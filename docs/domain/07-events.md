@@ -121,6 +121,7 @@ The rows are already in `permission_level`
 | `event.view` | event | `view` |
 | `event.register_self` | event | `contribute` |
 | `event.manage_participants` | event | `manage` |
+| `event.presence.mark` | event | `contribute` |
 | `event.grant_access` | event | `admin` |
 
 **This is why audiences matter here.** Registering 200 children one at a time is 200 grant
@@ -143,11 +144,28 @@ The obvious objection is a camp for 11–14 year-olds. How does `contribute` exp
 evaluates, so an event for the older section is opened to that section's participants and
 nothing else. An age-gated camp is a camp open to a unit whose participants are that age.
 
-**What this does not do:** it does not enforce an age *ceiling* on a registration for an
-open event. If a 9-year-old holds `contribute` on a camp for teenagers, they can register.
-Whether that is acceptable is [§11](../data-model/08-events.md#11-open-issues) — the honest
-statement is that this design **decides eligibility by who may register, not by checking the
-person**, and the check is the grant.
+**What this does not do, deliberately:** it does not enforce an age *ceiling* on a
+registration for an open event. If a 9-year-old holds `contribute` on a camp for teenagers,
+they can register, and **nothing in the system objects**
+([D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
+There are no `min_age`/`max_age` columns on `event` and there will not be some, for a reason
+worth keeping in mind when the next restriction is requested: **a condition evaluated at
+registration time that the capability model does not know about is the first rule-engine
+rule**, and the second is always cheaper than the first. Two years after that, the answer to
+"who can register for this?" stops being readable from `access_grant`.
+
+What makes the residual risk survivable is not a check but three properties the schema already
+has. The registration is **attributable** — `source = 'staff'` with a named `created_by`, so
+the judgement belongs to somebody. Age is **one join away** — `person.birth_date`, which the
+roster query in [data-model/08 §9](../data-model/08-events.md#9-the-three-queries-that-matter)
+already selects, so any list a leader works from can carry it without a new column anywhere.
+And the age-bounded case, the ordinary one, is already handled: open the event to the unit
+whose members are that age.
+
+**If the shape ever recurs often enough to hurt,** the fix is not a column on `event`. It is
+another **built-in audience** — `all_members` is a rule the resolver evaluates, so
+`members_aged_13_plus` can be one too. That keeps every answer to "who may register" living in
+one table, which is the property worth defending.
 
 ---
 
@@ -483,8 +501,9 @@ are read by that event's organizers, and they end with the event. See
 Moved to [../open-questions.md](../open-questions.md) under **G. Events**, where they are
 tracked with the rest. The ones this module raises:
 
-- **The age ceiling on an open event** (§4). Eligibility is decided by who may register; a
-  `contribute` grant does not check the person's age. Whether that is enough.
+- ~~**The age ceiling on an open event**~~ — **settled: accepted as a risk**, the grant is
+  the rule, and closing it later would mean a new audience rather than a column (§4,
+  [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
 - **Event answer retention** (§12). Answers end with the event — but a dietary answer citing
   a medical condition is health data with a retention obligation, and there is no policy yet.
 - **Cancelled events and fees** (§10–11). Cancelling keeps the registrations; whether it

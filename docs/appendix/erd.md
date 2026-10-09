@@ -220,7 +220,7 @@ so a parent can have full access to one child and read-only to another. See
                     ┌──────────────────┐
                     │    permission    │   'membership.request.approve'
                     │  code, resource  │   'dependent.medical.view'
-                    │  namespace       │   'event.admin'
+                    │  namespace       │   'event.register_self'
                     └────────┬─────────┘
                              │
               ┌──────────────┴───────────────┐
@@ -335,8 +335,11 @@ so a parent can have full access to one child and read-only to another. See
 - `role_assignment` and `access_grant` are the same idea at two granularities: authority
   held for a period, in a scope, granted by someone. They share `scope_type`, the level
   model, and the resolver.
-- The `admin` level subsumes narrower ones by **prefix match**, so a new narrow permission
-  is automatically covered by existing `.admin` grants.
+- **There is no wildcard permission.** A check for `X.y` needs an exact grant of `X.y`, or
+  `system.admin`. The old `<resource>.admin` prefix match was removed with its sixteen codes
+  (D-068, reversing D-007); "can do everything about events" is a **role** listing all
+  thirteen `event.*` codes. Note `access_level.admin` (rank 40) is a **grant level** and
+  survives — same word, different mechanism.
 - **Deny is absolute.** An explicit `revoked` at any scope is checked *first* and beats
   everything — including the `admin` level, ownership, and guardianship. "Most specific
   scope wins" applies **only to allows** (step 3).

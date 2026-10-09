@@ -279,6 +279,9 @@ CREATE TABLE event_registration (
     -- organization's care, and it cannot be reconstructed afterwards (§9).
 
     presence_marked_by BIGINT REFERENCES person(id),
+    -- The person who took the register. Held by whoever has event.presence.mark, which is
+    -- deliberately ONE LEVEL BELOW event.manage_participants (contribute, not manage) so the
+    -- volunteer at the door is not also the person who can delete a child from the roster.
     presence_marked_at TIMESTAMPTZ,
 
     fee_obligation_id BIGINT REFERENCES fee_obligation(id),
@@ -967,10 +970,12 @@ is wrong, and the fix is to change the number rather than to start refusing peop
 
 Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
 
-- **The age ceiling on an open event.** Eligibility is who may register, and a `contribute`
-  grant does not check a person's age. An age-gated camp is a camp open to a specific unit's
-  participants — which handles the common case and does not enforce a ceiling on an open
-  event (§4).
+- ~~**The age ceiling on an open event.**~~ **Settled: there is none**
+  ([D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
+  No `min_age`/`max_age` on `event`, no age branch in the registration trigger. If it is ever
+  revisited the shape is a new **built-in audience**, not a column on the row.
+- ~~**Whether `event.manage_participants` should split.**~~ **It did**, into
+  `event.presence.mark` at `contribute` (§4).
 - **Retention of `event_answer`.** Answers end with the event, but a dietary answer citing a
   medical condition is health data with a retention obligation, and there is no policy (§7).
 - **Cancelled events and fees.** Cancelling keeps the registrations. Whether it releases the
@@ -982,7 +987,4 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
   event, that is one clause — and no data migration (§8).
 - **Waitlist notification.** Promotion is deliberate; telling the promoted person is not
   designed. It belongs to the communication module.
-- **`event.*` permissions beyond the sketched set** — particularly whether
-  `event.manage_participants` should split into "add/remove" and "mark presence", since a
-  volunteer taking the register at camp is not the same trust as one who may alter the
-  roster.
+

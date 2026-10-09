@@ -124,10 +124,14 @@ so one grant level serves many permissions without a hardcoded mapping.
 
 ---
 
-## D-007 — Every resource has an `admin` level that subsumes narrower ones
+## D-007 — Every resource has an `admin` level that subsumes narrower ones ⚠ **REVERSED**
 
-**Status:** decided (from your answer)
-**Date:** initial design
+**Status:** ~~decided~~ **reversed by [D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)**
+**Date:** initial design · reversed refinement round 5
+
+> **Reversed.** The per-resource `<resource>.admin` *permissions* and the resolver's prefix
+> match are gone. **The `admin` grant LEVEL (rank 40) is untouched** — this decision conflated
+> the two, and the collision is what made it hard to reverse cleanly. See D-068.
 
 **Decision.** Per your instruction, every grantable resource exposes `<resource>.admin`,
 checked by prefix match, plus a single top-level `system.admin`.
@@ -411,7 +415,7 @@ late is a real harm. Automation should stop short of the consequence.
 The principle survives and is still the design's default: **for anything that is a
 judgement, the system produces a worklist and a human decides.** Terminations for cause,
 safeguarding removals, and guardianship expiry at majority
-([D-024](#d-024--guardianship-does-not-auto-expire-at-majority)) all still work this way.
+([D-024](#d-024--guardianship-does-not-auto-expire-at-majority--reversed)) all still work this way.
 
 Two halves of the original text do not survive:
 
@@ -430,9 +434,16 @@ including the one case the window cannot absorb.
 
 ---
 
-## D-024 — Guardianship does not auto-expire at majority
+## D-024 — Guardianship does not auto-expire at majority ⚠ **REVERSED**
 
-**Status:** assumption ⚠ *confirm*
+**Status:** ~~assumption~~ **reversed by [D-069](#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)**
+**Date:** initial design · reversed refinement round 5
+
+> **Reversed — but not in the direction you might expect.** The alternative was *not*
+> auto-expiry. D-024's sin was the review queue: still an automatic behaviour, still computing
+> a majority date the system has no authority to assert. D-069 removes the queue *and* the
+> date. The conclusion D-024 reached — do not silently strip access — is kept; the mechanism
+> is withdrawn.
 
 **Decision.** The system computes the candidate date and puts it on a review queue. Staff
 close the row.
@@ -1409,7 +1420,7 @@ change is confined to [data-model/02 §10](../data-model/02-organization.md#10-s
 **Decision.** The permission catalog is **large and granular on purpose**, and it stays that
 way. It is a *menu* from which administrators assign people only what they actually need —
 not a checklist every deployment is expected to use in full. Adding a permission remains one
-row plus its `permission_level` rows ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)),
+row plus its `permission_level` rows ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed)),
 and further permissions will arrive with the modules not yet specified (events, documents,
 communication, reporting).
 
@@ -1437,7 +1448,7 @@ role list would be a specification pretending to be data.
 rather than decorative — but **`.admin` subsumption means a new permission is
 retroactively held by everyone with the namespace's `.admin`.** Split a broad permission in
 two and an existing holder of the `.admin` gains both halves without an assignment being
-written. That is the intended behaviour ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)),
+written. That is the intended behaviour ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed)),
 and it is also why `role.edit` is marked 🔒🔒: the catalog's granularity only helps if the
 grants are actually narrow.
 
@@ -2035,6 +2046,285 @@ recording, because it is a task still outstanding.
 
 ---
 
+## D-068 — There are no per-resource `admin` permissions; roles are the bundle
+
+**Status:** decided (from your answer) — **reverses [D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed)**
+**Date:** refinement round 5
+
+**Your answer.** Asked whether `person.admin` should subsume `person.merge` and
+`person.redact` — the standing case against prefix subsumption, since both are irreversible
+and both are privacy incidents if granted wrongly — you answered: *"Only the system should
+have admin permissions, not the individual items."*
+
+The phrase needed disambiguating, because *"individual items"* names two different things in
+this schema: the per-resource permission (`person.admin`, over the whole resource) and the
+item-scoped grant (`access_grant` over one event). You confirmed the first reading.
+
+**Decision.** The **sixteen** `<resource>.admin` permission codes are **deleted** — the ten
+documented ones (`person.admin`, `account.admin`, `membership.admin`,
+`unit_participation.admin`, `org_unit.admin`, `position.admin`, `guardianship.admin`,
+`audit.admin`, `event.admin`, `audience.admin`) and the six sitting in deferred namespaces
+(`document`, `fee`, `payment`, `report`, `consent`, `message`). So is the resolver's
+prefix-match branch. What remains:
+
+- **`system.admin`** is the only permission in the system that means *everything*, and it is
+  reached only through a role assignment (`system` namespace — never an item grant, never
+  guardianship). Unchanged.
+- **"Someone who can do everything about events"** is a **role** the organization composes,
+  bundling the thirteen `event.*` codes. Not a permission the code invents for them.
+- **`access_level.admin` (rank 40) is untouched.** This is a different thing that shares a
+  name, and the collision is the most likely place for a later reader to go wrong. The level
+  answers *"how much authority does this grant carry"* — `view` < `contribute` < `manage` <
+  `admin`, used by `permission_level` to decide whether a `contribute`-level grant satisfies
+  `event.register_self`. The permission code answered *"does this capability imply that one"*.
+  The ladder survives; only the wildcard code dies.
+
+**Why this is coherent with the rest of the design rather than an exception to it.** D-052
+already settled that **roles are runtime data and the seed set is not a specification** — the
+organization composes permission groups at runtime. A per-resource `admin` code is the code
+composing a permission group *on the organization's behalf*, in advance, for a bundle nobody
+asked for. Deleting it makes the two mechanisms agree: **the code implements capabilities,
+the organization groups them.** It is the same division D-055 drew when it refused to prune
+the catalog — a large menu of narrow things, composed by whoever needs them.
+
+**The cost is real, and it is the cost D-007 existed to prevent.** Stated in D-007's own
+words: without the wildcard, *every new narrow permission requires updating every role that
+should already have implied it — and someone will miss one, producing a permission that
+silently is not granted.* That failure mode is back. It is accepted because it fails
+**closed**: someone cannot do a thing they were arguably meant to be able to do, and they say
+so, rather than doing a thing nobody meant them to be able to do. D-007 traded a loud
+inconvenience for a quiet hazard. The reversal takes the opposite side of the same trade.
+
+**What replaces the protection** — since the wildcard is gone, reachability needs a check of
+its own. **Integrity check 18** lists permissions that **no role grants**, which is the query
+that surfaces a permission silently orphaned by the absence of a wildcard (numbering follows
+the existing list in [../data-model/05 §11](../data-model/05-authorization.md#11-integrity-checks)):
+
+```sql
+-- 18. ORPHANED PERMISSIONS — granted by no role at all. With no .admin wildcard
+--     (D-068), a new permission nobody bundles is silently unusable. This report is
+--     the safety net the wildcard used to be.
+SELECT p.code, p.resource
+  FROM permission p
+ WHERE p.is_assignable
+   AND NOT EXISTS (SELECT 1 FROM role_permission rp WHERE rp.permission_id = p.id)
+ ORDER BY p.resource, p.code;
+```
+
+**What happens to the F-4 question that prompted this.** It does not dissolve — it **moves,
+and becomes visible.** A role bundling all eleven `person.*` permissions still reaches
+`person.merge` and `person.redact`, because those are ordinary codes in the bundle. The
+difference is where the decision lives: previously a *resolver rule* made the implication,
+invisible in every role editor and true for every resource whether or not anyone wanted it.
+Now the implication appears **as the contents of a role the organization wrote**, reviewable
+line by line in `role_permission`, dated, and alarmable. `role.edit` on that role is already
+audited for exactly this reason (D-052). **The guidance therefore moves from the schema to
+the seed:** a role bundling a resource *including* its irreversible codes should be named for
+what it is, and the seed roles in §11 are written so that no seeded role mixes
+`person.merge`/`person.redact` with routine `person.edit`. That is now expressible as a
+report rather than a caveat.
+
+**Two survivors, and why neither is an exception.** Both look like wildcards and neither is
+the thing being deleted:
+
+- **`dependent.admin` stays.** It is **not** a prefix-match artefact — it is a code a staff
+  member *chooses and stores*, one row in `guardianship_permission`, granting the full set for
+  one child. A wildcard that must be deliberately written is what this decision endorses, not
+  what it removes. It also has a property no role wildcard can have: an explicit
+  `is_granted = false` row **overrides** it, so a court-ordered restriction survives a broad
+  grant. Deleting `dependent.admin` would make the common restriction *easier* to express, not
+  harder — listing nineteen narrow rows per child where a court case needs two. **The
+  distinction to keep: `person.admin` implied capabilities nobody wrote down;
+  `dependent.admin` is a shorthand for capabilities somebody did write down, in a specific
+  row, about a specific child.**
+- **`system.admin` stays**, for the reasons already in §7 — it is the break-glass capability,
+  concentrating the most dangerous thing in one alarmable holder rather than scattering
+  equivalents. It was never a prefix-match beneficiary; it is checked outright.
+
+**A third thing called "admin", which also stays.** `dependent.profile.admin`,
+`dependent.medical.admin`, `dependent.consent.admin` are **not** wildcards at all — they are
+*actions* meaning "edit" inside a sub-resource, paired against `.view`. Nothing is implied by
+them. Three unrelated meanings now share one word in this schema — the access **level**
+(rank 40), the deleted resource **wildcard**, and an **edit** action — and any of the three
+may be what a reader means. When one of them comes up in conversation, say which.
+
+**Migration.** Deleting `role_permission` rows for the sixteen codes; no other data moves.
+Any role that held only `person.admin` becomes an empty role, which is *correct* and visible
+rather than quietly over-privileged — and `role.delete` still refuses to remove a role that
+was ever assigned (D-052), so the empty shell survives as evidence of what someone once
+meant. Re-deriving it means naming the bundle, which is the point.
+
+**Two-way door?** No. Re-adding a wildcard later is mechanically cheap and semantically loud
+— it re-creates the implication silently for resources added after the day you added it.
+Treat it as a fresh decision, not a revert.
+
+**See:** [../appendix/permission-catalog.md §1](../appendix/permission-catalog.md#1-conventions),
+[../data-model/05-authorization.md §2](../data-model/05-authorization.md#2-permission),
+[../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles--bundles-of-permissions).
+
+---
+
+## D-069 — Guardianship ends when a person ends it; the system takes no position on majority
+
+**Status:** decided (from your answer) — **reverses [D-024](#d-024--guardianship-does-not-auto-expire-at-majority--reversed)**
+**Date:** refinement round 5
+
+**Your answer.** Asked what the system does when a guarded child turns 18 — review queue,
+auto-expire, or nothing — you answered **"Nothing at all."**
+
+**Decision.** No job, no review queue, no computed candidate date, no flag. A guardianship
+row is ended by a person ending it (`guardianship.end`), or by import, and the system does
+not notice birthdays in this connection at all.
+
+**Why this is better than the queue D-024 proposed, and where D-024 went wrong.** D-024
+reasoned from *"fail open rather than silently strip access"* and picked the gentler of two
+automatic behaviours. **Both were automatic.** The queue was not a refusal to act; it was a
+deferral of the action, and it smuggled in a claim the system cannot support: that majority
+is a date the system knows. It is not. D-024's own rationale said thresholds vary by
+jurisdiction — and then computed a date anyway. A review queue is not a neutral container for
+a wrong date; it is a worklist of cases staff are told to decide, and the item on it asserts
+something the organization has not decided.
+
+**The deeper problem with the queue: it inverts who decides.** Under D-024 the system raises
+the question at 18 whether or not anyone wanted it asked, in every case, for every family —
+including the ones where the adult child asks their parent to keep handling their medical
+correspondence. The queue's default is that the arrangement is suspect. That is the wrong
+default for a relationship the organization did not create.
+
+**What "nothing" costs, stated honestly.** Nothing is tracked, so **"who is still listed as my
+guardian, and since when?" has no automatic answer.** It has a manual one: `guardianship`
+carries `valid_from`/`valid_to`, so the question is a query on a person's rows and the answer
+includes the date each was ended. What is lost is a *prompt*, not a *record* — which is the
+same trade the module makes everywhere. See the pattern below.
+
+**This is the latest in a consistent line of refusals, and the reasoning is identical each
+time.** Across five rounds the design has allowed itself exactly two automatic transitions —
+the yearly fee sweep (D-040) and the event waitlist release (D-066) — and has refused, among
+others, automatic membership lapse states (D-023), event status (D-064), and recurrence
+(D-058). Guardianship expiry is the next one refused. The pattern: **an automatic transition is cheap to design and expensive to defend, because it
+acts on every case including the ones it was not designed for.** A nightly job that ends
+guardianships at 18 fails closed and strips a legally valid arrangement overnight; a queue
+fails open and adds a standing assertion the org never made. The third option — a person who
+knows the family ends the row — is the only one that can also decide *not* to.
+
+**Consequence to carry: nothing here weakens the exit path, so the exit path must exist.**
+With no automatic end, `guardianship.end` is the only door, and it must be reachable by
+someone. Two things follow, both worth stating because they are now load-bearing in a way they
+were not when a job existed to help:
+
+1. **The adult child must be able to end it about themselves.** They are the subject of the
+   row and currently hold no permission over it — they are not a guardian of themselves. This
+   needs a route, and it is now the module's sharpest open item.
+2. **A stale row is invisible by design**, so the query, not the job, is the control. A
+   periodic human review is a good idea and is explicitly *not* a scheduled system behaviour.
+
+**Follow-up raised: E-2 is closed and replaced by E-5** — *"how does an adult end a guardianship
+over themselves?"* That question existed before this decision and was masked by a review queue
+that would have surfaced it. It is now unavoidable.
+
+**See:** [../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-guardianship_permission),
+[../domain/02-actors.md §5](../domain/02-actors.md#5-acting-on-behalf).
+
+---
+
+## D-070 — An event has no age ceiling; the grant is the rule
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Your answer.** Asked about the one gap in *eligibility is capability*
+([D-060](#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)) — an event
+opened to `all_members` can be registered for by a nine-year-old even if the camp was planned
+for teenagers — you answered **"Leave it — the grant is the rule."**
+
+**Decision.** No `min_age`/`max_age` on `event`. No age check in `place_event_registration()`.
+Age restriction is expressed **entirely** by choosing the audience the event is opened to.
+
+**Why the option was tempting, and why refusing it is right.** The offered design was the
+cheap one: a column pair plus one branch, **reported** rather than blocking, matching
+`position.min_age`. It would have cost little and reversed nothing. It is refused on
+consistency grounds, which are the only grounds worth having here. A condition evaluated at
+registration time that the capability model does not know about is **the first rule-engine
+rule**. Not because age is special — because the moment one exists, the second is cheap, and
+within two years the honest answer to "who can register for this?" is "check the grants, and
+also the age columns, and also whatever else we added there." D-060 dissolved a deferred
+question by noticing the capability model already answered it; a condition living beside it
+reopens the question by insisting the capability model is not enough.
+
+**The residual risk, stated rather than waved away.** A leader registers a child for an event
+the child is too young for, and **nothing in the system objects.** Accepted, on three
+conditions that are all already true in the schema:
+
+1. **It is attributable.** Staff-driven registrations carry `source = 'staff'` and a
+   `created_by`, so the judgement is recorded as belonging to a named person.
+2. **It is visible.** §9's roster query lists registrants with birth dates, so age is on the
+   page a leader looks at while confirming.
+3. **It is the normal case correctly handled already.** A genuinely age-bounded event is
+   opened to the unit whose members are that age, and that is how a section-based organization
+   works today. What is *not* covered is one narrow shape — an event open to everyone that
+   should be restricted — and it is narrow enough that a column pair would be a permanent
+   mechanism serving an exception.
+
+**If it is ever revisited,** the trigger is specific: the shape recurring often enough that
+leaders routinely open the wrong event to the wrong people. Then the right answer is probably
+still not columns on `event` but **an audience that encodes the age band** — `all_members` is
+a rule the resolver evaluates, and so could `members_aged_13_plus` be. That keeps eligibility
+in one place, which is the property being protected here. **Do not reach for a condition on
+the row when the mechanism for evaluating membership of a set already exists.**
+
+**See:** [../domain/07-events.md §4](../domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine),
+[../data-model/08-events.md §9](../data-model/08-events.md#9-the-three-queries-that-matter).
+
+---
+
+## D-071 — Nothing forces a role assignment to end; the gate and the report are the control
+
+**Status:** decided (from your answer) — **overrides the recommendation in F-3**
+**Date:** refinement round 5
+
+**Your answer.** Asked whether `valid_to` should be mandatory on high-authority role
+assignments — the classic *volunteer who was never removed* — you answered **"Nothing — rely
+on the gate."**
+
+**The docs had recommended the other way.** F-3 said *yes, at the application layer*, and
+argued the membership gate made an open-ended assignment more dangerous, not less. You
+disagree, and the disagreement is worth recording because the recommendation was not
+obviously wrong.
+
+**Decision.** `role_assignment.valid_to` stays nullable with no application-layer requirement
+and no per-role policy. The controls are the **membership gate**
+([D-039](#d-039--member-permissions-require-a-current-paid-membership)) and a **report**. No
+new constraint anywhere.
+
+**Why the recommendation was wrong, in one place.** F-3 said the gate makes open-ended
+assignments *more* dangerous. It is the other way round: **the gate already does what an
+expiry date would do, for exactly the population an expiry date would target, and it does it
+without inventing a date nobody chose.** A forced `valid_to` is an guess about when authority
+should lapse, written by whoever made the assignment — usually inherited from a form default.
+The gate instead ties expiry to a fact the organization already maintains and renews on
+purpose: whether this person is a member. When the fee lapses, gated roles stop granting. The
+expiry date was always going to be a worse approximation of that.
+
+**What the gate does not cover — the honest residue.** `unit_leader` and `assistant_leader`
+have `requires_membership = false` by explicit decision (a volunteer whose own fee lapses
+still runs the Thursday meeting), so a lapsed leader keeps leading. Also any role held by a
+non-member, and anything carrying `system.gate_exempt`. For those, the answer is a **periodic
+human review over open-ended assignments**, and D-068 now makes that query sharper, since a
+role's full reach is visible in `role_permission` with no wildcard hiding implications in the
+resolver.
+
+**Note the dependency this decision creates.** D-053 put *all* the weight on
+`role_assignment.valid_to` as the only thing that ends authority, and warned that the
+open-ended assignment is the classic access failure. **This decision declines to add a guard
+rail at precisely that point**, so the two together should be read as one load-bearing pair:
+authority ends only when somebody ends it, and the only defence left is that somebody looks.
+The report is not a nice-to-have here; it is the entire control.
+
+**See:** [../data-model/05-authorization.md §4](../data-model/05-authorization.md#4-role_assignment--system-wide-authority),
+[../open-questions.md F-3](../open-questions.md#f-3--closed--nothing-forces-an-assignment-to-end).
+
+---
+
 ## Reversed decisions
 
 - **D-015 — Authority inherits downward through the unit hierarchy.** Reversed by
@@ -2107,3 +2397,31 @@ recording, because it is a task still outstanding.
   [D-055](#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular): the
   catalog is a deliberately large, granular *menu*, and further permissions arrive with the
   modules not yet specified.
+
+- **`<resource>.admin`, and the resolver's prefix match.** All sixteen per-resource wildcard
+  permission codes (`person.admin`, `event.admin`, …) and the `X.admin` branch of `can()` were
+  removed by [D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
+  reversing [D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed).
+  **Two things sharing the name survive and are not reversals:** the `admin` **grant level**
+  (rank 40), which is a different mechanism, and `dependent.admin`, which is a shorthand a
+  person deliberately stores on one guardianship row rather than an implied capability. The
+  failure mode D-007 was written to prevent — a new permission nobody bundled into a role — is
+  **accepted**, and integrity check 18 is the net that replaces the wildcard.
+- **The guardianship review queue at majority**, together with the computed candidate date it
+  relied on. Removed by
+  [D-069](#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority),
+  reversing [D-024](#d-024--guardianship-does-not-auto-expire-at-majority--reversed). Note the
+  direction: the replacement is **not** auto-expiry. Both automatic behaviours went. D-024's
+  *conclusion* — never silently strip a legally valid arrangement — is kept; its mechanism was
+  a deferral that still asserted a date the system cannot justify.
+- **The "require `valid_to` on high-authority role assignments" recommendation** (F-3, a
+  recommendation, never a numbered decision). Withdrawn by
+  [D-071](#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control):
+  the membership gate already expires what an expiry date would have expired, for the same
+  population, without inventing a date. Read together with D-053, which placed all the weight
+  on `role_assignment.valid_to` — the human review report is now the entire control.
+- **The proposal to give `event` a `min_age`/`max_age` pair** (raised as EV-1 within this
+  round, never built). Declined by
+  [D-070](#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule): a registration-time
+  condition the capability model does not know about is the first rule-engine rule. No
+  reversal, since nothing was shipped — recorded here because the idea will return.

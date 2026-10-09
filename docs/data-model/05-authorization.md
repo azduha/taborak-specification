@@ -74,7 +74,9 @@ CREATE TABLE permission (
     -- True: seeded by the platform, cannot be deleted or have its code changed.
 
     is_assignable   BOOLEAN NOT NULL DEFAULT true,
-    -- False: a permission that exists only to be subsumed by an .admin code.
+    -- False: a permission no grant may name directly — a deprecated narrow code kept
+    -- only so historical audit rows still resolve to something readable. (Before D-068
+    -- this also flagged wildcard `.admin` codes; there are none now.)
 
     requires_scope  TEXT CHECK (requires_scope IN ('organization','org_unit')),
     -- Non-null forces the granting role/assignment to be scoped accordingly.
@@ -94,21 +96,27 @@ CREATE INDEX ix_permission_resource  ON permission (resource);
 CREATE INDEX ix_permission_namespace ON permission (namespace) WHERE namespace IS NOT NULL;
 ```
 
-### The `admin` convention, enforced structurally
+### There is no wildcard permission
 
-Per your instruction: **every resource exposes an `admin` permission that subsumes all
-narrower ones.** This is not enforced by rows but by a rule in the resolver:
+A check for `X.y` is satisfied by **an exact grant of `X.y`**, or by `system.admin`, which is
+checked outright and is the only permission meaning *everything*.
 
 ```
 A check for permission 'X.y' is satisfied by:
     - an exact grant of 'X.y', OR
-    - a grant of 'X.admin'
+    - a grant of 'system.admin'   (NULL-namespace permissions only)
 ```
 
-Because it is a **prefix match on the resource part**, adding a new narrow permission to a
-resource does not require updating every role that grants that resource's `admin`. Without
-this, every new permission needs a migration to every role that should already have
-implied it — and someone will forget one.
+**There are no `<resource>.admin` codes.** The convention that every resource should expose
+one, matched by prefix in the resolver, was **reversed by
+[D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)**,
+which also removed the resolver branch that implemented it. "Can do everything about events"
+is a **role** composed from the thirteen `event.*` codes, because roles are runtime data the
+organization composes (D-052) and a wildcard was the code guessing at that bundle instead.
+
+**The cost is the one D-007 existed to prevent, and it is accepted:** a new narrow permission
+is not automatically covered by the roles that should imply it. Integrity check **18**
+(permissions no role grants) is the net the wildcard used to be. It fails closed.
 
 `is_assignable = false` exists for permissions that only make sense as part of a bundle —
 a deprecated narrow permission kept for historical audit readability, for instance.
@@ -506,9 +514,14 @@ Note the scope is the unit being covered, not the actor's own unit. An officer h
 `scope.expose` at a **parent** unit **cannot** satisfy this for a sub-unit, because they
 hold nothing at the sub-unit. That single fact is what makes the whole rule enforceable.
 
-`scope.expose` is seeded as a permission without an `.admin` sibling implication beyond the
-usual one — it is ordinary in that respect, and grantable by anyone holding
-`org_unit.admin` at that unit. See §11 for the seed row.
+`scope.expose` is an ordinary, narrow permission with **no wildcard that implies it** —
+[D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
+deleted `org_unit.admin`, which previously reached it by prefix match. **That is an improvement
+worth naming.** Under the old rule, "may administer this unit" silently included "may hand a
+parent unit authority over this unit's records" — the single most consequential act available
+at unit scope, carried as an implication of a general-purpose administrative permission and
+invisible in the role editor. It is now grantable **only by naming it**, which is the correct
+weight for the door it opens. See §11 for the seed row.
 
 ### Practical scale — no bulk tool, and why that is now fine
 
@@ -643,8 +656,10 @@ ALTER TABLE access_grant ADD CONSTRAINT ck_access_grant_audience_not_delegated C
 
 ### `level` is the heart of the design
 
-Per your instruction, every grantable resource has an `admin` level that subsumes all
-narrower ones. The ordered levels (defined in
+The four **grant levels** below are a different thing from the deleted `<resource>.admin`
+*permissions*, and the shared name is an accident worth guarding against: a level says **how
+much** authority a grant carries and is compared by rank; a permission code says **which**
+capability. Only the codes were deleted. The ordered levels (defined in
 [00-conventions.md](00-conventions.md#5-enumerations)):
 
 | Level | Rank | Means |
@@ -730,6 +745,7 @@ without a hardcoded mapping in application code. Example:
 | `event.register_self` | event | `contribute` |
 | `event.edit` | event | `manage` |
 | `event.manage_participants` | event | `manage` |
+| `event.presence.mark` | event | `contribute` |
 | `event.grant_access` | event | `admin` |
 | `org_unit.view` | org_unit | `view` |
 | `org_unit.manage` | org_unit | `manage` |
@@ -1296,7 +1312,9 @@ BEGIN
                 OR person_holds_gate_exempt(p_person_id, p_at))  -- (b) D-051
            AND (
                  p2.code = p_permission_code
-              OR p2.code = v_perm.resource || '.admin'
+              -- NO '.admin' prefix-match branch. There are no per-resource admin
+              -- permissions (D-068, reversing D-007); a role that can do everything
+              -- about events lists all thirteen event.* codes explicitly.
               OR (v_perm.namespace IS NULL AND p2.code = 'system.admin')
            )
            AND (
@@ -1383,8 +1401,8 @@ transition, including the yearly expiry sweep, which touches every member at onc
    permissions are denied by a `revoked` grant if that is what the organization wants.
 2. **Ownership short-circuits before roles.** A person's access to their own record does not
    depend on any grant, which is what makes the system usable by non-members.
-3. **The `.admin` prefix match is computed**, not hardcoded, so new permissions are covered
-   automatically.
+3. **There is no wildcard except `system.admin`.** No prefix match, no implied capability.
+   If a holder can do a thing, a row says so (D-068).
 4. **`p_at` is threaded through every branch.** Permission checks are time-travel capable.
 5. **Delegation sources are re-validated at check time**, closing the
    stale-delegation escalation.
@@ -1592,6 +1610,40 @@ SELECT r.code, r.name, r.created_at
    AND r.is_system = false
  ORDER BY r.created_at;
 -- EXPECTED: unused, non-system roles. Delete the mistakes; keep the ones on the roadmap.
+
+-- 18. ORPHANED PERMISSIONS — a capability no role grants. This check exists BECAUSE of
+--     D-068: with no `.admin` wildcard, a permission that ought to be inside some role and
+--     was never added to it is silently unusable, and there is no longer a resolver rule
+--     that would have covered it by accident. This is the net the wildcard used to be.
+SELECT p.code, p.resource, p.display_name
+  FROM permission p
+ WHERE p.is_assignable
+   AND NOT EXISTS (SELECT 1 FROM role_permission rp
+                    WHERE rp.permission_id = p.id)
+ ORDER BY p.resource, p.code;
+-- EXPECTED: empty after a seeding pass. A non-empty row means either a permission nobody
+-- has bundled yet (fine on a roadmap, wrong in production) or a module was added and its
+-- roles were not. NOTE what this CANNOT see: a permission granted to *a* role but not to
+-- the role that arguably should have it. That residual is the accepted cost of D-068 and
+-- no query closes it — it is a human reading §11's seed table against the catalog.
+
+-- 19. TIME-BOMB for D-068: the `.admin` prefix match must STAY deleted. A reintroduced
+--     wildcard re-creates implied capabilities for every resource, including ones added
+--     after the day it was added back. CI assertion, same shape as 14 and 15.
+SELECT p.proname
+  FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+ WHERE n.nspname = 'public'
+   AND p.proname IN ('can', 'grant_satisfies', 'can_act_for_dependent')
+   AND pg_get_functiondef(p.oid) LIKE '%|| ''.admin''%';
+-- EXPECTED: zero rows. Non-empty means an implied-capability rule is back.
+SELECT count(*) AS wildcard_codes_present
+  FROM permission WHERE action = 'admin'
+   AND code NOT IN ('system.admin','dependent.admin',
+                    'dependent.profile.admin','dependent.medical.admin',
+                    'dependent.consent.admin');
+-- EXPECTED: zero. The five listed survivors are deliberate and each is explained in the
+-- catalog §1 ("three things named admin"). Anything else with action='admin' is a
+-- re-created wildcard.
 ```
 
 Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
@@ -1618,6 +1670,31 @@ Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
 
 Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.
 
+> **This block and [../appendix/permission-catalog.md](../appendix/permission-catalog.md) are
+> the same list written twice, and they drift.** When this was reconciled, **22 documented
+> permissions had no `INSERT` row** — among them `unit_participation.view`, which **five** of
+> the catalog's own seed roles assign, and `person.redact`, which is one of the two codes
+> D-068 exists to protect. A further 12 were the `event.*` set, added to the catalog when
+> events were designed and never carried here. **Under the old wildcard much of this was
+> harmless**: a role holding `unit_participation.admin` reached the code whether or not the row
+> existed, so the catalog could advertise a capability the database could not name and nothing
+> noticed. The permission editor was the only place the gap showed. **[D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
+> removed that cushion.** Now a role that lists a code with no row either fails to insert or
+> grants nothing, and integrity check 18 reads the *table*, so it cannot see that the catalog
+> promised something the seed never contained.
+>
+> **There is no SQL check for this** — one side is a Markdown file. The discipline is the
+> check: when adding a permission, add it in **both** places in the same edit, and treat a
+> catalog row with no `INSERT` row as a bug of the same class as a missing migration. The
+> reconciliation is mechanical enough to script if this file ever grows again:
+>
+> ```sql
+> -- Run alongside a parse of permission-catalog.md column 1. Anything in the catalog and not
+> -- here is a permission that cannot be granted; anything here and not there is an
+> -- undocumented capability. Both were present in this document at the same time.
+> SELECT code FROM permission ORDER BY code;
+> ```
+
 **Roles are data, and the organization administers them at runtime.** This section seeds the
 *permissions* — the vocabulary of things anyone might do. The role names used throughout the
 docs are worked examples of composing those permissions into groups, not a fixed list.
@@ -1643,14 +1720,20 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('person.create',            'person', 'create', NULL, 'Create people',          'Add a person record', true),
 ('person.edit',              'person', 'edit',   NULL, 'Edit people',            'Change person details', true),
 ('person.merge',             'person', 'merge',  NULL, 'Merge people',           'Confirm identity matches and merge', true),
-('person.admin',             'person', 'admin',  NULL, 'Administer people',      'Full control over person records', true),
+('person.contact.view',      'person', 'contact.view', NULL, 'View contacts',   'See contact points', true),
 ('person.contact.edit',      'person', 'contact.edit', NULL, 'Edit contacts',   'Change contact points', true),
+-- Irreversible, and deliberately separate codes. There is no `person.admin` that implies
+-- them (D-068), so a role reaching them does so by listing them, visibly. `identity_reviewer`
+-- holds person.merge; no seeded role holds person.redact.
+('person.unmerge',           'person', 'unmerge',  NULL, 'Reverse a merge',    'Undo a confirmed merge', true),
+('person.redact',            'person', 'redact',   NULL, 'Redact a person',    'GDPR-style erasure; keeps the financial skeleton', true),
 
 -- Accounts
 ('account.view',   'account', 'view',   NULL, 'View accounts',  '', true),
 ('account.create', 'account', 'create', NULL, 'Create accounts','', true),
 ('account.suspend','account', 'suspend',NULL, 'Suspend accounts','', true),
-('account.admin',  'account', 'admin',  NULL, 'Administer accounts','', true),
+('account.close','account', 'close',NULL, 'Close accounts','', true),
+('account.credential.reset','account','credential.reset',NULL,'Reset credentials','', true),
 
 -- Membership
 ('membership.view',          'membership', 'view',    NULL, 'View memberships', '', true),
@@ -1662,43 +1745,56 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('membership.suspend',       'membership', 'suspend', NULL, 'Suspend memberships','', true),
 ('membership.terminate',     'membership', 'terminate',NULL,'Terminate memberships','Expel. Restricted permission.', true),
 ('membership.backdate',      'membership', 'backdate',NULL, 'Backdate memberships','Enter historical periods', true),
-('membership.admin',         'membership', 'admin',   NULL, 'Administer memberships','', true),
+
+-- Participation in sub-units (D-041). NOTE `unit_participation.view` is what the
+-- registrar holds at ORG scope, and exact-match scope means it reads the root's own
+-- participation rows, not a pack roster. That looks like a bug and is not (D-049).
+('unit_participation.view',   'unit_participation', 'view',   NULL, 'View participation', 'See who takes part in a sub-unit', true),
+('unit_participation.manage', 'unit_participation', 'manage', NULL, 'Manage participation', 'Add, move or end participation', true),
 
 -- Organization
 ('org_unit.view',   'org_unit', 'view',   NULL, 'View units',   '', true),
 ('org_unit.create', 'org_unit', 'create', NULL, 'Create units', '', true),
 ('org_unit.edit',   'org_unit', 'edit',   NULL, 'Edit units',   '', true),
-('org_unit.restructure','org_unit','restructure',NULL,'Restructure units','Split/merge, create successor units', true),
+('org_unit.rename', 'org_unit', 'rename', NULL, 'Rename or renumber a unit','', true),
+('org_unit.restructure','org_unit','restructure',NULL,'Restructure units','Split/merge, create successor units. NOT reparenting (D-036).', true),
+('org_unit.close',  'org_unit', 'close',  NULL, 'Close a unit','', true),
 -- Scope exposure: grants a higher-level role coverage over THIS unit.
 -- Scoped to the unit being covered. A parent unit's officer cannot satisfy this
 -- for a child unit, which is what makes the no-inheritance rule enforceable.
 -- There is no bulk variant (D-045): every row is written by the unit it covers.
 ('scope.expose',    'scope',    'expose', NULL, 'Expose unit scope','Grant an external role authority over this unit', true),
 ('scope.exposure.review','scope','exposure.review',NULL,'Review scope exposures','See and revoke exposures over this unit', true),
-('org_unit.admin',  'org_unit', 'admin',  NULL, 'Administer units','', true),
 
 -- Audiences (§8). Grants may target a set of people rather than one person.
 ('audience.view',   'audience', 'view',   NULL, 'View audiences',   'See built-in audiences and named groups', true),
 ('audience.manage', 'audience', 'manage', NULL, 'Manage named groups','Create and populate named groups', true),
-('audience.admin',  'audience', 'admin',  NULL, 'Administer audiences','', true),
 
 -- Positions
 ('position.view',   'position', 'view',   NULL, 'View positions', '', true),
 ('position.assign', 'position', 'assign', NULL, 'Appoint to positions','', true),
-('position.admin',  'position', 'admin',  NULL, 'Administer positions','', true),
 
 -- Guardianship
 ('guardianship.view',   'guardianship', 'view',   NULL, 'View relationships','', true),
 ('guardianship.create', 'guardianship', 'create', NULL, 'Record guardianship','', true),
+('guardianship.end','guardianship', 'end', NULL, 'End a guardianship',
+ 'The ONLY exit from a guardianship — nothing expires automatically (D-069). Note that the
+ subject of the row cannot currently hold this; see open question E-5.', true),
 ('guardianship.permission.grant','guardianship','permission.grant',NULL,'Grant guardian permissions','', true),
-('guardianship.admin',  'guardianship', 'admin',  NULL, 'Administer guardianship','', true),
 
 -- Roles and permissions themselves
 ('role.view',        'role', 'view',  'system', 'View roles',        '', true),
-('role.edit',        'role', 'edit',  'system', 'Edit roles',        '', true),
+('role.create',      'role', 'create','system', 'Create a role',     'Compose a new permission group', true),
+('role.edit',        'role', 'edit',  'system', 'Edit roles',        'Takes effect immediately for every holder', true),
+('role.delete',      'role', 'delete','system', 'Delete a role',     'Only if never assigned and not a system role', true),
 ('role.assign',      'role', 'assign','system', 'Assign roles',      '', true),
+('role.unassign',    'role', 'unassign','system','End a role assignment',
+ 'The ONLY thing that ends authority, since a role has no period (D-053) and nothing forces
+ an assignment to end (D-071).', true),
 ('permission.view',  'permission', 'view','system','View permissions','', true),
 ('permission.edit',  'permission', 'edit','system','Edit permissions','', true),
+('access_grant.create','access_grant','create',NULL,'Create an item grant','', true),
+('access_grant.revoke','access_grant','revoke',NULL,'Revoke an item grant','', true),
 ('system.admin',     'system', 'admin','system','System administrator','Full system control', true),
 ('system.gate_exempt','system','gate_exempt','system','Exempt from the membership gate',
  'Hold this and the membership gate never applies to you: every gated role you hold keeps '
@@ -1706,10 +1802,40 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
  'arrive through a role assignment — never through an item grant. Scope-independent by '
  'design: the gate is a property of the person, so the waiver has to be too.', true),
 
--- Audit
+-- Audit. No audit.admin — per-resource admin codes were removed (D-068).
 ('audit.view',   'audit', 'view',  NULL, 'View audit log',   '', true),
 ('audit.export', 'audit', 'export',NULL, 'Export audit log', '', true),
-('audit.admin',  'audit', 'admin', NULL, 'Administer audit', '', true);
+
+-- Legacy import (D-056)
+('import.view',  'import', 'view',  NULL, 'View import batches','', true),
+('import.stage', 'import', 'stage', NULL, 'Stage an import','', true),
+('import.apply', 'import', 'apply', NULL, 'Apply a staged import','', true),
+('import.revert','import', 'revert',NULL, 'Revert an applied import','', true),
+
+-- Reports. Only the coarse pair is seeded: whether reporting is per-report
+-- (`report.finance.view`, `report.membership.view`, `report.safeguarding.view`) or one
+-- `report.view` with row-level filtering is STILL OPEN (catalog §12), and the seed roles in
+-- catalog §11 name the granular ones as an illustration of that unresolved choice. Do not
+-- seed both shapes; pick one when reporting is designed.
+('report.view',   'report', 'view',   NULL, 'Run standard reports','', true),
+('report.export', 'report', 'export', NULL, 'Export report data','', true);
+
+-- Events (data-model/08). Thirteen codes, no wildcard among them (D-068): a role that runs
+-- events holds all thirteen explicitly. Full rationale in permission-catalog §8a.
+INSERT INTO permission (code, resource, action, namespace, display_name, description, is_system) VALUES
+('event.view',               'event', 'view',               NULL, 'View event', '', true),
+('event.create',             'event', 'create',             NULL, 'Create event', '', true),
+('event.edit',               'event', 'edit',               NULL, 'Edit event', 'Details, dates, capacity', true),
+('event.cancel',             'event', 'cancel',             NULL, 'Cancel event', 'Keeps registrations; notifies nobody by itself (D-064)', true),
+('event.organizer.manage',   'event', 'organizer.manage',   NULL, 'Manage organizers', 'The roster, not a grant (D-062)', true),
+('event.register_self',      'event', 'register_self',      NULL, 'Register yourself', 'THIS is the eligibility rule (D-060)', true),
+('event.register_other',     'event', 'register_other',     NULL, 'Register someone else', 'A minor, a walk-in, a substitute', true),
+('event.manage_participants','event', 'manage_participants',NULL, 'Manage the roster', 'Add/remove registrations, work the waitlist', true),
+('event.presence.mark',      'event', 'presence.mark',      NULL, 'Mark presence', 'One level BELOW manage_participants on purpose (EV-5)', true),
+('event.answer.view',        'event', 'answer.view',        NULL, 'Read registrant answers', 'Health-adjacent; where D-061 lives', true),
+('event.question.manage',    'event', 'question.manage',    NULL, 'Manage event questions', '', true),
+('event.grant_access',       'event', 'grant_access',       NULL, 'Grant event access', 'Requires level admin', true),
+('event.delete',             'event', 'delete',             NULL, 'Delete event', 'Only possible with no registrations', true);
 
 -- Dependent namespace (resolved via guardianship_permission)
 INSERT INTO permission (code, resource, action, namespace, display_name, description, is_system) VALUES
@@ -1721,6 +1847,7 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('dependent.membership.request','dependent','membership.request','dependent','Apply for membership','', true),
 ('dependent.event.view',      'dependent', 'event.view',     'dependent', 'View events',         '', true),
 ('dependent.event.register',  'dependent', 'event.register', 'dependent', 'Register for events', '', true),
+('dependent.event.answer',    'dependent', 'event.answer',    'dependent', 'Answer event questions', 'On their behalf (D-061)', true),
 ('dependent.fee.view',        'dependent', 'fee.view',       'dependent', 'View fees',           '', true),
 ('dependent.fee.pay',         'dependent', 'fee.pay',        'dependent', 'Pay fees',            '', true),
 ('dependent.medical.view',    'dependent', 'medical.view',   'dependent', 'View medical records','Sensitive; often restricted', true),
@@ -1742,7 +1869,7 @@ INSERT INTO grant_scope_type (code, name, item_table, is_item_scoped) VALUES
     ('organization','Whole organization','organization',false),
     ('org_unit','Organization unit','org_unit',true),
     ('membership','Membership record','membership',true),
-    ('event','Event','event',true),          -- event table to be designed
+    ('event','Event','event',true),          -- designed: data-model/08
     ('document','Document','document',true); -- document layer to be designed
 
 -- Built-in audiences (§8). These are RULES the resolver evaluates, not lists —

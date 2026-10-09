@@ -360,13 +360,18 @@ change and must be avoided.
 | `<resource>.create` | Create | `event.create` |
 | `<resource>.<field>.edit` | Edit a field subset | `person.contact.edit` |
 | `<resource>.delete` | Delete (soft, and audited) | `document.delete` |
-| `<resource>.admin` | **Everything** on that resource | `event.admin` |
 | `dependent.<x>` | Acting on a supervised person | `dependent.fee.pay` |
 
-Per your instruction: **every resource exposes an `admin` permission** that subsumes all
-narrower ones for that resource. The resolver treats `X.admin` as satisfying any check for
-`X.<anything>`. This is checked structurally (`code` prefix match), so adding a new narrow
-permission to a resource does not require updating every role that grants `X.admin`.
+**Every capability is narrow and explicit.** A check for `X.y` needs an exact grant of `X.y`,
+or `system.admin`. There is no `<resource>.admin` wildcard and no prefix match in the resolver
+([D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
+reversing the earlier convention) — which is what makes the next section load-bearing rather
+than decorative: **if somebody can do everything about events, a role says so, in thirteen
+rows, and you can read them.**
+
+Do not confuse this with the `admin` **grant level** in §5, which is real and untouched: the
+level says *how much* authority a grant carries, the deleted code said *which capabilities it
+implied*.
 
 ---
 

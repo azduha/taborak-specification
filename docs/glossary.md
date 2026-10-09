@@ -206,10 +206,19 @@ over everything, at any scope.** See
 **Scope** — What a grant applies to. Either an org unit, a concrete item (via
 `scope_type` + `scope_id`), or the whole organization.
 
-**`admin`** — Per your instruction, every grantable resource exposes an `admin` level
-that subsumes all narrower ones. A permission check therefore asks *"at least level X?"*
-and `admin` always answers yes. Consequently there is no separate "superuser" concept
-except the organization-wide `system_admin` role.
+**`admin`** — **Ambiguous in three unrelated ways, and the ambiguity is load-bearing.** Say
+which you mean:
+
+| Meaning | What it does | Status |
+|---|---|---|
+| **Grant level** — `access_level.admin`, rank 40 | *How much* authority a grant carries. `revoked` < `view` < `contribute` < `manage` < `admin`, compared by **integer rank, never by string**. A check asks "at least level X?" | **Real, untouched** |
+| **Resource wildcard** — `person.admin`, `event.admin` | A permission code implying every sibling capability on that resource, matched by prefix in the resolver | **Deleted** — all sixteen codes and the prefix match ([D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)) |
+| **Edit action** — `dependent.medical.admin` | Means "edit", paired against `.view` inside a sub-resource. Implies nothing | **Real, untouched** |
+
+What survives of "can do everything": **`system.admin`** (the only wildcard permission, held
+through a role, never an item grant) and **roles** — a bundle the organization composes, which
+is where "someone who can do everything about events" now lives, written out as thirteen rows
+rather than implied by a resolver rule.
 
 **Scope exposure** — An explicit row by which a unit grants a parent unit's role
 assignment coverage over it. This is the *only* way authority crosses a unit boundary

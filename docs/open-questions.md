@@ -280,14 +280,47 @@ priced. A per-person discount is unaffected.
 
 ## E. Guardianship
 
-### E-2 🟡 Guardianship at majority
+### E-2 ✅ **Closed** — the system takes no position on majority
 
-**Question.** Confirm: review-queue, not auto-expire? (D-024)
+**Answered: nothing at all.** No job, no review queue, no computed candidate date
+([D-069](decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority),
+reversing D-024). A guardianship is ended by a person ending it.
 
-**Impact.** Auto-expiry silently strips access. Review leaves access in place until someone
-acts — the opposite failure.
+**What was wrong with the review queue** the docs had recommended: it was still automatic, and
+it computed a date the system has no authority to assert. Deferring a decision is not the same
+as declining to make one.
 
----
+**This closes E-2 and immediately opens E-5 below.** With no automatic end and no queue, the
+only exit is `guardianship.end` — and the adult who is the *subject* of the row holds no
+permission over it.
+
+### E-5 🟡 How does an adult end a guardianship over themselves?
+
+**Raised by closing E-2.** Nobody can leave a guardianship they are the subject of.
+
+**The gap.** `guardianship.end` is an ordinary permission, held through a role by staff. An
+18-year-old listed under their parent holds no role, so they cannot ask the system to remove
+the arrangement — they can ask a person, and only that person can act. Before D-069 a review
+queue at 18 would at least have surfaced the row for somebody to look at; now nothing does.
+
+**Three shapes, in increasing cost.**
+1. **Nothing — it is a support request.** Consistent with D-069's "a person decides", and the
+   cheapest. The subject contacts staff, staff end the row, the audit trail records who.
+2. **Self-service via ownership.** The resolver's ownership channel
+   ([domain/06 §1](domain/06-authorization-model.md#1-the-four-channels-of-authority)) already
+   lets a person act on their own data. Extending it so a **person who is the subject of a
+   guardianship may end it once they are an adult** is one branch — and it is the only one of
+   the three that does not depend on a staff member being available.
+3. **A request object** — the person asks, staff decide. Adds a workflow the schema has no
+   pattern for outside `membership_request`.
+
+**Recommendation.** (2), scoped tightly: the right attaches at majority and applies only to
+ending, never to editing the guardian's permissions. **But note this is the one place in the
+design where a person's own authority over their own record is currently absent**, and it is
+the only channel in the whole model that reaches a record about them without being a grant.
+
+**Impact.** One branch in the ownership channel plus a check on the subject's age at
+`p_at`. No schema change.
 
 ### E-3 🟢 Guardian acting for an adult child
 
@@ -337,32 +370,86 @@ expressible in the schema, so a comprehensive catalog costs only rows. A compreh
 list, by contrast, would be a specification pretending to be data.
 
 **The sharp edge.** Granularity only buys least-privilege if the grants are narrow, and
-[D-007](decisions/decision-log.md#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)
+[D-007](decisions/decision-log.md#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed)
 means any new permission in a namespace is **retroactively held by everyone with that
 namespace's `.admin`**, with no assignment written. That is intended — and it is the reason
 `role.edit` is marked 🔒🔒.
 
 ---
 
-### F-3 🟡 `valid_to` mandatory on high-authority role assignments?
+### F-3 ✅ **Closed** — nothing forces an assignment to end
 
-**Recommendation.** Yes, enforced at the application layer (not `NOT NULL`, which would
-break historical imports).
+**Answered: nothing — rely on the gate.** No `NOT NULL`, no application-layer requirement,
+no per-role policy ([D-071](decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)).
+The docs had recommended *yes, at the application layer*; that recommendation is withdrawn.
 
-**Impact.** Turns "the volunteer who never got removed" from an invisible risk into a
-60-day expiry report. This matters more now than it did: with the membership gate in place, an
-open-ended role held by a lapsed member is exactly the "dormant authority"
-case [data-model/05 §6](data-model/05-authorization.md#6-access_grant--the-per-item-layer)
-warns about.
+**Why the recommendation was wrong.** It claimed the membership gate makes an open-ended
+assignment *more* dangerous. It makes it less: the gate already expires authority for exactly
+the population an expiry date would target, and ties expiry to a fact the organization
+maintains on purpose rather than to a date somebody typed.
 
----
+**The residue, which is the whole control now.** `unit_leader` and `assistant_leader` have
+`requires_membership = false` by decision, so a lapsed leader keeps leading; the same for any
+role held by a non-member or carrying `system.gate_exempt`. For those, **a periodic human
+review over open-ended assignments is not a nice-to-have, it is the entire defence** — D-053
+put all the weight on `role_assignment.valid_to` and this decision declined to add a guard
+rail there. Read the two decisions as one pair.
 
-### F-4 🟡 Should `person.admin` subsume `person.merge` and `person.redact`?
+**See:** [data-model/05 §4](data-model/05-authorization.md#4-role_assignment--system-wide-authority)
 
-**Recommendation.** No. Both are irreversible in practice with privacy consequences far
-beyond editing a record. Grant them explicitly.
+### F-4 ✅ **Closed** — the question was answered by deleting the premise
 
----
+**Answered obliquely and decisively.** Asked whether `person.admin` should subsume
+`person.merge`/`person.redact`, the answer was *"Only the system should have admin permissions,
+not the individual items"* — which removed the subsumer rather than choosing between the two
+options offered
+([D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
+reversing D-007).
+
+**The question moved rather than dissolved.** A role bundling all `person.*` codes still
+reaches `person.merge` and `person.redact`. What changed is where that is decided: it used to
+be a resolver rule, invisible in every role editor and true for every resource whether or not
+anyone wanted it. Now it is **the contents of a role somebody wrote** — visible in
+`role_permission`, dated, alarmable, and audited on change.
+
+**What carries the guidance now** is the seed table, not the schema: no seeded role mixes
+`person.merge`/`person.redact` with routine `person.edit`, and `identity_reviewer` is the one
+that deliberately holds `person.merge`. A role that *does* bundle a resource including its
+irreversible codes should be named for it.
+
+**See:** [appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)
+
+### F-4a 🟡 The permission catalog and the seed data are one list written twice
+
+**Surfaced by D-068, not created by it.** When the two were reconciled during that work,
+**22 documented permissions had no `INSERT` row** — including `unit_participation.view`, which
+five of the catalog's *own* seed roles assign, and `person.redact`, one of the two codes
+D-068 exists to protect. A further 12 were the `event.*` set, catalogued when events were
+designed and never seeded. **All 34 are now fixed**; both sides list 91 codes and the diff is
+empty.
+
+**Why nobody noticed, which is the part worth keeping.** [D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
+made a harmless inconsistency into a live one. Under the prefix-match wildcard, a role holding
+`unit_participation.admin` reached `unit_participation.view` whether or not a `permission` row
+existed — the catalog could advertise a capability the database could not name, and nothing
+noticed, because the wildcard papered over the gap and only the permission editor showed it.
+**The cushion was itself the bug's hiding place.**
+
+**What is open is the discipline, not the data.** There is **no SQL check for this** — one side
+is a Markdown file. Integrity check 18 reads the table, so it can find a permission no role
+grants; it cannot find a permission the catalog promises and the seed never contained. The
+reconciliation is scripted in [data-model/05 §12](data-model/05-authorization.md#12-seed-data--permissions),
+and it is a review rule, not a test.
+
+**The actual question:** should the catalog be **generated from** `permission` rather than
+maintained beside it? That is the only change that makes the two incapable of disagreeing.
+Against it: the catalog's value is its prose — the sensitivity marks, the rationale notes, the
+§5a and §8a argumentation — none of which belongs in a table. A middle path is to keep the
+prose in Markdown and generate the code tables from the database, so only the commentary can
+drift.
+
+**Impact.** If left manual, this recurs on every module added, and D-055's decision to keep
+growing the catalog guarantees modules get added.
 
 ### F-5 🟢 Which built-in audiences are needed?
 
@@ -423,38 +510,28 @@ since it is the one place the design pays a structural cost for a hypothetical f
 
 ---
 
-## G. Events — designed, with five things left open
+## G. Events — designed, with three things left open
 
 The module is written: [domain/07-events.md](domain/07-events.md) and
-[data-model/08-events.md](data-model/08-events.md). Twelve questions were answered across
-three rounds (D-058 … D-067), and what follows is what those answers did **not** settle.
-None of it blocks implementation.
+[data-model/08-events.md](data-model/08-events.md). Fifteen questions have been answered
+(D-058 … D-067, plus EV-1 and EV-5 in a later round); what remains below is what those answers
+did **not** settle. None of it blocks implementation.
 
-### EV-1 🟡 The age ceiling on an open event
+### EV-1 ✅ **Closed** — there is no age ceiling; the grant is the rule
 
-**The gap, stated plainly.** Eligibility is capability ([D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
-A `contribute` grant says *who may register*; it does not **inspect the person**. So an event
-opened to `all_members` at `contribute` can be registered for by a nine-year-old, even if the
-camp was planned for teenagers.
+**Answered: leave it.** No `min_age`/`max_age` on `event`, no age branch in the registration
+trigger ([D-070](decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
 
-**What covers the common case.** An age-*restricted* camp is opened to
-`unit:<id>:participants` for the unit whose participants are that age. The grant is the
-filter, and for a section-based organization this is the normal way it works.
+**The residual risk is accepted, not eliminated**, and it is worth restating so nobody
+"closes" it later without knowing: an event opened to `all_members` can be registered for by a
+nine-year-old and **nothing objects**. What makes it survivable is attribution
+(`source = 'staff'`), a roster query one join away from birth dates, and the fact that the
+age-bounded case is already handled by opening an event to the right unit.
 
-**What it does not cover.** An open event with an age ceiling — "the summer camp is for
-13+, but any member may sign up". Today that relies on a human noticing.
-
-**Options if you want it closed.** (a) A `min_age` / `max_age` pair on `event`, checked in
-the registration trigger, **reported** rather than blocking so an organizer can override —
-which is the pattern `position.min_age` already uses. (b) Leave it: the grant is the rule,
-and a leader who registers the wrong child is exercising their own judgement, attributed in
-`source = 'staff'`. (c) A general eligibility table — which is the rule engine D-060
-deliberately avoided.
-
-**Impact.** (a) is one column pair and one branch in `place_event_registration()`. Cheap,
-and it does not reverse D-060 — it adds a reported condition alongside the capability, which
-is exactly the REPORTED-versus-ENFORCED distinction `position.requires_membership` already
-uses.
+**If it ever needs closing, the shape is a built-in audience, not a column on the row** —
+`all_members` is a rule the resolver evaluates, so `members_aged_13_plus` can be one too. That
+keeps every answer to "who may register" inside `access_grant`, which is the property D-060
+bought and D-070 defended.
 
 ### EV-2 🟡 Retention of `event_answer`
 
@@ -502,20 +579,22 @@ it would put two rows in two places describing one fact.
 permissions — a volunteer who takes the register at camp is not the same trust as one who may
 alter the roster. See EV-5, which is the same tension.
 
-### EV-5 🟢 Should `event.manage_participants` split?
+### EV-5 ✅ **Closed** — it split, and the new permission sits a level lower
 
-**The question.** Right now one permission covers adding and removing registrations, managing
-the waitlist, promoting people, and marking presence. Are those one trust level?
+**Resolved in favour of the split: `event.presence.mark`, at `contribute`.**
 
-**The case for splitting.** Marking presence is a task handed to whoever is at the door with
-a clipboard. Managing the roster is a task for the event's leadership. A single permission
-forces the organization to give the clipboard-holder the roster.
+The reasoning recommended the split and the recommendation stood. Marking the register at a
+camp door is not the same trust as deleting a child from the roster, and one permission forced
+organizations to hand the clipboard-holder both. Note where the new permission landed:
+`contribute`, not `manage` — **so the volunteer taking the register is somebody who could
+already register themselves**, which is the right bar for the job and plainly the wrong bar
+for altering who is coming. Same shape as `membership.lapse` versus `membership.terminate`
+(D-022): one routine, one consequential.
 
-**Impact.** Two permission codes and two `permission_level` rows. **Note the shape this
-follows:** it is the same split as `membership.lapse` versus `membership.terminate` — one
-routine, one consequential — and it costs nothing to add because
-[D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)
-made the catalog a menu rather than a fixed set.
+Thirteen `event.*` codes now exist; `event.admin` is not one of them
+([D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
+
+**See:** [appendix/permission-catalog.md §8a](appendix/permission-catalog.md#8a-events)
 
 ---
 
@@ -526,7 +605,7 @@ design.
 
 | Area | Hooks already in place | Notes |
 |------|------------------------|-------|
-| **Events** ✅ | **Designed** — [domain/07](domain/07-events.md), [data-model/08](data-model/08-events.md) | See the dedicated section below. |
+| **Events** ✅ | **Designed** — [domain/07](domain/07-events.md), [data-model/08](data-model/08-events.md) | Fifteen questions answered; three left in § G above. |
 | **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) is provisional | Ten open questions remain in that document (down from twelve — activation-on-payment and person-vs-household are settled). **Now with a real event arm:** `fee_obligation.event_registration_id` was restored by [D-066](decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition) after [D-057](decisions/decision-log.md#d-057--household-is-removed) removed the dormant household one. |
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | `dependent.consent.*` permissions exist | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). |
@@ -584,6 +663,12 @@ rather than finding it silently deleted.
 | — | The bulk scope-exposure tool | [D-045](decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed) | Removed once audiences existed to cover the case it was for. |
 | — | What a membership request must contain | [D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment) | Identity and the fee. The whole requirement mechanism is gone. |
 | — | Whether grants may target groups | [D-042](decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals) | Yes — built-in rule-evaluated audiences plus admin-managed named groups. |
+| E-2 | What happens to guardianship at majority? | [D-069](decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority) | Nothing — no job, no queue, no computed date. A person ends the row. *(Reverses D-024.)* |
+| F-3 | Must a high-authority role assignment have an end date? | [D-071](decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control) | No. The membership gate plus a human review report; the earlier "yes" recommendation is withdrawn. |
+| F-4 | Should `person.admin` subsume merge and redact? | [D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) | Moot — there are no per-resource `admin` permissions. The choice moved into reviewable role contents. *(Reverses D-007.)* |
+| — | Should every resource expose an `admin` permission? | [D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) | No. Sixteen codes and the resolver's prefix match are gone; roles are the bundle. |
+| EV-1 | Does an event need an age ceiling? | [D-070](decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule) | No. The grant is the rule; a future ceiling would be a built-in audience, not a column. |
+| EV-5 | Should `event.manage_participants` split? | this round | Yes — `event.presence.mark` at `contribute`, one level below the roster. |
 
 ---
 
@@ -605,7 +690,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 6 | Membership activates on payment (D-040) † | [domain/05](domain/05-membership-lifecycle.md#1-the-flow-you-described) |
 | 7 | The fee is per person and yearly (D-037) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
 | 8 | Renewal opens a new row, not an extended `valid_to` (D-016) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
-| 9 | Guardianship reviewed at majority, not auto-expired (D-024) † | [data-model/04](data-model/04-relationships.md#1-guardianship) |
+| ~~9~~ | ~~Guardianship reviewed at majority, not auto-expired~~ — **superseded**: neither, the system takes no position (D-069) | [data-model/04](data-model/04-relationships.md#1-guardianship) |
 | 10 | Display name uses `preferred_name` if set | [data-model/01](data-model/01-identity.md#3-person_name--name-history) |
 | 11 | Merge chains allowed (B-2) | [data-model/01](data-model/01-identity.md#9-views) |
 | 12 | Only confirmed payments count toward a balance | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
@@ -616,7 +701,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 17 | All business tables are audited | [data-model/06](data-model/06-audit-and-import.md#6-open-issues) |
 | 18 | Currency is EUR | [data-model/07](data-model/07-finance.md#2-minimal-provisional-shape) |
 | 19 | `access_log` is not human-annotatable | [data-model/05](data-model/05-authorization.md#9-access_log) |
-| 20 | Each permission has an `admin` sibling (D-007) † | throughout |
+| ~~20~~ | ~~Each permission has an `admin` sibling~~ — **superseded**: no per-resource wildcard codes (D-068) | throughout |
 | 21 | No downward inheritance; exposures are written by the unit (D-031) † | [domain/06](domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance) |
 | 22 | The person record holds no deceased flag (D-034) † | [data-model/01](data-model/01-identity.md#2-person) |
 | 23 | Positions are multi-holder unless `max_holders` says otherwise (D-033) † | [domain/04](domain/04-organization-structure.md#4-positions) |

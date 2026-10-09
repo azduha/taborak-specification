@@ -331,7 +331,7 @@ What a system built around this must still handle — none of it a membership tr
 
 | Concern | Where it lives now |
 |---|---|
-| A guardian's authority at majority | Guardianship, reviewed rather than auto-expired (D-024) |
+| A guardian's authority at majority | Guardianship — and the system does **not** notice the birthday. No auto-expiry and no review queue; a person ends the row (D-069) |
 | Whether a unit takes minors at all | `org_unit_type.allows_minors` — a safeguarding flag |
 | Whether a person may hold a leadership position | `position.min_age`, and `is_minor()` in the eligibility report |
 | Consent for a minor's own account | `guardianship_permission`, not a membership requirement |

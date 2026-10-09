@@ -30,27 +30,54 @@ This is the **proposed** catalog, seeded in
 ```
 <resource>.<action>              e.g.  membership.request.approve
 <resource>.<subresource>.<action> e.g.  unit_participation.view
-<resource>.admin                 e.g.  event.admin
 ```
 
 `resource` is always the first segment and matches `permission.resource`. Codes are
 **stable identifiers** — the `display_name` may change, the code may not. Renaming a code
 is a breaking change requiring a migration that rewrites `role_permission` rows.
 
-### The `admin` rule
+### There is no wildcard, except `system.admin`
 
-Per your instruction: **every resource exposes an `<resource>.admin` permission that
-subsumes all narrower ones.**
+Every capability in this catalog is **narrow and explicit**. A check for `X.y` is satisfied
+by an exact grant of `X.y` — or by `system.admin`, which is checked outright and is the only
+permission in the system that means *everything*.
 
 ```
-A check for 'X.y' is satisfied by an exact grant of 'X.y' OR a grant of 'X.admin'.
+A check for 'X.y' is satisfied by: an exact grant of 'X.y', OR 'system.admin'.
 ```
 
-This is a **prefix match on the resource**, computed in the resolver, not a mapping table.
-Consequence: adding a new narrow permission to a resource requires **no** change to any
-role that grants that resource's `admin`. That is the whole point — otherwise every new
-permission needs updating every role that should already have implied it, and someone will
-miss one.
+There are **no per-resource `admin` permissions.** The earlier convention that every resource
+should expose an `<resource>.admin` subsuming its narrower codes — a prefix match computed in
+the resolver — was **reversed by [D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)**,
+which also deleted the resolver branch that implemented it.
+
+**"Someone who can do everything about events" is a role, not a permission** — the
+organization composes it from the thirteen `event.*` codes. That is the division D-052 already
+drew: **the code implements capabilities, the organization groups them.** A per-resource
+`admin` was the code guessing at a bundle on the organization's behalf.
+
+**The cost, because it is real.** A new narrow permission is *not* automatically covered by
+roles that should imply it; someone must add it. Integrity check **18** is the safety net the
+wildcard used to be — it lists permissions no role grants, which is what a missed bundle looks
+like. It fails **closed**: a capability goes unheld and somebody says so, rather than a
+capability going unmeant and nobody saying so.
+
+### Three things named "admin", which are not the same thing
+
+The word survives in three unrelated places. When it comes up in conversation, say which:
+
+| Shape | What it is | Deleted by D-068? |
+|-------|-----------|-------------------|
+| `access_level.admin` (rank 40) | A **grant level** — how much authority a grant carries, in `view` < `contribute` < `manage` < `admin`. Used by `permission_level` to decide whether a given grant satisfies a given permission. | **No** — different mechanism, shares only a name |
+| `<resource>.admin` | A **wildcard permission code** implying every sibling on that resource | **Yes** — all sixteen gone |
+| `dependent.medical.admin` | An **action** meaning "edit", paired against `.view` inside a sub-resource. Implies nothing. | **No** — not a wildcard |
+
+**`dependent.admin` also survives, and is worth understanding rather than pattern-matching.**
+It is not a prefix-match artefact: it is a code a staff member *chooses and stores*, one row
+in `guardianship_permission`, granting the full set for **one child**. A wildcard somebody
+deliberately wrote is what D-068 endorses. It also has a property no resolver rule can have —
+an explicit `is_granted = false` row **overrides** it, so a court-ordered restriction survives
+a broad grant. See §9.
 
 ### Namespaces
 
@@ -91,11 +118,19 @@ These marks should drive UI warnings and the alerting in
 | `person.merge` | — | 🔒 | Confirm identity matches and merge people |
 | `person.unmerge` | — | 🔒 | Reverse a merge |
 | `person.redact` | — | 🔒 | Perform a GDPR-style erasure |
-| `person.admin` | — | 🔒 | Full control over person records |
 
 > `person.merge` and `person.redact` are separated from `person.edit` deliberately. Both
 > are irreversible in practice and both have privacy consequences far beyond editing a
-> record. **`person.admin` does not subsume them** — see §7.
+> record.
+>
+> **Before [D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),**
+> the way to keep them apart was to carve them out of `person.admin`'s prefix match — a
+> special case in the resolver that was invisible in every role editor. Now there is no
+> wildcard to carve out of, and the question moves somewhere reviewable: a role bundling all
+> of `person.*` reaches them, and you can *see* it in `role_permission`. **The guidance that
+> replaces the special case is in §11** — no seeded role mixes `person.merge` or
+> `person.redact` with routine `person.edit`, and one that does should be named for what it
+> is. This is now a report a person can read, not a caveat about a resolver rule.
 
 > **`person.background_check.*` is gone** ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
 > The organization has no background checks handled by this system, so there is nothing to
@@ -112,7 +147,6 @@ These marks should drive UI warnings and the alerting in
 | `account.suspend` | — | ⚠ | Suspend an account |
 | `account.close` | — | ⚠ | Close an account |
 | `account.credential.reset` | — | 🔒 | Issue a credential reset |
-| `account.admin` | — | 🔒 | Full control over accounts |
 
 > `account.suspend` is **not** `membership.suspend`. Suspending a login does not remove
 > someone from the organization; the two are separate lifecycles and separate permissions.
@@ -130,10 +164,8 @@ These marks should drive UI warnings and the alerting in
 | `membership.suspend` | — | ⛔ | Temporarily suspend a membership |
 | `membership.terminate` | — | ⛔ | **End a membership for cause / expel** |
 | `membership.backdate` | — | ⚠ | Enter or correct historical membership periods |
-| `membership.admin` | — | ⛔ | Full control over memberships |
 | `unit_participation.view` | — | ⚠ | See who takes part in a sub-unit |
 | `unit_participation.manage` | — | ⚠ | Add, move or end participation |
-| `unit_participation.admin` | — | 🔒 | Full control over participation records |
 
 > **`membership.terminate` is the most consequential non-system permission in the
 > catalog.** A lapse is administrative; a termination is a decision about a person's
@@ -163,16 +195,48 @@ These marks should drive UI warnings and the alerting in
 | `org_unit.rename` | — | | Rename or renumber a unit |
 | `org_unit.restructure` | — | ⚠ | Split or merge units |
 | `org_unit.close` | — | ⚠ | Close a unit |
-| `org_unit.admin` | — | 🔒 | Full control over units |
 | `position.view` | — | | See positions |
 | `position.assign` | — | ⚠ | Appoint someone to a position |
-| `position.admin` | — | 🔒 | Full control over positions |
 
 > `org_unit.restructure` is separated because a split rewrites the answer to historical
 > questions. It is not routine editing. **Reparenting is no longer among the things it
 > grants** — a unit cannot change parent at all
 > ([D-036](../decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)),
 > so the permission covers splits and mergers and the closing of a unit that "moved".
+
+## 5a. Scope exposure and audiences
+
+Two mechanisms that had been missing from this catalog while sitting in the seed data and
+carrying some of the design's weight. Both are now listed, and the first is arguably the most
+consequential permission in the authorization model.
+
+| Code | Namespace | Sens. | Grants |
+|------|-----------|-------|--------|
+| `scope.expose` | — | 🔒 | **Expose this unit's scope** to a parent unit's role assignment |
+| `scope.exposure.review` | — | ⚠ | See and revoke the exposures made over this unit |
+| `audience.view` | — | | See built-in audiences and named groups |
+| `audience.manage` | — | ⚠ | Create and populate named groups |
+
+> **`scope.expose` is the only door between unit levels.** Authority never inherits downward
+> ([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)),
+> and this permission is the single mechanism that crosses the boundary — so it is graded 🔒
+> despite being an obscure-sounding code, and it is *higher*-stakes than several codes with
+> more obvious names.
+>
+> **What makes it safe is who can write it.** Every `scope_exposure` row is written **by the
+> unit it covers**: a parent unit's officer cannot satisfy it for a child unit, which is what
+> makes the no-inheritance rule enforceable rather than aspirational
+> ([D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
+> There is no bulk variant ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)) —
+> every row is a deliberate, individual, attributable decision about one assignment.
+
+> **`audience.manage` is the permission that creates a grant target.** Whoever holds it can
+> assemble a named list of people which a later `access_grant` may then address
+> ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)) —
+> so it is authority over *who could be granted*, one step removed from granting. Whether it
+> belongs to a dedicated `audience_admin` or to unit leaders is open (§12).
+
+---
 
 ## 6. Guardianship
 
@@ -182,7 +246,6 @@ These marks should drive UI warnings and the alerting in
 | `guardianship.create` | — | ⚠⚠ | Record a guardianship |
 | `guardianship.end` | — | ⚠⚠ | End a guardianship |
 | `guardianship.permission.grant` | — | 🔒 | **Grant guardian permissions** |
-| `guardianship.admin` | — | 🔒 | Full control over guardianship records |
 
 ## 7. Permissions administration
 
@@ -243,7 +306,6 @@ These marks should drive UI warnings and the alerting in
 |------|-----------|-------|--------|
 | `audit.view` | — | ⚠ | Read the audit log |
 | `audit.export` | — | ⚠⚠ | Export audit records |
-| `audit.admin` | — | 🔒 | Administer audit settings |
 | `import.view` | — | ⚠ | See import batches |
 | `import.stage` | — | | Stage an import |
 | `import.apply` | — | 🔒 | Apply a staged import |
@@ -266,19 +328,35 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 | `event.organizer.manage` | — | ⚠ | Add or remove organizers |
 | `event.register_self` | — | | **Register yourself** — this is the eligibility rule |
 | `event.register_other` | — | ⚠ | Register someone else (a minor, a walk-in) |
-| `event.manage_participants` | — | ⚠ | Manage registrations, waitlist, promotion, presence |
+| `event.manage_participants` | — | ⚠ | **Manage the roster** — add or remove registrations, work the waitlist, promote |
+| `event.presence.mark` | — | ⚠ | **Mark who turned up** — nothing else |
 | `event.answer.view` | — | ⚠ | **Read registrant answers** (tent, dietary, …) |
 | `event.question.manage` | — | ⚠ | Define what the event asks |
 | `event.grant_access` | — | 🔒 | Grant access to an event. Requires level `admin` |
 | `event.delete` | — | 🔒 | Delete an event — only possible with **no** registrations |
-| `event.admin` | — | 🔒 | Full control over events |
 
 | Permission | scope_type | required_level |
 |---|---|---|
 | `event.view` | event | `view` |
 | `event.register_self` | event | `contribute` |
+| `event.presence.mark` | event | `contribute` |
 | `event.edit`, `event.manage_participants`, `event.cancel` | event | `manage` |
 | `event.grant_access`, `event.delete` | event | `admin` |
+
+> **`event.presence.mark` is split off `event.manage_participants` on purpose, and it sits a
+> level *lower*.** Marking presence is a task handed to whoever is at the door with a
+> clipboard; managing the roster is a task for the event's leadership. One permission covering
+> both forces the organization to hand the clipboard-holder the ability to delete a child from
+> the camp roster. Splitting it costs two rows and makes the ordinary delegation ordinary —
+> and note the level: presence is `contribute`, so **the volunteer taking the register is
+> somebody with `contribute` on the event, which is the same bar as being able to register.**
+> That is the right bar for the job, and it is not the bar for altering who is coming.
+>
+> It follows the shape of `membership.lapse` versus `membership.terminate`
+> ([D-022](../decisions/decision-log.md#d-022--lapsing-and-termination-are-different-permissions)) —
+> one routine, one consequential — and it is free to add because the catalog is a menu, not a
+> fixed set ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
+> **It was previously an open question (EV-5); it is resolved here as a split.**
 
 > **`event.register_self` at `contribute` is the whole of [D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine).** Granting a
 > whole audience `contribute` on an event — one row — is how an open camp is opened:
@@ -290,8 +368,11 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 > ```
 >
 > An age-restricted camp is a `unit:<id>:participants` audience instead. **There is no age
-> rule**, and the ceiling case it cannot express is an open
-> [question](../open-questions.md).
+> rule on the event and there will not be one** — an open event with an age ceiling is
+> accepted as a risk, on the grounds that a registration-time condition the capability model
+> does not know about is the first rule-engine rule
+> ([D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
+> If it ever needs closing, the shape is a new **built-in audience**, not a column.
 
 > **`event.cancel` is separated from `event.edit` deliberately.** Cancelling is the most
 > consequential thing anyone does to an event: it affects every registrant, it usually
@@ -356,12 +437,12 @@ established before anyone invents an inconsistent one.
 
 | Resource | Permission | Notes |
 |----------|-----------|-------|
-| `document` | `document.view`, `document.create`, `document.edit`, `document.delete`, `document.grant_access`, `document.admin` | |
-| `fee` | `fee.view`, `fee.create`, `fee.waive`, `fee.refund`, `fee.admin` | ⛔ `fee.waive` and `fee.refund` are sensitive — hardship waivers must not be visible to unit leaders. |
-| `payment` | `payment.view`, `payment.record`, `payment.reverse`, `payment.admin` | |
-| `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view`, `report.admin` | ⚠⚠ `report.safeguarding.view` |
-| `consent` | `consent.template.edit`, `consent.record.view`, `consent.admin` | |
-| `message` | `message.send_to_unit`, `message.send_to_org`, `message.admin` | |
+| `document` | `document.view`, `document.create`, `document.edit`, `document.delete`, `document.grant_access` | |
+| `fee` | `fee.view`, `fee.create`, `fee.waive`, `fee.refund` | ⛔ `fee.waive` and `fee.refund` are sensitive — hardship waivers must not be visible to unit leaders. |
+| `payment` | `payment.view`, `payment.record`, `payment.reverse` | |
+| `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view` | ⚠⚠ `report.safeguarding.view` |
+| `consent` | `consent.template.edit`, `consent.record.view` | |
+| `message` | `message.send_to_unit`, `message.send_to_org` | |
 | `partner` | *(namespace)* | For external organizations, if the model expands. |
 
 Generate each resource's `permission_level` rows at the same time — see
@@ -393,7 +474,24 @@ contact with the organization.
 | `identity_reviewer` | organization | yes | no | `person.merge`, `import.view`, `import.apply` | 12 mo |
 | `auditor` | organization | **no** | no | `audit.view`, `audit.export`, `report.view` — **read-only, no writes** | 12 mo |
 
-**`Req.`** is `role.requires_membership`: whether the role stops granting anything when the
+**Read the `*` shorthand as a bundle to be written out, not a wildcard to be relied on.**
+Since [D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
+there is no resolver rule that makes `person.*` mean anything; the notation here is an
+abbreviation for *"every `person.` code listed in §2"*, and a real role holds an explicit
+`role_permission` row for each. Two consequences for whoever seeds this:
+
+1. **`registrar` is written as `person.*` *except* `person.merge` and `person.redact`, and
+   that exclusion is now literal.** It used to be a caveat about a wildcard's prefix match.
+   It is now just the rows you do not insert — and it is visible in `role_permission`, dated,
+   and alarmable. `identity_reviewer` is the role that *does* hold `person.merge`, listed
+   beside it so the difference between the two is legible. **A role that bundles a resource
+   *including* its irreversible codes should be named for that**, since nothing else records
+   the choice any more.
+2. **`unit_leader` holding `event.*` means thirteen explicit rows** (§8a), and a fourteenth
+   added later is *not* in the role until someone adds it. Integrity check 18 surfaces an
+   orphaned permission — one no role grants at all. It does not surface "this role arguably
+   should have had it." That is the cost D-068 accepts, and it lands here, in the seed table,
+   rather than being absorbed silently by the resolver.
 holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 The proposals follow one rule — **staff-like roles working on the organization's own records
 require a membership; volunteer-facing roles do not.**
@@ -450,10 +548,9 @@ the system loses the ability to use it on the day it breaks.
 
 - **The catalog's disposition is settled; its contents are not.** It stays comprehensive and
   granular ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)),
-  so there is no longer a "prune this down" review to do. What remains is *additive*: each
-  unbuilt module brings its own permissions as it is specified, and unused rows cost nothing.
-  The `person.admin`-subsumption question below is the one genuinely open item in the current
-  set.
+  so there is no longer a "prune this down" review to do.
+  What remains is *additive*: each unbuilt module brings its own permissions as it is
+  specified, and unused rows cost nothing.
 - **`Req.` and `Waives gate` are configuration, not specification.** Both columns are
   attributes of roles, and roles are runtime data the organization administers
   ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). The values shown are
@@ -463,10 +560,8 @@ the system loses the ability to use it on the day it breaks.
   the organization changes them in the admin UI. The one value that is *not* a preference is
   `system_admin` carrying `system.gate_exempt` — the 1 January lockout is a property of the
   system, not a policy choice.
-- Whether `person.admin` should subsume `person.merge` and `person.redact` (recommend no).
 - Whether `report.*` should be per-report permissions or one `report.view` with
   row-level filtering.
-- The `event` resource's real permission set, once events are specified.
 - Whether the organization has roles this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief). **This is now answerable by the organization itself** rather
   than by a schema change — which is the point of roles being runtime data.
@@ -474,8 +569,13 @@ the system loses the ability to use it on the day it breaks.
   `audience_admin` is proposed, but it may belong to unit leaders instead
   ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
 
-**Resolved and no longer open**, kept visible so the reasoning survives: whether any
-permission should require current membership status (yes, via the role — D-039);
+**Resolved and no longer open**, kept visible so the reasoning survives: whether
+`person.admin` should subsume `person.merge` and `person.redact` (moot — there are no
+per-resource `admin` permissions at all, and the question moved into reviewable role contents,
+D-068); whether `event.manage_participants` should split off presence (it did, into
+`event.presence.mark` at `contribute` — EV-5); the `event` resource's real permission set
+(§8a, thirteen codes); whether any permission should require current membership status (yes,
+via the role — D-039);
 `person.background_check.*` (removed — D-043); `membership.transfer` (obsolete once
 participation replaced unit membership — D-041); and whether `org_unit.restructure` includes
 reparenting (it cannot — D-036).

@@ -140,8 +140,10 @@ Per your answer, both read and write access for a caretaker must be **explicit**
 - A `guardianship` row establishes the *relationship*.
 - A `guardianship_permission` row grants a specific *capability* over that dependent.
 
-Capability codes are granular, and every resource class includes an `admin` level per
-your instruction. Initial set:
+Capability codes are granular, and a role that needs broad reach lists them explicitly —
+there is no per-resource `admin` wildcard
+([D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
+Initial set:
 
 | Code | Grants |
 |------|--------|
@@ -209,8 +211,11 @@ capability to be reachable in an emergency.
 ## 7. Open issues
 
 - Minimum age to hold an account; whether guardian consent is legally required.
-- Whether a minor's account transitions to independent at majority automatically, and
-  whether guardian permissions then lapse automatically or by explicit review.
+- ~~Whether guardian permissions lapse automatically at majority, or by review.~~
+  **Neither** — no automatic transition and no review queue
+  ([D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
+  **What that leaves: whether the subject may end the guardianship themselves** once adult.
+  Today they cannot — see [E-5](../open-questions.md#e-5--how-does-an-adult-end-a-guardianship-over-themselves).
 - Whether staff-created accounts are allowed for children, or only adults.
 - Whether a person may hold more than one active account at a time (recommend: no).
 
