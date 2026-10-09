@@ -175,7 +175,10 @@ These marks should drive UI warnings and the alerting in
 | Code | Namespace | Sens. | Grants |
 |------|-----------|-------|--------|
 | `role.view` | `system` | | See roles and their permissions |
-| `role.edit` | `system` | 🔒 | Change what a role grants |
+| `role.create` | `system` | 🔒🔒 | Create a role |
+| `role.edit` | `system` | 🔒🔒 | Change what a role grants — **takes effect immediately for every holder** |
+| `role.retire` | `system` | 🔒🔒 | End a role; it stops granting everywhere at once |
+| `role.delete` | `system` | 🔒🔒 | Delete a role. Only possible if it was **never assigned** and is not a system role |
 | `role.assign` | `system` | 🔒🔒 | **Assign a role to a person** |
 | `role.unassign` | `system` | 🔒 | End a role assignment |
 | `permission.view` | `system` | | See the permission catalog |
@@ -190,6 +193,27 @@ These marks should drive UI warnings and the alerting in
 > be logged and alerted on. Note that `system.admin` is deliberately a **single top-level
 > permission** rather than a per-resource one — concentrating the most dangerous capability
 > and alarming on its holders is safer than scattering equivalents of it.
+>
+> **Roles are runtime data, and these four permissions are how the organization administers
+> them.** `role.create` composes a new permission group; `role.edit` changes what an existing
+> one grants; `role.retire` ends it; `role.delete` removes one that was created by mistake.
+> The seed roles in §11 are therefore a *starting point to be edited*, not a fixed
+> vocabulary — which is why §11 no longer claims to answer "which roles carry
+> `system.gate_exempt`". That is a configuration decision the organization makes at runtime,
+> not one the specification can make for it.
+>
+> **`role.edit` is a bulk privilege change wearing the clothes of a settings screen.** Editing
+> a role's permissions takes effect immediately for **every holder**, with no assignment
+> touched and no notification. It is marked 🔒🔒 alongside `role.assign` for that reason. The
+> two are different powers — `role.assign` escalates one person, `role.edit` escalates
+> everyone holding the role — and neither is implied by the other.
+>
+> **Deletion is deliberately harder than retirement.** `role.delete` only works on a role that
+> has **never been assigned** and is not `is_system`; the trigger in
+> [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission)
+> enforces it. A role that has been held is retired (`valid_to`), never deleted, so the answer
+> to "what authority did this person have in 2019?" survives the role being abolished — which
+> is precisely when someone asks it.
 >
 > **`access_grant.create` is scoped by `permission_level`:** holding it lets you grant
 > others access *to items you have `admin` on*, and only at a level at or below your own.
@@ -267,7 +291,12 @@ Generate each resource's `permission_level` rows at the same time — see
 
 ## 11. Roles — proposed seed set
 
-Awaiting your refinement. Each is a bundle; revisit before implementing.
+**A starting point, not a specification.** Roles are runtime data: the organization creates
+them, composes them from permissions, assigns them, edits what they grant and retires them
+([§7](../data-model/05-authorization.md#3-role-and-role_permission)). This section exists to
+show the *shape* of a plausible set, so that the model can be reviewed against something
+concrete. Do not read a row here as a requirement, and do not expect the list to survive
+contact with the organization.
 
 | Role | Scope required | `Req.` | Waives gate | Key permissions | Term |
 |------|---------------|--------|-------------|-----------------|------|
@@ -296,11 +325,13 @@ every role they hold. `system_admin` carries it because on 1 January the sweep l
 membership including the administrator's — without the exemption, the person who would repair
 the system loses the ability to use it on the day it breaks.
 
-**Which other roles should carry `system.gate_exempt` is the open question, not whether the
-mechanism exists.** The likely candidates are the roles held by people who *are* the
-organization operationally — an appointed treasurer, a safeguarding officer — for the same
-reason `system_admin` needs it. Adding it to a role is one `role_permission` row; it is
-listed per role above so the decision is visible rather than implied.
+> **This table is a starting set, not a specification** — and the `Waives gate` column is the
+> clearest case of why. Roles are runtime data: the organization creates, edits and retires
+> them ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). Whether a
+> treasurer or a safeguarding officer should also survive their own lapse is a configuration
+> decision the organization makes in the admin UI, not one this document can settle for it.
+> Only `system_admin` is marked certain, because the lockout case above is a property of the
+> system rather than a policy preference.
 
 > **`registrar` holding `unit_participation.view` at organization scope is not a bug, and it
 > will be read as one** ([D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
@@ -336,24 +367,26 @@ listed per role above so the decision is visible rather than implied.
 
 ## 12. Open issues
 
-- **The entire catalog needs your review.** Which of these does your organization actually
-  need? Which are missing? Most organizations need fewer roles than they think and more
-  granular permissions than they expect.
-- **The `Req.` column in §11 — a decision per role, not a default.** It is the switch
-  between "a lapse silently removes this" and "it does not", and the proposals above are
-  reasoned guesses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
-- **The `Waives gate` column in §11 — which roles carry `system.gate_exempt`.** The mechanism
-  is settled ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag));
-  the list is not. `system_admin` is certain. Whether the organization's appointed officers
-  should also survive their own lapse, or whether only the administrator does, is the
-  question — and it is worth answering per role rather than by defaulting, because every
-  addition is a person who keeps authority without paying.
+- **The entire catalog needs your review — the *permissions*, not the roles.** Which of these
+  does your organization actually need, and which are missing? Most organizations need fewer
+  roles than they think and more granular permissions than they expect. The roles in §11 are
+  a shape to react to; they are not the thing being asked about.
+- **`Req.` and `Waives gate` are configuration, not specification.** Both columns are
+  attributes of roles, and roles are runtime data the organization administers
+  ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). The values shown are
+  reasoned defaults to start from
+  ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership),
+  [D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag));
+  the organization changes them in the admin UI. The one value that is *not* a preference is
+  `system_admin` carrying `system.gate_exempt` — the 1 January lockout is a property of the
+  system, not a policy choice.
 - Whether `person.admin` should subsume `person.merge` and `person.redact` (recommend no).
 - Whether `report.*` should be per-report permissions or one `report.view` with
   row-level filtering.
 - The `event` resource's real permission set, once events are specified.
 - Whether the organization has roles this catalog does not anticipate (a chaplain, a
-  quartermaster, a camp chief).
+  quartermaster, a camp chief). **This is now answerable by the organization itself** rather
+  than by a schema change — which is the point of roles being runtime data.
 - Which built-in audiences the organization needs, and who may create named groups —
   `audience_admin` is proposed, but it may belong to unit leaders instead
   ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).

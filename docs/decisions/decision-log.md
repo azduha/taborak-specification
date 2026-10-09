@@ -1231,6 +1231,61 @@ should be as visible as the `system.admin` holders already are.
 
 ---
 
+## D-052 — Roles are runtime data; the seed set is not a specification
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** the remainder of D-6, and the framing of F-1
+
+**Decision.** Roles are **created, edited, assigned, retired and deleted by the organization
+at runtime** — they are not a vocabulary the specification fixes. A person may hold several
+roles at once, at the root or at a unit, so a leader can hold a leadership role *and* a role
+carrying administrative permissions, and a counselor can hold a role carrying event creation
+and `person.view`.
+
+**Why.** Your answer: *"The roles should be create-able in the system, and it should be also
+possible to assign people, delete the roles and so on. So you don't really need to know which
+roles carry `system.gate_exempt`."*
+
+This is a correction to how the documentation was framing F-1. Three documents presented the
+role list as something awaiting approval, with a `Waives gate` column to be filled in. That
+was wrong: a role is a **permission group**, and which permissions an organization puts in a
+group is a configuration act, not a design decision. The seed set survives as a worked example
+of the shape; it is explicitly not a requirement list.
+
+**What this does *not* delegate.** The *shape* stays fixed, and three properties of it are
+load-bearing precisely because a configuration screen must not be able to weaken them:
+
+1. **`system.gate_exempt` is `system`-namespace**, so it can only arrive through a role and
+   never through an `access_grant`. An item grant cannot lift the membership gate.
+2. **A role that has ever been assigned cannot be deleted** — only retired (`valid_to`), so
+   the assignment history survives. Deleting `system_admin` would remove the only route to
+   `system.admin` permanently.
+3. **Retiring a role stops it granting everywhere at once.** The resolver now checks
+   `role.valid_from` / `role.valid_to` in channel 4; it did not before, which would have made
+   retirement decorative.
+
+**Consequences, and what had to change in the schema.**
+
+| Gap | Fix |
+|---|---|
+| The resolver joined `role` but never checked the role's own period | Channel 4 now requires `COALESCE(r0.valid_from,'-infinity') <= p_at AND (r0.valid_to IS NULL OR r0.valid_to > p_at)` |
+| `role.code` was globally `UNIQUE`, so a retired code could never be reused | Replaced by `uq_role_code_current` — unique only among **live** roles |
+| `is_system` claimed "cannot be deleted" with nothing enforcing it | A `BEFORE DELETE` trigger: refuses deletion of any role with assignments, and of any system role |
+| No permissions existed for role lifecycle | `role.create`, `role.retire`, `role.delete` added to the catalog, all 🔒🔒 |
+| Integrity check 16 and 17 | Orphaned assignments; roles retiring while still held |
+
+**The sharpest consequence, recorded because it is easy to miss.** Editing a role's
+permissions takes effect **immediately for every holder** — no assignment touched, nobody
+notified. `role.edit` is a bulk privilege change wearing the clothes of a settings screen, and
+it is now marked as such. `role.assign` escalates one person; `role.edit` escalates everyone
+holding the role. Neither implies the other.
+
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+[../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+
+---
+
 ## Reversed decisions
 
 - **D-015 — Authority inherits downward through the unit hierarchy.** Reversed by

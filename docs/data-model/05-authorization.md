@@ -132,12 +132,20 @@ resolver branch.
 ```sql
 CREATE TABLE role (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    code            TEXT NOT NULL UNIQUE,      -- 'registrar', 'unit_leader'
+    code            TEXT NOT NULL,             -- 'registrar', 'unit_leader'
+    -- NOT globally unique — see uq_role_code_current below. A code may be reused after
+    -- the role that held it has been retired, which is how an organization fixes a role
+    -- it got wrong without inventing a new name for it.
     name            TEXT NOT NULL,
     description     TEXT,
 
     is_system       BOOLEAN NOT NULL DEFAULT false,
-    -- True: seeded, cannot be deleted (but its permissions may be edited).
+    -- True: seeded, cannot be DELETED or have its `code` changed (its permissions may be
+    -- edited, and it may still be RETIRED — see `valid_to`). False: an ordinary role the
+    -- organization created and may delete.
+    --
+    -- This flag is not decoration: without a guard, deleting `system_admin` would remove
+    -- the only route to system.admin and lock everyone out permanently.
 
     scope_required  TEXT CHECK (scope_required IN ('organization','org_unit')),
     -- NULL = assignable at either scope. 'organization' = only org-wide.
@@ -167,6 +175,16 @@ CREATE TABLE role (
     sort_order      INTEGER NOT NULL DEFAULT 0,
     valid_from      DATE,
     valid_to        DATE,
+    -- THE ROLE'S OWN LIFETIME. Roles are data: the organization creates them, edits what
+    -- they grant, and retires them. `valid_to` is how a role is RETIRED.
+    --
+    -- The resolver checks these (channel 4). Retiring a role therefore stops it granting
+    -- ANYWHERE, at once, without touching a single `role_assignment` — which is the
+    -- difference between "we no longer use this role" and "we cannot remember who holds
+    -- it". It is the same period discipline as everywhere else (D-002).
+    --
+    -- Prefer this to deletion. A deleted role would leave its assignments dangling and
+    -- destroy the answer to "what was this person's authority in 2019?".
 
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ,
@@ -178,6 +196,11 @@ CREATE TABLE role (
 );
 
 CREATE INDEX ix_role_current ON role (code) WHERE valid_to IS NULL;
+
+-- At most ONE LIVE role per code, but any number of retired ones. This is what lets an
+-- organization retire a role and later create a new one with the same code — the reason
+-- `code` is not simply UNIQUE.
+CREATE UNIQUE INDEX uq_role_code_current ON role (code) WHERE valid_to IS NULL;
 
 
 CREATE TABLE role_permission (
@@ -195,7 +218,57 @@ CREATE INDEX ix_role_permission_role ON role_permission (role_id);
 CREATE INDEX ix_role_permission_perm ON role_permission (permission_id);
 ```
 
-**`requires_membership` is enforced by the resolver, not by a constraint.** It depends on
+**`role` is runtime data, not a fixed vocabulary.** The organization creates roles, composes
+them from permissions, assigns them to people, edits what they grant, and retires them. The
+seed set in §12 is a starting point to edit, not a specification.
+
+The one asymmetry: a role that has ever been assigned **cannot be deleted** — end it with
+`valid_to` instead. Three reasons, in order of how loudly they would bite:
+
+1. **`role_assignment.role_id` is an FK.** Deleting the row would either fail or take the
+   assignment history with it, and D-003 forbids the latter.
+2. **The history is the point.** "What authority did this person have in 2019?" must survive
+   the role being abolished, which is exactly when someone asks.
+3. **`is_system` roles must survive regardless** — deleting `system_admin` would remove the
+   only route to `system.admin` and lock everyone out permanently.
+
+So **retirement is `valid_to`**, and the resolver honours it: a retired role stops granting
+everywhere at once, without touching a single assignment. Deleting is reserved for a role
+created by mistake and never assigned.
+
+```sql
+-- The guard. A role with any assignment is immutable as to deletion, forever.
+CREATE OR REPLACE FUNCTION forbid_delete_assigned_role()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM role_assignment WHERE role_id = OLD.id) THEN
+        RAISE EXCEPTION
+            'role % has assignments and cannot be deleted; retire it (set valid_to) '
+            'so the history survives', OLD.code
+            USING ERRCODE = 'restrict_violation';
+    END IF;
+    IF OLD.is_system THEN
+        RAISE EXCEPTION 'system role % cannot be deleted', OLD.code
+            USING ERRCODE = 'restrict_violation';
+    END IF;
+    RETURN OLD;
+END $$;
+
+CREATE TRIGGER trg_role_no_delete
+    BEFORE DELETE ON role
+    FOR EACH ROW EXECUTE FUNCTION forbid_delete_assigned_role();
+```
+
+**Editing a role's permissions takes effect immediately**, with no assignment touched — every
+holder's next permission check sees the new set. That is the intended behaviour and it is also
+the sharpest edge in the whole authorization system: `role.edit` is a bulk privilege change
+wearing the clothes of a configuration screen. `role_permission` is therefore audited like any
+other business table (§[06-audit-and-import.md](06-audit-and-import.md)), so "what did this
+role grant on that date?" is answerable after the fact — which is the only defence, since
+there is nothing to check *before* the fact. The catalog marks `role.edit` 🔒🔒 for this
+reason, alongside `role.assign`.
+
+**`role.requires_membership` is enforced by the resolver, not by a constraint.** It depends on
 temporal state in another table, so no `CHECK` can express it — but unlike a mere report
 flag, it is consulted at every permission check (D-039). A role with
 `requires_membership = true` held by someone without a current membership **grants nothing**,
@@ -1216,6 +1289,11 @@ BEGIN
          WHERE ra.person_id = p_person_id
            AND ra.valid_from <= p_at
            AND (ra.valid_to IS NULL OR ra.valid_to > p_at)
+           -- the ROLE must be live too: retiring a role stops it granting, everywhere,
+           -- at once. COALESCE because role.valid_from is nullable (a role with no
+           -- recorded start has always existed).
+           AND COALESCE(r0.valid_from, '-infinity'::date) <= p_at
+           AND (r0.valid_to IS NULL OR r0.valid_to > p_at)
            AND (NOT r0.requires_membership                 -- (a) the carve-out
                 OR is_current_member(p_person_id)          -- the gate
                 OR person_holds_gate_exempt(p_person_id, p_at))  -- (b) D-051
@@ -1491,10 +1569,43 @@ SELECT p.proname
    AND (pg_get_functiondef(p.oid) NOT LIKE '%is_current_member%'
         OR pg_get_functiondef(p.oid) NOT LIKE '%requires_membership%');
 -- EXPECTED: zero rows.
+
+-- 16. ROLE DELETIONS. A role that has ever been assigned must not be deletable, and a
+--     system role must never be deleted at all. The trigger on `role` enforces this; the
+--     check exists because a restored dump or a manual `ALTER TABLE ... DISABLE TRIGGER`
+--     bypasses it, and the loss is unrecoverable — the assignments are gone with the role.
+SELECT ra.role_id, r.code,
+       count(*) AS orphaned_assignments
+  FROM role_assignment ra
+  LEFT JOIN role r ON r.id = ra.role_id
+ WHERE r.id IS NULL
+ GROUP BY ra.role_id, r.code;
+-- EXPECTED: zero rows.
+
+-- 17. ROLES RETIRED WHILE STILL ASSIGNED. Not an error — retiring a role is exactly how
+--     an organization stops using it — but it is invisible authority loss: every holder
+--     loses access the moment `valid_to` passes, and nobody is told. This is the list to
+--     work before the date, not after.
+SELECT r.code, r.valid_to, count(*) AS holders,
+       array_agg(p.family_name ORDER BY p.family_name) AS affected
+  FROM role r
+  JOIN role_assignment ra ON ra.role_id = r.id AND ra.valid_to IS NULL
+  JOIN person p ON p.id = ra.person_id
+ WHERE r.valid_to IS NOT NULL
+   AND r.valid_to BETWEEN CURRENT_DATE AND CURRENT_DATE + 90
+ GROUP BY r.code, r.valid_to
+ ORDER BY r.valid_to;
+-- EXPECTED: whatever the organization is currently retiring. Each row is a group of
+-- people who will lose access on a date, and should be reassigned first.
 ```
 
-Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
+Checks 3, 7, 7b, 14, 15 and 17 are the ones to wire to alerts.
 
+- **Check 17 is the operational one, and the newest failure mode.** Because roles are data
+  and can be retired, retiring one is now a way to remove access from a group of people on a
+  future date without notifying any of them. That is the correct semantics — the resolver
+  honours it — but it needs the same warning the expiring-role-assignment report gives
+  (§4), for the same reason.
 - **Check 7b is the new one worth wiring to an alert.** Check 7 answers "who can rewrite the
   system?"; 7b answers "who keeps authority while lapsed?" — a shorter list with a different
   failure mode, and the one the membership gate introduces. Neither should ever grow quietly.
@@ -1516,6 +1627,24 @@ Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
 ## 12. Seed data — permissions
 
 Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.
+
+**Roles are data, and the organization administers them at runtime.** This section seeds the
+*permissions* — the vocabulary of things anyone might do. The role names used throughout the
+docs are worked examples of composing those permissions into groups, not a fixed list.
+Creating a role, changing what it grants, assigning it, retiring it and deleting an unused one
+are all supported operations (`role.create`, `role.edit`, `role.assign`, `role.retire`,
+`role.delete`).
+
+The consequence for this document: **it does not need to know which roles exist, and where it
+names a role it is illustrating, not specifying.** In particular, *which* roles carry
+`system.gate_exempt` is a configuration decision that belongs to the organization, not to the
+specification.
+
+> **What §12 must fix, and does, is the *shape*.** `system.gate_exempt` is a `system`-
+> namespace permission: it can only arrive through a role, never through an item grant. That
+> is not a configuration choice — it is the structural guarantee that an `access_grant` can
+> never lift the membership gate. Whether the organization puts it in one role or five is its
+> own business.
 
 ```sql
 INSERT INTO permission (code, resource, action, namespace, display_name, description, is_system) VALUES

@@ -401,11 +401,28 @@ the sub-units beneath it unless each of those has explicitly exposed its scope t
 the single important nuance that the **membership registry and the fees belong to the root
 unit**, so an organization-scoped role over them is not reaching downward at all.
 
-### Seed roles (starting set — expects your refinement)
+### Seed roles (a starting shape, not a specification)
+
+**Roles are data.** The organization creates them, composes them from permissions, assigns
+them, edits what they grant and retires them
+([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)).
+This means two things about the table below, and both are corrections to how this section
+read before:
+
+1. It is a **worked example** of composing permissions into permission groups, included so the
+   model can be reviewed against something concrete. It is not a requirement list.
+2. **The `Req.` and `Waives gate` columns are configuration, not specification.** They are
+   attributes of roles, and an organization sets them in the admin UI. The values shown are
+   reasoned defaults; only `system_admin` carrying `system.gate_exempt` is not a preference,
+   because the 1 January lockout it prevents is a property of the system.
+
+A person may hold **several roles at once** — a leader can hold a leadership role *and* a role
+carrying administrative permissions; a counselor may hold a role carrying event creation and
+`person.view`. A role is a bundle, and bundles compose.
 
 The `Req.` column is `role.requires_membership` — whether the role stops working when the
 holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
-It is the column to argue about, and the values below are proposals.
+It remains the blunt form of the gate's waiver; `system.gate_exempt` is the precise form.
 
 | Role | Scope | Req. | Waives gate | Key permissions |
 |------|-------|------|-------------|-----------------|

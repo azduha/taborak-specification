@@ -157,39 +157,29 @@ or it will be re-litigated every time someone asks about the 80s troop with that
 
 ## D. Membership
 
-### D-6 (part) 🟡 Who holds `system.gate_exempt`?
+### D-6 — closed, by making the question the organization's to answer
 
-**Answered: the mechanism.** The membership gate is no longer waived only by a role flag. A
-new person-level permission, `system.gate_exempt`, waives it for a named individual across
-every gated role they hold
-([D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
-`role.requires_membership` survives and still answers "is this role membership-dependent?";
-the permission answers "is this person exempt?". `system_admin` holds it, certainly — without
-it the 1 January sweep locks the administrator out of the system on the day it needs repair.
+**Answered: the mechanism** ([D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+The membership gate is waived by a person-level permission, `system.gate_exempt`, in addition
+to the role-level flag. `system_admin` holds it — without it the 1 January sweep locks the
+administrator out of the system on the day it needs repair.
 
-**Still open: which other roles carry it.** Every addition is a group of people who keep
-authority without paying, so it is worth answering per role rather than by default.
+**And "which other roles carry it" is no longer a question for this document.** Roles are
+runtime data: the organization creates them, edits what they grant, assigns them, and retires
+them ([data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission)). Marking
+a role as carrying `system.gate_exempt` is therefore a configuration act the organization
+performs, not a fact the specification can state. The seed set in
+[appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)
+shows the shape; it is a starting point to edit, and it explicitly declines to answer this.
 
-| Role | Carry it? | Argument |
-|---|---|---|
-| `system_admin` | **Yes** | Certain. The lockout case above. |
-| `treasurer` | ? | The person who fixes a fee problem is the person most likely to have one. |
-| `safeguarding_officer` | ? | A safeguarding incident does not pause because a fee is unpaid. |
-| `registrar` | ? | The volume of work peaks in January, which is exactly when fees lapse. |
-| `unit_leader`, `assistant_leader` | **No** | Already exempt at the role level (`Req. = no`), so the permission would be redundant. |
-| Any unit-scoped role | **No** | The exemption is system-wide by design; granting it via a unit role would give a pack leader blanket authority everywhere. |
+**What is *not* delegatable, and is therefore all this document has to get right:** that
+`system.gate_exempt` is a `system`-namespace permission, so it can only ever arrive through a
+role and never through an item grant. That structural guarantee — an `access_grant` cannot
+lift the membership gate — is the part a configuration screen must not be able to weaken.
 
-**Also still open: the `Req.` column itself, per role.** The role-level flag remains the blunt
-form of the same decision, and the current proposals for `unit_leader` and `assistant_leader`
-are `false` on the reasoning that a volunteer whose fee is unpaid still runs the Thursday
-meeting.
-
-**Impact.** Data only — one `role_permission` row per addition — but check 7b in
-[data-model/05 §11](data-model/05-authorization.md#11-integrity-checks) reports the resulting
-list, and it should stay short.
-
-**See:** [appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set),
-[data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission)
+**Tracked here only for visibility:** check 7b in
+[data-model/05 §11](data-model/05-authorization.md#11-integrity-checks) reports who currently
+holds the exemption, so the organization can see the list it has configured.
 
 ---
 

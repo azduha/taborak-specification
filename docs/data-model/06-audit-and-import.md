@@ -134,8 +134,23 @@ CREATE TRIGGER trg_audit_role_assignment  AFTER INSERT OR UPDATE ON role_assignm
     FOR EACH ROW EXECUTE FUNCTION audit_trigger();
 CREATE TRIGGER trg_audit_access_grant     AFTER INSERT OR UPDATE ON access_grant
     FOR EACH ROW EXECUTE FUNCTION audit_trigger();
+-- The role TABLES, not just the assignments. A role is runtime data the organization edits
+-- (D-052), and editing one changes effective permissions for EVERY holder at once with no
+-- assignment written — so if these two tables are not audited, the single largest privilege
+-- change available in the system leaves no trace on any other audited row.
+CREATE TRIGGER trg_audit_role             AFTER INSERT OR UPDATE ON role
+    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
+CREATE TRIGGER trg_audit_role_permission  AFTER INSERT OR UPDATE
+    ON role_permission FOR EACH ROW EXECUTE FUNCTION audit_trigger();
 -- ... and the remaining business tables
 ```
+
+> **`role` and `role_permission` are audited for a reason the other tables do not share.**
+> Everywhere else, the audit log answers "who changed this record?". Here it answers the
+> harder question the *next* incident will ask: **"what did role X grant on the date this
+> decision was made?"** Because a role edit rewrites the meaning of every assignment that
+> points at it, in place, there is no way to answer that from the assignments — the
+> assignments did not change. The log is the only record of what the role said at the time.
 
 **`DELETE` is intentionally absent from the trigger definitions for business tables**,
 because nothing in this schema is hard-deleted (see
