@@ -4,8 +4,22 @@ Every permission code, its namespace, and the channel that resolves it.
 
 This is the **proposed** catalog, seeded in
 [../data-model/05-authorization.md](../data-model/05-authorization.md#12-seed-data--permissions).
-It is a starting point for your refinement, not a specification. Expect to add, remove, and
-rename.
+
+> **Deliberately comprehensive and granular, and staying that way**
+> ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
+> This is a **menu, not a checklist.** Administrators assign people only the permissions they
+> actually need; that is only possible if the capabilities exist as separate rows to assign.
+> Further permissions arrive with the modules not yet specified — events, documents,
+> communication, reporting ([§10](#10-deferred-namespaces)).
+>
+> **This is the opposite disposition from roles, and the asymmetry is deliberate.** Roles are
+> *runtime data* the organization invents ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification));
+> permissions are *capabilities the code implements*. You cannot assign a power the schema
+> cannot express, so a comprehensive permission catalog costs only rows — while a
+> comprehensive *role* list would be a specification pretending to be data.
+>
+> Codes are still **stable identifiers**: adding one is free, renaming one is a migration
+> ([§1](#code-shape)). What is *not* yet settled is the exact contents — tracked in §12.
 
 ---
 
@@ -372,10 +386,12 @@ the system loses the ability to use it on the day it breaks.
 
 ## 12. Open issues
 
-- **The entire catalog needs your review — the *permissions*, not the roles.** Which of these
-  does your organization actually need, and which are missing? Most organizations need fewer
-  roles than they think and more granular permissions than they expect. The roles in §11 are
-  a shape to react to; they are not the thing being asked about.
+- **The catalog's disposition is settled; its contents are not.** It stays comprehensive and
+  granular ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)),
+  so there is no longer a "prune this down" review to do. What remains is *additive*: each
+  unbuilt module brings its own permissions as it is specified, and unused rows cost nothing.
+  The `person.admin`-subsumption question below is the one genuinely open item in the current
+  set.
 - **`Req.` and `Waives gate` are configuration, not specification.** Both columns are
   attributes of roles, and roles are runtime data the organization administers
   ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). The values shown are

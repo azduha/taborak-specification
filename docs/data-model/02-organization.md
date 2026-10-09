@@ -11,7 +11,7 @@ Domain rationale: [../domain/04-organization-structure.md](../domain/04-organiza
 ```sql
 CREATE TABLE org_unit_type (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    code            TEXT NOT NULL UNIQUE,      -- 'organization','pack','section','team', ...
+    code            TEXT NOT NULL UNIQUE,      -- 'organization', then whatever the org defines
     name            TEXT NOT NULL,
     description     TEXT,
 
@@ -25,8 +25,8 @@ CREATE TABLE org_unit_type (
     -- so through position eligibility instead. See §7.
 
     is_leaf         BOOLEAN NOT NULL DEFAULT false,
-    -- A leaf may contain participants but not sub-units. A pack is usually a leaf,
-    -- but not necessarily — nesting is arbitrary (D-035).
+    -- A leaf may contain participants but not sub-units. A weekly meeting group is
+    -- usually a leaf, but not necessarily — nesting is arbitrary (D-035).
 
     max_depth       INTEGER,
     -- Maximum nesting depth for this type, relative to the root. Null = unconstrained.
@@ -775,21 +775,32 @@ INSERT INTO org_unit (unit_type_id, parent_unit_id, code, name, valid_from, path
 SELECT t.id, NULL, 'ORG', 'The Organization', DATE '1970-01-01', '/', 0
   FROM org_unit_type t WHERE t.code = 'organization';
 
--- Sub-unit types. PLACEHOLDER — see the note below.
-INSERT INTO org_unit_type (code, name, allows_minors, is_leaf, sort_order) VALUES
-    ('pack',   'Pack',   true,  false, 20),
-    ('group',  'Group',  true,  false, 30),
-    ('team',   'Team',   true,  true,  40);
+-- Sub-unit types: NONE are seeded. The organization defines its own (D-054).
 ```
 
-> **The sub-unit vocabulary is a placeholder and nothing else is.** `pack`/`group`/`team` is a
-> guess at the three words your organization uses; the *shape* — one root, a handful of
-> freely-nestable types beneath it — is settled
-> ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)).
-> Note that **no nesting rules are seeded**, deliberately: nesting is permissive by default,
-> so the organization can start using a new kind of group immediately and constrain it later
-> if it turns out to want that. Tracked in
-> [../open-questions.md](../open-questions.md#a-1-remainder--the-real-unit-type-vocabulary).
+> **The sub-unit vocabulary is not seeded, and this is the decision rather than a gap.**
+> The seed contains the root and nothing else; `org_unit_type` is **runtime data**, exactly
+> like `role` ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)).
+> The organization creates the types it actually uses, renames them, and adds new ones as its
+> structure changes ([D-054](../decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)).
+>
+> Previous revisions seeded a guess — `pack`/`group`/`team`, and before that a
+> `national`/`region`/`district` ladder. Both were invented words that read as a
+> specification. **Not guessing is the better answer**, because a wrong vocabulary in seed
+> data is harder to dislodge than an absent one.
+>
+> **The words still appear throughout these docs as illustration.** "A pack has its own
+> roster" explains a self-governing sub-unit; it is not a type the system ships with. Read
+> them as "some sub-unit type the organization has defined".
+>
+> **Nesting is therefore entirely permissive** — `org_unit_type_nesting` is seeded with
+> nothing, so any type may sit under any other, including directly under the root, until the
+> organization states a rule. A new type is usable the moment it is created.
+>
+> **The root type is the one exception and must stay seeded.** Exactly one unit has
+> `parent_unit_id IS NULL` ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it))
+> and it needs a type; note `allows_minors = false` on it, since no minor belongs to "The
+> Organization" as a *unit* — minors hold memberships and sub-unit participation.
 
 **Position definitions, by contrast, are a real starting set** and worth filling in — they
 are what `position_assignment` hangs off, and `min_age` / `requires_membership` on them are

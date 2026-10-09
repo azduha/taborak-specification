@@ -334,7 +334,10 @@ caretakers act on behalf, which requires both parties to be recorded.
 
 ## D-019 — Household membership grants no access
 
-**Status:** decided
+**Status:** ⚠ **PARTLY SUPERSEDED** — the `household` tables are gone
+([D-057](#d-057--household-is-removed)), so there is no household membership left to grant
+anything. **The principle remains true and is the reason to keep this entry:** shared address
+never implied access, the access never came from these tables, and it still does not.
 **Date:** initial design
 
 **Decision.** `household` exists for billing and address grouping only. Being in a
@@ -1345,6 +1348,224 @@ A role-based permission now has no expiry of its own; it is the assignment or no
 
 ---
 
+## D-054 — The sub-unit vocabulary is not seeded; the organization defines its own types
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Amends:** [D-008](#d-008--organizations-units-are-one-self-referencing-table-with-configurable-types)
+in spirit; the self-referencing table is untouched
+
+**Decision.** The unit-type seed data contains **exactly one row**: the root. No sub-unit
+types are seeded at all. `org_unit_type` is **runtime data**, like `role`
+([D-052](#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)): the
+organization creates the types it uses, renames them, and adds new ones as its structure
+changes.
+
+**Why.** Your answer: *"Seed only the root."*
+
+`pack`/`group`/`team` was a placeholder, and it was the last thing in the schema that was
+comfortably wrong — three invented words that would have read as a specification to anyone
+implementing the system. The deeper reason to remove rather than correct it: **the
+organization's own vocabulary is not knowable at specification time**, and guessing it
+badly is worse than not guessing. This is the same argument as D-052 applied to units. The
+retired `national`/`region`/`district` ladder ([D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it))
+was a guess; so was its replacement.
+
+**Consequence: nesting is entirely permissive.** `org_unit_type_rule` exists and is
+seeded with nothing, so any type may sit under any other — including under the root — until
+the organization states a rule. This was already true with the placeholder
+([data-model/02 §10](../data-model/02-organization.md#10-seed-data)); it is now true with no
+ambiguity about *which* types the permissiveness applies to. A new type is usable the moment
+it is created.
+
+**Consequence: the root type is special and must be seeded.** The `organization` row stays,
+because exactly one unit must have `parent_unit_id IS NULL`
+([D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)) and that unit
+needs a type. It also carries the property that matters: `allows_minors = false` on the root
+type, since no minor belongs to "The Organization" as a *unit* — minors hold memberships and
+sub-unit participation.
+
+> **What this means for every example in these docs.** The words `pack`, `troop`, `section`
+> and `group` still appear throughout the documentation as *illustration* — "a pack has its
+> own roster" is how the prose explains a self-governing sub-unit. They are not types the
+> system ships with. Read them as "some sub-unit type the organization has defined", the same
+> way `unit_leader` in §11 of the permission catalog is a role the organization may not have.
+
+**What this removes.** The three placeholder rows (`pack`, `group`, `team`) and the
+"PLACEHOLDER" note that graded them. Nothing else: no columns, no constraints, no checks. The
+change is confined to [data-model/02 §10](../data-model/02-organization.md#10-seed-data).
+
+**See:** [../data-model/02-organization.md §10](../data-model/02-organization.md#10-seed-data),
+[../domain/04-organization-structure.md §1–2](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units).
+
+---
+
+## D-055 — The permission catalog is deliberately comprehensive and granular
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Amends:** [D-030](#d-030--finer-permissions-will-be-added-incrementally)
+
+**Decision.** The permission catalog is **large and granular on purpose**, and it stays that
+way. It is a *menu* from which administrators assign people only what they actually need —
+not a checklist every deployment is expected to use in full. Adding a permission remains one
+row plus its `permission_level` rows ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)),
+and further permissions will arrive with the modules not yet specified (events, documents,
+communication, reporting).
+
+**Why.** Your answer, in full: *"The permissions will be added by the additional modules I am
+yet to specify. It is good, that the list is large and granular so that the admins can assign
+people only the permissions they actually need."*
+
+This settles **F-1**, and it settles it in the opposite direction from the roles question.
+The two are not symmetrical and it is worth saying why, because the asymmetry looks like an
+inconsistency:
+
+| | Roles | Permissions |
+|---|---|---|
+| What it is | A *grouping* an organization invents | A *capability* the code implements |
+| Who defines it | The organization, at runtime | The system, at build time |
+| Why | Nobody can guess your vocabulary | You cannot assign a power that is not expressible |
+
+A permission is not a preference. `membership.terminate` exists because the *code* has a
+terminate operation; an organization that never expels anyone simply never grants it. A role
+is the opposite: `unit_leader` is only meaningful because someone in this organization chose
+that word. So a comprehensive permission catalog costs nothing but rows, while a comprehensive
+role list would be a specification pretending to be data.
+
+**The sharp edge.** Granularity is what makes least-privilege possible, so it is load-bearing
+rather than decorative — but **`.admin` subsumption means a new permission is
+retroactively held by everyone with the namespace's `.admin`.** Split a broad permission in
+two and an existing holder of the `.admin` gains both halves without an assignment being
+written. That is the intended behaviour ([D-007](#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)),
+and it is also why `role.edit` is marked 🔒🔒: the catalog's granularity only helps if the
+grants are actually narrow.
+
+**What this does not settle.** The catalog's *contents* remain open to revision as the
+unbuilt modules land — this decision fixes the **disposition** (comprehensive, granular,
+menu-like), not the exact 90 rows. `permission.edit` exists for later pruning, and
+[appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues) tracks
+what is still being decided.
+
+**See:** [../appendix/permission-catalog.md](../appendix/permission-catalog.md),
+[../open-questions.md](../open-questions.md) F-1.
+
+---
+
+## D-056 — The legacy import expects a large corpus with legacy member numbers
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+
+**Decision.** The import is designed for a **substantial** historical corpus — thousands of
+records, not hundreds — and the old records **carry a legacy member number**. That number is
+imported into `person_identifier` with `scheme = 'legacy'`
+([data-model/01 §7](../data-model/01-identity.md#7-person_identifier)).
+
+**Why.** Your answer: *"Large, with legacy member numbers."*
+
+This is the favourable case for [D-004](#d-004--no-automatic-merging-ever), and it materially
+changes what the import has to be:
+
+| | If there were no numbers | With legacy numbers |
+|---|---|---|
+| Matching | Name + birth date + address, probabilistic, review-heavy | Exact key when the number is present; heuristics only for backfilling it |
+| Review burden | Every match needs a human (D-004 assumed this) | Only the unmatched remainder does |
+| Confidence | "Probably the same person" | "Same number, same person" |
+
+**The consequence for the review design.** D-004's "no automatic merging, ever" was costed on
+the assumption that review was the bottleneck and the corpus was small enough to review by
+hand. With thousands of rows,"review everything" is no longer feasible, and the honest
+position is that **the number-bearing rows are the trustworthy set and the rest is a work
+queue**. The number does the work the human would have done; the human handles the rows the
+number cannot resolve. This is a *strengthening* of D-004, not a weakening — the rule is
+unchanged, but the input is better, so the rule is cheaper to obey.
+
+**What must hold for this to work.** The legacy number must be imported **verbatim and never
+reissued**. `person_identifier` is already the right home: it records a scheme and a value
+with a period, so a second numbering era can coexist with the first. The check that matters
+is that no legacy number is ever assigned to two people — worth an integrity check on the
+`(scheme, value)` uniqueness, which the table's index already provides.
+
+**The part that gets harder, not easier.** Volume and numbers make *identity* resolution
+reliable, but they do nothing for the **membership-vs-participation** question raised by
+[D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership). At this
+scale, a 1998 roster almost certainly records *which unit someone attended* and not *whether
+their fee was paid*, and the import must decide per row which of the two it becomes. The safe
+default — **participation, unless there is payment evidence** — matters more at thousands of
+rows than at hundreds, because the failure mode compounds: an inferred open-ended `membership`
+would make every 2003 roster member a *current* member today through the gate
+([D-039](#d-039--member-permissions-require-a-current-paid-membership)).
+
+**Not settled here:** the exact volume, the format, and the year range — those are operational
+inputs the import batch will carry. B-1 stays open for the sample, but the *shape* of the
+answer is now known.
+
+**See:** [../data-model/06-audit-and-import.md](../data-model/06-audit-and-import.md),
+[../domain/03-identity-and-legacy.md](../domain/03-identity-and-legacy.md),
+[../open-questions.md](../open-questions.md) B-1.
+
+---
+
+## D-057 — `household` is removed
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Supersedes:** [D-019](#d-019--household-membership-grants-no-access) — *the table it described
+is gone, but the principle it stated is not, and that is deliberate*. **Amends:**
+[D-037](#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+
+**Decision.** The `household` and `household_member` tables are **removed**, along with
+`fee_obligation.household_id`, its CHECK arm, and `ix_obligation_household`. A person's
+address is a `person_contact` row of type `postal` —
+[data-model/01 §6](../data-model/01-identity.md#6-person_contact) — which already exists,
+already keeps history, and already carries a `purpose` (`'billing'`) that the permission
+model can distinguish. Same-address matching for the legacy import becomes a **query over
+`person_contact`**, not a maintained table.
+
+**Why.** Your answer: *"Drop household entirely."*
+
+D-037 had already removed the load-bearing half: the fee is flat and per person, so there is
+no per-family price for a household to hold. What remained was two conveniences — "one invoice
+per household" and "which children lived at this address in 2003?" — and both are served by
+tables that must exist anyway:
+
+- **The invoice.** `person_contact` with `purpose = 'billing'` is where a billing address
+  belongs. A household table was duplicating it under a different key, and the duplication
+  had already gone stale: `household.postal_address` was documented as *"denormalised from the
+  billing contact's primary postal contact"*, which is a copy with no trigger keeping it true.
+- **The 2003 address question.** `person_contact` is temporal (`valid_from` / `valid_to`,
+  *"Addresses change; history is required"*). So "who lived at this address in 2003?" is
+  answered from the contacts table directly — and more honestly, because it asks about the
+  address a *person* had, rather than requiring that someone first grouped those people into
+  a household row that has itself since been renamed or split.
+
+**The one thing genuinely lost.** A household is a *group* with a name and its own lifetime,
+and `person_contact` records addresses per person. Two people at one address are related by a
+query, not by a row — so there is nowhere to hang "the Novák family" as a first-class thing,
+and no `valid_from` for the *grouping*. Accepted, because no feature was using it: nothing set
+`fee_obligation.household_id`, and the display-name use (`household.name`) has no consumer in
+the design.
+
+**What this does not change.** The safeguarding property D-019 was written to protect survives
+intact, and this is the point worth checking before deleting anything: **being at the same
+address still grants no access.** It never came from the household table in the first place —
+all access comes from `guardianship` + `guardianship_permission`
+([D-020](#d-020--guardian-permissions-are-scoped-to-the-guardianship-row)). Removing a table
+that granted nothing cannot grant anything. The old D-019 entry stays in the log, marked
+superseded, because "why does living together not imply access?" is a question that will be
+asked again.
+
+**Also removed with it:** integrity check 7 (households with no address and no billing
+contact), which has nothing left to check; the `household` bullet in
+[data-model/04 §7](../data-model/04-relationships.md#7-open-issues); and D-9 in
+[open-questions.md](../open-questions.md).
+
+**See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),
+[../data-model/07-finance.md §2](../data-model/07-finance.md#2-minimal-provisional-shape).
+
+---
+
 ## Reversed decisions
 
 - **D-015 — Authority inherits downward through the unit hierarchy.** Reversed by
@@ -1400,3 +1621,20 @@ A role-based permission now has no expiry of its own; it is the assignment or no
   `system.gate_exempt` permission now waives the gate for a named individual regardless of
   which roles they hold. The original framing — in which D-6 was a question about which *roles*
   to exempt — is what this supersedes.
+- **The seeded sub-unit vocabulary** (`pack`, `group`, `team`, and before them the
+  `national`/`region`/`district`/`group`/`troop` ladder). Removed by
+  [D-054](#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types):
+  the unit-type seed is the root and nothing else, and the organization defines its own types
+  as runtime data. The words still appear across these docs as illustration — they are not
+  types the system ships with.
+- **`household` and `household_member`**, plus `fee_obligation.household_id`, its CHECK arm,
+  `ix_obligation_household`, and integrity check 7. Removed by
+  [D-057](#d-057--household-is-removed). The address is a temporal `person_contact` row of type
+  `postal`. **Note this is not in the list as a reversal of [D-019](#d-019--household-membership-grants-no-access):**
+  D-019's *principle* — shared address grants no access — is untouched and still binding, since
+  the access never came from these tables. Only its subject was deleted.
+- **The trimmed-permission-catalog direction implied by F-1** (a review that would cut the
+  catalog down to what the organization needs now). Resolved the other way by
+  [D-055](#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular): the
+  catalog is a deliberately large, granular *menu*, and further permissions arrive with the
+  modules not yet specified.

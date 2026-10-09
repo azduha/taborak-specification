@@ -94,14 +94,22 @@ so a reviewer sees *why* the system proposed a match:
 
 | Signal | Strength | Notes |
 |--------|----------|-------|
-| Exact external identifier match (old membership number) | very strong | If the legacy system issued numbers, this is nearly decisive. |
+| **Exact legacy member number** | **decisive** | The corpus carries these ([D-056](../decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)). Same number, same person — matched, not scored. |
 | Exact birth date + exact normalised name | strong | Still not automatic — twins with similar names exist. |
 | Birth date within ±1 day or year-only match + name | moderate | Common with hand-written records. |
 | Name match after normalisation (diacritics, case, spacing) | moderate | Necessary but weak alone; "Jan Novák" is not unique. |
 | Same unit + overlapping membership period | moderate | Corroborating, not identifying. |
-| Same household address at the same time | moderate | Strong if the address is distinctive. |
+| Same postal address at the same time | moderate | Strong if the address is distinctive. Read from `person_contact` history — there is no household table ([D-057](../decisions/decision-log.md#d-057--household-is-removed)). |
 | Guardian name match | weak | Useful for minors in old records. |
 | Name-only fuzzy match | **weak — never sufficient alone** | |
+
+> **The decisive row changes the matcher's job.** With a number on the record, the question is
+> not "are these two the same person?" but "does this number already point somewhere?" — a
+> lookup. The scored signals below are then for the rows the number **cannot** resolve: legacy
+> records predating the numbering, records where the number is illegible, and people who were
+> never issued one. At thousands of rows ([D-056](../decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers))
+> this split is what makes [D-004](../decisions/decision-log.md#d-004--no-automatic-merging-ever)
+> affordable: the numbered rows are the trustworthy set and the rest is a work queue.
 
 ### Normalisation
 

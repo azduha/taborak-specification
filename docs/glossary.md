@@ -142,9 +142,11 @@ guardian grants nothing by itself.** Every capability is a separate, revocable,
 audited row. This is a deliberate consequence of your answer that both read and write
 permissions should be explicit.
 
-**Household** — A shared postal address and billing grouping. Convenience, not
-authority: belonging to a household grants no access. Included so that one payment can
-cover several siblings without inventing a fake "family" person row.
+**Household** — **No longer a thing in this system** ([D-057](decisions/decision-log.md#d-057--household-is-removed)).
+A person's address is a `person_contact` row of type `postal`, which is temporal like any
+other contact. Two people at one address are related by a query, not by a table. The word is
+kept here only to answer "where did the household go?": shared address never granted access,
+and still does not.
 
 **Acting on behalf** — Performing an operation as another person, under a guardianship
 permission. Every such operation records both the acting person and the subject person.

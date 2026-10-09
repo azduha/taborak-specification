@@ -61,7 +61,7 @@ and why the root cannot decide permissions inside a pack.
 ```
 org_unit(
     id,
-    unit_type_id,             -- pack, group, section, team, ...  ('organization' for the root)
+    unit_type_id,             -- ('organization' for the root; otherwise whatever the org defines)
     parent_unit_id,           -- nullable ONLY for the single root
     code,                     -- short human code, e.g. "T12"
     name,                     -- current display name
@@ -83,6 +83,17 @@ CREATE UNIQUE INDEX uq_org_unit_single_root ON org_unit ((true))
 The unit vocabulary in a long-lived organization changes — a type that existed in 1995 may
 be gone, and a new one may be needed in 2027. An enum requires a deployment to change; an
 `org_unit_type` row does not.
+
+> **This goes further than it used to: no sub-unit types are seeded at all**
+> ([D-054](../decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)).
+> `org_unit_type` is *runtime data*, like `role`
+> ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)) —
+> the seed carries the root type and nothing else, and the organization creates the types it
+> uses. Earlier revisions seeded `pack`/`group`/`team`, and before that a
+> `national`/`region`/`district` ladder; both were invented words that read as a
+> specification. **The words below are still used throughout these docs as illustration** —
+> "a pack may only sit directly under the root" is an example of a rule, not a type the
+> system ships with.
 
 ```
 org_unit_type(

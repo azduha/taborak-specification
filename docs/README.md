@@ -72,7 +72,7 @@ fees belong to the root in the first place.
 | [data-model/01-identity.md](data-model/01-identity.md) | `person`, `account`, contact points, identifiers. |
 | [data-model/02-organization.md](data-model/02-organization.md) | `org_unit`, types, hierarchy, positions. |
 | [data-model/03-membership.md](data-model/03-membership.md) | `membership`, `membership_request`, `unit_participation`. |
-| [data-model/04-relationships.md](data-model/04-relationships.md) | `guardianship`, `guardianship_permission`, households. |
+| [data-model/04-relationships.md](data-model/04-relationships.md) | `guardianship`, `guardianship_permission`. |
 | [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_assignment`, `access_grant`. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |

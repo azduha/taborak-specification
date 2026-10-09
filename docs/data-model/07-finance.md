@@ -84,13 +84,6 @@ CREATE TABLE fee_obligation (
     person_id       BIGINT NOT NULL REFERENCES person(id),
     -- The person the fee is FOR. Not the payer — see paid_by_person_id in payment.
 
-    household_id    BIGINT REFERENCES household(id),
-    -- VESTIGIAL. The fee is flat and per person (D-037), so nothing sets this today.
-    -- It is kept for one reason only: a family/sibling discount (open question 2) is
-    -- priced per household, and adding the column later means rewriting the CHECK and
-    -- the view. See the note under the table — and [../open-questions.md D-9] on whether
-    -- `household` survives at all.
-
     membership_id   BIGINT REFERENCES membership(id),
     membership_request_id BIGINT REFERENCES membership_request(id),
     -- What the fee is for. One of these is set, not both.
@@ -129,11 +122,9 @@ CREATE TABLE fee_obligation (
         amount_due >= 0 AND amount_discount >= 0 AND amount_paid >= 0),
     CONSTRAINT ck_obligation_target CHECK (
         (membership_id IS NOT NULL)::int
-      + (membership_request_id IS NOT NULL)::int
-      + (household_id IS NOT NULL)::int <= 2),
-    -- At most two targets: a membership (or request) AND optionally a household
-    -- grouping. The household arm is dormant (D-037); it is retained so that a family
-    -- discount can be added as a constraint change rather than a table change.
+      + (membership_request_id IS NOT NULL)::int = 1),
+    -- Exactly one target: a membership or a request, never both and never neither.
+    -- The former third arm (household_id) is gone with the table (D-057).
     CONSTRAINT ck_obligation_waived CHECK (
         status <> 'waived' OR (waived_by IS NOT NULL AND waived_reason IS NOT NULL))
 );
@@ -143,21 +134,21 @@ CREATE INDEX ix_obligation_open   ON fee_obligation (due_date)
     WHERE status IN ('unpaid','partially_paid','overdue');
 CREATE INDEX ix_obligation_membership ON fee_obligation (membership_id)
     WHERE membership_id IS NOT NULL;
-CREATE INDEX ix_obligation_household  ON fee_obligation (household_id)
-    WHERE household_id IS NOT NULL;
 CREATE INDEX ix_obligation_period     ON fee_obligation (period_from, period_to);
 ```
 
-> **`household_id` is dormant, and that is deliberate.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
-> settled the fee as flat and per person, which removed the only thing this column was
-> ever for. It is not dropped, because "are there family/sibling discounts?" is still an
-> open question (§5.2) and a discount is the one feature that would need it — a discount
-> priced per person is `amount_discount`, but a discount priced per family is a row that
-> covers several people. Keeping the column and the three-way CHECK means that answer
-> changes a constraint, not a schema. If the answer is a firm no, drop the column, the
-> CHECK arm, and `ix_obligation_household` together — and see
-> [../open-questions.md](../open-questions.md) D-9, which asks whether `household` itself
-> survives.
+> **The household arm is gone, not dormant.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+> settled the fee as flat and per person; [D-057](../decisions/decision-log.md#d-057--household-is-removed)
+> then removed the `household` table itself, so `household_id`, its CHECK arm and
+> `ix_obligation_household` went with it. The two were always a package — a column pointing
+> at a table nobody maintains is worse than either.
+>
+> **If a family discount is ever wanted**, the row is still the right shape — one obligation
+> covering several people — but it now needs the grouping to be re-introduced first, as a
+> group with a period rather than a fake person ([04 §3](04-relationships.md#3-there-is-no-household-table)).
+> That is a deliberate cost: the previous version kept a dormant column against a
+> hypothetical, and this version does not. The advantage of the change is that the CHECK now
+> reads `= 1` rather than `<= 2`, which is a statement about the domain instead of a hedge.
 
 ```sql
 CREATE TABLE payment (
@@ -340,11 +331,11 @@ SELECT m.id, m.person_id, o.due_date,
    `amount_expected`.
 2. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
    unspecified. With a flat per-person fee ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
-   this is the only remaining fee variation, so it is worth a deliberate yes or no — and
-   the answer decides whether `fee_obligation.household_id` (§2) is kept or dropped, since
-   a discount priced per family is the only thing that column is for. A **per-person**
-   discount is just `amount_discount`; a **per-family** one needs an obligation that
-   covers several people at once.
+   this is the only remaining fee variation, so it is worth a deliberate yes or no. Note
+   that [D-057](../decisions/decision-log.md#d-057--household-is-removed) has now removed the
+   `household` grouping, so a **per-family** discount is no longer a constraint change — it
+   needs that grouping designed again first. A **per-person** discount is unaffected and is
+   just `amount_discount`.
 3. **Refunds:** policy, and who may authorize them. Affects the `payment.status` values.
 4. **Payment methods:** which does the organization actually accept? The enum is a guess.
 5. **Invoicing:** does the organization issue invoices (legal requirement in some
@@ -369,10 +360,13 @@ SELECT m.id, m.person_id, o.due_date,
 
 **Resolved and no longer open**, kept visible so the reasoning survives: activation on
 payment or on approval (on payment — [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status));
-and whether the fee is per person or per household (per person, flat and ageless —
-[D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
-Two of the twelve original questions are closed and the numbering above has been collapsed
-to match.
+whether the fee is per person or per household (per person, flat and ageless —
+[D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person));
+and whether the household grouping survives at all (**no** — removed entirely,
+[D-057](../decisions/decision-log.md#d-057--household-is-removed)). But note that D-057 did not
+close question 2: with no grouping, a *per-family* discount now needs one designed again
+before it can be priced. That is why there are still **ten** questions above rather than nine —
+one question got sharper as another closed.
 
 All tracked in [../open-questions.md](../open-questions.md). **Rewrite this document once
 you specify fees.**

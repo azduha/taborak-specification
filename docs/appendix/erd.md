@@ -197,13 +197,14 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
         │  valid_from / valid_to            [T]   │
         └─────────────────────────────────────────┘
 
-        ┌───────────────┐        ┌──────────────────┐
-        │  household    │◄───────│ household_member │───────► person
-        │  billing_     │        │  [T]             │
-        │   contact_    │        └──────────────────┘
-        │   person_id   │
-        └───────────────┘
-          ↑ NO ACCESS GRANTED BY HOUSEHOLD MEMBERSHIP — billing/address only
+        ┌─────────────────────────────────────────┐
+        │  NO `household` TABLE (D-057)           │
+        │  An address is a person_contact row     │
+        │  (contact_type = 'postal', purpose =    │
+        │  'billing'), temporal like any contact. │
+        └─────────────────────────────────────────┘
+          ↑ SHARED ADDRESS GRANTS NO ACCESS — all dependent.* authority comes from
+            guardianship + guardianship_permission (D-019, which outlives the table)
 ```
 
 **Key point:** guardianship is a general graph — one guardian → many dependents, many
@@ -417,7 +418,7 @@ Queries this shape supports, all of which fail against a design with `person.is_
 | Identity | `person`, `person_name`[T], `account`, `account_credential`[T], `person_contact`[T], `person_identifier`[T], `identifier_scheme`, `identity_hypothesis`, `person_merge`, `field_conflict` |
 | Organization | `org_unit_type`, `org_unit_type_rule`, `org_unit`[T], `org_unit_name`[T], `org_unit_relationship`, `position`, `position_assignment`[T] |
 | Membership | `membership_type`, `membership`[T], `membership_request`, `unit_participation`[T] |
-| Relationships | `guardianship`[T], `guardianship_permission`[T], `household`[T], `household_member`[T] |
+| Relationships | `guardianship`[T], `guardianship_permission`[T] (`household` removed — D-057) |
 | Authorization | `permission`, `role`, `role_permission`, `role_assignment`[T], `scope_exposure`[T], `audience`[T], `audience_member`[T], `access_level`, `grant_scope_type`, `access_grant`[T], `permission_level`, `access_log`, `permission_cache` |
 | Audit / import | `audit_log`, `redaction_log`, `import_batch`, `staging_import`, `staging_import_row` |
 | Finance *(provisional)* | `fee_schedule`[T], `fee_obligation`, `payment`, `payment_allocation` |

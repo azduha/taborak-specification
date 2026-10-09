@@ -1,6 +1,6 @@
 # Data Model — Relationships
 
-`guardianship`, `guardianship_permission`, `household`, `household_member`.
+`guardianship`, `guardianship_permission`.
 
 Domain rationale: [../domain/02-actors.md](../domain/02-actors.md#5-acting-on-behalf).
 
@@ -290,81 +290,45 @@ indistinguishable in the domain language and must not be in the data.
 
 ---
 
-## 3. `household` and `household_member`
+## 3. There is no `household` table
 
-```sql
-CREATE TABLE household (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name            TEXT,          -- 'Novák family'; display only
-    public_id       UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+**Removed** ([D-057](../decisions/decision-log.md#d-057--household-is-removed)). An address
+is a `person_contact` row of type `postal`
+([01-identity.md §6](01-identity.md#6-person_contact)), which already exists, already keeps
+history (`valid_from` / `valid_to`), and already carries a `purpose` — `'billing'` for the
+address an invoice goes to. A separate household table was duplicating it under a different
+key, and the duplication had gone stale: its `postal_address` column was documented as
+denormalised *from* the billing contact's postal contact, with nothing keeping the copy true.
 
-    billing_contact_person_id BIGINT REFERENCES person(id),
-    -- Who receives and pays the household's fees. Nullable — a household may exist
-    -- only as an address grouping with no billing meaning.
+### Shared address still grants no access
 
-    postal_address  JSONB,
-    -- {street, city, postal_code, country}. Denormalised from the billing contact's
-    -- primary postal contact for convenience of the "one invoice per household" view.
+> **Living at the same address does not grant any permission over another person at that
+> address.** A stepparent with no `guardianship` row has no access to the children's records.
+> A grandparent at the address has no access. This is deliberate and it is a safeguarding
+> property, not an oversight.
 
-    valid_from      DATE NOT NULL DEFAULT CURRENT_DATE,
-    valid_to        DATE,
+This was true when `household` existed ([D-019](../decisions/decision-log.md#d-019--household-membership-grants-no-access))
+and it is true now, for a simple reason worth stating so nobody re-derives it: **the access
+never came from the household tables.** All `dependent.*` authority comes from
+`guardianship` + `guardianship_permission` (§1–2). Removing a table that granted nothing
+cannot grant anything.
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by      BIGINT REFERENCES person(id),
-    updated_at      TIMESTAMPTZ,
-    updated_by      BIGINT REFERENCES person(id),
+### What replaced it
 
-    CONSTRAINT ck_household_period CHECK (valid_to IS NULL OR valid_to > valid_from)
-);
+| Household feature | Now |
+|---|---|
+| Billing address | `person_contact` where `contact_type = 'postal' AND purpose = 'billing'` |
+| "Which children lived at this address in 2003?" | A query over the temporal `person_contact` history ([domain/03 §4](../domain/03-identity-and-legacy.md#4-match-signals)) |
+| One invoice for three siblings | The fee is flat and per person ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)); there is no family price to invoice |
+| `fee_obligation.household_id` | Column, CHECK arm and index all removed ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)) |
 
-CREATE TABLE household_member (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    household_id    BIGINT NOT NULL REFERENCES household(id),
-    person_id       BIGINT NOT NULL REFERENCES person(id),
-
-    role_in_household TEXT CHECK (role_in_household IN
-                        ('adult','child','other')),
-
-    valid_from      DATE NOT NULL DEFAULT CURRENT_DATE,
-    valid_to        DATE,
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_household_member_period CHECK (
-        valid_to IS NULL OR valid_to > valid_from)
-);
-
-ALTER TABLE household_member ADD CONSTRAINT ex_household_member_no_overlap
-    EXCLUDE USING gist (
-        household_id WITH =,
-        person_id    WITH =,
-        daterange(valid_from, valid_to, '[)') WITH &&
-    );
-
-CREATE INDEX ix_household_member_household ON household_member (household_id);
-CREATE INDEX ix_household_member_person    ON household_member (person_id, valid_to);
-```
-
-### Household membership grants no access — say it explicitly
-
-> **Being in the same household does not grant any permission over another member of it.**
-> A stepparent in the household with no guardianship row has no access to the children's
-> records. A grandparent living at the address has no access. This is deliberate and it is
-> a safeguarding property, not an oversight.
-
-All access comes from `guardianship` + `guardianship_permission`. The household exists for
-exactly two purposes:
-
-1. **Billing.** One invoice for three siblings, rather than three. This is the reason the
-   table exists — see [../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee),
-   where the open question of per-person vs. per-household fees is tracked.
-2. **Address grouping.** For the historical question "which children lived at this address
-   in 2003?", which is a useful corroborating signal in legacy matching
-   ([../domain/03-identity-and-legacy.md](../domain/03-identity-and-legacy.md#4-match-signals)).
-
-If the organization charges per person and never needs address history, this table can be
-dropped entirely. It is included because retrofitting household billing later is expensive
-and the table costs little.
+**What was genuinely lost, recorded rather than glossed:** a household was a *group* with a
+name and its own lifetime. Two people at one address are now related by a query, not by a row,
+so there is nowhere to hang "the Novák family" as a first-class thing and no `valid_from` for
+the grouping itself. Accepted, because nothing was using it — no code set
+`fee_obligation.household_id`, and `household.name` had no consumer. If family-level
+communication or a family discount is ever wanted, this is the decision to revisit, and the
+shape to bring back is a group with a period, not a fake person.
 
 ### Why not a `family` person row
 
@@ -512,11 +476,17 @@ SELECT g.id FROM guardianship g
  WHERE a.birth_date IS NOT NULL AND b.birth_date IS NOT NULL
    AND a.birth_date >= b.birth_date;
 
--- 7. Household members with no address and no billing contact (empty households)
-SELECT h.id FROM household h
- WHERE h.valid_to IS NULL
-   AND h.postal_address IS NULL
-   AND h.billing_contact_person_id IS NULL;
+-- 7. REMOVED — "households with no address and no billing contact".
+--    There is no household table (D-057), so there is nothing to check.
+--    The nearest surviving signal is a live billing purpose with no postal
+--    address behind it, which is a finance problem, not a relationship one:
+--
+--    SELECT pc.person_id FROM person_contact pc
+--     WHERE pc.purpose = 'billing' AND pc.valid_to IS NULL
+--       AND NOT EXISTS (SELECT 1 FROM person_contact a
+--                        WHERE a.person_id = pc.person_id
+--                          AND a.contact_type = 'postal'
+--                          AND a.valid_to IS NULL);
 ```
 
 **Check 4 is the important one.** A minor with no guardian recorded is a
@@ -543,9 +513,9 @@ fix could still create it.
 
 - Whether guardianship should auto-expire at majority, or always require review (§1).
   Recommend review.
-- Whether `household` is load-bearing at all now that the fee is flat and per person (§3).
-  If it is only a matching signal for the legacy import and a display convenience, it could
-  become a derived view rather than a maintained table.
+- **Resolved: `household` is removed entirely** — answered "drop household entirely", now
+  [D-057](../decisions/decision-log.md#d-057--household-is-removed) (§3). Addresses live on
+  `person_contact`.
 - Whether a guardian may act for a dependent who is also a member in their own right — e.g.
   can a parent register their adult child for an event, if the child consents? Recommend an
   explicit consent-based delegation rather than a guardianship, since the legal basis
@@ -562,7 +532,7 @@ fix could still create it.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: the default grant
 set at guardianship creation (now depends on `source` — D-046); whether fees are per person
-or per household (per person, flat — D-037, which retires the load-bearing half of `household`);
-and background checks (none are recorded — D-043).
+or per household (per person, flat — D-037, which retired the load-bearing half of `household`
+and led to its removal — D-057); and background checks (none are recorded — D-043).
 
 All tracked in [../open-questions.md](../open-questions.md).

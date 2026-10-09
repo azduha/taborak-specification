@@ -287,7 +287,7 @@ Requirements the design must satisfy:
 | [01-identity.md](01-identity.md) | `person`, `person_name`, `account`, `account_credential`, `person_contact`, `person_identifier`, `identity_hypothesis`, `person_merge` |
 | [02-organization.md](02-organization.md) | `org_unit`, `org_unit_type`, `org_unit_name`, `org_unit_relationship`, `position`, `position_assignment` |
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request`, `unit_participation` |
-| [04-relationships.md](04-relationships.md) | `guardianship`, `guardianship_permission`, `household`, `household_member` |
+| [04-relationships.md](04-relationships.md) | `guardianship`, `guardianship_permission` |
 | [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `access_grant`, `permission_level`, `access_log` |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment` — **provisional** |

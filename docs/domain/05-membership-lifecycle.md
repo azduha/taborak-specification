@@ -392,7 +392,9 @@ resolver, which is the worst kind of bug to find.
   ([data-model/05 §3](../data-model/05-authorization.md#3-role-and-role_permission)).
 
 **Resolved and no longer open**, kept visible so the reasoning survives: activation on
-payment or approval (on payment, §1); per person or per household (per person and flat, §6);
+payment or approval (on payment, §1); per person or per household (per person and flat, §6 —
+and the household grouping has since been removed entirely,
+[D-057](../decisions/decision-log.md#d-057--household-is-removed));
 renewal shape A or B (A, §6); age-out timing and the child→adult transition (neither exists,
 §7); background checks as a requirement (§2); and simultaneous memberships of different types
 (impossible — one type, one open membership, §3).

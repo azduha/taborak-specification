@@ -13,25 +13,31 @@ the decision that settled them, so the reasoning survives — see
 
 ## A. Blocking the core design
 
-### A-1 (remainder) 🔴 The real unit type vocabulary
+### A-1 ✅ **Closed** — the unit type vocabulary is not seeded at all
 
-**Question.** One root and arbitrary nesting are settled
+**Answered: the sub-unit vocabulary is not a question the specification can answer, so it is
+not seeded** ([D-054](decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)).
+
+`org_unit_type` is **runtime data**, like `role` ([D-052](decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)).
+The seed contains the root type and nothing else; the organization creates the types it uses.
+The previous placeholder — `pack`/`group`/`team`, and before it a
+`national`/`region`/`district` ladder — is gone.
+
+**Why this is a better answer than a correct list would have been.** The organization's own
+vocabulary is not knowable at specification time, and a wrong word in seed data is harder to
+dislodge than an absent one, because it reads as a specification to whoever implements the
+system. The *shape* was always the settled part: one root, arbitrary nesting beneath it
 ([D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)).
-What is **not** settled is the *vocabulary*: which unit types exist, what they are called, and
-which nesting constraints the organization actually wants stated as rules.
 
-**Current state.** [data-model/02 §10](data-model/02-organization.md#10-seed-data) still
-seeds the retired ladder (`national`, `region`, `district`, `group`, `troop`, `pack`) as a
-placeholder. It does not match the model any more.
+**What remains true and worth knowing.** Nesting is **permissive by default** —
+`org_unit_type_rule` is seeded with nothing, so any type may sit under any other until the
+organization states a rule, and a new type is usable the moment it is created. Every rule
+added later is a constraint deliberately chosen. The words `pack`, `troop` and `section` still
+appear across these docs **as illustration only** — read them as "some sub-unit type the
+organization has defined".
 
-**Impact.** Only `INSERT` statements change; the schema does not. But nesting is now
-**permissive by default** — a type with no rules is unconstrained — so the rules you do state
-carry more weight than before. Each one you add is a constraint you have chosen.
-
-**Needed.** Type codes and names; which types are leaves; which may sit directly under the
-root. Expect this to be a short list.
-
-**See:** [domain/04 §1–2](domain/04-organization-structure.md#1-one-root-arbitrary-sub-units)
+**See:** [data-model/02 §10](data-model/02-organization.md#10-seed-data),
+[domain/04 §1–2](domain/04-organization-structure.md#1-one-root-arbitrary-sub-units)
 
 ---
 
@@ -54,22 +60,41 @@ come from the row?*
 
 ## B. Identity and history
 
-### B-1 🟡 How much historical data, and in what state?
+### B-1 (remainder) 🟢 The legacy corpus is large and number-bearing
 
-**Question.** How many records, in what format, over what years? Do the records have birth
-dates? Are there old membership numbers?
+**Answered: large, and the old records carry a legacy member number**
+([D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)).
 
-**Impact.** Determines whether manual review of every match is feasible (D-004 assumes it
-is). An exact legacy member number would make matching dramatically more reliable —
-[person_identifier](data-model/01-identity.md#7-person_identifier) exists for it.
+That changes what the import has to be. The number goes into
+[person_identifier](data-model/01-identity.md#7-person_identifier) with `scheme = 'legacy'`,
+and where it is present the match is **exact rather than probabilistic** — same number, same
+person. The heuristics in [domain/03 §4](domain/03-identity-and-legacy.md#4-match-signals)
+are then for **backfilling** the number on rows that lack it, not for deciding identity from
+scratch.
 
-**Needed.** Record counts and a sample.
+**The consequence for [D-004](decisions/decision-log.md#d-004--no-automatic-merging-ever).**
+The "no automatic merging, ever" rule was costed on a small corpus where review was the
+bottleneck. At thousands of rows that changes shape: the **number-bearing rows are the
+trustworthy set** and the rest is a work queue. The rule is unchanged — the human still
+decides every match — but the number does the work the human would have done, so the rule
+becomes far cheaper to obey. This is a strengthening, not a relaxation.
 
-**Note.** This is now a larger question than it was, because
-[D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
-split belonging into membership and participation. If the old records recorded "which troop"
-but not "whether paid up", the import has to decide which of the two each historical row
-becomes — and a 1998 roster probably encodes participation, not a paid membership.
+**What must hold.** The legacy number is imported **verbatim and never reissued**. The
+`(scheme, value)` index is what enforces it. A second numbering era can coexist, because
+`person_identifier` carries a scheme and a period.
+
+**What gets harder, not easier: membership vs. participation.** Volume and numbers fix
+*identity*; they say nothing about *what a historical row means*. At this scale a 1998 roster
+almost certainly records which unit someone attended, not whether their fee was paid — so the
+import must decide per row which of the two it becomes
+([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+The safe default matters more at thousands of rows than at hundreds, because the failure
+compounds: **participation unless there is payment evidence**, since an inferred open-ended
+`membership` would make every 2003 roster member a *current* member today through the gate
+([D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+
+**Still needed (operational, not design).** The record count, the format, and the year range.
+Those are inputs the import batch carries; they do not change the schema.
 
 ---
 
@@ -217,24 +242,39 @@ exactly that reason.
 
 ---
 
-### D-9 🟢 Is `household` load-bearing at all?
+### D-9 ✅ **Closed** — `household` is removed entirely
 
-**Question.** [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
-made the fee **flat and per person**, which was the last thing household grouping was doing
-for finance. What remains is "same address" as a matching signal for the legacy import, and
-as a display convenience.
+**Answered: drop it** ([D-057](decisions/decision-log.md#d-057--household-is-removed)).
+`household`, `household_member`, `fee_obligation.household_id`, its CHECK arm,
+`ix_obligation_household` and integrity check 7 are all gone.
 
-**Current state of the schema.** `fee_obligation.household_id` still exists but nothing sets
-it; it is kept only so that a per-family discount could be added as a constraint change
-([data-model/07 §2](data-model/07-finance.md#2-minimal-provisional-shape)). A firm "no family
-discounts" answer lets us drop the column, its CHECK arm, its index, and — plausibly —
-`household` itself.
+**Why removal rather than a derived view.** D-037 had already taken the load-bearing half —
+the fee is flat and per person, so there is no family price. The two survivors were both
+served by tables that must exist anyway: a billing address is a `person_contact` row where
+`contact_type = 'postal' AND purpose = 'billing'`, and "who lived at this address in 2003?"
+is a query over that table's own `valid_from`/`valid_to` history. The household table was
+duplicating the address under a second key, and the copy had already gone stale — its
+`postal_address` was documented as denormalised *from* the contact row, with nothing keeping
+it true.
 
-**Impact.** If it is only a matching signal, it could become a derived view rather than a
-maintained table. If the organization ever wants family communication or family discounts,
-it is load-bearing again.
+**The safeguarding property is untouched, and this is the point to check first.** Shared
+address never granted access — all `dependent.*` authority comes from `guardianship` +
+`guardianship_permission`. Removing a table that granted nothing cannot grant anything.
+[D-019](decisions/decision-log.md#d-019--household-membership-grants-no-access) stays in the
+log, marked superseded, because "why does living together not imply access?" will be asked
+again.
 
-**See:** [data-model/04 §3](data-model/04-relationships.md#3-household-and-household_member)
+**The one thing genuinely lost.** A household was a group with a name and its own lifetime;
+two people at one address are now related by a query, not a row. There is nowhere to hang
+"the Novák family" as a first-class thing. Accepted because nothing used it. If family-level
+communication or a family discount is ever wanted, the grouping comes back as a group with a
+period — not a fake person.
+
+**One knock-on worth knowing.** Finance question 2 (family/sibling discounts) is now *more*
+open, not less: a per-family discount needs the grouping designed again before it can be
+priced. A per-person discount is unaffected.
+
+**See:** [data-model/04 §3](data-model/04-relationships.md#3-there-is-no-household-table)
 
 ---
 
@@ -279,18 +319,28 @@ answer.
 
 ## F. Authorization
 
-### F-1 🔴 The permission catalog and role definitions
+### F-1 ✅ **Closed** — the catalog stays comprehensive and granular
 
-**Question.** Which of the proposed permissions does your organization actually need? Which
-roles exist?
+**Answered: keep the catalog large and granular; more permissions arrive with the unbuilt
+modules** ([D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
 
-**Impact.** Data only — adding a permission is one row plus `permission_level` rows, and
+It is a **menu**, not a checklist. Administrators assign people only the permissions they
+actually need, and that is only possible if the capabilities exist as separate rows to assign.
+The parts of the question that remain — the exact contents — are tracked in
+[appendix/permission-catalog.md §12](appendix/permission-catalog.md#12-open-issues) and will
+move as events, documents, communication and reporting land.
+
+**Note the asymmetry with roles, because it looks like an inconsistency and is not.** Roles
+are *runtime data* the organization invents ([D-052](decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification));
+permissions are *capabilities the code implements*. You cannot assign a power that is not
+expressible in the schema, so a comprehensive catalog costs only rows. A comprehensive *role*
+list, by contrast, would be a specification pretending to be data.
+
+**The sharp edge.** Granularity only buys least-privilege if the grants are narrow, and
 [D-007](decisions/decision-log.md#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)
-ensures existing `.admin` grants cover it automatically.
-
-**Needed.** Your review of [appendix/permission-catalog.md](appendix/permission-catalog.md) —
-minus the two namespaces already struck from it (background checks, and the retired
-requirement machinery).
+means any new permission in a namespace is **retroactively held by everyone with that
+namespace's `.admin`**, with no assignment written. That is intended — and it is the reason
+`role.edit` is marked 🔒🔒.
 
 ---
 
@@ -401,7 +451,11 @@ rather than finding it silently deleted.
 
 | Was | Question | Settled by | In one line |
 |-----|----------|-----------|-------------|
-| A-1 | The organizational structure | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | One root; all sub-units nest arbitrarily beneath it. *(The type vocabulary is still open — see A-1 remainder.)* |
+| A-1 | The organizational structure | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | One root; all sub-units nest arbitrarily beneath it. |
+| A-1 | The unit type vocabulary | [D-054](decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types) | Not seeded — `org_unit_type` is runtime data; only the root type ships. |
+| B-1 | How much legacy data, in what shape? | [D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers) | Large, with legacy member numbers — exact matches, so review is a work queue. |
+| D-9 | Is `household` load-bearing at all? | [D-057](decisions/decision-log.md#d-057--household-is-removed) | No — removed entirely. Addresses are temporal `person_contact` rows. |
+| F-1 | Which permissions and roles does the organization need? | [D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular) | The catalog stays large and granular; it is a menu, not a checklist. |
 | A-2 | Permissions conditioned on membership status | [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership) | Yes, enforced by the resolver, with guardianship and ownership carved out. |
 | A-3 | Activate on payment or on approval? | [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status) | On payment; the fee expires yearly and a dated renewal window replaces a grace status. |
 | A-4 | Background checks | [D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system) | None are recorded in this system. |
@@ -448,7 +502,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 10 | Display name uses `preferred_name` if set | [data-model/01](data-model/01-identity.md#3-person_name--name-history) |
 | 11 | Merge chains allowed (B-2) | [data-model/01](data-model/01-identity.md#9-views) |
 | 12 | Only confirmed payments count toward a balance | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
-| 13 | Placeholder unit types and nesting rules (A-1) | [data-model/02](data-model/02-organization.md#10-seed-data) |
+| 13 | No sub-unit types are seeded; nesting is permissive by default (D-054) † | [data-model/02](data-model/02-organization.md#10-seed-data) |
 | 14 | `membership_type` is seeded with exactly one row (D-037) † | [data-model/03](data-model/03-membership.md#8-seed-data) |
 | 15 | `person.gender` is needed for reporting | [data-model/01](data-model/01-identity.md#2-person) |
 | 16 | Imported rosters end at the organizational year end (D-028) † | [data-model/06](data-model/06-audit-and-import.md#3-import-pipeline) |
@@ -471,24 +525,38 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 33 | The root reads into a sub-unit only through `scope_exposure` (D-049) † | [domain/06](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved) |
 | 34 | A renewal extends the root participation row rather than closing it (D-050) † | [data-model/03](data-model/03-membership.md#51-a-participation-row-on-the-root-unit) |
 | 35 | The membership gate is waived by a person-level permission, not only a role flag (D-051) † | [data-model/05](data-model/05-authorization.md#3-role-and-role_permission) |
+| 36 | The permission catalog is deliberately comprehensive and granular (D-055) † | [appendix/permission-catalog.md](appendix/permission-catalog.md) |
+| 37 | The legacy corpus is large and carries legacy member numbers (D-056) † | [domain/03](domain/03-identity-and-legacy.md#4-match-signals) |
+| 38 | There is no `household` table; addresses are temporal `person_contact` rows (D-057) † | [data-model/04](data-model/04-relationships.md#3-there-is-no-household-table) |
 
 ---
 
 ## How to answer
 
-Pick any subset — they are independent. The ones that most change the shape of the system, if
-you want the core to stop moving:
+**The blocking set is now empty.** Four rounds have cleared every question that was holding
+the schema still, so nothing here has to be answered before implementation could start.
 
-1. **A-1 remainder** — the unit type vocabulary and nesting rules
-2. **F-1** — the permission catalog, and the roles
-3. **B-1** — how much legacy data, and in what shape
-4. **D-6 remainder** — who holds `system.gate_exempt`, and the `Req.` column per role
+What remains is genuinely deferrable, and the most useful next ones are:
+
+1. **F-5** — which built-in audiences are needed, and whether parameterised ones are seeded
+   per instance or created on demand
+2. **F-3** — should high-authority role assignments require a `valid_to`?
+3. **E-2 / E-4** — guardianship at majority, and confirming the gate's guardianship carve-out
+   is intended
+4. **B-2 / B-3** — merge chains, and the retention policy (the latter needs legal input,
+   not design)
 
 Everything else can be answered as we go. The schema is built so that most answers change
-data rather than structure — the ones above are the exceptions, which is why they are first.
+data rather than structure — which is why the four above are worth a moment and the rest are
+not.
 
-**Answered in this round:** the organizational calendar (A-4 — 1 January, 60 days);
-the root's read access into sub-units (C-1 — `scope_exposure` only); the membership
-gate's waiver (D-6 — a person-level permission, in addition to the role flag); and the
-root participation row at renewal (D-7 — extended). All four are in
-[§ R](#r-resolved--moved-to-the-decision-log) with links to the decisions that settled them.
+**Answered in round 4:** the unit type vocabulary (A-1 — not seeded, D-054); the permission
+catalog (F-1 — comprehensive and granular on purpose, D-055); the legacy corpus
+(B-1 — large, with member numbers, D-056); and `household` (D-9 — removed entirely, D-057).
+All four are in [§ R](#r-resolved--moved-to-the-decision-log) with links to the decisions that
+settled them.
+
+**Answered in round 3, for reference:** the organizational calendar (A-4 — 1 January, 60
+days); the root's read access into sub-units (C-1 — `scope_exposure` only); the membership
+gate's waiver (D-6 — a person-level permission, in addition to the role flag); and the root
+participation row at renewal (D-7 — extended).
