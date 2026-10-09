@@ -177,7 +177,6 @@ These marks should drive UI warnings and the alerting in
 | `role.view` | `system` | | See roles and their permissions |
 | `role.create` | `system` | 🔒🔒 | Create a role |
 | `role.edit` | `system` | 🔒🔒 | Change what a role grants — **takes effect immediately for every holder** |
-| `role.retire` | `system` | 🔒🔒 | End a role; it stops granting everywhere at once |
 | `role.delete` | `system` | 🔒🔒 | Delete a role. Only possible if it was **never assigned** and is not a system role |
 | `role.assign` | `system` | 🔒🔒 | **Assign a role to a person** |
 | `role.unassign` | `system` | 🔒 | End a role assignment |
@@ -196,11 +195,17 @@ These marks should drive UI warnings and the alerting in
 >
 > **Roles are runtime data, and these four permissions are how the organization administers
 > them.** `role.create` composes a new permission group; `role.edit` changes what an existing
-> one grants; `role.retire` ends it; `role.delete` removes one that was created by mistake.
-> The seed roles in §11 are therefore a *starting point to be edited*, not a fixed
-> vocabulary — which is why §11 no longer claims to answer "which roles carry
-> `system.gate_exempt`". That is a configuration decision the organization makes at runtime,
-> not one the specification can make for it.
+> one grants; `role.delete` removes one that was created by mistake. The seed roles in §11 are
+> therefore a *starting point to be edited*, not a fixed vocabulary — which is why §11 no
+> longer claims to answer "which roles carry `system.gate_exempt`". That is a configuration
+> decision the organization makes at runtime, not one the specification can make for it.
+>
+> **There is no `role.retire`, and a role cannot be switched off**
+> ([D-053](../decisions/decision-log.md#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)).
+> A role is a definition and is valid always; the period lives on the **assignment**. Ending a
+> role's use means ending its assignments, which is `role.unassign` — one person at a time, or
+> a loop over the holders. This is the right shape: what ends is *someone's authority*, and
+> that is a fact about a person, not about a definition.
 >
 > **`role.edit` is a bulk privilege change wearing the clothes of a settings screen.** Editing
 > a role's permissions takes effect immediately for **every holder**, with no assignment
@@ -208,12 +213,11 @@ These marks should drive UI warnings and the alerting in
 > two are different powers — `role.assign` escalates one person, `role.edit` escalates
 > everyone holding the role — and neither is implied by the other.
 >
-> **Deletion is deliberately harder than retirement.** `role.delete` only works on a role that
-> has **never been assigned** and is not `is_system`; the trigger in
+> **`role.delete` only works on a role that has never been assigned** and is not `is_system`;
+> the trigger in
 > [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission)
-> enforces it. A role that has been held is retired (`valid_to`), never deleted, so the answer
-> to "what authority did this person have in 2019?" survives the role being abolished — which
-> is precisely when someone asks it.
+> enforces it. A role that has been held is left in place, so the answer to "what authority
+> did this person have in 2019?" survives — which is precisely when someone asks it.
 >
 > **`access_grant.create` is scoped by `permission_level`:** holding it lets you grant
 > others access *to items you have `admin` on*, and only at a level at or below your own.
@@ -292,7 +296,8 @@ Generate each resource's `permission_level` rows at the same time — see
 ## 11. Roles — proposed seed set
 
 **A starting point, not a specification.** Roles are runtime data: the organization creates
-them, composes them from permissions, assigns them, edits what they grant and retires them
+them, composes them from permissions, assigns them, edits what they grant, and deletes the
+unused ones
 ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). This section exists to
 show the *shape* of a plausible set, so that the model can be reviewed against something
 concrete. Do not read a row here as a requirement, and do not expect the list to survive
@@ -326,7 +331,7 @@ membership including the administrator's — without the exemption, the person w
 the system loses the ability to use it on the day it breaks.
 
 > **This table is a starting set, not a specification** — and the `Waives gate` column is the
-> clearest case of why. Roles are runtime data: the organization creates, edits and retires
+> clearest case of why. Roles are runtime data: the organization creates, edits and deletes
 > them ([§7](../data-model/05-authorization.md#3-role-and-role_permission)). Whether a
 > treasurer or a safeguarding officer should also survive their own lapse is a configuration
 > decision the organization makes in the admin UI, not one this document can settle for it.

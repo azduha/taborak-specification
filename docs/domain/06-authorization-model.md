@@ -404,8 +404,9 @@ unit**, so an organization-scoped role over them is not reaching downward at all
 ### Seed roles (a starting shape, not a specification)
 
 **Roles are data.** The organization creates them, composes them from permissions, assigns
-them, edits what they grant and retires them
-([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)).
+them, edits what they grant and deletes the unused ones
+([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification),
+[D-053](../decisions/decision-log.md#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)).
 This means two things about the table below, and both are corrections to how this section
 read before:
 

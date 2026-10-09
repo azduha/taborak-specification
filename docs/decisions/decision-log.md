@@ -1237,8 +1237,8 @@ should be as visible as the `system.admin` holders already are.
 **Date:** refinement round 4
 **Resolves:** the remainder of D-6, and the framing of F-1
 
-**Decision.** Roles are **created, edited, assigned, retired and deleted by the organization
-at runtime** — they are not a vocabulary the specification fixes. A person may hold several
+**Decision.** Roles are **created, edited, assigned and deleted by the organization at
+runtime** — they are not a vocabulary the specification fixes. A person may hold several
 roles at once, at the root or at a unit, so a leader can hold a leadership role *and* a role
 carrying administrative permissions, and a counselor can hold a role carrying event creation
 and `person.view`.
@@ -1253,27 +1253,33 @@ was wrong: a role is a **permission group**, and which permissions an organizati
 group is a configuration act, not a design decision. The seed set survives as a worked example
 of the shape; it is explicitly not a requirement list.
 
-**What this does *not* delegate.** The *shape* stays fixed, and three properties of it are
+**What this does *not* delegate.** The *shape* stays fixed, and two properties of it are
 load-bearing precisely because a configuration screen must not be able to weaken them:
 
 1. **`system.gate_exempt` is `system`-namespace**, so it can only arrive through a role and
    never through an `access_grant`. An item grant cannot lift the membership gate.
-2. **A role that has ever been assigned cannot be deleted** — only retired (`valid_to`), so
-   the assignment history survives. Deleting `system_admin` would remove the only route to
-   `system.admin` permanently.
-3. **Retiring a role stops it granting everywhere at once.** The resolver now checks
-   `role.valid_from` / `role.valid_to` in channel 4; it did not before, which would have made
-   retirement decorative.
+2. **A role that has ever been assigned cannot be deleted**, so the assignment history
+   survives. Deleting `system_admin` would remove the only route to `system.admin`
+   permanently.
 
 **Consequences, and what had to change in the schema.**
 
 | Gap | Fix |
 |---|---|
-| The resolver joined `role` but never checked the role's own period | Channel 4 now requires `COALESCE(r0.valid_from,'-infinity') <= p_at AND (r0.valid_to IS NULL OR r0.valid_to > p_at)` |
-| `role.code` was globally `UNIQUE`, so a retired code could never be reused | Replaced by `uq_role_code_current` — unique only among **live** roles |
 | `is_system` claimed "cannot be deleted" with nothing enforcing it | A `BEFORE DELETE` trigger: refuses deletion of any role with assignments, and of any system role |
-| No permissions existed for role lifecycle | `role.create`, `role.retire`, `role.delete` added to the catalog, all 🔒🔒 |
-| Integrity check 16 and 17 | Orphaned assignments; roles retiring while still held |
+| No permissions existed for role lifecycle | `role.create` and `role.delete` added to the catalog, both 🔒🔒 |
+| Integrity check 16 | Orphaned assignments |
+
+> **This decision was amended by [D-053](#d-053--a-role-is-valid-always-only-its-assignment-is-temporal),
+> which removed the retirement mechanism D-052 originally introduced.** D-052 as first written
+> gave `role` a `valid_from`/`valid_to`, added a `role.retire` permission, made the resolver
+> check the role's period, replaced `UNIQUE (code)` with a partial index so retired codes
+> could be reused, and added check 17 reporting roles expiring while still held. All of that is
+> gone: a role is valid always. The correction came from the user in the same round, and the
+> superseded reasoning is kept here rather than edited away, because the *reason* it looked
+> right is instructive — retirement appears to be the elegant way to abolish a role in one
+> act, and it is only when you ask what "a role that is not in force" means for an assignment
+> made in 2019 that the problem shows.
 
 **The sharpest consequence, recorded because it is easy to miss.** Editing a role's
 permissions takes effect **immediately for every holder** — no assignment touched, nobody
@@ -1283,6 +1289,59 @@ holding the role. Neither implies the other.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
 [../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+
+---
+
+## D-053 — A role is valid always; only its assignment is temporal
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Amends:** [D-052](#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)
+
+**Decision.** `role` has **no `valid_from` / `valid_to`**. A role is valid all the time, for as
+long as the row exists. The only period in the picture is
+`role_assignment.valid_from` / `valid_to` — who held it, and from when to when.
+
+**Why.** Your answer: *"The roles should be valid all the time, but their assignment to people
+shouldn't."*
+
+D-052 had just given `role` a period, on the reasoning that retiring a role is a neat way to
+abolish one in a single act. That was wrong, and the reason is worth recording because it is
+not obvious until you push on it: **a role is a definition, and a definition does not come into
+and out of force.** "What did `unit_leader` grant?" has one answer, and it is the same answer
+for every date. What varies is *who held it*, which is what `role_assignment` records.
+
+The proposed retirement also creates a question with no good answer. If a role has a period and
+an assignment does not, then an assignment from 2019 rests on a role that is "not in force" —
+so was that person a leader in 2019? The honest answers are either "yes, and the role's period
+is irrelevant" (in which case the role's period never did anything) or "who knows" (in which
+case the design has damaged its own history). Making the role permanently valid avoids the
+question entirely.
+
+**What this removes.** The whole retirement mechanism D-052 introduced:
+
+| Removed | Replaced by |
+|---|---|
+| `role.valid_from`, `role.valid_to`, `ck_role_period`, `ix_role_current` | nothing — the columns are gone |
+| `role.retire` permission | `role.unassign`, per assignment. A role nobody holds is unused, not retired |
+| The resolver's check on the role's period (channel 4) | nothing. Channel 4 already checks the *assignment's* period, which was always the load-bearing one |
+| `uq_role_code_current` (partial unique, so retired codes could be reused) | `code TEXT NOT NULL UNIQUE` — plain, because codes are never in competition |
+| Integrity check 17 (roles expiring while held) | Reformulated as check 17 (unused roles) — a glance, not a warning |
+
+**What this keeps from D-052.** Roles are still runtime data: created, edited, assigned and —
+if never assigned — deleted. `is_system` still guard-rails deletion. `role` and
+`role_permission` are still audited, because `role.edit` still changes effective permissions
+for every holder at once. The `BEFORE DELETE` trigger stays.
+
+**The consequence worth carrying forward.** Because a role never expires, the **only** thing
+that ends authority is the assignment ending. That puts the entire weight on
+`role_assignment.valid_to`, which is exactly where the design already wanted it — and it is why
+the open-ended assignment is called the classic access failure
+([data-model/05 §4](../data-model/05-authorization.md#the-open-ended-assignment-is-the-classic-access-failure)).
+A role-based permission now has no expiry of its own; it is the assignment or nothing.
+
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+[../appendix/permission-catalog.md §7](../appendix/permission-catalog.md#7-permissions-administration).
 
 ---
 
@@ -1328,6 +1387,13 @@ holding the role. Neither implies the other.
   recommendation, never a numbered decision). Reversed by
   [D-039](#d-039--member-permissions-require-a-current-paid-membership): the resolver *does*
   evaluate membership state, with guardianship, ownership and exempt role classes carved out.
+- **`role.valid_from` / `valid_to`, the `role.retire` permission, and the resolver's check on
+  a role's own period** — all introduced by
+  [D-052](#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification) and removed the
+  same round by [D-053](#d-053--a-role-is-valid-always-only-its-assignment-is-temporal). A
+  role is a definition and is valid always; the period lives on `role_assignment`. The
+  superseded reasoning is kept in D-052's entry, because *why* it looked right is worth
+  knowing.
 - **`role.requires_membership` as the *only* way to waive the gate.** Widened by
   [D-051](#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag): the
   flag survives and still answers "is this role membership-dependent?", but a person-level

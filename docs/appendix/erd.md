@@ -236,9 +236,9 @@ so a parent can have full access to one child and read-only to another. See
     │  scope_required  │          │   rank 0/10/20/30/40│  ← COMPARE BY RANK,
     │  requires_member │          │   revoked…admin     │     NEVER BY STRING
     │   _ship         │          └─────────┬──────────┘
-    │  valid_from/_to  │  ← a ROLE is data: created, edited, retired (D-052).
-    └────────┬─────────┘    Retiring one stops it granting EVERYWHERE at once,
-             │              and a role ever assigned cannot be DELETED, only retired
+    │  (no period)     │  ← a ROLE is a DEFINITION and is valid ALWAYS (D-053).
+    └────────┬─────────┘    The period lives on role_assignment, never here. A role
+             │              ever assigned cannot be deleted, and is never switched off
              │                              │
              │   the membership gate has TWO waivers:
              │     role.requires_membership = false   (this ROLE)

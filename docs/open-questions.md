@@ -165,8 +165,8 @@ to the role-level flag. `system_admin` holds it — without it the 1 January swe
 administrator out of the system on the day it needs repair.
 
 **And "which other roles carry it" is no longer a question for this document.** Roles are
-runtime data: the organization creates them, edits what they grant, assigns them, and retires
-them ([data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission)). Marking
+runtime data: the organization creates them, edits what they grant, assigns them, and deletes
+the unused ones ([data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission)). Marking
 a role as carrying `system.gate_exempt` is therefore a configuration act the organization
 performs, not a fact the specification can state. The seed set in
 [appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)
