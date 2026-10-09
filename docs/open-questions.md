@@ -423,15 +423,111 @@ since it is the one place the design pays a structural cost for a hypothetical f
 
 ---
 
-## G. Not yet designed
+## G. Events — designed, with five things left open
+
+The module is written: [domain/07-events.md](domain/07-events.md) and
+[data-model/08-events.md](data-model/08-events.md). Twelve questions were answered across
+three rounds (D-058 … D-067), and what follows is what those answers did **not** settle.
+None of it blocks implementation.
+
+### EV-1 🟡 The age ceiling on an open event
+
+**The gap, stated plainly.** Eligibility is capability ([D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
+A `contribute` grant says *who may register*; it does not **inspect the person**. So an event
+opened to `all_members` at `contribute` can be registered for by a nine-year-old, even if the
+camp was planned for teenagers.
+
+**What covers the common case.** An age-*restricted* camp is opened to
+`unit:<id>:participants` for the unit whose participants are that age. The grant is the
+filter, and for a section-based organization this is the normal way it works.
+
+**What it does not cover.** An open event with an age ceiling — "the summer camp is for
+13+, but any member may sign up". Today that relies on a human noticing.
+
+**Options if you want it closed.** (a) A `min_age` / `max_age` pair on `event`, checked in
+the registration trigger, **reported** rather than blocking so an organizer can override —
+which is the pattern `position.min_age` already uses. (b) Leave it: the grant is the rule,
+and a leader who registers the wrong child is exercising their own judgement, attributed in
+`source = 'staff'`. (c) A general eligibility table — which is the rule engine D-060
+deliberately avoided.
+
+**Impact.** (a) is one column pair and one branch in `place_event_registration()`. Cheap,
+and it does not reverse D-060 — it adds a reported condition alongside the capability, which
+is exactly the REPORTED-versus-ENFORCED distinction `position.requires_membership` already
+uses.
+
+### EV-2 🟡 Retention of `event_answer`
+
+**The question.** A dietary answer citing a medical condition is health data. Event answers
+end with the event — but "end" is not a defined policy, and health data has a retention
+obligation.
+
+**Why it is not trivial.** [D-061](decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)
+made an event form the route by which a camp leader learns a child has a nut allergy. That is
+a deliberate widening, and it puts health-adjacent data in a table whose protections are
+weaker than `dependent.medical.*`. The retention policy is the remaining half of that trade.
+
+**Needed.** Legal input, like B-3. The technical question — where does it live, who may read
+it — is answered; whether it must be deleted, kept, or archived is not.
+
+### EV-3 🟢 Cancelled events and fees
+
+**The question.** Cancelling keeps every registration ([D-064](decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
+The registrations have `fee_obligation` rows. Does cancellation release them, refund them, or
+neither?
+
+**Recommendation.** Neither, automatically. Cancellation is recorded; what happens to the
+money is a finance decision made deliberately per event, using `fee.waive` or `fee.refund`.
+An automatic release would be a second automatic transition in a module that deliberately has
+exactly one ([D-066](decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition)).
+
+**Impact.** None structurally — it is a policy the finance module will state. Worth answering
+when finance is specified.
+
+### EV-4 🟢 `was_present` as a safeguarding record
+
+**The question.** Presence is the record of who was actually in the organization's care
+([D-067](decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
+Does it need its own retention, or its own permission?
+
+**Why it might.** It is the record that answers "was this child at camp on the day of the
+incident" — the question insurance and any safeguarding review will ask. That is a heavier
+thing than "who said they were coming", and it currently shares both a table and a permission
+with the registration.
+
+**Why it might not.** It is meaningless without the registration it belongs to, and splitting
+it would put two rows in two places describing one fact.
+
+**Impact.** Splitting it is a table; keeping it is nothing. The argument for splitting is
+permissions — a volunteer who takes the register at camp is not the same trust as one who may
+alter the roster. See EV-5, which is the same tension.
+
+### EV-5 🟢 Should `event.manage_participants` split?
+
+**The question.** Right now one permission covers adding and removing registrations, managing
+the waitlist, promoting people, and marking presence. Are those one trust level?
+
+**The case for splitting.** Marking presence is a task handed to whoever is at the door with
+a clipboard. Managing the roster is a task for the event's leadership. A single permission
+forces the organization to give the clipboard-holder the roster.
+
+**Impact.** Two permission codes and two `permission_level` rows. **Note the shape this
+follows:** it is the same split as `membership.lapse` versus `membership.terminate` — one
+routine, one consequential — and it costs nothing to add because
+[D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)
+made the catalog a menu rather than a fixed set.
+
+---
+
+## H. Not yet designed
 
 Each of these is referenced by the schema and has hooks left for it. None blocks the current
 design.
 
 | Area | Hooks already in place | Notes |
 |------|------------------------|-------|
-| **Events** | `access_grant.scope_type = 'event'`; `grant_scope_type` has a row; `event.*` permissions sketched; **audiences** now exist to express "exposed to everyone / to this group" | The per-item permission case you named. Needs: event entity, registration/participation, capacity, eligibility gates, attendance. Note that **participation** and **capability** are different — see D-006. |
-| **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) is provisional | Ten open questions remain in that document (down from twelve — activation-on-payment and person-vs-household are settled). |
+| **Events** ✅ | **Designed** — [domain/07](domain/07-events.md), [data-model/08](data-model/08-events.md) | See the dedicated section below. |
+| **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) is provisional | Ten open questions remain in that document (down from twelve — activation-on-payment and person-vs-household are settled). **Now with a real event arm:** `fee_obligation.event_registration_id` was restored by [D-066](decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition) after [D-057](decisions/decision-log.md#d-057--household-is-removed) removed the dormant household one. |
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | `dependent.consent.*` permissions exist | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). |
 | **Health records** | `dependent.medical.*` permissions exist | **Highest-sensitivity data in the system.** Separate retention, separate access, likely separate storage. Requires its own design and legal review before implementation. |
@@ -456,6 +552,17 @@ rather than finding it silently deleted.
 | B-1 | How much legacy data, in what shape? | [D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers) | Large, with legacy member numbers — exact matches, so review is a work queue. |
 | D-9 | Is `household` load-bearing at all? | [D-057](decisions/decision-log.md#d-057--household-is-removed) | No — removed entirely. Addresses are temporal `person_contact` rows. |
 | F-1 | Which permissions and roles does the organization need? | [D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular) | The catalog stays large and granular; it is a menu, not a checklist. |
+| — | Eligibility for an event — a separate rule engine? | [D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine) | No — eligibility **is** capability. `event.register_self` at `contribute`, via audiences. |
+| — | Is `unanswered` a stored attendance value? | [D-059](decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values) | No — absence of a row. Two stored values: `attending`, `not_attending`. |
+| — | Is a weekly meeting an event? | [D-058](decisions/decision-log.md#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit) | No — it is `unit_participation`. No recurrence, no series table. |
+| — | One owning unit per event, or several? | [D-058](decisions/decision-log.md#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit) | Exactly one. A joint camp is one unit's event another unit participates in. |
+| — | Are organizers a grant or a roster? | [D-062](decisions/decision-log.md#d-062--organizers-are-appointed-on-the-event-not-granted) | A roster on the event — labelled and ordered. Grants stay separate. |
+| — | Do unit roles reach the unit's own events? | [D-063](decisions/decision-log.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it) | Yes — an event is an **artifact** of its unit, not a child. Not inheritance (D-031 stands). |
+| — | Does an event have a status (`draft`, `published`)? | [D-064](decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model) | No status column. Visibility **is** the permission model; cancellation is a fact. |
+| — | What happens when a full event gets another registration? | [D-065](decisions/decision-log.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it) | Waitlisted for self-service; admitted for organizers; the overrun reported. |
+| — | Does paying confirm a place? | [D-066](decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition) | Yes when the event has a fee; most events are free and confirm immediately. |
+| — | Do organizers record who actually came? | [D-067](decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration) | Yes — `was_present`, three-valued. It is the "who was in our care" record. |
+| — | May an event form collect medical detail? | [D-061](decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers) | Effectively yes: answers are read by that event's organizers, and unit leaders cannot reach `dependent.medical.*` at all. A recorded widening. |
 | A-2 | Permissions conditioned on membership status | [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership) | Yes, enforced by the resolver, with guardianship and ownership carved out. |
 | A-3 | Activate on payment or on approval? | [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status) | On payment; the fee expires yearly and a dated renewal window replaces a grace status. |
 | A-4 | Background checks | [D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system) | None are recorded in this system. |
@@ -480,7 +587,7 @@ rather than finding it silently deleted.
 
 ---
 
-## H. Assumption index
+## I. Assumption index
 
 Every *Assumption:* in the documentation, so they can be reviewed as a group. Once you confirm
 one, it should be promoted to a numbered decision and struck from [§ R](#r-resolved--moved-to-the-decision-log).
@@ -528,6 +635,16 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 36 | The permission catalog is deliberately comprehensive and granular (D-055) † | [appendix/permission-catalog.md](appendix/permission-catalog.md) |
 | 37 | The legacy corpus is large and carries legacy member numbers (D-056) † | [domain/03](domain/03-identity-and-legacy.md#4-match-signals) |
 | 38 | There is no `household` table; addresses are temporal `person_contact` rows (D-057) † | [data-model/04](data-model/04-relationships.md#3-there-is-no-household-table) |
+| 39 | An event belongs to exactly one unit; meetings are participation (D-058) † | [data-model/08](data-model/08-events.md#2-event) |
+| 40 | "Unanswered" is the absence of a registration row (D-059) † | [data-model/08](data-model/08-events.md#4-event_registration) |
+| 41 | Eligibility is capability — there is no rule engine (D-060) † | [domain/07](domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine) |
+| 42 | Event answers are read by that event's organizers (D-061) † | [data-model/08](data-model/08-events.md#7-event_question-and-event_answer) |
+| 43 | Organizers are a roster on the event, not grants (D-062) † | [data-model/08](data-model/08-events.md#3-event_organizer) |
+| 44 | An event is an artifact of its unit, so unit roles reach it (D-063) † | [domain/07](domain/07-events.md#6-the-hinge-organizers-and-the-scope-mismatch) |
+| 45 | There is no event status; visibility is the permission model (D-064) † | [data-model/08](data-model/08-events.md#2-event) |
+| 46 | Capacity is a waitlist threshold organizers may exceed (D-065) † | [data-model/08](data-model/08-events.md#5-capacity-and-the-waitlist) |
+| 47 | Payment confirms a place; free events confirm immediately (D-066) † | [data-model/08](data-model/08-events.md#6-payments-and-confirmation) |
+| 48 | Presence is a three-valued fact, not a boolean (D-067) † | [data-model/08](data-model/08-events.md#4-event_registration) |
 
 ---
 

@@ -251,6 +251,68 @@ These marks should drive UI warnings and the alerting in
 | `report.view` | — | ⚠ | Run standard reports |
 | `report.export` | — | ⚠⚠ | Export report data |
 
+## 8a. Events
+
+The per-item grant scope the whole authorization model was built toward. **Registration is
+eligibility** — `event.register_self` at `contribute` *is* the rule for who may sign up, and
+there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
+
+| Code | Namespace | Sens. | Grants |
+|------|-----------|-------|--------|
+| `event.view` | — | | See an event |
+| `event.create` | — | | Create an event |
+| `event.edit` | — | | Change an event's details, dates, capacity |
+| `event.cancel` | — | ⚠ | **Cancel an event** — keeps registrations, notifies nobody by itself |
+| `event.organizer.manage` | — | ⚠ | Add or remove organizers |
+| `event.register_self` | — | | **Register yourself** — this is the eligibility rule |
+| `event.register_other` | — | ⚠ | Register someone else (a minor, a walk-in) |
+| `event.manage_participants` | — | ⚠ | Manage registrations, waitlist, promotion, presence |
+| `event.answer.view` | — | ⚠ | **Read registrant answers** (tent, dietary, …) |
+| `event.question.manage` | — | ⚠ | Define what the event asks |
+| `event.grant_access` | — | 🔒 | Grant access to an event. Requires level `admin` |
+| `event.delete` | — | 🔒 | Delete an event — only possible with **no** registrations |
+| `event.admin` | — | 🔒 | Full control over events |
+
+| Permission | scope_type | required_level |
+|---|---|---|
+| `event.view` | event | `view` |
+| `event.register_self` | event | `contribute` |
+| `event.edit`, `event.manage_participants`, `event.cancel` | event | `manage` |
+| `event.grant_access`, `event.delete` | event | `admin` |
+
+> **`event.register_self` at `contribute` is the whole of [D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine).** Granting a
+> whole audience `contribute` on an event — one row — is how an open camp is opened:
+>
+> ```sql
+> INSERT INTO access_grant (scope_type, scope_id, audience_id, level)
+> VALUES ('event', :camp, (SELECT id FROM audience WHERE code = 'all_members'),
+>         'contribute');
+> ```
+>
+> An age-restricted camp is a `unit:<id>:participants` audience instead. **There is no age
+> rule**, and the ceiling case it cannot express is an open
+> [question](../open-questions.md).
+
+> **`event.cancel` is separated from `event.edit` deliberately.** Cancelling is the most
+> consequential thing anyone does to an event: it affects every registrant, it usually
+> involves money, and it is a decision rather than an edit. It does not notify anyone — that
+> is the communication module's job, and conflating the two makes "who cancelled this, and
+> when?" harder to answer than it should be.
+
+> **`event.delete` is on this list and `org_unit` has no equivalent, because events are the
+> one thing in this schema that can be deleted.** A draft event with no registrations is a
+> mistake to be cleaned up; anything else is cancelled, not deleted
+> ([D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
+> The trigger refuses deletion once anyone has registered.
+
+> **`event.answer.view` is where [D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers) lives.** Answers to an event's questions
+> are readable by that event's organizers with no additional gate — which makes an event form
+> the route by which a camp leader learns a child has a nut allergy, because the
+> `dependent.*` namespace is unreachable by unit leaders. That is a deliberate widening and
+> it is recorded as one. **Note that this permission is therefore a ⚠ on health-adjacent
+> data**, and the discipline that only preference-level detail belongs on a form is guidance
+> on the form's label, not a constraint the schema enforces.
+
 ## 9. The `dependent.*` namespace
 
 Resolved **only** against `guardianship_permission`, never against roles. A unit leader
@@ -265,8 +327,9 @@ in [../domain/02-actors.md](../domain/02-actors.md#5-acting-on-behalf).
 | `dependent.contact.manage` | ⚠ | Edit contact points | Granted (self-registered) |
 | `dependent.membership.view` | ⚠ | See membership history | Granted |
 | `dependent.membership.request` | | Submit or renew a membership | Granted (self-registered) |
-| `dependent.event.view` | ⚠ | See event registrations | Granted |
-| `dependent.event.register` | | Register for events | Granted (self-registered) |
+| `dependent.event.view` | ⚠ | See the dependent's event registrations | Granted |
+| `dependent.event.register` | | Register the dependent for events | Granted (self-registered) |
+| `dependent.event.answer` | ⚠ | Answer an event's questions on their behalf | Granted (self-registered) |
 | `dependent.fee.view` | ⚠ | See fee and payment records | Granted |
 | `dependent.fee.pay` | | Pay fees | Granted (self-registered) |
 | `dependent.medical.view` | ⚠⚠ | **See medical and allergy records** | Granted; **often restricted** |
@@ -293,7 +356,6 @@ established before anyone invents an inconsistent one.
 
 | Resource | Permission | Notes |
 |----------|-----------|-------|
-| `event` | `event.view`, `event.create`, `event.edit`, `event.manage_participants`, `event.register_self`, `event.register_other`, `event.grant_access`, `event.admin` | The per-item grant scope you described. `event.grant_access` requires level `admin`. |
 | `document` | `document.view`, `document.create`, `document.edit`, `document.delete`, `document.grant_access`, `document.admin` | |
 | `fee` | `fee.view`, `fee.create`, `fee.waive`, `fee.refund`, `fee.admin` | ⛔ `fee.waive` and `fee.refund` are sensitive — hardship waivers must not be visible to unit leaders. |
 | `payment` | `payment.view`, `payment.record`, `payment.reverse`, `payment.admin` | |

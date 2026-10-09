@@ -63,6 +63,7 @@ fees belong to the root in the first place.
 | [domain/04-organization-structure.md](domain/04-organization-structure.md) | Units, nesting, restructuring over decades. |
 | [domain/05-membership-lifecycle.md](domain/05-membership-lifecycle.md) | Register → request → accept → pay → member → lapse → return. |
 | [domain/06-authorization-model.md](domain/06-authorization-model.md) | The permission model end to end. |
+| [domain/07-events.md](domain/07-events.md) | Events, registration, capacity, presence, forms. |
 
 ### Data model (tables)
 
@@ -76,6 +77,7 @@ fees belong to the root in the first place.
 | [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_assignment`, `access_grant`. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |
+| [data-model/08-events.md](data-model/08-events.md) | `event`, registration, capacity, presence, questions. |
 
 ### Reference
 

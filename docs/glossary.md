@@ -226,6 +226,54 @@ leave). Modeled as an access grant with an explicit end date and a
 
 ---
 
+## Events
+
+**Event** — A dated occasion that people **register** for: a camp, a trip, a hike, a
+jamboree. It belongs to **exactly one unit**, has a start and an end, an optional capacity,
+an optional fee, and a set of **organizers**. It has **no status column** — visibility *is*
+the permission model, and cancellation is a recorded fact rather than a state
+([D-064](decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
+
+**A weekly meeting is not an event.** It is **participation**. A Thursday group meeting
+forty times a year is one `unit_participation` row, not forty events — so there is no
+recurrence, no series, and no occurrence table
+([D-058](decisions/decision-log.md#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)).
+This boundary is deliberate and easy to miss: "was Jan at the meeting on 14 March?" is not
+answerable from the events module.
+
+**Organizer** — Someone **running** an event. A roster entry on the event, with an optional
+label (`'lead'`, `'cook'`, `'driver'`) and an order — **not** an `access_grant`
+([D-062](decisions/decision-log.md#d-062--organizers-are-appointed-on-the-event-not-granted)).
+It is the event-scoped analogue of a **position assignment**: an appointment on the thing
+being run, not a permission bundle. Authority to *act* on the event comes from the owning
+unit's roles, which reach the unit's own events because an event is an **artifact** of its
+unit rather than a child of it
+([D-063](decisions/decision-log.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)).
+
+**Registration** — One person's answer about one event: `attending`, or `not_attending`.
+**"Unanswered" is not a value** — it is the absence of a registration row, so "who has not
+replied yet?" is the eligible set minus the registered set
+([D-059](decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
+
+**Eligibility** — Who may register. This is **capability**, not a rule engine:
+`event.register_self` requires `contribute` on the event, and opening a camp to members is
+**one** `access_grant` naming an audience. An age-restricted camp is a camp opened to a
+unit's participants
+([D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
+
+**Waitlist** — What happens when a full event gets a self-service registration: the person is
+written down and ordered, never refused. **Organizers may exceed capacity** outright, and the
+overrun is reported rather than prevented — the leader who knows there are two spare tents is
+trusted ([D-065](decisions/decision-log.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it)).
+
+**Presence** — Whether someone actually turned up, marked by an organizer after the fact.
+Three-valued: `NULL` (no register taken), `true`, `false`. For a camp this is **the record of
+who was in the organization's care**, and it cannot be reconstructed from registrations
+([D-067](decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
+Not the same as registration — a no-show is a registration with `was_present = false`.
+
+---
+
 ## Time
 
 **Temporal row** — Any row with `valid_from` / `valid_to`. `valid_to IS NULL` means

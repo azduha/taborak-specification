@@ -422,7 +422,16 @@ Queries this shape supports, all of which fail against a design with `person.is_
 | Authorization | `permission`, `role`, `role_permission`, `role_assignment`[T], `scope_exposure`[T], `audience`[T], `audience_member`[T], `access_level`, `grant_scope_type`, `access_grant`[T], `permission_level`, `access_log`, `permission_cache` |
 | Audit / import | `audit_log`, `redaction_log`, `import_batch`, `staging_import`, `staging_import_row` |
 | Finance *(provisional)* | `fee_schedule`[T], `fee_obligation`, `payment`, `payment_allocation` |
+| Events | `event`, `event_organizer`, `event_registration`, `event_question`[T], `event_answer` |
 | Reference | `reason_code`, `access_level`, `grant_scope_type`, `identifier_scheme`, `permission`, `org_unit_type` |
+
+> **`event` is the only table in this schema with no `[T]`** — it has no `valid_from` /
+> `valid_to`, because an event is a dated occasion rather than a period-tracked record. Its
+> lifecycle is `starts_at` / `ends_at` / `cancelled_at`, and it has no `status` column at all
+> ([D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
+> `event_registration` likewise stores no period: a person is attending, or they are not, and
+> "unanswered" is the absence of a row
+> ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
 
 **Removed since the first draft**, listed so the inventory stays honest: `requirement_code`
 and `membership_request_requirement` (nothing gates a request —

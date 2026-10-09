@@ -86,7 +86,13 @@ CREATE TABLE fee_obligation (
 
     membership_id   BIGINT REFERENCES membership(id),
     membership_request_id BIGINT REFERENCES membership_request(id),
-    -- What the fee is for. One of these is set, not both.
+    event_registration_id BIGINT REFERENCES event_registration(id),
+    -- What the fee is for. EXACTLY ONE of these three is set.
+    --
+    -- The event arm is real, not a hedge: an event with a fee_schedule creates one
+    -- obligation per registration (D-066), and payment confirms the place. It
+    -- replaced the dormant household_id arm that D-057 removed — same shape, but
+    -- with data behind it this time.
 
     fee_schedule_id BIGINT NOT NULL REFERENCES fee_schedule(id),
     -- Snapshotted so the amount is reproducible even if the schedule is edited.
@@ -122,9 +128,13 @@ CREATE TABLE fee_obligation (
         amount_due >= 0 AND amount_discount >= 0 AND amount_paid >= 0),
     CONSTRAINT ck_obligation_target CHECK (
         (membership_id IS NOT NULL)::int
-      + (membership_request_id IS NOT NULL)::int = 1),
-    -- Exactly one target: a membership or a request, never both and never neither.
-    -- The former third arm (household_id) is gone with the table (D-057).
+      + (membership_request_id IS NOT NULL)::int
+      + (event_registration_id IS NOT NULL)::int = 1),
+    -- Exactly one target: a membership period, a membership request, or one
+    -- person's place at one event. Still "= 1", not "<= 3" — every obligation is
+    -- for exactly one thing. The per-person choice for events is deliberate: the
+    -- fee is flat and per person (D-037), and a per-family price would need the
+    -- household grouping designed again first (D-057).
     CONSTRAINT ck_obligation_waived CHECK (
         status <> 'waived' OR (waived_by IS NOT NULL AND waived_reason IS NOT NULL))
 );
@@ -132,23 +142,29 @@ CREATE TABLE fee_obligation (
 CREATE INDEX ix_obligation_person ON fee_obligation (person_id, status);
 CREATE INDEX ix_obligation_open   ON fee_obligation (due_date)
     WHERE status IN ('unpaid','partially_paid','overdue');
+CREATE INDEX ix_obligation_event_registration ON fee_obligation (event_registration_id)
+    WHERE event_registration_id IS NOT NULL;
 CREATE INDEX ix_obligation_membership ON fee_obligation (membership_id)
     WHERE membership_id IS NOT NULL;
 CREATE INDEX ix_obligation_period     ON fee_obligation (period_from, period_to);
 ```
 
-> **The household arm is gone, not dormant.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+> **The household arm is gone, and an event arm took its place — a real one.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
 > settled the fee as flat and per person; [D-057](../decisions/decision-log.md#d-057--household-is-removed)
 > then removed the `household` table itself, so `household_id`, its CHECK arm and
-> `ix_obligation_household` went with it. The two were always a package — a column pointing
-> at a table nobody maintains is worse than either.
+> `ix_obligation_household` went with it. Events then supplied a third target that is
+> genuinely used: one obligation per registration, created by trigger, paid to confirm the
+> place ([D-066](../decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition)).
+>
+> **The CHECK reads `= 1`, which is the point.** Three arms, exactly one set — a membership
+> period, a membership request, or one person's place at one event. The previous version read
+> `<= 2` with a dormant arm against a hypothetical; this one states the domain. That is the
+> difference between a constraint and a hedge, and it is worth preserving: if a fourth target
+> is ever added, check whether it is *used* before widening this.
 >
 > **If a family discount is ever wanted**, the row is still the right shape — one obligation
 > covering several people — but it now needs the grouping to be re-introduced first, as a
 > group with a period rather than a fake person ([04 §3](04-relationships.md#3-there-is-no-household-table)).
-> That is a deliberate cost: the previous version kept a dormant column against a
-> hypothetical, and this version does not. The advantage of the change is that the CHECK now
-> reads `= 1` rather than `<= 2`, which is a statement about the domain instead of a hedge.
 
 ```sql
 CREATE TABLE payment (

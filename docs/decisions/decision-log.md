@@ -1566,6 +1566,475 @@ contact), which has nothing left to check; the `household` bullet in
 
 ---
 
+## D-058 — An event is a dated occasion owned by exactly one unit
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** `event.org_unit_id` is `NOT NULL` — **exactly one owning unit.** A weekly
+meeting group is **not** an event; it is `unit_participation`. Events are the things people
+*register* for: camps, trips, hikes, jamborees.
+
+**Why.** Two answers, and the second is the structural one.
+
+- On ownership: *"One owning unit."* A joint camp between two packs is **Pack A's event that
+  Pack B's children register for.** Pack B is a guest, and its access is written explicitly —
+  an audience grant, a named person, at the level that fits. Nobody arbitrates "whose event
+  is this?", and one unit remains the author of the record.
+- On recurrence: *"No recurrence — meetings are participation."* A Thursday group meeting
+  forty times a year is already recorded as "this child takes part in this Thursday group."
+  Forty event rows would say what one participation row says, with forty capacities, forty
+  organizer rosters, and forty chances to be wrong.
+
+**The ownership rule is forced by [D-049](#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing),
+not merely preferred by it.** If an event could belong to two units, the root's inability to
+read a sub-unit's events would have an exception shaped exactly like a joint camp, with no
+principled place to stop. One owner keeps the rule total.
+
+**What this forecloses.** There is no `event_series`, no RFC 5545 rule, no occurrence table,
+and no `event_unit` join table. Each would require every downstream table — registrations,
+capacity, presence, organizers, questions — to carry a second possible home.
+
+**Consequence worth stating.** "Was Jan at the meeting on 14 March?" is **not answerable from
+the events module.** That is presence tracking for a standing group, which is a different
+feature. The boundary is deliberate; the confusion between the two is the thing to watch for.
+
+**See:** [../domain/07-events.md §1–2](../domain/07-events.md#1-what-an-event-is-and-what-it-is-not),
+[../data-model/08-events.md §2](../data-model/08-events.md#2-event).
+
+---
+
+## D-059 — "Unanswered" is the absence of a row; a registration stores two values
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** `event_registration.response` has **two** values — `'attending'` and
+`'not_attending'`. **`'unanswered'` is written nowhere.** It is the *absence* of a
+registration row. "Who has not replied yet?" is a subtraction:
+*(people who could contribute to this event) MINUS (people with a registration)*.
+
+**Why.** Your answer: *"Absent row — two stored values."*
+
+The framing that settled it was your own correction: registration is *"positive with
+additional fields, or negative (or none)"*. **"None" is not a third stored value** — it is the
+lack of a record, and storing it would mean writing rows for people who have not acted.
+
+**Three reasons absence beats a stored value**, and the third is decisive:
+
+| | Absent row | Stored `'unanswered'` |
+|---|---|---|
+| Rows written before anyone acts | None | One per person asked |
+| "Asked and silent" vs "never asked" | Distinguishable — the eligible set is a query | Indistinguishable without an invite table |
+| **"Who has not replied?"** | **A subtraction against an audience** | Requires enumerating the audience into rows |
+
+The third is the real argument. The eligible set is an **audience** — a rule the resolver
+evaluates ([D-042](#d-042--grants-may-target-audiences-not-only-individuals)) such as
+`unit:7:participants` or `all_members`. Enumerating it into `'unanswered'` rows would mean
+re-enumerating every time a child joins the pack, and the stored rows would drift out of
+agreement with the rule that generated them.
+
+**Returning someone to unanswered removes the row** (`DELETE`, recorded in `audit_log`). That
+is the honest act — it leaves the least behind, and "no row" then means the same thing
+whether the person never answered or their answer was withdrawn.
+
+**Consequence.** `unit_participation` uses the same reasoning for the same reason, and this
+decision makes the pattern explicit: **where a state is the absence of a fact, store the
+absence.** Compare [D-002](#d-002--everything-temporal-is-a-period-never-a-boolean) for the
+temporal case and [D-053](#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)
+for the definitional one.
+
+**See:** [../data-model/08-events.md §4](../data-model/08-events.md#4-event_registration),
+[../domain/07-events.md §3](../domain/07-events.md#3-registration-one-record-two-stored-answers-and-no-unanswered).
+
+---
+
+## D-060 — Eligibility is capability; there is no separate rule engine
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+**Resolves:** the deferral in [D-006](#d-006--per-item-permissions-are-capabilities-on-the-item)
+
+**Decision.** Registration requires **`contribute` capability on that event.** Nothing else.
+There is no eligibility rule table, no age gate, no prerequisite system. `event.register_self`
+is already mapped to `contribute` in `permission_level`.
+
+**Why.** Your answer: *"I feel like the people with 'contribute' permissions (capabilities) on
+that item should be allowed to register."*
+
+**This dissolves D-006's deferral rather than satisfying it.** D-006 said *"eligibility ...
+will be a separate concept when events are specified."* Your answer says the separate concept
+was never needed: **the capability ladder already is one.**
+
+```
+view        may SEE the event
+contribute  may REGISTER for it
+manage      may ORGANIZE it
+admin       may control it
+```
+
+**Why audiences make this sufficient rather than merely simple.** Registering 200 children
+individually is 200 grant rows — but opening an event to members is **one**:
+
+```sql
+INSERT INTO access_grant (scope_type, scope_id, audience_id, level)
+VALUES ('event', :camp_id,
+        (SELECT id FROM audience WHERE code = 'all_members'), 'contribute');
+```
+
+An age-gated camp is a camp opened to `unit:<id>:participants` for a unit whose participants
+are that age. **This is the case audiences ([D-042](#d-042--grants-may-target-audiences-not-only-individuals))
+were built for**, and events are where the investment pays off.
+
+**What this does not do, stated plainly.** It does **not** enforce an age *ceiling* on an
+open event. If a nine-year-old holds `contribute` on a camp for teenagers, they can register.
+The design **decides eligibility by who may register, not by inspecting the person** — the
+check *is* the grant. Whether that is sufficient is carried in
+[../open-questions.md](../open-questions.md) rather than hidden.
+
+**Organizers are not bound by it.** Anyone holding `event.manage_participants` may register
+anyone, and the registration records `source = 'staff'`. That is the permission's purpose:
+the leader who knows there is a spare bed is trusted, and the act is attributed.
+
+**See:** [../domain/07-events.md §4](../domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine),
+[data-model/05 §7](../data-model/05-authorization.md#7-permission_level--connecting-permissions-to-grant-levels).
+
+---
+
+## D-061 — Event answers are read by that event's organizers
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** Answers to `event_question` are readable by **the organizers of that event**,
+with no additional permission. You confirmed the consequence explicitly: **the event form is
+the route by which a camp leader learns a child has a nut allergy.**
+
+**Why, and the part that must be recorded.** This is only coherent — and only defensible —
+because the `dependent.*` namespace is **unreachable by unit leaders**. The permission
+catalog states it outright:
+
+> *"Resolved **only** against `guardianship_permission`, never against roles. A unit leader
+> does not get these by virtue of leading the unit — that is a safeguarding property."*
+
+So a camp leader **cannot reach `dependent.medical.*` at all.** Not by leading the pack, not
+by running the camp, not by being an organizer. There is no permission that changes it.
+Which means an allergy recorded on a camp form is the *only* way the people running the camp
+will know.
+
+**This is a widening, and it is recorded as one.** Access to a child's health information
+moves from *"few people, via a guardianship-scoped permission granted by the guardian"* to
+*"every organizer of any event the child registers for."* That is a coherent position — the
+parent tells the people present, per event, and the medical file stays closed — but it is
+**not** an accident of where the gate was placed, and it must not be "fixed" later by
+tightening the wrong thing.
+
+**Two consequences that follow.**
+
+1. **Only preference-level detail belongs on a form.** Nothing in the schema distinguishes
+   "vegetarian" from "coeliac" — both are `data_type = 'text'` in `event_answer.value`. The
+   discipline is in the form *label*, so it is guidance, not a constraint. A `CHECK` cannot
+   tell them apart, and a keyword list would fail on the first unusual phrasing.
+2. **Event answers are not a medical record.** They are operational detail for one event,
+   read by that event's organizers, and ending with the event. The two stores are not
+   duplicates of each other and should not be merged or synchronised.
+
+**Open:** the retention policy. A dietary answer citing a medical condition is health data
+with a retention obligation, and there is no policy yet.
+
+**See:** [../data-model/08-events.md §7](../data-model/08-events.md#7-event_question-and-event_answer),
+[../domain/07-events.md §12](../domain/07-events.md#12-the-forms-questions-and-answers),
+[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-the-dependent-namespace).
+
+---
+
+## D-062 — Organizers are appointed on the event, not granted
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** Events have an `event_organizer` roster, and it is **the domain answer** to
+"who is running this?" — labelled, ordered, attributed. It is **not** an `access_grant`, and
+it does not by itself confer authority to act on the event.
+
+**Why.** Your answer: *"Roster only; grants stay separate."*
+
+**The tempting alternative, and why it fails.** Write an `access_grant` at `manage` whenever
+an organizer is added, so "the organizers" is a query over grants and the two can never
+disagree. It fails on three counts:
+
+| | Grant at `manage` | `event_organizer` |
+|---|---|---|
+| A cook's label | No room for `organizer_role = 'cook'` | `organizer_role`, free text |
+| Display order | Not expressible | `sort_order`, `is_primary` |
+| "Who is running this camp?" | Read the permission table | Read the roster |
+| Removing the cook | Revokes their ability to *see* the event | Removes them from the list |
+
+That last row is the practical one: "they are no longer cooking" does not mean "they may no
+longer see the camp."
+
+**`event_organizer` is the event-scoped analogue of `position_assignment`** — an appointment
+on the thing being run. Like a position it may carry a label and an order; like a position it
+is not a permission bundle. `organizer_role` is **free text, not a CHECK**: every
+organization labels these differently, and a controlled vocabulary here would be a guess of
+the kind [D-054](#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)
+removed for unit types.
+
+**It has no `valid_to`, deliberately.** A roster is not a period: you are on the list or you
+are not. An organizer who drops out is removed (audited), because "was Jan an organizer of
+that camp?" must have one answer, not a set of intervals.
+
+**How authority actually reaches an organizer** is [D-063](#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it) —
+the unit's roles reach its events.
+
+**See:** [../data-model/08-events.md §3](../data-model/08-events.md#3-event_organizer),
+[../domain/07-events.md §5](../domain/07-events.md#5-organizers-are-appointed-not-granted).
+
+---
+
+## D-063 — An event is an ARTIFACT of its unit, not a child of it
+
+**Status:** decided (from your answer, as a consequence you did not have to state)
+**Date:** refinement round 5
+**Amends:** nothing. **Extends:** [D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+
+**The problem.** The resolver matches scope **exactly**. There is therefore no path from a
+`unit_leader` role held at `('org_unit', 7)` to a check made at `('event', 42)` — even when
+unit 7 owns event 42:
+
+```
+unit_leader ── holds role at ──► org_unit 7 (the pack)
+                                     │
+                                     │  ✗ NO PATH
+                                     ▼
+event 42 "Summer camp" ◄─ owned by ──┘    resolver checks scope exactly
+```
+
+The pack's leader — the person whose *job* is running the pack's camp — does not pass
+`can(leader, 'event.view', 'event', 42)`. Nothing is broken; the answer is simply no. But the
+module cannot ship with that gap, because it would mean the leader must be granted every
+event their own unit creates.
+
+**Decision.** A permission is satisfied at `('event', E)` if it is satisfied at **the event's
+owning unit**, `('org_unit', E.org_unit_id)`, *and* that unit is the event's owner. One
+wrapper function, `can_event()`, calling `can()` twice.
+
+**Why this is not inheritance downward, and why that distinction is the whole point.**
+
+| | Inheritance (rejected, D-015/D-031) | Artifact rule (chosen) |
+|---|---|---|
+| What a leader gains | Authority in the unit's **sub-units** too | Authority over the unit's **own events** |
+| Blast radius | Grows on every restructure | Fixed — one owner, pinned by D-049 |
+| Reverses | **D-015, D-031** | Nothing |
+
+**An event is not a child of its unit; it is a thing the unit made.** The unit's authority
+already covers the unit. Asking "may this person do this in Pack 7?" is asking the right
+question about the right scope — and it is a question the resolver already answers correctly.
+
+Restructuring the hierarchy still changes nothing about who may do what. Adding a sub-unit
+still grants nobody anything. **D-015 and D-031 stand untouched**, and the rule is exactly as
+narrow as the case requires.
+
+**Why a wrapper function rather than a change inside `can()`.** Putting this clause inside
+the resolver would make every permission check — on people, memberships, units, fees —
+evaluate an event-shaped rule. Keeping it in `can_event()` means the exception is visible,
+named, and confined to the module that needs it.
+
+**And it is a two-way door.** `can_event()` calls `can()` twice and adds no authority of its
+own; nothing is written to `access_grant` to make it work. If the organization decides that
+leaders should *not* automatically run every event their unit creates, **deleting the second
+`can()` call is the entire change, and it needs no data migration.**
+
+**The root is unaffected.** An organization-scoped `registrar` still cannot see a pack's camp
+— events are precisely the sub-unit records [D-049](#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)
+protects. The fix, if the root wants it, is one `scope_exposure` row naming one assignment.
+
+**See:** [../domain/07-events.md §6](../domain/07-events.md#6-the-hinge-organizers-and-the-scope-mismatch),
+[../data-model/08-events.md §8](../data-model/08-events.md#8-projections-and-guards).
+
+---
+
+## D-064 — There is no event status; visibility is the permission model
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** `event` has **no `status` column.** Draft is not a state: a new event has no
+grants beyond its organizers' own authority, so nobody else can see it, and **publishing is
+an `access_grant`, not an `UPDATE`.** `completed` is derived (`ends_at < now()`).
+Cancellation is a recorded fact — `cancelled_at`, `cancelled_by`, `cancel_reason`.
+
+**Why.** Your answer, which is the right instinct: *"Isn't the draft solved by not giving
+anyone else permissions, but the organizer?"* It is, and it is better than a status enum for
+a reason worth stating:
+
+> **A status column and a permission system that both claim to answer "who may see this?"
+> will eventually disagree — and the one that gets enforced is whoever wrote the last `IF`.**
+
+With no status column there is nothing to disagree. The questions a `draft` flag would answer
+are all answered by grants:
+
+| Question | Answer |
+|---|---|
+| "Is this ready to be seen?" | Has anyone been granted `view`? |
+| "Who can see it before it is announced?" | Its organizers, and anyone already granted |
+| "How do I hide it again?" | Revoke the grant — `revoked_at` set, the row kept |
+
+**Where the logic deliberately diverges: cancellation.** If cancelling were done by revoking
+grants, **the event would vanish for exactly the people who need to know it is off** — the
+registrants. They would see nothing at all: not "cancelled", just gone. So cancellation is a
+fact, the event stays visible, and it is marked.
+
+Draft and cancellation therefore use *different mechanisms on purpose*, because they have
+different audiences: draft is about who may **discover** an event, cancellation is about who
+must be **told**.
+
+**A cancelled event** stops accepting registrations (the window closes implicitly) and
+**keeps every registration row** — those rows are the record that the camp was planned and
+who was coming, which is precisely what is needed to notify and refund.
+
+**See:** [../domain/07-events.md §10](../domain/07-events.md#10-cancellation-and-why-there-is-no-status-column),
+[../data-model/08-events.md §2](../data-model/08-events.md#2-event).
+
+---
+
+## D-065 — Capacity is a waitlist threshold, and organizers may exceed it
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** Registering for a full event **succeeds and produces a waitlisted row** — it is
+never refused. Organizers may register past capacity outright, and the overrun is
+**permitted, attributed and reported** rather than prevented. Promotion from the waitlist is
+a deliberate act by an organizer, never automatic.
+
+**Why.** Two answers, and they only look contradictory:
+
+- *"Waitlist"* — the thirteenth caller for a twelve-bed camp is not turned away, they are
+  written down.
+- *"Organizers might exceed, also they might choose to include people from the waiting
+  list"* — a leader who knows there are two spare tents should not be blocked by a number
+  they cannot edit mid-camp.
+
+**The two coexist because the waitlist is a SELF-SERVICE outcome.** The trigger applies it
+only when `source = 'self'`. A staff registration is admitted regardless. So:
+
+| Path | At a full event |
+|---|---|
+| Self-service | Waitlisted, ordered |
+| Staff / organizer | **Admitted**, the overrun reported |
+| Promotion | Deliberate — an organizer picks who comes off the waitlist |
+| Capacity change | An `UPDATE` — visible and attributed |
+
+**Capacity is therefore three things at once, on purpose:** a rule for self-service, a number
+organizers can exceed, and a report. [data-model/08 §10 check 5](../data-model/08-events.md#10-integrity-checks)
+produces rows and **that is not a failure** — an event that overruns every year has a wrong
+capacity number, and the fix is the number, not refusing people.
+
+**Promotion is not automatic** because a place freeing up is not the same as it being right
+to give it to the next person — the organizer may know the next child cannot come on those
+dates. What *is* automatic is one narrow release rule, recorded as such in
+[D-066](#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition).
+
+**See:** [../data-model/08-events.md §5](../data-model/08-events.md#5-capacity-and-the-waitlist),
+[../domain/07-events.md §8](../domain/07-events.md#8-capacity-and-the-waitlist).
+
+---
+
+## D-066 — Payment confirms the place, and the release deadline is the one automatic transition
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** An event may have a fee (`event.fee_schedule_id`), and **payment confirms the
+place**. Registering creates a `fee_obligation`; a paid obligation sets
+`is_confirmed = true` via `confirm_event_place()`. **Events without a fee confirm
+immediately, and most events have no fee** — you were explicit that payment *"does not have
+to be at all events."*
+
+**Why.** Your answer: *"Payment confirms the place, also the payment does not have to be at
+all events."*
+
+The second half is the part that shapes the schema: `fee_schedule_id` is **nullable**, and
+`NULL` is the common case. A free hike confirms on registration, and there is no
+"confirmation" state with no meaning.
+
+**The accepted cost, recorded rather than hidden.** This design has spent real effort
+avoiding automatic state changes ([D-023](#d-023--nothing-is-auto-lapsed-or-auto-terminated),
+[D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
+and payment-confirms-the-place reintroduces one: an unpaid registration at a full event
+**releases its place to the waitlist** at `waitlist_deadline`. It is accepted because it is a
+**deadline, not a sweep** — narrowly scoped, opt-in per event, and visible in what it
+produces:
+
+```sql
+-- Only at a full event, only with a fee configured, only past the deadline,
+-- only unpaid, only self-service, never a cancelled event.
+e.fee_schedule_id IS NOT NULL
+AND e.waitlist_deadline IS NOT NULL
+AND e.waitlist_deadline < now()
+AND r.source = 'self' AND r.is_confirmed = false
+AND e.cancelled_at IS NULL
+```
+
+`waitlist_deadline` is `NULL` by default, so **an event that does not opt in never runs this
+rule at all.** The alternative — no deadline — means a place is held forever by someone who
+never paid, which is worse.
+
+**A function, not a trigger.** `confirm_event_place()` is called by the finance module and is
+**not** a trigger on `fee_obligation.status`, because a trigger would fire for membership
+fees and event fees alike and "the fee is paid" means something different in each case: a
+membership *activates* (D-040), an event place *confirms*. Two transitions, two owners.
+
+**See:** [../data-model/08-events.md §6](../data-model/08-events.md#6-payments-and-confirmation),
+[../domain/07-events.md §11](../domain/07-events.md#11-payments-on-events).
+
+---
+
+## D-067 — Presence is a three-valued fact on the registration
+
+**Status:** decided (from your answer)
+**Date:** refinement round 5
+
+**Decision.** `event_registration.was_present` is a **nullable boolean**, marked by an
+organizer with `presence_marked_by` / `presence_marked_at`.
+
+| Value | Meaning |
+|---|---|
+| `NULL` | Not yet marked — no register was taken |
+| `true` | Turned up |
+| `false` | Marked absent — a register was taken and they were not there |
+
+**Why three-valued rather than a boolean defaulting to false.** *"We did not take a
+register"* and *"we took a register and they were not there"* are **different facts**, and
+only the second is a safeguarding signal. A boolean defaulting to `false` would assert
+absence where the organization only failed to look.
+
+**Why it matters more than it looks.** For a camp, the end-of-week presence record **is the
+record of who was actually in the organization's care.** That is the row that matters if the
+fee buys insurance (finance question 9 — *"member on the date of the incident"*), and it is
+the row that cannot be reconstructed afterwards from registrations.
+
+**Presence is not registration**, and the distinction is enforced: a `not_attending`
+registration with `was_present` set is contradictory and reported
+([data-model/08 §10 check 8](../data-model/08-events.md#10-integrity-checks)).
+
+**A walk-in is not representable, deliberately.** A sibling who turns up on the day was not
+in the organization's care — no guardian recorded, no name on the roster — and must not
+*silently appear* to have been. Recording them means registering them, which means the
+organizers have a name and a guardian. That is the correct friction.
+
+**Note the contrast with D-059.** There, absence of a row was the right encoding for
+*unanswered*. Here, a stored `NULL` is the right encoding for *not marked*. The difference:
+"unanswered" is the absence of a **fact about the person**, while "not marked" is a fact
+about the **organization's incomplete work** — and the work being incomplete is itself worth
+recording, because it is a task still outstanding.
+
+**See:** [../data-model/08-events.md §4](../data-model/08-events.md#4-event_registration),
+[../domain/07-events.md §9](../domain/07-events.md#9-presence-what-actually-happened).
+
+---
+
 ## Reversed decisions
 
 - **D-015 — Authority inherits downward through the unit hierarchy.** Reversed by

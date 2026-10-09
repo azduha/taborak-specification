@@ -291,6 +291,7 @@ Requirements the design must satisfy:
 | [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `access_grant`, `permission_level`, `access_log` |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment` — **provisional** |
+| [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
 
 DDL is presented in **dependency order**: a table appears only after everything it
 references.
