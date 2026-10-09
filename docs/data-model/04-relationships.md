@@ -243,16 +243,50 @@ expressible.
 
 ### Default grants for a new guardianship
 
-An application-level decision, not a schema one, but worth fixing now: when a guardianship
-is created, grant a **conservative default set** — `dependent.profile.view`,
-`dependent.contact.view`, `dependent.membership.view`, `dependent.event.view`,
-`dependent.fee.view`, `dependent.medical.view`, `dependent.consent.give`. That is
-read-and-consent, not admin. Everything else requires a deliberate grant.
+[Decided (D-046)](../decisions/decision-log.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created):
+the default set depends on **how the guardianship arose**, not on a single global rule.
 
-*Assumption:* a parent registering their own child should have `dependent.admin` by default
-— they created the record. The two cases (parent self-registering vs. staff recording a
-court-ordered guardianship) should produce different defaults, which is why `source` and
-`grant_reason` are recorded. Tracked in [../open-questions.md](../open-questions.md).
+| `guardianship.source` | Default permission set |
+|---|---|
+| `self` — a parent registering their own child | **`dependent.admin`** — they created the record and are asserting the relationship; there is nobody better placed to hold full authority over it |
+| `staff`, `court_order`, `import` — recorded by someone else | **Chosen at creation**, from the conservative set below |
+
+The conservative set, for the second row — read-and-consent, deliberately not admin:
+`dependent.profile.view`, `dependent.contact.view`, `dependent.membership.view`,
+`dependent.event.view`, `dependent.fee.view`, `dependent.medical.view`,
+`dependent.consent.give`. Everything beyond it requires a deliberate grant.
+
+```sql
+-- Applied by the application at guardianship insert, not by a trigger — the "chosen at
+-- creation" case needs a human in the loop, and a trigger cannot express that.
+CREATE OR REPLACE FUNCTION default_guardianship_grants(
+    p_guardianship_id BIGINT
+) RETURNS INTEGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_source TEXT;
+    v_count  INTEGER := 0;
+BEGIN
+    SELECT source INTO v_source FROM guardianship WHERE id = p_guardianship_id;
+
+    IF v_source = 'self' THEN
+        INSERT INTO guardianship_permission
+            (guardianship_id, permission_id, is_granted, granted_by, grant_reason)
+        SELECT p_guardianship_id, perm.id, true, NULL,
+               'self-registration: parent created the child record'
+          FROM permission perm
+         WHERE perm.code = 'dependent.admin'
+            OR perm.code LIKE 'dependent.admin.%';
+        GET DIAGNOSTICS v_count = ROW_COUNT;
+    END IF;
+
+    RETURN v_count;   -- 0 for the manual paths: the caller chooses the set explicitly.
+END $$;
+```
+
+**Why `source` and `grant_reason` are both recorded.** The same word — "guardian" — now means
+two different default scopes depending on paperwork, and the record has to say which was
+chosen and why. A guardian with read-only access and a guardian with full access are
+indistinguishable in the domain language and must not be in the data.
 
 ---
 
@@ -344,7 +378,7 @@ receive a membership, an account, and eventually permissions.
 ## 4. How the resolver uses these tables
 
 The guardianship channel is step 4 of the resolver
-([../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-the-resolver)).
+([../domain/06-authorization-model.md](../domain/06-authorization-model.md#6-the-resolver)).
 Concretely:
 
 ```sql
@@ -453,12 +487,14 @@ SELECT g.dependent_person_id, count(*) FROM guardianship g
  GROUP BY g.dependent_person_id
 HAVING count(*) FILTER (WHERE g.is_primary_contact) = 0;
 
--- 4. A child member with NO guardian recorded at all (a safeguarding gap)
+-- 4. A MINOR participant or member with NO guardian recorded at all (a safeguarding gap).
+--    Age comes from person.birth_date — there is no membership category to read it from,
+--    because membership is ageless (D-038).
 SELECT m.id, m.person_id, p.family_name, p.given_name
   FROM membership m
-  JOIN membership_type mt ON mt.id = m.membership_type_id
   JOIN person p ON p.id = m.person_id
- WHERE mt.category = 'child' AND m.status = 'active'
+ WHERE m.status = 'active'
+   AND is_minor(m.person_id)
    AND NOT EXISTS (SELECT 1 FROM guardianship g
                     WHERE g.dependent_person_id = m.person_id
                       AND g.valid_to IS NULL);
@@ -483,11 +519,19 @@ SELECT h.id FROM household h
    AND h.billing_contact_person_id IS NULL;
 ```
 
-**Check 4 is the important one.** A child member with no guardian recorded is a
+**Check 4 is the important one.** A minor with no guardian recorded is a
 safeguarding gap, not a data-quality nit — the organization has a member it cannot contact
 in an emergency and cannot obtain consent from. It should alert, not log. This check is one
 of the reasons `guardianship` is a required part of the model rather than an optional
 convenience.
+
+Note what changed when membership became ageless. The check used to read
+`membership_type.category = 'child'`; with one membership type
+([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person))
+that column does not exist, and the question is now answered from `person.birth_date` via
+`is_minor()`. The signal is arguably better than it was: "this person is under 18 today"
+rather than "this person's membership row was categorised as a child when it was opened",
+which could be years out of date.
 
 Check 2 detects the specific failure that scoping permissions to `guardianship_id` was
 meant to prevent — worth keeping as a backstop, since an application bug or a manual SQL
@@ -497,17 +541,28 @@ fix could still create it.
 
 ## 7. Open issues
 
-- The default permission set granted when a guardianship is created, and whether it differs
-  by `source` (§2).
 - Whether guardianship should auto-expire at majority, or always require review (§1).
   Recommend review.
-- Per-person vs. per-household fees — determines whether `household` is load-bearing (§3).
+- Whether `household` is load-bearing at all now that the fee is flat and per person (§3).
+  If it is only a matching signal for the legacy import and a display convenience, it could
+  become a derived view rather than a maintained table.
 - Whether a guardian may act for a dependent who is also a member in their own right — e.g.
   can a parent register their adult child for an event, if the child consents? Recommend an
   explicit consent-based delegation rather than a guardianship, since the legal basis
-  differs.
-- Whether the organization needs to record guardianship for deceased members' records.
+  differs. The *group* version of this is now answered by audiences
+  ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
 - Whether `custody_arrangement` free text should be structured. Recommend not — custody
   orders vary too much to model, and a wrong model is worse than honest prose.
+- **Confirm that the membership gate's guardianship carve-out is intended** (§6). A lapsed
+  parent keeps full `dependent.*` access ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)),
+  which means an unpaid parent and a paid one are indistinguishable inside that namespace.
+  It is almost certainly right — guardianship comes from a legal relationship, not a
+  membership — but it should be a stated choice, not a side effect of where the gate was
+  placed.
+
+**Resolved and no longer open**, kept visible so the reasoning survives: the default grant
+set at guardianship creation (now depends on `source` — D-046); whether fees are per person
+or per household (per person, flat — D-037, which retires the load-bearing half of `household`);
+and background checks (none are recorded — D-043).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -1,49 +1,30 @@
 # Data Model — Membership
 
-`membership_type`, `membership`, `membership_request`, request requirements, and
-`unit_membership`.
+`membership_type`, `membership`, `membership_request`, and `unit_participation`.
 
 Domain rationale: [../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md).
 
 ---
 
-## 1. `membership_type`
+## 1. `membership_type` — one row, kept as a table
 
 ```sql
 CREATE TABLE membership_type (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    code            TEXT NOT NULL UNIQUE,   -- 'child','adult','counselor','honorary','lifetime'
+    code            TEXT NOT NULL UNIQUE,   -- 'member' — and nothing else, for now
     name            TEXT NOT NULL,
     description     TEXT,
 
-    category        TEXT NOT NULL CHECK (category IN ('child','adult','special')),
-    -- 'child'  — youth participant. Drives guardian-consent and age validation.
-    -- 'adult'  — adult participant. Drives background-check validation.
-    -- 'special'— honorary, lifetime, staff. No age rules, no background check.
-    --
-    -- This is the column that replaces `person.is_child`. A person's category comes
-    -- from their CURRENT membership's type, never from the person row.
+    duration_months INTEGER NOT NULL DEFAULT 12,
+    -- 12: the fee is yearly. Kept as a column rather than a constant so a type with a
+    -- different term could be added without a schema change.
 
-    requires_background_check BOOLEAN NOT NULL DEFAULT false,
-    requires_guardian_consent BOOLEAN NOT NULL DEFAULT false,
-    requires_references       BOOLEAN NOT NULL DEFAULT false,
-
-    min_age         INTEGER,     -- in years, at valid_from. NULL = no minimum.
-    max_age         INTEGER,     -- drives automatic age-out. NULL = no maximum.
-
-    duration_months INTEGER,     -- 12 typically; NULL = indefinite (lifetime)
-    grace_period_days INTEGER NOT NULL DEFAULT 0,
-    -- Days after valid_to during which the person still counts as a member.
-    -- Matters legally: "was this person a member on the day of the camp?"
-
-    fee_schedule_id BIGINT,      -- FK added in 07-finance.md
-    allows_concurrent BOOLEAN NOT NULL DEFAULT false,
-    -- May a person hold this type concurrently with another open membership?
-    -- See §3 for how this interacts with the overlap constraint.
+    renewal_grace_days INTEGER NOT NULL DEFAULT 90,
+    -- The renewal window after valid_to, during which a payment restores the
+    -- membership WITHOUT re-applying and backdates the new period to the expiry date.
+    -- Dates, not a status: the person is expired throughout (D-040).
 
     is_self_registerable BOOLEAN NOT NULL DEFAULT true,
-    -- False for types only staff may grant (honorary, lifetime).
-
     requires_approval BOOLEAN NOT NULL DEFAULT true,
     sort_order      INTEGER NOT NULL DEFAULT 0,
 
@@ -53,24 +34,42 @@ CREATE TABLE membership_type (
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT ck_membership_type_period CHECK (
-        valid_to IS NULL OR valid_from IS NULL OR valid_to > valid_from),
-    CONSTRAINT ck_membership_type_ages CHECK (
-        min_age IS NULL OR max_age IS NULL OR max_age > min_age)
+        valid_to IS NULL OR valid_from IS NULL OR valid_to > valid_from)
 );
 
 CREATE INDEX ix_membership_type_current ON membership_type (code) WHERE valid_to IS NULL;
 ```
 
-**`category` rather than treating type codes as interchangeable.** The validation and
-permission rules genuinely differ between a child and an adult in a youth organization, and
-expressing that once on the type is far better than scattering
-`if membership_type == 'child'` through the codebase. It is a three-valued classification,
-not a type-code check, so adding a `cub` or `venture` type does not require touching code.
+### Why this table still exists with one row
 
-**`grace_period_days` here, not as a date on the membership.** During grace the person is
-*still a member*. Modeling it as an extended `valid_to` on the row would lose the
-distinction between "paid up" and "in grace", and that distinction is exactly what an
-insurance or safeguarding question turns on.
+**There is exactly one membership** (D-037). Everyone who is a member holds
+`membership_type = 'member'`, the fee is flat and per person, and being a counselor or a
+leader is a **position**, never a type.
+
+The table survives rather than collapsing into a constant for two reasons:
+
+1. **Consistency with the design's own principle.** Vocabularies are rows, not enums —
+   the same argument that keeps `org_unit_type` and `position` as tables. A second kind of
+   membership (a supporting or honorary one) would then be a data change.
+2. **A place for the term and the renewal window to live**, which are genuinely
+   type-dependent parameters even when there is one type.
+
+The cost is honest and small: an FK that currently always holds one value. Recorded here
+rather than hidden.
+
+### What was removed, and why
+
+| Removed | Reason |
+|---|---|
+| `category` (`child`/`adult`/`special`) | Membership is ageless (D-038). Age is a fact about the person. |
+| `min_age`, `max_age` | No age floor, ceiling, or automatic age-out. |
+| `requires_background_check` | The system records no background checks (D-043). |
+| `requires_references`, `requires_guardian_consent` | Nothing gates a request but identity and payment (D-044). |
+| `allows_concurrent` | With one type and a person-scoped overlap constraint, this cannot arise. |
+| `grace_period_days` (as a status) | Replaced by `renewal_grace_days` — a window, not a state (D-040). |
+| `fee_schedule_id` | The fee is flat and per person (D-037), so there is nothing type-specific to schedule. The schedule attaches to the **obligation** instead — [07-finance.md §2](07-finance.md#2-minimal-provisional-shape). |
+
+**`ck_membership_type_ages`** goes with them; there are no ages to check.
 
 ---
 
@@ -194,9 +193,10 @@ CREATE TABLE membership (
     -- Self-reference forming the renewal chain. See domain/05 §6.
 
     outstanding_balance NUMERIC(12,2),
-    -- DENORMALISED from fee_obligation/payment. Convenience for the "approved but
-    -- unpaid" worklist. Must be maintained transactionally or recomputed — see
-    -- 07-finance.md. NULL for imported historical memberships with no payment data.
+    -- DENORMALISED from fee_obligation/payment. 07-finance.md §3 recommends DROPPING
+    -- this column in favour of v_fee_obligation_balance — a wrong balance suspends the
+    -- wrong child. Kept here only until that decision is taken. NULL for imported
+    -- historical memberships with no payment data.
 
     termination_reason_code TEXT,
     termination_note TEXT,
@@ -221,13 +221,12 @@ CREATE TABLE membership (
         renewed_from_membership_id IS DISTINCT FROM id)
 );
 
--- THE critical constraint: no two overlapping open memberships of the same type.
+-- THE critical constraint: one person, one open membership, full stop.
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 ALTER TABLE membership ADD CONSTRAINT ex_membership_no_overlap
     EXCLUDE USING gist (
-        person_id          WITH =,
-        membership_type_id WITH =,
+        person_id WITH =,
         daterange(valid_from, valid_to, '[)') WITH &&
     )
     WHERE (status IN ('pending_payment','active','suspended'));
@@ -239,20 +238,39 @@ CREATE INDEX ix_membership_status   ON membership (status, valid_to)
     WHERE status IN ('active','pending_payment');
 CREATE INDEX ix_membership_period   ON membership USING gist
     (person_id, daterange(valid_from, valid_to, '[)'));
-CREATE INDEX ix_membership_type     ON membership (membership_type_id, status);
+CREATE INDEX ix_membership_expiry   ON membership (valid_to)
+    WHERE valid_to IS NOT NULL AND status = 'active';
+-- Drives the renewal worklist: who expires soon, who is in their renewal window.
 ```
 
-### Why the exclusion constraint is scoped to `membership_type_id`
+### The constraint dropped `membership_type_id` — that is the point
 
-Not to `person_id` alone, because some combinations are legitimate: an honorary member who
-is also an active adult member, or a lifetime member who still volunteers. Constraining on
-the type permits that while blocking the case that matters — one person, one open child
-membership.
+The old constraint was scoped to the type, to permit an honorary member who is also an
+active member. **With one membership type (D-037) that case cannot arise**, so the type is
+gone from the constraint and "one person, one open membership" becomes an enforceable
+invariant rather than a convention.
 
-**If you decide a person may hold only ONE open membership of any type**, change the
-constraint to drop the `membership_type_id` line and handle `allows_concurrent` in
-application logic. That is a stricter and simpler rule; it is your call. Tracked in
-[../open-questions.md](../open-questions.md).
+This is what makes the membership gate (D-039) implementable: `is_current_member()` is a
+question about **one row, one status, one date**, not a question that has to reconcile three
+concurrent memberships.
+
+### `renewed_from_membership_id` and the renewal window
+
+When a person pays inside the renewal window
+([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
+the new membership's `valid_from` is set to the **previous row's `valid_to`**, not to the
+payment date. Two consequences worth stating:
+
+- **The history shows continuous coverage** — no gap, no spurious "returning member".
+- **The person is nevertheless expired during the window** (D-040). The two facts are
+  compatible because the window is a *date range*, not a status: they were not a member
+  while it was open, and the record of that period is filled in retrospectively once they
+  pay. Nothing needs backdating in the audit sense, because the new row's as-of start is the
+  expiry date and its audit time is the payment date — the two-times distinction in
+  [00-conventions.md](00-conventions.md).
+
+A payment *after* the window opens the new membership at the payment date, and the gap is
+real.
 
 ### The exclusion constraint and status transitions
 
@@ -283,12 +301,14 @@ Renewal opens a **new** row (Shape A in
 The self-reference makes the chain explicit:
 
 ```
-membership 501  child  1990-09-01 → 1991-06-30   completed
+membership 501  member  1990-09-01 → 1991-06-30   completed
      ↑ renewed_from
-membership 502  child  1991-09-01 → 1992-06-30   completed
+membership 502  member  1991-09-01 → 1992-06-30   completed
      ↑ renewed_from
-membership 503  child  1992-09-01 → 1993-06-30   completed
+membership 503  member  1992-09-01 → 1993-06-30   completed
 ```
+*(The type is `member` on every row — there is only one type, and the person's age is not
+part of it: [§1](#1-membership_type--one-row-kept-as-a-table), D-037, D-038.)*
 
 "Why does this person have 15 membership rows?" is then answerable by following the chain
 rather than by reasoning about dates. And a gap — a missing link — is visible as data.
@@ -297,16 +317,16 @@ rather than by reasoning about dates. And a gap — a missing link — is visibl
 
 ```sql
 -- Is person X a member right now?
+-- NOTE: no grace coalescing. A lapsed membership is lapsed; the renewal window
+-- (§6) is a date range for rejoining, not a state in which the person is a member.
 CREATE OR REPLACE FUNCTION is_current_member(p_person_id BIGINT)
 RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
     SELECT EXISTS (
         SELECT 1 FROM membership m
-          JOIN membership_type mt ON mt.id = m.membership_type_id
          WHERE m.person_id = p_person_id
            AND m.status = 'active'
            AND m.valid_from <= CURRENT_DATE
-           AND (m.valid_to IS NULL
-                OR m.valid_to + mt.grace_period_days > CURRENT_DATE)
+           AND (m.valid_to IS NULL OR m.valid_to > CURRENT_DATE)
     );
 $$;
 
@@ -323,15 +343,21 @@ RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
     );
 $$;
 
--- Person's current membership category (replaces any person.is_child check):
-CREATE OR REPLACE FUNCTION current_member_category(p_person_id BIGINT)
-RETURNS TEXT LANGUAGE sql STABLE AS $$
-    SELECT mt.category
-      FROM membership m JOIN membership_type mt ON mt.id = m.membership_type_id
-     WHERE m.person_id = p_person_id AND m.status = 'active'
-       AND m.valid_from <= CURRENT_DATE
-       AND (m.valid_to IS NULL OR m.valid_to > CURRENT_DATE)
-     ORDER BY m.valid_from DESC LIMIT 1;
+-- May this person renew without re-applying? (D-040: expired, but inside the window.)
+-- This is the distinction a 'grace_period_days' membership status would have blurred:
+-- they are NOT a member, and they MAY rejoin cheaply.
+CREATE OR REPLACE FUNCTION in_renewal_window(p_person_id BIGINT)
+RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1
+          FROM membership m
+          JOIN membership_type mt ON mt.id = m.membership_type_id
+         WHERE m.person_id = p_person_id
+           AND m.status IN ('lapsed','active')
+           AND m.valid_to IS NOT NULL
+           AND m.valid_to <= CURRENT_DATE
+           AND m.valid_to + mt.renewal_grace_days > CURRENT_DATE
+    );
 $$;
 
 -- Total years of membership, excluding gaps:
@@ -349,103 +375,73 @@ $$;
 The difference is the 14-year gap in the returning-member case, and getting it wrong
 mislabels a returning member as having 36 years of service.
 
----
-
-## 4. `membership_request_requirement`
-
-```sql
-CREATE TABLE requirement_code (
-    code            TEXT PRIMARY KEY,
-    name            TEXT NOT NULL,
-    description     TEXT,
-    is_blocking     BOOLEAN NOT NULL DEFAULT true,
-    -- Blocking requirements must be satisfied before approval.
-    has_expiry      BOOLEAN NOT NULL DEFAULT false,
-    -- True for background checks, medical forms — things that lapse.
-    default_validity_months INTEGER
-);
-
-CREATE TABLE membership_request_requirement (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    request_id      BIGINT NOT NULL REFERENCES membership_request(id),
-    requirement_code TEXT NOT NULL REFERENCES requirement_code(code),
-
-    status          TEXT NOT NULL DEFAULT 'pending'
-                    CHECK (status IN ('pending','satisfied','waived','failed')),
-
-    satisfied_at    TIMESTAMPTZ,
-    satisfied_by    BIGINT REFERENCES person(id),
-    evidence_reference TEXT,
-    -- Document id, external reference number, or a note explaining the evidence.
-    -- Free text pointing at the durable record; the document layer is out of scope.
-
-    expires_at      DATE,
-    waived_by       BIGINT REFERENCES person(id),
-    waived_reason   TEXT,
-
-    notes           TEXT,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_requirement_waived CHECK (
-        status <> 'waived' OR (waived_by IS NOT NULL AND waived_reason IS NOT NULL)),
-    CONSTRAINT ck_requirement_satisfied CHECK (
-        status <> 'satisfied' OR satisfied_at IS NOT NULL)
-);
-
-CREATE INDEX ix_requirement_request ON membership_request_requirement (request_id);
-CREATE INDEX ix_requirement_expiry  ON membership_request_requirement (expires_at)
-    WHERE expires_at IS NOT NULL AND status = 'satisfied';
-```
-
-**Requirements are rows, not columns**, because the requirement set changes per membership
-type and per year. Adding "police clearance" in 2027 must not be a schema migration.
-
-**`is_blocking` matters.** Not every requirement blocks approval — some are collected for
-record-keeping. The distinction must be explicit, or the review UI cannot tell a reviewer
-what actually prevents approval.
-
-**Why `evidence_reference` is free text rather than a FK.** The document layer is out of
-scope (see [../open-questions.md](../open-questions.md)). When it exists, this becomes a
-proper reference. Until then, a free-text pointer plus the audit log is honest about the
-gap — better than a fake FK to a table that does not exist.
-
-### Expiry is the point of this table
-
-A background check is not a one-time fact. Modeled with `expires_at`, it becomes a
-standing obligation that can be reported on:
+**`current_member_category()` is gone.** It existed to answer "is this person currently a
+child or an adult?", which is no longer a question the membership table can answer, because
+membership is ageless (D-038). Age is a fact about the person:
 
 ```sql
--- Adult members whose background check expires within 90 days:
-SELECT p.id, p.family_name, p.given_name, r.expires_at
-  FROM membership_request_requirement r
-  JOIN membership_request mr ON mr.id = r.request_id
-  JOIN person p ON p.id = mr.person_id
- WHERE r.requirement_code = 'background_check'
-   AND r.status = 'satisfied'
-   AND r.expires_at BETWEEN CURRENT_DATE AND CURRENT_DATE + 90
-   AND is_current_member(p.id);
+-- Is this person a minor? A fact about the person, not about their membership.
+CREATE OR REPLACE FUNCTION is_minor(p_person_id BIGINT, p_at DATE DEFAULT CURRENT_DATE)
+RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT p.birth_date IS NOT NULL
+       AND p_at < p.birth_date + INTERVAL '18 years'
+      FROM person p WHERE p.id = p_person_id;
+$$;
 ```
+
+This matters for **guardianship and safeguarding**, which are where age legitimately bears —
+not for whether someone may be a member.
 
 ---
 
-## 5. `unit_membership`
+## 4. No request requirements — removed entirely
+
+`requirement_code` and `membership_request_requirement` **do not exist** (D-044).
+
+**Why.** Your answer, asked what a membership request must contain in order to be accepted:
+*"Just identity and the fee — nothing to verify."* The option of keeping the mechanism as
+empty infrastructure was offered and not taken, so it is gone rather than left dangling.
+
+**What a request therefore is:** a person, a submitted timestamp, a reviewer, a decision, and
+a payment. The `membership_request` table in [§2](#2-membership_request) is complete as it
+stands — it never referenced requirements except through this table.
+
+**Guardian consent is unaffected.** It was never a *membership* requirement; it belongs to
+the guardianship layer, where it is a relationship fact rather than a checklist item. See
+[04-relationships.md](04-relationships.md#2-guardianship_permission).
+
+**If a requirement ever appears** — a form, an interview, a document — the honest starting
+point is to add the table back deliberately, with the requirement that made it necessary
+recorded as a decision. The removed design was general enough to carry one; it is recorded
+in the decision log rather than deleted from history.
+
+---
+
+## 5. `unit_participation`
+
+**Renamed from `unit_membership`.** Belonging to a sub-unit is **participation**, not a
+species of membership (D-041). The old name asserted something untrue, and the rename is the
+fix.
 
 ```sql
-CREATE TABLE unit_membership (
+CREATE TABLE unit_participation (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
     person_id       BIGINT NOT NULL REFERENCES person(id),
     -- Deliberately person_id, NOT membership_id.
     --
-    -- Why: a person's unit history must survive independently of how their
-    -- organization membership is recorded. Imported 1998 rosters often have a unit
-    -- but no formal membership row. Linking to membership would make those
+    -- Why: participation history must survive independently of how organization
+    -- membership is recorded. Imported 1998 rosters often have a unit and a year but
+    -- no formal membership row. Linking to membership would make those
     -- unrepresentable, and would break the whole historical dataset.
     --
-    -- The trade-off: the schema cannot enforce "unit membership implies organization
-    -- membership". Enforced by application + the integrity check in §8.
+    -- The trade-off: the schema cannot enforce "participation implies membership".
+    -- Enforced by application + the integrity check in §7.
 
     org_unit_id     BIGINT NOT NULL REFERENCES org_unit(id),
+    -- May be the ROOT unit. A participation row on the root is created alongside
+    -- each membership, so that "everyone in unit X" is one uniform query whether X
+    -- is the organization or a Thursday-evening pack. See §5.1.
 
     role_in_unit    TEXT CHECK (role_in_unit IN ('member','leader','assistant','guest')),
     -- A denormalised convenience for display and historical import. NOT an
@@ -455,10 +451,10 @@ CREATE TABLE unit_membership (
     valid_to        DATE,          -- NULL = current
 
     join_reason_code    TEXT,      -- 'initial' | 'transfer' | 'promotion' | 'reorganisation'
-    leave_reason_code   TEXT,      -- 'age_out' | 'transfer_out' | 'unit_closed' | 'personal'
+    leave_reason_code   TEXT,      -- 'transfer_out' | 'unit_closed' | 'stopped_attending'
 
     is_primary      BOOLEAN NOT NULL DEFAULT true,
-    -- Some people (adults especially) belong to several units.
+    -- Which group to show first, for a person in several.
 
     data_confidence TEXT NOT NULL DEFAULT 'high'
                     CHECK (data_confidence IN ('high','medium','low')),
@@ -470,75 +466,84 @@ CREATE TABLE unit_membership (
     updated_at      TIMESTAMPTZ,
     updated_by      BIGINT REFERENCES person(id),
 
-    CONSTRAINT ck_unit_membership_period CHECK (
+    CONSTRAINT ck_unit_participation_period CHECK (
         valid_to IS NULL OR valid_to > valid_from)
 );
 
--- The core invariant: a person is in a given unit only once at a time.
-ALTER TABLE unit_membership ADD CONSTRAINT ex_unit_membership_no_overlap
+-- A person takes part in a given unit only once at a time.
+ALTER TABLE unit_participation ADD CONSTRAINT ex_unit_participation_no_overlap
     EXCLUDE USING gist (
         person_id   WITH =,
         org_unit_id WITH =,
         daterange(valid_from, valid_to, '[)') WITH &&
     );
 
-CREATE INDEX ix_unit_membership_person ON unit_membership
+CREATE INDEX ix_unit_participation_person ON unit_participation
     (person_id, valid_from DESC, valid_to);
-CREATE INDEX ix_unit_membership_unit   ON unit_membership
+CREATE INDEX ix_unit_participation_unit   ON unit_participation
     (org_unit_id, valid_from DESC, valid_to);
-CREATE INDEX ix_unit_membership_current ON unit_membership (org_unit_id, person_id)
+CREATE INDEX ix_unit_participation_current ON unit_participation (org_unit_id, person_id)
     WHERE valid_to IS NULL;
-CREATE INDEX ix_unit_membership_period ON unit_membership USING gist
+CREATE INDEX ix_unit_participation_period ON unit_participation USING gist
     (org_unit_id, daterange(valid_from, valid_to, '[)'));
 ```
 
-**Why `person_id` and not `membership_id`.** This is a deliberate trade-off worth stating
-plainly:
+### 5.1 A participation row on the root unit
 
-- **Chosen:** unit history is independent. Imported rosters without formal memberships are
-  representable; a unit change does not require membership rows; queries about units are
-  simpler and faster.
-- **Cost:** nothing enforces that a person with a `unit_membership` has an organization
-  `membership`. A data-entry error can put a non-member in a unit.
-- **Mitigation:** an application-level validation, plus the nightly integrity check in §8.
+When a membership is created, a matching **`unit_participation` row for the root unit** is
+created over the same period, and similarly closed when the membership ends.
 
-The alternative — linking to `membership_id` — would make the entire 1990s dataset
-unrepresentable, since those rosters have units and years but no membership workflow. That
-is a decisive argument.
-
-**"Who was in Troop 12 on 1 June 1998?"** is now a single indexed range query:
+This buys one thing: **"everyone in unit X" is one query, with one shape, at every level.**
 
 ```sql
+-- Works whether :unit is the organization (depth 0) or a Thursday group (depth 4).
 SELECT p.id, p.family_name, p.given_name
-  FROM unit_membership um
-  JOIN person p ON p.id = um.person_id
- WHERE um.org_unit_id = 12
-   AND um.valid_from <= DATE '1998-06-01'
-   AND (um.valid_to IS NULL OR um.valid_to > DATE '1998-06-01')
+  FROM unit_participation up
+  JOIN person p ON p.id = up.person_id
+ WHERE up.org_unit_id = :unit
+   AND up.valid_from <= :d
+   AND (up.valid_to IS NULL OR up.valid_to > :d)
  ORDER BY p.family_name, p.given_name;
 ```
 
-### Transfers and reorganizations
+Without it, "who is in the organization?" would be a query against `membership` and "who is
+in a pack?" a query against `unit_participation` — two shapes for one question, and every
+report would have to know which case it was in.
 
-When a member moves units, **close the old row and open a new one.** Never update
-`org_unit_id` on an existing row:
+**The redundancy is deliberate and bounded.** The root row and the membership always have
+the same period, so the root row is derivable — it is maintained by trigger, and integrity
+check 1 in [§7](#7-integrity-checks) verifies the two agree. The alternative, a `UNION` in
+every roster query, is worse.
+
+**"Who was in the 4th Pack on 1 June 1998?"** is then exactly the query above.
+
+### 5.2 Transfers between sub-units are cheap
+
+Because participation is not membership (D-041), moving a person between groups is **one row
+edit** — close one, open another. Nothing about their membership, their fee, or their status
+as a member changes.
 
 ```sql
--- Transfer person 100 from unit 12 to unit 31 effective 1998-09-01
-UPDATE unit_membership
+-- Move person 100 from pack 12 to pack 31 effective 1998-09-01
+UPDATE unit_participation
    SET valid_to = DATE '1998-09-01',
        leave_reason_code = 'transfer_out',
        updated_at = now(),
        updated_by = :actor
  WHERE person_id = 100 AND org_unit_id = 12 AND valid_to IS NULL;
 
-INSERT INTO unit_membership
+INSERT INTO unit_participation
     (person_id, org_unit_id, valid_from, join_reason_code, source, created_by)
 VALUES (100, 31, DATE '1998-09-01', 'transfer', 'staff', :actor);
 ```
 
 Rewriting the old row would destroy the answer to "where was this child in 2003?" — the
-question the whole temporal design exists to answer.
+question the whole temporal design exists to answer. Close and open; never update
+`org_unit_id` in place.
+
+**Under the old model this was much more expensive**: a "unit membership" was a membership,
+so moving a child between groups raised questions about which membership was which and
+whether a fee was owed twice. Participation removes the question.
 
 ### Unit reorganizations
 
@@ -552,92 +557,118 @@ and must be testable before it commits.
 
 ## 6. Membership and the authorization system
 
-Two permissions depend on membership state, and both need care:
+**The resolver evaluates membership state.** This is settled (D-039) and it is the single
+largest coupling in the design, so it is worth stating in full rather than in a footnote.
 
-**Can a lapsed member see their unit's events?** The resolver would need to evaluate
-`is_current_member()`, which means the permission cache must be invalidated when a
-membership lapses. This is a real coupling and a real cost.
+```
+A role grants access ONLY IF the holder has a current membership,
+    unless  role.requires_membership = false    (appointed counselors, local leaders)
+    or      the channel is guardianship         (a legal relationship, not a membership)
+    or      the channel is ownership            (your own record — see below)
+```
 
-Two options:
+**The carve-outs, and why each exists:**
 
-| Option | Cost | Benefit |
-|--------|------|---------|
-| Condition permissions on membership status | Cache invalidation on every membership transition; a lapse silently removes access, which is correct but surprising | Matches the common intent — lapsed members lose member access |
-| Do not condition permissions on membership; revoke roles explicitly when a membership ends | A lapse leaves roles in place until someone acts | Simpler, decoupled; but requires a process to close out leaving members |
+| Carve-out | Why |
+|---|---|
+| **Guardianship** | A parent's authority over their child comes from a legal relationship. An unpaid fee must not make a parent unable to act for their child. |
+| **Appointed counselors and local leaders** | The organization needs them present regardless of their own fee status. Marked per-role with `requires_membership = false`. |
+| **Ownership** | Otherwise a lapse locks a person out of the very screen they renew on. |
 
-**Recommendation:** condition only the narrow set of permissions that genuinely require
-current membership (member-only event signup, member pricing) and drive role revocation
-from the membership lifecycle for the rest. Do not make the resolver's general answer
-depend on membership state — it makes the permission system much harder to reason about.
-Tracked in [../open-questions.md](../open-questions.md).
+**The cost, named plainly:**
 
-**A role assignment should not outlive the membership that justified it.** A nightly check:
+- **The permission cache must be invalidated on every membership transition** — including
+  the yearly expiry sweep, which is a bulk event touching every member at once. The cache
+  design has to be built for this from the start; retrofitting it is where the bugs will be.
+- **A lapse silently removes access.** That is the intent, but "why can't I see this?" now
+  has an answer that is a date rather than a decision.
+- **`role.requires_membership` changed meaning** — from a flag that drove a report to a value
+  the resolver enforces.
+
+**The "leaver with access" report remains valuable**, but its purpose changes. It no longer
+*prevents* access — the resolver already does that — so what it now detects is a role that
+should have been **closed** and was not. That is still worth a worklist, because a stale
+assignment silently springs back to life the moment the person renews:
 
 ```sql
--- People with an authority-bearing role but no current membership:
-SELECT ra.id, p.family_name, p.given_name, r.code AS role, ra.valid_to
+-- Role assignments held by non-members. The resolver blocks these today, but the
+-- assignment should be closed, not merely dormant.
+SELECT ra.id, p.family_name, p.given_name, r.code AS role, ra.valid_to,
+       r.requires_membership AS enforced
   FROM role_assignment ra
   JOIN role r ON r.id = ra.role_id
   JOIN person p ON p.id = ra.person_id
  WHERE ra.valid_to IS NULL
-   AND r.scope_required
-   AND NOT is_current_member(ra.person_id);
+   AND NOT is_current_member(ra.person_id)
+ ORDER BY r.requires_membership DESC;
 ```
 
-This is the "leaver with access" report. It is one of the highest-value operational
-reports in the whole system — see
-[../domain/06-authorization-model.md](../domain/06-authorization-model.md#3-roles--bundles-of-permissions).
+**Dormant authority is a real hazard.** A membership that lapses and is renewed a year later
+would otherwise resurrect every role the person held in the interim, including ones a human
+had quietly decided not to reinstate. Closing the assignment at the same time as the
+membership is the honest fix; this report finds the ones that were missed.
+
+**A role assignment should not outlive the membership that justified it.**
 
 ---
 
 ## 7. Integrity checks
 
 ```sql
--- 1. Unit memberships without a corresponding organization membership at that time
-SELECT um.id, um.person_id, um.org_unit_id, um.valid_from, um.valid_to
-  FROM unit_membership um
+-- 1. Participation rows without a corresponding organization membership at that time
+SELECT up.id, up.person_id, up.org_unit_id, up.valid_from, up.valid_to
+  FROM unit_participation up
  WHERE NOT EXISTS (
      SELECT 1 FROM membership m
-      WHERE m.person_id = um.person_id
+      WHERE m.person_id = up.person_id
         AND m.status <> 'pending_payment'
-        AND m.valid_from <= COALESCE(um.valid_to, um.valid_from)
-        AND (m.valid_to IS NULL OR m.valid_to > um.valid_from));
+        AND m.valid_from <= COALESCE(up.valid_to, up.valid_from)
+        AND (m.valid_to IS NULL OR m.valid_to > up.valid_from));
 
--- 2. Child-category members in units that do not allow children
-SELECT m.id, p.family_name, p.given_name, ou.name
+-- 1b. The ROOT participation row disagreeing with the membership it mirrors (§5.1).
+--     The root row is maintained by trigger; this detects the trigger drifting.
+SELECT m.id, m.valid_from, m.valid_to, up.valid_from, up.valid_to
   FROM membership m
-  JOIN membership_type mt ON mt.id = m.membership_type_id
-  JOIN org_unit ou ON ou.id = (
-        SELECT org_unit_id FROM unit_membership
-         WHERE person_id = m.person_id AND valid_to IS NULL LIMIT 1)
-  JOIN person p ON p.id = m.person_id
+  JOIN org_unit root ON root.parent_unit_id IS NULL
+  JOIN unit_participation up
+    ON up.person_id = m.person_id AND up.org_unit_id = root.id
+ WHERE up.valid_from IS DISTINCT FROM m.valid_from
+    OR up.valid_to   IS DISTINCT FROM m.valid_to;
+
+-- 2. Participants in units that do not allow minors — a unit that does not
+--    supervise minors may not have any placed in it. (Safeguarding, not membership:
+--    membership itself is ageless, D-038.)
+SELECT up.id, p.family_name, p.given_name, ou.name
+  FROM unit_participation up
+  JOIN person p ON p.id = up.person_id
+  JOIN org_unit ou ON ou.id = up.org_unit_id
   JOIN org_unit_type out_ ON out_.id = ou.unit_type_id
- WHERE mt.category = 'child' AND m.status = 'active'
-   AND NOT out_.allows_children;
+ WHERE up.valid_to IS NULL
+   AND NOT out_.allows_minors
+   AND p.birth_date IS NOT NULL
+   AND CURRENT_DATE < p.birth_date + INTERVAL '18 years';
 
--- 3. Members whose type's max_age has been exceeded but are still active
---    (age-out not processed)
-SELECT m.id, p.family_name, p.given_name, mt.code,
-       EXTRACT(YEAR FROM age(CURRENT_DATE, p.birth_date)) AS age, mt.max_age
-  FROM membership m
-  JOIN membership_type mt ON mt.id = m.membership_type_id
-  JOIN person p ON p.id = m.person_id
- WHERE m.status = 'active' AND m.valid_to IS NULL
-   AND mt.max_age IS NOT NULL AND p.birth_date IS NOT NULL
-   AND EXTRACT(YEAR FROM age(CURRENT_DATE, p.birth_date)) > mt.max_age;
+-- 3. Non-members holding a role that requires membership.
+--    The resolver blocks these (D-039), so this is not an access breach — it is a
+--    stale assignment that will spring back to life when the person renews (§6).
+SELECT ra.id, p.family_name, p.given_name, r.code, ra.valid_to
+  FROM role_assignment ra
+  JOIN role r ON r.id = ra.role_id
+  JOIN person p ON p.id = ra.person_id
+ WHERE ra.valid_to IS NULL AND r.requires_membership
+   AND NOT is_current_member(ra.person_id);
 
 -- 4. Approved requests that never produced a membership
 SELECT mr.* FROM membership_request mr
  WHERE mr.status = 'approved' AND mr.membership_id IS NULL
    AND mr.decided_at < now() - INTERVAL '7 days';
 
--- 5. Blocking requirements unsatisfied on approved requests
-SELECT mr.id, r.requirement_code
-  FROM membership_request mr
-  JOIN membership_request_requirement r ON r.request_id = mr.id
-  JOIN requirement_code rc ON rc.code = r.requirement_code
- WHERE mr.status = 'approved' AND rc.is_blocking
-   AND r.status NOT IN ('satisfied','waived');
+-- 5. Memberships expiring soon — the renewal campaign worklist (§6 of domain/05)
+SELECT m.id, p.family_name, p.given_name, m.valid_to
+  FROM membership m
+  JOIN person p ON p.id = m.person_id
+ WHERE m.status = 'active'
+   AND m.valid_to BETWEEN CURRENT_DATE AND CURRENT_DATE + 90;
 
 -- 6. Renewal chains with a gap or a broken link
 SELECT m.id FROM membership m
@@ -645,18 +676,25 @@ SELECT m.id FROM membership m
    AND NOT EXISTS (SELECT 1 FROM membership pm
                     WHERE pm.id = m.renewed_from_membership_id);
 
--- 7. Overlapping memberships of DIFFERENT types (permitted but worth reviewing)
-SELECT a.person_id, a.id AS m1, b.id AS m2, a.membership_type_id, b.membership_type_id
-  FROM membership a JOIN membership b
-    ON a.person_id = b.person_id AND a.id < b.id
-   AND daterange(a.valid_from, a.valid_to, '[)') &&
-       daterange(b.valid_from, b.valid_to, '[)')
- WHERE a.status = 'active' AND b.status = 'active';
+-- 7. Renewals inside the window whose new period does NOT start at the previous
+--    expiry date. The renewal rule (D-040) backdates the new period, so a mismatch
+--    means either a genuine post-window rejoin or a bug.
+SELECT m.id, m.valid_from, pm.valid_to AS previous_expiry,
+       m.valid_from - pm.valid_to AS gap_days
+  FROM membership m
+  JOIN membership pm ON pm.id = m.renewed_from_membership_id
+ WHERE m.valid_from <> pm.valid_to
+   AND m.valid_from < pm.valid_to + INTERVAL '91 days';
 ```
 
-Checks 3 and 4 are operational (work not yet done); 1, 5, 6 and 7 are data-quality
-(cases the schema could not prevent). Both categories belong in a nightly job, and the
-operational ones should produce worklists, not just logs.
+**Check 3 is the one that matters most now.** Under D-039 the resolver already blocks a
+non-member's roles, so this is no longer an access breach — but it detects *dormant*
+authority, which is the failure mode the membership gate introduces: a role nobody closed
+that silently reactivates on renewal.
+
+**Check 5 is operational** (a worklist for the renewal campaign), and **check 1b** guards the
+one deliberate redundancy in the model (§5.1). The rest are data-quality checks for cases the
+schema cannot prevent.
 
 ---
 
@@ -664,43 +702,45 @@ operational ones should produce worklists, not just logs.
 
 ```sql
 INSERT INTO membership_type
-    (code, name, description, category, requires_background_check,
-     requires_guardian_consent, min_age, max_age, duration_months,
-     grace_period_days, is_self_registerable, sort_order)
+    (code, name, description, duration_months, renewal_grace_days,
+     is_self_registerable, sort_order)
 VALUES
-    ('child',    'Child Member',     'Youth participant',            'child',   false, true,   6,  18, 12, 30, true,  10),
-    ('adult',    'Adult Member',     'Adult participant and leader', 'adult',   true,  false, 18, NULL, 12, 30, true,  20),
-    ('counselor','Counselor',        'Trained adult leader',         'adult',   true,  false, 18, NULL, 12, 30, true,  30),
-    ('honorary', 'Honorary Member',  'Granted by the organization',  'special', false, false,NULL, NULL, NULL,  0, false, 40),
-    ('lifetime', 'Lifetime Member',  'Indefinite membership',        'special', false, false,NULL, NULL, NULL,  0, false, 50);
-
-INSERT INTO requirement_code (code, name, is_blocking, has_expiry, default_validity_months) VALUES
-    ('guardian_consent',   'Guardian consent',              true,  false, NULL),
-    ('background_check',   'Background check',              true,  true,  36),
-    ('medical_form',       'Medical form',                  true,  true,  12),
-    ('references',         'References',                    true,  false, NULL),
-    ('previous_unit_transfer', 'Transfer confirmation',     false, false, NULL),
-    ('photo_consent',      'Photo consent',                 false, false, NULL);
+    ('member', 'Member', 'A member of the organization', 12, 90, true, 10);
 ```
 
-> Placeholder values; the ages, durations, and grace period are assumptions. See
+**One row, and that is the whole vocabulary** (D-037). The fee is flat and per person, so
+there is nothing to vary by type; being a counselor or leader is a position, not a type; and
+membership is ageless, so there are no age limits to seed (D-038).
+
+> The term (12 months) and the renewal window (90 days) are the two parameters that could
+> reasonably differ. Both are placeholders — see
 > [../open-questions.md](../open-questions.md).
+
+**No `requirement_code` seed.** That table does not exist (D-044). The formerly seeded rows
+— `guardian_consent`, `background_check`, `medical_form`, `references`,
+`previous_unit_transfer`, `photo_consent` — are all gone:
+consent moved to the guardianship layer where it belongs, background checks are not recorded
+at all (D-043), and the rest were never required.
 
 ---
 
 ## 9. Open issues
 
-- Whether a person may hold **one** open membership of any type, or several of different
-  types (§3).
-- The real age limits, membership durations, and grace period (§8).
-- Does membership activate on approval or on payment? Affects whether
-  `pending_payment` is a membership status at all, or only a fee state (§3).
+- The real membership term and renewal-window length (§1, §8) — the two remaining
+  type-level parameters.
 - Whether `outstanding_balance` should exist as a denormalised column or be computed
   (§3) — depends on the finance design in [07-finance.md](07-finance.md).
-- Whether permissions should be conditioned on membership status (§6) — recommend a narrow
-  set only.
-- Whether `unit_membership` should reference `membership_id` in addition to `person_id`,
+- Whether `unit_participation` should reference `membership_id` in addition to `person_id`,
   to get referential integrity without losing the import case. Possible as a nullable
   column, but it would be unenforced for imports.
+- What the root-unit participation row does when a membership is renewed inside the
+  window — it must extend across the (retrospectively filled) period without creating an
+  overlapping row (§5.1).
+
+**Resolved and no longer open**, kept visible so the reasoning survives: whether a person
+may hold several open memberships (no — one type, person-scoped constraint, §3); whether
+membership activates on payment (yes, §3); whether permissions depend on membership state
+(yes, with carve-outs — D-039, §6); the age limits and age-out (§8); the grace period as a
+status (§6); and the whole requirement mechanism (§4).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -19,7 +19,6 @@ no unique key, no way to log in. Meanwhile:
 - Diacritics and transliterations vary across decades of manual entry (`Novák` / `Novak`).
 - Birth dates are often wrong by a digit, or recorded as year-only.
 - The same human appears in multiple rosters under slightly different spellings.
-- Some people in the old records are now deceased.
 
 So: **automatic matching will produce both false positives and false negatives.**
 False positive (two people merged) is a privacy incident. False negative (one person
@@ -150,8 +149,8 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 | `person_identifier` | Reassigned. Duplicate scheme+value collapses to one. |
 | `person_name` | Reassigned, keeping validity periods — this is how a maiden name survives. |
 | `account` | Reassigned to survivor. **If the survivor already has an account, the absorbed account is closed, not deleted.** |
-| `membership` | Reassigned. Overlapping periods flagged for review — they may legitimately overlap or may indicate a bad merge. |
-| `unit_membership` | Reassigned, with the same overlap check. |
+| `membership` | Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level exclusion constraint, an overlap here means a bad merge. |
+| `unit_participation` | Reassigned, with the same overlap check. |
 | `guardianship` (as dependent) | Reassigned. |
 | `guardianship` (as guardian) | Reassigned. |
 | `role_assignment`, `access_grant` | Reassigned. **Union of permissions results — this is the security-critical step.** |
@@ -179,7 +178,7 @@ gains the absorbed person's access. Therefore:
    moved back — but `access_grant` rows created during the merged period cannot be
    attributed. Hence rule 2.
 4. Merges invalidate cached permissions. See
-   [06-authorization-model.md](06-authorization-model.md#7-caching-and-invalidation).
+   [06-authorization-model.md](06-authorization-model.md#8-caching-and-invalidation).
 
 ---
 
@@ -221,7 +220,7 @@ Staged, reviewed, idempotent. Never a direct write into live tables.
   [4] review queue            ── human confirms: link to existing | create new | discard
        │
        ▼
-  [5] apply                   ── writes person / membership / unit_membership
+  [5] apply                   ── writes person / membership / unit_participation
        │
        ▼
   [6] import_log              ── what was applied, by whom, when; reversal instructions
@@ -250,14 +249,34 @@ An imported roster row typically yields:
 - a `person` with `record_origin = 'legacy_import'`
 - a `membership` with `valid_from` = roster year start, `valid_to` = roster year end (or
   null if it was the last known roster and the member's status is unknown)
-- a `unit_membership` linking them to the historical unit
+- a `unit_participation` row linking them to the historical unit
 - `data_confidence = 'low'` on all of the above
+
+**What a 1998 roster actually tells you is participation, not membership.** This is the
+one place the membership/participation split ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership))
+really bites on legacy data, and it is worth being deliberate about rather than generating
+both rows by reflex:
+
+| The old record says | It becomes | Confidence |
+|---|---|---|
+| "was in Pack 12 in 1998" | `unit_participation`, 1998-01-01 → 1998-12-31 | Reasonable — the roster is decent evidence of this |
+| "was a member in 1998" (a membership list, or a fee ledger) | `membership` | Good — a payment record is strong evidence |
+| "was in Pack 12 in 1998" with no fee evidence | `unit_participation` **and** a `membership` marked `data_confidence = 'low'` | Weak — this is an **inference**, and the discussion below applies |
+
+The temptation is to generate a membership for every roster row, because that is what the
+old data model implied. **Do it, but mark it as inferred**, because
+`is_current_member()` and the permission gate ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership))
+both read `membership`, and an inferred membership from 1998 is harmless while an inferred
+membership row that runs to `valid_to IS NULL` would make someone a member today. The
+exclusion constraint makes this concrete: a person-level "one open membership" rule means
+the import must **not** leave an open membership for someone whose only evidence is a
+roster.
 
 **End dates are often unknown.** For an imported member last seen in a 2003 roster, the
 membership should end at a defensible date — not left open, which would falsely make them
 a current member, and not guessed. Convention: end at the end of the school/organizational
-year of the last roster they appear in, marked as inferred. Document the rule you choose;
-it will be questioned.
+year of the last roster they appear in, marked as inferred. The participation row can be
+bounded the same way. Document the rule you choose; it will be questioned.
 
 ---
 
@@ -291,10 +310,19 @@ proves false, you can see it was self-asserted rather than discovered.
 - Volume and formats of historical data — determines whether manual review of every match
   is feasible, or whether a high-confidence tier is needed.
 - Whether the old system issued member numbers (would make §4's strongest signal available).
-- Retention rules for deceased members and for members who request erasure — interacts with
-  the "never delete" rule and may require redaction rather than deletion. See
-  [../open-questions.md](../open-questions.md).
+- **How much of an old roster becomes a membership and how much becomes participation**
+  (§7). This got harder when the two were split apart
+  ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)):
+  the import must decide per record class, and an inferred membership running to today
+  would make a 2003 roster member a current member under the permission gate.
+- Retention periods for members who request erasure — the *shape* is settled (redact the
+  person, keep the financial and membership skeleton), but the durations need legal input.
+  See [../open-questions.md](../open-questions.md#b-3--erasure-the-policy-not-the-mechanism).
 - Whether twins/siblings with similar names and the same birth date need a documented
   disambiguation procedure (recommend: yes, and never merge them automatically).
+
+**Resolved and no longer open**, kept visible so the reasoning survives: the erasure
+*mechanism* (redact the person, keep the financial and membership skeleton) — only the
+retention durations remain open.
 
 All tracked in [../open-questions.md](../open-questions.md).

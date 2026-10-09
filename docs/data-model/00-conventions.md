@@ -261,7 +261,7 @@ Requirements the design must satisfy:
 | All FKs are `ON DELETE RESTRICT` | Nothing cascades. A person cannot be deleted while memberships reference them. |
 | No `ON DELETE CASCADE` anywhere | Cascade delete is the enemy of a 40-year audit trail. |
 | Nullable FKs document *why* they are nullable | In a comment. A nullable FK is usually a design decision worth recording. |
-| `access_grant.scope_id` is the **one** FK-less column | It is polymorphic by design; see [../domain/06-authorization-model.md](../domain/06-authorization-model.md#4-access-grants--the-per-item-layer). |
+| `access_grant.scope_id` is the **one** FK-less column | It is polymorphic by design; see [../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-access-grants--the-per-item-layer). |
 | Circular FKs are resolved with a deferred constraint or a nullable column | `membership_request.membership_id` ↔ `membership.joined_via_request_id` is the one instance. |
 
 ---
@@ -286,7 +286,7 @@ Requirements the design must satisfy:
 |----------|--------|
 | [01-identity.md](01-identity.md) | `person`, `person_name`, `account`, `account_credential`, `person_contact`, `person_identifier`, `identity_hypothesis`, `person_merge` |
 | [02-organization.md](02-organization.md) | `org_unit`, `org_unit_type`, `org_unit_name`, `org_unit_relationship`, `position`, `position_assignment` |
-| [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request`, `membership_request_requirement`, `unit_membership` |
+| [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request`, `unit_participation` |
 | [04-relationships.md](04-relationships.md) | `guardianship`, `guardianship_permission`, `household`, `household_member` |
 | [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `access_grant`, `permission_level`, `access_log` |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `import_batch`, `staging_import*` |

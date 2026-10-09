@@ -1,75 +1,59 @@
 # Open Questions
 
-Everything unresolved, each with its **schema impact** — what changes once you answer.
+Everything still unresolved, each with its **schema impact** — what changes once you answer.
 Ordered roughly by how much they block.
 
 Marked: 🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred.
+
+**Resolved items are not deleted.** They are moved to the bottom of this file with a link to
+the decision that settled them, so the reasoning survives — see
+[§ R. Resolved](#r-resolved--moved-to-the-decision-log).
 
 ---
 
 ## A. Blocking the core design
 
-### A-1 🔴 The real organizational structure
+### A-1 (remainder) 🔴 The real unit type vocabulary
 
-**Question.** What are the actual unit types, and what may nest inside what?
+**Question.** One root and arbitrary nesting are settled
+([D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)).
+What is **not** settled is the *vocabulary*: which unit types exist, what they are called, and
+which nesting constraints the organization actually wants stated as rules.
 
-**Assumption in place.** `national → region → district → group → troop|pack`, groups may
-also sit directly under national. See
-[data-model/02-organization.md](data-model/02-organization.md#10-seed-data).
+**Current state.** [data-model/02 §10](data-model/02-organization.md#10-seed-data) still
+seeds the retired ladder (`national`, `region`, `district`, `group`, `troop`, `pack`) as a
+placeholder. It does not match the model any more.
 
-**Impact if wrong.** Only the two `INSERT` statements in the seed data change. The schema
-does not — that is the point of making types and rules rows. But the trigger's behavior and
-every picker depend on getting it right before data entry starts.
+**Impact.** Only `INSERT` statements change; the schema does not. But nesting is now
+**permissive by default** — a type with no rules is unconstrained — so the rules you do state
+carry more weight than before. Each one you add is a constraint you have chosen.
 
-**Needed.** Unit type codes and names; the nesting rules; whether a unit may have two
-parents; whether any level is optional.
+**Needed.** Type codes and names; which types are leaves; which may sit directly under the
+root. Expect this to be a short list.
 
----
-
-### A-2 🔴 Permissions conditioned on membership status
-
-**Question.** Should any permission require the person to be a *current* member — e.g. can a
-lapsed member still see their unit's events?
-
-**Impact.** If yes, the permission resolver must evaluate `is_current_member()`, which means
-the cache must be invalidated on every membership transition, and a lapse silently removes
-access.
-
-**Recommendation.** Condition only the narrow set that genuinely requires it
-(member-only event signup, member pricing) and revoke roles explicitly when a membership
-ends. Do not make the resolver's general answer depend on membership state — it makes the
-permission system much harder to reason about.
-
-**See:** [data-model/03-membership.md](data-model/03-membership.md#6-membership-and-the-authorization-system)
+**See:** [domain/04 §1–2](domain/04-organization-structure.md#1-one-root-arbitrary-sub-units)
 
 ---
 
-### A-3 🔴 Does membership activate on payment or on approval?
+### A-4 🔴 The organizational calendar
 
-**Question.** You said a person becomes a member after being accepted **and** paying. Does
-the membership row exist before payment (in a `pending_payment` status), or is payment
-tracked separately as debt?
+**Question.** Which date does the fee expire on, and how long is the renewal window?
 
-**Impact.** Whether `pending_payment` is a membership status at all. Affects the exclusion
-constraint's `WHERE` clause, every "list members" query, and the lapse flow.
+**Current state.** `membership_type` carries `duration_months` and `renewal_grace_days`
+([data-model/03 §1](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table)),
+seeded with the "January, three months" you described. Nothing but the seed row is a
+placeholder — but the seed row is a guess.
 
-**Recommendation.** Activate on payment (your description), keeping `pending_payment` as a
-membership status so "approved but unpaid" is a visible worklist. The alternative — activate
-on approval, track payment as debt — is common and equally defensible.
+**Impact.** Small in schema, large in behaviour. Every member's lapse date, the bulk expiry
+sweep, the renewal campaign worklist, and the permission cache invalidation all derive from
+this one parameter. Changing it later re-dates every historical membership period, so it is
+worth fixing before real data is entered.
 
----
+**Needed.** The expiry day (1 January? the organization's year-end meeting?) and the window
+length.
 
-### A-4 🔴 Background checks: required, and how long valid?
-
-**Question.** Is a background check a blocking requirement for any membership type or
-position? What is its validity period? Who may record the result?
-
-**Impact.** `membership_type.requires_background_check`,
-`position.requires_background_check`, `requirement_code.default_validity_months`, and the
-alerting in the integrity checks.
-
-**Why it matters beyond the schema.** A leader with a lapsed check is a safeguarding risk,
-not a data-quality issue. This is the one integrity check that should run daily and alert.
+**See:** [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status),
+[data-model/03 §3](data-model/03-membership.md#3-membership)
 
 ---
 
@@ -86,6 +70,12 @@ is). An exact legacy member number would make matching dramatically more reliabl
 
 **Needed.** Record counts and a sample.
 
+**Note.** This is now a larger question than it was, because
+[D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
+split belonging into membership and participation. If the old records recorded "which troop"
+but not "whether paid up", the import has to decide which of the two each historical row
+becomes — and a 1998 roster probably encodes participation, not a paid membership.
+
 ---
 
 ### B-2 🟡 Merge chains: allowed or flattened?
@@ -101,15 +91,22 @@ system — a rule application code can forget.
 
 ---
 
-### B-3 🟡 Erasure policy
+### B-3 🟡 Erasure: the policy, not the mechanism
 
 **Question.** What must be redacted, what must be retained, for how long? Does the
 organization have a legal obligation to keep membership records after an erasure request?
 
-**Impact.** `redaction_log.retained_reason` is a placeholder for the judgement. The
-mechanism (redact, do not delete) is designed; the policy is not.
+**Resolved already.** The *shape* is settled: **redact the person, keep the financial and
+membership skeleton** — the `person` row is anonymised in place and the `membership`,
+`fee_obligation` and `payment` rows survive intact, because the organization's own accounting
+and "was this person a member on that date" questions outlive the person's participation.
+
+**Still open.** The retention periods and the legal basis. `redaction_log.retained_reason` is
+a placeholder for that judgement.
 
 **Needed.** Legal review. Not a technical question.
+
+**See:** [data-model/06 §4](data-model/06-audit-and-import.md#4-redaction-log)
 
 ---
 
@@ -123,25 +120,34 @@ mechanism (redact, do not delete) is designed; the policy is not.
 
 ## C. Organization
 
-### C-1 🟡 Does authority inherit downward? (D-015)
+### C-1 🟡 May the root *see* what happens in its sub-units?
 
-**Question.** Does a district-level role cover the troops inside it, or must each unit be
-granted separately?
+**Question.** [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)
+settled the root **owns** the registry, the memberships and the fees — so a registrar or
+treasurer working at the root is not reaching into anyone else's data. What is left is the
+narrower question: the root does **not** own the packs' events, rosters and local leadership,
+and it cannot decide permissions inside a pack
+([D-031](decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)).
 
-**Current design.** Inherits downward via `unit_ancestors()`.
+May the root nonetheless *read* that material — for safeguarding, for a national report, for
+an incident — or must the pack expose its scope first?
 
-**Impact.** One resolver change, but a system-wide change in who can do what.
+**Why it is a real question.** The no-inheritance rule is stated and enforced. This is the
+one case where the rule's cost is felt, and it is the case most likely to be worked around in
+application code by someone who assumes a parent can of course see its children.
 
----
+**Three routes, each with a cost.**
 
-### C-2 🟡 May units be reparented retroactively?
+| Route | Cost |
+|---|---|
+| The pack exposes its scope with `scope_exposure` | The rule holds absolutely; the pack must act, per pack, per period |
+| A `system_admin` does it | The stated exception — all-or-nothing, bypasses the model, and is auditable but blunt |
+| A **read-only reporting channel** deliberately *outside* the permission model — aggregate counts and rosters pushed upward by each unit, carrying no item-level authority | Lets the root report without letting it act; needs its own design and its own "what is in the aggregate" rule |
 
-**Question.** A troop reassigned to a different district in 2001 — is that recorded as of
-2001, or as of when someone noticed in 2026?
+**Impact.** Medium. A decision, not a structural change. The third route is the one that
+preserves the rule and still answers "how many members were there in 2019?".
 
-**Impact.** Retroactive reparenting means historical unit-scoped reports change
-retroactively, and `role_assignment` scope inheritance with them. This is much harder than a
-forward reparent and may be worth prohibiting.
+**See:** [domain/06 §2.4](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved)
 
 ---
 
@@ -152,6 +158,8 @@ later, is it the same unit or a new one?
 
 **Impact.** An organizational judgement, not a technical one — but it must be *recorded*,
 or it will be re-litigated every time someone asks about the 80s troop with that number.
+
+**See:** [domain/04 §3](domain/04-organization-structure.md#3-unit-names-and-renumbering--the-history-problem)
 
 ---
 
@@ -165,76 +173,80 @@ or it will be re-litigated every time someone asks about the 80s troop with that
 
 ## D. Membership
 
-### D-1 🟡 Fee per person or per household?
+### D-6 🟡 Which roles do **not** require a membership?
 
-**Impact.** Whether `fee_obligation` targets a person or a household, and whether
-`household` is load-bearing or can be dropped.
+**Question.** [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
+made `role.requires_membership` the switch between "a lapse silently removes this" and "it
+does not". Only two carve-outs are settled: guardianship
+([D-005](decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity))
+and ownership of your own record. Everything else depends on this flag.
 
-**See:** [data-model/07-finance.md](data-model/07-finance.md).
+**Needed.** A decision **per role** in the seed set, not a default. The plausible candidates
+for `false` are the ones held by adult volunteers whose membership and whose authority have
+different lifetimes — local leadership, and any role an appointed non-member holds.
 
----
+**Impact.** Data only, but it is the flag that decides whether an unpaid volunteer keeps
+access on 2 January, so getting it wrong is loud.
 
-### D-2 🟡 One open membership, or several of different types?
-
-**Question.** May a person be both an `honorary` and an `adult` member simultaneously?
-
-**Current design.** Permitted — the exclusion constraint is scoped to
-`membership_type_id`.
-
-**Impact.** Dropping the type from the constraint is stricter and simpler, and makes
-"one person, one membership" an enforceable invariant. Your call.
-
----
-
-### D-3 🟡 Age-out timing
-
-**Question.** A member turns 18 in March — do they age out on the birthday or at the end of
-the organizational year?
-
-**Current design.** Leaves it to `membership_type.max_age` plus a reviewed transition.
-
-**Impact.** Affects the age-out worklist and whether a member can be in a camp after their
-birthday.
+**See:** [data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission),
+[data-model/05 §12](data-model/05-authorization.md#12-seed-data--permissions)
 
 ---
 
-### D-4 🟡 Child → adult transition
+### D-7 🟡 What does the root-unit participation row do at renewal?
 
-**Question.** Turning 18 is not enough to work with children. Does an adult membership
-require a new request, a new background check, and a new acceptance?
+**Question.** Every membership creates a participation row on the root unit, so "everyone in
+unit X" is one uniform query whether X is the organization or a Thursday-evening pack
+([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+When someone renews **inside the window**, the new membership period is backdated to the
+expiry date ([D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)) —
+so what happens to the participation row? Extend it across the closed period, or close it and
+open a new one that starts in the past?
 
-**Impact.** Whether the transition is automatic or (recommended) a new application.
-`membership_type.requires_*` supports either.
+**Impact.** The participation overlap constraint makes this a real choice: extending avoids a
+second row but rewrites a period that was already lapsing; a new backdated row is honest but
+must not overlap the old one. It is a small amount of DDL either way, but it has to be decided
+because the bulk expiry sweep and the renewal path must agree.
+
+**See:** [data-model/03 §5.1](data-model/03-membership.md#51-a-participation-row-on-the-root-unit)
 
 ---
 
-### D-5 🟢 Membership type vocabulary
+### D-8 🟢 Should `unit_participation` reference the membership?
 
-**Current seed.** `child`, `adult`, `counselor`, `honorary`, `lifetime`.
+**Question.** A nullable `membership_id` on `unit_participation` would give referential
+integrity between "paid up" and "takes part", at the cost of being unenforceable for imported
+historical rows, where no membership exists to point at.
 
-**Question.** What are the real ones? Is `counselor` distinct from `adult`, or is it an
-`adult` membership plus a position?
+**Impact.** Integrity vs. import coverage. The current design chose person-based linkage for
+exactly that reason.
 
-**Note.** If your organization uses "leader" to mean something narrower (a trained,
-appointed youth leader), avoid it as a membership type name — it will collide with the
-position vocabulary.
+**See:** [data-model/03 §5](data-model/03-membership.md#5-unit_participation)
+
+---
+
+### D-9 🟢 Is `household` load-bearing at all?
+
+**Question.** [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+made the fee **flat and per person**, which was the last thing household grouping was doing
+for finance. What remains is "same address" as a matching signal for the legacy import, and
+as a display convenience.
+
+**Current state of the schema.** `fee_obligation.household_id` still exists but nothing sets
+it; it is kept only so that a per-family discount could be added as a constraint change
+([data-model/07 §2](data-model/07-finance.md#2-minimal-provisional-shape)). A firm "no family
+discounts" answer lets us drop the column, its CHECK arm, its index, and — plausibly —
+`household` itself.
+
+**Impact.** If it is only a matching signal, it could become a derived view rather than a
+maintained table. If the organization ever wants family communication or family discounts,
+it is load-bearing again.
+
+**See:** [data-model/04 §3](data-model/04-relationships.md#3-household-and-household_member)
 
 ---
 
 ## E. Guardianship
-
-### E-1 🟡 Default permissions when a guardianship is created
-
-**Question.** What is granted automatically, and does it differ between a parent
-self-registering their child and staff recording a court-ordered guardianship?
-
-**Current proposal.** Conservative default (read + consent), `dependent.admin` for a parent
-registering their own child.
-
-**Impact.** The first is an application rule; the second is an authorization decision worth
-stating explicitly.
-
----
 
 ### E-2 🟡 Guardianship at majority
 
@@ -252,6 +264,25 @@ acts — the opposite failure.
 **Recommendation.** An explicit consent-based delegation, not a guardianship — the legal
 basis differs and `access_grant.is_delegated` already supports it.
 
+**Note.** Now that grants can target **audiences**
+([D-042](decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)),
+the *event-wide* version of this question — "register everyone in this group" — is answered
+without touching guardianship at all. What remains is the individual case.
+
+---
+
+### E-4 🟢 Guardianship lifetime vs. the membership gate
+
+**Question.** Guardianship is exempt from the membership gate
+([D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)),
+so a lapsed parent keeps full access to their child's records. Confirm that is intended
+rather than a side effect: it means an unpaid parent and a paid one are indistinguishable
+inside the `dependent.*` namespace.
+
+**Impact.** None structurally. It is worth stating explicitly because it is the one place the
+gate is deliberately absent, and "why can this person still see that?" should have a written
+answer.
+
 ---
 
 ## F. Authorization
@@ -262,20 +293,12 @@ basis differs and `access_grant.is_delegated` already supports it.
 roles exist?
 
 **Impact.** Data only — adding a permission is one row plus `permission_level` rows, and
-D-007 ensures existing `.admin` grants cover it automatically.
+[D-007](decisions/decision-log.md#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones)
+ensures existing `.admin` grants cover it automatically.
 
-**Needed.** Your review of
-[appendix/permission-catalog.md](appendix/permission-catalog.md).
-
----
-
-### F-2 🟡 Polymorphic `scope_id` vs a `grantable_item` supertable (D-011)
-
-**A real fork.** Polymorphic: flexible, no referential integrity. Supertable: full integrity,
-migration per new grantable type.
-
-**Recommendation.** Polymorphic, given how much of this system is unspecified. But it is
-worth a deliberate decision rather than a default.
+**Needed.** Your review of [appendix/permission-catalog.md](appendix/permission-catalog.md) —
+minus the two namespaces already struck from it (background checks, and the retired
+requirement machinery).
 
 ---
 
@@ -285,7 +308,10 @@ worth a deliberate decision rather than a default.
 break historical imports).
 
 **Impact.** Turns "the volunteer who never got removed" from an invisible risk into a
-60-day expiry report.
+60-day expiry report. This matters more now than it did: with the membership gate in place, an
+open-ended role held by a lapsed member is exactly the "dormant authority"
+case [data-model/05 §6](data-model/05-authorization.md#6-access_grant--the-per-item-layer)
+warns about.
 
 ---
 
@@ -296,19 +322,62 @@ beyond editing a record. Grant them explicitly.
 
 ---
 
-### F-5 🟢 Cache vs materialized `effective_permission` table
+### F-5 🟢 Which built-in audiences are needed?
+
+**Question.** `everyone` and `all_members` are seeded, plus parameterised
+`unit:<id>:participants` and `unit:<id>:leaders`
+([D-042](decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+Which others are real — "the guardians of this child", "the leaders of the parent unit",
+"adults only", "everyone in this section *and everything under it*"?
+
+**Impact.** Each is one `audience` row plus one branch in `person_in_audience()`. Cheap to
+add, cheap to remove. But the parameterised ones raise a second question: are
+`unit:42:participants` rows **seeded per instance** on demand, or created when first granted?
+The first is a migration that must be re-run as units are created; the second needs a
+create-on-demand path that bypasses the usual admin permission.
+
+---
+
+### F-6 🟢 The permission cache lifetime under the membership gate
+
+**Question.** [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
+means the resolver's answer changes when a membership lapses — including at the yearly sweep,
+which touches everyone at once. What TTL is acceptable?
+
+**Impact.** The shorter the TTL, the smaller the window in which a lapsed member still has
+access, and the more load on the resolver. The sweep must invalidate by person, not by scope
+([data-model/05 §10](data-model/05-authorization.md#10-the-resolver-in-sql)), and that is
+settled — this is only about the steady-state TTL.
+
+---
+
+### F-7 🟢 Cache vs materialized `effective_permission` table
 
 **Recommendation.** Start with cache-only. Materializing is a denormalization requiring
 transactional maintenance, and a silent refresh failure is an access bug nothing detects.
 
-**Impact.** Performance only; revisit if measurement demands it.
+**Impact.** Performance only; revisit if measurement demands it. The membership gate makes
+materializing harder, not easier — every membership transition would have to rewrite rows.
 
 ---
 
-### F-6 🟢 Retention policy for `access_log`
+### F-8 🟢 Retention policy for `access_log`
 
 Legal input required. Recommend monthly partitioning from the start, with archival to cold
 storage and **never deletion**.
+
+---
+
+### F-9 🟢 Should `membership_type` stay a table with one row?
+
+**Question.** [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+kept `membership_type` as a table with a single seeded `member` row, on the principle that
+vocabularies are rows and not enums — at the cost of an FK that always holds one value.
+
+**Impact.** A deliberate trade, not an oversight. Worth confirming it is the trade you want,
+since it is the one place the design pays a structural cost for a hypothetical future.
+
+**See:** [data-model/03 §1](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table)
 
 ---
 
@@ -319,60 +388,103 @@ design.
 
 | Area | Hooks already in place | Notes |
 |------|------------------------|-------|
-| **Events** | `access_grant.scope_type = 'event'`; `grant_scope_type` has a row; `event.*` permissions sketched | The per-item permission case you named. Needs: event entity, registration/participation, capacity, eligibility gates, attendance. Note that **participation** and **capability** are different — see D-006. |
-| **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) is provisional | Twelve open questions in that document. |
-| **Documents** | `access_grant.scope_type = 'document'`; `membership_request_requirement.evidence_reference` is a free-text pointer | Needs: storage, versions, retention, consent-driven access. |
-| **Consents** | `dependent.consent.*` permissions exist; `requirement_code` exists | Needs: template, per-activity consent, expiry, revocation, who may consent. |
+| **Events** | `access_grant.scope_type = 'event'`; `grant_scope_type` has a row; `event.*` permissions sketched; **audiences** now exist to express "exposed to everyone / to this group" | The per-item permission case you named. Needs: event entity, registration/participation, capacity, eligibility gates, attendance. Note that **participation** and **capability** are different — see D-006. |
+| **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) is provisional | Ten open questions remain in that document (down from twelve — activation-on-payment and person-vs-household are settled). |
+| **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
+| **Consents** | `dependent.consent.*` permissions exist | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). |
 | **Health records** | `dependent.medical.*` permissions exist | **Highest-sensitivity data in the system.** Separate retention, separate access, likely separate storage. Requires its own design and legal review before implementation. |
-| **Communication** | `message.*` permissions sketched | Needs: audiences, channels, templates, opt-out, and a rule against contacting minors directly. |
-| **Reporting** | `report.*` permissions sketched | The ten historical queries in [domain/05](domain/05-membership-lifecycle.md#8-queries-this-design-must-support) are the starting set. Query 10 (members per year since 1985) is the acceptance test. |
+| **Communication** | `message.*` permissions sketched | Needs: channels, templates, opt-out, and a rule against contacting minors directly. Audiences are a natural fit for the recipient side, but "who may *address* an audience" is a separate permission question. |
+| **Reporting** | `report.*` permissions sketched | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-since-1985--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year since 1985) is the acceptance test. |
 | **API and UI** | — | Not started. The resolver's `p_at` parameter exists partly for this. |
-| **Notifications** | — | Expiring checks, expiring roles, ageing-out members, unpaid fees. |
+| **Notifications** | — | Expiring roles, members inside the renewal window, unpaid fees. Note the renewal window makes this *dated* rather than status-driven — a nightly job over `in_renewal_window()`. |
 | **Payment gateway** | — | Only if the organization collects rather than records payments. Adds webhooks, reconciliation, idempotency. |
-| **Multi-language** | — | Unit names, membership type names, and permission display names are all in the database. Whether they need translation columns is unanswered. |
+| **Multi-language** | — | Unit names and permission display names are all in the database. Whether they need translation columns is unanswered. |
+
+---
+
+## R. Resolved — moved to the decision log
+
+Kept here so a reader of this file knows the question was asked and where the answer lives,
+rather than finding it silently deleted.
+
+| Was | Question | Settled by | In one line |
+|-----|----------|-----------|-------------|
+| A-1 | The organizational structure | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | One root; all sub-units nest arbitrarily beneath it. *(The type vocabulary is still open — see A-1 remainder.)* |
+| A-2 | Permissions conditioned on membership status | [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership) | Yes, enforced by the resolver, with guardianship and ownership carved out. |
+| A-3 | Activate on payment or on approval? | [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status) | On payment; the fee expires yearly and a dated renewal window replaces a grace status. |
+| A-4 | Background checks | [D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system) | None are recorded in this system. |
+| B-3 (part) | Erasure: what shape? | your answer, round 5 | Redact the person, keep the financial and membership skeleton. *(The retention policy is still open — see B-3.)* |
+| C-1 (largely) | Organization-wide operational roles without downward inheritance | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | The problem dissolves: the root owns the registry and the fees. What remains is a reporting question — see C-1. |
+| C-2 | May units be reparented retroactively? | [D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit) | Not at all — a unit that moves is a new unit. |
+| D-1 | Fee per person or per household? | [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person) | Per person, flat, yearly. |
+| D-2 | One open membership, or several of different types? | [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person), [D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership) | One type, so one open membership, enforced person-wide. |
+| D-3 | Age-out timing | [D-038](decisions/decision-log.md#d-038--membership-is-ageless) | Retired — there is no age-out. |
+| D-4 | Child → adult transition | [D-038](decisions/decision-log.md#d-038--membership-is-ageless) | Retired — there are no membership categories to transition between. |
+| D-5 | Membership type vocabulary | [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person) | One type, `member`; counselor is a position, not a type. |
+| E-1 | Default permissions when a guardianship is created | [D-046](decisions/decision-log.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created) | `dependent.admin` for a self-registered child; chosen at creation when recorded manually. |
+| F-2 | Polymorphic `scope_id` vs a `grantable_item` supertable | your answer, round 6 | Polymorphic — `scope_type` plus `scope_id`, as currently designed. |
+| — | The bulk scope-exposure tool | [D-045](decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed) | Removed once audiences existed to cover the case it was for. |
+| — | What a membership request must contain | [D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment) | Identity and the fee. The whole requirement mechanism is gone. |
+| — | Whether grants may target groups | [D-042](decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals) | Yes — built-in rule-evaluated audiences plus admin-managed named groups. |
 
 ---
 
 ## H. Assumption index
 
-Every *Assumption:* in the documentation, so they can be reviewed as a group.
+Every *Assumption:* in the documentation, so they can be reviewed as a group. Once you confirm
+one, it should be promoted to a numbered decision and struck from [§ R](#r-resolved--moved-to-the-decision-log).
+
+Rows marked **†** are now backed by a decision rather than a bare assumption — kept here
+because the docs still cite them and because the decision is worth seeing in this list.
 
 | # | Assumption | Where |
 |---|-----------|-------|
 | 1 | PostgreSQL 14+ with `btree_gist` | [data-model/00](data-model/00-conventions.md#1-target-platform) |
-| 2 | No automatic merging (D-004) | [domain/03](domain/03-identity-and-legacy.md#4-match-signals) |
+| 2 | No automatic merging (D-004) † | [domain/03](domain/03-identity-and-legacy.md#4-match-signals) |
 | 3 | Minors need guardian consent for an account | [domain/02](domain/02-actors.md#2-who-registers-and-why) |
-| 4 | Parent self-registering a child gets `dependent.admin` | [data-model/04](data-model/04-relationships.md#2-guardianship_permission) |
-| 5 | Authority inherits downward (D-015) | [domain/04](domain/04-organization-structure.md#6-units-and-permissions) |
-| 6 | Membership activates on payment (A-3) | [domain/05](domain/05-membership-lifecycle.md#1-the-flow-you-described) |
-| 7 | Fee is per person, yearly | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
-| 8 | Renewal is Shape A (new row) | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
-| 9 | Guardianship reviewed at majority, not auto-expired (D-024) | [data-model/04](data-model/04-relationships.md#1-guardianship) |
+| 4 | A self-registered child's parent gets `dependent.admin` (D-046) † | [data-model/04](data-model/04-relationships.md#2-guardianship_permission) |
+| 5 | Locality orders allows only; deny is absolute (D-032) † | [domain/06](domain/06-authorization-model.md#6-the-resolver) |
+| 6 | Membership activates on payment (D-040) † | [domain/05](domain/05-membership-lifecycle.md#1-the-flow-you-described) |
+| 7 | The fee is per person and yearly (D-037) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
+| 8 | Renewal opens a new row, not an extended `valid_to` (D-016) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
+| 9 | Guardianship reviewed at majority, not auto-expired (D-024) † | [data-model/04](data-model/04-relationships.md#1-guardianship) |
 | 10 | Display name uses `preferred_name` if set | [data-model/01](data-model/01-identity.md#3-person_name--name-history) |
 | 11 | Merge chains allowed (B-2) | [data-model/01](data-model/01-identity.md#9-views) |
 | 12 | Only confirmed payments count toward a balance | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
 | 13 | Placeholder unit types and nesting rules (A-1) | [data-model/02](data-model/02-organization.md#10-seed-data) |
-| 14 | Placeholder membership types and age limits (D-5) | [data-model/03](data-model/03-membership.md#8-seed-data) |
+| 14 | `membership_type` is seeded with exactly one row (D-037) † | [data-model/03](data-model/03-membership.md#8-seed-data) |
 | 15 | `person.gender` is needed for reporting | [data-model/01](data-model/01-identity.md#2-person) |
-| 16 | Imported rosters end at organizational year end (D-028) | [data-model/06](data-model/06-audit-and-import.md#3-import-pipeline) |
+| 16 | Imported rosters end at the organizational year end (D-028) † | [data-model/06](data-model/06-audit-and-import.md#3-import-pipeline) |
 | 17 | All business tables are audited | [data-model/06](data-model/06-audit-and-import.md#6-open-issues) |
 | 18 | Currency is EUR | [data-model/07](data-model/07-finance.md#2-minimal-provisional-shape) |
-| 19 | `access_log` is not human-annotatable | [data-model/05](data-model/05-authorization.md#7-access_log) |
-| 20 | Each permission has an `admin` sibling (your instruction, D-007) | throughout |
+| 19 | `access_log` is not human-annotatable | [data-model/05](data-model/05-authorization.md#9-access_log) |
+| 20 | Each permission has an `admin` sibling (D-007) † | throughout |
+| 21 | No downward inheritance; exposures are written by the unit (D-031) † | [domain/06](domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance) |
+| 22 | The person record holds no deceased flag (D-034) † | [data-model/01](data-model/01-identity.md#2-person) |
+| 23 | Positions are multi-holder unless `max_holders` says otherwise (D-033) † | [domain/04](domain/04-organization-structure.md#4-positions) |
+| 24 | Membership is ageless — no category, no `min_age`, no `max_age` (D-038) † | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |
+| 25 | A grant targets a person **or** an audience, never both (D-042) † | [data-model/05](data-model/05-authorization.md#6-access_grant--the-per-item-layer) |
+| 26 | Built-in audiences are rules evaluated by the resolver, not stored lists (D-042) † | [data-model/05](data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people) |
+| 27 | Belonging to a sub-unit is participation, not membership (D-041) † | [data-model/03](data-model/03-membership.md#5-unit_participation) |
+| 28 | Roles require a current membership unless `requires_membership = false` (D-039) † | [data-model/05](data-model/05-authorization.md#3-role-and-role_permission) |
+| 29 | There is no bulk exposure tool and no `bulk:` reason marker (D-045) † | [data-model/05](data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward) |
+| 30 | No background checks are recorded anywhere (D-043) † | throughout |
+| 31 | `access_grant.scope_id` is polymorphic, with no foreign key (F-2) † | [data-model/05](data-model/05-authorization.md#6-access_grant--the-per-item-layer) |
+| 32 | The renewal window is what you described — a fixed date plus a fixed number of days. **The dates themselves are a guess** (A-4) | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |
 
 ---
 
 ## How to answer
 
-Pick any subset — they are independent. The most valuable to resolve first, if you want the
-core schema to be final:
+Pick any subset — they are independent. The ones that most change the shape of the system, if
+you want the core to stop moving:
 
-1. **A-1** organizational structure
-2. **A-3** activation on payment vs. approval
-3. **A-4** background checks
-4. **F-1** permission catalog
-5. **D-2** one membership or several
-6. **C-1** authority inheritance
+1. **A-1 remainder** — the unit type vocabulary and nesting rules
+2. **A-4** — the organizational calendar (expiry date, window length)
+3. **D-6** — which roles do **not** require a membership
+4. **F-1** — the permission catalog, and the roles
+5. **C-1** — may the root read into its sub-units, or does each pack expose its scope?
+6. **B-1** — how much legacy data, and in what shape
 
-Everything else can be answered as we go, and the schema is designed so that most answers
-change data rather than structure.
+Everything else can be answered as we go. The schema is built so that most answers change
+data rather than structure — the ones above are the exceptions, which is why they are first.

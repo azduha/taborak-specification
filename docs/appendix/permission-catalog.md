@@ -3,7 +3,7 @@
 Every permission code, its namespace, and the channel that resolves it.
 
 This is the **proposed** catalog, seeded in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#10-seed-data--permissions).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#12-seed-data--permissions).
 It is a starting point for your refinement, not a specification. Expect to add, remove, and
 rename.
 
@@ -15,7 +15,7 @@ rename.
 
 ```
 <resource>.<action>              e.g.  membership.request.approve
-<resource>.<subresource>.<action> e.g.  person.background_check.manage
+<resource>.<subresource>.<action> e.g.  unit_participation.view
 <resource>.admin                 e.g.  event.admin
 ```
 
@@ -61,7 +61,7 @@ The **Sens.** column flags permissions that need extra care:
 | ⛔ | Granting it can end someone's membership or standing |
 
 These marks should drive UI warnings and the alerting in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#9-integrity-checks).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#11-integrity-checks).
 
 ---
 
@@ -77,14 +77,17 @@ These marks should drive UI warnings and the alerting in
 | `person.merge` | — | 🔒 | Confirm identity matches and merge people |
 | `person.unmerge` | — | 🔒 | Reverse a merge |
 | `person.redact` | — | 🔒 | Perform a GDPR-style erasure |
-| `person.background_check.view` | — | ⚠⚠ | See background-check status |
-| `person.background_check.manage` | — | ⚠⚠ | Record and update background checks |
-| `person.deceased.record` | — | | Mark a person deceased |
 | `person.admin` | — | 🔒 | Full control over person records |
 
 > `person.merge` and `person.redact` are separated from `person.edit` deliberately. Both
 > are irreversible in practice and both have privacy consequences far beyond editing a
 > record. **`person.admin` does not subsume them** — see §7.
+
+> **`person.background_check.*` is gone** ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
+> The organization has no background checks handled by this system, so there is nothing to
+> view and nothing to record. If that changes, the permission pair and a dated record with an
+> `expires_at` are the natural shape — and it would belong here, next to `person.*`, because
+> a clearance is a fact about a person and not about their membership.
 
 ## 3. Accounts
 
@@ -113,14 +116,26 @@ These marks should drive UI warnings and the alerting in
 | `membership.suspend` | — | ⛔ | Temporarily suspend a membership |
 | `membership.terminate` | — | ⛔ | **End a membership for cause / expel** |
 | `membership.backdate` | — | ⚠ | Enter or correct historical membership periods |
-| `membership.transfer` | — | | Transfer a member between units |
 | `membership.admin` | — | ⛔ | Full control over memberships |
+| `unit_participation.view` | — | ⚠ | See who takes part in a sub-unit |
+| `unit_participation.manage` | — | ⚠ | Add, move or end participation |
+| `unit_participation.admin` | — | 🔒 | Full control over participation records |
 
 > **`membership.terminate` is the most consequential non-system permission in the
 > catalog.** A lapse is administrative; a termination is a decision about a person's
 > standing in a youth organization, frequently with safeguarding and reputational
 > consequences. It should be held by very few people, and it must not be implied by
 > `membership.lapse`. Grant it explicitly, per person.
+
+> **`membership.transfer` is gone.** "Transfer a member between units" was an artefact of
+> units holding memberships. With participation ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)),
+> moving between sub-units is `unit_participation.manage` — close one row, open another —
+> and it does not touch the person's membership at all. There is nothing to transfer.
+
+> **These permissions are gated by membership when held through a role that requires one**
+> ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+> The gate is a property of the *role*, not of the permission, so it is not visible in this
+> table — see [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission).
 
 ## 5. Organization and positions
 
@@ -130,15 +145,18 @@ These marks should drive UI warnings and the alerting in
 | `org_unit.create` | — | | Create a unit |
 | `org_unit.edit` | — | | Edit a unit's details |
 | `org_unit.rename` | — | | Rename or renumber a unit |
-| `org_unit.restructure` | — | ⚠ | Split, merge, or reparent units |
+| `org_unit.restructure` | — | ⚠ | Split or merge units |
 | `org_unit.close` | — | ⚠ | Close a unit |
 | `org_unit.admin` | — | 🔒 | Full control over units |
 | `position.view` | — | | See positions |
 | `position.assign` | — | ⚠ | Appoint someone to a position |
 | `position.admin` | — | 🔒 | Full control over positions |
 
-> `org_unit.restructure` is separated because a reparent or split rewrites the answer to
-> historical questions. It is not routine editing.
+> `org_unit.restructure` is separated because a split rewrites the answer to historical
+> questions. It is not routine editing. **Reparenting is no longer among the things it
+> grants** — a unit cannot change parent at all
+> ([D-036](../decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)),
+> so the permission covers splits and mergers and the closing of a unit that "moved".
 
 ## 6. Guardianship
 
@@ -240,7 +258,7 @@ established before anyone invents an inconsistent one.
 | `partner` | *(namespace)* | For external organizations, if the model expands. |
 
 Generate each resource's `permission_level` rows at the same time — see
-[../data-model/05-authorization.md](../data-model/05-authorization.md#6-permission_level--connecting-permissions-to-grant-levels).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#7-permission_level--connecting-permissions-to-grant-levels).
 
 ---
 
@@ -248,30 +266,46 @@ Generate each resource's `permission_level` rows at the same time — see
 
 Awaiting your refinement. Each is a bundle; revisit before implementing.
 
-| Role | Scope required | Key permissions | Term |
-|------|---------------|-----------------|------|
-| `system_admin` | organization | `system.admin` | 12 mo |
-| `registrar` | organization | `membership.request.*`, `membership.activate`, `person.*` (except merge/redact), `unit_membership.*`, `import.*` | 12 mo |
-| `membership_approver` | organization | `membership.request.review`, `membership.request.approve` | 12 mo |
-| `treasurer` | organization or unit | `fee.*`, `payment.*`, `report.finance.view` | 12 mo |
-| `safeguarding_officer` | organization | `person.background_check.*`, `report.safeguarding.view`, `membership.terminate` | 12 mo |
-| `group_admin` | org_unit | `org_unit.view`, `unit_member.view`, `position.view`, `org_unit.edit` (own unit only) | 12 mo |
-| `unit_leader` | org_unit | `org_unit.view`, `unit_member.view`, `position.view`, `event.*` (own unit), `report.membership.view` (own unit) | 12 mo |
-| `assistant_leader` | org_unit | Subset of `unit_leader` | 12 mo |
-| `identity_reviewer` | organization | `person.merge`, `import.view`, `import.apply` | 12 mo |
-| `auditor` | organization | `audit.view`, `audit.export`, `report.view` — **read-only, no writes** | 12 mo |
+| Role | Scope required | `Req.` | Key permissions | Term |
+|------|---------------|--------|-----------------|------|
+| `system_admin` | organization | — | `system.admin` | 12 mo |
+| `registrar` | organization | yes | `membership.request.*`, `membership.activate`, `person.*` (except merge/redact), `unit_participation.*`, `import.*` | 12 mo |
+| `membership_approver` | organization | yes | `membership.request.review`, `membership.request.approve` | 12 mo |
+| `treasurer` | organization or unit | yes | `fee.*`, `payment.*`, `report.finance.view` | 12 mo |
+| `safeguarding_officer` | organization | yes | `report.safeguarding.view`, `membership.terminate` | 12 mo |
+| `unit_admin` | org_unit | yes | `org_unit.view`, `unit_participation.view`, `position.view`, `org_unit.edit` (own unit only) | 12 mo |
+| `unit_leader` | org_unit | **no** | `org_unit.view`, `unit_participation.view`, `position.view`, `event.*` (own unit), `report.membership.view` (own unit) | 12 mo |
+| `assistant_leader` | org_unit | **no** | Subset of `unit_leader` | 12 mo |
+| `audience_admin` | organization or unit | yes | `audience.view`, `audience.manage` | 12 mo |
+| `identity_reviewer` | organization | yes | `person.merge`, `import.view`, `import.apply` | 12 mo |
+| `auditor` | organization | **no** | `audit.view`, `audit.export`, `report.view` — **read-only, no writes** | 12 mo |
 
-**Three properties worth noting:**
+`Req.` is `role.requires_membership`: whether the role stops granting anything when the
+holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+It is the column to argue about, and the proposals above follow one rule — **staff-like roles
+working on the organization's own records require a membership; volunteer-facing roles do
+not.**
+
+**Four properties worth noting:**
 
 1. **`membership_approver` is separate from `registrar`.** Deciding who becomes a member is
    a different act from processing records. If your organization wants one person to do
    both, grant both roles — but keep them separately attributable.
 2. **`safeguarding_officer` holds `membership.terminate`.** The permission to end someone's
    membership sits with the person responsible for safeguarding, not with whoever chases
-   fees. This is deliberate.
+   fees. This is deliberate. Note that the role **lost** `person.background_check.*` and
+   gained nothing in its place, because the organization records no background checks
+   ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
 3. **No role bundles `dependent.*` permissions.** Those come only from guardianship. A role
    that granted them would let a unit leader see members' medical records by virtue of a
    role assignment, which fails safeguarding review.
+4. **`unit_leader` and `assistant_leader` are `Req. = no`.** They are held by volunteers, and
+   the failure this prevents is specific: the volunteer whose own fee is unpaid still runs
+   the Thursday meeting, and must not lose their roster the night it lapses. The
+   corresponding `position.requires_membership` stays `true`, so the unpaid volunteer shows
+   up on a chase-up report — **the report is how the organization notices, the resolver is
+   not how it punishes.** See
+   [../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles--bundles-of-permissions).
 
 ---
 
@@ -280,13 +314,23 @@ Awaiting your refinement. Each is a bundle; revisit before implementing.
 - **The entire catalog needs your review.** Which of these does your organization actually
   need? Which are missing? Most organizations need fewer roles than they think and more
   granular permissions than they expect.
+- **The `Req.` column in §11 — a decision per role, not a default.** It is now the switch
+  between "a lapse silently removes this" and "it does not", and the proposals above are
+  reasoned guesses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 - Whether `person.admin` should subsume `person.merge` and `person.redact` (recommend no).
-- Whether any permission should require current membership status — affects cache
-  invalidation.
 - Whether `report.*` should be per-report permissions or one `report.view` with
   row-level filtering.
 - The `event` resource's real permission set, once events are specified.
 - Whether the organization has roles this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief).
+- Which built-in audiences the organization needs, and who may create named groups —
+  `audience_admin` is proposed, but it may belong to unit leaders instead
+  ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+
+**Resolved and no longer open**, kept visible so the reasoning survives: whether any
+permission should require current membership status (yes, via the role — D-039);
+`person.background_check.*` (removed — D-043); `membership.transfer` (obsolete once
+participation replaced unit membership — D-041); and whether `org_unit.restructure` includes
+reparenting (it cannot — D-036).
 
 All tracked in [../open-questions.md](../open-questions.md).

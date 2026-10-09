@@ -2,28 +2,35 @@
 
 > ## ⚠ PROVISIONAL — DO NOT BUILD FROM THIS YET
 >
-> You have not yet specified fees, pricing, or payment handling. This document exists
-> **only** because membership activation depends on payment
+> The **shape** of the obligation is now settled, but almost nothing about the money is.
+> This document exists because membership activation depends on payment
 > ([../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described)),
-> so the membership tables need somewhere to point.
+> and because the yearly expiry and renewal window
+> ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status))
+> need somewhere to read a due date from.
 >
-> Expect to rewrite most of this. It is included so that
-> `membership.outstanding_balance` and `membership_type.fee_schedule_id` have referents,
-> and so that the open questions below are visible rather than discovered later.
+> Expect to rewrite the tables. Read §1 for what is actually settled.
 
 ---
 
 ## 1. What the domain requires (from what you have said)
 
-Only these facts are established:
+**Settled:**
 
-- There is a **yearly fee**.
-- Becoming a member requires **paying** it (or at least, you described the flow that way
-  — see open question 1).
-- The fee amount **will be described later**, i.e. it varies.
+- There is a **yearly fee**, **flat**, **per person** — it does not vary by age, by
+  household, or by membership type, because there is one membership type
+  ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+- Becoming a member requires **paying** it; the membership activates on payment
+  ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)).
+- The fee **expires on a fixed organizational date**, typically January. At that date the
+  membership **lapses** — the person is not a member — and a **renewal window** follows
+  during which they may renew without re-applying. A payment inside the window **opens the
+  new period at the expiry date**, so the record shows no gap.
+- There is **no grace *status***. The window is tracked as dates, and the resolver does not
+  know it exists.
 
-Everything else — proration, family rates, discounts, refunds, payment methods, invoices,
-currency, whether the organization collects or merely records — is unspecified.
+**Unspecified** — the fee *amount*, proration, family discounts, refunds, payment methods,
+invoices, currency, and whether the organization collects or merely records.
 
 ---
 
@@ -78,8 +85,11 @@ CREATE TABLE fee_obligation (
     -- The person the fee is FOR. Not the payer — see paid_by_person_id in payment.
 
     household_id    BIGINT REFERENCES household(id),
-    -- Set when the fee is charged per household rather than per person.
-    -- OPEN QUESTION 2: which is it?
+    -- VESTIGIAL. The fee is flat and per person (D-037), so nothing sets this today.
+    -- It is kept for one reason only: a family/sibling discount (open question 2) is
+    -- priced per household, and adding the column later means rewriting the CHECK and
+    -- the view. See the note under the table — and [../open-questions.md D-9] on whether
+    -- `household` survives at all.
 
     membership_id   BIGINT REFERENCES membership(id),
     membership_request_id BIGINT REFERENCES membership_request(id),
@@ -102,7 +112,8 @@ CREATE TABLE fee_obligation (
                          'written_off','overdue')),
 
     due_date        DATE NOT NULL,
-    -- Drives the grace period in membership_type.grace_period_days.
+    -- The yearly fee expires on a fixed organizational date (D-040); this obligation's
+    -- due_date is what the lapse sweep compares against. The window that follows is
 
     waived_by       BIGINT REFERENCES person(id),
     waived_reason   TEXT,
@@ -121,7 +132,8 @@ CREATE TABLE fee_obligation (
       + (membership_request_id IS NOT NULL)::int
       + (household_id IS NOT NULL)::int <= 2),
     -- At most two targets: a membership (or request) AND optionally a household
-    -- grouping, since a household fee may cover several members' obligations.
+    -- grouping. The household arm is dormant (D-037); it is retained so that a family
+    -- discount can be added as a constraint change rather than a table change.
     CONSTRAINT ck_obligation_waived CHECK (
         status <> 'waived' OR (waived_by IS NOT NULL AND waived_reason IS NOT NULL))
 );
@@ -135,6 +147,17 @@ CREATE INDEX ix_obligation_household  ON fee_obligation (household_id)
     WHERE household_id IS NOT NULL;
 CREATE INDEX ix_obligation_period     ON fee_obligation (period_from, period_to);
 ```
+
+> **`household_id` is dormant, and that is deliberate.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+> settled the fee as flat and per person, which removed the only thing this column was
+> ever for. It is not dropped, because "are there family/sibling discounts?" is still an
+> open question (§5.2) and a discount is the one feature that would need it — a discount
+> priced per person is `amount_discount`, but a discount priced per family is a row that
+> covers several people. Keeping the column and the three-way CHECK means that answer
+> changes a constraint, not a schema. If the answer is a firm no, drop the column, the
+> CHECK arm, and `ix_obligation_household` together — and see
+> [../open-questions.md](../open-questions.md) D-9, which asks whether `household` itself
+> survives.
 
 ```sql
 CREATE TABLE payment (
@@ -226,7 +249,7 @@ wrongly-chased family. A wrong number here has a human consequence.
 
 ```sql
 CREATE VIEW v_fee_obligation_balance AS
-SELECT o.id AS fee_obligation_id, o.person_id, o.household_id, o.status,
+SELECT o.id AS fee_obligation_id, o.person_id, o.status,
        o.amount_due, o.amount_discount,
        COALESCE(SUM(a.amount), 0) AS amount_allocated,
        o.amount_due - o.amount_discount - COALESCE(SUM(a.amount), 0) AS balance
@@ -259,50 +282,87 @@ RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
 $$;
 ```
 
-And the lapse trigger — a membership whose fee is unpaid past the grace period:
+And the yearly expiry sweep — this one **does** change membership status, unlike everything
+else in this document:
 
 ```sql
--- Run daily. Produces the lapse worklist; does NOT auto-lapse.
-SELECT m.id, m.person_id, o.due_date, mt.grace_period_days,
-       o.due_date + mt.grace_period_days AS grace_ends
+-- Run on the organizational expiry date (see D-040). This is the ONE automatic
+-- membership transition in the system.
+SELECT m.id, m.person_id, o.due_date, mt.renewal_grace_days,
+       o.due_date + mt.renewal_grace_days AS window_ends
   FROM membership m
   JOIN membership_type mt ON mt.id = m.membership_type_id
   JOIN fee_obligation o ON o.membership_id = m.id
   JOIN v_fee_obligation_balance b ON b.fee_obligation_id = o.id
  WHERE m.status = 'active'
    AND b.balance > 0
-   AND o.due_date + mt.grace_period_days < CURRENT_DATE;
+   AND o.due_date < CURRENT_DATE;
+-- → set m.status = 'lapsed', close the period, and INVALIDATE THE PERMISSION CACHE
+--   BY PERSON for every row returned. See domain/06-authorization-model.md §8.
 ```
 
-> **Recommendation: do not auto-lapse.** Produce the worklist and let a human act on it.
-> Automatically removing membership from a child because a bank transfer was recorded late
-> is a real harm, and the grace period exists precisely to absorb those cases. This is a
-> case where automation should stop short of the consequence.
+> **This reverses an earlier recommendation, and the reversal is worth recording.** This
+> document previously said "do not auto-lapse — produce the worklist and let a human act."
+> The reasoning was sound: automatically removing membership from a child because a bank
+> transfer was recorded late is a real harm.
+>
+> [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
+> resolves it differently, and the resolution is that **the expiry is a date, not a
+> decision.** The fee covers a fixed period and the period ends. Nobody decides anything,
+> and the renewal window exists to absorb exactly the late-transfer case: a payment inside
+> it backdates the new period to the expiry date, so the record shows no gap and the person
+> was never misclassified.
+>
+> **Where the old caution still applies** is the case the window cannot absorb — a payment
+> that *arrived* before the expiry but was *recorded* after it. That is a data-entry lag,
+> not a non-payment, and it should be corrected with `membership.backdate` rather than left
+> as a real gap. Worth a report: members who lapsed and then paid within a few days.
 
 ---
 
 ## 5. Open issues — the whole of this document, essentially
 
-1. **Does membership activate on payment, or on approval with payment tracked as debt?**
-   Changes whether `pending_payment` is a membership status at all.
-2. **Is the fee per person or per household?** Determines whether `fee_obligation` targets a
-   person or a household, and whether `household` is load-bearing.
-3. **Is the fee prorated** for mid-year joins?
-4. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
-   unspecified.
-5. **Refunds:** policy, and who may authorize them. Affects the `payment.status` values.
-6. **Payment methods:** which does the organization actually accept? The enum is a guess.
-7. **Invoicing:** does the organization issue invoices (legal requirement in some
-   jurisdictions)? If so, a `invoice` entity and a numbering sequence are needed.
-8. **Is the organization collecting payments or only recording them?** If payments go
-   through a gateway, there is a whole webhook/reconciliation layer to design.
-9. **Accounting integration:** does anything need to be exported to an accounting system?
-10. **Currency and jurisdiction** — currently assumed `EUR`.
-11. **Does the fee cover insurance?** If so, "member on the date of the incident" becomes a
-    legal record with its own retention needs.
-12. **Scholarships/hardship waivers** — a `waived` status exists but the process is
+1. **Is the fee prorated** for mid-year joins? Note this is a sharper question than it was:
+   with the expiry on a fixed date ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
+   someone joining in October pays for three months of a twelve-month fee unless the
+   organization prorates — and the *renewal* twelve months later is a full year. Whether
+   that is fair is a policy question; whether the schema supports it is `amount_due` vs
+   `amount_expected`.
+2. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
+   unspecified. With a flat per-person fee ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
+   this is the only remaining fee variation, so it is worth a deliberate yes or no — and
+   the answer decides whether `fee_obligation.household_id` (§2) is kept or dropped, since
+   a discount priced per family is the only thing that column is for. A **per-person**
+   discount is just `amount_discount`; a **per-family** one needs an obligation that
+   covers several people at once.
+3. **Refunds:** policy, and who may authorize them. Affects the `payment.status` values.
+4. **Payment methods:** which does the organization actually accept? The enum is a guess.
+5. **Invoicing:** does the organization issue invoices (legal requirement in some
+   jurisdictions)? If so, an `invoice` entity and a numbering sequence are needed.
+6. **Is the organization collecting payments or only recording them?** If payments go
+   through a gateway, there is a whole webhook/reconciliation layer to design. Note the
+   renewal window makes this more urgent than it was: a gateway can confirm a payment
+   *inside* the window, which is what makes the backdating rule reliable rather than
+   dependent on someone recording a transfer by hand in February.
+7. **Accounting integration:** does anything need to be exported to an accounting system?
+8. **Currency and jurisdiction** — currently assumed `EUR`.
+9. **Does the fee cover insurance?** If so, "member on the date of the incident" becomes a
+   legal record with its own retention needs. This one interacts directly with the new
+   lapse rule ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)):
+   if the fee buys insurance, then **the date the membership lapses is the date cover
+   ends**, and the renewal window does *not* extend it. That is worth confirming with
+   whoever handles the policy, because the softer "still covered during grace" reading was
+   the alternative D-040 explicitly rejected.
+10. **Scholarships/hardship waivers** — a `waived` status exists but the process is
     unspecified, and in a youth organization this is often a sensitive, need-to-know
     process that must not be visible to unit leaders.
+
+**Resolved and no longer open**, kept visible so the reasoning survives: activation on
+payment or on approval (on payment — [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status));
+and whether the fee is per person or per household (per person, flat and ageless —
+[D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+Two of the twelve original questions are closed and the numbering above has been collapsed
+to match.
 
 All tracked in [../open-questions.md](../open-questions.md). **Rewrite this document once
 you specify fees.**

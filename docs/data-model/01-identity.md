@@ -52,8 +52,12 @@ CREATE TABLE person (
     -- organization's records stay legally correct while the person is addressed
     -- correctly ("Alexandra" recorded, "Lex" displayed).
 
-    deceased_at         DATE,
-    is_deceased         BOOLEAN     NOT NULL DEFAULT false,
+    -- NOTE: there is deliberately NO deceased flag. The organization does not record
+    -- whether a person has died. A membership simply ends; the reason for the ending
+    -- lives in the generic reason-code tables (membership.termination_reason_code,
+    -- membership.ended_note) like any other ending, and the organization's own
+    -- vocabulary for such reasons is theirs to define. Do not add is_deceased or
+    -- deceased_at back: it is not data the organization keeps.
 
     record_origin       TEXT        NOT NULL DEFAULT 'self_registered'
                         CHECK (record_origin IN
@@ -87,9 +91,7 @@ CREATE TABLE person (
         (merged_into_person_id IS NULL) = (merged_at IS NULL)),
     CONSTRAINT ck_person_birth_precision CHECK (
         birth_date IS NOT NULL OR birth_date_precision IS NULL
-        OR birth_date_precision = 'unknown'),
-    CONSTRAINT ck_person_deceased CHECK (
-        is_deceased = (deceased_at IS NOT NULL) OR deceased_at IS NULL)
+        OR birth_date_precision = 'unknown')
 );
 
 CREATE INDEX ix_person_family_given  ON person (lower(family_name), lower(given_name));
@@ -437,7 +439,10 @@ CREATE TABLE identity_hypothesis (
                                       'rejected','superseded')),
 
     proposed_by     TEXT NOT NULL CHECK (proposed_by IN
-                        ('import_job','background_match','person','staff')),
+                        ('import_job','match_job','person','staff')),
+    -- 'match_job' = the nightly batch matcher, as opposed to a person suggesting a match
+    -- by hand. (Named 'background_match' before background checks were removed from the
+    -- design; renamed so the two never get confused.)
     proposed_by_person_id BIGINT REFERENCES person(id),
     proposed_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -573,7 +578,7 @@ SELECT p.id, p.public_id,
        COALESCE(p.preferred_name, p.given_name) AS display_given_name,
        p.family_name,
        COALESCE(p.preferred_name, p.given_name) || ' ' || p.family_name AS display_name,
-       p.birth_date, p.birth_date_precision, p.is_deceased, p.redacted_at
+       p.birth_date, p.birth_date_precision, p.redacted_at
   FROM person p
  WHERE p.merged_into_person_id IS NULL;
 ```

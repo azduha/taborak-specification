@@ -24,15 +24,21 @@ This matters because of a case you named explicitly: someone who was a member fr
 September 1990 to June 2010, and again from October 2024 to the present. They were a
 *child member*, then nothing, then an *adult counselor*. That is one `person` row and
 **two `membership` rows**. A model that puts `is_member` or `member_type` on the person
-cannot express it, and cannot answer "who was in Troop 12 in 1998?" six years from now.
+cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
 
-So there are three rules the schema obeys throughout:
+So there are four rules the schema obeys throughout:
 
 | # | Rule | Consequence |
 |---|------|-------------|
 | 1 | Personhood is separate from participation | `person` holds identity only. No member flags. |
-| 2 | Participation is a period, not a boolean | `membership`, `unit_membership`, `guardianship`, `position_assignment` all carry `valid_from` / `valid_to`. |
+| 2 | Participation is a period, not a boolean | `membership`, `unit_participation`, `guardianship`, `position_assignment` all carry `valid_from` / `valid_to`. |
 | 3 | Access is granted, never implied by identity | Being a parent does not by itself grant access to the child's data — a `guardianship_permission` row does. |
+| 4 | Belonging to a sub-unit is not membership | There is **one** membership, at the organization. Sub-units hold participation records. |
+
+Rule 4 is the one added last, and it is load-bearing:
+[D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership).
+"Am I a paid-up member?" is one row, one status, one date — regardless of how many
+Thursday-evening groups the person turns up to.
 
 ---
 
@@ -57,7 +63,7 @@ So there are three rules the schema obeys throughout:
 | [data-model/00-conventions.md](data-model/00-conventions.md) | Naming, keys, temporal patterns, enums. **Read before reviewing any DDL.** |
 | [data-model/01-identity.md](data-model/01-identity.md) | `person`, `account`, contact points, identifiers. |
 | [data-model/02-organization.md](data-model/02-organization.md) | `org_unit`, types, hierarchy, positions. |
-| [data-model/03-membership.md](data-model/03-membership.md) | `membership`, `membership_request`, `unit_membership`. |
+| [data-model/03-membership.md](data-model/03-membership.md) | `membership`, `membership_request`, `unit_participation`. |
 | [data-model/04-relationships.md](data-model/04-relationships.md) | `guardianship`, `guardianship_permission`, households. |
 | [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_assignment`, `access_grant`. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |

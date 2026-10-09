@@ -75,16 +75,28 @@ never become a member — a parent who only ever manages their child is exactly 
    │                                                                                   │
    │                                     ┌─────────────────────────────────────────────┤
    │                                     │                                             │
-   │                                     ├──> lapsed (fee unpaid / withdrew)           │
+   │                                     ├──> lapsed (fee expired at the yearly date)  │
    │                                     ├──> terminated (cause, with reason)          │
-   │                                     └──> completed (aged out / moved on)          │
+   │                                     └──> suspended (temporary hold)               │
    │                                                                                   │
+   │      ┌──────────────── renewal (no new application) ────────────────────────────┘
+   │      │        inside the renewal window → the new period opens at the expiry date
+   │      │        after it                  → the new period opens at the payment date
+   │      ▼
+   │   active member again
+   │
    └──────────────────────── re-apply ─────────────────────────────────────────────────┘
 ```
 
 Every transition creates or closes a row; nothing is overwritten. A person who was a
 member 1990–2010 and again from 2024 has two `membership` rows and the gap is visible
 as data, not inferred from a date.
+
+**Note the shape of the lapse.** There is no `completed` state: it existed only for ageing
+out, and membership is ageless ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
+And **the lapse happens on a date, to everyone at once** — the yearly expiry — which is why
+the renewal path matters more here than the word "grace" suggests
+([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)).
 
 Detailed in [05-membership-lifecycle.md](05-membership-lifecycle.md).
 
@@ -109,11 +121,17 @@ Three distinct relationships, deliberately not merged:
 | Relationship | Direction | Example | Grants access? |
 |--------------|-----------|---------|----------------|
 | **Guardianship** | guardian → dependent | parent → child | **No.** Only via explicit `guardianship_permission` rows. |
-| **Membership in a unit** | member → org unit | child → Troop 12 | No. |
-| **Position held** | person → position in unit | adult → scoutmaster of Troop 12 | No. Only via `role_assignment`. |
+| **Membership** | member → the organization | anyone → the root unit | No. |
+| **Participation** | participant → sub-unit | child → Pack 12 | No. |
+| **Position held** | person → position in a sub-unit | adult → scoutmaster of Pack 12 | No. Only via `role_assignment`. |
+
+**Membership and participation are two rows, not one** ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+A person is a **member of the organization** and a **participant in a pack** — different
+facts with different lifetimes, which is why someone who stops attending on Thursdays is
+still a paid-up member, and someone who is paid up may take part in nothing.
 
 The recurring theme: **participation is not authority.** A person can be deeply involved
-— a parent of three members, a 20-year veteran, a unit's founder — and still have no
+— a parent of three members, a 20-year veteran, a pack's founder — and still have no
 administrative access. Access comes only from an explicit grant. This separation is what
 makes the permission system auditable and what prevents the classic failure where a
 relationship ends (custody changes, a leader steps down) but access silently persists.
@@ -123,11 +141,17 @@ relationship ends (custody changes, a leader steps down) but access silently per
 You named this case explicitly. It is not special:
 
 - One `person` row.
-- One open `membership` (type `adult`/`counselor`).
-- A `position_assignment` making them a leader of their unit.
+- One open `membership` — `member`, like everyone else's.
+- A `position_assignment` making them a leader of their pack.
+- One `unit_participation` row for the pack they lead.
 - Two `guardianship` rows (to their own children).
 - Separate `guardianship_permission` rows for their parental capabilities.
 - `role_assignment` rows for their leadership authority.
+
+Note there is no `counselor` membership type. Being a counselor is the **position**, not a
+kind of membership ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)) —
+and this person's membership is identical to that of the child they lead, which is exactly
+the point.
 
 Their leadership role grants authority over **the unit's members**. Their guardianship
 grants authority over **their own children**. These are different scopes and the system
@@ -165,7 +189,7 @@ This is the constraint that most shapes the schema, so it is worth stating plain
 
 The system must answer, correctly and indefinitely:
 
-- "Who was in Troop 12 on 1 June 1998?"
+- "Who was in Pack 12 on 1 June 1998?"
 - "Was this person a member when they attended that camp in 2003?"
 - "This person registered in 2026 claiming they were a member in the 90s — is that true?"
 - "What was this unit called in 2001, and what is its successor unit today?"

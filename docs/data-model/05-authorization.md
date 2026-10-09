@@ -1,7 +1,7 @@
 # Data Model — Authorization
 
-`permission`, `role`, `role_permission`, `role_assignment`, `access_grant`,
-`permission_level`, `access_log`.
+`permission`, `role`, `role_permission`, `role_assignment`, `scope_exposure`,
+`access_grant`, `permission_level`, `access_log`.
 
 This is the direct answer to your question about system-wide and per-item permissions.
 Design rationale: [../domain/06-authorization-model.md](../domain/06-authorization-model.md).
@@ -25,11 +25,20 @@ access_grant ───────────── PER-ITEM authority.        
                                                       level 'manage', until 2026-06-30
 
 guardianship_permission ── authority over a PERSON.   (04-relationships.md)
+
+scope_exposure ─────────── upward delegation.         unit 7 agrees that assignment
+                                                      912's authority covers unit 7.
 ```
 
-Three tables carry authority. They are separate because their lifetimes, granters, and
+Four tables carry authority. They are separate because their lifetimes, granters, and
 revocation semantics differ — argued in
 [../domain/06-authorization-model.md](../domain/06-authorization-model.md#1-the-four-channels-of-authority).
+
+**And the rule that governs all of them:** authority over a unit originates **at that
+unit** and cannot be claimed from outside it — not by a parent unit, and not by the
+organization. `scope_exposure` (§5) is the only way it crosses a boundary downward, and
+`system_admin` is the sole exception. See
+[../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance).
 
 **The key insight:** `role_assignment` and `access_grant` are not two unrelated
 mechanisms. They are the **same idea at two granularities** — authority held for a period,
@@ -55,7 +64,7 @@ CREATE TABLE permission (
     action          TEXT NOT NULL,             -- 'approve'
     namespace       TEXT,                      -- 'dependent' | 'system' | NULL
     -- The namespace routes a check to the right channel. 'dependent' → guardianship;
-    -- NULL → the normal role/item/ownership path. See §6.
+    -- NULL → the normal role/item/ownership path. See §9 (the resolver).
 
     description     TEXT NOT NULL,
     display_name    TEXT NOT NULL,
@@ -135,18 +144,20 @@ CREATE TABLE role (
     -- 'org_unit' = only within a unit.
 
     requires_membership BOOLEAN NOT NULL DEFAULT true,
-    -- Holder should be a current member. Drives the "leaver with access" report;
-    -- NOT enforced by constraint (membership is temporal).
-
-    requires_background_check BOOLEAN NOT NULL DEFAULT false,
-    -- For roles involving contact with children. Reported, not constrained.
+    -- THE MEMBERSHIP GATE (D-039). True: the resolver honours this role only while
+    -- the holder has a current membership — a lapse silently withholds the role's
+    -- permissions. False: the role is honoured regardless, which is what keeps
+    -- appointed counselors and local leaders able to serve while their own fee is
+    -- unpaid. This is ENFORCED by the resolver (domain/06 §6), not merely reported.
+    --
+    -- Not expressible as a constraint: membership is temporal, in another table.
 
     max_term_months INTEGER,
     -- Default term length. Used to prefill valid_to, and to flag assignments that
     -- have run past their expected term.
 
     is_delegatable  BOOLEAN NOT NULL DEFAULT true,
-    -- False for system_admin and similar. See domain/06 §8.
+    -- False for system_admin and similar. See domain/06 §2.6.
 
     sort_order      INTEGER NOT NULL DEFAULT 0,
     valid_from      DATE,
@@ -179,10 +190,15 @@ CREATE INDEX ix_role_permission_role ON role_permission (role_id);
 CREATE INDEX ix_role_permission_perm ON role_permission (permission_id);
 ```
 
-**`requires_membership` and `requires_background_check` are flags, not constraints.** They
-depend on temporal state in other tables, so no `CHECK` can express them. They drive
-reports — the "leaver with access" and "leader with expired clearance" worklists — which
-is where the enforcement actually happens. See
+**`requires_membership` is enforced by the resolver, not by a constraint.** It depends on
+temporal state in another table, so no `CHECK` can express it — but unlike a mere report
+flag, it is consulted at every permission check (D-039). A role with
+`requires_membership = true` held by someone without a current membership **grants nothing**,
+though the assignment row survives so the history is intact and a renewal can reinstate it.
+
+**The "leaver with access" report is still worth running** — not to prevent access, which the
+resolver already does, but to find assignments that should have been *closed* and were not.
+Dormant authority that springs back on renewal is the failure mode this gate introduces; see
 [03-membership.md](03-membership.md#6-membership-and-the-authorization-system).
 
 **`max_term_months` turns "the volunteer who never got removed" into a visible expiry.**
@@ -275,18 +291,21 @@ for any role with `scope_required` set. Making it a database `NOT NULL` would br
 historical imports (where end dates are genuinely unknown), so the requirement is enforced
 one level up. Tracked in [../open-questions.md](../open-questions.md).
 
-### Scope and inheritance
+### Scope — exact match, plus explicit exposures
 
-A unit-scoped role assignment covers that unit **and its descendants**, per the
-downward-inheritance assumption in
-[../domain/04-organization-structure.md](../domain/04-organization-structure.md#6-units-and-permissions).
-The resolver expands the scope using `unit_ancestors` — a district treasurer's assignment
-at the district covers every troop beneath it.
+A unit-scoped role assignment covers **that unit only**. It does **not** cover the unit's
+children. Authority does not flow down the hierarchy — see
+[../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance)
+for the full reasoning.
 
-**To switch to non-inheriting**, the resolver stops calling `unit_ancestors` and matches
-`scope_id` exactly. That is a single change, which is why the policy decision is cheap
-either way — but it must be made deliberately, because it changes who can do what across
-the whole organization.
+Authority crosses a unit boundary downward through exactly one mechanism: an explicit
+`scope_exposure` row, written at the subordinate unit, granting a specific role assignment
+coverage over it. See §5.
+
+**The resolver matches `scope_id` exactly, plus exposures.** It must **not** call
+`unit_ancestors()`. Any occurrence of `unit_ancestors()` in a permission path is a bug —
+see §10, integrity check 13.
+
 
 ### `delegation_of`
 
@@ -306,7 +325,129 @@ ALTER TABLE role_assignment ADD CONSTRAINT ck_delegation_expires CHECK (
 
 ---
 
-## 5. `access_grant` — the per-item layer
+## 5. `scope_exposure` — how a unit delegates upward
+
+The only mechanism by which authority crosses a unit boundary downward. Read
+[../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance)
+first — this table exists to implement that rule, and it is easy to misread as inheritance.
+
+```sql
+CREATE TABLE scope_exposure (
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    org_unit_id     BIGINT NOT NULL REFERENCES org_unit(id),
+    -- THE UNIT GRANTING COVERAGE OVER ITSELF. This is the grantor. It is never
+    -- the unit being reached into from above.
+
+    role_assignment_id BIGINT NOT NULL REFERENCES role_assignment(id),
+    -- The assignment whose authority is honoured over this unit. Points at a specific
+    -- ASSIGNMENT, not at a role — so a unit approves a person-in-a-role, not a role
+    -- that any future holder would inherit.
+
+    valid_from      DATE NOT NULL DEFAULT CURRENT_DATE,
+    valid_to        DATE,          -- NULL = open
+
+    exposed_by      BIGINT NOT NULL REFERENCES person(id),
+    -- The person who exposed the scope. MUST hold scope.expose AT org_unit_id.
+    -- Enforced by trg_exposure_direction (see domain §2.5) — a FK cannot express
+    -- "holds a permission there". The trigger calls can(), so an ancestor-unit
+    -- holder is rejected: exposure cannot be imposed from above.
+
+    exposed_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    exposure_reason TEXT NOT NULL,
+    -- e.g. 'the treasurer handles our finances', 'the registrar processes our
+    -- membership'. Required: the point of the rule is that coverage is deliberate
+    -- and attributable.
+
+    withdrawn_by    BIGINT REFERENCES person(id),
+    withdrawn_at    TIMESTAMPTZ,
+    withdrawal_reason TEXT,
+
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT ck_exposure_period CHECK (valid_to IS NULL OR valid_to > valid_from),
+    CONSTRAINT ck_exposure_withdrawn CHECK (
+        withdrawn_at IS NULL OR withdrawn_by IS NOT NULL)
+);
+
+-- One live exposure per (unit, assignment):
+CREATE UNIQUE INDEX uq_exposure_unit_assignment
+    ON scope_exposure (org_unit_id, role_assignment_id)
+    WHERE valid_to IS NULL AND withdrawn_at IS NULL;
+
+CREATE INDEX ix_exposure_unit       ON scope_exposure (org_unit_id)
+    WHERE valid_to IS NULL AND withdrawn_at IS NULL;
+CREATE INDEX ix_exposure_assignment ON scope_exposure (role_assignment_id)
+    WHERE valid_to IS NULL AND withdrawn_at IS NULL;
+```
+
+### There is no bulk tool and no reason-prefix convention
+
+**Every row in this table is written by the unit it covers.** There is no administrative
+shortcut, no `bulk:` marker, no branch in the trigger, and no review report (D-045).
+
+This was previously the design's most uncomfortable compromise — a tool that let a parent
+write exposures on a child's behalf, argued for on grounds of scale. Your answer removed the
+need for it: *"If the unit wants to expose something (a single event eg), they set the
+permissions to that event for 'everyone' or a group of people."* Once **audiences** (§8) can
+express "open this to everyone", the bulk case largely evaporates, and the rule becomes
+absolute with nothing to explain.
+
+**If a unit genuinely wants a higher-level officer to have authority over it,** its own
+leadership writes the exposure. That is the whole rule, and now it has no exceptions.
+
+### Why the key is the unit, and not the assignment
+
+`org_unit_id` is the **subject and the grantor simultaneously** — the unit is granting
+coverage over itself. This is what makes the direction of authority structural rather than
+a convention:
+
+- A row `(org_unit_id = 7, role_assignment_id = 912)` means *unit 7 has agreed that the
+  authority held by assignment 912 applies to unit 7*.
+- There is no way to express "assignment 912 covers unit 7 whether unit 7 likes it or not",
+  because that row would still have to be written at unit 7.
+
+A parent unit that wanted to reach down would have to insert a row naming the child as
+grantor — which `trg_exposure_direction` rejects (domain §2.5), and which integrity check 9 reports.
+
+### Why it points at an assignment, not a role
+
+Pointing at `role_id` would mean a unit exposes its scope to *"whoever holds the treasurer
+role"*. A person appointed treasurer two years later would silently gain access to that unit
+without the unit ever being consulted. Pointing at the assignment forces a **new exposure
+decision** whenever the holder changes — which is the behaviour the rule is for.
+
+### The `scope.expose` permission
+
+Creating an exposure requires:
+
+```
+can(actor, 'scope.expose', 'org_unit', <the unit being covered>)
+```
+
+Note the scope is the unit being covered, not the actor's own unit. An officer holding
+`scope.expose` at a **parent** unit **cannot** satisfy this for a sub-unit, because they
+hold nothing at the sub-unit. That single fact is what makes the whole rule enforceable.
+
+`scope.expose` is seeded as a permission without an `.admin` sibling implication beyond the
+usual one — it is ordinary in that respect, and grantable by anyone holding
+`org_unit.admin` at that unit. See §11 for the seed row.
+
+### Practical scale — no bulk tool, and why that is now fine
+
+Exposing many units one at a time would be tedious, and the earlier design addressed that
+with a bulk tool. **It is removed** (D-045), for a reason worth recording: once grants can
+target **audiences** (§8), the common case it existed for — "let everyone / the whole group
+see this event" — has a direct expression that needs no exposure row at all.
+
+What remains is the genuinely narrower case: *this specific person, in this specific role,
+should have authority over our unit.* That is a deliberate act by the unit, it happens
+rarely, and doing it once per unit is the correct amount of friction rather than an
+obstacle.
+
+---
+
+## 6. `access_grant` — the per-item layer
 
 This is the "per-item permission" table. You specified it means a **capability on that
 item**: "person X may act on item Y".
@@ -326,7 +467,11 @@ CREATE TABLE grant_scope_type (
 CREATE TABLE access_grant (
     id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
-    person_id       BIGINT NOT NULL REFERENCES person(id),
+    person_id       BIGINT REFERENCES person(id),
+    audience_id     BIGINT REFERENCES audience(id),
+    -- EXACTLY ONE of person_id / audience_id is set. This is how "open this event
+    -- to everyone" or "to the whole group" is expressed — see §8. A grant to an
+    -- audience is evaluated against the person being checked.
 
     scope_type      TEXT NOT NULL REFERENCES grant_scope_type(code),
     scope_id        BIGINT,
@@ -355,6 +500,11 @@ CREATE TABLE access_grant (
     updated_at      TIMESTAMPTZ,
     updated_by      BIGINT REFERENCES person(id),
 
+    CONSTRAINT ck_access_grant_grantee CHECK (
+        (person_id IS NOT NULL) <> (audience_id IS NOT NULL)),
+    -- Exactly one grantee. A grant to neither is meaningless; a grant to both
+    -- would be ambiguous (any person in the audience, or only this one?).
+
     CONSTRAINT ck_access_grant_period CHECK (
         valid_to IS NULL OR valid_to > valid_from),
     CONSTRAINT ck_access_grant_scope CHECK (
@@ -370,23 +520,48 @@ CREATE TABLE access_grant (
     CONSTRAINT ck_access_grant_delegation_expires CHECK (
         NOT is_delegated OR valid_to IS NOT NULL)
 );
+```
 
-CREATE INDEX ix_access_grant_person ON access_grant (person_id, scope_type, scope_id)
-    WHERE valid_to IS NULL;
-CREATE INDEX ix_access_grant_scope  ON access_grant (scope_type, scope_id)
-    WHERE valid_to IS NULL;
-CREATE INDEX ix_access_grant_live   ON access_grant (person_id, scope_type)
-    WHERE valid_to IS NULL AND revoked_at IS NULL;
-CREATE INDEX ix_access_grant_deny   ON access_grant (person_id, scope_type, scope_id)
-    WHERE level = 'revoked' AND valid_to IS NULL;
+### The uniqueness rule has to be careful with audiences
 
--- One live grant per (person, scope, level)? No — see below. One live NON-DENY
--- grant per (person, scope):
-CREATE UNIQUE INDEX uq_access_grant_live
+The obvious index — one live grant per (grantee, scope) — no longer works, because a person
+can legitimately hold a **personal** grant *and* be covered by an **audience** grant on the
+same item, and those are different rows with different lifetimes.
+
+```sql
+-- One live NON-DENY grant per PERSON per scope:
+CREATE UNIQUE INDEX uq_access_grant_live_person
     ON access_grant (person_id, scope_type, COALESCE(scope_id, 0))
-    WHERE valid_to IS NULL AND revoked_at IS NULL AND level <> 'revoked';
--- Denies are excluded from uniqueness, so a deny may coexist with a grant —
--- which is exactly what makes an explicit deny meaningful.
+    WHERE person_id IS NOT NULL
+      AND valid_to IS NULL AND revoked_at IS NULL AND level <> 'revoked';
+
+-- One live NON-DENY grant per AUDIENCE per scope:
+CREATE UNIQUE INDEX uq_access_grant_live_audience
+    ON access_grant (audience_id, scope_type, COALESCE(scope_id, 0))
+    WHERE audience_id IS NOT NULL
+      AND valid_to IS NULL AND revoked_at IS NULL AND level <> 'revoked';
+
+CREATE INDEX ix_access_grant_person   ON access_grant (person_id, scope_type, scope_id)
+    WHERE person_id IS NOT NULL AND valid_to IS NULL;
+CREATE INDEX ix_access_grant_audience ON access_grant (audience_id, scope_type, scope_id)
+    WHERE audience_id IS NOT NULL AND valid_to IS NULL;
+CREATE INDEX ix_access_grant_scope    ON access_grant (scope_type, scope_id)
+    WHERE valid_to IS NULL;
+CREATE INDEX ix_access_grant_deny     ON access_grant
+    (COALESCE(person_id, 0), scope_type, scope_id)
+    WHERE level = 'revoked' AND valid_to IS NULL;
+```
+
+**Denies are excluded from both unique indexes**, so a deny may coexist with a grant — which
+is exactly what makes an explicit deny meaningful. A **personal deny beats an audience
+allow**, because the deny check runs first and is scope-independent (§9, channel 0).
+
+**Audience grants cannot be delegated.** `is_delegated` requires `delegated_from`, which is a
+person, and delegating "everyone" is not a coherent act — so a check constraint enforces it:
+
+```sql
+ALTER TABLE access_grant ADD CONSTRAINT ck_access_grant_audience_not_delegated CHECK (
+    audience_id IS NULL OR NOT is_delegated);
 ```
 
 ### `level` is the heart of the design
@@ -433,7 +608,7 @@ The mitigations are mandatory, not optional:
 
 1. `grant_scope_type` validates the `scope_type` value (FK above).
 2. Deleting an item must close its grants — an application obligation, and tested.
-3. A **nightly orphan check** per scope type (§8).
+3. A **nightly orphan check** per scope type (§10, check 2).
 4. `scope_id` is `BIGINT` and ids are never reused.
 
 **To overrule this**, add a `grantable_item(id, item_type)` supertable and give every
@@ -450,7 +625,7 @@ exception.
 
 ---
 
-## 6. `permission_level` — connecting permissions to grant levels
+## 7. `permission_level` — connecting permissions to grant levels
 
 ```sql
 CREATE TABLE permission_level (
@@ -496,7 +671,196 @@ SELECT p.code, p.display_name
 
 ---
 
-## 7. `access_log`
+## 8. `audience` — grants that target a set of people
+
+A grant can name a **person** or an **audience** (D-042). This is how "open this event to
+everyone" or "let the whole group see it" is expressed — the case that surfaced when the
+question of exposing a scope was answered with *"they set the permissions to that event for
+'everyone' or a group of people."*
+
+```sql
+CREATE TABLE audience (
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    code            TEXT UNIQUE,        -- set for BUILT-IN audiences; NULL for named groups
+    name            TEXT NOT NULL,
+    description     TEXT,
+
+    kind            TEXT NOT NULL CHECK (kind IN ('builtin','group')),
+    -- 'builtin' — evaluated as a RULE by the resolver. No membership rows exist.
+    -- 'group'   — a stored, administered list in audience_member.
+
+    resolver_key    TEXT,
+    -- For built-ins, which rule the resolver applies. Set iff kind = 'builtin'.
+    --   'everyone'         — any person, including non-members and the public
+    --   'all_members'      — anyone with a current membership
+    --   'unit_participants'— participants of the unit in scope_parameter
+    --   'unit_leaders'     — holders of a leadership role in that unit
+    --   'guardians_of'     — active guardians of the person in scope_parameter
+    scope_parameter BIGINT,
+    -- For the parameterised built-ins: which unit, or which person.
+
+    is_system       BOOLEAN NOT NULL DEFAULT false,
+    valid_from      DATE,
+    valid_to        DATE,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    created_by      BIGINT REFERENCES person(id),
+
+    CONSTRAINT ck_audience_kind CHECK (
+        (kind = 'builtin') = (resolver_key IS NOT NULL)),
+    CONSTRAINT ck_audience_group_has_code CHECK (
+        kind <> 'group' OR code IS NULL)
+);
+
+CREATE UNIQUE INDEX uq_audience_code ON audience (code) WHERE code IS NOT NULL;
+CREATE INDEX ix_audience_kind ON audience (kind);
+
+CREATE TABLE audience_member (
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    audience_id     BIGINT NOT NULL REFERENCES audience(id),
+    person_id       BIGINT NOT NULL REFERENCES person(id),
+
+    valid_from      DATE NOT NULL DEFAULT CURRENT_DATE,
+    valid_to        DATE,
+    added_by        BIGINT REFERENCES person(id),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT ck_audience_member_period CHECK (
+        valid_to IS NULL OR valid_to > valid_from)
+);
+
+-- Only named groups have members. A built-in audience is a rule, so a row here
+-- would be meaningless — and, worse, would look authoritative.
+ALTER TABLE audience_member ADD CONSTRAINT ex_audience_member_no_overlap
+    EXCLUDE USING gist (
+        audience_id WITH =,
+        person_id   WITH =,
+        daterange(valid_from, valid_to, '[)') WITH &&
+    );
+
+CREATE INDEX ix_audience_member_audience ON audience_member (audience_id, valid_to);
+CREATE INDEX ix_audience_member_person   ON audience_member (person_id, valid_to);
+```
+
+### Built-in audiences are rules, not lists — and that is the whole point
+
+The distinction is the load-bearing one:
+
+| | Built-in audience | Named group |
+|---|---|---|
+| **How evaluated** | A rule the resolver applies at check time | A stored list of `audience_member` rows |
+| **When a person joins the unit** | They immediately receive what the unit granted — **automatically** | Nothing happens. Someone must add them. |
+| **Maintenance** | None | The classic stale-group problem: nobody ever removes anyone |
+| **Examples** | `everyone`, `all_members`, the participants of unit X, the guardians of person Y | "the summer camp kitchen crew" |
+
+**Prefer built-ins.** A pack that grants `view` on its events to
+`unit_participants` of itself gets the correct behaviour forever: next year's new members
+inherit it, and people who leave stop being covered, with no rows to maintain. The same grant
+to a *named group* silently rots the moment the roster changes.
+
+Named groups exist because some sets genuinely are ad hoc — a camp kitchen crew is not a unit
+and is not derivable from anything. They are the escape hatch, and they carry their known
+cost.
+
+### Evaluation
+
+An audience grant is evaluated as part of the person's own permissions — the resolver
+expands it, so a grant to an audience is checked *as if* the person held it directly:
+
+```sql
+-- Is this person covered by an audience grant applicable to this scope and level?
+CREATE OR REPLACE FUNCTION audience_grant_applies(
+    p_person_id BIGINT, p_scope_type TEXT, p_scope_id BIGINT,
+    p_permission_id BIGINT, p_at DATE
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1
+          FROM access_grant g
+          JOIN audience a ON a.id = g.audience_id
+          JOIN permission_level pl
+            ON pl.permission_id = p_permission_id
+           AND pl.scope_type = g.scope_type
+          JOIN access_level req  ON req.level  = pl.required_level
+          JOIN access_level have ON have.level = g.level
+         WHERE g.scope_type = p_scope_type
+           AND g.scope_id IS NOT DISTINCT FROM p_scope_id
+           AND g.level <> 'revoked'
+           AND g.revoked_at IS NULL
+           AND g.valid_from <= p_at
+           AND (g.valid_to IS NULL OR g.valid_to > p_at)
+           AND have.rank >= req.rank
+           AND person_in_audience(p_person_id, a.id, p_at)
+    );
+$$;
+```
+
+`person_in_audience()` is where the built-in rules live:
+
+```sql
+CREATE OR REPLACE FUNCTION person_in_audience(
+    p_person_id BIGINT, p_audience_id BIGINT, p_at DATE
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM audience a
+         WHERE a.id = p_audience_id
+           AND (a.valid_to IS NULL OR a.valid_to > p_at)
+           AND CASE a.resolver_key
+               WHEN 'everyone'          THEN true
+               WHEN 'all_members'       THEN is_current_member(p_person_id)
+               WHEN 'unit_participants' THEN EXISTS (
+                       SELECT 1 FROM unit_participation up
+                        WHERE up.person_id   = p_person_id
+                          AND up.org_unit_id = a.scope_parameter
+                          AND up.valid_from <= p_at
+                          AND (up.valid_to IS NULL OR up.valid_to > p_at))
+               WHEN 'unit_leaders'      THEN EXISTS (
+                       SELECT 1 FROM role_assignment ra
+                        JOIN role r2 ON r2.id = ra.role_id
+                        WHERE ra.person_id  = p_person_id
+                          AND r2.is_leadership
+                          AND ra.scope_type = 'org_unit'
+                          AND ra.scope_id   = a.scope_parameter
+                          AND ra.valid_from <= p_at
+                          AND (ra.valid_to IS NULL OR ra.valid_to > p_at))
+               WHEN 'guardians_of'      THEN EXISTS (
+                       SELECT 1 FROM guardianship gd
+                        WHERE gd.guardian_person_id  = p_person_id
+                          AND gd.dependent_person_id = a.scope_parameter
+                          -- a lapsed membership does not remove a guardian,
+                          -- but an ENDED guardianship does
+                          AND gd.valid_from <= p_at
+                          AND (gd.valid_to IS NULL OR gd.valid_to > p_at))
+               ELSE EXISTS (
+                       SELECT 1 FROM audience_member am
+                        WHERE am.audience_id = a.id
+                          AND am.person_id   = p_person_id
+                          AND am.valid_from <= p_at
+                          AND (am.valid_to IS NULL OR am.valid_to > p_at))
+               END
+    );
+$$;
+```
+
+**Note `unit_leaders` calls the resolver's role tables without itself being an authority
+grant.** Membership in an audience confers nothing on its own — it only decides whether *this
+grant*, which someone already created deliberately, reaches this person. A leader does not
+become able to do anything by being in the `unit_leaders` audience; they become able to do
+exactly what that grant says, on that item.
+
+### What audiences do **not** do
+
+- **They are not a permission.** Being in an audience is not authority; it is membership of a
+  set. All authority still comes from a grant.
+- **They do not replace `guardianship_permission`.** `guardians_of` lets a unit open something
+  to a child's guardians; it does not let a guardian edit the child's record. That remains the
+  guardianship channel.
+- **They do not nest.** An audience cannot contain another audience — that is how you get
+  evaluation cycles and answers nobody can predict.
+- **`everyone` is genuinely everyone**, including people with no account and no membership.
+  It is the right target for a public event page and the wrong one for anything else.
+
+---
+
+## 9. `access_log`
 
 The audit trail. Append-only; no updates, no deletes.
 
@@ -514,7 +878,7 @@ CREATE TABLE access_log (
 
     on_behalf       BOOLEAN NOT NULL DEFAULT false,
     -- True when actor_person_id != subject_person_id and the action was performed
-    -- FOR the subject (guardianship, delegation). See 04-relationships.md §5.
+    -- FOR the subject (guardianship, delegation). See 04-relationships.md §6.
 
     authorization_channel TEXT CHECK (authorization_channel IN
                         ('ownership','guardianship','item_grant','role','system','none')),
@@ -602,10 +966,74 @@ is automatic. If the organization needs human annotation of audit entries, add a
 
 ---
 
-## 8. The resolver in SQL
+## 10. The resolver in SQL
+
+### Helper functions used by the resolver
+
+Two small helpers keep `can()` readable. Both are `STABLE`.
+
+```sql
+-- Does the person hold a grant ON THIS EXACT SCOPE whose level meets what the
+-- permission requires at that scope kind? Exact match only — no inheritance.
+-- Covers BOTH a personal grant and one made to an audience the person is in.
+CREATE OR REPLACE FUNCTION grant_satisfies(
+    p_person_id BIGINT, p_scope_type TEXT, p_scope_id BIGINT,
+    p_permission_id BIGINT, p_at DATE
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1
+          FROM access_grant g
+          JOIN permission_level pl
+            ON pl.permission_id = p_permission_id
+           AND pl.scope_type = g.scope_type
+          JOIN access_level req  ON req.level  = pl.required_level
+          JOIN access_level have ON have.level = g.level
+         WHERE g.scope_type = p_scope_type
+           AND g.scope_id IS NOT DISTINCT FROM p_scope_id
+           AND g.level <> 'revoked'          -- denies handled in channel 0
+           AND g.revoked_at IS NULL
+           AND g.valid_from <= p_at
+           AND (g.valid_to IS NULL OR g.valid_to > p_at)
+           AND have.rank >= req.rank
+           -- the grantee: this person, or an audience containing them (§8)
+           AND (g.person_id = p_person_id
+                OR (g.audience_id IS NOT NULL
+                    AND person_in_audience(p_person_id, g.audience_id, p_at)))
+    );
+$$;
+
+-- Is this grant's level sufficient for the permission at this scope kind?
+CREATE OR REPLACE FUNCTION level_satisfies(
+    p_level TEXT, p_permission_id BIGINT, p_scope_type TEXT
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT COALESCE((
+        SELECT have.rank >= req.rank
+          FROM permission_level pl
+          JOIN access_level req  ON req.level  = pl.required_level
+          JOIN access_level have ON have.level = p_level
+         WHERE pl.permission_id = p_permission_id
+           AND pl.scope_type = p_scope_type
+    ), false);
+$$;
+
+-- Is the assignment still live, and does an exposure at this unit cover it?
+-- The exposure is the ONLY way authority crosses a unit boundary downward.
+CREATE OR REPLACE FUNCTION scope_exposure_covers_assignment(
+    p_org_unit_id BIGINT, p_role_assignment_id BIGINT, p_at DATE
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM scope_exposure se
+         WHERE se.org_unit_id = p_org_unit_id
+           AND se.role_assignment_id = p_role_assignment_id
+           AND se.valid_to IS NULL
+           AND se.withdrawn_at IS NULL
+           AND se.valid_from <= p_at
+    );
+$$;
+```
 
 The single authorization entry point. One implementation, used everywhere. Algorithm:
-[../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-the-resolver).
+[../domain/06-authorization-model.md](../domain/06-authorization-model.md#6-the-resolver).
 
 ```sql
 CREATE OR REPLACE FUNCTION can(
@@ -629,16 +1057,40 @@ BEGIN
     -- Resolve merge chains: never evaluate permissions for a tombstoned person.
     p_person_id := resolve_person(p_person_id);
 
-    -- CHANNEL 0: explicit deny. Checked first; overrides everything.
+    -- CHANNEL 0: explicit deny. ABSOLUTE AND SCOPE-INDEPENDENT.
+    --
+    -- A 'revoked' grant applicable to this permission blocks access no matter
+    -- WHAT scope it sits at. A per-event grant can never restore access that an
+    -- organization-wide suspension removed. Locality orders ALLOWS (the tiering
+    -- below); it never outranks a deny. See the authorization model, §7.1.
+    --
+    -- "Applicable" means: the deny's scope is the checked scope, an ancestor of
+    -- the checked unit, organization-level, or the deny names this permission
+    -- (or its resource's .admin).
     IF EXISTS (
         SELECT 1 FROM access_grant g
-         WHERE g.person_id = p_person_id
-           AND g.level = 'revoked'
+         WHERE g.level = 'revoked'
            AND g.revoked_at IS NULL
            AND g.valid_from <= p_at
            AND (g.valid_to IS NULL OR g.valid_to > p_at)
-           AND (p_scope_type IS NULL
-                OR (g.scope_type = p_scope_type AND g.scope_id = p_scope_id))
+           -- A deny applies to this person if it names them, OR if it names an
+           -- audience they are in (§8). A personal deny and an audience deny are
+           -- equally absolute; a PERSONAL allow below cannot beat an AUDIENCE deny,
+           -- because channel 0 has already returned.
+           AND (g.person_id = p_person_id
+                OR (g.audience_id IS NOT NULL
+                    AND person_in_audience(p_person_id, g.audience_id, p_at)))
+           AND (
+                 -- organization-wide deny: applies everywhere
+                 g.scope_type = 'organization'
+                 -- deny on the exact thing being checked
+              OR (p_scope_type IS NOT NULL
+                  AND g.scope_type = p_scope_type AND g.scope_id = p_scope_id)
+                 -- deny on a unit: applies to that unit and, since authority does
+                 -- not flow down, ONLY that unit. No ancestor walk.
+              OR (p_scope_type = 'org_unit' AND g.scope_type = 'org_unit'
+                  AND g.scope_id = p_scope_id)
+           )
     ) THEN
         RETURN false;
     END IF;
@@ -655,52 +1107,106 @@ BEGIN
                                      p_permission_code, p_at);
     END IF;
 
-    -- CHANNEL 3: item grant on this exact scope.
-    IF p_scope_type IS NOT NULL THEN
-        SELECT g.id INTO v_assignment_id
-          FROM access_grant g
-          JOIN permission_level pl
-            ON pl.permission_id = v_perm.id AND pl.scope_type = g.scope_type
-          JOIN access_level req ON req.level = pl.required_level
-          JOIN access_level have ON have.level = g.level
-         WHERE g.person_id = p_person_id
-           AND g.scope_type = p_scope_type
-           AND g.scope_id   = p_scope_id
-           AND g.revoked_at IS NULL
-           AND g.valid_from <= p_at
-           AND (g.valid_to IS NULL OR g.valid_to > p_at)
-           AND have.rank >= req.rank
-         LIMIT 1;
-        IF FOUND THEN
+    -- CHANNELS 3-5: ALLOWS, ORDERED BY LOCALITY (most specific first).
+    --
+    -- The first tier that yields a determination decides the effective level for
+    -- this check. If that level is insufficient, fall through to the next tier.
+    -- This is what "local permissions override global" means, and it applies to
+    -- ALLOWS ONLY — denies were already resolved in channel 0.
+
+    -- Resolve the units whose grants apply to this check:
+    --   * the checked unit itself
+    --   * any unit that has explicitly exposed its scope to a relevant assignment
+    -- NOTE: no unit_ancestors() call anywhere in this function.
+
+    -- TIER A — item grant on this exact scope (most specific).
+    IF p_scope_type IS NOT NULL AND p_scope_id IS NOT NULL THEN
+        IF grant_satisfies(p_person_id, p_scope_type, p_scope_id,
+                           v_perm.id, p_at) THEN
             RETURN true;
         END IF;
     END IF;
 
-    -- CHANNEL 4: roles, expanding unit scope upward.
+    -- TIER B — unit grant: on this unit, or on a unit whose assignment this unit
+    -- has exposed via scope_exposure.
+    IF p_scope_type = 'org_unit' AND p_scope_id IS NOT NULL THEN
+        IF grant_satisfies(p_person_id, 'org_unit', p_scope_id, v_perm.id, p_at)
+           OR EXISTS (
+                SELECT 1
+                  FROM scope_exposure se
+                  JOIN access_grant g
+                    ON g.scope_type = 'org_unit' AND g.scope_id = se.org_unit_id
+                 WHERE se.org_unit_id = p_scope_id
+                   AND se.valid_to IS NULL AND se.withdrawn_at IS NULL
+                   AND se.valid_from <= p_at
+                   AND g.person_id = p_person_id
+                   AND g.revoked_at IS NULL
+                   AND g.valid_from <= p_at
+                   AND (g.valid_to IS NULL OR g.valid_to > p_at)
+                   AND level_satisfies(g.level, v_perm.id, 'org_unit')
+                  -- the exposure must cover this very assignment
+                   AND scope_exposure_covers_assignment(
+                         se.org_unit_id, se.role_assignment_id, p_at)
+                  AND se.role_assignment_id IN (
+                        SELECT ra2.id FROM role_assignment ra2
+                         WHERE ra2.person_id = p_person_id
+                           AND ra2.valid_from <= p_at
+                           AND (ra2.valid_to IS NULL OR ra2.valid_to > p_at))
+           ) THEN
+            RETURN true;
+        END IF;
+    END IF;
+
+    -- TIER C — organization-scoped grant.
+    IF grant_satisfies(p_person_id, 'organization', NULL, v_perm.id, p_at) THEN
+        RETURN true;
+    END IF;
+
+    -- TIER D — roles: EXACT scope match, or a unit exposed to the assignment.
+    -- No downward inheritance.
+    --
+    -- MEMBERSHIP GATE (D-039): a role grants anything only while the holder has a
+    -- current membership, unless the role is marked requires_membership = false
+    -- (appointed counselors and local leaders). Guardianship and ownership were
+    -- already answered in channels 1 and 2 and are deliberately exempt.
     RETURN EXISTS (
         SELECT 1
           FROM role_assignment ra
-          JOIN role_permission rp ON rp.role_id = ra.role_id
-          JOIN permission p2      ON p2.id = rp.permission_id
+          JOIN role r0             ON r0.id = ra.role_id
+          JOIN role_permission rp  ON rp.role_id = ra.role_id
+          JOIN permission p2       ON p2.id = rp.permission_id
          WHERE ra.person_id = p_person_id
            AND ra.valid_from <= p_at
            AND (ra.valid_to IS NULL OR ra.valid_to > p_at)
+           AND (NOT r0.requires_membership           -- the carve-out
+                OR is_current_member(p_person_id))   -- the gate
            AND (
-                 -- exact permission
                  p2.code = p_permission_code
-                 -- or the resource's .admin permission
               OR p2.code = v_perm.resource || '.admin'
-                 -- or the top-level .admin
               OR (v_perm.namespace IS NULL AND p2.code = 'system.admin')
            )
            AND (
-                 ra.scope_type = 'organization'
-              OR (p_scope_type = 'org_unit' AND p_scope_id IS NOT NULL AND (
-                     ra.scope_id = p_scope_id
-                  -- downward inheritance:
-                  OR ra.scope_id IN (SELECT id FROM unit_ancestors(p_scope_id))
-                 ))
-              OR (p_scope_type IS NULL)   -- unscoped check, any assignment qualifies
+                 -- organization-scoped assignment: applies only at org level
+                 -- (system.admin excepted, below)
+                 (ra.scope_type = 'organization'
+                  AND (p2.code = 'system.admin' OR p_scope_type IS NULL
+                       OR p_scope_type = 'organization'))
+                 -- unit-scoped: the exact unit only, or a unit that exposed
+                 -- its scope to THIS assignment
+              OR (ra.scope_type = 'org_unit' AND p_scope_type = 'org_unit'
+                  AND p_scope_id IS NOT NULL
+                  AND (ra.scope_id = p_scope_id
+                       OR EXISTS (
+                            SELECT 1 FROM scope_exposure se
+                             WHERE se.org_unit_id = p_scope_id
+                               AND se.role_assignment_id = ra.id
+                               AND se.valid_to IS NULL
+                               AND se.withdrawn_at IS NULL
+                               AND se.valid_from <= p_at)))
+                 -- unscoped check ("can they do this anywhere?") — any live
+                 -- assignment qualifies. For UI decisions only; never enforce
+                 -- a mutation on an unscoped check.
+              OR (p_scope_type IS NULL)
            )
            -- delegations must still be backed by a live source
            AND (ra.delegation_of IS NULL OR EXISTS (
@@ -715,26 +1221,17 @@ BEGIN
 END $$;
 ```
 
-### Properties to verify when reviewing this function
+> **The membership gate is one line, and it is the line most likely to be "optimized"
+> away.** `AND (NOT r0.requires_membership OR is_current_member(p_person_id))` is the whole
+> of D-039. Removing it because "the join is expensive" reverses a decision you made
+> deliberately, and nothing else in the schema would notice. If it becomes a measured
+> performance problem, the fix is to cache `is_current_member()` — which is a single indexed
+> lookup on `(person_id, status, valid_to)` — not to drop the condition.
 
-1. **Deny is checked before everything**, including ownership. A suspended account's owner
-   permissions are denied by a `revoked` grant if that is what the organization wants.
-2. **Ownership short-circuits before roles.** A person's access to their own record does not
-   depend on any grant, which is what makes the system usable by non-members.
-3. **The `.admin` prefix match is computed**, not hardcoded, so new permissions are covered
-   automatically.
-4. **`p_at` is threaded through every branch.** Permission checks are time-travel capable.
-5. **Delegation sources are re-validated at check time**, closing the
-   stale-delegation escalation.
-6. **`resolve_person` is called on entry**, so a tombstoned person's id still resolves.
+### Cache invalidation, revisited
 
-**A caveat on `p_scope_type IS NULL` in channel 4.** An unscoped check ("can this person do
-X anywhere?") returns true if *any* assignment grants it. That is correct for UI decisions
-like "show the admin menu?" but **wrong for enforcement**. Every enforcing call must pass a
-scope. Enforce this in the calling convention — make scope mandatory at the API layer for
-mutating operations.
-
-### Cache
+The membership gate makes this harder than it was, and it must be built in from the start
+(D-039):
 
 ```sql
 CREATE TABLE permission_cache (
@@ -750,15 +1247,58 @@ CREATE TABLE permission_cache (
 );
 
 CREATE INDEX ix_permission_cache_expiry ON permission_cache (expires_at);
+-- The membership gate means a bulk expiry sweep must invalidate by PERSON, fast:
+CREATE INDEX ix_permission_cache_person ON permission_cache (person_id);
 ```
 
 Invalidated on any write to `role_assignment`, `access_grant`, `guardianship_permission`,
-`role_permission`, or a person merge. The merge case is the one that gets forgotten —
+`role_permission`, `audience`, `audience_member`, a person merge — **and on every membership
+transition, including the yearly expiry sweep, which touches every member at once.**
+
+### Properties to verify when reviewing this function
+
+1. **Deny is checked before everything**, including ownership. A suspended account's owner
+   permissions are denied by a `revoked` grant if that is what the organization wants.
+2. **Ownership short-circuits before roles.** A person's access to their own record does not
+   depend on any grant, which is what makes the system usable by non-members.
+3. **The `.admin` prefix match is computed**, not hardcoded, so new permissions are covered
+   automatically.
+4. **`p_at` is threaded through every branch.** Permission checks are time-travel capable.
+5. **Delegation sources are re-validated at check time**, closing the
+   stale-delegation escalation.
+6. **`resolve_person` is called on entry**, so a tombstoned person's id still resolves.
+7. **A deny is scope-independent.** Channel 0 matches organization-level denies and
+   same-scope denies, and does **not** walk ancestors — so a `revoked` grant at
+   organization scope blocks every unit, which is what makes a suspension absolute.
+8. **`unit_ancestors()` does not appear in this function.** Authority does not flow down.
+   A unit's grants reach it only via exact match or an explicit `scope_exposure`. This is
+   asserted by a test, not just a comment — integrity check 13.
+9. **Locality orders allows only.** Tiers A→D are consulted in order and the first
+   sufficient level wins; none of them can override channel 0.
+10. **The membership gate applies to roles only, in tier D.** Ownership (channel 1) and
+    guardianship (channel 2) return before it, which is what keeps a lapsed parent able to
+    act for their child and a lapsed person able to see their own renewal screen. Item and
+    unit grants are *not* gated — a grant someone deliberately made to an unpaid person is
+    honoured, because it was an explicit act rather than an inherited role.
+11. **Audience grants are evaluated through the same tiers as personal ones**, via
+    `grant_satisfies()`. A grant to `everyone` and a grant to a named person differ only in
+    how `grantee` is satisfied, never in how the level or the scope is resolved.
+
+**A caveat on `p_scope_type IS NULL` in tier D.** An unscoped check ("can this person do
+X anywhere?") returns true if *any* assignment grants it. That is correct for UI decisions
+like "show the admin menu?" but **wrong for enforcement**. Every enforcing call must pass a
+scope. Enforce this in the calling convention — make scope mandatory at the API layer for
+mutating operations.
+
+The cache definition and its invalidation rules are above, immediately after the resolver —
+they are part of the resolver's contract, not a separate concern.
+
+The person-merge case remains the easiest to forget —
 see [01-identity.md](01-identity.md#8-identity_hypothesis-and-person_merge).
 
 ---
 
-## 9. Integrity checks
+## 11. Integrity checks
 
 ```sql
 -- 1. Live grants for a person who has been merged away
@@ -811,15 +1351,95 @@ SELECT ra.person_id, p.family_name, p.given_name, ra.valid_from, ra.valid_to
 SELECT p.code FROM permission p
  WHERE p.namespace = 'dependent'
    AND NOT EXISTS (SELECT 1 FROM permission_level pl WHERE pl.permission_id = p.id);
+
+-- 9. SCOPE-AUTHORITY VIOLATION: an exposure naming a grantor that is NOT the unit
+--    itself nor an ancestor of it. That shape would mean authority is being
+--    claimed from a sibling or a descendant — never a legitimate exposure.
+--
+--    NOTE THE DIRECTION. It is CORRECT (not a violation) for an exposure to name
+--    a district-scoped assignment, because the row is keyed on the troop and the
+--    troop is doing the exposing — see domain/06-authorization-model.md §2.3. What
+--    is forbidden is a row that reaches across, not one that reaches up.
+--
+--    This is the one legitimate use of unit_ancestors() in this document: checking
+--    for violations, never resolving permissions.
+SELECT se.id, se.org_unit_id, se.exposed_by, ra.scope_type, ra.scope_id
+  FROM scope_exposure se
+  JOIN role_assignment ra ON ra.id = se.role_assignment_id
+ WHERE ra.scope_type = 'org_unit'
+   AND ra.scope_id <> se.org_unit_id
+   AND ra.scope_id NOT IN (SELECT id FROM unit_ancestors(se.org_unit_id));
+
+-- 10. Exposures whose exposing person does not hold scope.expose at the covered unit.
+--     There is no longer any exception to this: the bulk tool is removed (D-045),
+--     so EVERY row must satisfy the predicate the trigger enforces. A result here
+--     means the direction trigger was bypassed or a data fix was applied by hand.
+SELECT se.id, se.org_unit_id, se.exposed_by, se.exposure_reason
+  FROM scope_exposure se
+ WHERE NOT can(se.exposed_by, 'scope.expose', 'org_unit', se.org_unit_id,
+               se.valid_from, NULL);
+
+-- 11. Exposures pointing at a role assignment that has since ended — harmless
+--     (the resolver re-validates) but worth cleaning up
+SELECT se.id FROM scope_exposure se
+  JOIN role_assignment ra ON ra.id = se.role_assignment_id
+ WHERE se.valid_to IS NULL AND se.withdrawn_at IS NULL
+   AND ra.valid_to IS NOT NULL AND ra.valid_to <= CURRENT_DATE;
+
+-- 12. Audience member rows on a BUILT-IN audience. Built-ins are rules, not lists
+--     (§8); a stored member row would be meaningless and would look authoritative.
+SELECT am.id, a.code, am.person_id
+  FROM audience_member am
+  JOIN audience a ON a.id = am.audience_id
+ WHERE a.kind = 'builtin';
+
+-- 13. Named groups with no members (probably abandoned, worth confirming)
+SELECT a.id, a.name FROM audience a
+ WHERE a.kind = 'group' AND a.valid_to IS NULL
+   AND NOT EXISTS (SELECT 1 FROM audience_member am
+                    WHERE am.audience_id = a.id AND am.valid_to IS NULL);
+
+-- 14. TIME-BOMB for the resolver: any permission path that would inherit.
+--     Schema-level assertion — fails if a future migration adds an inheriting
+--     view or function. Run in CI, not nightly.
+SELECT p.proname
+  FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+ WHERE n.nspname = 'public'
+   AND p.proname IN ('can', 'grant_satisfies', 'can_act_for_dependent')
+   AND pg_get_functiondef(p.oid) LIKE '%unit_ancestors%';
+-- EXPECTED: zero rows. A non-empty result means authority is flowing downward
+-- through a permission path, which the design forbids.
+
+-- 15. TIME-BOMB for the membership gate (D-039). CI assertion, same idea:
+--     the resolver must still consult the gate, and roles must still be able to
+--     opt out of it. If someone deletes the condition, this fails the build.
+SELECT p.proname
+  FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+ WHERE n.nspname = 'public'
+   AND p.proname = 'can'
+   AND (pg_get_functiondef(p.oid) NOT LIKE '%is_current_member%'
+        OR pg_get_functiondef(p.oid) NOT LIKE '%requires_membership%');
+-- EXPECTED: zero rows.
 ```
 
-Checks 3 and 7 are the ones to wire to alerts. **Check 7 should email someone every time
-its result changes** — a new `system_admin` is either a planned change or an incident, and
-either way someone should know within the hour.
+Checks 3, 7, 14 and 15 are the ones to wire to alerts.
+
+- **Check 7 should email someone every time its result changes** — a new `system_admin` is
+  either a planned change or an incident, and either way someone should know within the hour.
+- **Checks 14 and 15 are CI assertions, not reports.** They are the automated guards on the
+  two rules most likely to be "simplified" away when someone optimizes the resolver: the
+  no-inheritance rule and the membership gate. Both fail the build rather than silently
+  changing who can do what.
+- **Check 9 catches the direction being broken in the way the resolver cannot see.** A row
+  that reaches sideways to a sibling unit, or down to a descendant, would be honoured
+  happily by `can()` — nothing else in this list would notice it, and it is precisely the
+  shape that lets authority be claimed from outside.
+- **Checks 12 and 13 guard the audience model.** Built-ins must not accumulate member rows
+  (they are rules), and an empty named group is usually an abandoned one.
 
 ---
 
-## 10. Seed data — permissions
+## 12. Seed data — permissions
 
 Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.
 
@@ -832,8 +1452,6 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('person.merge',             'person', 'merge',  NULL, 'Merge people',           'Confirm identity matches and merge', true),
 ('person.admin',             'person', 'admin',  NULL, 'Administer people',      'Full control over person records', true),
 ('person.contact.edit',      'person', 'contact.edit', NULL, 'Edit contacts',   'Change contact points', true),
-('person.background_check.view',   'person', 'background_check.view', NULL, 'View background checks', '', true),
-('person.background_check.manage', 'person', 'background_check.manage', NULL, 'Manage background checks', '', true),
 
 -- Accounts
 ('account.view',   'account', 'view',   NULL, 'View accounts',  '', true),
@@ -857,8 +1475,19 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('org_unit.view',   'org_unit', 'view',   NULL, 'View units',   '', true),
 ('org_unit.create', 'org_unit', 'create', NULL, 'Create units', '', true),
 ('org_unit.edit',   'org_unit', 'edit',   NULL, 'Edit units',   '', true),
-('org_unit.restructure','org_unit','restructure',NULL,'Restructure units','Split/merge/reparent', true),
+('org_unit.restructure','org_unit','restructure',NULL,'Restructure units','Split/merge, create successor units', true),
+-- Scope exposure: grants a higher-level role coverage over THIS unit.
+-- Scoped to the unit being covered. A parent unit's officer cannot satisfy this
+-- for a child unit, which is what makes the no-inheritance rule enforceable.
+-- There is no bulk variant (D-045): every row is written by the unit it covers.
+('scope.expose',    'scope',    'expose', NULL, 'Expose unit scope','Grant an external role authority over this unit', true),
+('scope.exposure.review','scope','exposure.review',NULL,'Review scope exposures','See and revoke exposures over this unit', true),
 ('org_unit.admin',  'org_unit', 'admin',  NULL, 'Administer units','', true),
+
+-- Audiences (§8). Grants may target a set of people rather than one person.
+('audience.view',   'audience', 'view',   NULL, 'View audiences',   'See built-in audiences and named groups', true),
+('audience.manage', 'audience', 'manage', NULL, 'Manage named groups','Create and populate named groups', true),
+('audience.admin',  'audience', 'admin',  NULL, 'Administer audiences','', true),
 
 -- Positions
 ('position.view',   'position', 'view',   NULL, 'View positions', '', true),
@@ -917,26 +1546,54 @@ INSERT INTO grant_scope_type (code, name, item_table, is_item_scoped) VALUES
     ('membership','Membership record','membership',true),
     ('event','Event','event',true),          -- event table to be designed
     ('document','Document','document',true); -- document layer to be designed
+
+-- Built-in audiences (§8). These are RULES the resolver evaluates, not lists —
+-- no audience_member rows ever exist for them (integrity check 12).
+-- The parameterised ones are seeded per instance, not once:
+--   'unit_participants' / 'unit_leaders' — one row per unit that needs one, with
+--                                          scope_parameter = that unit's id
+--   'guardians_of'                       — one per dependent whose guardians need
+--                                          a shared target
+INSERT INTO audience (code, name, kind, resolver_key, is_system, description) VALUES
+    ('everyone',    'Everyone',            'builtin', 'everyone',    true,
+     'Any person, including non-members and the public'),
+    ('all_members', 'All members',         'builtin', 'all_members', true,
+     'Anyone with a current membership');
+
+-- Parameterised built-ins, created as needed. Example: opening a unit's events to
+-- its own participants and leaders — the case that replaced the bulk exposure tool.
+INSERT INTO audience (code, name, kind, resolver_key, scope_parameter, is_system) VALUES
+    ('unit:42:participants', 'Participants of unit 42', 'builtin', 'unit_participants', 42, true),
+    ('unit:42:leaders',      'Leaders of unit 42',      'builtin', 'unit_leaders',      42, true);
 ```
 
 > **`system.admin` is deliberately a single top-level permission**, not a
-> per-resource one. Holding it satisfies everything, and check 7 in §9 alerts on its
+> per-resource one. Holding it satisfies everything, and check 7 in §11 alerts on its
 > holders. Keeping the most dangerous capability concentrated and alarmed is safer than
 > spreading equivalents of it across every resource.
 
 ---
 
-## 11. Open issues
+## 13. Open issues
 
-- The complete permission catalog and real role definitions (§10) — needs your input.
-- Downward inheritance of unit-scoped authority (§4) — a policy decision with system-wide
-  effect.
+- The complete permission catalog and real role definitions (§12) — needs your input.
+  Specifically: which roles are marked `requires_membership = false`. That flag is now the
+  line between "a lapse silently removes this" and "it does not", and it needs a deliberate
+  answer per role rather than a default.
 - Whether `valid_to` should be mandatory for high-authority assignments (§4).
-- Polymorphic `scope_id` vs a `grantable_item` supertable (§5) — a real fork.
-- Whether any permission should depend on current membership status (§9 check 3 relates) —
-  affects cache invalidation.
-- Cache vs materialized effective-permission table (§8).
+- Polymorphic `scope_id` vs a `grantable_item` supertable (§6) — a real fork.
+- Which built-in audiences are needed beyond `everyone` and `all_members`, and whether the
+  parameterised ones are seeded per instance or created on demand (§8).
+- How long a `permission_cache` entry may live given the membership gate (§10) — the
+  shorter the TTL, the smaller the window in which a lapse has not yet taken effect.
+- Cache vs materialized effective-permission table (§10).
 - Retention policy for `access_log` — legal input required.
 - Whether `access_log` needs human annotation (recommend a separate table if so).
+
+**Resolved and no longer open**, kept visible so the reasoning survives: the bulk exposure
+tool (removed — D-045); whether permissions depend on membership status (yes, with three
+carve-outs — D-039); background-check permissions (removed — D-043); and the
+organization-wide-roles tension (§4), which is much reduced now that membership and the
+registry live at the single root unit (D-035).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -3,7 +3,7 @@
 `audit_log`, `import_batch`, staging tables, and the redaction log.
 
 `access_log` (the authorization audit trail) is in
-[05-authorization.md](05-authorization.md#7-access_log). This document covers the
+[05-authorization.md](05-authorization.md#9-access_log). This document covers the
 data-change audit trail, the legacy import pipeline, and erasure.
 
 ---
@@ -32,7 +32,7 @@ CREATE TABLE audit_log (
     occurred_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
     transaction_id  BIGINT NOT NULL DEFAULT txid_current(),
     -- Groups all changes made in one transaction, so a multi-table operation
-    -- (approve a request → create a membership → open a unit membership) reads
+    -- (approve a request → create a membership → open a unit participation) reads
     -- as one event rather than three unrelated ones.
 
     actor_person_id BIGINT REFERENCES person(id),
@@ -281,7 +281,7 @@ CREATE TABLE staging_import_row (
     applied         BOOLEAN NOT NULL DEFAULT false,
     applied_person_id BIGINT REFERENCES person(id),
     applied_membership_id BIGINT REFERENCES membership(id),
-    applied_unit_membership_id BIGINT REFERENCES unit_membership(id),
+    applied_participation_id  BIGINT REFERENCES unit_participation(id),
 
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -300,10 +300,10 @@ CREATE INDEX ix_staging_row_applied ON staging_import_row (applied)
 ```sql
 -- Revert a batch: remove only what this batch created.
 -- Order matters: dependents first.
-UPDATE unit_membership SET valid_to = NULL   -- (or delete if it was purely created here)
- WHERE id IN (SELECT applied_unit_membership_id FROM staging_import_row
+UPDATE unit_participation SET valid_to = NULL  -- (or delete if it was purely created here)
+ WHERE id IN (SELECT applied_participation_id FROM staging_import_row
                WHERE staging_id IN (SELECT id FROM staging_import WHERE batch_id = :batch)
-                 AND applied_unit_membership_id IS NOT NULL);
+                 AND applied_participation_id IS NOT NULL);
 -- ... similarly for membership, then person, then mark rows unapplied
 UPDATE staging_import_row SET applied = false
  WHERE staging_id IN (SELECT id FROM staging_import WHERE batch_id = :batch);
@@ -344,17 +344,37 @@ invalidates every previously staged row. Version it if it must change.
 
 ### End-date inference
 
-Imported rosters rarely state when a membership ended. Three defensible options:
+Imported rosters rarely state when a period ended. Three defensible options:
 
 | Rule | Effect | Risk |
 |------|--------|------|
-| Leave `valid_to` NULL | Person appears to be a current member | **Wrong and dangerous** — inflates the member count and grants member privileges |
-| End at the end of the roster's organizational year | Defensible, documented | May truncate a membership that continued |
+| Leave `valid_to` NULL | Person appears to be current | **Wrong and dangerous** — inflates the member count, and an open `membership` also passes the permission gate (§3.1) |
+| End at the end of the organizational year of the last roster the person appears in | Defensible, documented | May truncate a period that continued |
 | End at the last date the person appears in *any* roster | Best fidelity, needs all rosters | Requires the complete dataset |
 
 **Recommended default:** end at the end of the organizational year of the last roster in
 which the person appears, marked `data_confidence = 'low'` and with a parse warning. Never
-NULL — an open membership from 1998 would make that person a current member in 2026.
+NULL.
+
+### 3.1 What a roster actually evidences
+
+A roster proves that someone **took part in a unit in a period**. It does not prove they paid
+a fee, and under [D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
+sub-unit belonging is a `unit_participation`, not a membership at all — which is the
+row the import should create by default, and the row for which "the last date they appear"
+is a genuinely good answer.
+
+**The dangerous case is the inferred membership.** If the import *also* generates a
+`membership` row for each historical participant — plausibly, because the fee was paid — then
+an open-ended one from 1998 does something a participation row never does: it satisfies
+`is_current_member()`, so a 2003 roster member would hold current member authority today
+through every role that is gated. The end-date rule above is what prevents that, and check 1
+in §5 is what catches it when the rule is not applied.
+
+**Where the money is unknown, prefer participation.** Import a participation row with a
+period, and leave the membership to be inferred only where there is evidence of payment —
+a receipt, a ledger, a dues column. Erring toward participation loses a little fidelity in
+"were they a member in 1998?" and removes an entire class of false-current-member.
 
 ---
 
@@ -378,7 +398,7 @@ CREATE TABLE redaction_log (
     -- Which tables had values overwritten.
 
     retained_reason TEXT,
-    -- Why some data was kept. Membership periods and unit memberships are
+    -- Why some data was kept. Membership periods and unit participation periods are
     -- organizational history, not personal data, and removing them would falsify
     -- records the organization may be obliged to keep. This field records that
     -- judgement per case.
@@ -401,7 +421,9 @@ incident.
 ## 5. Integrity checks
 
 ```sql
--- 1. Imported memberships with a NULL valid_to (should be zero; see §3)
+-- 1. Imported memberships with a NULL valid_to (should be zero; see §3). These are the
+--    rows that silently satisfy the permission gate, so this is a security check as much
+--    as a data-quality one.
 SELECT m.id, m.person_id, m.valid_from FROM membership m
  WHERE m.import_batch_id IS NOT NULL AND m.valid_to IS NULL;
 
@@ -448,8 +470,12 @@ discovered only when someone needs the history that was never recorded.
 - Retention period for `audit_log` before archival to cold storage. Legal input required.
 - Whether `audit_log` should be partitioned by month from the start (recommend yes, given
   the write volume and the multi-decade horizon).
-- The definitive end-date inference rule for imported rosters (§3) — needs your input on
-  the organizational year boundary.
+- The definitive end-date inference rule for imported rosters
+  ([§3.1](#31-what-a-roster-actually-evidences)) — needs your input on the organizational
+  year boundary (tracked as [../open-questions.md](../open-questions.md) A-4).
+- **Whether the import should create a `membership` at all** for a historical roster, or
+  only a `unit_participation` ([§3.1](#31-what-a-roster-actually-evidences)). The safe
+  default is participation-only; the alternative needs payment evidence per row.
 - Exact redaction scope: which fields are personal data vs. organizational history (§4).
   Requires legal review.
 - Whether `person.notes` should exist at all, given the redaction burden it creates.
