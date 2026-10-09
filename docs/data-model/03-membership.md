@@ -19,10 +19,24 @@ CREATE TABLE membership_type (
     -- 12: the fee is yearly. Kept as a column rather than a constant so a type with a
     -- different term could be added without a schema change.
 
-    renewal_grace_days INTEGER NOT NULL DEFAULT 90,
+    expiry_month    SMALLINT NOT NULL DEFAULT 1 CHECK (expiry_month BETWEEN 1 AND 12),
+    expiry_day      SMALLINT NOT NULL DEFAULT 1 CHECK (expiry_day BETWEEN 1 AND 31),
+    -- WHEN THE FEE EXPIRES (D-047): 1 January. The organizational year runs with the
+    -- calendar, so "a member this year" means what a reader expects, and the sweep, the
+    -- campaign and the reports all land on a boundary nobody has to look up.
+    --
+    -- These are columns, not a constant in a scheduled job, for the reason the user gave
+    -- for the window below: the date is a parameter the organization may move, and moving
+    -- it must not require a code change. Every lapse date, the yearly sweep and the
+    -- renewal worklist derive from these two values.
+
+    renewal_grace_days INTEGER NOT NULL DEFAULT 60,
     -- The renewal window after valid_to, during which a payment restores the
     -- membership WITHOUT re-applying and backdates the new period to the expiry date.
-    -- Dates, not a status: the person is expired throughout (D-040).
+    -- Dates, not a status: the person is expired throughout (D-040). 60 days (D-048).
+    --
+    -- Read it from here; never hardcode 60 in a job or a front end (D-048). The
+    -- requirement attached to that answer was precisely that the value stays tunable.
 
     is_self_registerable BOOLEAN NOT NULL DEFAULT true,
     requires_approval BOOLEAN NOT NULL DEFAULT true,
@@ -51,8 +65,11 @@ The table survives rather than collapsing into a constant for two reasons:
 1. **Consistency with the design's own principle.** Vocabularies are rows, not enums —
    the same argument that keeps `org_unit_type` and `position` as tables. A second kind of
    membership (a supporting or honorary one) would then be a data change.
-2. **A place for the term and the renewal window to live**, which are genuinely
-   type-dependent parameters even when there is one type.
+2. **A place for the organizational calendar to live.** The term, the expiry date and the
+   renewal window are genuinely type-dependent parameters even when there is one type — and
+   they are the parameters most likely to be tuned. Putting them in a row rather than in code
+   is what makes *"it should not be hard to modify"* ([D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter))
+   true by construction rather than by discipline.
 
 The cost is honest and small: an FK that currently always holds one value. Recorded here
 rather than hidden.
@@ -343,20 +360,35 @@ RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
     );
 $$;
 
+-- The organizational calendar for a given year, read from the parameters and never from
+-- a constant (D-047). Returns the expiry date of the year containing p_at.
+CREATE OR REPLACE FUNCTION membership_expiry_date(p_at DATE DEFAULT CURRENT_DATE)
+RETURNS DATE LANGUAGE sql STABLE AS $$
+    SELECT make_date(
+             EXTRACT(YEAR FROM p_at)::INT,
+             mt.expiry_month,
+             mt.expiry_day)
+      FROM membership_type mt
+     WHERE mt.code = 'member';
+$$;
+
 -- May this person renew without re-applying? (D-040: expired, but inside the window.)
 -- This is the distinction a 'grace_period_days' membership status would have blurred:
 -- they are NOT a member, and they MAY rejoin cheaply.
-CREATE OR REPLACE FUNCTION in_renewal_window(p_person_id BIGINT)
+--
+-- 60 days, read from the row (D-048). Not a member during the window: this answers
+-- "may they rejoin cheaply?", never "do they have access?".
+CREATE OR REPLACE FUNCTION in_renewal_window(p_person_id BIGINT,
+                                             p_at DATE DEFAULT CURRENT_DATE)
 RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
     SELECT EXISTS (
         SELECT 1
           FROM membership m
           JOIN membership_type mt ON mt.id = m.membership_type_id
          WHERE m.person_id = p_person_id
-           AND m.status IN ('lapsed','active')
            AND m.valid_to IS NOT NULL
-           AND m.valid_to <= CURRENT_DATE
-           AND m.valid_to + mt.renewal_grace_days > CURRENT_DATE
+           AND m.valid_to <= p_at
+           AND m.valid_to + mt.renewal_grace_days > p_at
     );
 $$;
 
@@ -514,6 +546,50 @@ report would have to know which case it was in.
 the same period, so the root row is derivable — it is maintained by trigger, and integrity
 check 1 in [§7](#7-integrity-checks) verifies the two agree. The alternative, a `UNION` in
 every roster query, is worse.
+
+**The root row is the only participation row that is *extended* rather than closed and
+reopened** ([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)).
+A transfer between sub-units is still close-and-open ([§5.2](#52-transfers-between-sub-units-are-cheap));
+the root row is different because it mirrors a period that is itself backdated:
+
+```sql
+-- The yearly expiry sweep. The MEMBERSHIP gets a valid_to of the expiry date and its
+-- status moves to 'lapsed'. The root participation row is NOT closed with it — it is
+-- moved forward to the same date, so it is neither open-ended nor a second row (D-050).
+UPDATE unit_participation up
+   SET valid_to = m.valid_to
+  FROM membership m, org_unit root
+ WHERE up.person_id = m.person_id
+   AND up.org_unit_id = root.id
+   AND root.parent_unit_id IS NULL
+   AND up.valid_to IS NULL;
+
+-- A renewal inside the window opens a NEW membership row starting at the expiry date
+-- ([D-016], D-040). The root row is then stretched to the new period's end, which is
+-- exactly "extend the existing row": one row spanning both periods, no gap, no overlap.
+UPDATE unit_participation up
+   SET valid_to = new_m.valid_to,
+       updated_at = now()
+  FROM membership new_m, org_unit root
+ WHERE up.person_id = new_m.person_id
+   AND up.org_unit_id = root.id
+   AND root.parent_unit_id IS NULL
+   AND new_m.valid_from = up.valid_to;   -- contiguity, not a membership FK
+```
+
+> **The join in the second statement is the whole of D-050, and it is easy to get wrong.**
+> The root row is matched to the *new* membership by **person and date**, not through
+> `renewed_from_membership_id` — the participation row carries no membership FK, deliberately
+> ([D-008](../open-questions.md#d-8--should-unit_participation-reference-the-membership), §5).
+> So the condition is `new_m.valid_from = up.valid_to`: the renewal begins exactly where the
+> root row was swept to. Anything looser would stretch a single row across a genuine
+> post-window rejoin, where the gap is real and must stay.
+
+> **This erases the visual evidence of the lapse, and that is the accepted trade (D-050).**
+> A person who lapsed and renewed looks, in `unit_participation`, exactly like a person who
+> never lapsed. The lapse is still fully visible in `membership`, which is the authority on
+> payment. The participation table answers "who was in this unit when" — a roster question —
+> and for that question a child who was in the pack across the period has exactly one answer.
 
 **"Who was in the 4th Pack on 1 June 1998?"** is then exactly the query above.
 
@@ -702,19 +778,26 @@ schema cannot prevent.
 
 ```sql
 INSERT INTO membership_type
-    (code, name, description, duration_months, renewal_grace_days,
-     is_self_registerable, sort_order)
+    (code, name, description, duration_months, expiry_month, expiry_day,
+     renewal_grace_days, is_self_registerable, sort_order)
 VALUES
-    ('member', 'Member', 'A member of the organization', 12, 90, true, 10);
+    ('member', 'Member', 'A member of the organization',
+     12, 1, 1, 60, true, 10);
 ```
 
 **One row, and that is the whole vocabulary** (D-037). The fee is flat and per person, so
 there is nothing to vary by type; being a counselor or leader is a position, not a type; and
 membership is ageless, so there are no age limits to seed (D-038).
 
-> The term (12 months) and the renewal window (90 days) are the two parameters that could
-> reasonably differ. Both are placeholders — see
-> [../open-questions.md](../open-questions.md).
+**The calendar is now settled** — 1 January, 60 days
+([D-047](../decisions/decision-log.md#d-047--the-fee-expires-on-1-january),
+[D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)).
+The term (12 months) remains a placeholder that nothing currently depends on. All four are
+columns rather than constants, so tuning any of them is an `UPDATE`, not a release.
+
+> **The one rule about these four values: read them from the row.** A scheduled job, a front
+> end or a report that contains the literal `60` or `1` has quietly reverted a parameter to a
+> constant, and the organization will discover it the first time it changes its mind.
 
 **No `requirement_code` seed.** That table does not exist (D-044). The formerly seeded rows
 — `guardian_consent`, `background_check`, `medical_form`, `references`,

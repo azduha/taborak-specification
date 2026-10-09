@@ -35,25 +35,20 @@ root. Expect this to be a short list.
 
 ---
 
-### A-4 🔴 The organizational calendar
+### A-4 (remainder) 🟢 The organizational calendar
 
-**Question.** Which date does the fee expire on, and how long is the renewal window?
+**Answered.** The fee expires on **1 January**
+([D-047](decisions/decision-log.md#d-047--the-fee-expires-on-1-january)) and the renewal
+window is **60 days** ([D-048](decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)).
 
-**Current state.** `membership_type` carries `duration_months` and `renewal_grace_days`
-([data-model/03 §1](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table)),
-seeded with the "January, three months" you described. Nothing but the seed row is a
-placeholder — but the seed row is a guess.
+**What is left is not a question but a discipline.** Both values live in
+`membership_type` as columns — `expiry_month`, `expiry_day`, `renewal_grace_days` — so either
+can be moved by an `UPDATE`. The one way to lose that property is a scheduled job or a front
+end that contains the literal `60` or `1`. Worth one line in code review: *do these values
+come from the row?*
 
-**Impact.** Small in schema, large in behaviour. Every member's lapse date, the bulk expiry
-sweep, the renewal campaign worklist, and the permission cache invalidation all derive from
-this one parameter. Changing it later re-dates every historical membership period, so it is
-worth fixing before real data is entered.
-
-**Needed.** The expiry day (1 January? the organization's year-end meeting?) and the window
-length.
-
-**See:** [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status),
-[data-model/03 §3](data-model/03-membership.md#3-membership)
+**See:** [data-model/03 §1](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table),
+[domain/05 §6](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee)
 
 ---
 
@@ -120,34 +115,23 @@ a placeholder for that judgement.
 
 ## C. Organization
 
-### C-1 🟡 May the root *see* what happens in its sub-units?
+### C-1 🟢 May the root *see* what happens in its sub-units?
 
-**Question.** [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)
-settled the root **owns** the registry, the memberships and the fees — so a registrar or
-treasurer working at the root is not reaching into anyone else's data. What is left is the
-narrower question: the root does **not** own the packs' events, rosters and local leadership,
-and it cannot decide permissions inside a pack
-([D-031](decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)).
+**Answered: no — `scope_exposure` is the only crossing, and no reporting channel is built**
+([D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
 
-May the root nonetheless *read* that material — for safeguarding, for a national report, for
-an incident — or must the pack expose its scope first?
+**What was not obvious until it was answered.** The question existed on the assumption that
+the root needed a way *around* the no-inheritance rule in order to report nationally. It
+does not, because the root **owns the membership registry and the fees** — so "how many
+members in 2019?", "who is currently a member?" and "what fees are outstanding?" are all
+answered from the root's own tables, with no exposure at all. Only the sub-units' own
+material — their events, their rosters, their local leadership — requires one.
 
-**Why it is a real question.** The no-inheritance rule is stated and enforced. This is the
-one case where the rule's cost is felt, and it is the case most likely to be worked around in
-application code by someone who assumes a parent can of course see its children.
-
-**Three routes, each with a cost.**
-
-| Route | Cost |
-|---|---|
-| The pack exposes its scope with `scope_exposure` | The rule holds absolutely; the pack must act, per pack, per period |
-| A `system_admin` does it | The stated exception — all-or-nothing, bypasses the model, and is auditable but blunt |
-| A **read-only reporting channel** deliberately *outside* the permission model — aggregate counts and rosters pushed upward by each unit, carrying no item-level authority | Lets the root report without letting it act; needs its own design and its own "what is in the aggregate" rule |
-
-**Impact.** Medium. A decision, not a structural change. The third route is the one that
-preserves the rule and still answers "how many members were there in 2019?".
-
-**See:** [domain/06 §2.4](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved)
+The consequence that will be misread as a bug: `registrar` holds `unit_participation.view` at
+organization scope and **cannot** read a pack roster. Scope is an exact match; it reads the
+root participation rows, which mirror membership
+([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+See [domain/06 §2.4](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved).
 
 ---
 
@@ -173,40 +157,58 @@ or it will be re-litigated every time someone asks about the 80s troop with that
 
 ## D. Membership
 
-### D-6 🟡 Which roles do **not** require a membership?
+### D-6 (part) 🟡 Who holds `system.gate_exempt`?
 
-**Question.** [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
-made `role.requires_membership` the switch between "a lapse silently removes this" and "it
-does not". Only two carve-outs are settled: guardianship
-([D-005](decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity))
-and ownership of your own record. Everything else depends on this flag.
+**Answered: the mechanism.** The membership gate is no longer waived only by a role flag. A
+new person-level permission, `system.gate_exempt`, waives it for a named individual across
+every gated role they hold
+([D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+`role.requires_membership` survives and still answers "is this role membership-dependent?";
+the permission answers "is this person exempt?". `system_admin` holds it, certainly — without
+it the 1 January sweep locks the administrator out of the system on the day it needs repair.
 
-**Needed.** A decision **per role** in the seed set, not a default. The plausible candidates
-for `false` are the ones held by adult volunteers whose membership and whose authority have
-different lifetimes — local leadership, and any role an appointed non-member holds.
+**Still open: which other roles carry it.** Every addition is a group of people who keep
+authority without paying, so it is worth answering per role rather than by default.
 
-**Impact.** Data only, but it is the flag that decides whether an unpaid volunteer keeps
-access on 2 January, so getting it wrong is loud.
+| Role | Carry it? | Argument |
+|---|---|---|
+| `system_admin` | **Yes** | Certain. The lockout case above. |
+| `treasurer` | ? | The person who fixes a fee problem is the person most likely to have one. |
+| `safeguarding_officer` | ? | A safeguarding incident does not pause because a fee is unpaid. |
+| `registrar` | ? | The volume of work peaks in January, which is exactly when fees lapse. |
+| `unit_leader`, `assistant_leader` | **No** | Already exempt at the role level (`Req. = no`), so the permission would be redundant. |
+| Any unit-scoped role | **No** | The exemption is system-wide by design; granting it via a unit role would give a pack leader blanket authority everywhere. |
 
-**See:** [data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission),
-[data-model/05 §12](data-model/05-authorization.md#12-seed-data--permissions)
+**Also still open: the `Req.` column itself, per role.** The role-level flag remains the blunt
+form of the same decision, and the current proposals for `unit_leader` and `assistant_leader`
+are `false` on the reasoning that a volunteer whose fee is unpaid still runs the Thursday
+meeting.
+
+**Impact.** Data only — one `role_permission` row per addition — but check 7b in
+[data-model/05 §11](data-model/05-authorization.md#11-integrity-checks) reports the resulting
+list, and it should stay short.
+
+**See:** [appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set),
+[data-model/05 §3](data-model/05-authorization.md#3-role-and-role_permission)
 
 ---
 
-### D-7 🟡 What does the root-unit participation row do at renewal?
+### D-7 🟢 What does the root-unit participation row do at renewal?
 
-**Question.** Every membership creates a participation row on the root unit, so "everyone in
-unit X" is one uniform query whether X is the organization or a Thursday-evening pack
-([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-When someone renews **inside the window**, the new membership period is backdated to the
-expiry date ([D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)) —
-so what happens to the participation row? Extend it across the closed period, or close it and
-open a new one that starts in the past?
+**Answered: it is extended, not closed and reopened**
+([D-050](decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)).
 
-**Impact.** The participation overlap constraint makes this a real choice: extending avoids a
-second row but rewrites a period that was already lapsing; a new backdated row is honest but
-must not overlap the old one. It is a small amount of DDL either way, but it has to be decided
-because the bulk expiry sweep and the renewal path must agree.
+The yearly sweep moves the root row's `valid_to` forward to the expiry date rather than
+closing it, and a renewal inside the window stretches that one row over the new period. The
+join between the two is **person and date** (`new_m.valid_from = up.valid_to`), not a
+membership FK — the participation table has none, deliberately.
+
+**The accepted cost, recorded rather than hidden.** This erases the visual evidence of the
+lapse: a person who lapsed and renewed looks, in `unit_participation`, exactly like a person
+who never lapsed. Accepted because `membership` remains the authority on payment and the
+lapse is fully visible there, while the participation table answers a *roster* question — and
+for "who was in this pack when" a child who was present across the period has one answer, not
+two.
 
 **See:** [data-model/03 §5.1](data-model/03-membership.md#51-a-participation-row-on-the-root-unit)
 
@@ -413,6 +415,11 @@ rather than finding it silently deleted.
 | A-2 | Permissions conditioned on membership status | [D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership) | Yes, enforced by the resolver, with guardianship and ownership carved out. |
 | A-3 | Activate on payment or on approval? | [D-040](decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status) | On payment; the fee expires yearly and a dated renewal window replaces a grace status. |
 | A-4 | Background checks | [D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system) | None are recorded in this system. |
+| A-4 | The expiry date | [D-047](decisions/decision-log.md#d-047--the-fee-expires-on-1-january) | 1 January; the organizational year runs with the calendar. |
+| A-4 | The renewal window length | [D-048](decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter) | 60 days, stored as a parameter rather than compiled in. |
+| C-1 | May the root read into its sub-units? | [D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing) | No. `scope_exposure` is the only crossing; no reporting channel is built. |
+| D-6 | How may the membership gate be waived? | [D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag) | A person-level `system.gate_exempt` permission, in addition to the role flag. |
+| D-7 | The root participation row at renewal | [D-050](decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row) | Extended across the renewed period; one row, no gap. |
 | B-3 (part) | Erasure: what shape? | your answer, round 5 | Redact the person, keep the financial and membership skeleton. *(The retention policy is still open — see B-3.)* |
 | C-1 (largely) | Organization-wide operational roles without downward inheritance | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | The problem dissolves: the root owns the registry and the fees. What remains is a reporting question — see C-1. |
 | C-2 | May units be reparented retroactively? | [D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit) | Not at all — a unit that moves is a new unit. |
@@ -470,7 +477,10 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 29 | There is no bulk exposure tool and no `bulk:` reason marker (D-045) † | [data-model/05](data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward) |
 | 30 | No background checks are recorded anywhere (D-043) † | throughout |
 | 31 | `access_grant.scope_id` is polymorphic, with no foreign key (F-2) † | [data-model/05](data-model/05-authorization.md#6-access_grant--the-per-item-layer) |
-| 32 | The renewal window is what you described — a fixed date plus a fixed number of days. **The dates themselves are a guess** (A-4) | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |
+| 32 | The organizational calendar is 1 January plus a 60-day window (D-047, D-048) † | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |
+| 33 | The root reads into a sub-unit only through `scope_exposure` (D-049) † | [domain/06](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved) |
+| 34 | A renewal extends the root participation row rather than closing it (D-050) † | [data-model/03](data-model/03-membership.md#51-a-participation-row-on-the-root-unit) |
+| 35 | The membership gate is waived by a person-level permission, not only a role flag (D-051) † | [data-model/05](data-model/05-authorization.md#3-role-and-role_permission) |
 
 ---
 
@@ -480,11 +490,15 @@ Pick any subset — they are independent. The ones that most change the shape of
 you want the core to stop moving:
 
 1. **A-1 remainder** — the unit type vocabulary and nesting rules
-2. **A-4** — the organizational calendar (expiry date, window length)
-3. **D-6** — which roles do **not** require a membership
-4. **F-1** — the permission catalog, and the roles
-5. **C-1** — may the root read into its sub-units, or does each pack expose its scope?
-6. **B-1** — how much legacy data, and in what shape
+2. **F-1** — the permission catalog, and the roles
+3. **B-1** — how much legacy data, and in what shape
+4. **D-6 remainder** — who holds `system.gate_exempt`, and the `Req.` column per role
 
 Everything else can be answered as we go. The schema is built so that most answers change
 data rather than structure — the ones above are the exceptions, which is why they are first.
+
+**Answered in this round:** the organizational calendar (A-4 — 1 January, 60 days);
+the root's read access into sub-units (C-1 — `scope_exposure` only); the membership
+gate's waiver (D-6 — a person-level permission, in addition to the role flag); and the
+root participation row at renewal (D-7 — extended). All four are in
+[§ R](#r-resolved--moved-to-the-decision-log) with links to the decisions that settled them.

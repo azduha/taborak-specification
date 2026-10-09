@@ -136,6 +136,8 @@ These marks should drive UI warnings and the alerting in
 > ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 > The gate is a property of the *role*, not of the permission, so it is not visible in this
 > table — see [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission).
+> The single exception is `system.gate_exempt` (§7), which *is* the gate's waiver and is
+> therefore exempt from the gate itself ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
 
 ## 5. Organization and positions
 
@@ -181,6 +183,7 @@ These marks should drive UI warnings and the alerting in
 | `access_grant.create` | — | ⚠ | Create an item grant |
 | `access_grant.revoke` | — | ⚠ | Revoke an item grant |
 | `system.admin` | `system` | 🔒🔒 | **Everything.** Single top-level capability. |
+| `system.gate_exempt` | `system` | 🔒 | **Waive the membership gate for this person.** Every gated role they hold keeps granting while their fee is unpaid (D-051). |
 
 > **`role.assign` is the permission to escalate privilege.** Whoever holds it can grant
 > themselves `system.admin`. It must be held by very few people and every assignment must
@@ -266,25 +269,47 @@ Generate each resource's `permission_level` rows at the same time — see
 
 Awaiting your refinement. Each is a bundle; revisit before implementing.
 
-| Role | Scope required | `Req.` | Key permissions | Term |
-|------|---------------|--------|-----------------|------|
-| `system_admin` | organization | — | `system.admin` | 12 mo |
-| `registrar` | organization | yes | `membership.request.*`, `membership.activate`, `person.*` (except merge/redact), `unit_participation.*`, `import.*` | 12 mo |
-| `membership_approver` | organization | yes | `membership.request.review`, `membership.request.approve` | 12 mo |
-| `treasurer` | organization or unit | yes | `fee.*`, `payment.*`, `report.finance.view` | 12 mo |
-| `safeguarding_officer` | organization | yes | `report.safeguarding.view`, `membership.terminate` | 12 mo |
-| `unit_admin` | org_unit | yes | `org_unit.view`, `unit_participation.view`, `position.view`, `org_unit.edit` (own unit only) | 12 mo |
-| `unit_leader` | org_unit | **no** | `org_unit.view`, `unit_participation.view`, `position.view`, `event.*` (own unit), `report.membership.view` (own unit) | 12 mo |
-| `assistant_leader` | org_unit | **no** | Subset of `unit_leader` | 12 mo |
-| `audience_admin` | organization or unit | yes | `audience.view`, `audience.manage` | 12 mo |
-| `identity_reviewer` | organization | yes | `person.merge`, `import.view`, `import.apply` | 12 mo |
-| `auditor` | organization | **no** | `audit.view`, `audit.export`, `report.view` — **read-only, no writes** | 12 mo |
+| Role | Scope required | `Req.` | Waives gate | Key permissions | Term |
+|------|---------------|--------|-------------|-----------------|------|
+| `system_admin` | organization | — | **yes** | `system.admin`, `system.gate_exempt` | 12 mo |
+| `registrar` | organization | yes | no | `membership.request.*`, `membership.activate`, `person.*` (except merge/redact), `unit_participation.view` (root rows only — see note), `import.*` | 12 mo |
+| `membership_approver` | organization | yes | no | `membership.request.review`, `membership.request.approve` | 12 mo |
+| `treasurer` | organization or unit | yes | no | `fee.*`, `payment.*`, `report.finance.view` | 12 mo |
+| `safeguarding_officer` | organization | yes | no | `report.safeguarding.view`, `membership.terminate` | 12 mo |
+| `unit_admin` | org_unit | yes | no | `org_unit.view`, `unit_participation.view`, `position.view`, `org_unit.edit` (own unit only) | 12 mo |
+| `unit_leader` | org_unit | **no** | no | `org_unit.view`, `unit_participation.view`, `position.view`, `event.*` (own unit), `report.membership.view` (own unit) | 12 mo |
+| `assistant_leader` | org_unit | **no** | no | Subset of `unit_leader` | 12 mo |
+| `audience_admin` | organization or unit | yes | no | `audience.view`, `audience.manage` | 12 mo |
+| `identity_reviewer` | organization | yes | no | `person.merge`, `import.view`, `import.apply` | 12 mo |
+| `auditor` | organization | **no** | no | `audit.view`, `audit.export`, `report.view` — **read-only, no writes** | 12 mo |
 
-`Req.` is `role.requires_membership`: whether the role stops granting anything when the
+**`Req.`** is `role.requires_membership`: whether the role stops granting anything when the
 holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
-It is the column to argue about, and the proposals above follow one rule — **staff-like roles
-working on the organization's own records require a membership; volunteer-facing roles do
-not.**
+The proposals follow one rule — **staff-like roles working on the organization's own records
+require a membership; volunteer-facing roles do not.**
+
+**`Waives gate`** is the separate, person-level *permission* `system.gate_exempt`
+([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+The two columns answer different questions and are not alternatives: `Req. = no` exempts
+everyone who holds the role, everywhere; `system.gate_exempt` exempts a named person across
+every role they hold. `system_admin` carries it because on 1 January the sweep lapses every
+membership including the administrator's — without the exemption, the person who would repair
+the system loses the ability to use it on the day it breaks.
+
+**Which other roles should carry `system.gate_exempt` is the open question, not whether the
+mechanism exists.** The likely candidates are the roles held by people who *are* the
+organization operationally — an appointed treasurer, a safeguarding officer — for the same
+reason `system_admin` needs it. Adding it to a role is one `role_permission` row; it is
+listed per role above so the decision is visible rather than implied.
+
+> **`registrar` holding `unit_participation.view` at organization scope is not a bug, and it
+> will be read as one** ([D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
+> Scope is an exact match: the registrar's scope is the root unit, so the role reads the
+> **root** participation rows — which is what "who is in the organization?" needs
+> ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+> It does **not** reach into any pack's roster; that requires the pack to write a
+> `scope_exposure`. Someone who assumes a parent can see its children will "fix" this by
+> widening the role, and that fix would silently reverse D-049.
 
 **Four properties worth noting:**
 
@@ -314,9 +339,15 @@ not.**
 - **The entire catalog needs your review.** Which of these does your organization actually
   need? Which are missing? Most organizations need fewer roles than they think and more
   granular permissions than they expect.
-- **The `Req.` column in §11 — a decision per role, not a default.** It is now the switch
+- **The `Req.` column in §11 — a decision per role, not a default.** It is the switch
   between "a lapse silently removes this" and "it does not", and the proposals above are
   reasoned guesses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+- **The `Waives gate` column in §11 — which roles carry `system.gate_exempt`.** The mechanism
+  is settled ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag));
+  the list is not. `system_admin` is certain. Whether the organization's appointed officers
+  should also survive their own lapse, or whether only the administrator does, is the
+  question — and it is worth answering per role rather than by defaulting, because every
+  addition is a person who keeps authority without paying.
 - Whether `person.admin` should subsume `person.merge` and `person.redact` (recommend no).
 - Whether `report.*` should be per-report permissions or one `report.view` with
   row-level filtering.

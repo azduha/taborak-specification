@@ -143,7 +143,8 @@ and it should be recorded as an accepted risk.
 membership_type(
     id, code, name,
     duration_months,                 -- 12
-    renewal_grace_days,              -- the renewal window, e.g. 90
+    expiry_month, expiry_day,        -- 1, 1   — the fee expires 1 January (D-047)
+    renewal_grace_days,              -- 60      — the renewal window (D-048)
     sort_order
 )
 ```
@@ -261,13 +262,32 @@ What replaces it is a **window tracked as dates, not as a status**
 
 | When | What is true |
 |---|---|
-| On the expiry date | The membership **lapses**. They are not a member, and member permissions stop. |
-| Inside the window (`renewal_grace_days` after expiry) | Still not a member — but they may **renew without re-applying**, and a payment now **opens the new period at the expiry date**, so the record shows no gap. |
-| After the window | A payment opens a new membership at the **payment date**. The gap is real. Still no new application required. |
+| On 1 January | The membership **lapses**. They are not a member, and member permissions stop. |
+| Inside the window (60 days after expiry) | Still not a member — but they may **renew without re-applying**, and a payment now **opens the new period at the expiry date**, so the record shows no gap. |
+| After 2 March | A payment opens a new membership at the **payment date**. The gap is real. Still no new application required. |
+
+**The 1 January date has a consequence that reaches past the membership table.** The yearly
+sweep is the only *bulk* event in a system carefully built to have none: on a single day,
+every membership in the organization lapses at once. That makes it the day the permission
+cache is invalidated for everyone, the day renewal traffic peaks, and — if
+`system.gate_exempt` were not in place — the day the system administrator would lose access to
+the system they administer ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+
 
 ```
-membership_type.renewal_grace_days = 90     -- the window, not a status
+membership_type.expiry_month = 1             -- 1 January (D-047)
+membership_type.expiry_day   = 1
+membership_type.renewal_grace_days = 60      -- the window, not a status (D-048)
 ```
+
+**All four calendar values are columns, and that is a requirement rather than a convenience.**
+The organizational year runs with the calendar, and 60 days was chosen for the window on the
+explicit condition that it stays easy to change
+([D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)):
+*"Make it 60 days, but it should not be hard to modify."* Because the window and the date live
+in a row rather than in a scheduled job, moving them is an `UPDATE`. The failure this prevents
+is a job that contains the literal `60` — invisible, and wrong the first time the organization
+changes its mind.
 
 **Why dates rather than a status.** Your own answers pointed two ways on this, and it is
 worth being honest about that: you described the window as existing *"for them to pay to stay

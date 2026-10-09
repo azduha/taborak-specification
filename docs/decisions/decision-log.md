@@ -1006,6 +1006,231 @@ scopes depending on paperwork, and the record says which was chosen and why.
 
 ---
 
+## D-047 — The fee expires on 1 January
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** A-4 (the date half)
+
+**Decision.** The organizational membership year runs with the calendar: the fee for a year
+expires on **1 January**. The yearly expiry sweep runs on that date, and the renewal campaign
+follows it.
+
+**Why.** Your answer, from the three options offered: *"1 January"*. It aligns the year with
+the calendar, so "a member this year" means what a reader expects, and the sweep, the campaign
+and the reports all land on a boundary nobody has to look up.
+
+**Consequence.** `membership_type.expiry_month` / `expiry_day` carry it as data rather than as
+a constant, because a date written into code is a date the organization cannot move when it
+changes its mind. Every lapse date, the sweep, the renewal worklist and the cache invalidation
+derive from this one parameter; changing it re-dates every *future* period but leaves
+historical ones alone, which is the reason it is a parameter and not an expression computed
+into stored rows.
+
+**See:** [D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status),
+[../data-model/03-membership.md §1](../data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table).
+
+---
+
+## D-048 — The renewal window is 60 days, and is a configuration parameter
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** A-4 (the window half)
+
+**Decision.** The renewal window after the expiry date is **60 days**. It is stored as a
+parameter (`membership_type.renewal_grace_days`), not compiled into the application.
+
+**Why.** Your answer: *"Make it 60 days, but it should not be hard to modify (even if it would
+be in the code)."* The 60 is a starting value; the requirement is that it can be changed
+without a code change.
+
+**The design is already the parameter, deliberately.** The window lives in the database, and
+`in_renewal_window()` reads it. So the second half of the answer is not a constraint to
+satisfy — it is a description of what is already built. The one thing that must *not* happen
+is a front-end or a scheduled job hardcoding `90` or `60`; every reader goes through the
+column.
+
+**Consequence.** Seat the sweep and the renewal campaign to read the window from the row, and
+the value can be tuned between years as the organization learns what actually gets paid.
+
+**See:** [D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status),
+[../data-model/03-membership.md §3](../data-model/03-membership.md#3-membership).
+
+---
+
+## D-049 — The root may not read into its sub-units; `scope_exposure` is the only crossing
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** C-1
+
+**Decision.** There is **no reporting channel outside the permission model** and none is
+built. A unit's own material — its events, its rosters, its local leadership — is visible to
+the root **only** when that unit writes a `scope_exposure` naming the assignment it is exposed
+to. Every crossing is a written, attributed act by the unit that owns the data.
+
+**Why.** Your answer, from the three routes offered: *"scope_exposure only"*. The
+no-downward-inheritance rule ([D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing))
+is the organization's own constitutional principle — *"the organization itself should not be
+able to itself decide permissions over the nested unit, it must come from the unit itself
+up."* A reporting channel would be an exception to it that grows, because every subsequent
+question ("can the root see X?") has a plausible answer of "yes, for reporting". The rule is
+easier to keep when there is no side door to argue about.
+
+**The cost, named.** The root must ask, per unit, per period, and nobody can make a pack
+expose its scope. For the questions the root genuinely needs to answer, this is less painful
+than it sounds — see the consequence below, which is the part that makes this decision
+affordable.
+
+**Consequence — most of C-1 dissolved when the root became the membership unit.** The root
+**owns** the registry, the memberships and the fees ([D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)),
+so a treasurer or registrar working at the root is not reaching into anyone else's data. These
+need no exposure at all:
+
+| Question | Answered from | Exposure needed |
+|---|---|---|
+| How many members were there in 2019? | `membership` — the root's own table | **No** |
+| Who is currently a member? | `membership` | **No** |
+| What fees are outstanding? | `fee_obligation` | **No** |
+| Was this person a member on this date? | `membership` | **No** |
+| Who was in the 4th Pack in 1998? | `unit_participation`, scoped to that unit | **Yes** |
+| Which events did a pack run? | the pack's own material | **Yes** |
+| Who leads a pack? | `position_assignment`, scoped to that unit | **Yes** |
+
+The upper half is the organization's own records. The lower half is the unit's. This split is
+the whole of D-049: **the root does not need to see into a unit to answer a question about
+membership, because membership is the root's.**
+
+**One thing that now looks like a bug and is not.** The `registrar` role
+([appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set))
+holds `unit_participation.view` at organization scope. Under exact-match scoping that does
+**not** let the registrar read any sub-unit's roster — the role's scope is the root, and a
+sub-unit roster is a different scope. It reads the **root** participation rows, which is what
+the registrar actually needs ([D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
+[03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit)).
+This will be misread as a mistake by someone who assumes a parent can see its children. It is
+not a mistake, and the catalog says so in place.
+
+**See:** [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance),
+[../data-model/05-authorization.md §5](../data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+
+---
+
+## D-050 — A renewal inside the window extends the existing root participation row
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** D-7
+
+**Decision.** When a membership lapses on 1 January and the person pays inside the window, the
+new membership period is backdated to the expiry date ([D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status))
+and the **root-unit participation row is extended** to cover the same span. It is not closed
+and reopened.
+
+Mechanically, the sweep does **not** close the root row: it moves `valid_to` forward to
+1 January, and the renewal clears it back to `NULL` (or sets the new period end), so the row
+tracks the membership across the boundary without ever being two rows.
+
+**Why.** Your answer: *"Extend the existing row."* The alternative — close at the expiry date,
+open a new backdated row — is more literal about what happened, but it makes the renewal path
+diverge from the initial-creation path, and it produces two rows per person per year for the
+one row the schema most wants to be simple.
+
+**The honest cost, recorded rather than hidden.** Extending **erases the evidence that a lapse
+occurred**: a person who lapsed and renewed looks, in `unit_participation`, exactly like a
+person who never lapsed. The gap exists only if you go and look at the membership rows. This
+is accepted deliberately, because:
+
+1. `membership` remains the authority on payment, and the lapse is fully visible there —
+   the two rows disagree about nothing, they simply answer different questions.
+2. The participation table is a *roster* history ("who was in this unit when"), not a
+   *payment* history. Erasing a gap in the roster is the correct thing to do: the child was
+   in the pack across that period, and the question the table exists to answer has one
+   answer, not two.
+
+**Consequence for the participation overlap constraint.** `ex_unit_participation_no_overlap`
+([03-membership.md §5](../data-model/03-membership.md#5-unit_participation)) is what makes the
+close-and-reopen alternative awkward, and extending avoids the constraint entirely. The
+integrity check that verifies the root row mirrors the membership
+([03-membership.md §7](../data-model/03-membership.md#7-integrity-checks), check 1b) remains
+valid and unchanged: after a renewal the two agree, and during a lapse-only period — before
+any payment — the membership has ended while the root row has not yet been swept, which is
+why the sweep must run and must run before anything reads the roster for authority.
+
+**See:** [../data-model/03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit).
+
+---
+
+## D-051 — The membership gate is waived by a permission, not only by a role flag
+
+**Status:** decided (from your answer)
+**Date:** refinement round 4
+**Resolves:** D-6
+
+**Decision.** A new **permission**, `system.gate_exempt`, waives the membership gate
+([D-039](#d-039--member-permissions-require-a-current-paid-membership)) for anyone who holds
+it. It is delivered the way every other permission is: by being placed in a **role**, which is
+then assigned to a person at the root or at a unit.
+
+- It is a **`system`-namespace** permission, so it can only arrive through a
+  `role_assignment` — **never** through an `access_grant`. An item-level grant must not be
+  able to lift the gate.
+- It is **exempt from the gate itself.** Holding it does not depend on membership, or it
+  could not do its job.
+- It is **scope-independent**: a person who holds it anywhere is waived everywhere. This is
+  what makes it "system-wide" — the gate is a property of the person's membership, so the
+  waiver has to be too.
+
+**Why.** Your answer: *"Let's create a system-wide permission, that means that their
+permissions do not end if their membership lapses... The `system.gate_exempt` is one of the
+permissions that can be assigned to the permission groups."*
+
+This replaces the earlier framing, in which `role.requires_membership` was the only switch and
+the question was therefore which *roles* to exempt. It is a better fit for the model as it
+actually works: every organizational role is a **permission group**, a person may hold several
+at once (a leader may also hold a role carrying `system_admin`; a counselor may hold a role
+carrying event creation and `person.view`), and a role may be assigned at the root or at a
+unit. A flag on the role answers "is this role membership-dependent?"; a permission answers
+"is *this person* exempt?", which is the question the exemption actually is.
+
+**`role.requires_membership` stays.** It is not superseded — the two compose, and they answer
+different questions:
+
+| | Question | Granularity | Effect |
+|---|---|---|---|
+| `role.requires_membership = false` | Is this **role** membership-dependent? | the role | the role grants regardless of membership |
+| `system.gate_exempt` | Is this **person** exempt? | the person | **every** gated role they hold is honoured |
+
+A role flag is the blunt form: it exempts everyone who holds that role, everywhere.
+The permission is the precise form: it exempts named people, and can be granted and revoked
+as an act of its own. The resolver honours a role if **either** applies.
+
+**Who holds it.** `system_admin` — without it, the 1 January sweep lapses every membership
+including the administrator's, and the person who would repair the system loses the ability to
+use it on the day it breaks. That is a lockout, not a policy. Beyond `system_admin`, which
+roles carry it is settled in the role review
+([F-1](../appendix/permission-catalog.md#11-roles--proposed-seed-set)) — the mechanism is
+fixed here, the membership of the list is data.
+
+**The evaluation must not go through `can()`.** Reading the permission through the resolver
+would be circular: `can()` would have to evaluate the gate in order to learn whether the gate
+applies, and a lapsed holder of `system.gate_exempt` would be denied it by the very rule it
+exists to lift — an unbreakable lockout with no error message. The resolver therefore checks
+for the permission by **direct lookup against live role assignments**, outside its own gate
+condition. This is the one place the resolver reads the role tables without consulting
+itself, and it is deliberate.
+
+**Consequence.** Integrity reports gain a row: who currently holds an exemption, and under
+which assignment. It is a small list of people who keep authority without paying, and it
+should be as visible as the `system.admin` holders already are.
+
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+[../data-model/05 §12](../data-model/05-authorization.md#12-seed-data--permissions),
+[../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+
+---
+
 ## Reversed decisions
 
 - **D-015 — Authority inherits downward through the unit hierarchy.** Reversed by
@@ -1048,3 +1273,9 @@ scopes depending on paperwork, and the record says which was chosen and why.
   recommendation, never a numbered decision). Reversed by
   [D-039](#d-039--member-permissions-require-a-current-paid-membership): the resolver *does*
   evaluate membership state, with guardianship, ownership and exempt role classes carved out.
+- **`role.requires_membership` as the *only* way to waive the gate.** Widened by
+  [D-051](#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag): the
+  flag survives and still answers "is this role membership-dependent?", but a person-level
+  `system.gate_exempt` permission now waives the gate for a named individual regardless of
+  which roles they hold. The original framing — in which D-6 was a question about which *roles*
+  to exempt — is what this supersedes.

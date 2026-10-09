@@ -286,10 +286,11 @@ And the yearly expiry sweep — this one **does** change membership status, unli
 else in this document:
 
 ```sql
--- Run on the organizational expiry date (see D-040). This is the ONE automatic
+-- Run on 1 January (membership_expiry_date(), D-047). This is the ONE automatic
 -- membership transition in the system.
-SELECT m.id, m.person_id, o.due_date, mt.renewal_grace_days,
-       o.due_date + mt.renewal_grace_days AS window_ends
+SELECT m.id, m.person_id, o.due_date,
+       membership_expiry_date(CURRENT_DATE) AS expiry,
+       membership_expiry_date(CURRENT_DATE) + mt.renewal_grace_days AS window_ends
   FROM membership m
   JOIN membership_type mt ON mt.id = m.membership_type_id
   JOIN fee_obligation o ON o.membership_id = m.id
@@ -297,7 +298,16 @@ SELECT m.id, m.person_id, o.due_date, mt.renewal_grace_days,
  WHERE m.status = 'active'
    AND b.balance > 0
    AND o.due_date < CURRENT_DATE;
--- → set m.status = 'lapsed', close the period, and INVALIDATE THE PERMISSION CACHE
+-- → set m.status = 'lapsed', set m.valid_to = the expiry date, and
+--   INVALIDATE THE PERMISSION CACHE FOR EVERY ROW RETURNED (by person, not by scope).
+--
+-- The sweep must NOT close the root unit_participation row — it moves valid_to forward
+-- instead, so a renewal inside the window can extend one continuous row (D-050). See
+-- 03-membership.md §5.1.
+--
+-- Note the personnel consequence: this runs for everyone at once, including the person
+-- who runs it. Without system.gate_exempt (D-051) the administrator would lock
+-- themselves out on this date.
 --   BY PERSON for every row returned. See domain/06-authorization-model.md §8.
 ```
 

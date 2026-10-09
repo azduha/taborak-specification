@@ -34,11 +34,19 @@ So there are four rules the schema obeys throughout:
 | 2 | Participation is a period, not a boolean | `membership`, `unit_participation`, `guardianship`, `position_assignment` all carry `valid_from` / `valid_to`. |
 | 3 | Access is granted, never implied by identity | Being a parent does not by itself grant access to the child's data — a `guardianship_permission` row does. |
 | 4 | Belonging to a sub-unit is not membership | There is **one** membership, at the organization. Sub-units hold participation records. |
+| 5 | Authority does not flow down the hierarchy | A unit is covered only if it exposes its scope — including the root, and including for reading. |
 
-Rule 4 is the one added last, and it is load-bearing:
-[D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership).
+Rule 4 is load-bearing: [D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership).
 "Am I a paid-up member?" is one row, one status, one date — regardless of how many
 Thursday-evening groups the person turns up to.
+
+Rule 5 is the organization's own constitutional principle, and it has no exceptions short of
+the alarmed `system_admin` escape hatch: [D-031](decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing).
+It applies to **reading** as well as acting — the root does not see into a pack's events and
+rosters unless the pack exposes them
+([D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
+Most of what the root needs is not a crossing at all, because the membership registry and the
+fees belong to the root in the first place.
 
 ---
 

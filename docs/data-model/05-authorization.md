@@ -144,11 +144,16 @@ CREATE TABLE role (
     -- 'org_unit' = only within a unit.
 
     requires_membership BOOLEAN NOT NULL DEFAULT true,
-    -- THE MEMBERSHIP GATE (D-039). True: the resolver honours this role only while
-    -- the holder has a current membership — a lapse silently withholds the role's
-    -- permissions. False: the role is honoured regardless, which is what keeps
+    -- THE MEMBERSHIP GATE (D-039), ROLE-LEVEL. True: the resolver honours this role
+    -- only while the holder has a current membership — a lapse silently withholds the
+    -- role's permissions. False: the role is honoured regardless, which is what keeps
     -- appointed counselors and local leaders able to serve while their own fee is
-    -- unpaid. This is ENFORCED by the resolver (domain/06 §6), not merely reported.
+    -- unpaid. Enforced by the resolver, not merely reported.
+    --
+    -- This is the BLUNT form of the exemption: it exempts everyone holding this role,
+    -- everywhere. The PRECISE form is the system.gate_exempt permission (D-051), which
+    -- exempts a named person across every role they hold. The resolver honours a role if
+    -- EITHER applies; the two compose and answer different questions.
     --
     -- Not expressible as a constraint: membership is temporal, in another table.
 
@@ -1030,6 +1035,35 @@ CREATE OR REPLACE FUNCTION scope_exposure_covers_assignment(
            AND se.valid_from <= p_at
     );
 $$;
+
+-- Does this person hold system.gate_exempt, and is the exemption itself still live?
+-- (D-051.) Deliberately NOT expressed as can(...): can() applies the membership gate,
+-- and the exemption exists to lift that gate. Calling can() here would make a lapsed
+-- holder unable to hold the permission that says a lapse does not matter.
+--
+-- Read directly from role_assignment. An access_grant can never confer this:
+-- system-namespace permissions are unreachable by the item channel, which is the
+-- structural guarantee that an item grant cannot lift the gate.
+CREATE OR REPLACE FUNCTION person_holds_gate_exempt(
+    p_person_id BIGINT, p_at DATE DEFAULT CURRENT_DATE
+) RETURNS BOOLEAN LANGUAGE sql STABLE AS $$
+    SELECT EXISTS (
+        SELECT 1
+          FROM role_assignment ra
+          JOIN role_permission rp ON rp.role_id = ra.role_id
+          JOIN permission p2      ON p2.id = rp.permission_id
+         WHERE ra.person_id = p_person_id
+           AND ra.valid_from <= p_at
+           AND (ra.valid_to IS NULL OR ra.valid_to > p_at)
+           AND p2.code = 'system.gate_exempt'
+           -- a delegated exemption must still be backed by a live source
+           AND (ra.delegation_of IS NULL OR EXISTS (
+                   SELECT 1 FROM role_assignment src
+                    WHERE src.id = ra.delegation_of
+                      AND src.valid_from <= p_at
+                      AND (src.valid_to IS NULL OR src.valid_to > p_at)))
+    );
+$$;
 ```
 
 The single authorization entry point. One implementation, used everywhere. Algorithm:
@@ -1166,9 +1200,13 @@ BEGIN
     -- No downward inheritance.
     --
     -- MEMBERSHIP GATE (D-039): a role grants anything only while the holder has a
-    -- current membership, unless the role is marked requires_membership = false
-    -- (appointed counselors and local leaders). Guardianship and ownership were
-    -- already answered in channels 1 and 2 and are deliberately exempt.
+    -- current membership, unless (a) the ROLE is marked requires_membership = false,
+    -- or (b) the PERSON holds system.gate_exempt (D-051). Guardianship and ownership
+    -- were already answered in channels 1 and 2 and are deliberately exempt.
+    --
+    -- (b) is resolved by DIRECT LOOKUP, not through can(). Routing it through the
+    -- resolver would be circular: a lapsed holder of the exemption would be denied it
+    -- by the very rule it exists to lift, and the lockout would have no error message.
     RETURN EXISTS (
         SELECT 1
           FROM role_assignment ra
@@ -1178,8 +1216,9 @@ BEGIN
          WHERE ra.person_id = p_person_id
            AND ra.valid_from <= p_at
            AND (ra.valid_to IS NULL OR ra.valid_to > p_at)
-           AND (NOT r0.requires_membership           -- the carve-out
-                OR is_current_member(p_person_id))   -- the gate
+           AND (NOT r0.requires_membership                 -- (a) the carve-out
+                OR is_current_member(p_person_id)          -- the gate
+                OR person_holds_gate_exempt(p_person_id, p_at))  -- (b) D-051
            AND (
                  p2.code = p_permission_code
               OR p2.code = v_perm.resource || '.admin'
@@ -1221,12 +1260,20 @@ BEGIN
 END $$;
 ```
 
-> **The membership gate is one line, and it is the line most likely to be "optimized"
-> away.** `AND (NOT r0.requires_membership OR is_current_member(p_person_id))` is the whole
-> of D-039. Removing it because "the join is expensive" reverses a decision you made
+> **The membership gate is one clause, and it is the clause most likely to be "optimized"
+> away.** `AND (NOT r0.requires_membership OR is_current_member(p_person_id) OR
+> person_holds_gate_exempt(p_person_id, p_at))` is the whole of D-039 as amended by D-051.
+> Removing any disjunct because "the join is expensive" reverses a decision taken
 > deliberately, and nothing else in the schema would notice. If it becomes a measured
-> performance problem, the fix is to cache `is_current_member()` — which is a single indexed
-> lookup on `(person_id, status, valid_to)` — not to drop the condition.
+> performance problem, the fix is to cache `is_current_member()` — a single indexed lookup on
+> `(person_id, status, valid_to)` — or to inline `person_holds_gate_exempt` as a join, not to
+> drop a condition.
+>
+> **The third disjunct is the one that must never be routed through `can()`.** It is a plain
+> read of `role_assignment`; going back through the resolver would mean asking the gate
+> whether the gate applies, and a lapsed holder of `system.gate_exempt` would be denied the
+> permission whose entire job is to say that a lapse does not matter. That is a lockout with
+> no error message, on the one day of the year it would hurt most.
 
 ### Cache invalidation, revisited
 
@@ -1347,6 +1394,30 @@ SELECT ra.person_id, p.family_name, p.given_name, ra.valid_from, ra.valid_to
   JOIN person p ON p.id = ra.person_id
  WHERE r.code = 'system_admin' AND ra.valid_to IS NULL;
 
+-- 7b. People holding system.gate_exempt — everyone who keeps authority without a
+--     current membership (D-051). Like check 7, this should be a very short list and
+--     it should alert on change. It is a different list: check 7 catches who can
+--     rewrite the system, this catches who keeps access while lapsed.
+SELECT ra.person_id, p.family_name, p.given_name, r.code AS via_role,
+       ra.valid_from, ra.valid_to
+  FROM role_assignment ra
+  JOIN role_permission rp ON rp.role_id = ra.role_id
+  JOIN permission pe      ON pe.id = rp.permission_id AND pe.code = 'system.gate_exempt'
+  JOIN role r             ON r.id = ra.role_id
+  JOIN person p           ON p.id = ra.person_id
+ WHERE ra.valid_from <= CURRENT_DATE
+   AND (ra.valid_to IS NULL OR ra.valid_to > CURRENT_DATE);
+
+-- 7c. The gate's own soundness check: nobody holds system.gate_exempt whose
+--     assignment is itself being withheld by the gate. If this ever returns a row,
+--     person_holds_gate_exempt() is being routed through can() somewhere and the
+--     exemption has become unreachable for the person who needs it (D-051).
+SELECT ra.id, ra.person_id
+  FROM role_assignment ra
+ WHERE NOT can(ra.person_id, 'system.gate_exempt', NULL, NULL, CURRENT_DATE, NULL)
+   AND person_holds_gate_exempt(ra.person_id, CURRENT_DATE)
+   AND NOT is_current_member(ra.person_id);
+
 -- 8. Permissions in the dependent.* namespace that lack a permission_level row
 SELECT p.code FROM permission p
  WHERE p.namespace = 'dependent'
@@ -1422,8 +1493,11 @@ SELECT p.proname
 -- EXPECTED: zero rows.
 ```
 
-Checks 3, 7, 14 and 15 are the ones to wire to alerts.
+Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
 
+- **Check 7b is the new one worth wiring to an alert.** Check 7 answers "who can rewrite the
+  system?"; 7b answers "who keeps authority while lapsed?" — a shorter list with a different
+  failure mode, and the one the membership gate introduces. Neither should ever grow quietly.
 - **Check 7 should email someone every time its result changes** — a new `system_admin` is
   either a planned change or an incident, and either way someone should know within the hour.
 - **Checks 14 and 15 are CI assertions, not reports.** They are the automated guards on the
@@ -1507,6 +1581,11 @@ INSERT INTO permission (code, resource, action, namespace, display_name, descrip
 ('permission.view',  'permission', 'view','system','View permissions','', true),
 ('permission.edit',  'permission', 'edit','system','Edit permissions','', true),
 ('system.admin',     'system', 'admin','system','System administrator','Full system control', true),
+('system.gate_exempt','system','gate_exempt','system','Exempt from the membership gate',
+ 'Hold this and the membership gate never applies to you: every gated role you hold keeps '
+ 'granting whether or not your fee is current (D-051). system namespace, so it can only '
+ 'arrive through a role assignment — never through an item grant. Scope-independent by '
+ 'design: the gate is a property of the person, so the waiver has to be too.', true),
 
 -- Audit
 ('audit.view',   'audit', 'view',  NULL, 'View audit log',   '', true),

@@ -185,27 +185,45 @@ local leadership. So the question becomes:
 
 > May the root *read* what happens in its sub-units, or must each sub-unit expose its scope?
 
-Three honest answers, in order of preference:
+**Answered: the sub-unit exposes its scope, and there is no other route**
+([D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
+Every crossing is a written, attributed act by the unit that owns the data.
 
-1. **The sub-unit exposes its scope.** The normal path, and the rule holds absolutely. For an
-   ongoing working relationship, the exposure row makes it visible and revocable — which is
-   the point.
-2. **A read-only reporting channel, deliberately outside the permission model.** Aggregate
-   counts and rosters pushed upward by each unit, carrying no item-level authority. This lets
-   the organization report nationally without letting it act locally — and it is the answer
-   most likely to preserve the rule while still answering "how many members in 2019?".
-3. **`system_admin`.** The stated exception; alarmed and logged. The escape hatch, not the
-   routine path.
+> **No reporting channel outside the permission model is built, and this was a deliberate
+> refusal.** A push-upward aggregate channel was the answer most likely to preserve the rule
+> while still answering "how many members in 2019?" — but it turns out not to be needed,
+> because **the root already owns the memberships**. The question that motivated it is
+> answered from the root's own table.
+
+The split is worth stating plainly, because it is what makes the strict answer affordable:
+
+| The root's own records — **no exposure needed** | A unit's own records — **exposure required** |
+|---|---|
+| How many members in 2019 | Who was in the 4th Pack in 1998 |
+| Who is currently a member | Which events a pack ran |
+| What fees are outstanding | Who leads a pack |
+| Was this person a member on this date | A pack's roster and attendance |
+
+Memberships and fees are held **at the root unit**, which *is* the organization
+([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)).
+A unit's internal life is the unit's.
 
 **What must not happen** is a background process that quietly treats root-scoped roles as
 universal because "otherwise the office can't do its job." That converts a deliberate policy
-into an inconsistency, and the inconsistency is where access bugs live.
+into an inconsistency, and the inconsistency is where access bugs live. The specific shape
+this takes in this system is worth naming: **`registrar` holds `unit_participation.view` at
+organization scope, and that does not let it read a single pack roster.** Scope is exact — the
+role reads the root participation rows, which are the membership rows
+([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+It looks like an oversight and is not
+([appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set)).
 
-> **Note for the real organization:** if it turns out that the majority of sub-units expose
-> their scope to the same organization-wide roles, that is a signal the rule does not match
-> how the organization works — and it should be revisited as a policy decision, recorded in
-> [../decisions/decision-log.md](../decisions/decision-log.md), rather than worked around in
-> code. Tracked as C-1 in [../open-questions.md](../open-questions.md#c-1--may-the-root-see-what-happens-in-its-sub-units).
+> **Note for the real organization:** if it turns out that the majority of sub-units are
+> writing exposures to the same organization-wide roles, that is a signal the rule does not
+> match how the organization works — and it should be revisited as a policy decision, recorded
+> in [../decisions/decision-log.md](../decisions/decision-log.md), rather than worked around
+> in code. The signal is legible precisely *because* there is no side channel that would hide
+> it: every crossing is a row someone wrote.
 
 ### 2.5 Enforcing the direction of authority
 
@@ -389,15 +407,22 @@ The `Req.` column is `role.requires_membership` — whether the role stops worki
 holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 It is the column to argue about, and the values below are proposals.
 
-| Role | Scope | Req. | Key permissions |
-|------|-------|------|-----------------|
-| `system_admin` | organization | — | all, plus `system.*`. Exempt: it is the recovery path, and it must work when nothing else does. |
-| `registrar` | organization | yes | `membership.request.*`, `person.*`, `unit_participation.*` |
-| `treasurer` | organization or unit | yes | `fee.*`, `payment.*`, `report.finance.view` |
-| `unit_leader` | org_unit | **no** | `event.*` for own unit, `unit_participation.view`, `unit_report.view` |
-| `assistant_leader` | org_unit | **no** | subset of `unit_leader` |
-| `unit_admin` | org_unit | yes | administrative management of a sub-unit and its children |
-| `audience_admin` | organization or unit | yes | `audience.view`, `audience.manage` — who maintains the named groups |
+| Role | Scope | Req. | Waives gate | Key permissions |
+|------|-------|------|-------------|-----------------|
+| `system_admin` | organization | — | **yes** | all, plus `system.*`. Holds `system.gate_exempt`: the 1 January sweep lapses every membership including this one, and the recovery path must work on the day it is needed. |
+| `registrar` | organization | yes | no | `membership.request.*`, `person.*`, `unit_participation.view` (root rows — see the note below the table) |
+| `treasurer` | organization or unit | yes | no | `fee.*`, `payment.*`, `report.finance.view` |
+| `unit_leader` | org_unit | **no** | no | `event.*` for own unit, `unit_participation.view`, `unit_report.view` |
+| `assistant_leader` | org_unit | **no** | no | subset of `unit_leader` |
+| `unit_admin` | org_unit | yes | no | administrative management of a sub-unit and its children |
+| `audience_admin` | organization or unit | yes | no | `audience.view`, `audience.manage` — who maintains the named groups |
+
+**`Req.` and `Waives gate` are not alternatives.** `Req.` is `role.requires_membership` — "is
+this role membership-dependent?". `Waives gate` is whether the role carries the person-level
+`system.gate_exempt` permission — "does holding this role make *me* exempt everywhere?"
+([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+Which roles carry it beyond `system_admin` is open for your review — the mechanism is
+settled, the list is data.
 
 **Why the two leader roles are marked `no`.** They are held by adult volunteers, and the
 organization's answer was *"everything except guardianship and adult volunteers"* — a
@@ -412,13 +437,21 @@ not how it punishes.** See
 the organization's own records at the root. A lapsed member should not be processing other
 people's memberships or fees, and there is no operational reason for the exemption.
 
+> **`registrar` reading `unit_participation.view` at organization scope does not let it read a
+> pack roster** ([D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
+> Scope is an exact match, so the role reads the **root** participation rows — the ones that
+> mirror membership. A sub-unit roster is a different scope and requires that sub-unit to
+> expose it. This looks like a mistake and is not; widening the role to "fix" it would quietly
+> reverse D-049.
+
 > **Organization-scoped roles do not reach into sub-units.** A `registrar` assigned at
 > organization scope has authority over organization-level records — which now includes the
 > **membership registry and the fees**, because those live at the root
 > ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)).
-> Authority over a *sub-unit's* own records — its events, its local rosters — still requires
-> either that sub-unit exposing its scope to the assignment (§2.3) or the work being done as
-> `system_admin` (§2.6). See §2.4.
+> Authority over a *sub-unit's* own records — its events, its local rosters — requires **that
+> sub-unit exposing its scope to the assignment** (§2.3). There is no other route, and
+> `system_admin` is not one: it remains the stated emergency exception, alarmed and logged
+> (§2.6), not a way to read a roster on a Tuesday. See §2.4.
 
 ### The role assignment period matters
 
@@ -582,8 +615,9 @@ answer *time-sensitive* rather than merely *scope-sensitive*.
 
 ```sql
 -- Inside tier d, for every candidate role assignment r:
-AND (NOT r.requires_membership              -- the carve-out for this role
-     OR is_current_member(p_person_id, p_at))   -- the gate
+AND (NOT r.requires_membership              -- (a) the carve-out for this ROLE
+     OR is_current_member(p_person_id, p_at)      -- the gate
+     OR person_holds_gate_exempt(p_person_id, p_at))  -- (b) the carve-out for this PERSON
 ```
 
 | Channel | Gated? | Why |
@@ -591,7 +625,25 @@ AND (NOT r.requires_membership              -- the carve-out for this role
 | Ownership (step 1) | **No** | Otherwise a lapse locks a person out of the screen they renew on |
 | Guardianship (step 2) | **No** | A legal relationship, not a membership |
 | Item / unit / org grants (tiers a–c) | **No** | An explicit act by someone who chose to give this person access. Not inherited, not implied. |
-| Roles (tier d) | **Yes**, unless the role opts out | The role was granted *because* the person was a member; the justification has gone |
+| Roles (tier d) | **Yes**, unless the role or the person opts out | The role was granted *because* the person was a member; the justification has gone |
+
+**Two ways to opt out, and they answer different questions**
+([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)):
+
+| | `role.requires_membership = false` | `system.gate_exempt` (a permission) |
+|---|---|---|
+| Question | Is this **role** membership-dependent? | Is this **person** exempt? |
+| Granularity | the role | the person |
+| Effect | the role grants regardless of membership | **every** gated role that person holds is honoured |
+| Example | a volunteer-facing role that would break the evening if it stopped working | the system administrator, who must not be locked out by the sweep they are expected to run |
+
+**`system.gate_exempt` must not be evaluated through `can()`.** Doing so is circular — the
+resolver would have to apply the gate in order to find out whether the gate applies — and a
+lapsed holder would be denied the permission whose only purpose is to say that a lapse does
+not matter. It is a plain read of `role_assignment`, and it is the one place the resolver
+touches the role tables without consulting itself. Because it is a `system`-namespace
+permission, it can never arrive through an `access_grant`: an item-level grant cannot lift the
+gate, structurally.
 
 **Why the gate reaches tier d and stops there.** The distinction is *how the authority
 arose*. A role is granted to a member qua member — a leader's authority is a consequence of

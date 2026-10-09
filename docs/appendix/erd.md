@@ -123,7 +123,8 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
   │ membership_type         │   ONE ROW: 'member'
   │  code = 'member'        │   The vocabulary is a table so it can grow,
   │  duration_months        │   not because it varies today.  (D-037)
-  │  renewal_grace_days     │   ← the renewal WINDOW, in days — not a status
+  │  expiry_month, _day     │   ← the organizational calendar: 1 Jan  (D-047)
+  │  renewal_grace_days     │   ← the renewal WINDOW: 60 days, not a status (D-048)
   └─────────┬───────────────┘
             │
             ▼
@@ -233,9 +234,15 @@ so a parent can have full access to one child and read-only to another. See
     │       role       │          ┌─────────┴──────────┐
     │  code            │          │   access_level     │
     │  scope_required  │          │   rank 0/10/20/30/40│  ← COMPARE BY RANK,
-    │  requires_*      │          │   revoked…admin     │     NEVER BY STRING
-    └────────┬─────────┘          └─────────┬──────────┘
+    │  requires_member │          │   revoked…admin     │     NEVER BY STRING
+    │   _ship         │          └─────────┬──────────┘
+    └────────┬─────────┘                    │
              │                              │
+             │   the membership gate has TWO waivers:
+             │     role.requires_membership = false   (this ROLE)
+             │     system.gate_exempt, a permission   (this PERSON, D-051)
+             │   — the second arrives by the same route as any permission,
+             │     through role_permission, and is never reachable by a grant
              ▼                              ▼
    ╔═══════════════════════╗    ╔═════════════════════════╗
    ║   role_assignment     ║    ║      access_grant       ║
@@ -375,7 +382,8 @@ person 100 — Jan Novák
 │    unit_participation  Pack 5    2024-10-01 ──────► NULL     membership, so the
 │    position_assignment  scoutmaster, Pack 5  2025-01-01 ──► NULL   roster is uniform
 │    role_assignment  unit_leader @ Pack 5     2025-01-01 ──► 2025-12-31
-│                      (requires_membership = false → survives a lapse)
+│                      (requires_membership = false → survives a lapse, D-039;
+│                       the person-level alternative is system.gate_exempt, D-051)
 │
 ├─ guardianship → child A    2015-03-01 ──────────► NULL
 │    guardianship_permission  dependent.admin          (source='self' → full)
