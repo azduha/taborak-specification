@@ -1,0 +1,3130 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/appendix/permission-catalog/">
+      
+      
+        <link rel="prev" href="../erd/">
+      
+      
+        <link rel="next" href="../../decisions/decision-log/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Permission Catalog - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#appendix--permission-catalog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Permission Catalog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-wildcard-except-systemadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no wildcard, except system.admin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-things-named-admin-which-are-not-the-same-thing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two things named "admin", which are not the same thing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sensitivity-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensitivity marker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-people-and-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. People and identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. People and identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descriptive-data-two-old-codes-and-one-new-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descriptive data: two old codes and one new one
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Accounts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Membership
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-organization-and-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Organization and positions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5a-scope-exposure-and-audiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5a. Scope exposure and audiences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Guardianship
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-permissions-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Permissions administration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-audit-and-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Audit and system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8a-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8a. Events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-there-is-no-dependent-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. There is no dependent.* namespace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-deferred-namespaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Deferred namespaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-roles--proposed-seed-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Roles — proposed seed set
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-wildcard-except-systemadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no wildcard, except system.admin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-things-named-admin-which-are-not-the-same-thing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two things named "admin", which are not the same thing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Namespaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sensitivity-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensitivity marker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-people-and-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. People and identity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. People and identity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descriptive-data-two-old-codes-and-one-new-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descriptive data: two old codes and one new one
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Accounts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Membership
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-organization-and-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Organization and positions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5a-scope-exposure-and-audiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5a. Scope exposure and audiences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Guardianship
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-permissions-administration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Permissions administration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-audit-and-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Audit and system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8a-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8a. Events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-there-is-no-dependent-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. There is no dependent.* namespace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-deferred-namespaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Deferred namespaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-roles--proposed-seed-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Roles — proposed seed set
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="appendix--permission-catalog">Appendix — Permission Catalog<a class="headerlink" href="#appendix--permission-catalog" title="Permanent link">&para;</a></h1>
+<p>Every permission code, its namespace, and the channel that resolves it.</p>
+<p>This is the <strong>proposed</strong> catalog, seeded in
+<a href="../../data-model/05-authorization/#12-what-the-organization-starts-with">../data-model/05-authorization.md</a>.</p>
+<blockquote>
+<p><strong>Deliberately comprehensive and granular, and staying that way</strong>
+(<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
+This is a <strong>menu, not a checklist.</strong> Administrators assign people only the permissions they
+actually need; that is only possible if the capabilities exist as separate rows to assign.
+Further permissions arrive with the modules not yet specified — events, documents,
+communication, reporting (<a href="#10-deferred-namespaces">§10</a>).</p>
+<p><strong>This is the opposite disposition from roles, and the asymmetry is deliberate.</strong> Roles are
+<em>runtime data</em> the organization invents (<a href="../../decisions/decision-log/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>);
+permissions are <em>capabilities the code implements</em>. You cannot assign a power the data model
+cannot express, so a comprehensive permission catalog costs only rows — while a
+comprehensive <em>role</em> list would be a specification pretending to be data.</p>
+<p>Codes are still <strong>stable identifiers</strong>: adding one is free, renaming one is a migration
+(<a href="#code-shape">§1</a>). What is <em>not</em> yet settled is the exact contents — tracked in §12.</p>
+</blockquote>
+<hr />
+<h2 id="1-conventions">1. Conventions<a class="headerlink" href="#1-conventions" title="Permanent link">&para;</a></h2>
+<h3 id="code-shape">Code shape<a class="headerlink" href="#code-shape" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&lt;resource&gt;.&lt;action&gt;              e.g.  membership.request.approve
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&lt;resource&gt;.&lt;subresource&gt;.&lt;action&gt; e.g.  unit_participation.view
+</code></pre></div>
+<p><code>resource</code> is always the first segment and matches <code>permission.resource</code>. Codes are
+<strong>stable identifiers</strong> — the <code>display_name</code> may change, the code may not. Renaming a code
+is a breaking change requiring a migration that rewrites <code>role_permission</code> rows.</p>
+<h3 id="there-is-no-wildcard-except-systemadmin">There is no wildcard, except <code>system.admin</code><a class="headerlink" href="#there-is-no-wildcard-except-systemadmin" title="Permanent link">&para;</a></h3>
+<p>Every capability in this catalog is <strong>narrow and explicit</strong>. A check for <code>X.y</code> is satisfied
+by an exact grant of <code>X.y</code> — or by <code>system.admin</code>, which is checked outright and is the only
+permission in the system that means <em>everything</em>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>A check for 'X.y' is satisfied by: an exact grant of 'X.y', OR 'system.admin'.
+</code></pre></div>
+<p>There are <strong>no per-resource <code>admin</code> permissions.</strong> The earlier convention that every resource
+should expose an <code>&lt;resource&gt;.admin</code> subsuming its narrower codes — a prefix match computed in
+the resolver — was <strong>reversed by <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></strong>,
+which also deleted the resolver branch that implemented it.</p>
+<p><strong>"Someone who can do everything about events" is a role, not a permission</strong> — the
+organization composes it from the thirteen <code>event.*</code> codes. That is the division D-052 already
+drew: <strong>the code implements capabilities, the organization groups them.</strong> A per-resource
+<code>admin</code> was the code guessing at a bundle on the organization's behalf.</p>
+<p><strong>The cost, because it is real.</strong> A new narrow permission is <em>not</em> automatically covered by
+roles that should imply it; someone must add it. Integrity check <strong>18</strong> is the safety net the
+wildcard used to be — it lists permissions no role grants, which is what a missed bundle looks
+like. It fails <strong>closed</strong>: a capability goes unheld and somebody says so, rather than a
+capability going unmeant and nobody saying so.</p>
+<h3 id="two-things-named-admin-which-are-not-the-same-thing">Two things named "admin", which are not the same thing<a class="headerlink" href="#two-things-named-admin-which-are-not-the-same-thing" title="Permanent link">&para;</a></h3>
+<p>The word used to be ambiguous three ways. Two rounds of deletion left two, and the third is
+recorded as deleted rather than quietly dropped:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th>What it is</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_level.admin</code> (rank 40)</td>
+<td>A <strong>grant level</strong> — how much authority a grant carries, in <code>view</code> &lt; <code>contribute</code> &lt; <code>manage</code> &lt; <code>admin</code>. Used by <code>permission_level</code> to decide whether a given grant satisfies a given permission.</td>
+<td><strong>Real, untouched</strong></td>
+</tr>
+<tr>
+<td><code>system.admin</code></td>
+<td>The <strong>one wildcard permission</strong>: everything, held through a role, never through an item grant</td>
+<td><strong>Real, untouched</strong></td>
+</tr>
+<tr>
+<td><code>&lt;resource&gt;.admin</code></td>
+<td>A <strong>wildcard permission code</strong> implying every sibling on that resource</td>
+<td><strong>Deleted</strong> — all sixteen, by <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></td>
+</tr>
+<tr>
+<td><code>dependent.medical.admin</code>, <code>dependent.admin</code></td>
+<td>An <strong>action</strong> meaning "edit", paired against <code>.view</code> inside a sub-resource; plus a shorthand for the whole set</td>
+<td><strong>Deleted</strong> — by <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>, which reduced a guardian's rights to <code>none</code> / <code>view</code> / <code>write</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>D-068 exempted <code>dependent.admin</code> on purpose, and D-074 withdrew the exemption.</strong> The reason
+D-068 kept it was sound at the time: it was not a prefix match inferred by code but a value a
+person deliberately stored on one row about one child. What changed is not the reasoning about
+wildcards but the thing it was a value <em>of</em> — there is no longer a set of guardian capabilities for
+a shorthand to stand for. <strong>Read the two decisions together before reinstating anything that
+spells <code>admin</code>.</strong></p>
+<h3 id="namespaces">Namespaces<a class="headerlink" href="#namespaces" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Resolved against</th>
+<th>Channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NULL</code></td>
+<td><code>role_assignment</code>, <code>access_grant</code>, ownership</td>
+<td>1, 3, 4</td>
+</tr>
+<tr>
+<td><code>system</code></td>
+<td><code>role_assignment</code> only — <strong>never</strong> item grants</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>There is no <code>dependent</code> namespace</strong> (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>);
+§9 explains what replaced it, and what was lost with it.</p>
+<p><strong>That leaves the guardianship channel with no prefix to dispatch on, which has to be answered
+rather than left implied.</strong> It used to route on <code>dependent.</code>, and the reason for routing by prefix
+was that <strong>no caller should decide which channel applies</strong> — otherwise the same authorization rule
+gets implemented twice, once correctly. It now routes on a fact about the request instead of a fact
+about the name: <strong>the channel is consulted whenever the person the action is <em>about</em> differs from
+the person performing it.</strong> That is stronger than the prefix rule, not weaker — under the old rule a
+guardian asking to change their child's address with a <code>person.contact.edit</code> code would not have
+routed through guardianship at all, because the code did not carry the right prefix. Nobody chooses
+a channel; the shape of the request selects it.</p>
+<p>The <code>guardianship.*</code> codes are additionally satisfiable by <strong>being a party to the row</strong>, and not
+only by a grant (<a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).</p>
+<p><code>system</code> permissions remain non-grantable by item grant: <code>system.admin</code> must never be delegable to
+a single event or to a parent.</p>
+<h3 id="sensitivity-marker">Sensitivity marker<a class="headerlink" href="#sensitivity-marker" title="Permanent link">&para;</a></h3>
+<p>The <strong>Sens.</strong> column flags permissions that need extra care:</p>
+<table>
+<thead>
+<tr>
+<th>Mark</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠</td>
+<td>Granting it exposes personal data</td>
+</tr>
+<tr>
+<td>⚠⚠</td>
+<td>Granting it exposes children's personal data — or the same about an adult, where the code reads a whole person record rather than one field of it. Since <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a> there is <strong>no separate <em>health data</em> class to name</strong>: the mark grades what a grant <em>exposes</em>, not which field the code points at</td>
+</tr>
+<tr>
+<td>🔒</td>
+<td>Granting it confers authority over the permission system itself</td>
+</tr>
+<tr>
+<td>⛔</td>
+<td>Granting it can end someone's membership or standing</td>
+</tr>
+</tbody>
+</table>
+<p>These marks should drive UI warnings and the alerting in
+<a href="../../data-model/05-authorization/#11-invariants-to-verify">../data-model/05-authorization.md</a>.</p>
+<hr />
+<h2 id="2-people-and-identity">2. People and identity<a class="headerlink" href="#2-people-and-identity" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person.view</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>See person records — <strong>all of them, including every descriptive value</strong></td>
+</tr>
+<tr>
+<td><code>person.create</code></td>
+<td>—</td>
+<td></td>
+<td>Add a person record</td>
+</tr>
+<tr>
+<td><code>person.edit</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Change person details, including descriptive values</td>
+</tr>
+<tr>
+<td><code>person.contact.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See contact points</td>
+</tr>
+<tr>
+<td><code>person.contact.edit</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Change contact points</td>
+</tr>
+<tr>
+<td><code>person.merge</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Confirm identity matches and merge people</td>
+</tr>
+<tr>
+<td><code>person.unmerge</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Reverse a merge</td>
+</tr>
+<tr>
+<td><code>person.redact</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Perform a GDPR-style erasure</td>
+</tr>
+<tr>
+<td><code>attribute.define</code></td>
+<td>—</td>
+<td></td>
+<td><strong>Curate the vocabulary</strong> of descriptive data — create, rename, merge or retire a code</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>person.merge</code> and <code>person.redact</code> are separated from <code>person.edit</code> deliberately. Both
+are irreversible in practice and both have privacy consequences far beyond editing a
+record.</p>
+<p><strong>Before <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>,</strong>
+the way to keep them apart was to carve them out of <code>person.admin</code>'s prefix match — a
+special case in the resolver that was invisible in every role editor. Now there is no
+wildcard to carve out of, and the question moves somewhere reviewable: a role bundling all
+of <code>person.*</code> reaches them, and you can <em>see</em> it in <code>role_permission</code>. <strong>The guidance that
+replaces the special case is in §11</strong> — no seeded role mixes <code>person.merge</code> or
+<code>person.redact</code> with routine <code>person.edit</code>, and one that does should be named for what it
+is. This is now a report a person can read, not a caveat about a resolver rule.</p>
+<p><strong><code>person.background_check.*</code> is gone</strong> (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
+The organization has no background checks handled by this system, so there is nothing to
+view and nothing to record. If that changes, the permission pair and a dated record with an
+<code>expires_at</code> are the natural shape — and it would belong here, next to <code>person.*</code>, because
+a clearance is a fact about a person and not about their membership.</p>
+<h3 id="descriptive-data-two-old-codes-and-one-new-one">Descriptive data: two old codes and one new one<a class="headerlink" href="#descriptive-data-two-old-codes-and-one-new-one" title="Permanent link">&para;</a></h3>
+<p>Everything the system knows about a person other than their name, their gender and their age is
+one class of data, in fields the organization defines while it runs
+(<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>,
+<a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a>,
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+<a href="../../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>).
+The catalog's whole involvement in that is one row added and none removed:</p>
+<ul>
+<li><strong>Read: <code>person.view</code>. Write: <code>person.edit</code>. That is the entire access story.</strong> <strong>No read or
+  write code was added</strong> for descriptive data, because there is nothing left for one to gate —
+  a code that separated, say, the allergy list from the rest of the record would reinstate the
+  privileged subset <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  refused on the merits. There is therefore <strong>no <code>health.*</code> or <code>medical.*</code> namespace and no
+  per-field access rule</strong>, deliberately: <code>category</code> on a definition groups a form and grants
+  nothing. If a narrower tier is ever genuinely needed, the route is a decision entry about a
+  <strong>second grant scope over a defined set of data</strong>, not a code with a suggestive name.</li>
+<li><strong><code>attribute.define</code> is the new one, and it is the narrow one</strong>
+  (<a href="../../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>):
+  it creates, renames, merges and retires a code — deciding what the organization <em>collects</em>,
+  which is what makes the data queryable. Recording a value against a code that does not exist
+  needs no such permission: it saves as a <code>proposed</code> definition and waits in the curation queue.
+  The mark column stays empty for it because it reads nobody's data — the vocabulary is rows
+  about codes, and the values underneath it are reached through <code>person.view</code> like anything else.</li>
+<li><strong><code>person.view</code> moved from ⚠ to ⚠⚠</strong>, and the reason is the same decision: the marker grades
+  what a grant <em>exposes</em>, and this one now exposes everything known about a child — an allergy
+  list, an insurance number, a note about who the child actually lives with — through a single
+  code that used to be graded as ordinary personal data from when the record was smaller than
+  the person.</li>
+</ul>
+<p><code>person.redact</code> reaches the layer too, and in the opposite direction from retiring a code:
+retiring one keeps the values, redacting a person erases theirs — in the audit trail as well as in
+the row, since a trail that still reads out an erased value has preserved it rather than missed it
+(<a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">../data-model/09-attributes.md §6</a>).</p>
+</blockquote>
+<h2 id="3-accounts">3. Accounts<a class="headerlink" href="#3-accounts" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>account.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See account records</td>
+</tr>
+<tr>
+<td><code>account.create</code></td>
+<td>—</td>
+<td></td>
+<td>Create an account for someone</td>
+</tr>
+<tr>
+<td><code>account.suspend</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Suspend an account</td>
+</tr>
+<tr>
+<td><code>account.close</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Close an account</td>
+</tr>
+<tr>
+<td><code>account.credential.reset</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Issue a credential reset</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>account.suspend</code> is <strong>not</strong> <code>membership.suspend</code>. Suspending a login does not remove
+someone from the organization; the two are separate lifecycles and separate permissions.</p>
+</blockquote>
+<h2 id="4-membership">4. Membership<a class="headerlink" href="#4-membership" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>membership.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See membership records</td>
+</tr>
+<tr>
+<td><code>membership.request.create</code></td>
+<td>—</td>
+<td></td>
+<td>Submit an application</td>
+</tr>
+<tr>
+<td><code>membership.request.review</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Read and work an application</td>
+</tr>
+<tr>
+<td><code>membership.request.approve</code></td>
+<td>—</td>
+<td>⛔</td>
+<td>Approve or reject an application</td>
+</tr>
+<tr>
+<td><code>membership.activate</code></td>
+<td>—</td>
+<td></td>
+<td>Activate a membership</td>
+</tr>
+<tr>
+<td><code>membership.lapse</code></td>
+<td>—</td>
+<td>⛔</td>
+<td>Lapse a membership (administrative, non-payment)</td>
+</tr>
+<tr>
+<td><code>membership.suspend</code></td>
+<td>—</td>
+<td>⛔</td>
+<td>Temporarily suspend a membership</td>
+</tr>
+<tr>
+<td><code>membership.terminate</code></td>
+<td>—</td>
+<td>⛔</td>
+<td><strong>End a membership for cause / expel</strong></td>
+</tr>
+<tr>
+<td><code>membership.backdate</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Enter or correct historical membership periods</td>
+</tr>
+<tr>
+<td><code>unit_participation.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See who takes part in a sub-unit</td>
+</tr>
+<tr>
+<td><code>unit_participation.manage</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Add, move or end participation</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>membership.terminate</code> is the most consequential non-system permission in the
+catalog.</strong> A lapse is administrative; a termination is a decision about a person's
+standing in a youth organization, frequently with safeguarding and reputational
+consequences. It should be held by very few people, and it must not be implied by
+<code>membership.lapse</code>. Grant it explicitly, per person.</p>
+<p><strong><code>membership.transfer</code> is gone.</strong> "Transfer a member between units" was an artefact of
+units holding memberships. With participation (<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>),
+moving between sub-units is <code>unit_participation.manage</code> — close one row, open another —
+and it does not touch the person's membership at all. There is nothing to transfer.</p>
+<p><strong>These permissions are gated by membership when held through a role that requires one</strong>
+(<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+The gate is a property of the <em>role</em>, not of the permission, so it is not visible in this
+table — see <a href="../../data-model/05-authorization/#3-role-and-role_permission">../data-model/05-authorization.md §3</a>.
+The single exception is <code>system.gate_exempt</code> (§7), which <em>is</em> the gate's waiver and is
+therefore exempt from the gate itself (<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).</p>
+</blockquote>
+<h2 id="5-organization-and-positions">5. Organization and positions<a class="headerlink" href="#5-organization-and-positions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>org_unit.view</code></td>
+<td>—</td>
+<td></td>
+<td>See units</td>
+</tr>
+<tr>
+<td><code>org_unit.create</code></td>
+<td>—</td>
+<td></td>
+<td>Create a unit</td>
+</tr>
+<tr>
+<td><code>org_unit.edit</code></td>
+<td>—</td>
+<td></td>
+<td>Edit a unit's details</td>
+</tr>
+<tr>
+<td><code>org_unit.rename</code></td>
+<td>—</td>
+<td></td>
+<td>Rename or renumber a unit</td>
+</tr>
+<tr>
+<td><code>org_unit.restructure</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Split or merge units</td>
+</tr>
+<tr>
+<td><code>org_unit.close</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Close a unit</td>
+</tr>
+<tr>
+<td><code>position.view</code></td>
+<td>—</td>
+<td></td>
+<td>See positions</td>
+</tr>
+<tr>
+<td><code>position.assign</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Appoint someone to a position</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>org_unit.restructure</code> is separated because a split rewrites the answer to historical
+questions. It is not routine editing. <strong>Reparenting is no longer among the things it
+grants</strong> — a unit cannot change parent at all
+(<a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>),
+so the permission covers splits and mergers and the closing of a unit that "moved".</p>
+</blockquote>
+<h2 id="5a-scope-exposure-and-audiences">5a. Scope exposure and audiences<a class="headerlink" href="#5a-scope-exposure-and-audiences" title="Permanent link">&para;</a></h2>
+<p>Two mechanisms that had been missing from this catalog while sitting in the seed data and
+carrying some of the design's weight. Both are now listed, and the first is arguably the most
+consequential permission in the authorization model.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope.expose</code></td>
+<td>—</td>
+<td>🔒</td>
+<td><strong>Expose this unit's scope</strong> to a parent unit's role assignment</td>
+</tr>
+<tr>
+<td><code>scope.exposure.review</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See and revoke the exposures made over this unit</td>
+</tr>
+<tr>
+<td><code>audience.view</code></td>
+<td>—</td>
+<td></td>
+<td>See built-in audiences and named groups</td>
+</tr>
+<tr>
+<td><code>audience.manage</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Create and populate named groups</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>scope.expose</code> is the only door between unit levels.</strong> Authority never inherits downward
+(<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>),
+and this permission is the single mechanism that crosses the boundary — so it is graded 🔒
+despite being an obscure-sounding code, and it is <em>higher</em>-stakes than several codes with
+more obvious names.</p>
+<p><strong>What makes it safe is who can write it.</strong> Every <code>scope_exposure</code> row is written <strong>by the
+unit it covers</strong>: a parent unit's officer cannot satisfy it for a child unit, which is what
+makes the no-inheritance rule enforceable rather than aspirational
+(<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).
+There is no bulk variant (<a href="../../decisions/decision-log/#d-045--the-bulk-scope-exposure-tool-is-removed">D-045</a>) —
+every row is a deliberate, individual, attributable decision about one assignment.</p>
+<p><strong><code>audience.manage</code> is the permission that creates a grant target.</strong> Whoever holds it can
+assemble a named list of people which a later <code>access_grant</code> may then address
+(<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>) —
+so it is authority over <em>who could be granted</em>, one step removed from granting. Whether it
+belongs to a dedicated <code>audience_admin</code> or to unit leaders is open (§12).</p>
+</blockquote>
+<hr />
+<h2 id="6-guardianship">6. Guardianship<a class="headerlink" href="#6-guardianship" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guardianship.view</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>See guardianship relationships</td>
+</tr>
+<tr>
+<td><code>guardianship.create</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>Record a guardianship</td>
+</tr>
+<tr>
+<td><code>guardianship.end</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>End a guardianship</td>
+</tr>
+<tr>
+<td><code>guardianship.assign</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>Add another guardian over the same dependent</td>
+</tr>
+<tr>
+<td><code>guardianship.change_right</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Change a guardianship's <code>right_level</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>These four are the only codes in the catalog that a private individual holds over their own
+household, without being granted them.</strong> <a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>
+makes the parties to a guardianship principals on the row: a guardian may end it, add another
+guardian, and change its level; the adult subject may end it over themselves. Staff hold the same
+codes and are <strong>an</strong> route, never <strong>the</strong> route.</p>
+<p><code>guardianship.permission.grant</code> is <strong>deleted</strong> — it granted individual codes from the
+<code>dependent.*</code> namespace, and there is no such namespace to grant from
+(<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+<code>guardianship.change_right</code> replaces it, and does less: one value, three choices.</p>
+</blockquote>
+<h2 id="7-permissions-administration">7. Permissions administration<a class="headerlink" href="#7-permissions-administration" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role.view</code></td>
+<td><code>system</code></td>
+<td></td>
+<td>See roles and their permissions</td>
+</tr>
+<tr>
+<td><code>role.create</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td>Create a role</td>
+</tr>
+<tr>
+<td><code>role.edit</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td>Change what a role grants — <strong>takes effect immediately for every holder</strong></td>
+</tr>
+<tr>
+<td><code>role.delete</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td>Delete a role. Only possible if it was <strong>never assigned</strong> and is not a system role</td>
+</tr>
+<tr>
+<td><code>role.assign</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td><strong>Assign a role to a person</strong></td>
+</tr>
+<tr>
+<td><code>role.unassign</code></td>
+<td><code>system</code></td>
+<td>🔒</td>
+<td>End a role assignment</td>
+</tr>
+<tr>
+<td><code>permission.view</code></td>
+<td><code>system</code></td>
+<td></td>
+<td>See the permission catalog</td>
+</tr>
+<tr>
+<td><code>permission.edit</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td>Change the permission catalog</td>
+</tr>
+<tr>
+<td><code>access_grant.create</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Create an item grant</td>
+</tr>
+<tr>
+<td><code>access_grant.revoke</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Revoke an item grant</td>
+</tr>
+<tr>
+<td><code>system.admin</code></td>
+<td><code>system</code></td>
+<td>🔒🔒</td>
+<td><strong>Everything.</strong> Single top-level capability.</td>
+</tr>
+<tr>
+<td><code>system.gate_exempt</code></td>
+<td><code>system</code></td>
+<td>🔒</td>
+<td><strong>Waive the membership gate for this person.</strong> Every gated role they hold keeps granting while their fee is unpaid (D-051).</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>role.assign</code> is the permission to escalate privilege.</strong> Whoever holds it can grant
+themselves <code>system.admin</code>. It must be held by very few people and every assignment must
+be logged and alerted on. Note that <code>system.admin</code> is deliberately a <strong>single top-level
+permission</strong> rather than a per-resource one — concentrating the most dangerous capability
+and alarming on its holders is safer than scattering equivalents of it.</p>
+<p><strong>Roles are runtime data, and these four permissions are how the organization administers
+them.</strong> <code>role.create</code> composes a new permission group; <code>role.edit</code> changes what an existing
+one grants; <code>role.delete</code> removes one that was created by mistake. The seed roles in §11 are
+therefore a <em>starting point to be edited</em>, not a fixed vocabulary — which is why §11 no
+longer claims to answer "which roles carry <code>system.gate_exempt</code>". That is a configuration
+decision the organization makes at runtime, not one the specification can make for it.</p>
+<p><strong>There is no <code>role.retire</code>, and a role cannot be switched off</strong>
+(<a href="../../decisions/decision-log/#d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053</a>).
+A role is a definition and is valid always; the period lives on the <strong>assignment</strong>. Ending a
+role's use means ending its assignments, which is <code>role.unassign</code> — one person at a time, or
+a loop over the holders. This is the right shape: what ends is <em>someone's authority</em>, and
+that is a fact about a person, not about a definition.</p>
+<p><strong><code>role.edit</code> is a bulk privilege change wearing the clothes of a settings screen.</strong> Editing
+a role's permissions takes effect immediately for <strong>every holder</strong>, with no assignment
+touched and no notification. It is marked 🔒🔒 alongside <code>role.assign</code> for that reason. The
+two are different powers — <code>role.assign</code> escalates one person, <code>role.edit</code> escalates
+everyone holding the role — and neither is implied by the other.</p>
+<p><strong><code>role.delete</code> only works on a role that has never been assigned</strong> and is not <code>is_system</code>.
+No delete may leave a <code>role_assignment</code> pointing at a role that is gone:
+<a href="../../data-model/05-authorization/#3-role-and-role_permission">../data-model/05-authorization.md §3</a>
+states the guard and the order it refuses in. The two halves are not equally strong, and the
+difference is the reason this permission is not self-policing. The first is referential
+integrity — <code>role_assignment.role_id</code> references <code>role.id</code>, which is a migration-level
+constraint, so it refuses a delete that arrives from an import, from a manual fix, or from a
+second client as surely as from the screens. The second, <code>is_system</code>, is a property of the row
+being deleted and no index can see it: it is a check inside the transaction that deletes, and
+a model-layer guard there is a friendlier message, not the refusal. A role that has been held
+is left in place, so the answer to "what authority did this person have in 2019?" survives —
+which is precisely when someone asks it.</p>
+<p><strong><code>access_grant.create</code> is scoped by <code>permission_level</code>:</strong> holding it lets you grant
+others access <em>to items you have <code>admin</code> on</em>, and only at a level at or below your own.
+Without that restriction, any item-grant holder becomes a universal grantor.</p>
+</blockquote>
+<h2 id="8-audit-and-system">8. Audit and system<a class="headerlink" href="#8-audit-and-system" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>audit.view</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>Read the audit log — <strong>including the before/after values it carries, which are person data like any other</strong></td>
+</tr>
+<tr>
+<td><code>audit.export</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>Export audit records</td>
+</tr>
+<tr>
+<td><code>import.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>See import batches</td>
+</tr>
+<tr>
+<td><code>import.stage</code></td>
+<td>—</td>
+<td></td>
+<td>Stage an import</td>
+</tr>
+<tr>
+<td><code>import.apply</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Apply a staged import</td>
+</tr>
+<tr>
+<td><code>import.revert</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Revert an applied import</td>
+</tr>
+<tr>
+<td><code>report.view</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Run standard reports</td>
+</tr>
+<tr>
+<td><code>report.export</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td>Export report data</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>audit.view</code> is graded ⚠⚠, and the reason is a property of the trail rather than of any field
+it touches.</strong> <code>audit_log</code> carries the before and after images of what changed, which makes it
+<strong>a second copy of the person record</strong> — descriptive values included, on the same terms as a
+<code>person_contact</code> or a note change. There is no exclusion list doing that work, and there must not
+be one: a rule naming the person fields whose values may not be logged is a privileged <em>subset</em> of
+the record, which is precisely what
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+refused — and it would hollow out <a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+whose entire justification for overwriting a value in place is that the trail holds the sequence.
+So reading the trail over a scope <strong>is</strong> reading person data over that scope, and reading <em>more</em>
+than <code>person.view</code> shows: the current row is the organization's present belief, the trail is every
+belief it has held. What protects the trail is therefore the guard on it — scope, this mark, and
+who is granted it — exactly as the guard on <code>person.view</code> protects the record. The grading rule this
+applies — <strong>the mark follows what a grant exposes, not the table a code names</strong> — is
+<a href="../../decisions/decision-log/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>,
+taken during propagation rather than from an answer, and reversible on one line.</p>
+<p><strong>The excluded-keys list survives, with a smaller and honest job.</strong> Values that must never be
+logged <em>at all</em> belong on it: credential secrets, tokens, session material. Personal data does
+not, because personal data is protected by who may read the table, not by a list of its names.</p>
+<p><strong>Erasure reaches the payload.</strong> A redaction that rewrote the business tables while the erased
+values stayed readable in the trail is a failed redaction, not a partial one
+(<a href="../../data-model/06-audit-and-import/">../data-model/06-audit-and-import.md</a> §2,
+<a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a> §6).</p>
+<p><strong><code>audit.export</code> sits at ⚠⚠ for a reason unrelated to what it reads.</strong> An export carries the
+payload outside every mechanism this catalog governs: scope stops at the file, revoking the grant
+does not recall the copy, and a later redaction cannot reach it. It is graded by where the data
+goes, not by what the code is allowed to see.</p>
+<p><strong>Whether one permission is enough of a guard for all that is itself open</strong> — tracked as <strong>AT-4</strong>
+(<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">../open-questions.md</a>).
+The grading above is what is settled: the trail is read with the guard of person data, whichever
+permission or combination of permissions that guard turns out to be.</p>
+</blockquote>
+<h2 id="8a-events">8a. Events<a class="headerlink" href="#8a-events" title="Permanent link">&para;</a></h2>
+<p>The per-item grant scope the whole authorization model was built toward. <strong>Registration is
+eligibility</strong> — <code>event.register_self</code> at <code>contribute</code> <em>is</em> the rule for who may sign up, and
+there is no separate eligibility mechanism (<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event.view</code></td>
+<td>—</td>
+<td></td>
+<td>See an event</td>
+</tr>
+<tr>
+<td><code>event.create</code></td>
+<td>—</td>
+<td></td>
+<td>Create an event</td>
+</tr>
+<tr>
+<td><code>event.edit</code></td>
+<td>—</td>
+<td></td>
+<td>Change an event's details, dates, capacity</td>
+</tr>
+<tr>
+<td><code>event.cancel</code></td>
+<td>—</td>
+<td>⚠</td>
+<td><strong>Cancel an event</strong> — keeps registrations, notifies nobody by itself</td>
+</tr>
+<tr>
+<td><code>event.organizer.manage</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Add or remove organizers</td>
+</tr>
+<tr>
+<td><code>event.register_self</code></td>
+<td>—</td>
+<td></td>
+<td><strong>Register yourself</strong> — this is the eligibility rule</td>
+</tr>
+<tr>
+<td><code>event.register_other</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Register someone else (a minor, a walk-in)</td>
+</tr>
+<tr>
+<td><code>event.manage_participants</code></td>
+<td>—</td>
+<td>⚠</td>
+<td><strong>Manage the roster</strong> — add or remove registrations, work the waitlist, promote</td>
+</tr>
+<tr>
+<td><code>event.presence.mark</code></td>
+<td>—</td>
+<td>⚠</td>
+<td><strong>Mark who turned up</strong> — nothing else</td>
+</tr>
+<tr>
+<td><code>event.answer.view</code></td>
+<td>—</td>
+<td>⚠⚠</td>
+<td><strong>Read registrant answers</strong> (tent, dietary, …) — see the note in §8a</td>
+</tr>
+<tr>
+<td><code>event.question.manage</code></td>
+<td>—</td>
+<td>⚠</td>
+<td>Define what the event asks</td>
+</tr>
+<tr>
+<td><code>event.grant_access</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Grant access to an event. Requires level <code>admin</code></td>
+</tr>
+<tr>
+<td><code>event.delete</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Delete an event — only possible with <strong>no</strong> registrations</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>scope_type</th>
+<th>required_level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event.view</code></td>
+<td>event</td>
+<td><code>view</code></td>
+</tr>
+<tr>
+<td><code>event.register_self</code></td>
+<td>event</td>
+<td><code>contribute</code></td>
+</tr>
+<tr>
+<td><code>event.presence.mark</code></td>
+<td>event</td>
+<td><code>contribute</code></td>
+</tr>
+<tr>
+<td><code>event.edit</code>, <code>event.manage_participants</code>, <code>event.cancel</code></td>
+<td>event</td>
+<td><code>manage</code></td>
+</tr>
+<tr>
+<td><code>event.grant_access</code>, <code>event.delete</code></td>
+<td>event</td>
+<td><code>admin</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose, and it sits a
+level <em>lower</em>.</strong> Marking presence is a task handed to whoever is at the door with a
+clipboard; managing the roster is a task for the event's leadership. One permission covering
+both forces the organization to hand the clipboard-holder the ability to delete a child from
+the camp roster. Splitting it costs two rows and makes the ordinary delegation ordinary —
+and note the level: presence is <code>contribute</code>, so <strong>the volunteer taking the register is
+somebody with <code>contribute</code> on the event, which is the same bar as being able to register.</strong>
+That is the right bar for the job, and it is not the bar for altering who is coming.</p>
+<p>It follows the shape of <code>membership.lapse</code> versus <code>membership.terminate</code>
+(<a href="../../decisions/decision-log/#d-022--lapsing-and-termination-are-different-permissions">D-022</a>) —
+one routine, one consequential — and it is free to add because the catalog is a menu, not a
+fixed set (<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
+<strong>It was previously an open question (EV-5); it is resolved here as a split.</strong></p>
+<p><strong><code>event.register_self</code> at <code>contribute</code> is the whole of <a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>.</strong> Granting a
+whole audience <code>contribute</code> on an event is how an open camp is opened, and it is <strong>one row</strong>: an
+<code>access_grant</code> scoped to that event, addressed to the <code>all_members</code> audience, at level
+<code>contribute</code>. One row is the point — nobody is enumerated, so nobody is left out when the roster
+changes, and nothing has to be re-run when someone joins.</p>
+<p>An age-restricted camp is a <code>unit:&lt;id&gt;:participants</code> audience instead. <strong>There is no age
+rule on the event and there will not be one</strong> — an open event with an age ceiling is
+accepted as a risk, on the grounds that a registration-time condition the capability model
+does not know about is the first rule-engine rule
+(<a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
+If it ever needs closing, the shape is a new <strong>built-in audience</strong>, not a column.</p>
+<p><strong><code>event.cancel</code> is separated from <code>event.edit</code> deliberately.</strong> Cancelling is the most
+consequential thing anyone does to an event: it affects every registrant, it usually
+involves money, and it is a decision rather than an edit. It does not notify anyone — that
+is the communication module's job, and conflating the two makes "who cancelled this, and
+when?" harder to answer than it should be.</p>
+<p><strong><code>event.delete</code> is on this list and <code>org_unit</code> has no equivalent, because events are the
+one thing in this data model that can be deleted.</strong> A draft event with no registrations is a
+mistake to be cleaned up; anything else is cancelled, not deleted
+(<a href="../../decisions/decision-log/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).
+<strong>No event with even one registration row may be deleted</strong> — Guard 2 in
+<a href="../../data-model/08-events/#guards">../data-model/08-events.md §8</a> is the rule, and cancelling
+is what to do instead. The obligation is not the permission's to carry: <code>event.delete</code> decides
+who may ask, and only a migration-level constraint — <code>event_registration.event_id</code> referencing
+<code>event.id</code> with no cascade — refuses the same delete when it arrives from an import or a
+hand-written fix instead of a screen. Enforcing this in the model layer alone would leave the
+record of who was coming deletable by everything except the intended route.</p>
+<p><strong><code>event.answer.view</code> is where <a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a> lives.</strong> Answers to an event's questions
+are readable by that event's organizers with no additional gate, because a unit leader holds
+no guardianship over the children in their unit — guardianship authority belongs to the guardians
+(§9). That is a deliberate widening and it is recorded as one.</p>
+<p><strong>Its premise has since been narrowed, and not by reversing it</strong>
+(<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>).
+D-061 was written when an event form was the <em>only</em> route by which a camp leader learned a child
+has a nut allergy, because nothing else was readable. Descriptive data now exists
+(<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>) and a leader holding <code>person.view</code>
+over that unit reads a recorded allergy there, so the form is <strong>the fallback for a fact the
+organization has not recorded, not the ceiling on what an organizer may know</strong>. What survives
+unchanged is the decision itself, and the discipline below it.</p>
+<p><strong>This code is graded ⚠⚠, and it is the second time in this round that the marker followed the
+content rather than the category.</strong> It sat at ⚠ beside a paragraph conceding that the answers under
+it can be clinical, which is the same mismatch <code>audit.view</code> had one section above: a payload that is
+children's personal data, graded as though it were logistics. <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+refuses a class of data more delicate than the rest, so either an adrenaline-pen answer is person
+data — it is — or the grading on the audit trail was wrong. <strong>The raise narrows nothing</strong>: D-061
+stands, an event's organizers read that event's answers with no additional gate, and all that changed
+is what a reviewer should notice before ticking the box for a role handed to thirty volunteers.</p>
+<p><strong>Which leaves the discipline exactly where it was, and says so plainly:</strong> the rule that only
+preference-level detail belongs on a form is guidance on the form's label and nothing more. No layer
+enforces it and no layer can: nothing distinguishes
+"vegetarian" from "carries an adrenaline pen" to a database
+(<a href="../../data-model/08-events/#health-facts-and-the-discipline-this-requires">../data-model/08-events.md §7</a>).
+It rests entirely on whoever writes the form — a convention, not a guard, and D-072's own
+sentence is the right way to read that.</p>
+</blockquote>
+<h2 id="9-there-is-no-dependent-namespace">9. There is no <code>dependent.*</code> namespace<a class="headerlink" href="#9-there-is-no-dependent-namespace" title="Permanent link">&para;</a></h2>
+<p><strong>Eighteen codes deleted by <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>.</strong>
+A guardian's rights are <code>none</code>, <code>view</code>, or <code>write</code> — one value on the guardianship row, not a
+capability list. <strong>Nothing in this namespace may be reinstated by pattern-matching the old names;
+there is no set of codes left for a name to stand for.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Old code</th>
+<th>Became</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dependent.profile.view</code>, <code>dependent.contact.view</code>, <code>dependent.membership.view</code>, <code>dependent.event.view</code>, <code>dependent.fee.view</code>, <code>dependent.medical.view</code>, <code>dependent.achievement.view</code>, <code>dependent.document.view</code></td>
+<td><strong><code>view</code></strong> — all of them, together. They can no longer be separated</td>
+</tr>
+<tr>
+<td><code>dependent.profile.admin</code>, <code>dependent.contact.manage</code>, <code>dependent.medical.admin</code>, <code>dependent.consent.admin</code></td>
+<td><strong><code>write</code></strong></td>
+</tr>
+<tr>
+<td><code>dependent.membership.request</code>, <code>dependent.event.register</code>, <code>dependent.event.answer</code>, <code>dependent.fee.pay</code>, <code>dependent.consent.give</code></td>
+<td><strong><code>write</code></strong> — an act is not a narrower category than an edit</td>
+</tr>
+<tr>
+<td><code>dependent.admin</code></td>
+<td>Nothing. There is no set left to be a shorthand for</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is lost, stated as plainly as it should be.</strong> A court order restricting one parent's access
+to a child's medical record while leaving everything else in place <strong>cannot be expressed</strong>.
+"Read-only, but not the medical file" cannot be expressed. A grandmother granted roster visibility
+and nothing else is now a <code>view</code> guardian, which reaches the fee history and everything else the
+system holds about that child. The old namespace existed for exactly these cases, and D-074 traded
+them for a vocabulary a volunteer treasurer can hold in their head.</p>
+<p><strong>The separation was then declined, not merely left unimplemented — and the difference matters to
+anyone reading this table as a to-do list.</strong>
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+put the court-order story to the organization directly and it was refused on the merits
+(<em>"medical data is not different in any way"</em>), and the same answer removed the referent: there is
+no medical record inside the person record to be shut out of, because everything other than name,
+gender and age is one class of data reached by <code>person.view</code> and governed by the guardian's right
+level whole (<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>). So <em>"read everything
+except the diagnoses"</em> is not a sentence waiting on a mechanism somebody has yet to build; it is a
+sentence the organization declined to want, which is why
+<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 closed</a>
+as a dissolved question rather than an answered one. <strong>Read the inexpressibility above as settled,
+not as pending work.</strong></p>
+<p><strong>What still holds:</strong></p>
+<ul>
+<li><code>write</code> ranks at <code>contribute</code> (20), <strong>not</strong> <code>manage</code>. A guardian cannot do organization-wide
+  things, and cannot reach a different dependent's records — authority is per guardianship row.</li>
+<li>The <strong>organization-wide deny channel is untouched.</strong> A deny still beats any grant, at any scope
+  (<a href="../../decisions/decision-log/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>), so
+  "this guardian, nothing" remains expressible. What was lost is a <em>narrow</em> deny, not the ability
+  to refuse.</li>
+<li>A guardianship at <code>none</code> grants literally nothing, so <strong>being a guardian still grants nothing by
+  itself</strong> — the safeguarding property that motivated the eighteen codes survives without them.</li>
+<li>Answers to an event's questions are still read through <code>event.answer.view</code>, which is a role-side
+  permission and never was a guardian one
+  (<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).</li>
+</ul>
+<p><strong>If the split turns out to matter in operation it is still a new decision</strong> — one grant scope over
+a defined set of data, argued from the current documents — and not a restoration from this table.
+<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 is closed</a>,
+so reopening it means producing the case that was declined, not finding the code that was deleted.</p>
+<p>See <a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">../data-model/04-relationships.md §2</a>
+for the value, its defaults by <code>source</code>, and the ladder it is a range of.</p>
+<h2 id="10-deferred-namespaces">10. Deferred namespaces<a class="headerlink" href="#10-deferred-namespaces" title="Permanent link">&para;</a></h2>
+<p>Placeholders for features you have not specified. Listed so the naming convention is
+established before anyone invents an inconsistent one.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Permission</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>document</code></td>
+<td><code>document.view</code>, <code>document.create</code>, <code>document.edit</code>, <code>document.delete</code>, <code>document.grant_access</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fee</code></td>
+<td><code>fee.view</code>, <code>fee.create</code>, <code>fee.waive</code>, <code>fee.refund</code></td>
+<td>⛔ <code>fee.waive</code> and <code>fee.refund</code> are sensitive — hardship waivers must not be visible to unit leaders.</td>
+</tr>
+<tr>
+<td><code>payment</code></td>
+<td><code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>report</code></td>
+<td><code>report.finance.view</code>, <code>report.membership.view</code>, <code>report.safeguarding.view</code></td>
+<td>⚠⚠ <code>report.safeguarding.view</code></td>
+</tr>
+<tr>
+<td><code>consent</code></td>
+<td><code>consent.template.edit</code>, <code>consent.record.view</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message.send_direct</code>, <code>message.broadcast</code></td>
+<td><strong>Decided in shape, undesigned in detail</strong> (<a href="../../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>). Everyone may send direct; <code>broadcast</code> is an ordinary <strong>scoped</strong> permission, so granted on a unit it reaches that unit and granted organization-wide it reaches everyone. The older <code>send_to_unit</code> / <code>send_to_org</code> pair is replaced by one code at two scopes. Recipient chooses the channel, which is not a permission at all. <strong>A direct message to a minor is mirrored to that minor's guardians and the sender is told it will be</strong> — no permission, no age branch in the resolver (<a href="../../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>)</td>
+</tr>
+<tr>
+<td><code>partner</code></td>
+<td><em>(namespace)</em></td>
+<td>For external organizations, if the model expands.</td>
+</tr>
+</tbody>
+</table>
+<p>Generate each resource's <code>permission_level</code> rows at the same time — see
+<a href="../../data-model/05-authorization/#7-permission_level--connecting-permissions-to-grant-levels">../data-model/05-authorization.md</a>.</p>
+<hr />
+<h2 id="11-roles--proposed-seed-set">11. Roles — proposed seed set<a class="headerlink" href="#11-roles--proposed-seed-set" title="Permanent link">&para;</a></h2>
+<p><strong>A starting point, not a specification.</strong> Roles are runtime data: the organization creates
+them, composes them from permissions, assigns them, edits what they grant, and deletes the
+unused ones
+(<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). This section exists to
+show the <em>shape</em> of a plausible set, so that the model can be reviewed against something
+concrete. Do not read a row here as a requirement, and do not expect the list to survive
+contact with the organization.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Scope required</th>
+<th><code>Req.</code></th>
+<th>Waives gate</th>
+<th>Key permissions</th>
+<th>Term</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system_admin</code></td>
+<td>organization</td>
+<td>—</td>
+<td><strong>yes</strong></td>
+<td><code>system.admin</code>, <code>system.gate_exempt</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>registrar</code></td>
+<td>organization</td>
+<td>yes</td>
+<td>no</td>
+<td><code>membership.request.*</code>, <code>membership.activate</code>, <code>person.*</code> (except merge/redact), <code>unit_participation.view</code> (root rows only — see note), <code>import.*</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>membership_approver</code></td>
+<td>organization</td>
+<td>yes</td>
+<td>no</td>
+<td><code>membership.request.review</code>, <code>membership.request.approve</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>treasurer</code></td>
+<td>organization or unit</td>
+<td>yes</td>
+<td>no</td>
+<td><code>fee.*</code>, <code>payment.*</code>, <code>report.finance.view</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>safeguarding_officer</code></td>
+<td>organization</td>
+<td>yes</td>
+<td>no</td>
+<td><code>report.safeguarding.view</code>, <code>membership.terminate</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>unit_admin</code></td>
+<td>org_unit</td>
+<td>yes</td>
+<td>no</td>
+<td><code>org_unit.view</code>, <code>unit_participation.view</code>, <code>position.view</code>, <code>org_unit.edit</code> (own unit only)</td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>unit_leader</code></td>
+<td>org_unit</td>
+<td><strong>no</strong></td>
+<td>no</td>
+<td><code>org_unit.view</code>, <code>unit_participation.view</code>, <code>position.view</code>, <code>event.*</code> (own unit), <code>report.membership.view</code> (own unit)</td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>assistant_leader</code></td>
+<td>org_unit</td>
+<td><strong>no</strong></td>
+<td>no</td>
+<td>Subset of <code>unit_leader</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>audience_admin</code></td>
+<td>organization or unit</td>
+<td>yes</td>
+<td>no</td>
+<td><code>audience.view</code>, <code>audience.manage</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>identity_reviewer</code></td>
+<td>organization</td>
+<td>yes</td>
+<td>no</td>
+<td><code>person.merge</code>, <code>import.view</code>, <code>import.apply</code></td>
+<td>12 mo</td>
+</tr>
+<tr>
+<td><code>auditor</code></td>
+<td>organization</td>
+<td><strong>no</strong></td>
+<td>no</td>
+<td><code>audit.view</code>, <code>audit.export</code>, <code>report.view</code> — <strong>read-only, no writes</strong></td>
+<td>12 mo</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Read the <code>*</code> shorthand as a bundle to be written out, not a wildcard to be relied on.</strong>
+Since <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+there is no resolver rule that makes <code>person.*</code> mean anything; the notation here is an
+abbreviation for <em>"every <code>person.</code> code listed in §2"</em>, and a real role holds an explicit
+<code>role_permission</code> row for each. Two consequences for whoever seeds this:</p>
+<ol>
+<li><strong><code>registrar</code> is written as <code>person.*</code> <em>except</em> <code>person.merge</code> and <code>person.redact</code>, and
+   that exclusion is now literal.</strong> It used to be a caveat about a wildcard's prefix match.
+   It is now just the rows you do not insert — and it is visible in <code>role_permission</code>, dated,
+   and alarmable. <code>identity_reviewer</code> is the role that <em>does</em> hold <code>person.merge</code>, listed
+   beside it so the difference between the two is legible. <strong>A role that bundles a resource
+   <em>including</em> its irreversible codes should be named for that</strong>, since nothing else records
+   the choice any more.</li>
+<li><strong><code>unit_leader</code> holding <code>event.*</code> means thirteen explicit rows</strong> (§8a), and a fourteenth
+   added later is <em>not</em> in the role until someone adds it. Integrity check 18 surfaces an
+   orphaned permission — one no role grants at all. It does not surface "this role arguably
+   should have had it." That is the cost D-068 accepts, and it lands here, in the seed table,
+   rather than being absorbed silently by the resolver.</li>
+<li><strong><code>auditor</code> is a role that reads the whole person record, and does it without <code>person.view</code>.</strong>
+   <code>audit.view</code> is graded ⚠⚠ in §8 precisely because the payload is a second copy of the record,
+   so this row grants a ⚠⚠ read over everything the system has ever believed about a child, dated
+   backwards. Nothing here forbids that — it is a plausible role — but the row must not be
+   described to anyone as "just the logs", and it is scoped and term-limited for the same reason
+   the ⚠⚠ rows above it are.</li>
+</ol>
+<p><code>Req.</code> is <code>role.requires_membership</code>: whether the role stops granting anything when the
+holder's fee lapses (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+The proposals follow one rule — <strong>staff-like roles working on the organization's own records
+require a membership; volunteer-facing roles do not.</strong></p>
+<p><strong><code>Waives gate</code></strong> is the separate, person-level <em>permission</em> <code>system.gate_exempt</code>
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).
+The two columns answer different questions and are not alternatives: <code>Req. = no</code> exempts
+everyone who holds the role, everywhere; <code>system.gate_exempt</code> exempts a named person across
+every role they hold. <code>system_admin</code> carries it because on 1 January the sweep lapses every
+membership including the administrator's — without the exemption, the person who would repair
+the system loses the ability to use it on the day it breaks.</p>
+<blockquote>
+<p><strong>This table is a starting set, not a specification</strong> — and the <code>Waives gate</code> column is the
+clearest case of why. Roles are runtime data: the organization creates, edits and deletes
+them (<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). Whether a
+treasurer or a safeguarding officer should also survive their own lapse is a configuration
+decision the organization makes in the admin UI, not one this document can settle for it.
+Only <code>system_admin</code> is marked certain, because the lockout case above is a property of the
+system rather than a policy preference.</p>
+<p><strong><code>registrar</code> holding <code>unit_participation.view</code> at organization scope is not a bug, and it
+will be read as one</strong> (<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).
+Scope is an exact match: the registrar's scope is the root unit, so the role reads the
+<strong>root</strong> participation rows — which is what "who is in the organization?" needs
+(<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+It does <strong>not</strong> reach into any pack's roster; that requires the pack to write a
+<code>scope_exposure</code>. Someone who assumes a parent can see its children will "fix" this by
+widening the role, and that fix would silently reverse D-049.</p>
+</blockquote>
+<p><strong>Four properties worth noting:</strong></p>
+<ol>
+<li><strong><code>membership_approver</code> is separate from <code>registrar</code>.</strong> Deciding who becomes a member is
+   a different act from processing records. If your organization wants one person to do
+   both, grant both roles — but keep them separately attributable.</li>
+<li><strong><code>safeguarding_officer</code> holds <code>membership.terminate</code>.</strong> The permission to end someone's
+   membership sits with the person responsible for safeguarding, not with whoever chases
+   fees. This is deliberate. Note that the role <strong>lost</strong> <code>person.background_check.*</code> and
+   gained nothing in its place, because the organization records no background checks
+   (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).</li>
+<li><strong>No role is a guardian.</strong> There used to be a rule that no role bundles
+   <code>dependent.*</code>, and the namespace it named no longer exists
+   (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+   The safeguarding property it protected is the one that survives, restated against the mechanism
+   that now provides it: <strong>the guardianship channel is only consulted when the subject of the act
+   is someone else, and it only finds a guardianship row.</strong> Leadership is not guardianship, so no
+   role hands anyone a guardian's right over a child — not the right to act for that child, and not
+   the row that decides what the family may see.
+   <strong>What a role can now do, and does openly, is read the child's record.</strong> That sentence used to
+   be false, and <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+   is why it is not: with no privileged subset inside the person record, a leader granted
+   <code>person.view</code> over their own unit reads the whole of a member's descriptive data, allergy list
+   included (<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>). Nothing about leading a
+   unit grants it — no channel opens on its own, and the row that would is explicit, scoped, dated
+   and readable in <code>role_permission</code>. That is also why §2 now grades that code ⚠⚠: the safeguarding
+   review moved from <em>"is there a code we kept out of roles?"</em> to <em>"which roles were given this
+   one?"</em>, which is a question the catalog can actually answer.
+   <strong>Do not re-derive the old rule as a list of codes to keep out of roles</strong> — the rule is about
+   the channel, and there is no code left to quarantine.</li>
+<li><strong><code>unit_leader</code> and <code>assistant_leader</code> are <code>Req. = no</code>.</strong> They are held by volunteers, and
+   the failure this prevents is specific: the volunteer whose own fee is unpaid still runs
+   the Thursday meeting, and must not lose their roster the night it lapses. The
+   corresponding <code>position.requires_membership</code> stays <code>true</code>, so the unpaid volunteer shows
+   up on a chase-up report — <strong>the report is how the organization notices, the resolver is
+   not how it punishes.</strong> See
+   <a href="../../domain/06-authorization-model/#4-roles--bundles-of-permissions">../domain/06-authorization-model.md §4</a>.</li>
+</ol>
+<hr />
+<h2 id="12-open-issues">12. Open issues<a class="headerlink" href="#12-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>The catalog's disposition is settled; its contents are not.</strong> It stays comprehensive and
+  granular (<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>),
+  so there is no longer a "prune this down" review to do.
+  What remains is <em>additive</em>: each unbuilt module brings its own permissions as it is
+  specified, and unused rows cost nothing.</li>
+<li><strong><code>Req.</code> and <code>Waives gate</code> are configuration, not specification.</strong> Both columns are
+  attributes of roles, and roles are runtime data the organization administers
+  (<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). The values shown are
+  reasoned defaults to start from
+  (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>,
+  <a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>);
+  the organization changes them in the admin UI. The one value that is <em>not</em> a preference is
+  <code>system_admin</code> carrying <code>system.gate_exempt</code> — the 1 January lockout is a property of the
+  system, not a policy choice.</li>
+<li>Whether <code>report.*</code> should be per-report permissions or one <code>report.view</code> with
+  row-level filtering.</li>
+<li>Whether the organization has roles this catalog does not anticipate (a chaplain, a
+  quartermaster, a camp chief). <strong>This is now answerable by the organization itself</strong> rather
+  than by a change to the data model and a migration — which is the point of roles being runtime data.</li>
+<li>Which built-in audiences the organization needs, and who may create named groups —
+  <code>audience_admin</code> is proposed, but it may belong to unit leaders instead
+  (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
+<li><strong><code>attribute.define</code> is in the catalog and in no seed role, and that gap is the open half of the
+  design.</strong> The permission and its rules are settled (§2); who holds it, and how long a <code>proposed</code>
+  code may sit before it is an embarrassment rather than a queue, are not — tracked as <strong>AT-2</strong> in
+  <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">../open-questions.md</a>. The risk of leaving it unheld is specific and slow:
+  proposals keep arriving through ordinary data entry, and a vocabulary nobody curates stops
+  answering questions while still storing everything
+  (<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).</li>
+</ul>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: whether
+<code>person.admin</code> should subsume <code>person.merge</code> and <code>person.redact</code> (moot — there are no
+per-resource <code>admin</code> permissions at all, and the question moved into reviewable role contents,
+D-068); whether <code>event.manage_participants</code> should split off presence (it did, into
+<code>event.presence.mark</code> at <code>contribute</code> — EV-5); the <code>event</code> resource's real permission set
+(§8a, thirteen codes); whether any permission should require current membership status (yes,
+via the role — D-039);
+<code>person.background_check.*</code> (removed — D-043); <code>membership.transfer</code> (obsolete once
+participation replaced unit membership — D-041); and whether <code>org_unit.restructure</code> includes
+reparenting (it cannot — D-036).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

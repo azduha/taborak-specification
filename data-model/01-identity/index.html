@@ -1,0 +1,2792 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/01-identity/">
+      
+      
+        <link rel="prev" href="../00-conventions/">
+      
+      
+        <link rel="next" href="../09-attributes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Identity - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--identity" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Identity
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-central-claim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The central claim
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. person
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. person">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notes-on-specific-choices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes on specific choices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-deliberately-not-on-this-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is deliberately not on this table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-answer-to-who-is-a-member-is-never-on-this-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer to "who is a member?" is never on this table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-person_name--name-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. person_name — name history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. account
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-account_credential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. account_credential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-person_contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. person_contact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-person_identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. person_identifier
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-identity_hypothesis-and-person_merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. identity_hypothesis and person_merge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. identity_hypothesis and person_merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merge-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge conflicts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Views
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-central-claim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The central claim
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. person
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. person">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notes-on-specific-choices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes on specific choices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-deliberately-not-on-this-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is deliberately not on this table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-answer-to-who-is-a-member-is-never-on-this-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer to "who is a member?" is never on this table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-person_name--name-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. person_name — name history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. account
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-account_credential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. account_credential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-person_contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. person_contact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-person_identifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. person_identifier
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-identity_hypothesis-and-person_merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. identity_hypothesis and person_merge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. identity_hypothesis and person_merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merge-conflicts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge conflicts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Views
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--identity">Data Model — Identity<a class="headerlink" href="#data-model--identity" title="Permanent link">&para;</a></h1>
+<p><code>person</code>, <code>account</code>, contact points, identifiers, identity hypotheses, and merges.</p>
+<p>Every pattern referenced here is defined in <a href="../00-conventions/">00-conventions.md</a>.</p>
+<hr />
+<h2 id="1-the-central-claim">1. The central claim<a class="headerlink" href="#1-the-central-claim" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>person   ── what the organization knows about a human. No status. No role. No type.
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>account  ── how that human logs in. Optional. Zero or more over a lifetime.
+</code></pre></div>
+<p><strong>There is no <code>is_member</code>, <code>member_type</code>, <code>is_child</code>, <code>is_adult</code>, <code>unit_id</code>, or <code>role</code> on
+<code>person</code>.</strong> Each of those is either a period in another table or a derived fact. This is
+the single most important property of the schema and the one most likely to be undone by
+a well-meaning future change.</p>
+<hr />
+<h2 id="2-person">2. <code>person</code><a class="headerlink" href="#2-person" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>external identifier, required</td>
+<td>Unique. Generated when the row is created. This is what URLs and exports carry</td>
+</tr>
+<tr>
+<td><code>given_name</code></td>
+<td>text, required</td>
+<td>Names are <strong>also</strong> stored as temporal rows in <code>person_name</code> (§3). These two columns are the current, canonical form, denormalised for display and search; history and legal-name variants live in <code>person_name</code></td>
+</tr>
+<tr>
+<td><code>family_name</code></td>
+<td>text, required</td>
+<td>As above</td>
+</tr>
+<tr>
+<td><code>birth_date</code></td>
+<td>date, optional</td>
+<td>Nullable because legacy records frequently lack it. <strong>Never required</strong> — a 1994 roster with no birth date must still import</td>
+</tr>
+<tr>
+<td><code>birth_date_precision</code></td>
+<td>text, optional</td>
+<td>One of: <code>exact</code>, <code>month</code>, <code>year</code>, <code>unknown</code>. Because an imported birth date of <code>1990-01-01</code> often means "year 1990, month and day unknown". Storing the precision prevents false matches on a guessed day and prevents "happy 1 January birthday" emails</td>
+</tr>
+<tr>
+<td><code>gender</code></td>
+<td>text, optional</td>
+<td>One of: <code>male</code>, <code>female</code>, <code>other</code>, <code>unknown</code>. Included because youth organizations typically must report it. Remove if yours does not need it — do not collect what you cannot justify</td>
+</tr>
+<tr>
+<td><code>preferred_name</code></td>
+<td>text, optional</td>
+<td>What the person is actually called. Distinct from <code>given_name</code> so that the organization's records stay legally correct while the person is addressed correctly — "Alexandra" recorded, "Lex" displayed</td>
+</tr>
+<tr>
+<td><code>record_origin</code></td>
+<td>text, required</td>
+<td>One of: <code>self_registered</code>, <code>staff_created</code>, <code>legacy_import</code>. Default <code>self_registered</code></td>
+</tr>
+<tr>
+<td><code>data_confidence</code></td>
+<td>text, required</td>
+<td>One of: <code>high</code>, <code>medium</code>, <code>low</code>. Default <code>high</code>. <code>low</code> for imported rows: it drives whether a merge may absorb this row, and whether the UI warns before displaying it as fact</td>
+</tr>
+<tr>
+<td><code>merged_into_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Tombstone. When set, this row is absorbed and queries must follow the pointer. Never deleted (§8)</td>
+</tr>
+<tr>
+<td><code>merged_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>redacted_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td>Set when a GDPR-style erasure was performed. Names and contacts are overwritten and the person's <code>person_attribute</code> rows are deleted; the row and its id survive so historical references still resolve (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>)</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text, optional</td>
+<td>Free text about a person, and the only such text that lives outside the attribute vocabulary — see <em>What is deliberately not on this table</em> below. May contain anything, including a diagnosis sitting under a column nobody would call medical. <strong>It is logged with its contents, like every other field on this row, and it is deliberately <em>not</em> on the redactor's list</strong> — a column named as an exception is the field-name rule <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a> removed, and the protection is the guard on the trail (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8 item 7</a>). Whether the column should exist at all is argued below</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td>Set on imported rows. Its link to <code>import_batch</code> can only be made once that table exists</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>There is deliberately <strong>no deceased flag</strong>. The organization does not record whether a
+  person has died. A membership simply ends; the reason for the ending lives in the generic
+  reason-code fields (<code>membership.termination_reason_code</code>, <code>membership.ended_note</code>) like any
+  other ending, and the organization's own vocabulary for such reasons is theirs to define.
+  Do not add <code>is_deceased</code> or <code>deceased_at</code> back: it is not data the organization keeps.</li>
+<li><code>public_id</code> is unique.</li>
+<li>A person may not be merged into themselves — <code>merged_into_person_id</code> may never name this
+  same row.</li>
+<li><code>merged_into_person_id</code> and <code>merged_at</code> are set together or both left null. A pointer with
+  no date, or a date with no pointer, cannot be explained to anyone.</li>
+<li>A <code>birth_date_precision</code> may be recorded without a <code>birth_date</code> only when it says
+  <code>unknown</code>. Every other precision claims something about a date that is not there.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Person search by name, with both names compared case-insensitively.</li>
+<li>Persons by <code>birth_date</code>, restricted to rows that have one.</li>
+<li><strong>Persons that have not been merged</strong> — a partial index, because every ordinary listing
+  must exclude merged rows and it has to stay cheap.</li>
+<li><strong>Persons that have not been redacted</strong> — same reason.</li>
+<li>Lookup by <code>public_id</code>.</li>
+</ul>
+<h3 id="notes-on-specific-choices">Notes on specific choices<a class="headerlink" href="#notes-on-specific-choices" title="Permanent link">&para;</a></h3>
+<p><strong><code>birth_date_precision</code>.</strong> Without it, a legacy import that only knows the year produces
+<code>1990-01-01</code>, which then matches every other year-only record born in 1990 on the same
+invented day, and sends birthday greetings on 1 January. Cheap column, prevents a whole
+class of matching noise.</p>
+<p><strong><code>public_id</code> alongside <code>id</code>.</strong> External references use <code>public_id</code>. Sequential internal
+ids appear in <code>access_grant.scope_id</code> and in URLs; exposing them would let anyone enumerate
+member records. See <a href="../00-conventions/#3-primary-keys">00-conventions.md</a>.</p>
+<p><strong><code>merged_into_person_id</code> and <code>redacted_at</code> are both on <code>person</code> rather than in side
+tables.</strong> They are read on <em>every</em> query (every listing must exclude merged and redacted
+rows from ordinary views), so they need to be cheap. They are also the reason the two
+partial indexes above exist.</p>
+<h3 id="what-is-deliberately-not-on-this-table">What is deliberately not on this table<a class="headerlink" href="#what-is-deliberately-not-on-this-table" title="Permanent link">&para;</a></h3>
+<p>Everything the system knows about a person other than their <strong>name, their gender and their age</strong> is
+a descriptive value in <code>person_attribute</code>, and this table carries no column for any of it — no
+allergy, no medication, no insurance number, no shoe size, no preferred contact language, no
+diagnosis (<a href="../09-attributes/">09-attributes.md</a>,
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>).
+That is not a gap waiting for the next module. An earlier design did put the medical facts on a shelf
+of their own, behind codes of their own, and the answer that produced D-083 refused the shelf: a drug
+dosage and a clothing size are the same kind of object — recorded by the organization, wrong in three
+years, unenumerable in advance — and a permission that reads a person reads the whole record
+whatever the shelf is called (<a href="../../domain/08-person-data/">domain/08-person-data.md</a>).</p>
+<p><strong><code>given_name</code>/<code>family_name</code>/<code>preferred_name</code>, <code>gender</code> and <code>birth_date</code> are the only descriptive
+facts that are columns here, and they are the last the model will accept.</strong> The test for keeping one
+is not sensitivity — <code>notes</code> sits in the field table above and is a worse exposure than most of what
+moved out. <strong>The test is whether a rule exists that an open layer physically cannot hold.</strong> <em>"One
+current name per person"</em>, <em>"exactly one primary postal contact among the open rows"</em>, <em>"a school id
+may repeat, a birth number may not"</em> — each is a constraint over a <strong>known set of columns</strong>, and a
+key/value layer has no known set of columns, which is the whole of what it is for. Folding
+<code>person_name</code>, <code>person_contact</code> or <code>person_identifier</code> into the attribute layer would have relocated
+four working constraints into application code and been called uniformity
+(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).
+Identity is closed because it was enumerated years ago and has not changed; description is open
+because nobody can enumerate it
+(<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>).</p>
+<p><strong>The rule cuts both ways, and review is where it is applied.</strong> A fact with no such rule behind it
+does not earn a column here, however reasonable it looks — that is the sentence that keeps
+<code>is_deceased</code>'s cousins out. And a table already in this document does not lose its columns because
+the new layer looks tidier — that is the sentence that keeps a well-meaning unification of "everything
+about a person" from quietly turning four enforced rules into four hopes.</p>
+<p><strong>One consequence names itself.</strong> <code>person.notes</code> is the last free text about a person kept outside the
+vocabulary, and it is the column a reviewer should ask about: a sentence typed there is invisible to
+the curation queue, to any report on a code, and to the screen a first aider reads at 23:00, while the
+same sentence recorded as a value against a <code>proposed</code> code is visible to all three
+(<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>). Whether the column
+should exist at all is open and already argued
+(<a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>); what is settled is that it
+carries no protection the attribute layer does not carry, and less readability.</p>
+<h3 id="the-answer-to-who-is-a-member-is-never-on-this-table">The answer to "who is a member?" is never on this table<a class="headerlink" href="#the-answer-to-who-is-a-member-is-never-on-this-table" title="Permanent link">&para;</a></h3>
+<p>To be unambiguous, the two facts:</p>
+<ul>
+<li><strong>Currently a member</strong> — the person has a <code>membership</code> whose <code>valid_to</code> is absent and whose
+  status is <code>active</code>.</li>
+<li><strong>Was a member on 1998-06-01</strong> — the person has a <code>membership</code> whose period contains that
+  date: <code>valid_from</code> on or before it, and <code>valid_to</code> either absent or after it. Its status is
+  one of <code>active</code>, <code>completed</code>, <code>lapsed</code>, <code>terminated</code>.</li>
+</ul>
+<p>Note the second fact includes closed statuses — "was a member in 1998" is true regardless
+of how the membership later ended. Getting this wrong is why "years of membership" reports
+are usually wrong.</p>
+<hr />
+<h2 id="3-person_name--name-history">3. <code>person_name</code> — name history<a class="headerlink" href="#3-person_name--name-history" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>name_type</code></td>
+<td>text, required</td>
+<td>One of: <code>legal</code>, <code>preferred</code>, <code>maiden</code>, <code>former</code>, <code>alias</code>, <code>imported</code></td>
+</tr>
+<tr>
+<td><code>given_name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>family_name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>middle_name</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, optional</td>
+<td>Optional because an imported name often arrives with no start date at all</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td><code>NULL</code> = current for this <code>name_type</code></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td><code>self</code>, <code>staff</code>, <code>legacy_import</code></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>valid_to</code> is either absent, or <code>valid_from</code> is absent, or <code>valid_to</code> is later than
+  <code>valid_from</code>.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A person's names.</li>
+<li>Fuzzy search across all historical names — both names lowercased, family name first, and
+  usable for prefix matching. This is what legacy matching reads.</li>
+</ul>
+<p><strong>Why name history is a table.</strong> Three concrete cases:</p>
+<ol>
+<li>A member married and changed their family name. The 1998 roster has the maiden name;
+   the 2026 registration has the married name. Legacy matching must find the link, and
+   the historical record must keep the name it actually had.</li>
+<li>An imported name has a typo (<code>Novak</code> for <code>Novák</code>). Correcting it must not destroy the
+   imported form, because that is what the paper says and someone will ask.</li>
+<li>A person goes by a different name than their legal one. Both must be storable, and
+   which is used where must be deterministic.</li>
+</ol>
+<p><strong><code>person.given_name</code>/<code>family_name</code> are the denormalised current values</strong> and are what the
+UI displays. <code>person_name</code> is the source of truth for matching and for historical queries.
+This is a deliberate denormalization — the alternative is joining on every list view — and
+it must be updated in the same transaction whenever the canonical name changes.</p>
+<p><em>Assumption:</em> display should use <code>person.preferred_name ?? person.given_name</code>. If the
+organization requires legal names on official documents, that rule lives in the document
+layer, not here.</p>
+<hr />
+<h2 id="4-account">4. <code>account</code><a class="headerlink" href="#4-account" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td>Not unique. Uniqueness applies only to live accounts, under <strong>Rules</strong></td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>One of: <code>pending_verification</code>, <code>active</code>, <code>suspended</code>, <code>closed</code>. Default <code>pending_verification</code></td>
+</tr>
+<tr>
+<td><code>verified_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>guardian_consent_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td>Set when a guardian confirmed a minor's account. <code>NULL</code> for adults (domain/02-actors.md §2)</td>
+</tr>
+<tr>
+<td><code>created_by_staff</code></td>
+<td>boolean, required</td>
+<td>Default false</td>
+</tr>
+<tr>
+<td><code>last_login_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>failed_login_count</code></td>
+<td>integer, required</td>
+<td>Default 0</td>
+</tr>
+<tr>
+<td><code>locked_until</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status_reason_code</code></td>
+<td>text, optional</td>
+<td>Why suspended or closed</td>
+</tr>
+<tr>
+<td><code>status_note</code></td>
+<td>text, optional</td>
+<td>The human explanation</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>At most one live account per person: unique over <code>person_id</code> across the rows whose status
+  is <code>pending_verification</code>, <code>active</code> or <code>suspended</code>. Closed rows are not covered, so a
+  person may accumulate as many closed accounts as their history contains.</li>
+<li><code>username</code> is unique compared case-insensitively, over the rows that have one and are not
+  closed. A closed account releases its username for someone else to take. It covers live
+  rows only, not all rows.</li>
+<li>An account may not reach <code>active</code> while <code>verified_at</code> is absent.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A person's accounts.</li>
+</ul>
+<p><strong>Why <code>person_id</code> is not unique.</strong> The partial unique index expresses the real rule:
+<em>one live account per person</em>, while permitting closed historical accounts. A plain
+<code>UNIQUE (person_id)</code> would make it impossible to close an old account and open a new one —
+which is exactly the returning-member case at the account level.</p>
+<p><strong>Why <code>guardian_consent_at</code> is on <code>account</code>, not <code>person</code>.</strong> Consent is about the <em>act of
+creating login credentials</em>, not about the human. A person who was registered as a child
+and later reaches majority keeps the same <code>person</code> row; the consent record stays attached
+to the account it was given for.</p>
+<p><strong>A suspended account does not suspend a membership.</strong> They are independent lifecycles.
+The schema enforces this by simply not linking them.</p>
+<hr />
+<h2 id="5-account_credential">5. <code>account_credential</code><a class="headerlink" href="#5-account_credential" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>account_id</code></td>
+<td>reference to account, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>credential_type</code></td>
+<td>text, required</td>
+<td>One of: <code>password</code>, <code>passkey</code>, <code>totp</code>, <code>oauth</code>, <code>staff_link</code>. Multiple methods per account. <code>oauth</code> supports a national Scout identity provider; <code>staff_link</code> supports a one-time link issued to a member who cannot self-serve</td>
+</tr>
+<tr>
+<td><code>secret_hash</code></td>
+<td>text, optional</td>
+<td>Password/OTP hash. Absent for passkey and oauth</td>
+</tr>
+<tr>
+<td><code>external_ref</code></td>
+<td>text, optional</td>
+<td>OAuth subject id, or WebAuthn credential id</td>
+</tr>
+<tr>
+<td><code>external_issuer</code></td>
+<td>text, optional</td>
+<td>OAuth issuer</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>timestamp, audit time, required</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>timestamp, audit time, optional</td>
+<td><code>NULL</code> = current</td>
+</tr>
+<tr>
+<td><code>last_used_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>revoked_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A <code>password</code>, <code>totp</code> or <code>staff_link</code> credential must carry a <code>secret_hash</code>. A <code>passkey</code> or
+  <code>oauth</code> credential must carry both <code>external_ref</code> and <code>external_issuer</code>. A credential with
+  nothing to check against cannot exist.</li>
+<li><code>valid_to</code> is either absent or later than <code>valid_from</code>.</li>
+<li>One current credential per <code>(external_issuer, external_ref)</code> pair among <code>oauth</code> rows that
+  are still current. It covers open rows only — an expired credential does not hold its
+  external identity back.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>An account's current credentials — the open half of the period only.</li>
+<li>The <code>oauth</code> uniqueness above, which is itself a lookup: given an issuer and a subject id,
+  which account is this.</li>
+</ul>
+<p><strong>Why credentials are not columns on <code>account</code>.</strong> Adding passkeys, an organizational SSO,
+or a one-time-link flow later must not require restructuring <code>account</code> and migrating every
+existing password. Keeping <code>secret_hash</code> off the <code>account</code> table also means the common
+"show me the user" query never touches credential material.</p>
+<p><strong><code>valid_to</code> on a credential is how password history and revocation are expressed.</strong> A
+revoked credential stays as a row, so "was this account ever accessed with a credential
+that has since been revoked?" is answerable.</p>
+<hr />
+<h2 id="6-person_contact">6. <code>person_contact</code><a class="headerlink" href="#6-person_contact" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>contact_type</code></td>
+<td>text, required</td>
+<td>One of: <code>email</code>, <code>phone</code>, <code>postal</code>, <code>website</code>, <code>messaging</code></td>
+</tr>
+<tr>
+<td><code>purpose</code></td>
+<td>text, required</td>
+<td>One of: <code>login</code>, <code>membership</code>, <code>emergency</code>, <code>billing</code>, <code>guardian</code>, <code>general</code></td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>text, required</td>
+<td>Normalised per type: emails lowercased, phones E.164, postal as structured JSON</td>
+</tr>
+<tr>
+<td><code>value_detail</code></td>
+<td>free-form jsonb, optional</td>
+<td>For postal addresses: <code>{street, city, postal_code, country}</code>. Avoids six optional fields that only apply to one <code>contact_type</code></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>text, optional</td>
+<td><code>home</code>, <code>work</code>, <code>school</code> — display only</td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>boolean, required</td>
+<td>Default false</td>
+</tr>
+<tr>
+<td><code>verified_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>verified_by</code></td>
+<td>text, optional</td>
+<td>One of: <code>self</code>, <code>staff</code>, <code>bounce_check</code>, <code>import</code></td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default: today</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td><code>NULL</code> = current. Addresses change; history is required</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td><code>self</code>, <code>staff</code>, <code>legacy_import</code></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>valid_to</code> is either absent or later than <code>valid_from</code>.</li>
+<li>At most one current primary per <code>(person, contact_type, purpose)</code>. It covers open rows
+  only: a superseded primary does not block the new one.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A person's contact points.</li>
+<li>A person's current contact points by type and purpose — open rows only.</li>
+<li>Email lookup on <code>value</code> lowercased, over current email rows only.</li>
+<li>Phone lookup on <code>value</code> as stored, over current phone rows only.</li>
+</ul>
+<p><strong><code>purpose</code> is the column that makes this operationally useful.</strong> It lets the permission
+system distinguish "a unit leader may see emergency contacts for camp" from "only billing
+staff may see payment email addresses". Without <code>purpose</code>, every contact is equally
+sensitive and the only safe choice is to hide all of them.</p>
+<p><strong>The partial unique index on the primary contact</strong> enforces "one primary email per person
+per purpose" without preventing a person from having four non-primary addresses. Note this
+index is what makes the merge conflict in
+<a href="#8-identity_hypothesis-and-person_merge">§8</a> possible — resolving two <code>is_primary</code> rows is a review
+step, not a rule.</p>
+<p><strong>The email index is functional — it indexes <code>value</code> lowercased</strong> because email matching in
+the legacy importer must be case-insensitive, and a plain index cannot serve that.</p>
+<hr />
+<h2 id="7-person_identifier">7. <code>person_identifier</code><a class="headerlink" href="#7-person_identifier" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scheme</code></td>
+<td>text, required</td>
+<td><code>national_scout_id</code>, <code>legacy_member_no</code>, <code>legacy_member_no_oldsystem</code>, <code>government_id</code>, <code>school_id</code>, <code>insurance_no</code>. Validated against <code>identifier_scheme</code> below</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>issued_at</code></td>
+<td>date, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>IDs expire or are superseded</td>
+</tr>
+<tr>
+<td><code>verified_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>identifier_scheme</code></strong> — the vocabulary of schemes.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td>text, required</td>
+<td>The value <code>person_identifier.scheme</code> holds</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_unique</code></td>
+<td>boolean, required</td>
+<td>Default true. True: a value may appear on only one person (national id, member number). False: values legitimately repeat (school id across schools)</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><strong>Uniqueness is per scheme, and <code>identifier_scheme.is_unique</code> decides it.</strong> For a scheme
+  flagged unique, <code>(scheme, value)</code> is unique over the identifiers that are still current — those
+  with no <code>valid_to</code>. A superseded number may be reused; a current one may not be shared. The rule
+  covers open rows only.</li>
+<li><strong>For a scheme flagged not-unique there is no such rule, and that is the point of the flag.</strong>
+  <code>school_id</code> repeats by design: the same school issues the same number to many children, and each
+  of them is a different person who genuinely carries it. <code>is_unique = false</code> means one value may
+  appear on any number of people, and means it <em>at enforcement time</em>, not as a note in a
+  description column.</li>
+<li><strong>Corrected here, and worth reading as a lesson.</strong> The rule as first written applied to every
+  scheme and never read the flag; the flag and the rule were the same idea stated twice, once
+  enforced and once decorative. The effect was that <code>school_id</code> could not in fact repeat — the
+  second child at that school with the same number would have been rejected as a duplicate
+  identifier, at import time, by a constraint whose own table said it should not exist. <strong>A column
+  that no rule reads is not documentation, it is a promise.</strong> This is the same failure D-072 warns
+  about from the other side: a rule nobody runs is a convention, and a flag nothing consults is
+  decoration. Both read correctly on the page.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A person's identifiers.</li>
+<li>The uniqueness lookup above.</li>
+</ul>
+<p><strong>This table is the highest-value asset in the legacy import.</strong> If the old system issued
+member numbers, an exact <code>(scheme='legacy_member_no', value=…)</code> match is the strongest
+identity signal available — strong enough to short-circuit a fuzzy name comparison. See
+<a href="../../domain/03-identity-and-legacy/#4-match-signals">../domain/03-identity-and-legacy.md</a>.</p>
+<p><strong>Why not put these on <code>person</code> as columns.</strong> A person may have zero identifiers (most
+self-registered children), one, or several; schemes appear and disappear over decades; and
+<code>national_scout_id</code> must be unique while <code>school_id</code> must not. Columns would mean a schema
+change per scheme and a nullable-unique mess.</p>
+<hr />
+<h2 id="8-identity_hypothesis-and-person_merge">8. <code>identity_hypothesis</code> and <code>person_merge</code><a class="headerlink" href="#8-identity_hypothesis-and-person_merge" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_a_id</code></td>
+<td>reference to person, required</td>
+<td>The lower of the two ids — canonical ordering, so that <code>(a,b)</code> and <code>(b,a)</code> cannot both exist</td>
+</tr>
+<tr>
+<td><code>person_b_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>confidence</code></td>
+<td>number between 0 and 1, required</td>
+<td>Inclusive of both ends</td>
+</tr>
+<tr>
+<td><code>match_signals</code></td>
+<td>jsonb, required</td>
+<td>A list of signals, each with a name, a weight and whether it matched — <code>[{signal: 'birth_date_exact', weight: 0.4, matched: true}, {signal: 'name_normalised', weight: 0.3, matched: true}, …]</code>. Stored so a human reviewer can see <strong>WHY</strong> the matcher proposed this</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>One of: <code>proposed</code>, <code>needs_review</code>, <code>confirmed</code>, <code>rejected</code>, <code>superseded</code>. Default <code>proposed</code></td>
+</tr>
+<tr>
+<td><code>proposed_by</code></td>
+<td>text, required</td>
+<td>One of: <code>import_job</code>, <code>match_job</code>, <code>person</code>, <code>staff</code>. <code>match_job</code> is the nightly batch matcher, as opposed to a person suggesting a match by hand. (Named <code>background_match</code> before background checks were removed from the design; renamed so the two never get confused.)</td>
+</tr>
+<tr>
+<td><code>proposed_by_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Set when a person proposed it</td>
+</tr>
+<tr>
+<td><code>proposed_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>reviewed_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reviewed_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>review_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>person_a_id</code> names a lower person id than <code>person_b_id</code>, and the two are never the same
+  person.</li>
+<li>A hypothesis cannot be <code>confirmed</code> or <code>rejected</code> without a <code>reviewed_at</code>.</li>
+<li>One live hypothesis per pair: unique over <code>(person_a_id, person_b_id)</code> while the status is
+  <code>proposed</code>, <code>needs_review</code> or <code>confirmed</code>. A <code>rejected</code> or <code>superseded</code> hypothesis does not
+  block a new one, so the pair can be re-proposed later.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>The review queue: status, then <code>confidence</code> highest first, restricted to the rows still
+  waiting — <code>proposed</code> and <code>needs_review</code>.</li>
+</ul>
+<p><strong><code>person_merge</code></strong> — the record that one person row was absorbed into another.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>surviving_person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>merged_person_id</code></td>
+<td>reference to person, required</td>
+<td>The absorbed row. It keeps its id; <code>person.merged_into_person_id</code> points here</td>
+</tr>
+<tr>
+<td><code>hypothesis_id</code></td>
+<td>reference to identity hypothesis, optional</td>
+<td>The hypothesis this merge came from, when one did</td>
+</tr>
+<tr>
+<td><code>merged_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>merged_by</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reversed_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reversed_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reversal_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A person may not be merged into themselves: <code>surviving_person_id</code> and <code>merged_person_id</code>
+  are never the same person.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Merges by surviving person, and merges by merged person — both directions get asked.</li>
+<li>Merges by merged person that have not been reversed — the "who is this person now" query.</li>
+</ul>
+<p><strong>The canonical ordering (<code>person_a_id</code> before <code>person_b_id</code>) is not cosmetic.</strong> Without it
+the matcher can create both <code>(100, 847)</code> and <code>(847, 100)</code>, and a reviewer will confirm one
+while the other sits in the queue forever — or worse, confirm both. The ordering rule plus
+the partial unique index makes the pair identity unambiguous.</p>
+<p><strong><code>match_signals</code> as JSONB</strong> rather than columns, because the signal set will evolve as the
+matcher improves, and because these are write-once-read-for-review, never queried
+analytically.</p>
+<p><strong><code>person_merge</code> is append-only</strong> — <code>reversed_at</code> is set, rows are never deleted. An
+unmerge does not remove the merge record; it records that it was undone, so the history of
+the mistake is visible. See
+<a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">../domain/03-identity-and-legacy.md</a>.</p>
+<h3 id="merge-conflicts">Merge conflicts<a class="headerlink" href="#merge-conflicts" title="Permanent link">&para;</a></h3>
+<p><strong><code>field_conflict</code></strong> — one field the merge could not decide.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>merge_id</code></td>
+<td>reference to person merge, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>entity_table</code></td>
+<td>text, required</td>
+<td><code>person</code>, <code>person_contact</code>, <code>membership</code>, …</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>surrogate id, required</td>
+<td>The row in <code>entity_table</code>. No reference — with the table named per row it would point at any table in the schema</td>
+</tr>
+<tr>
+<td><code>field_name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>surviving_value</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>merged_value</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td>text, optional</td>
+<td>One of: <code>kept_surviving</code>, <code>took_merged</code>, <code>manual</code>, <code>unresolved</code></td>
+</tr>
+<tr>
+<td><code>resolved_value</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolved_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolved_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A merge's conflicts by resolution.</li>
+<li>A merge's conflicts that are still <code>unresolved</code> — the reportable set.</li>
+</ul>
+<p>Every field the merge could not resolve automatically lands here as <code>unresolved</code>. <strong>A
+merge with unresolved conflicts must be visible in an operational report</strong> — otherwise
+these rows accumulate silently and the data is quietly wrong.</p>
+<p>Conflict cases worth naming, because each needs a human decision and none has a safe rule:</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Why it cannot be automatic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Two <code>is_primary</code> emails of the same purpose</td>
+<td>Which one does the person actually use?</td>
+</tr>
+<tr>
+<td>Two different <code>birth_date</code> values</td>
+<td>One is a typo; guessing produces a wrong legal record.</td>
+</tr>
+<tr>
+<td>Two overlapping memberships</td>
+<td>May be legitimate, or may mean the merge is <em>wrong</em>.</td>
+</tr>
+<tr>
+<td>Two different current names</td>
+<td>One may be a maiden name, or they may be different people.</td>
+</tr>
+<tr>
+<td>Two accounts, both active</td>
+<td>Which one is in use?</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-views">9. Views<a class="headerlink" href="#9-views" title="Permanent link">&para;</a></h2>
+<p>Convenience views that encode the "always exclude merged and redacted" and "point in
+time" rules, so that application code cannot forget them.</p>
+<p><strong><code>v_person</code></strong> — the person rows most queries actually want: a person who is neither merged
+away nor redacted. <strong>Both exclusions, not one.</strong> They are different reasons and they must not be
+collapsed: a merged row is a <em>duplicate</em> that points at the real answer, while a redacted row is a
+<em>person who was erased</em>, whose names and contacts no longer exist. Neither belongs in a list of
+people, and a listing that shows one and hides the other is worse than either, because it teaches
+the reader that the redacted child is a data-entry error.</p>
+<blockquote>
+<p><strong>This is a correction, not a restatement.</strong> The view as this document first carried it
+excluded merged rows only, while §1 and §2 both said every listing must exclude redacted ones
+too, and §9's own opening sentence claimed the views encoded both. Three statements, one of them
+the code. The code lost. It is fixed here rather than noted as a discrepancy, because with the
+SQL gone (§1 of D-072) there is nothing left to disagree with the prose — <strong>the prose is now the
+only place the rule lives, so it has to be right.</strong></p>
+</blockquote>
+<p><strong>What is deliberately <em>not</em> excluded anywhere: the row itself.</strong> A redacted person is still a
+row with a still-working id, so historical references keep resolving
+(<a href="#2-person">§2</a>'s <code>redacted_at</code>). Anything that must reach a merged or redacted
+row — audit, as-of reconstruction, <code>resolve_person</code> — queries <code>person</code> directly and says so.
+<code>v_person</code> is the view for "people", and people is not what an audit trail is asking for.</p>
+<p><strong><code>resolve_person(id)</code></strong> — turns a possibly-merged id into the survivor. These steps run in
+this order, and the order is the rule:</p>
+<ol>
+<li>Begin at the person row carrying the given id.</li>
+<li>If that row has no <code>merged_into_person_id</code>, stop; this id is the answer.</li>
+<li>Otherwise move to the row its <code>merged_into_person_id</code> names and repeat from step 2.</li>
+</ol>
+<p><strong><code>v_person_display</code></strong> — one row per person <code>v_person</code> admits, carrying <code>id</code>, <code>public_id</code>, a
+display given name (<code>preferred_name</code> where present, <code>given_name</code> otherwise), <code>family_name</code>,
+a display name formed by putting the two together with a space, <code>birth_date</code>,
+<code>birth_date_precision</code> and <code>redacted_at</code>.</p>
+<p><strong>What <code>v_person_display</code> does not carry, and why that is a rule rather than an omission.</strong> It is a
+<em>display</em> row — the columns needed to name a person in a list — and it carries <strong>no descriptive
+values</strong>. It cannot: a view is a fixed list of columns and the attribute layer is the part of a
+person with no fixed list, which is §2's test arriving from the other side. Naming the boundary
+matters because the failure mode is silent. <strong>Anything asked about a <em>person</em>, rather than about what
+they are called, reads <code>person</code> and <code>person_attribute</code> together under the one <code>person.view</code> that
+reaches both</strong> (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes.md §4</a>) — the
+allergy list a first aider asks for, the record a guardian opens, the form a leader fills in. A screen
+built on <code>v_person_display</code> alone answers those questions with a name and a birth date, shows no
+empty field where an allergy should be, and looks entirely healthy while doing it
+(<a href="../../domain/08-person-data/#3-who-needs-to-know-what">domain/08-person-data.md §3</a>). The view stays
+narrow for the reason it exists — every picker and roster in the system reads it and none of them
+needs the record — and the obligation sits on the caller: <strong>do not answer a question about a person
+out of a view that only knows how to print one.</strong></p>
+<p><code>resolve_person</code> follows every hop because merges chain: A absorbed into B, later B absorbed
+into C. A single-level pointer lookup would return B, whose row is itself tombstoned.
+<strong>Every place that accepts a person id from outside must call this.</strong> Getting it wrong
+means a historical record links to a tombstone and the UI shows a blank name — or the
+wrong one.</p>
+<p><em>Assumption:</em> merge chains are allowed rather than flattened at merge time. Flattening
+(silently repointing every existing pointer to the new survivor) is faster to query but
+rewrites history and makes unmerge nearly impossible. Tracked in
+<a href="../../open-questions/">../open-questions.md</a>.</p>
+<hr />
+<h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
+<p>Checks that should run nightly and alert. These encode invariants that no per-column rule
+above can express.</p>
+<p><strong>Invariants to verify</strong></p>
+<ul>
+<li><strong>A person with more than one live account.</strong> Count <code>account</code> rows per person whose status
+  is <code>pending_verification</code>, <code>active</code> or <code>suspended</code>; anything above one is a breach of the
+  rule in §4, and the point of the check is to confirm that rule really does exclude the
+  pending-plus-active combination.</li>
+<li><strong>A tombstoned person with no merge record.</strong> Count persons whose merge pointer is set but
+  who do not appear as the merged person of any un-reversed <code>person_merge</code> row; non-zero
+  means merge chains longer than expected, which signals repeated bad merges.</li>
+<li><strong>A tombstoned row still referenced as a survivor.</strong> Count <code>person_merge</code> rows whose
+  <code>surviving_person_id</code> has its own merge pointer set; non-zero means a merge names as its
+  survivor a person who has themselves been absorbed.</li>
+<li><strong>Unresolved merge conflicts older than 30 days.</strong> Count <code>field_conflict</code> rows resolved to
+  <code>unresolved</code> and created more than 30 days ago; non-zero means the review queue is being
+  ignored and the data is quietly wrong.</li>
+<li><strong>Redacted people still referenced by a live account.</strong> Count <code>account</code> rows that are not
+  closed and belong to a person with <code>redacted_at</code> set; non-zero means an erasure left a
+  working login behind.</li>
+<li><strong>Imported people with no membership.</strong> Count people whose <code>record_origin</code> is
+  <code>legacy_import</code> and who have no <code>membership</code> row at all; non-zero probably means a
+  partially applied batch.</li>
+<li><strong>A redacted person with descriptive values still attached.</strong> Stated where the rows are, as check 6
+  of <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> — attribute rows belonging to a
+  redacted person, and attribute values still present in <code>audit_log</code>. It is named here because the
+  redaction checks above are the same erasure guarantee read from the identity side, and a half-finished
+  erasure does not announce which table it stopped in. Of everything on either list, that is the one
+  that should alert rather than log.</li>
+</ul>
+<hr />
+<h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Whether merge chains are allowed or flattened at merge time (§9).</li>
+<li>Whether a person may hold two live accounts simultaneously — recommend no, enforced by
+  the partial index in §4.</li>
+<li>Erasure policy specifics: what must be redacted vs. retained, and the retention period.
+  Requires legal input. See <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a>.</li>
+<li>Whether <code>person.gender</code> is needed at all; if so, what value set.</li>
+<li>Whether the organization has (or will have) a national SSO identity provider — this
+  determines how much of <code>account_credential</code> is actually used.</li>
+</ul>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

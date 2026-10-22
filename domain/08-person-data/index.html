@@ -1,0 +1,1643 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/08-person-data/">
+      
+      
+        <link rel="prev" href="../03-identity-and-legacy/">
+      
+      
+        <link rel="next" href="../04-organization-structure/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Person Data - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#domain--personal-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Person Data
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-one-class-of-data-and-no-privileged-corner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. One class of data, and no privileged corner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. One class of data, and no privileged corner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-exceptions-and-why-they-are-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three exceptions, and why they are exceptions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-vocabulary-is-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The vocabulary is the system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-who-needs-to-know-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Who needs to know what
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-what-was-refused-and-what-it-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. What was refused, and what it cost
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-forgetting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Forgetting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-where-each-part-is-described" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Where each part is described
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-one-class-of-data-and-no-privileged-corner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. One class of data, and no privileged corner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. One class of data, and no privileged corner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-exceptions-and-why-they-are-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The three exceptions, and why they are exceptions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-vocabulary-is-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The vocabulary is the system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-who-needs-to-know-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Who needs to know what
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-what-was-refused-and-what-it-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. What was refused, and what it cost
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-forgetting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Forgetting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-where-each-part-is-described" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Where each part is described
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="domain--personal-data">Domain — Personal Data<a class="headerlink" href="#domain--personal-data" title="Permanent link">&para;</a></h1>
+<p>What the system knows about a person, why it is all one kind of thing, and what that choice costs.
+The tables are in <a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a>; the reasoning is
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+<a href="../../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> and
+<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>.</p>
+<p>This module began as "design the health records module". It ended as this, because the first
+question — what is a health record here — turned out to have a much larger answer than the one the
+question was expecting.</p>
+<hr />
+<h2 id="1-one-class-of-data-and-no-privileged-corner">1. One class of data, and no privileged corner<a class="headerlink" href="#1-one-class-of-data-and-no-privileged-corner" title="Permanent link">&para;</a></h2>
+<p>Asked how to protect medical data, the answer given was that <strong>everything about a person apart from
+their name, their gender and their age is medical data, stored in fields rather than files — and
+that medical data is not different in any way.</strong></p>
+<p>Read as a scoping decision it removes the category the module was supposed to be about. There is no
+special shelf inside the person record, no code list whose names begin with something clinical, no
+access path that exists only for the sensitive part. A drug dosage, a preferred contact language and
+a shoe size are the same kind of fact: something the organization wrote down about somebody, which
+will be out of date in three years, which nobody could have enumerated when the schema was designed.</p>
+<p><strong>The consequence is uncomfortable and intended: the permission that reads a person's record now
+reads everything in it.</strong> A volunteer with that permission sees the allergy list and the insurance
+number and the note about who in the family the child actually lives with. That is not an accident
+of implementation, it is what "not different in any way" means, and it is why the catalog marks
+reading a person as one of the serious permissions in the system rather than an ordinary one.</p>
+<h3 id="the-three-exceptions-and-why-they-are-exceptions">The three exceptions, and why they are exceptions<a class="headerlink" href="#the-three-exceptions-and-why-they-are-exceptions" title="Permanent link">&para;</a></h3>
+<p>Name, gender and age stay structured, in the identity model
+(<a href="../03-identity-and-legacy/">../domain/03-identity-and-legacy.md</a>). Not because they are less
+sensitive — a name is the most persistent piece of data here — but because <strong>they answer a different
+question</strong>. They are what a person is called and counted as; everything else is what the organization
+happens to have noticed. The three are also the only descriptive facts that have been stable across
+every system this organization has used, which is the practical test for whether something earns a
+column.</p>
+<p>The boundary between "identity machinery" and "descriptive data" is drawn by a harsher test than
+sensitivity, and it is worth stating plainly because it is the test a reviewer will want to argue
+with: <strong>a fact keeps its own table when there is a rule about it that an open layer cannot express.</strong>
+"Exactly one primary postal contact", "a school id may repeat but a birth number may not", "one
+current name" — those rules need a known set of columns, and an open layer's whole value is that it
+has none.</p>
+<hr />
+<h2 id="2-the-vocabulary-is-the-system">2. The vocabulary is the system<a class="headerlink" href="#2-the-vocabulary-is-the-system" title="Permanent link">&para;</a></h2>
+<p>If the organization decides at runtime what it collects, then the <em>list of things it collects</em> is the
+part of the design that matters. The tables are trivial; the vocabulary is not.</p>
+<p>An open vocabulary left open decays the same way every open vocabulary does. Within months there will
+be <code>allergy</code>, <code>Allergy</code>, <code>alergie</code>, and <code>allergies (2)</code>, each with some of the values, and after that
+the layer still stores everything and answers nothing — which is the single thing an attribute layer
+exists to avoid. Three defences, none clever:</p>
+<ul>
+<li><strong>Codes are compared in normalized form</strong>, so the obvious duplicates are refused rather than filed.</li>
+<li><strong>Recording a value is open; naming a thing is not.</strong> Anyone who can edit a person can write down
+  what the doctor said tonight. Creating a code — deciding that this is now a thing the organization
+  knows about people — takes a permission and a person who reads what they are given.</li>
+<li><strong>An improvised need becomes a proposal, not a workaround.</strong> The failure this is aimed at is
+  specific and familiar: at 23:00 on a Friday, there is no field for "carries an adrenaline
+  auto-injector", so the leader types it into a notes box, and it is never read by anyone again. A
+  proposal is visible, queued and curable; a notes box is neither.</li>
+</ul>
+<p><strong>Curation is a job, and the documents say so rather than assuming it happens.</strong> An unwatched proposal
+queue is the same information loss arriving slowly instead of all at once
+(<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).</p>
+<hr />
+<h2 id="3-who-needs-to-know-what">3. Who needs to know what<a class="headerlink" href="#3-who-needs-to-know-what" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Who</th>
+<th>What they need</th>
+<th>What the design gives them</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A unit leader</strong></td>
+<td>The allergies and instructions for the children in their unit, tonight, without asking permission</td>
+<td><strong>Whatever the organization has granted them, and nothing more.</strong> The starting role set gives a leader their unit's roster and events but <strong>not</strong> a read over the child's record — that is a deliberate choice about a role, not a wall in the model, and granting <code>person.view</code> on the unit hands over the entire record including the allergy list. See the paragraph below the table</td>
+</tr>
+<tr>
+<td><strong>A guardian</strong></td>
+<td>Everything about their child, or nothing, depending on what the organization decided</td>
+<td>The guardian right level — <code>none</code>, <code>view</code>, <code>write</code> — over the whole record (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>)</td>
+</tr>
+<tr>
+<td><strong>The person themselves</strong></td>
+<td>Their own data</td>
+<td>Their own record, which is not a special case in the resolver — "about you" is already a channel</td>
+</tr>
+<tr>
+<td><strong>An event organizer</strong></td>
+<td>What matters on the day, for the people who registered</td>
+<td>The registration, and the event form that asks. Where the organization already recorded a fact, <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a> asks whether the form should prefill from it rather than re-asking every camper every season</td>
+</tr>
+<tr>
+<td><strong>A first aider at a camp</strong></td>
+<td>The short list: what is this child allergic to, what do they take, what should we do</td>
+<td>The values are fields, so a list can be produced. This is the argument for fields over documents, and it is the reason "files" was rejected in the answer that started this module</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The leader row carries the sharpest edge in this module, and it should be read twice.</strong> Before
+round 7 the corpus asserted that a leader <em>cannot</em> reach a child's medical information — which was
+argued from a namespace that no longer exists, then from the absence of an <code>event.*</code> code, and is now
+simply not a property of the model: <strong>there is no privileged subset to be kept away from anybody.</strong>
+What remains is the same decision wearing its honest clothes — <strong>the starting roles do not give
+leadership a read over the record, because leadership is not guardianship</strong> — plus the fact that the
+organization may hand it over deliberately, in one grant, and see exactly what that exposes. That is
+a better position than a guarantee nobody could have configured away, and a worse one than the
+documents used to claim
+(<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</p>
+<p>The last row is the one that justifies the whole shape. A scanned form in a drawer is a legally tidy
+answer and a useless one at 23:00 in a tent; the fact has to be something a screen can show somebody
+who is not thinking clearly.</p>
+<hr />
+<h2 id="4-what-was-refused-and-what-it-cost">4. What was refused, and what it cost<a class="headerlink" href="#4-what-was-refused-and-what-it-cost" title="Permanent link">&para;</a></h2>
+<p><strong>The granular medical file, refused on the merits.</strong> Every previous design of this system carried a
+way to restrict one person's access to the medical part of a child's record while leaving the rest.
+Its justification was always a story about a court order. That story was put to you directly and
+declined: <em>a guardian's rights are what the guardian's permission says; medical data is not different</em>
+(<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7, closed</a>).</p>
+<p><strong>What is genuinely lost.</strong> A system that cannot say <em>"everything except the diagnoses"</em> cannot
+express an arrangement a court might actually order. It will instead express it as a guardian who
+either has the record or does not, and somebody will have to explain the difference to a parent. The
+trade made is that the current model <strong>fails visibly</strong> — one decision, in one place, audited — while
+the granular model fails quietly, because a list of eighteen ticks nobody read is not a safeguard, it
+is a receipt. If the case ever arrives in reality, the route back is <strong>one new grant scope over a
+defined set of data, argued once as a decision</strong>, and not a fresh namespace of suggestive permission
+names.</p>
+<p><strong>The per-field type wall, refused deliberately.</strong> A field declared as a date warns when someone
+types <code>2019</code>, and lets them save it. The wall is the wrong tool precisely in the cases that matter
+most to health data, where the true value is imprecise and the imprecise answer is better than no
+answer: <em>probably allergic to wasp stings, mother thinks it was only once</em> is a fact worth keeping, and
+a validation error would discard it in favor of an empty field.</p>
+<p><strong>The narrow one: no history on the row.</strong> Values are overwritten and the audit trail holds the
+sequence — holds the values themselves, not a note that something changed, since a trail that will not
+say what changed cannot serve as a history and the trade below would be a lie. Elsewhere the model
+keeps history in business tables when the question "what was it on that date?" is routine — guardianship
+is the standing example. Here it is not routine; it is what someone asks during an incident. So the
+history of a child's allergy list lives in the one control these documents elsewhere admit is now
+discipline rather than guarantee
+(<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
+<strong>and it lives there in two dependencies, not one: somebody has to write the audit row, on every path
+including the ones nobody thinks of, and somebody has to keep the trail guarded as the copy of the whole
+person record that it is.</strong>
+That is a real risk, accepted in the open rather than discovered later, and
+<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+is the entry to reverse if it ever bites.</p>
+<hr />
+<h2 id="5-forgetting">5. Forgetting<a class="headerlink" href="#5-forgetting" title="Permanent link">&para;</a></h2>
+<p>Two operations that look alike and must not be confused.</p>
+<ul>
+<li><strong>Retiring a thing the organization collects</strong> keeps what was collected. The label leaves the form;
+  the values stay readable and reportable, and the label can come back. Deleting a name must not
+  delete nine years of facts, or nobody will ever retire a badly-named thing and the list will only
+  ever grow.</li>
+<li><strong>Erasing a person</strong> deletes what was collected, everywhere, including in the trail's payloads.
+  The organization keeps that it held a record and that it was removed — and not what the record
+  said.</li>
+</ul>
+<p>Between them sits the rule that changed twice in one round, and the second change is the one to keep.</p>
+<p><strong>The audit trail carries these values, in the clear, because it is the only place they have a
+history.</strong> What changed is not what the trail holds but who may read it: an entry about a person is as
+sensitive as the person data it quotes, so the permission that opens the trail sits with the serious
+permissions rather than among the administrative ones
+(<a href="../../appendix/permission-catalog/#8-audit-and-system">permission-catalog §8</a>). The trail used to
+scrub a list of sensitive <em>field names</em>, which made sense while there was a sensitive subset and became
+incoherent the moment there was not — a list of names is only as good as somebody having predicted the
+name of every field that would matter, and this organization invents those names at runtime. <strong>An
+interim draft of these documents responded by refusing to log descriptive values at all, and that was
+withdrawn</strong>: it put medical-shaped fields in a stricter class than a change of address, which is the
+privileged corner this module exists to have deleted, and it left the history empty, which is the thing
+<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+was chosen for. The protection is the guard. It is one line in one table of one appendix, and the
+documents say so where they describe it (<a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">../data-model/09-attributes.md §6</a>).</p>
+<p><strong>What erasure does is absolute in a way the guard is not.</strong> It deletes the values and reaches into the
+trail to delete them again from copies written years earlier, lawfully, when nobody was asking questions
+about them.</p>
+<hr />
+<h2 id="6-where-each-part-is-described">6. Where each part is described<a class="headerlink" href="#6-where-each-part-is-described" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Tables, rules, permissions and integrity checks —
+  <a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a></li>
+<li>Identity: the three exceptions and their rules —
+  <a href="../03-identity-and-legacy/">../domain/03-identity-and-legacy.md</a>,
+  <a href="../../data-model/01-identity/">../data-model/01-identity.md</a></li>
+<li>Who may ask, and how the answer is reached —
+  <a href="../06-authorization-model/">../domain/06-authorization-model.md</a>,
+  <a href="../../data-model/05-authorization/">../data-model/05-authorization.md</a></li>
+<li>Erasure and the audit payload —
+  <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">../data-model/00-conventions.md §8</a>,
+  <a href="../../data-model/06-audit-and-import/">../data-model/06-audit-and-import.md</a></li>
+<li>What the organization starts collecting — nothing is seeded. The vocabulary arrives with the
+  legacy import
+  (<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">../data-model/09-attributes.md §7</a>).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

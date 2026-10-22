@@ -1,0 +1,2960 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/08-events/">
+      
+      
+        <link rel="prev" href="../07-finance/">
+      
+      
+        <link rel="next" href="../../appendix/erd/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Events - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--events" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Events
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-why-these-five-tables-and-no-event_series" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why these five tables, and no event_series
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. event
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. event">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#no-status-column-and-why-that-is-not-an-omission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No status column, and why that is not an omission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-fee_schedule_id-and-not-an-event_fee-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why fee_schedule_id and not an event_fee table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-event_organizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. event_organizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. event_organizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizers-are-appointments-not-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizers are appointments, not grants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-event_registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. event_registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. event_registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-person_id-not-membership_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why person_id, not membership_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-capacity-and-the-waitlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Capacity and the waitlist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Capacity and the waitlist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#promotion-which-is-a-deliberate-act" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Promotion, which is a deliberate act
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-an-unpaid-registration-releases-its-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When an unpaid registration releases its place
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-payments-and-confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Payments and confirmation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Payments and confirmation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#confirming-on-payment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirming on payment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-event_question-and-event_answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. event_question and event_answer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. event_question and event_answer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#answers-as-rows-not-jsonb-on-the-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Answers as rows, not JSONB on the registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reusable-question-libraries-were-considered-and-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reusable question libraries were considered and rejected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-facts-and-the-discipline-this-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health facts, and the discipline this requires
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-projections-and-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Projections and guards
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Projections and guards">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-unit-authority-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The unit-authority rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guards
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-the-three-queries-that-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. The three queries that matter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. The three queries that matter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-has-not-replied-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who has not replied yet?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-is-actually-coming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who is actually coming?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-was-actually-there" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who was actually there?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-why-these-five-tables-and-no-event_series" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why these five tables, and no event_series
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. event
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. event">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#no-status-column-and-why-that-is-not-an-omission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No status column, and why that is not an omission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-fee_schedule_id-and-not-an-event_fee-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why fee_schedule_id and not an event_fee table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-event_organizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. event_organizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. event_organizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizers-are-appointments-not-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizers are appointments, not grants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-event_registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. event_registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. event_registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-person_id-not-membership_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why person_id, not membership_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-capacity-and-the-waitlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Capacity and the waitlist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Capacity and the waitlist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#promotion-which-is-a-deliberate-act" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Promotion, which is a deliberate act
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-an-unpaid-registration-releases-its-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When an unpaid registration releases its place
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-payments-and-confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Payments and confirmation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Payments and confirmation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#confirming-on-payment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirming on payment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-event_question-and-event_answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. event_question and event_answer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. event_question and event_answer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#answers-as-rows-not-jsonb-on-the-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Answers as rows, not JSONB on the registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reusable-question-libraries-were-considered-and-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reusable question libraries were considered and rejected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-facts-and-the-discipline-this-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health facts, and the discipline this requires
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-projections-and-guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Projections and guards
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Projections and guards">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-unit-authority-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The unit-authority rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guards
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-the-three-queries-that-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. The three queries that matter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. The three queries that matter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-has-not-replied-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who has not replied yet?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-is-actually-coming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who is actually coming?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-was-actually-there" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who was actually there?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--events">Data Model — Events<a class="headerlink" href="#data-model--events" title="Permanent link">&para;</a></h1>
+<p><code>event</code>, <code>event_organizer</code>, <code>event_registration</code>, <code>event_question</code>, <code>event_answer</code>.</p>
+<p>Domain rationale: <a href="../../domain/07-events/">../domain/07-events.md</a>.</p>
+<p><strong>Nothing here is provisional.</strong> This module was designed against the authorization model
+rather than beside it, and every hook it uses — <code>access_grant.scope_type = 'event'</code>,
+<code>grant_scope_type</code>, audiences, <code>permission_level</code> — was already in place and seeded. The
+tables below fill those hooks; they do not extend the model.</p>
+<hr />
+<h2 id="1-why-these-five-tables-and-no-event_series">1. Why these five tables, and no <code>event_series</code><a class="headerlink" href="#1-why-these-five-tables-and-no-event_series" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td>The occasion. One owning unit, a date, a registration window, an optional capacity</td>
+</tr>
+<tr>
+<td><code>event_organizer</code></td>
+<td>Who is running it — an appointment on the event, not a grant (§5)</td>
+</tr>
+<tr>
+<td><code>event_registration</code></td>
+<td>One person's answer: attending, or not attending. <em>Unanswered is the absence of a row</em></td>
+</tr>
+<tr>
+<td><code>event_question</code></td>
+<td>What this event asks registrants</td>
+</tr>
+<tr>
+<td><code>event_answer</code></td>
+<td>What one person said to one question</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No recurrence.</strong> A weekly meeting is <code>unit_participation</code>, not an event
+(<a href="../../domain/07-events/#1-what-an-event-is-and-what-it-is-not">../domain/07-events.md §1</a>).
+Adding <code>event_series</code> would mean every downstream table — registrations, capacity, presence,
+organizers, questions — needs a second possible home, and the feature that needed recurrence
+is already modelled.</p>
+<p><strong>No <code>event_status</code> column.</strong> Visibility is the permission model; cancellation is a fact
+(<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>).</p>
+<hr />
+<h2 id="2-event">2. <code>event</code><a class="headerlink" href="#2-event" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>external identifier, required</td>
+<td>Unique. Generated when the event is created</td>
+</tr>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to org unit, required</td>
+<td>EXACTLY ONE owning unit, and it is never absent. A joint camp is one unit's event that another unit's children register for, via an audience grant — see <a href="../../domain/07-events/#2-an-event-belongs-to-one-unit">../domain/07-events.md §2</a>. This is forced by D-049, not merely preferred: two owners would create an exception to "the root may not read a sub-unit's events" shaped exactly like a joint camp, with no principled place to stop</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td>The committee's own notes — internal</td>
+</tr>
+<tr>
+<td><code>public_note</code></td>
+<td>text, optional</td>
+<td>Shown to registrants. Separate from <code>description</code>, which is internal: "bring a sleeping bag and a torch" vs. the committee's own notes</td>
+</tr>
+<tr>
+<td><code>location</code></td>
+<td>text, optional</td>
+<td>Free text: a camp site, an address, "the usual place"</td>
+</tr>
+<tr>
+<td><code>location_detail</code></td>
+<td>free-form jsonb, optional</td>
+<td><code>{lat, lon, meeting_point, …}</code> when known</td>
+</tr>
+<tr>
+<td><code>starts_at</code></td>
+<td>instant in time, required</td>
+<td>An instant, not a date. A Thursday group meets at 5pm; a camp starts on Saturday morning. The instant carries a timezone, and the timezone is the organization's, recorded rather than assumed</td>
+</tr>
+<tr>
+<td><code>ends_at</code></td>
+<td>instant in time, required</td>
+<td>An instant, not a date, for the same reason</td>
+</tr>
+<tr>
+<td><code>all_day</code></td>
+<td>boolean, required</td>
+<td>Default false. Display only — an all-day camp still has instants underneath</td>
+</tr>
+<tr>
+<td><code>registration_opens_at</code></td>
+<td>instant in time, optional</td>
+<td><code>NULL</code> = open as soon as the event is visible. The event is visible to whoever holds <code>event.view</code>, which for a fresh event is its organizers and nobody else (<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>), so <code>NULL</code> is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed</td>
+</tr>
+<tr>
+<td><code>registration_closes_at</code></td>
+<td>instant in time, optional</td>
+<td><code>NULL</code> = when the event starts. This is the "unlimited" case: registration stays open until the thing happens</td>
+</tr>
+<tr>
+<td><code>capacity</code></td>
+<td>integer, optional</td>
+<td><code>NULL</code> = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and organizers may exceed it (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>)</td>
+</tr>
+<tr>
+<td><code>waitlist_deadline</code></td>
+<td>instant in time, optional</td>
+<td>When an unpaid registration at a full event releases its place to the waitlist (§6). <code>NULL</code> = never releases. Only meaningful when the event has a fee AND a capacity; ignored otherwise. This is the ONE automatic transition in this module — see §6 for why it is accepted and what it costs</td>
+</tr>
+<tr>
+<td><code>fee_schedule_id</code></td>
+<td>reference to fee schedule, optional</td>
+<td><code>NULL</code> = this event is free, which most are. Set = a fee applies; registering creates a <code>fee_obligation</code> (§6). The amount and currency live in <code>fee_schedule</code>, not here — events do not price themselves</td>
+</tr>
+<tr>
+<td><code>cancelled_at</code></td>
+<td>instant in time, optional</td>
+<td>Cancellation is a FACT, not a status, and this is the point where the "no status column" reasoning deliberately diverges: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming</td>
+</tr>
+<tr>
+<td><code>cancelled_by</code></td>
+<td>reference to person, optional</td>
+<td>Who cancelled. Set exactly when <code>cancelled_at</code> is set</td>
+</tr>
+<tr>
+<td><code>cancel_reason</code></td>
+<td>text, optional</td>
+<td>Free text, and it may be absent ("cancelled — see email")</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td>Set on imported rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>ends_at</code> is later than <code>starts_at</code>.</li>
+<li><code>capacity</code> is either absent or greater than zero.</li>
+<li>When both <code>registration_opens_at</code> and <code>registration_closes_at</code> are set, the close is later
+  than the open. When either one is absent nothing is required of the other — each is
+  independently meaningful on its own.</li>
+<li><code>cancelled_at</code> and <code>cancelled_by</code> are set together or not at all. A cancellation has a who
+  and a when, or neither. The reason is free text and may be absent ("cancelled — see email").</li>
+<li><code>waitlist_deadline</code> may be set only when both <code>capacity</code> and <code>fee_schedule_id</code> are set. A
+  waitlist deadline is meaningless without a capacity to fill or a fee to pay, and stating
+  this prevents a column that silently does nothing.</li>
+<li><code>public_id</code> is unique.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Upcoming events by <code>starts_at</code>, and events by <code>registration_closes_at</code> — both restricted to
+  rows that are not cancelled. Every "what is happening" and "what is still open" list
+  excludes cancelled events, so the cancelled ones are simply not in the index.</li>
+</ul>
+<h3 id="no-status-column-and-why-that-is-not-an-omission">No <code>status</code> column, and why that is not an omission<a class="headerlink" href="#no-status-column-and-why-that-is-not-an-omission" title="Permanent link">&para;</a></h3>
+<p>Nothing is stored that can be derived. "Is this event over?" is <code>ends_at</code> in the past. "Is it
+cancelled?" is <code>cancelled_at</code> set. "Needs attention now" — the list an admin screen runs — is
+every event with <code>cancelled_at</code> absent and <code>ends_at</code> not yet past, ordered by <code>starts_at</code>.</p>
+<p><code>completed</code> is derived, never stored, so there is no state to keep consistent and no job to
+move rows between states. <strong>Draft</strong> is not a state either: a new event has no grants beyond
+its organizers, so nobody else can see it, and publishing is an <code>access_grant</code>, not an
+<code>UPDATE</code>. A status column and a permission system that both claim to answer "who may see
+this?" will eventually disagree, and the one that gets enforced is whoever wrote the last
+<code>IF</code>.</p>
+<h3 id="why-fee_schedule_id-and-not-an-event_fee-table">Why <code>fee_schedule_id</code> and not an <code>event_fee</code> table<a class="headerlink" href="#why-fee_schedule_id-and-not-an-event_fee-table" title="Permanent link">&para;</a></h3>
+<p>The fee amount, currency and validity already live in <code>fee_schedule</code>
+(<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), which is temporal — so a
+1998 camp's fee recomputes correctly from the 1998 schedule. An <code>event_fee</code> table would
+duplicate that and immediately drift. An event points at the schedule that prices it.</p>
+<hr />
+<h2 id="3-event_organizer">3. <code>event_organizer</code><a class="headerlink" href="#3-event_organizer" title="Permanent link">&para;</a></h2>
+<p><strong>The absence of a <code>valid_to</code> is deliberate.</strong> This is a <em>roster</em>, not a period: you are on
+the list, or you are not. An organizer who drops out is removed (recorded in <code>audit_log</code>),
+because "was Jan an organizer of that camp?" must have one answer, not a set of intervals.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>event_id</code></td>
+<td>reference to event, required</td>
+<td>The event this person is on. Deleting the event removes its organizer rows — the one cascade in this design, and guard 2 in §8 is what makes it safe</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>organizer_role</code></td>
+<td>text, optional</td>
+<td><code>lead</code>, <code>assistant</code>, <code>cook</code>, <code>driver</code>, <code>medic</code>, <code>quartermaster</code> — free text. NOT a controlled vocabulary: every organization labels these differently, and a closed list here would be a guess of the kind D-054 removed for unit types</td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>boolean, required</td>
+<td>Default false. The person the parents are told to call. At most one per event (§10 check 3)</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>integer, required</td>
+<td>Default 0. Display order for the list. Cooks before drivers is a real preference and not something to derive</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>added_by</code></td>
+<td>reference to person, optional</td>
+<td>Who put them on the roster</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>One row per person per event — the (<code>event_id</code>, <code>person_id</code>) pair is unique, over all rows.</li>
+<li>At most one organizer of an event has <code>is_primary</code> set. The rule covers every row of the
+  event; rows where the flag is not set are unrestricted, so an event may have any number of
+  ordinary organizers and exactly one primary.</li>
+<li>Removing an organizer is a removal of the row, not the ending of a period, and <code>audit_log</code>
+  is where the history of it lives. There is nothing to overlap, so there is no no-overlap
+  rule here.</li>
+</ul>
+<blockquote>
+<p><strong>Cascade on delete here, and nowhere else in this data model.</strong> It is justified because
+<code>event_organizer</code> is a roster of <em>assignments on the event</em>, not a business record: a
+deleted event has no organizers in the domain sense either. <strong>In practice nothing deletes
+an event</strong> — the deletion policy is temporal closure, and cancellation sets <code>cancelled_at</code>.
+The cascade exists so that a mistaken <code>INSERT</code> into a draft event can be cleaned up
+without leaving orphan rows, and it is the only cascade in the design. Deleting an event
+that has registrations is refused outright (§8, Guard 2), and the refusal belongs in the database
+rather than in the delete path: the reference from <code>event_registration</code> to <code>event</code> carries no
+cascade, so an import or a hand-written fix meets the same wall the screens do. A refusal only
+the screens knew about would delete the record of who was coming.</p>
+</blockquote>
+<h3 id="organizers-are-appointments-not-grants">Organizers are appointments, not grants<a class="headerlink" href="#organizers-are-appointments-not-grants" title="Permanent link">&para;</a></h3>
+<p><code>event_organizer</code> is the <strong>domain</strong> answer to "who is running this camp?" — the labelled,
+ordered list that parents see. It is deliberately <strong>not</strong> an <code>access_grant</code>
+(<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>):</p>
+<ul>
+<li>A grant has no room for <code>organizer_role = 'cook'</code>.</li>
+<li>"Who is running this camp?" should not be answered by reading the permission table.</li>
+<li>Revoking a grant to remove a cook would also revoke their ability to see the event at
+  all, which is not what "they are no longer cooking" means.</li>
+</ul>
+<p><strong>Authority to act on the event does not come from this table.</strong> It comes from the owning
+unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or from <code>system.admin</code>.</p>
+<hr />
+<h2 id="4-event_registration">4. <code>event_registration</code><a class="headerlink" href="#4-event_registration" title="Permanent link">&para;</a></h2>
+<p>One row per person per event. <strong>Two stored values; "unanswered" is the absence of a row.</strong></p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>event_id</code></td>
+<td>reference to event, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td><code>person_id</code>, NOT <code>membership_id</code> — same reasoning as <code>unit_participation</code> (D-041, <a href="../03-membership/#5-unit_participation">03-membership.md §5</a>). An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would make every one of those children a "current member" today through the gate (D-039, D-056)</td>
+</tr>
+<tr>
+<td><code>response</code></td>
+<td>enum: <code>attending</code> / <code>not_attending</code>, required</td>
+<td>TWO values. <code>unanswered</code> is written NOWHERE. It is the absence of a row, so "who has not replied yet?" is a subtraction, not a stored state (<a href="../../domain/07-events/#3-registration-one-record-two-stored-answers-and-no-unanswered">../domain/07-events.md §3</a>). Returning someone to unanswered deletes the row, which <code>audit_log</code> records — the honest act, and the one that leaves least behind</td>
+</tr>
+<tr>
+<td><code>responded_at</code></td>
+<td>timestamp, required</td>
+<td>Default now. When the ANSWER was given, which may differ from when it was recorded. A phone call on Tuesday entered on Thursday has two dates and both matter</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>enum: <code>self</code> / <code>staff</code> / <code>guardian</code> / <code>import</code>, required</td>
+<td>Default <code>self</code>. How this person got here, and the audit answer to "how did they get in?". <code>staff</code> bypasses the contribute requirement deliberately (<a href="../../domain/07-events/#6-the-hinge-organizers-and-the-scope-mismatch">../domain/07-events.md §6</a>): organizers may register anyone. <code>guardian</code> is acting-under-guardianship; the acting person is in <code>access_log</code></td>
+</tr>
+<tr>
+<td><code>registered_by</code></td>
+<td>reference to person, optional</td>
+<td><code>NULL</code> when <code>source</code> is <code>self</code>. Set otherwise: which organizer, or which guardian</td>
+</tr>
+<tr>
+<td><code>is_waitlisted</code></td>
+<td>boolean, required</td>
+<td>Default false</td>
+</tr>
+<tr>
+<td><code>waitlist_position</code></td>
+<td>integer, optional</td>
+<td>Order within the waitlist. Assigned on insert when the event is at capacity, and rewritten on promotion. See §5</td>
+</tr>
+<tr>
+<td><code>is_confirmed</code></td>
+<td>boolean, required</td>
+<td>Default false. Registration is not the same as a held place. An event with NO fee confirms immediately on registration; an event WITH a fee confirms on payment (§6). This is the "payment confirms the place" rule, and it is the only place in this module where money changes a registration's meaning</td>
+</tr>
+<tr>
+<td><code>confirmed_at</code></td>
+<td>instant in time, optional</td>
+<td>Set exactly when <code>is_confirmed</code> is true</td>
+</tr>
+<tr>
+<td><code>was_present</code></td>
+<td>boolean, three-valued</td>
+<td><code>NULL</code> = not yet marked — no register was taken. <code>true</code> = turned up. <code>false</code> = marked absent. THREE-VALUED ON PURPOSE: "we did not take a register" and "we took one and they were not there" are different facts, and only one is a safeguarding signal. For a camp this is the record of who was actually in the organization's care, and it cannot be reconstructed afterwards (§9)</td>
+</tr>
+<tr>
+<td><code>presence_marked_by</code></td>
+<td>reference to person, optional</td>
+<td>The person who took the register. Held by whoever has <code>event.presence.mark</code>, which is deliberately ONE LEVEL BELOW <code>event.manage_participants</code> (contribute, not manage) so the volunteer at the door is not also the person who can delete a child from the roster</td>
+</tr>
+<tr>
+<td><code>presence_marked_at</code></td>
+<td>instant in time, optional</td>
+<td>When the register was taken</td>
+</tr>
+<tr>
+<td><code>fee_obligation_id</code></td>
+<td>reference to fee obligation, optional</td>
+<td>Set when the event has a <code>fee_schedule</code> and this registration created an obligation. The reverse pointer from <code>fee_obligation.event_registration_id</code> also exists (§6) — both directions, because each is asked a different question: "what does this person owe for this camp?" and "what is this obligation for?"</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td>Set on imported rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>One row per person per event, full stop — the (<code>event_id</code>, <code>person_id</code>) pair is unique over
+  all rows. This is what makes "unanswered = absence" work: there is exactly one place an
+  answer could live.</li>
+<li>A <code>not_attending</code> row has <code>is_waitlisted</code> false and <code>is_confirmed</code> false. A decline is not
+  waitlisted and not confirmed; otherwise a "no" could hold a place on the waitlist, which is
+  nonsense.</li>
+<li><code>is_confirmed</code> is true exactly when <code>confirmed_at</code> is set.</li>
+<li><code>is_waitlisted</code> is true exactly when <code>waitlist_position</code> is set.</li>
+<li>Presence is marked all together or not at all: <code>was_present</code>, <code>presence_marked_by</code> and
+  <code>presence_marked_at</code> are either all present or all absent, and <code>was_present</code> absent is the
+  same condition as the other two absent. A partially-set trio is a bug, not a state.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li><strong>The set the capacity test counts</strong> — an event's registrations whose <code>response</code> is
+  <code>attending</code> and which are not waitlisted. Capacity is compared against exactly this set
+  (§5), and the other registrations of an event must not slow it down.</li>
+<li>An event's waitlist in <code>waitlist_position</code> order, restricted to waitlisted rows.</li>
+<li>An event's registrations by <code>was_present</code>, restricted to rows where presence has been
+  marked at all.</li>
+</ul>
+<h3 id="why-person_id-not-membership_id">Why <code>person_id</code>, not <code>membership_id</code><a class="headerlink" href="#why-person_id-not-membership_id" title="Permanent link">&para;</a></h3>
+<p>Same argument as <code>unit_participation</code> (<a href="../03-membership/#5-unit_participation">03-membership.md §5</a>),
+and it is stronger here. An imported 1998 camp roster names children who have no membership
+row to point at. With the corpus being large and number-bearing
+(<a href="../../decisions/decision-log/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>),
+linking to <code>membership</code> would make those rows unrepresentable — and, worse, an inferred
+open-ended membership created to satisfy the FK would make every one of those children a
+<em>current</em> member today through the gate.</p>
+<p><strong>The trade-off, stated:</strong> no database constraint can enforce "only members may register", and
+none is wanted — eligibility is capability (<a href="../../domain/07-events/#4-who-may-register-capability-not-a-separate-rule-engine">../domain/07-events.md §4</a>),
+and capability is a grant, not a membership row.</p>
+<hr />
+<h2 id="5-capacity-and-the-waitlist">5. Capacity and the waitlist<a class="headerlink" href="#5-capacity-and-the-waitlist" title="Permanent link">&para;</a></h2>
+<p><strong>Capacity is a threshold, not a block.</strong> Registering for a full event succeeds and produces
+a waitlisted row.</p>
+<p><strong>Is this event at capacity?</strong> The question is asked of one event and answered only from the
+registrations it has: count its <code>attending</code>, non-waitlisted registrations and compare that
+count with its <code>capacity</code>. An event with no <code>capacity</code> is never full — with no capacity set
+there is nothing to reach, and the answer is no.</p>
+<p><strong>The placing rule</strong> runs before the row is written, once per row, on every insert, so that
+EVERY insert path obeys it — self-service, staff, guardian and import alike.
+Application-level placement would let one of the four paths forget, and the forgotten one
+would be the one that matters. <strong>The order of these steps is a rule</strong>: the decline branch
+settles all four flags and ends the rule, and the capacity test is counted before confirmation
+is decided, because confirmation is a property of the place the earlier steps gave the row.</p>
+<ol>
+<li>Read the event the registration names.</li>
+<li>A decline never occupies a place. If <code>response</code> is not <code>attending</code>, set <code>is_waitlisted</code>
+   false and <code>waitlist_position</code> absent, set <code>is_confirmed</code> false and <code>confirmed_at</code> absent,
+   and stop here — none of what follows applies to a "no".</li>
+<li>Waitlisting is a SELF-SERVICE outcome. Waitlist the row when all three of these hold:
+   <code>source</code> is <code>self</code>; the event has a <code>capacity</code>; and the event's <code>attending</code>,
+   non-waitlisted registrations already number at least that capacity. Then set
+   <code>is_waitlisted</code> true and <code>waitlist_position</code> to one past the highest position already on
+   that event's waitlist — <code>1</code> when the waitlist is empty. If any of the three fails, set
+   <code>is_waitlisted</code> false and <code>waitlist_position</code> absent. A staff registration is admitted
+   even past capacity: the organizer who knows there are two spare tents is not to be blocked
+   by a number they cannot edit mid-camp (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>).
+   The overrun is permitted, attributed, and REPORTED (§10, check 5).</li>
+<li>Confirmation: immediate when there is no fee to wait for. If the event has no
+   <code>fee_schedule_id</code>, set <code>is_confirmed</code> true and <code>confirmed_at</code> to now. Otherwise set
+   <code>is_confirmed</code> false and <code>confirmed_at</code> absent — §6, payment confirms the place.</li>
+<li>Write the row carrying those flags.</li>
+</ol>
+<p>The rule runs on insert only; a later edit of the row does not re-run it. Promotion and the
+release below write the same flags deliberately.</p>
+<blockquote>
+<p><strong>The <code>source = 'self'</code> disjunct is the whole of "organizers may register anyone", made
+mechanical.</strong> Removing it silently reverses the answer: every staff registration would be
+waitlisted behind self-service ones, and the leader adding a child on the day would be
+told the camp is full when they can see two spare beds.</p>
+</blockquote>
+<h3 id="promotion-which-is-a-deliberate-act">Promotion, which is a deliberate act<a class="headerlink" href="#promotion-which-is-a-deliberate-act" title="Permanent link">&para;</a></h3>
+<p>Promotion is <strong>not automatic</strong> — no trigger, no job. An organizer picks someone from the
+waitlist:</p>
+<ol>
+<li>Take the one registration this person holds at this event — the pair names exactly one row
+   (§4).</li>
+<li>Clear the waitlist on it: <code>is_waitlisted</code> false, <code>waitlist_position</code> absent.</li>
+<li>Set <code>is_confirmed</code> and <code>confirmed_at</code> by exactly the test the placing rule uses: confirmed
+   now when the event has no <code>fee_schedule_id</code>, unconfirmed with no <code>confirmed_at</code> when it has
+   one.</li>
+</ol>
+<p>The promotion deliberately bypasses the capacity test: the whole point of promoting is that a
+place has freed up, and re-testing would just fail again.</p>
+<p>Promotion writes the same two flags the placing rule would have, so a promoted registration
+and an admitted one are indistinguishable afterwards — which is correct, because the
+difference between them is <em>when</em>, not <em>what</em>.</p>
+<h3 id="when-an-unpaid-registration-releases-its-place">When an unpaid registration releases its place<a class="headerlink" href="#when-an-unpaid-registration-releases-its-place" title="Permanent link">&para;</a></h3>
+<p>If <code>waitlist_deadline</code> is set, an unpaid registration at a full event releases its place to
+the waitlist at that moment. This is <strong>the one automatic transition in this module</strong>, and it
+is recorded as such. The release is scoped as narrowly as the rule can be: only at a full
+event, only with a fee configured, only past the deadline, only unpaid, and never a staff
+registration (which is admitted by hand and by a human who can see the roster).</p>
+<ol>
+<li>Take every registration that is <code>attending</code>, not already waitlisted, <code>source</code> <code>self</code>, and
+   not confirmed.</li>
+<li>Keep only those whose event has a <code>fee_schedule_id</code>, has a <code>waitlist_deadline</code>, has that
+   deadline already past, and is not cancelled.</li>
+<li>Move each one onto the waitlist: <code>is_waitlisted</code> true, <code>waitlist_position</code> one past the
+   highest position already on that event's waitlist — <code>1</code> when the waitlist is empty.</li>
+<li>Take the place back: <code>is_confirmed</code> false, <code>confirmed_at</code> absent.</li>
+</ol>
+<blockquote>
+<p><strong>Why this is accepted despite the design's habit of avoiding automatic transitions.</strong> The
+design has spent real effort keeping state changes deliberate
+(<a href="../../decisions/decision-log/#d-023--nothing-is-auto-lapsed-or-auto-terminated">D-023</a>,
+<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
+and "payment confirms the place" reintroduces one. It is a <em>deadline</em>, not a sweep: it
+applies to a narrow conjunction, it is opt-in per event (<code>waitlist_deadline</code> is <code>NULL</code> by
+default, so most events never run it), and the state it produces is visible — the person
+is on the waitlist, not silently deleted. The alternative, no deadline at all, means a
+place is held forever by someone who never paid, which is worse.</p>
+</blockquote>
+<hr />
+<h2 id="6-payments-and-confirmation">6. Payments and confirmation<a class="headerlink" href="#6-payments-and-confirmation" title="Permanent link">&para;</a></h2>
+<p><strong>Registering creates a fee obligation; payment confirms the place.</strong></p>
+<p><strong>Creating the obligation</strong> runs after the registration row is written, so that the
+registration has an id to be pointed at. The order is a rule: the obligation cannot be
+created before the registration it belongs to exists, and the registration's
+<code>fee_obligation_id</code> cannot be written before the obligation does.</p>
+<ol>
+<li>Read the event the registration is for.</li>
+<li>If the event has no <code>fee_schedule_id</code>, or the registration is not <code>attending</code>, stop — a
+   free event owes nothing, and a place someone declined owes nothing.</li>
+<li>Read the fee schedule the event points at.</li>
+<li>Create one <code>fee_obligation</code> for this registration, carrying: <code>person_id</code> taken from the
+   registration; <code>event_registration_id</code> set to the registration; the event's
+   <code>fee_schedule_id</code>; the event's title as the description; the event's start and end as the
+   obligation's period; the schedule's amount and currency; and a due date of the event's
+   <code>waitlist_deadline</code>, falling back to the event's <code>starts_at</code> when it has none.</li>
+<li>Write the new obligation's id into the registration's <code>fee_obligation_id</code>.</li>
+</ol>
+<p><strong>The pointer that had to be restored.</strong> <a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>
+removed the household arm from the exactly-one rule over <code>fee_obligation</code>'s target columns,
+leaving two of them (membership or membership request, never both). An event fee needs an arm back — and this time it is a <em>real</em> arm
+with data behind it, not the dormant hedge the household column was.</p>
+<p>The arm lives in <code>fee_obligation</code> and is stated there in full
+(<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>): exactly one of
+<code>membership_id</code>, <code>membership_request_id</code> and <code>event_registration_id</code> is set on every
+obligation. Still exactly one, not "at most three" — every obligation is for exactly one
+thing: a membership period, a membership request, or one person's place at one event. The
+per-person choice is deliberate, because the fee is flat and per person (D-037) and a family
+price would need the household grouping designed again first. Obligations carrying the event
+arm are indexed on <code>event_registration_id</code>, restricted to the rows where it is set.</p>
+<h3 id="confirming-on-payment">Confirming on payment<a class="headerlink" href="#confirming-on-payment" title="Permanent link">&para;</a></h3>
+<p><code>confirm_event_place(obligation)</code> is called by the payment flow. It is <strong>not</strong> a rule on
+<code>fee_obligation</code>'s status — the payment module owns that transition, and a rule there would
+make every fee, membership or event alike, confirm an event place.</p>
+<ol>
+<li>Take the obligation the call names.</li>
+<li>Follow its <code>event_registration_id</code> to the registration it pays for.</li>
+<li>Confirm that registration only when it is <code>attending</code> and not waitlisted — a waitlisted
+   person stays waiting until promoted (§5), so paying does not by itself place them.</li>
+<li>Confirming means setting <code>is_confirmed</code> true and <code>confirmed_at</code> to now.</li>
+</ol>
+<blockquote>
+<p><strong><code>confirm_event_place</code> is deliberately an operation the finance module calls, not a rule
+hanging off <code>fee_obligation</code>'s status change.</strong> The argument is about ownership and does not
+depend on where the code lives: anything that fires because a fee became paid fires for
+membership fees and event fees alike, and "the fee is paid" means something different in each
+case: a membership activates
+(<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
+an event place confirms. Two transitions, two owners.</p>
+</blockquote>
+<p><strong>Free events confirm immediately</strong> — see the placing rule in §5. An event with no
+<code>fee_schedule_id</code> has nothing to wait for, and requiring "confirmation" for a free hike
+would be a state with no meaning.</p>
+<hr />
+<h2 id="7-event_question-and-event_answer">7. <code>event_question</code> and <code>event_answer</code><a class="headerlink" href="#7-event_question-and-event_answer" title="Permanent link">&para;</a></h2>
+<p><strong>Fields — <code>event_question</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>event_id</code></td>
+<td>reference to event, required</td>
+<td>The event that asks it. A question is defined per event, never shared (§7)</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>text, required</td>
+<td><code>Tent preference</code>, <code>Dietary requirements</code></td>
+</tr>
+<tr>
+<td><code>help_text</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td>integer, required</td>
+<td>Default 0. Display order</td>
+</tr>
+<tr>
+<td><code>data_type</code></td>
+<td>enum: <code>text</code> / <code>long_text</code> / <code>integer</code> / <code>decimal</code> / <code>bool</code> / <code>date</code> / <code>choice</code> / <code>multichoice</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>choices</code></td>
+<td>list of text, optional</td>
+<td>For <code>choice</code> and <code>multichoice</code> only. An ordered list on the question rather than a child table: the options are a property of the question, they are ordered, and they are never referenced by anything else</td>
+</tr>
+<tr>
+<td><code>is_required</code></td>
+<td>boolean, required</td>
+<td>Default false. The person REGISTERING must answer. Not a gate on registration itself: a form that blocks sign-up is a form nobody completes, and the organizer would rather have the registration and chase the answer</td>
+</tr>
+<tr>
+<td><code>applies_to</code></td>
+<td>enum: <code>attendee</code> / <code>organizer</code> / <code>all</code>, required</td>
+<td>Default <code>attendee</code>. Who is asked. Organizers may be asked things attendees are not (T-shirt size for the leaders' shirts) and vice versa</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default today</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td><code>NULL</code> = still asked. A question can be retired after people have answered it. Answers survive (an answer is never removed with its question), because "what did they say?" must outlive "do we still ask this?"</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules — <code>event_question</code></strong></p>
+<ul>
+<li><code>choices</code> is present exactly when <code>data_type</code> is <code>choice</code> or <code>multichoice</code>, and never
+  otherwise. Stated as an equivalence rather than a one-way requirement so that a <code>text</code>
+  question cannot carry a stray <code>choices</code> list that the UI might honour.</li>
+<li><code>valid_to</code> is either absent or later than <code>valid_from</code>.</li>
+</ul>
+<p><strong>Fields — <code>event_answer</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only</td>
+</tr>
+<tr>
+<td><code>question_id</code></td>
+<td>reference to event question, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td>Who ANSWERED — for a child, the child. The person who submitted on their behalf is in <code>access_log</code> and in <code>registered_by</code>, not here. Answers are about the person the question concerns</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>free-form jsonb, required</td>
+<td>Typed by <code>question.data_type</code>. One loose value rather than a column per type: the alternative is eight nullable columns only one of which is ever set, which is the shape 01-identity.md §6 rejected for <code>person_contact</code></td>
+</tr>
+<tr>
+<td><code>answered_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default now</td>
+</tr>
+<tr>
+<td><code>answered_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules — <code>event_answer</code></strong></p>
+<ul>
+<li>One answer per question per person — the (<code>question_id</code>, <code>person_id</code>) pair is unique over
+  all rows.</li>
+<li>An answer is not removed when its question is retired: there is no delete rule from
+  <code>event_question</code> to <code>event_answer</code>.</li>
+</ul>
+<h3 id="answers-as-rows-not-jsonb-on-the-registration">Answers as rows, not JSONB on the registration<a class="headerlink" href="#answers-as-rows-not-jsonb-on-the-registration" title="Permanent link">&para;</a></h3>
+<p>This is the choice that makes the feature worth having. The whole reason to collect
+"dietary requirements" is to be able to answer <strong>"who needs a gluten-free meal, and how
+many?"</strong> — and that is a question the data must answer directly: for one event and one
+question, take every answer given to it, group the answers by the value given, and count each
+group, largest group first.</p>
+<p>With answers stored as a JSONB blob on the registration, that becomes JSON traversal, an
+index that does not help, and a report nobody writes. The cost is one row per answer — which
+is exactly the number of things the organization must act on.</p>
+<h3 id="reusable-question-libraries-were-considered-and-rejected">Reusable question libraries were considered and rejected<a class="headerlink" href="#reusable-question-libraries-were-considered-and-rejected" title="Permanent link">&para;</a></h3>
+<p>A shared pool of question definitions — <code>question_code</code>, assigned to events — is
+structurally the requirement machinery removed in
+<a href="../../decisions/decision-log/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>.
+It earns its keep only when the same question must mean the same thing across events, and
+tent preference does not: what one camp asks and what another needs are allowed to differ.
+Per-event definitions keep them from having to agree, and avoid reviving a removed pattern
+for a benefit nobody asked for.</p>
+<h3 id="health-facts-and-the-discipline-this-requires">Health facts, and the discipline this requires<a class="headerlink" href="#health-facts-and-the-discipline-this-requires" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>An event form is how the people running an event find out what they need to know about the
+people who came.</strong> It used to be the <em>only</em> way. <a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+ended that, and the guidance below is still worth reading as a warning rather than a nicety —
+anything a form asks is read by whoever runs that event, and the number of such people is decided
+by whoever creates the event
+(<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
+<a href="../../domain/07-events/#12-the-forms-questions-and-answers">../domain/07-events.md §12</a>).</p>
+</blockquote>
+<p><strong>This sentence's reason has now been rewritten twice, and the second rewriting killed the claim.</strong>
+It began as "the <code>dependent.*</code> namespace is unreachable by unit leaders"; <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+deleted that namespace and the claim survived on a better reason — no <code>event.*</code> permission includes
+the medical record, and no wildcard is left to sweep it in (D-068). <strong>Both halves are now gone: there
+is no medical record</strong> (<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+and the facts that would have been in one are attributes on the person, which
+<strong>a unit leader holding <code>person.view</code> over their own unit can read</strong>
+(<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes §4</a>). A claim that had outlived two
+of its reasons should not be repaired a third time; it is stated as what is now true:</p>
+<ul>
+<li><strong>The form is no longer the ceiling on what an organizer may know.</strong> An organizer who is also a
+  leader of the registrant's unit may already have read the allergy. Any document implying the
+  contrary was quietly making a privacy promise the model does not keep.</li>
+<li><strong>What the form is for changed accordingly</strong> — it asks <em>now</em>, about <em>this</em> event, of a person who
+  may not be in the system at all, and its answer carries a date. That is a genuine property the
+  record does not have: a recorded attribute says what somebody believed, once, at no particular
+  time. Whether the two should meet at all is <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>,
+  and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
+  a stale health fact that arrives looking authoritative is worse data than an asked question.</li>
+<li><strong>Nothing in the data model distinguishes a preference from a condition</strong>, and now nothing <em>could</em>:
+  <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  refused the category. "Vegetarian" and "coeliac" are both <code>data_type = 'text'</code> in
+  <code>event_answer.value</code>, so the line is what an organizer types into <code>label</code> — <strong>form design guidance,
+  not an enforced constraint</strong>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Belongs on an event form</th>
+<th>Belongs on the person, as an attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What the organizers need <strong>on the day</strong>, for this event</td>
+<td>Diagnoses, medication, allergies, conditions</td>
+</tr>
+<tr>
+<td>What a visitor who is not in the system must supply</td>
+<td>Anything already recorded, curable and audited on the record</td>
+</tr>
+<tr>
+<td>T-shirt size for a camp that is ordering shirts now</td>
+<td>Anything whose value outlives the event that asked</td>
+</tr>
+</tbody>
+</table>
+<p>Asking a returning camper to restate a recorded allergy at every event is not a privacy measure; it
+is the same fact, fresher in one table and unmanaged in it. <strong>The honest reading of this section is
+that the event answer is where a health fact lands when the organization has not collected it
+properly</strong> — and the fix is the record plus a confirmation pass, not a cleverer form.</p>
+<p><strong>Open:</strong> the retention policy for answers. A dietary answer citing a medical condition is data of
+exactly the same class as everything else the organization holds about a person — <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+settled that there is no specially-sensitive category, not that this data is insignificant — and
+there is no policy for how long answers survive their event. See
+<strong><a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a></strong>, which notes that until it is
+answered the weakest-protected copy of a health fact is the freshest one.</p>
+<hr />
+<h2 id="8-projections-and-guards">8. Projections and guards<a class="headerlink" href="#8-projections-and-guards" title="Permanent link">&para;</a></h2>
+<h3 id="the-unit-authority-rule">The unit-authority rule<a class="headerlink" href="#the-unit-authority-rule" title="Permanent link">&para;</a></h3>
+<p>The resolver matches scope <strong>exactly</strong>, so a <code>unit_leader</code> at <code>('org_unit', 7)</code> does not
+satisfy a check at <code>('event', 42)</code> — even when unit 7 owns event 42. This is the hinge of
+the module (<a href="../../domain/07-events/#6-the-hinge-organizers-and-the-scope-mismatch">../domain/07-events.md §6</a>).</p>
+<p><strong><code>can_event(person, permission_code, event, at)</code></strong> is one permission check for events, used
+by the API in place of a bare <code>can()</code>. An event is an ARTIFACT of its owning unit, not a
+child of it, so a permission is satisfied at <code>('event', E)</code> if it is satisfied at
+<code>('org_unit', E.org_unit_id)</code> AND the event's owner is that same unit.</p>
+<p>This is NOT inheritance downward. It does not reach the unit's SUB-units, and it does not
+grow when the hierarchy is restructured — the event's owner is one unit, fixed by D-049.
+Authority for a sub-unit's events still requires that sub-unit's own roles or an exposure,
+exactly as before.</p>
+<p>The check has three steps, and the order is only the order of two independent questions:</p>
+<ol>
+<li>Ask <code>can()</code> whether the person holds the permission at scope <code>('event', the event's id)</code>,
+   as of the given date.</li>
+<li>Ask <code>can()</code> the same question at scope <code>('org_unit', the event's owning unit)</code>, as of the
+   same date.</li>
+<li>Either one being true is enough. If there is no such event, the answer is no.</li>
+</ol>
+<blockquote>
+<p><strong><code>can_event</code> is a convenience wrapper, not a new channel.</strong> It calls <code>can()</code> twice on
+scopes that already resolve, and adds no authority of its own. If the organization later
+decides leaders should not automatically run every event their unit creates, <strong>deleting
+the second <code>can()</code> call is the whole change</strong> — and making organizers
+<code>access_grant</code>-based then needs no data migration, because nothing was written to
+<code>access_grant</code> to make this work.</p>
+</blockquote>
+<h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
+<p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
+window does not admit it. The guard runs inside the transaction that inserts the row, on every
+insert path — and since there is nothing left to attach it to, that coverage is now a requirement
+on the paths rather than a property the database supplies for them. Steps 4 and 5 read the
+event's own dates and step 2 exempts a source value, so no constraint states this rule and no
+report would catch a violation the way a window violation should be caught: at the write.
+<strong>The order is a rule</strong>: "there is no such event" must be settled
+before anything reads the event's dates, and the staff carve-out must be answered before the
+checks it overrides.</p>
+<ol>
+<li>Read the event the registration names. If there is no such event, refuse the row — a
+   registration cannot name an event that does not exist.</li>
+<li>If <code>source</code> is <code>staff</code>, admit the row and stop here. Staff may always register, including
+   at a cancelled event (to record who had been coming) — they are acting deliberately and
+   are attributed.</li>
+<li>Otherwise refuse the row if the event is cancelled (<code>cancelled_at</code> is set).</li>
+<li>Refuse it if <code>registration_opens_at</code> is set and has not yet arrived.</li>
+<li>Refuse it if the effective close has passed — <code>registration_closes_at</code>, or <code>starts_at</code>
+   when <code>registration_closes_at</code> is absent. This is where "<code>NULL</code> = open until the event
+   starts" is enforced.</li>
+<li>Admit the row.</li>
+</ol>
+<p><strong>Guard 2 — an event with registrations cannot be deleted.</strong> Deleting an event is refused as
+soon as the event has any registration row at all, and the refusal says what to do instead:
+cancel it (set <code>cancelled_at</code>) so the record of who was coming survives. Cancellation is the
+mechanism.</p>
+<blockquote>
+<p><strong>Guard 2 is what makes the cascade in §3 safe.</strong> Organizers cascade when an
+event is deleted — but an event that anyone registered for cannot be deleted at all. So
+the cascade can only ever fire on a draft with no registrations, which is the only case
+where losing the roster is harmless.</p>
+</blockquote>
+<hr />
+<h2 id="9-the-three-queries-that-matter">9. The three queries that matter<a class="headerlink" href="#9-the-three-queries-that-matter" title="Permanent link">&para;</a></h2>
+<h3 id="who-has-not-replied-yet">Who has not replied yet?<a class="headerlink" href="#who-has-not-replied-yet" title="Permanent link">&para;</a></h3>
+<p>"Unanswered" is a subtraction (<a href="../../domain/07-events/#3-registration-one-record-two-stored-answers-and-no-unanswered">../domain/07-events.md §3</a>).
+The subtrahend is <em>who could contribute</em> — which, for an open event, is an audience.</p>
+<p>The question asked of one camp is: <strong>every person who may register for it and has not
+answered.</strong> The audience is the eligible set, the registration table is the answered set, and
+the answer is the difference between them, listed by preferred name. What makes the question
+answerable at all:</p>
+<ul>
+<li>The eligible set is <em>evaluated</em>, not stored: it is the people named by the event's
+  <code>access_grant</code> rows through their audiences, assessed as of the day the question is asked,
+  not as of the day the grant was written. A child who joined the pack last week is on this
+  list; a child who has left is not.</li>
+<li>Only grants on this event count, and only grants that are not <code>revoked</code> in level and have
+  not been revoked themselves.</li>
+<li>The answered set is one row per person at most (§4), so the subtraction cannot leave the
+  same person on the list twice.</li>
+<li>People who have been merged away are excluded, so a tombstone never turns up on a list
+  somebody is being asked to chase.</li>
+</ul>
+<p><strong>This is the query that would be impossible if <code>unanswered</code> were a stored value</strong>, because
+the eligible set — an audience, evaluated as a rule — is what defines the question. Storing
+"unanswered" rows would mean enumerating an audience into rows, and re-enumerating whenever
+a child joins the pack.</p>
+<h3 id="who-is-actually-coming">Who is actually coming?<a class="headerlink" href="#who-is-actually-coming" title="Permanent link">&para;</a></h3>
+<p>Four numbers about one event, in one answer, all counted over that event's <code>attending</code>
+registrations: how many are not waitlisted (coming), how many are waitlisted (waiting), how
+many are unconfirmed and not waitlisted (holding a place without having paid), and the
+event's <code>capacity</code>. An event with no registrations still has to produce the row, with zeros.</p>
+<p>The four numbers an organizer needs, in one row: coming, waiting, holding a place without
+having paid, and the limit. <code>attending &gt; capacity</code> is the overrun, and it is visible here
+rather than prevented (§10 check 5).</p>
+<h3 id="who-was-actually-there">Who was actually there?<a class="headerlink" href="#who-was-actually-there" title="Permanent link">&para;</a></h3>
+<p>For one camp, the attending registrations listed with each person's preferred name, birth
+date and <code>was_present</code>, <strong>with the unmarked listed first</strong> — the unmarked sort ahead of both
+a mark and an absence recorded as <code>false</code>, because the unmarked are the work remaining. This
+is the camp roster as a safeguarding record, not a plan.</p>
+<p><code>NULLS FIRST</code> puts the unmarked at the top, which is the work remaining. Once every row is
+<code>true</code> or <code>false</code>, this is the answer to "who was in the organization's care at that camp" —
+and it is the reason <code>was_present</code> is three-valued rather than a boolean defaulting to false.</p>
+<hr />
+<h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify</strong></p>
+<ol>
+<li><strong>An event whose owning unit has closed.</strong> Counts events whose unit's status is <code>closed</code>
+   while that unit's own period is still open; a non-zero result means either the event was
+   miscategorised or the unit's closure was recorded without ending its future events.</li>
+<li><strong>Overlapping events for the same unit.</strong> Counts pairs of events belonging to one unit,
+   neither cancelled, whose start-to-end instants overlap. Not an error — a pack may run two
+   things at once — but worth a glance, since it is often a duplicate entry.</li>
+<li><strong>An event with no organizer.</strong> Counts events that are neither cancelled nor already begun
+   and have no <code>event_organizer</code> row at all — an event nobody is running: either abandoned
+   mid-setup, or a data-entry error. Not a rule on write, because an event is legitimately
+   created before its organizers are named.</li>
+<li><strong>A registration held by a person who has been merged away.</strong> Counts registrations whose
+   person carries a merge pointer. The merge should have repointed them; a non-zero result
+   catches the ones it missed.</li>
+<li><strong>An event running over its stated capacity.</strong> Counts, for each non-cancelled event that
+   has a capacity, its attending non-waitlisted registrations, and reports the events where
+   that count exceeds the capacity. PERMITTED — organizers may exceed deliberately
+   (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>) — so this
+   is a report, not an error. A pattern of overruns means the capacity numbers are wrong, not
+   that the rule is.</li>
+<li><strong>An unpaid registration holding a place past the waitlist deadline.</strong> Counts attending,
+   non-waitlisted registrations on a non-cancelled event whose <code>waitlist_deadline</code> has passed
+   and whose fee obligation stands at <code>unpaid</code>, <code>partially_paid</code> or <code>overdue</code>. It should be
+   empty once the release in §5 has run — a non-empty result means the job is not running.</li>
+<li><strong>An answer to a question the person was never registered for.</strong> Counts answers whose
+   person has no registration for the event that owns the question. Either the registration
+   was deleted, or the answer was written against the wrong person.</li>
+<li>
+<p><strong>Presence marked on a registration that declined.</strong> Counts <code>not_attending</code> registrations
+   whose <code>was_present</code> is not absent. Contradictory: you cannot have been present at a thing
+   you said you were not attending. Nothing above forbids the combination, so this is a
+   written prohibition and a check rather than a guard — a prohibition nobody runs is a
+   convention, not a guarantee.</p>
+</li>
+<li>
+<p><strong>A registration outside its event's registration window.</strong> Counts registrations whose
+   <code>registered_at</code> falls before the window opens or after it closes, excluding the ones an
+   organizer recorded deliberately (<code>registration_kind = 'organized'</code>, whose window is the
+   event's own period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
+   <strong>there is no constraint behind that guard</strong> — a window spans two columns of two tables, so
+   the check runs inside the writing transaction or nowhere
+   (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).
+   A non-zero result is therefore evidence about the code, not the data: someone added a second
+   path that places a registration.</p>
+</li>
+<li><strong>A fee-bearing event with registrations and no obligations.</strong> Counts non-cancelled events
+   that require a fee and have at least one registration, where no <code>fee_obligation</code> exists for
+   some of those registrations. <strong>The obligation is created by the code that places the
+   registration</strong> (<a href="#6-fee_obligation">§6</a>); there is no rule attached to the registration row
+   that would create it, so a path that forgets produces a person with a confirmed place and no
+   bill — invisible to every check here, because every row it left behind is individually
+   correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
+   more expensively; this is the version worth running nightly.</li>
+</ol>
+<p><strong>Check 5 is the important one to read correctly.</strong> It will produce rows, and that is not a
+failure — exceeding capacity is a permitted, attributed act
+(<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>). What the
+report is <em>for</em> is the pattern: an event that overruns every year has a capacity number that
+is wrong, and the fix is to change the number rather than to start refusing people.</p>
+<hr />
+<h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
+<p>Tracked in <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>.</p>
+<ul>
+<li>~~<strong>The age ceiling on an open event.</strong>~~ <strong>Settled: there is none</strong>
+  (<a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
+  No <code>min_age</code>/<code>max_age</code> on <code>event</code>, no age branch anywhere in the registration path. If it is ever
+  revisited the shape is a new <strong>built-in audience</strong>, not a column on the row.</li>
+<li>~~<strong>Whether <code>event.manage_participants</code> should split.</strong>~~ <strong>It did</strong>, into
+  <code>event.presence.mark</code> at <code>contribute</code> (§4).</li>
+<li><strong>Retention of <code>event_answer</code>.</strong> Answers end with the event and there is no policy saying when (§7).
+  This used to be argued from the answer being <em>health data</em>, which
+  <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  left without a referent: it is personal data, which makes the question ordinary rather than
+  answered — and sharper, since the same sentence recorded as a <code>person_attribute</code> follows a different
+  retention rule on purpose (<a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>).</li>
+<li><strong>Cancelled events and fees.</strong> Cancelling keeps the registrations. Whether it releases the
+  obligations, refunds them, or neither is the finance module's decision (§6). That decision
+  has since been taken for events
+  (<a href="../../decisions/decision-log/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>):
+  cancelling voids the outstanding requests and money that already arrived waits in the
+  unmatched queue (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>).</li>
+<li><strong><code>was_present</code> as a safeguarding record.</strong> Whether presence needs its own retention or its
+  own permission, given what it is (§9 of the domain doc).</li>
+<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> §8's <code>can_event</code> makes the
+  unit's roles reach its events. If the organization would rather organizers be opt-in per
+  event, that is one clause — and no data migration (§8).</li>
+<li><strong>Waitlist notification.</strong> Promotion is deliberate; telling the promoted person is not
+  designed. It belongs to the communication module.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,3980 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/open-questions/">
+      
+      
+        <link rel="prev" href="../decisions/decision-log/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Open Questions - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#open-questions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Open Questions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-blocking-the-core-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Blocking the core design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A. Blocking the core design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-1--closed--the-unit-type-vocabulary-is-not-seeded-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A-1 ✅ Closed — the unit type vocabulary is not seeded at all
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-4-remainder--the-organizational-calendar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A-4 (remainder) 🟢 The organizational calendar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b-identity-and-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Identity and history
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B. Identity and history">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b-1-remainder--the-legacy-corpus-is-large-and-number-bearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-1 (remainder) 🟢 The legacy corpus is large and number-bearing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-2--merge-chains-allowed-or-flattened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-2 🟡 Merge chains: allowed or flattened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-3--erasure-the-policy-not-the-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-3 🟡 Erasure: the policy, not the mechanism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-4--can-a-person-hold-two-live-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-4 🟢 Can a person hold two live accounts?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Organization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C. Organization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-1--may-the-root-see-what-happens-in-its-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-1 🟢 May the root see what happens in its sub-units?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-3--units-with-the-same-number-across-decades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-3 🟢 Units with the same number across decades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-4--does-appointing-someone-to-a-position-auto-create-a-role-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-4 🟢 Does appointing someone to a position auto-create a role assignment?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="D. Membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#d-6--closed-by-making-the-question-the-organizations-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-6 — closed, by making the question the organization's to answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-7--what-does-the-root-unit-participation-row-do-at-renewal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-7 🟢 What does the root-unit participation row do at renewal?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-8--should-unit_participation-reference-the-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-8 🟢 Should unit_participation reference the membership?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-9--closed--household-is-removed-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-9 ✅ Closed — household is removed entirely
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E. Guardianship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="E. Guardianship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e-2--closed--the-system-takes-no-position-on-majority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-2 ✅ Closed — the system takes no position on majority
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-5--closed--the-parties-administer-their-own-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-5 ✅ Closed — the parties administer their own row
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-6--a-guardian-may-appoint-a-guardian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-6 🟡 A guardian may appoint a guardian
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-7 ✅ Closed — one level cannot separate the medical record from the profile, and nobody wanted to
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-3--guardian-acting-for-an-adult-child" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-3 🟢 Guardian acting for an adult child
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-4--guardianship-lifetime-vs-the-membership-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-4 🟢 Guardianship lifetime vs. the membership gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#f-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F. Authorization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="F. Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f-1--closed--the-catalog-stays-comprehensive-and-granular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-1 ✅ Closed — the catalog stays comprehensive and granular
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-3--closed--nothing-forces-an-assignment-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-3 ✅ Closed — nothing forces an assignment to end
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-4--closed--the-question-was-answered-by-deleting-the-premise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-4 ✅ Closed — the question was answered by deleting the premise
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-4a--closed--the-catalog-is-the-only-list-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-4a ✅ Closed — the catalog is the only list now
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-5--which-built-in-audiences-are-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-5 🟢 Which built-in audiences are needed?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-6--the-permission-cache-lifetime-under-the-membership-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-6 🟢 The permission cache lifetime under the membership gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-7--cache-vs-materialized-effective_permission-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-7 🟢 Cache vs materialized effective_permission table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-8--retention-policy-for-access_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-8 🟢 Retention policy for access_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-9--should-membership_type-stay-a-table-with-one-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-9 🟢 Should membership_type stay a table with one row?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-10 🔴 Which invariants the ORM cannot express, and who writes those
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-events--designed-with-three-things-left-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G. Events — designed, with three things left open
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="G. Events — designed, with three things left open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-1 ✅ Closed — there is no age ceiling; the grant is the rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-2--retention-of-event_answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-2 🟡 Retention of event_answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-3--closed--cancelling-voids-the-request-and-paid-money-queues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-3 ✅ Closed — cancelling voids the request, and paid money queues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-4--was_present-as-a-safeguarding-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-4 🟢 was_present as a safeguarding record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-5 ✅ Closed — it split, and the new permission sits a level lower
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ga-personal-attributes--designed-with-four-things-left-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ga. Personal attributes — designed, with four things left open
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ga. Personal attributes — designed, with four things left open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-1--should-an-event-question-bind-to-an-attribute-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-1 🟡 Should an event question bind to an attribute code?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-2 🟡 Who curates the vocabulary, and how long may a proposal sit?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-3--do-attribute-labels-need-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-3 🟢 Do attribute labels need translation?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-4 🟡 Is one permission enough to guard a trail that holds person data?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#h-not-yet-designed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        H. Not yet designed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="H. Not yet designed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#h-0--closed--the-medical-record-was-cited-everywhere-and-defined-nowhere-and-it-turns-out-there-was-nothing-to-define" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        H-0 ✅ Closed — the medical record was cited everywhere and defined nowhere, and it turns out there was nothing to define
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSG-1 ✅ Closed — a direct message to a minor is mirrored to their guardians
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#r-resolved--moved-to-the-decision-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        R. Resolved — moved to the decision log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i-assumption-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I. Assumption index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-blocking-the-core-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Blocking the core design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A. Blocking the core design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-1--closed--the-unit-type-vocabulary-is-not-seeded-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A-1 ✅ Closed — the unit type vocabulary is not seeded at all
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-4-remainder--the-organizational-calendar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A-4 (remainder) 🟢 The organizational calendar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b-identity-and-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Identity and history
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="B. Identity and history">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b-1-remainder--the-legacy-corpus-is-large-and-number-bearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-1 (remainder) 🟢 The legacy corpus is large and number-bearing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-2--merge-chains-allowed-or-flattened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-2 🟡 Merge chains: allowed or flattened?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-3--erasure-the-policy-not-the-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-3 🟡 Erasure: the policy, not the mechanism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-4--can-a-person-hold-two-live-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-4 🟢 Can a person hold two live accounts?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Organization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C. Organization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#c-1--may-the-root-see-what-happens-in-its-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-1 🟢 May the root see what happens in its sub-units?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-3--units-with-the-same-number-across-decades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-3 🟢 Units with the same number across decades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-4--does-appointing-someone-to-a-position-auto-create-a-role-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C-4 🟢 Does appointing someone to a position auto-create a role assignment?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="D. Membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#d-6--closed-by-making-the-question-the-organizations-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-6 — closed, by making the question the organization's to answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-7--what-does-the-root-unit-participation-row-do-at-renewal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-7 🟢 What does the root-unit participation row do at renewal?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-8--should-unit_participation-reference-the-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-8 🟢 Should unit_participation reference the membership?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-9--closed--household-is-removed-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-9 ✅ Closed — household is removed entirely
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E. Guardianship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="E. Guardianship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#e-2--closed--the-system-takes-no-position-on-majority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-2 ✅ Closed — the system takes no position on majority
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-5--closed--the-parties-administer-their-own-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-5 ✅ Closed — the parties administer their own row
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-6--a-guardian-may-appoint-a-guardian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-6 🟡 A guardian may appoint a guardian
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-7 ✅ Closed — one level cannot separate the medical record from the profile, and nobody wanted to
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-3--guardian-acting-for-an-adult-child" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-3 🟢 Guardian acting for an adult child
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-4--guardianship-lifetime-vs-the-membership-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E-4 🟢 Guardianship lifetime vs. the membership gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#f-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F. Authorization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="F. Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f-1--closed--the-catalog-stays-comprehensive-and-granular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-1 ✅ Closed — the catalog stays comprehensive and granular
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-3--closed--nothing-forces-an-assignment-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-3 ✅ Closed — nothing forces an assignment to end
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-4--closed--the-question-was-answered-by-deleting-the-premise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-4 ✅ Closed — the question was answered by deleting the premise
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-4a--closed--the-catalog-is-the-only-list-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-4a ✅ Closed — the catalog is the only list now
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-5--which-built-in-audiences-are-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-5 🟢 Which built-in audiences are needed?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-6--the-permission-cache-lifetime-under-the-membership-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-6 🟢 The permission cache lifetime under the membership gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-7--cache-vs-materialized-effective_permission-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-7 🟢 Cache vs materialized effective_permission table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-8--retention-policy-for-access_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-8 🟢 Retention policy for access_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-9--should-membership_type-stay-a-table-with-one-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-9 🟢 Should membership_type stay a table with one row?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F-10 🔴 Which invariants the ORM cannot express, and who writes those
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-events--designed-with-three-things-left-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G. Events — designed, with three things left open
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="G. Events — designed, with three things left open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-1 ✅ Closed — there is no age ceiling; the grant is the rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-2--retention-of-event_answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-2 🟡 Retention of event_answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-3--closed--cancelling-voids-the-request-and-paid-money-queues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-3 ✅ Closed — cancelling voids the request, and paid money queues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-4--was_present-as-a-safeguarding-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-4 🟢 was_present as a safeguarding record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EV-5 ✅ Closed — it split, and the new permission sits a level lower
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ga-personal-attributes--designed-with-four-things-left-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ga. Personal attributes — designed, with four things left open
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ga. Personal attributes — designed, with four things left open">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-1--should-an-event-question-bind-to-an-attribute-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-1 🟡 Should an event question bind to an attribute code?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-2 🟡 Who curates the vocabulary, and how long may a proposal sit?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-3--do-attribute-labels-need-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-3 🟢 Do attribute labels need translation?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AT-4 🟡 Is one permission enough to guard a trail that holds person data?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#h-not-yet-designed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        H. Not yet designed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="H. Not yet designed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#h-0--closed--the-medical-record-was-cited-everywhere-and-defined-nowhere-and-it-turns-out-there-was-nothing-to-define" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        H-0 ✅ Closed — the medical record was cited everywhere and defined nowhere, and it turns out there was nothing to define
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSG-1 ✅ Closed — a direct message to a minor is mirrored to their guardians
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#r-resolved--moved-to-the-decision-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        R. Resolved — moved to the decision log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i-assumption-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I. Assumption index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="open-questions">Open Questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h1>
+<p>Everything still unresolved, each with its <strong>schema impact</strong> — what changes once you answer.
+Ordered roughly by how much they block.</p>
+<p>Marked: 🔴 <strong>blocking</strong> something else · 🟡 <strong>important</strong> · 🟢 can be deferred.</p>
+<p><strong>Resolved items are not deleted.</strong> They are moved to the bottom of this file with a link to
+the decision that settled them, so the reasoning survives — see
+<a href="#r-resolved--moved-to-the-decision-log">§ R. Resolved</a>.</p>
+<hr />
+<h2 id="a-blocking-the-core-design">A. Blocking the core design<a class="headerlink" href="#a-blocking-the-core-design" title="Permanent link">&para;</a></h2>
+<h3 id="a-1--closed--the-unit-type-vocabulary-is-not-seeded-at-all">A-1 ✅ <strong>Closed</strong> — the unit type vocabulary is not seeded at all<a class="headerlink" href="#a-1--closed--the-unit-type-vocabulary-is-not-seeded-at-all" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: the sub-unit vocabulary is not a question the specification can answer, so it is
+not seeded</strong> (<a href="../decisions/decision-log/#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types">D-054</a>).</p>
+<p><code>org_unit_type</code> is <strong>runtime data</strong>, like <code>role</code> (<a href="../decisions/decision-log/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>).
+The seed contains the root type and nothing else; the organization creates the types it uses.
+The previous placeholder — <code>pack</code>/<code>group</code>/<code>team</code>, and before it a
+<code>national</code>/<code>region</code>/<code>district</code> ladder — is gone.</p>
+<p><strong>Why this is a better answer than a correct list would have been.</strong> The organization's own
+vocabulary is not knowable at specification time, and a wrong word in seed data is harder to
+dislodge than an absent one, because it reads as a specification to whoever implements the
+system. The <em>shape</em> was always the settled part: one root, arbitrary nesting beneath it
+(<a href="../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a>).</p>
+<p><strong>What remains true and worth knowing.</strong> Nesting is <strong>permissive by default</strong> —
+<code>org_unit_type_rule</code> is seeded with nothing, so any type may sit under any other until the
+organization states a rule, and a new type is usable the moment it is created. Every rule
+added later is a constraint deliberately chosen. The words <code>pack</code>, <code>troop</code> and <code>section</code> still
+appear across these docs <strong>as illustration only</strong> — read them as "some sub-unit type the
+organization has defined".</p>
+<p><strong>See:</strong> <a href="../data-model/02-organization/#10-seed-data">data-model/02 §10</a>,
+<a href="../domain/04-organization-structure/#1-one-root-arbitrary-sub-units">domain/04 §1–2</a></p>
+<hr />
+<h3 id="a-4-remainder--the-organizational-calendar">A-4 (remainder) 🟢 The organizational calendar<a class="headerlink" href="#a-4-remainder--the-organizational-calendar" title="Permanent link">&para;</a></h3>
+<p><strong>Answered.</strong> The fee expires on <strong>1 January</strong>
+(<a href="../decisions/decision-log/#d-047--the-fee-expires-on-1-january">D-047</a>) and the renewal
+window is <strong>60 days</strong> (<a href="../decisions/decision-log/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).</p>
+<p><strong>What is left is not a question but a discipline.</strong> Both values live in
+<code>membership_type</code> as columns — <code>expiry_month</code>, <code>expiry_day</code>, <code>renewal_grace_days</code> — so either
+can be moved by an <code>UPDATE</code>. The one way to lose that property is a scheduled job or a front
+end that contains the literal <code>60</code> or <code>1</code>. Worth one line in code review: <em>do these values
+come from the row?</em></p>
+<p><strong>See:</strong> <a href="../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">data-model/03 §1</a>,
+<a href="../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">domain/05 §6</a></p>
+<hr />
+<h2 id="b-identity-and-history">B. Identity and history<a class="headerlink" href="#b-identity-and-history" title="Permanent link">&para;</a></h2>
+<h3 id="b-1-remainder--the-legacy-corpus-is-large-and-number-bearing">B-1 (remainder) 🟢 The legacy corpus is large and number-bearing<a class="headerlink" href="#b-1-remainder--the-legacy-corpus-is-large-and-number-bearing" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: large, and the old records carry a legacy member number</strong>
+(<a href="../decisions/decision-log/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>).</p>
+<p>That changes what the import has to be. The number goes into
+<a href="../data-model/01-identity/#7-person_identifier">person_identifier</a> with <code>scheme = 'legacy'</code>,
+and where it is present the match is <strong>exact rather than probabilistic</strong> — same number, same
+person. The heuristics in <a href="../domain/03-identity-and-legacy/#4-match-signals">domain/03 §4</a>
+are then for <strong>backfilling</strong> the number on rows that lack it, not for deciding identity from
+scratch.</p>
+<p><strong>The consequence for <a href="../decisions/decision-log/#d-004--no-automatic-merging-ever">D-004</a>.</strong>
+The "no automatic merging, ever" rule was costed on a small corpus where review was the
+bottleneck. At thousands of rows that changes shape: the <strong>number-bearing rows are the
+trustworthy set</strong> and the rest is a work queue. The rule is unchanged — the human still
+decides every match — but the number does the work the human would have done, so the rule
+becomes far cheaper to obey. This is a strengthening, not a relaxation.</p>
+<p><strong>What must hold.</strong> The legacy number is imported <strong>verbatim and never reissued</strong>. The
+<code>(scheme, value)</code> index is what enforces it. A second numbering era can coexist, because
+<code>person_identifier</code> carries a scheme and a period.</p>
+<p><strong>What gets harder, not easier: membership vs. participation.</strong> Volume and numbers fix
+<em>identity</em>; they say nothing about <em>what a historical row means</em>. At this scale a 1998 roster
+almost certainly records which unit someone attended, not whether their fee was paid — so the
+import must decide per row which of the two it becomes
+(<a href="../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+The safe default matters more at thousands of rows than at hundreds, because the failure
+compounds: <strong>participation unless there is payment evidence</strong>, since an inferred open-ended
+<code>membership</code> would make every 2003 roster member a <em>current</em> member today through the gate
+(<a href="../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).</p>
+<p><strong>Still needed (operational, not design).</strong> The record count, the format, and the year range.
+Those are inputs the import batch carries; they do not change the schema.</p>
+<hr />
+<h3 id="b-2--merge-chains-allowed-or-flattened">B-2 🟡 Merge chains: allowed or flattened?<a class="headerlink" href="#b-2--merge-chains-allowed-or-flattened" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> If A is merged into B, and later B into C, does A point at B (a chain) or is
+A repointed at C (flattened)?</p>
+<p><strong>Current design.</strong> Chains. <code>resolve_person()</code> follows them recursively.</p>
+<p><strong>Impact.</strong> Flattening is faster to query but rewrites pointers and makes unmerge nearly
+impossible. Chains need <code>resolve_person()</code> called everywhere an external id enters the
+system — a rule application code can forget.</p>
+<hr />
+<h3 id="b-3--erasure-the-policy-not-the-mechanism">B-3 🟡 Erasure: the policy, not the mechanism<a class="headerlink" href="#b-3--erasure-the-policy-not-the-mechanism" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> What must be redacted, what must be retained, for how long? Does the
+organization have a legal obligation to keep membership records after an erasure request?</p>
+<p><strong>Resolved already.</strong> The <em>shape</em> is settled: <strong>redact the person, keep the financial and
+membership skeleton</strong> — the <code>person</code> row is anonymised in place and the <code>membership</code>,
+<code>fee_obligation</code> and <code>payment</code> rows survive intact, because the organization's own accounting
+and "was this person a member on that date" questions outlive the person's participation.</p>
+<p><strong>Still open.</strong> The retention periods and the legal basis. <code>redaction_log.retained_reason</code> is
+a placeholder for that judgement.</p>
+<p><strong>Needed.</strong> Legal review. Not a technical question.</p>
+<p><strong>See:</strong> <a href="../data-model/06-audit-and-import/#4-redaction-log">data-model/06 §4</a></p>
+<hr />
+<h3 id="b-4--can-a-person-hold-two-live-accounts">B-4 🟢 Can a person hold two live accounts?<a class="headerlink" href="#b-4--can-a-person-hold-two-live-accounts" title="Permanent link">&para;</a></h3>
+<p><strong>Recommendation.</strong> No. Enforced by the partial unique index already in the schema.</p>
+<p><strong>Impact.</strong> If yes, the index is dropped and identity attribution weakens.</p>
+<hr />
+<h2 id="c-organization">C. Organization<a class="headerlink" href="#c-organization" title="Permanent link">&para;</a></h2>
+<h3 id="c-1--may-the-root-see-what-happens-in-its-sub-units">C-1 🟢 May the root <em>see</em> what happens in its sub-units?<a class="headerlink" href="#c-1--may-the-root-see-what-happens-in-its-sub-units" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: no — <code>scope_exposure</code> is the only crossing, and no reporting channel is built</strong>
+(<a href="../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).</p>
+<p><strong>What was not obvious until it was answered.</strong> The question existed on the assumption that
+the root needed a way <em>around</em> the no-inheritance rule in order to report nationally. It
+does not, because the root <strong>owns the membership registry and the fees</strong> — so "how many
+members in 2019?", "who is currently a member?" and "what fees are outstanding?" are all
+answered from the root's own tables, with no exposure at all. Only the sub-units' own
+material — their events, their rosters, their local leadership — requires one.</p>
+<p>The consequence that will be misread as a bug: <code>registrar</code> holds <code>unit_participation.view</code> at
+organization scope and <strong>cannot</strong> read a pack roster. Scope is an exact match; it reads the
+root participation rows, which mirror membership
+(<a href="../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+See <a href="../domain/06-authorization-model/#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved">domain/06 §2.4</a>.</p>
+<hr />
+<h3 id="c-3--units-with-the-same-number-across-decades">C-3 🟢 Units with the same number across decades<a class="headerlink" href="#c-3--units-with-the-same-number-across-decades" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> When a troop closes and a new troop with the same number starts ten years
+later, is it the same unit or a new one?</p>
+<p><strong>Impact.</strong> An organizational judgement, not a technical one — but it must be <em>recorded</em>,
+or it will be re-litigated every time someone asks about the 80s troop with that number.</p>
+<p><strong>See:</strong> <a href="../domain/04-organization-structure/#3-unit-names-and-renumbering--the-history-problem">domain/04 §3</a></p>
+<hr />
+<h3 id="c-4--does-appointing-someone-to-a-position-auto-create-a-role-assignment">C-4 🟢 Does appointing someone to a position auto-create a role assignment?<a class="headerlink" href="#c-4--does-appointing-someone-to-a-position-auto-create-a-role-assignment" title="Permanent link">&para;</a></h3>
+<p><strong>Current design.</strong> Separate. <code>position.is_leadership</code> lets a workflow offer both.</p>
+<p><strong>Impact.</strong> Purely a workflow question; the schema is unaffected.</p>
+<hr />
+<h2 id="d-membership">D. Membership<a class="headerlink" href="#d-membership" title="Permanent link">&para;</a></h2>
+<h3 id="d-6--closed-by-making-the-question-the-organizations-to-answer">D-6 — closed, by making the question the organization's to answer<a class="headerlink" href="#d-6--closed-by-making-the-question-the-organizations-to-answer" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: the mechanism</strong> (<a href="../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).
+The membership gate is waived by a person-level permission, <code>system.gate_exempt</code>, in addition
+to the role-level flag. <code>system_admin</code> holds it — without it the 1 January sweep locks the
+administrator out of the system on the day it needs repair.</p>
+<p><strong>And "which other roles carry it" is no longer a question for this document.</strong> Roles are
+runtime data: the organization creates them, edits what they grant, assigns them, and deletes
+the unused ones (<a href="../data-model/05-authorization/#3-role-and-role_permission">data-model/05 §3</a>). Marking
+a role as carrying <code>system.gate_exempt</code> is therefore a configuration act the organization
+performs, not a fact the specification can state. The seed set in
+<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">appendix/permission-catalog.md §11</a>
+shows the shape; it is a starting point to edit, and it explicitly declines to answer this.</p>
+<p><strong>What is <em>not</em> delegatable, and is therefore all this document has to get right:</strong> that
+<code>system.gate_exempt</code> is a <code>system</code>-namespace permission, so it can only ever arrive through a
+role and never through an item grant. That structural guarantee — an <code>access_grant</code> cannot
+lift the membership gate — is the part a configuration screen must not be able to weaken.</p>
+<p><strong>Tracked here only for visibility:</strong> check 7b in
+<a href="../data-model/05-authorization/#11-invariants-to-verify">data-model/05 §11</a> reports who currently
+holds the exemption, so the organization can see the list it has configured.</p>
+<hr />
+<h3 id="d-7--what-does-the-root-unit-participation-row-do-at-renewal">D-7 🟢 What does the root-unit participation row do at renewal?<a class="headerlink" href="#d-7--what-does-the-root-unit-participation-row-do-at-renewal" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: it is extended, not closed and reopened</strong>
+(<a href="../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>).</p>
+<p>The yearly sweep moves the root row's <code>valid_to</code> forward to the expiry date rather than
+closing it, and a renewal inside the window stretches that one row over the new period. The
+join between the two is <strong>person and date</strong> (<code>new_m.valid_from = up.valid_to</code>), not a
+membership FK — the participation table has none, deliberately.</p>
+<p><strong>The accepted cost, recorded rather than hidden.</strong> This erases the visual evidence of the
+lapse: a person who lapsed and renewed looks, in <code>unit_participation</code>, exactly like a person
+who never lapsed. Accepted because <code>membership</code> remains the authority on payment and the
+lapse is fully visible there, while the participation table answers a <em>roster</em> question — and
+for "who was in this pack when" a child who was present across the period has one answer, not
+two.</p>
+<p><strong>See:</strong> <a href="../data-model/03-membership/#51-a-participation-row-on-the-root-unit">data-model/03 §5.1</a></p>
+<hr />
+<h3 id="d-8--should-unit_participation-reference-the-membership">D-8 🟢 Should <code>unit_participation</code> reference the membership?<a class="headerlink" href="#d-8--should-unit_participation-reference-the-membership" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> A nullable <code>membership_id</code> on <code>unit_participation</code> would give referential
+integrity between "paid up" and "takes part", at the cost of being unenforceable for imported
+historical rows, where no membership exists to point at.</p>
+<p><strong>Impact.</strong> Integrity vs. import coverage. The current design chose person-based linkage for
+exactly that reason.</p>
+<p><strong>See:</strong> <a href="../data-model/03-membership/#5-unit_participation">data-model/03 §5</a></p>
+<hr />
+<h3 id="d-9--closed--household-is-removed-entirely">D-9 ✅ <strong>Closed</strong> — <code>household</code> is removed entirely<a class="headerlink" href="#d-9--closed--household-is-removed-entirely" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: drop it</strong> (<a href="../decisions/decision-log/#d-057--household-is-removed">D-057</a>).
+<code>household</code>, <code>household_member</code>, <code>fee_obligation.household_id</code>, its CHECK arm,
+<code>ix_obligation_household</code> and integrity check 7 are all gone.</p>
+<p><strong>Why removal rather than a derived view.</strong> D-037 had already taken the load-bearing half —
+the fee is flat and per person, so there is no family price. The two survivors were both
+served by tables that must exist anyway: a billing address is a <code>person_contact</code> row where
+<code>contact_type = 'postal' AND purpose = 'billing'</code>, and "who lived at this address in 2003?"
+is a query over that table's own <code>valid_from</code>/<code>valid_to</code> history. The household table was
+duplicating the address under a second key, and the copy had already gone stale — its
+<code>postal_address</code> was documented as denormalised <em>from</em> the contact row, with nothing keeping
+it true.</p>
+<p><strong>The safeguarding property is untouched, and this is the point to check first.</strong> Shared
+address never granted access: <strong>a child's records are reachable only through a guardianship
+row</strong>, whatever the household arrangement beside it. Removing a table that granted nothing
+cannot grant anything.
+<a href="../decisions/decision-log/#d-019--household-membership-grants-no-access">D-019</a> stays in the
+log, marked superseded, because "why does living together not imply access?" will be asked
+again.</p>
+<p><strong>The one thing genuinely lost.</strong> A household was a group with a name and its own lifetime;
+two people at one address are now related by a query, not a row. There is nowhere to hang
+"the Novák family" as a first-class thing. Accepted because nothing used it. If family-level
+communication or a family discount is ever wanted, the grouping comes back as a group with a
+period — not a fake person.</p>
+<p><strong>One knock-on worth knowing.</strong> Finance question 2 (family/sibling discounts) is now <em>more</em>
+open, not less: a per-family discount needs the grouping designed again before it can be
+priced. A per-person discount is unaffected.</p>
+<p><strong>See:</strong> <a href="../data-model/04-relationships/#3-there-is-no-household-table">data-model/04 §3</a></p>
+<hr />
+<h2 id="e-guardianship">E. Guardianship<a class="headerlink" href="#e-guardianship" title="Permanent link">&para;</a></h2>
+<h3 id="e-2--closed--the-system-takes-no-position-on-majority">E-2 ✅ <strong>Closed</strong> — the system takes no position on majority<a class="headerlink" href="#e-2--closed--the-system-takes-no-position-on-majority" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: nothing at all.</strong> No job, no review queue, no computed candidate date
+(<a href="../decisions/decision-log/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>,
+reversing D-024). A guardianship is ended by a person ending it.</p>
+<p><strong>What was wrong with the review queue</strong> the docs had recommended: it was still automatic, and
+it computed a date the system has no authority to assert. Deferring a decision is not the same
+as declining to make one.</p>
+<p><strong>This closes E-2 and immediately opens E-5 below.</strong> With no automatic end and no queue, the
+only exit is <code>guardianship.end</code> — and the adult who is the <em>subject</em> of the row holds no
+permission over it.</p>
+<h3 id="e-5--closed--the-parties-administer-their-own-row">E-5 ✅ <strong>Closed</strong> — the parties administer their own row<a class="headerlink" href="#e-5--closed--the-parties-administer-their-own-row" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: the guardian and the subject both act on the row themselves; there is no
+management-team route</strong> (<a href="../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).</p>
+<p><strong>All three of the shapes above were wrong in the same direction.</strong> Support request, ownership
+channel, and request object each assumed the answer had to come from somewhere <em>other than the
+people in the relationship</em>. It does not. A guardianship is a relationship between two people, both
+of them are principals on the row, and either may end it. A guardian may add another guardian. No
+staff approval, and no workflow invented for the purpose.</p>
+<p><strong>It is not the ownership channel, which is why option (2) was the right answer for the wrong
+reason.</strong> Ownership is <em>your own record</em>; a guardianship row belongs to neither party alone. The
+guardianship channel simply gained a direction — from "may guardian G act on D's records?" to also
+"may a party act on this row?" — and the resolver still has four channels.</p>
+<p><strong>The gap this closes was real, and it is now closed at the only place it could be.</strong> D-069 removed
+both the automatic end and the queue, leaving <code>guardianship.end</code> as the sole exit and the subject
+unable to reach it. That was a door with no handle on the inside.</p>
+<p><strong>Two things this opens, both below.</strong></p>
+<h3 id="e-6--a-guardian-may-appoint-a-guardian">E-6 🟡 A guardian may appoint a guardian<a class="headerlink" href="#e-6--a-guardian-may-appoint-a-guardian" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by closing E-5.</strong> D-073 lets a guardian add another guardian, so anyone with authority
+over a child can hand that same authority to a second person <strong>with no approval from the
+organization</strong>. The ordinary case is a mother adding the father. The design does not prevent the
+non-ordinary case; it attributes it — who added whom, when, from which account, audited, with the
+other party notified.</p>
+<p><strong>The open question is whether attribution is enough</strong>, and specifically whether adding a guardian
+over a <strong>minor</strong> should also notify somebody at the organization beyond the audit log. A child
+gaining a second legal stranger with <code>write</code> over their records is not the same kind of event as an
+adult adding a co-parent.</p>
+<p><strong>Recommendation.</strong> Notify a safeguarding contact on <code>guardianship.assign</code> where the subject is a
+minor, and nothing else. Notification is visibility, not approval, so the parties still do not need
+the organization's permission — which is the whole point of D-073.</p>
+<p><strong>Impact.</strong> One notification rule. No schema change.</p>
+<h3 id="e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 ✅ <strong>Closed</strong> — one level cannot separate the medical record from the profile, and nobody wanted to<a class="headerlink" href="#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by <a href="../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>,
+which deleted the eighteen <code>dependent.*</code> codes that existed for this case.</strong></p>
+<p><strong>What could not be said.</strong> <em>"This guardian may register the child for events but may not read the
+medical record."</em> <em>"Read-only, except not the health data."</em> <em>"The grandmother may see the roster and
+nothing else."</em> A guardian either sees everything about the child or nothing. The case the old
+namespace was built around — a court order restricting one parent's medical access while their other
+access continues — was inexpressible.</p>
+<p><strong>Why it was accepted anyway.</strong> Three values a volunteer treasurer can hold in their head, versus
+eighteen whose differences nobody outside a court uses. And the alternative had a failure mode of its
+own: a granular list that administrators ticked without reading is not more protective than a coarse
+one, it only looks more precise.</p>
+<p><strong>Answered (round 7), and the answer was not the one the question expected.</strong> The question assumed a
+medical record worth separating. Asked directly, you answered: <em>"ignore 'court order', guardian has
+all rights on a child if it's permissions say so. Medical data is not different in any way."</em> Recorded
+as <a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>.</p>
+<p><strong>So this closes as a dissolved question, not an answered one.</strong> "Everything except the medical record"
+is not a sentence the organization wants to say, which means the missing granularity was never a gap —
+it was the absence of a feature nobody asked for. There is now no inside and outside to the person
+record, because there is no separate record: everything the system knows about a person other than
+name, gender and age is one class of data, reached by <code>person.view</code> and governed by the guardian right
+level whole.</p>
+<p><strong>What the closure trades away, in one sentence and on purpose:</strong> a system that cannot express
+<em>"everything except the diagnoses"</em> cannot express an arrangement a court might order, and will
+express it instead as a guardian who either has the record or does not. If the case arrives in
+reality, the route back is <strong>one new grant scope over a defined set of data, argued once as a
+decision entry</strong> — not a namespace of eighteen codes, which is what was deleted and why this question
+existed.</p>
+<p><strong>Impact.</strong> None left open. One value, three choices, over the whole record.</p>
+<p><strong>See:</strong> <a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+<a href="../data-model/09-attributes/">data-model/09-attributes.md</a>,
+<a href="../glossary/#personal-data">glossary — Descriptive data</a>.</p>
+<h3 id="e-3--guardian-acting-for-an-adult-child">E-3 🟢 Guardian acting for an adult child<a class="headerlink" href="#e-3--guardian-acting-for-an-adult-child" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> Can a parent register their adult child for an event, with the child's consent?</p>
+<p><strong>Recommendation.</strong> An explicit consent-based delegation, not a guardianship — the legal
+basis differs and <code>access_grant.is_delegated</code> already supports it.</p>
+<p><strong>Note.</strong> Now that grants can target <strong>audiences</strong>
+(<a href="../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>),
+the <em>event-wide</em> version of this question — "register everyone in this group" — is answered
+without touching guardianship at all. What remains is the individual case.</p>
+<hr />
+<h3 id="e-4--guardianship-lifetime-vs-the-membership-gate">E-4 🟢 Guardianship lifetime vs. the membership gate<a class="headerlink" href="#e-4--guardianship-lifetime-vs-the-membership-gate" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> Guardianship is exempt from the membership gate
+(<a href="../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),
+so a lapsed parent keeps their guardian's right over their child's records. Confirm that is
+intended rather than a side effect: it means an unpaid parent and a paid one are indistinguishable
+inside the guardianship channel.</p>
+<p><strong>Impact.</strong> None structurally. It is worth stating explicitly because it is the one place the
+gate is deliberately absent, and "why can this person still see that?" should have a written
+answer.</p>
+<hr />
+<h2 id="f-authorization">F. Authorization<a class="headerlink" href="#f-authorization" title="Permanent link">&para;</a></h2>
+<h3 id="f-1--closed--the-catalog-stays-comprehensive-and-granular">F-1 ✅ <strong>Closed</strong> — the catalog stays comprehensive and granular<a class="headerlink" href="#f-1--closed--the-catalog-stays-comprehensive-and-granular" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: keep the catalog large and granular; more permissions arrive with the unbuilt
+modules</strong> (<a href="../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).</p>
+<p>It is a <strong>menu</strong>, not a checklist. Administrators assign people only the permissions they
+actually need, and that is only possible if the capabilities exist as separate rows to assign.
+The parts of the question that remain — the exact contents — are tracked in
+<a href="../appendix/permission-catalog/#12-open-issues">appendix/permission-catalog.md §12</a> and will
+move as events, documents, communication and reporting land.</p>
+<p><strong>Note the asymmetry with roles, because it looks like an inconsistency and is not.</strong> Roles
+are <em>runtime data</em> the organization invents (<a href="../decisions/decision-log/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>);
+permissions are <em>capabilities the code implements</em>. You cannot assign a power that is not
+expressible in the schema, so a comprehensive catalog costs only rows. A comprehensive <em>role</em>
+list, by contrast, would be a specification pretending to be data.</p>
+<p><strong>The sharp edge.</strong> Granularity only buys least-privilege if the grants are narrow, and
+<a href="../decisions/decision-log/#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed">D-007</a>
+means any new permission in a namespace is <strong>retroactively held by everyone with that
+namespace's <code>.admin</code></strong>, with no assignment written. That is intended — and it is the reason
+<code>role.edit</code> is marked 🔒🔒.</p>
+<hr />
+<h3 id="f-3--closed--nothing-forces-an-assignment-to-end">F-3 ✅ <strong>Closed</strong> — nothing forces an assignment to end<a class="headerlink" href="#f-3--closed--nothing-forces-an-assignment-to-end" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: nothing — rely on the gate.</strong> No <code>NOT NULL</code>, no application-layer requirement,
+no per-role policy (<a href="../decisions/decision-log/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>).
+The docs had recommended <em>yes, at the application layer</em>; that recommendation is withdrawn.</p>
+<p><strong>Why the recommendation was wrong.</strong> It claimed the membership gate makes an open-ended
+assignment <em>more</em> dangerous. It makes it less: the gate already expires authority for exactly
+the population an expiry date would target, and ties expiry to a fact the organization
+maintains on purpose rather than to a date somebody typed.</p>
+<p><strong>The residue, which is the whole control now.</strong> <code>unit_leader</code> and <code>assistant_leader</code> have
+<code>requires_membership = false</code> by decision, so a lapsed leader keeps leading; the same for any
+role held by a non-member or carrying <code>system.gate_exempt</code>. For those, <strong>a periodic human
+review over open-ended assignments is not a nice-to-have, it is the entire defence</strong> — D-053
+put all the weight on <code>role_assignment.valid_to</code> and this decision declined to add a guard
+rail there. Read the two decisions as one pair.</p>
+<p><strong>See:</strong> <a href="../data-model/05-authorization/#4-role_assignment--system-wide-authority">data-model/05 §4</a></p>
+<h3 id="f-4--closed--the-question-was-answered-by-deleting-the-premise">F-4 ✅ <strong>Closed</strong> — the question was answered by deleting the premise<a class="headerlink" href="#f-4--closed--the-question-was-answered-by-deleting-the-premise" title="Permanent link">&para;</a></h3>
+<p><strong>Answered obliquely and decisively.</strong> Asked whether <code>person.admin</code> should subsume
+<code>person.merge</code>/<code>person.redact</code>, the answer was <em>"Only the system should have admin permissions,
+not the individual items"</em> — which removed the subsumer rather than choosing between the two
+options offered
+(<a href="../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>,
+reversing D-007).</p>
+<p><strong>The question moved rather than dissolved.</strong> A role bundling all <code>person.*</code> codes still
+reaches <code>person.merge</code> and <code>person.redact</code>. What changed is where that is decided: it used to
+be a resolver rule, invisible in every role editor and true for every resource whether or not
+anyone wanted it. Now it is <strong>the contents of a role somebody wrote</strong> — visible in
+<code>role_permission</code>, dated, alarmable, and audited on change.</p>
+<p><strong>What carries the guidance now</strong> is the seed table, not the schema: no seeded role mixes
+<code>person.merge</code>/<code>person.redact</code> with routine <code>person.edit</code>, and <code>identity_reviewer</code> is the one
+that deliberately holds <code>person.merge</code>. A role that <em>does</em> bundle a resource including its
+irreversible codes should be named for it.</p>
+<p><strong>See:</strong> <a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">appendix/permission-catalog.md §11</a></p>
+<h3 id="f-4a--closed--the-catalog-is-the-only-list-now">F-4a ✅ <strong>Closed</strong> — the catalog is the only list now<a class="headerlink" href="#f-4a--closed--the-catalog-is-the-only-list-now" title="Permanent link">&para;</a></h3>
+<p><strong>Surfaced by D-068, not created by it.</strong> When the two were reconciled during that work,
+<strong>22 documented permissions had no <code>INSERT</code> row</strong> — including <code>unit_participation.view</code>, which
+five of the catalog's <em>own</em> seed roles assign, and <code>person.redact</code>, one of the two codes
+D-068 exists to protect. A further 12 were the <code>event.*</code> set, catalogued when events were
+designed and never seeded. <strong>All 34 are now fixed</strong>; both sides list 91 codes and the diff is
+empty.</p>
+<p><strong>Why nobody noticed, which is the part worth keeping.</strong> <a href="../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+made a harmless inconsistency into a live one. Under the prefix-match wildcard, a role holding
+<code>unit_participation.admin</code> reached <code>unit_participation.view</code> whether or not a <code>permission</code> row
+existed — the catalog could advertise a capability the database could not name, and nothing
+noticed, because the wildcard papered over the gap and only the permission editor showed it.
+<strong>The cushion was itself the bug's hiding place.</strong></p>
+<p><strong>What is open is the discipline, not the data.</strong> There is <strong>no SQL check for this</strong> — one side
+is a Markdown file. Integrity check 18 reads the table, so it can find a permission no role
+grants; it cannot find a permission the catalog promises and the seed never contained. The
+reconciliation is scripted in <a href="../data-model/05-authorization/#12-what-the-organization-starts-with">data-model/05 §12</a>,
+and it is a review rule, not a test.</p>
+<p><strong>The actual question:</strong> should the catalog be <strong>generated from</strong> <code>permission</code> rather than
+maintained beside it? That is the only change that makes the two incapable of disagreeing.
+Against it: the catalog's value is its prose — the sensitivity marks, the rationale notes, the
+§5a and §8a argumentation — none of which belongs in a table. A middle path is to keep the
+prose in Markdown and generate the code tables from the database, so only the commentary can
+drift.</p>
+<p><strong>Impact.</strong> If left manual, this recurs on every module added, and D-055's decision to keep
+growing the catalog guarantees modules get added.</p>
+<p><strong>✅ Closed — answered by deleting one of the two lists.</strong> Asked whether to generate the catalog
+from the seed, the answer was <strong>"delete the schema, I will use ORM anyway"</strong>
+(<a href="../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>),
+which removed the seed blocks, the DDL and the 19 integrity checks from the documentation
+altogether.</p>
+<p><strong>The generation question dissolved rather than being settled, and the difference matters for what
+is still true.</strong> Nothing is generated, because there is no longer a table to generate <em>from</em>.
+<strong>The catalog is now the only list that exists</strong> — which answers the drift problem completely and
+removes, at the same time, the executable form of every rule the DDL had been carrying. That trade
+is D-072's to make and its entry records what it costs: integrity check 18, the orphaned-permission
+check that was the safety net for the deleted wildcard, is now a prose instruction rather than a
+query. <strong>A check nobody runs is a convention.</strong></p>
+<p><strong>What remains genuinely open is the thing the check was guarding.</strong> With no seed and no wildcard,
+a capability in the catalog that no role bundles is unusable and silent. It is now caught by review
+of the catalog, and there is no automated backstop at all.</p>
+<hr />
+<h3 id="f-5--which-built-in-audiences-are-needed">F-5 🟢 Which built-in audiences are needed?<a class="headerlink" href="#f-5--which-built-in-audiences-are-needed" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> <code>everyone</code> and <code>all_members</code> are seeded, plus parameterised
+<code>unit:&lt;id&gt;:participants</code> and <code>unit:&lt;id&gt;:leaders</code>
+(<a href="../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).
+Which others are real — "the guardians of this child", "the leaders of the parent unit",
+"adults only", "everyone in this section <em>and everything under it</em>"?</p>
+<p><strong>Impact.</strong> Each is one <code>audience</code> row plus one branch in <code>person_in_audience()</code>. Cheap to
+add, cheap to remove. But the parameterised ones raise a second question: are
+<code>unit:42:participants</code> rows <strong>seeded per instance</strong> on demand, or created when first granted?
+The first is a migration that must be re-run as units are created; the second needs a
+create-on-demand path that bypasses the usual admin permission.</p>
+<hr />
+<h3 id="f-6--the-permission-cache-lifetime-under-the-membership-gate">F-6 🟢 The permission cache lifetime under the membership gate<a class="headerlink" href="#f-6--the-permission-cache-lifetime-under-the-membership-gate" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> <a href="../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>
+means the resolver's answer changes when a membership lapses — including at the yearly sweep,
+which touches everyone at once. What TTL is acceptable?</p>
+<p><strong>Impact.</strong> The shorter the TTL, the smaller the window in which a lapsed member still has
+access, and the more load on the resolver. The sweep must invalidate by person, not by scope
+(<a href="../data-model/05-authorization/#10-the-resolver">data-model/05 §10</a>), and that is
+settled — this is only about the steady-state TTL.</p>
+<hr />
+<h3 id="f-7--cache-vs-materialized-effective_permission-table">F-7 🟢 Cache vs materialized <code>effective_permission</code> table<a class="headerlink" href="#f-7--cache-vs-materialized-effective_permission-table" title="Permanent link">&para;</a></h3>
+<p><strong>Recommendation.</strong> Start with cache-only. Materializing is a denormalization requiring
+transactional maintenance, and a silent refresh failure is an access bug nothing detects.</p>
+<p><strong>Impact.</strong> Performance only; revisit if measurement demands it. The membership gate makes
+materializing harder, not easier — every membership transition would have to rewrite rows.</p>
+<hr />
+<h3 id="f-8--retention-policy-for-access_log">F-8 🟢 Retention policy for <code>access_log</code><a class="headerlink" href="#f-8--retention-policy-for-access_log" title="Permanent link">&para;</a></h3>
+<p>Legal input required. Recommend monthly partitioning from the start, with archival to cold
+storage and <strong>never deletion</strong>.</p>
+<hr />
+<h3 id="f-9--should-membership_type-stay-a-table-with-one-row">F-9 🟢 Should <code>membership_type</code> stay a table with one row?<a class="headerlink" href="#f-9--should-membership_type-stay-a-table-with-one-row" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> <a href="../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>
+kept <code>membership_type</code> as a table with a single seeded <code>member</code> row, on the principle that
+vocabularies are rows and not enums — at the cost of an FK that always holds one value.</p>
+<p><strong>Impact.</strong> A deliberate trade, not an oversight. Worth confirming it is the trade you want,
+since it is the one place the design pays a structural cost for a hypothetical future.</p>
+<p><strong>See:</strong> <a href="../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">data-model/03 §1</a></p>
+<hr />
+<h3 id="f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 🔴 Which invariants the ORM cannot express, and who writes those<a class="headerlink" href="#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those" title="Permanent link">&para;</a></h3>
+<p><strong>Question.</strong> <a href="../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+moved the schema to an ORM. Most of what the deleted DDL asserted an ORM will generate from a
+model definition. <strong>Three shapes it generally cannot</strong>, and each appears dozens of times in these
+documents:</p>
+<p>The list below is four shapes, and they are not equally bad. Shapes 1–3 have a known answer even
+if nobody has chosen it yet; shape 4 does not have one, and is why this question is red.</p>
+<ol>
+<li><strong>No two open rows overlap</strong> — the temporal invariant under memberships, participations,
+   assignments, guardianships, grants and exposures. On PostgreSQL this needs an exclusion
+   constraint over a range built from two columns.</li>
+<li><strong>Unique, but only among rows satisfying a condition</strong> — "one open request per person and
+   type", "one primary contact among open rows", "one live exposure per unit and assignment".
+   These need a partial unique index; a plain unique constraint over the same columns is a
+   <em>different and wrong rule</em>, forbidding the second closed row that history requires.</li>
+<li><strong>Anything whose answer comes from another table or from the resolver</strong> — the holder limit, the
+   nesting rules, the exposure direction, per-scheme identifier uniqueness
+   (<a href="../decisions/decision-log/#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved">D-080</a>
+   item 1 is this class), and since round 7 <strong>one current value per <code>(person, definition)</code></strong>, whose
+   condition lives in <code>attribute_definition.allow_multiple</code> — a uniqueness rule that some definitions
+   want and others forbid
+   (<a href="../data-model/09-attributes/#3-person_attribute--a-value-one-person-has">data-model/09-attributes.md §3</a>).
+   It is the cleanest example in the list, because the rule is not even conditional on the row's own
+   data: the same two columns are unique for one definition and repeatable for the next, so a partial
+   unique index cannot be written without knowing which definitions exist at runtime. No declarative
+   constraint can state these; they need a check inside the writing transaction plus a report.</li>
+<li><strong>A column that may not change once it is set</strong> — <code>org_unit.parent_unit_id</code>
+   (<a href="../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>).
+   This is not a PostgreSQL limitation that an ORM happens to inherit; <strong>no declarative constraint
+   in any database states it</strong>, which is why it survived into the hand-written migrations even when
+   the DDL was still in these documents. It is a rule about a transition between two states of a
+   row, and a constraint sees states.</li>
+</ol>
+<p><strong>What makes it different from 1–3 is that there is no report.</strong> The nightly checks catch shape 1
+   and 2 by finding a pair of rows that should not coexist, and shape 3 by recomputing an answer and
+   comparing. A reparent leaves no offending row: every row in the database stays individually valid
+   and satisfies every constraint, while the meaning of the subtree's entire history moves under
+   them. Nothing can be compared afterwards, because there is no second statement of the intended
+   hierarchy to compare against — and the <code>path</code> the damage would show up in is itself derived and
+   would simply be recomputed to match. So the guard is the whole enforcement, and it must sit in
+   the write path (<a href="../data-model/02-organization/#a-unit-never-changes-parent">data-model/02 §4</a>),
+   with an automated test that attempts the update and expects a refusal. <strong>A test is not a
+   substitute for the guard; it is the only remaining evidence that the guard was intended to stay.</strong></p>
+<p><strong>Why this is a question and not a task.</strong> The fallback an ORM offers for all three is validation
+in the model layer, and
+<a href="../data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00 §6a</a> explains why
+that is not the same guarantee: an import, a data fix, and a second client all bypass it. <strong>The
+legacy import is the specific case that makes this urgent rather than theoretical</strong> — the corpus
+arrives through exactly the path that model-layer validation does not cover, and an overlapping
+membership written by the importer is nearly impossible to diagnose afterwards, because the two
+rows look like two memberships and only one of them was ever real.</p>
+<p><strong>Needed.</strong> A decision per shape — hand-written migration, database check, or application check
+plus report — before the first migration is generated, not discovered during one. <strong>The
+recommendation in <a href="../data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00 §6a</a>
+is that shapes 1 and 2 are hand-written migrations, and that this is the condition on which using
+an ORM is safe rather than an argument against using one.</strong></p>
+<p><strong>Impact if unanswered.</strong> Not a crash. A system whose constraints are quietly absent, whose
+integrity checks (every "Invariants to verify" section) then start reporting rows, and whose first
+report is read as a data-quality problem rather than as the missing guarantee arriving on schedule.</p>
+<p><strong>See:</strong> <a href="../data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00 §6a</a>,
+<a href="../appendix/erd/">appendix/erd.md's inventory</a>, which marks every temporal entity.</p>
+<hr />
+<h2 id="g-events--designed-with-three-things-left-open">G. Events — designed, with three things left open<a class="headerlink" href="#g-events--designed-with-three-things-left-open" title="Permanent link">&para;</a></h2>
+<p>The module is written: <a href="../domain/07-events/">domain/07-events.md</a> and
+<a href="../data-model/08-events/">data-model/08-events.md</a>. Fifteen questions have been answered
+(D-058 … D-067, plus EV-1 and EV-5 in a later round); what remains below is what those answers
+did <strong>not</strong> settle. None of it blocks implementation.</p>
+<h3 id="ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule">EV-1 ✅ <strong>Closed</strong> — there is no age ceiling; the grant is the rule<a class="headerlink" href="#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule" title="Permanent link">&para;</a></h3>
+<p><strong>Answered: leave it.</strong> No <code>min_age</code>/<code>max_age</code> on <code>event</code>, and no age test anywhere in the path
+that places a registration (<a href="../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).</p>
+<p><strong>The residual risk is accepted, not eliminated</strong>, and it is worth restating so nobody
+"closes" it later without knowing: an event opened to <code>all_members</code> can be registered for by a
+nine-year-old and <strong>nothing objects</strong>. What makes it survivable is attribution
+(<code>source = 'staff'</code>), a roster query one join away from birth dates, and the fact that the
+age-bounded case is already handled by opening an event to the right unit.</p>
+<p><strong>If it ever needs closing, the shape is a built-in audience, not a column on the row</strong> —
+<code>all_members</code> is a rule the resolver evaluates, so <code>members_aged_13_plus</code> can be one too. That
+keeps every answer to "who may register" inside <code>access_grant</code>, which is the property D-060
+bought and D-070 defended.</p>
+<h3 id="ev-2--retention-of-event_answer">EV-2 🟡 Retention of <code>event_answer</code><a class="headerlink" href="#ev-2--retention-of-event_answer" title="Permanent link">&para;</a></h3>
+<p><strong>The question, restated once so it stays answerable.</strong> It used to read "a dietary answer citing a
+medical condition is health data, and health data has a retention obligation" — and
+<a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+removed the second half of that sentence's subject: there is no class of health data with its own
+obligation, only personal data, of which a dietary answer is one instance. <strong>The question survives, and
+it is now the ordinary version of a question this system has not answered anywhere</strong>: event answers end
+with the event, "end" is not a defined policy, and a fact recorded on a form is the same kind of fact as
+the same sentence recorded as a <code>person_attribute</code> (<a href="../data-model/09-attributes/">data-model/09-attributes.md</a>),
+which raises the sharper form of the question — <strong>should an answer about a child be deleted on a
+schedule at all, when the same information held as an attribute is kept until someone retires it?</strong> The
+paragraph at the end of this item is where that doubling is worked out; what changed here is only that
+the question can no longer be filed under a category of data that no longer exists.</p>
+<p><strong>Why it is not trivial.</strong> <a href="../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>
+made an event form the route by which a camp leader learns a child has a nut allergy. That is
+a deliberate widening, and it puts health-adjacent data in a table whose protections are weaker
+than the health record's — <strong>and in round 6 that gap widened twice over</strong>: there is no longer a
+<code>dependent.medical.*</code> code marking which data is the sensitive kind (<strong>E-7</strong>), and the audience
+entitled to read an answer is whoever runs that event, a set sized by whoever creates it.
+The retention policy is the remaining half of that trade.</p>
+<p><strong>Needed.</strong> Legal input, like B-3. The technical question — where does it live, who may read
+it — is answered; whether it must be deleted, kept, or archived is not.</p>
+<p><strong>Changed in round 7, in a way that strengthens the case rather than settling it.</strong> <a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+made every fact about a person one class of data held on the person, so an event answer naming an
+allergy is now <strong>the same kind of fact stored in two places by two different rules</strong> — one on the
+person, where it is audited, curable and erased with the person; one in an event's table, readable by
+whoever runs that event, with no retention policy. <strong>The retention question and <a href="#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>
+are the same question from two directions</strong>: an answer worth keeping is an attribute that was
+collected at the wrong address, and an answer not worth keeping should be deleted on a schedule rather
+than surviving because nobody wrote a policy. Until one of the two is decided, the weakest-protected
+copy of a health fact is the one that is freshest.</p>
+<h3 id="ev-3--closed--cancelling-voids-the-request-and-paid-money-queues">EV-3 ✅ <strong>Closed</strong> — cancelling voids the request, and paid money queues<a class="headerlink" href="#ev-3--closed--cancelling-voids-the-request-and-paid-money-queues" title="Permanent link">&para;</a></h3>
+<p><strong>Answered by <a href="../decisions/decision-log/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>,
+in the finance module rather than here.</strong> The recommendation was right and the mechanism arrived
+before the policy did:</p>
+<ul>
+<li><strong>Cancelling an event voids its outstanding payment requests</strong>, recording why
+  (<a href="../data-model/07-finance/#2b-money-that-cannot-be-matched">finance model §2b</a>).</li>
+<li><strong>Money already received becomes a queue item</strong> for a person to refund or carry forward. Not
+  auto-refunded — that needs an outbound bank integration and would return a grandparent's
+  mistaken camp fee.</li>
+</ul>
+<p><strong>Why the recommendation held.</strong> It said neither, automatically, because an automatic release would
+be a second automatic transition in a module with exactly one
+(<a href="../decisions/decision-log/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a>).
+That argument was strong enough to survive contact with the payment design unchanged. <strong>Voiding an
+outstanding request is not that second transition</strong> — a request nobody has paid against has no state
+to preserve and nobody is disadvantaged by its withdrawal, which is exactly the property the waitlist
+release had and this does not.</p>
+<p><strong>What actually moved.</strong> The question assumed cancellation was the interesting case and payment an
+afterthought parked in finance. It is the reverse: cancellation is where <strong>most of the unmatched
+queue's volume comes from</strong>, because a cancelled event keeps its registrations
+(<a href="../decisions/decision-log/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>)
+and therefore its money obligations, unless something explicitly voids them.</p>
+<p><strong>Impact.</strong> Answered; the queue itself lives in the finance module.</p>
+<h3 id="ev-4--was_present-as-a-safeguarding-record">EV-4 🟢 <code>was_present</code> as a safeguarding record<a class="headerlink" href="#ev-4--was_present-as-a-safeguarding-record" title="Permanent link">&para;</a></h3>
+<p><strong>The question.</strong> Presence is the record of who was actually in the organization's care
+(<a href="../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>).
+Does it need its own retention, or its own permission?</p>
+<p><strong>Why it might.</strong> It is the record that answers "was this child at camp on the day of the
+incident" — the question insurance and any safeguarding review will ask. That is a heavier
+thing than "who said they were coming", and it currently shares both a table and a permission
+with the registration.</p>
+<p><strong>Why it might not.</strong> It is meaningless without the registration it belongs to, and splitting
+it would put two rows in two places describing one fact.</p>
+<p><strong>Impact.</strong> Splitting it is a table; keeping it is nothing. The argument for splitting is
+permissions — a volunteer who takes the register at camp is not the same trust as one who may
+alter the roster. See EV-5, which is the same tension.</p>
+<h3 id="ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower">EV-5 ✅ <strong>Closed</strong> — it split, and the new permission sits a level lower<a class="headerlink" href="#ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower" title="Permanent link">&para;</a></h3>
+<p><strong>Resolved in favour of the split: <code>event.presence.mark</code>, at <code>contribute</code>.</strong></p>
+<p>The reasoning recommended the split and the recommendation stood. Marking the register at a
+camp door is not the same trust as deleting a child from the roster, and one permission forced
+organizations to hand the clipboard-holder both. Note where the new permission landed:
+<code>contribute</code>, not <code>manage</code> — <strong>so the volunteer taking the register is somebody who could
+already register themselves</strong>, which is the right bar for the job and plainly the wrong bar
+for altering who is coming. Same shape as <code>membership.lapse</code> versus <code>membership.terminate</code>
+(D-022): one routine, one consequential.</p>
+<p>Thirteen <code>event.*</code> codes now exist; <code>event.admin</code> is not one of them
+(<a href="../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>).</p>
+<p><strong>See:</strong> <a href="../appendix/permission-catalog/#8a-events">appendix/permission-catalog.md §8a</a></p>
+<hr />
+<h2 id="ga-personal-attributes--designed-with-four-things-left-open">Ga. Personal attributes — designed, with four things left open<a class="headerlink" href="#ga-personal-attributes--designed-with-four-things-left-open" title="Permanent link">&para;</a></h2>
+<p>The module exists: <a href="../domain/08-person-data/">domain/08-person-data.md</a> and
+<a href="../data-model/09-attributes/">data-model/09-attributes.md</a>, decided by
+<a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+<a href="../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> and
+<a href="../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>.
+It arrived instead of the health-records module, because the question "what is a health record here"
+answered itself a size larger: everything about a person except name, gender and age is one class of
+data, defined by the organization at runtime, with no privileged subset.</p>
+<h3 id="at-1--should-an-event-question-bind-to-an-attribute-code">AT-1 🟡 Should an event question bind to an attribute code?<a class="headerlink" href="#at-1--should-an-event-question-bind-to-an-attribute-code" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by <a href="../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+which made the event form the fallback rather than the ceiling.</strong></p>
+<p><strong>The situation.</strong> A returning camper types their allergy into every event form, every season, and
+the answer lives in <code>event_answer.value</code> for that event only. Meanwhile the organization may already
+hold the same fact as an attribute on the person, with a name, a <code>value_type</code>, and a recorded author.
+Nothing connects them.</p>
+<p><strong>Why this is a question and not an obvious improvement.</strong> Prefilling an answer from the record makes
+the <strong>record the thing a leader relies on</strong>, and the record is: whatever was typed, by whoever,
+possibly two years ago, with no obligation on anyone to update it. Today's arrangement is worse data
+and better epistemics — <em>the form asks now, about this event, and the answer is dated today</em>. Bind
+the two and an out-of-date attribute becomes a wrong answer that looks authoritative, which is the
+one failure mode a health fact has that makes it dangerous.</p>
+<p><strong>Recommendation.</strong> Prefill as a <strong>suggestion the registrant confirms or corrects on the way in</strong>, and
+write the confirmed value back to the attribute with today's date and this person as its author. Then
+the form stays the authority for the event, the record gets refreshed by the act of using it, and
+nobody ever relies on a two-year-old entry without a human having just looked at it. <strong>The variant to
+reject</strong> is reading the attribute directly into the organizer's view without the registrant's
+confirmation pass — that is the same convenience with the safety removed.</p>
+<p><strong>Impact.</strong> One binding on the question definition, one write-back rule, and a rule about which is
+authoritative when they disagree. No new permission.</p>
+<p><strong>See:</strong> <a href="../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>
+(as amended), <a href="../data-model/08-events/#health-facts-and-the-discipline-this-requires">data-model/08 §7</a>.</p>
+<h3 id="at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">AT-2 🟡 Who curates the vocabulary, and how long may a proposal sit?<a class="headerlink" href="#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by <a href="../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>,
+which made <code>attribute.define</code> a permission instead of a release.</strong></p>
+<p>An open vocabulary is only as good as somebody tending it, and "somebody" is currently nobody in
+particular. Two halves:</p>
+<ul>
+<li><strong>Who holds <code>attribute.define</code>.</strong> The starting role set
+  (<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11</a>) is the place
+  this gets answered, and the honest answer is that a volunteer organization has one or two people who
+  will do this and not a committee. Too narrow and the proposal queue is a bottleneck that teaches
+  people to file facts into notes instead; too wide and it is not a curation.</li>
+<li><strong>How long a proposal may sit</strong> before it is promoted, merged or discarded. The check exists
+  (<a href="../data-model/09-attributes/#8-integrity-checks">09-attributes §8</a> checks 1 and 2) and the number
+  does not. A quarter is a defensible default: long enough that a seasonal field is not judged off a
+  single use, short enough that a proposal is answered inside the season that produced it.</li>
+</ul>
+<p><strong>Recommendation.</strong> One named role, a stated age limit on proposals, and a standing decision that an
+expired proposal's <strong>values stay</strong> — the curation is about the name, never about deleting what was
+recorded.</p>
+<p><strong>Impact.</strong> Configuration and one role, no schema change. The thing it prevents is the slow failure:
+a vocabulary nobody curates stops being queryable and the layer keeps storing everything, which looks
+like success for years.</p>
+<h3 id="at-3--do-attribute-labels-need-translation">AT-3 🟢 Do attribute labels need translation?<a class="headerlink" href="#at-3--do-attribute-labels-need-translation" title="Permanent link">&para;</a></h3>
+<p>Inherited from the multi-language row in <a href="#h-not-yet-designed">§H</a>, and sharper here than anywhere
+else because the vocabulary is runtime data: if a code's label is Czech-only, a Slovak-speaking
+volunteer cannot pick the field at all. Whether the answer is a translation column on
+<code>attribute_definition</code>, a separate label-per-language table, or "the organization is
+single-language, stop asking" is unrecorded. <strong>The cost of not answering is asymmetric</strong> — a label
+table added later is a migration; a body of codes accumulated with one label each is a data-cleaning
+project.</p>
+<h3 id="at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4 🟡 Is one permission enough to guard a trail that holds person data?<a class="headerlink" href="#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by the reversal recorded in
+<a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+which decided the audit trail <em>does</em> hold a person's descriptive values</strong> — because
+<a href="../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+made that trail the only history such values have, and stripping them would have made the history empty
+while quietly grading health-shaped fields above a change of address. What protects the copy is then one
+thing: <code>audit.view</code>, graded ⚠⚠ beside <code>person.view</code>
+(<a href="../appendix/permission-catalog/#8-audit-and-system">permission-catalog §8</a>). Three positions exist and
+none is recorded as taken:</p>
+<ul>
+<li><strong>The guard is enough</strong> (current documents). One permission, marked honestly, and a rule that whoever
+  holds it is reading person data. Simple, and it makes the auditor role — which has <code>audit.view</code> and
+  not <code>person.view</code> — a reader of the entire person record
+  (<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</li>
+<li><strong>Per-entry filtering in the history view:</strong> show an audit row's values only where the reader could
+  also see the live field. Consistent with everything §9 of
+  <a href="../data-model/05-authorization/#9-access_log">data-model/05-authorization.md</a> says about channels, and
+  it was considered and left unimplemented, because it means running the resolver per audit row against
+  rows that may no longer exist — a grant withdrawn last year is exactly the case a history is read for.</li>
+<li><strong>Split the permission:</strong> the trail's shape (who changed which table, when) apart from its payloads.
+  Honest about what an auditor usually needs, and it is the option that reintroduces a sensitive subset
+  through the back of the catalog — which is why the documents do not recommend it.</li>
+</ul>
+<p><strong>The cost of not answering is asymmetric in the uncomfortable direction:</strong> the first position is
+already implemented by default, so leaving the question open <em>is</em> choosing it, and the choice is made
+invisible — nobody signs off on "volunteers with <code>audit.view</code> can read children's medical history"
+because there is no moment at which anybody has to say it.</p>
+<hr />
+<h2 id="h-not-yet-designed">H. Not yet designed<a class="headerlink" href="#h-not-yet-designed" title="Permanent link">&para;</a></h2>
+<p>Each of these is referenced by the schema and has hooks left for it — <strong>except health records, which
+has no hooks because it has no design at all, and whose missing design is load-bearing in two other
+documents. Read H-0 below before the table.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Hooks already in place</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Events</strong> ✅</td>
+<td><strong>Designed</strong> — <a href="../domain/07-events/">domain/07</a>, <a href="../data-model/08-events/">data-model/08</a></td>
+<td>Fifteen questions answered; three left in § G above.</td>
+</tr>
+<tr>
+<td><strong>Fees and payments</strong></td>
+<td><a href="../data-model/07-finance/">data-model/07-finance.md</a> — <strong>architecture settled, policy open</strong></td>
+<td><strong>Nine open questions</strong>, of which one is new. Round 6 closed the architectural ones: money arrives by <strong>bank API</strong>, is requested by <strong>variable symbol + QR code</strong>, there is <strong>no card gateway</strong>, and unmatched money <strong>queues</strong> (<a href="../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>, <a href="../decisions/decision-log/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>). What remains needs somebody in the organization asked: proration, discounts, insurance, waivers, invoices.</td>
+</tr>
+<tr>
+<td><strong>Documents</strong></td>
+<td><code>access_grant.scope_type = 'document'</code>; the evidence-reference hook belonged to the removed requirement tables</td>
+<td>Needs: storage, versions, retention, consent-driven access.</td>
+</tr>
+<tr>
+<td><strong>Consents</strong></td>
+<td>No <code>dependent.consent.*</code> any more — a guardian at <code>write</code> may give and manage consents (<a href="../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>)</td>
+<td>Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement (<a href="../decisions/decision-log/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>). <strong><code>is_legal_decision_maker</code> on the guardianship row is the existing hook for "who may sign" — and it is now the only place that distinction lives</strong>, since the right level cannot express it.</td>
+</tr>
+<tr>
+<td><strong>Health records</strong> ✅</td>
+<td><strong>Designed — as <a href="../domain/08-person-data/">domain/08</a> and <a href="../data-model/09-attributes/">data-model/09</a></strong></td>
+<td><strong>Highest-sensitivity data in the system, and the exposure grew in round 6.</strong> <a href="../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a> deleted the codes that used to gate medical visibility, so "read everything except the health file" is no longer sayable — see <strong>E-7</strong>. This raises the case for designing the module <strong>before</strong> the coarse default is relied on, rather than after: separate retention, separate access, likely separate storage, and its own legal review.</td>
+</tr>
+<tr>
+<td><strong>Communication</strong></td>
+<td><code>message.send_direct</code>, <code>message.broadcast</code> (scoped) — shape decided, detail undesigned</td>
+<td><strong>Shape decided by <a href="../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>:</strong> internal first, external channels are delivery; everyone may send direct; <code>broadcast</code> is one scoped permission; <strong>the recipient picks the channel.</strong> Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was <strong>declined as a sender restriction</strong> — see <strong>MSG-1</strong> below.</td>
+</tr>
+<tr>
+<td><strong>Reporting</strong></td>
+<td><code>report.*</code> permissions sketched</td>
+<td>The historical queries in <a href="../domain/05-membership-lifecycle/#8-since-1985--the-ten-queries-this-design-must-answer">domain/05</a> are the starting set. Query 10 (members per year since 1985) is the acceptance test.</td>
+</tr>
+<tr>
+<td><strong>API and UI</strong></td>
+<td>—</td>
+<td>Not started. The resolver's <code>p_at</code> parameter exists partly for this.</td>
+</tr>
+<tr>
+<td><strong>Notifications</strong></td>
+<td>—</td>
+<td>Expiring roles, members inside the renewal window, unpaid fees. Note the renewal window makes this <em>dated</em> rather than status-driven — a nightly job over <code>in_renewal_window()</code>.</td>
+</tr>
+<tr>
+<td><strong>Payment gateway</strong></td>
+<td>—</td>
+<td><strong>Answered, so this row is now narrower than it was.</strong> The organization collects via <strong>bank API</strong>, not a card gateway (<a href="../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>): no webhooks, no disputes, no processor reconciliation. What remains undesigned is the <strong>statement import</strong> itself — file formats, the idempotency key, and what happens to an account the bank revises.</td>
+</tr>
+<tr>
+<td><strong>Multi-language</strong></td>
+<td>—</td>
+<td>Unit names and permission display names are all in the database. Whether they need translation columns is unanswered.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="h-0--closed--the-medical-record-was-cited-everywhere-and-defined-nowhere-and-it-turns-out-there-was-nothing-to-define">H-0 ✅ <strong>Closed</strong> — the medical record was cited everywhere and defined nowhere, and it turns out there was nothing to define<a class="headerlink" href="#h-0--closed--the-medical-record-was-cited-everywhere-and-defined-nowhere-and-it-turns-out-there-was-nothing-to-define" title="Permanent link">&para;</a></h3>
+<p><strong>Found while starting the health-records module, and it changes what that module is.</strong> Sentences
+across five files discuss who may read <em>the medical record</em> as though it were a table:</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What it says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§H, this file, Health records row</td>
+<td>"a <code>view</code> guardian already sees them"</td>
+</tr>
+<tr>
+<td><a href="#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7</a></td>
+<td>"a guardian either sees everything about the child or nothing"</td>
+</tr>
+<tr>
+<td><a href="../appendix/permission-catalog/#9-there-is-no-dependent-namespace">permission-catalog §9</a></td>
+<td>a <code>view</code> guardian "reaches the fee history and the health record"</td>
+</tr>
+<tr>
+<td><a href="../data-model/08-events/#health-facts-and-the-discipline-this-requires">data-model/08 §7</a></td>
+<td>"the medical file, which <strong>no event permission reaches</strong>"</td>
+</tr>
+<tr>
+<td><a href="../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">data-model/04 §2</a></td>
+<td>the case the old codes existed for is "access to medical information"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No document defines one.</strong> There is no health or medical entity in any
+<a href="../data-model/00-conventions/">data-model</a> file and no box in <a href="../appendix/erd/">the ERD</a>. The only
+thing that ever had a medical shape in this model was a <code>medical_form</code> <strong>requirement code</strong>, and
+<a href="../decisions/decision-log/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>
+deleted that table. So the referent is a habit of speech inherited from the old
+<code>dependent.medical.*</code> permission codes, which named a sub-resource of a table that was itself
+removed with <a href="../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>.</p>
+<p><strong>What this does to the arguments built on it — most of them survive, one does not.</strong></p>
+<ul>
+<li><strong>E-7 stands, and is sharper than it looked.</strong> "One right level cannot separate the medical record
+  from the profile" is <em>still true</em> about a record that does not exist: it says the guardian model has
+  no granularity to offer whenever something sensitive is later attached to a person. That is a real
+  finding about the model, not about a table.</li>
+<li><strong>"No event permission reaches the medical record" is true but empty.</strong> Nothing reaches it, because
+  nothing is there. The paragraph in 08-events that leans on this to reassure is right about
+  permissions and wrong about the risk: <strong>the only health data the system actually holds today is in
+  <code>event_answer.value</code></strong> — free text typed into a form, read by whoever runs the event, with no
+  retention policy (<a href="#ev-2--retention-of-event_answer">EV-2</a>). The sensitive data is in the weakest
+  place, not the strongest.</li>
+<li><strong>"A <code>view</code> guardian already sees them" is simply false</strong>, and was written as a reason not to design
+  the module early. It is replaced by the question below.</li>
+</ul>
+<p><strong>The question, before any field is designed.</strong> <em>What is a health record in this system?</em> Not "which
+fields" — the shape. Three coherent answers, and they imply different systems:</p>
+<ol>
+<li><strong>Structured entries</strong> (allergy, medication, condition, instruction) — queryable, so "who in this
+   unit has a nut allergy" is answerable, and the price is that the organization is now a custodian of
+   diagnosable data with everything that implies.</li>
+<li><strong>Documents only</strong> — a scanned form filed against the person, using the <code>document</code> scope that
+   already exists in the catalog. Cheap, legally simple, and useless in an emergency, because nobody
+   reads a PDF at 23:00 in a tent.</li>
+<li><strong>Hybrid</strong> — a small set of structured, actionable entries plus documents behind them for anything
+   a form can hold. This is what organizations actually do on paper, and the option the rest of the
+   corpus seems to assume.</li>
+</ol>
+<p><strong>Why this is H-0 and not a row in the table.</strong> Every other open question about health — who may read
+it, whether the guardian default changes, what event organizers get, how long answers survive,
+whether E-7 needs its exception — takes a different answer depending on this one. It is also the only
+module whose <em>absence</em> is already load-bearing: two documents cite the medical record's protections in
+order to argue that something else is safe.</p>
+<p><strong>Answered (round 7), by rejecting the framing.</strong> You answered the three-way question with a fourth
+answer: <em>"I consider everything apart from name, gender and age a 'medical record'. It is fields in
+the database, not files."</em> So the referent was not missing — the <strong>category</strong> was missing, and the
+phrase in those five files was groping at a distinction nobody makes: there is no medical record
+inside the person record, because the person record is the thing, and it is fields. Recorded as
+<a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+with the shape of the layer in <a href="../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>
+and the boundary in <a href="../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>.
+The three options above are recorded nowhere else, which is right: they were the shape of the question,
+not the shape of the answer.</p>
+<p><strong>See:</strong> <a href="#ga-personal-attributes--designed-with-four-things-left-open">section Ga</a>,
+<a href="../data-model/09-attributes/">data-model/09-attributes.md</a>.</p>
+<hr />
+<h3 id="msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians">MSG-1 ✅ <strong>Closed</strong> — a direct message to a minor is mirrored to their guardians<a class="headerlink" href="#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians" title="Permanent link">&para;</a></h3>
+<p><strong>Raised by <a href="../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>,
+which declined the restriction rather than forgetting it.</strong></p>
+<p><strong>The situation.</strong> Messaging has two sender tiers — direct, which everyone may do, and <code>broadcast</code>,
+which is a permission. <strong>Neither tier mentions age.</strong> So any person with an account may send a
+private message to any child with an account, and nothing in the model prevents it, records it as
+unusual, or tells anyone. This is not a gap created by oversight: the question asked whether staff
+may address a child or only their guardians, and the answer replaced it with a model in which
+age is not a sender concept at all. <strong>The rule the communication section had promised — "a rule
+against contacting minors directly" — is therefore not implemented, and it is worth being blunt
+that this is the most consequential unanswered question in the file.</strong></p>
+<p><strong>Why restricting senders is the wrong fix here.</strong> An age branch in the resolver is what
+<a href="../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>
+refused for events, on the grounds that a condition evaluated at check time which the capability
+model does not know about becomes the first rule in a rule engine nobody wants. It would also be
+the kind of restriction that gets loosened the first time it inconveniences a leader, and a
+permission that is routinely bypassed on a messaging system is worse than none, because it makes
+the bypass normal.</p>
+<p><strong>Recommendation — restrict visibility, not permission.</strong> Mirror direct messages reaching a minor
+to that minor's guardians, and make the mirroring visible to the sender. Then:</p>
+<ul>
+<li>nothing is blocked, so the resolver still has no age branch;</li>
+<li>nothing is secretly unread, which is the actual safeguarding property;</li>
+<li>it is built on the guardianship rows the organization already maintains, so it needs no new
+  authority concept;</li>
+<li>and it degrades honestly — a child with no guardian on record gets no mirroring, which is the
+  same safeguarding gap <strong>check 4</strong> in <a href="../data-model/04-relationships/#6-invariants-to-verify">data-model/04 §6</a>
+  already alerts on, arriving through a second channel.</li>
+</ul>
+<p><strong>The variant to reject.</strong> "Only guardians and unit leaders may message a child." That is the
+restriction wearing the visibility recommendation's clothes: it is a sender rule, it needs the age
+branch, and it silently tells a child that the adult messaging them has been vetted — which the
+model does not establish, and the organization records no background checks
+(<a href="../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).</p>
+<p><strong>Answered (round 6): the recommendation is adopted</strong>, as
+<a href="../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>
+— mirror to guardians, tell the sender, block nothing. Three details were settled with it, because
+"mirror it to the guardians" does not by itself say who the guardians are <em>to this message</em>:</p>
+<ul>
+<li><strong>Which guardians.</strong> Those whose right level is <code>view</code> or <code>write</code>. A guardian at <code>none</code> receives
+  nothing: <code>none</code> is the organization having already decided that this party sees nothing about the
+  child, and a safeguarding rule is not a licence to undo a recorded decision by side effect. <strong>A
+  minor whose guardians are all <code>none</code> is therefore reported with the minors who have no guardian at
+  all</strong> — otherwise the exclusion would be a way to make a child silently unwatched.</li>
+<li><strong>Which set, as of when.</strong> The guardianships open <em>at the moment the message is sent</em>, frozen into
+  the delivery. A guardianship closed afterwards does not lose its mirror, and a guardian added later
+  does not acquire old threads — same discipline as
+  <a href="../data-model/06-audit-and-import/#2-audit_log">06-audit §2</a>, which keeps the
+  trail answering "what was true then".</li>
+<li><strong>Broadcast is not mirrored.</strong> A scoped broadcast is already addressed to a set, recorded, and
+  attributable; mirroring exists for the <em>private</em> case, which is the one that can be invisible.</li>
+</ul>
+<p><strong>What mirroring is not.</strong> Not approval, not a gate, and not evidence anyone read it. It buys the one
+property the safeguarding argument actually needs — <strong>no private conversation about a child is
+secretly unread</strong> — without putting an age into the resolver.</p>
+<p><strong>See:</strong> <a href="../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>,
+<a href="../appendix/permission-catalog/#10-deferred-namespaces">permission-catalog's <code>message</code> row</a>,
+<a href="../glossary/#communication">glossary — Mirroring</a>.</p>
+<hr />
+<h2 id="r-resolved--moved-to-the-decision-log">R. Resolved — moved to the decision log<a class="headerlink" href="#r-resolved--moved-to-the-decision-log" title="Permanent link">&para;</a></h2>
+<p>Kept here so a reader of this file knows the question was asked and where the answer lives,
+rather than finding it silently deleted.</p>
+<table>
+<thead>
+<tr>
+<th>Was</th>
+<th>Question</th>
+<th>Settled by</th>
+<th>In one line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A-1</td>
+<td>The organizational structure</td>
+<td><a href="../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a></td>
+<td>One root; all sub-units nest arbitrarily beneath it.</td>
+</tr>
+<tr>
+<td>A-1</td>
+<td>The unit type vocabulary</td>
+<td><a href="../decisions/decision-log/#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types">D-054</a></td>
+<td>Not seeded — <code>org_unit_type</code> is runtime data; only the root type ships.</td>
+</tr>
+<tr>
+<td>B-1</td>
+<td>How much legacy data, in what shape?</td>
+<td><a href="../decisions/decision-log/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a></td>
+<td>Large, with legacy member numbers — exact matches, so review is a work queue.</td>
+</tr>
+<tr>
+<td>D-9</td>
+<td>Is <code>household</code> load-bearing at all?</td>
+<td><a href="../decisions/decision-log/#d-057--household-is-removed">D-057</a></td>
+<td>No — removed entirely. Addresses are temporal <code>person_contact</code> rows.</td>
+</tr>
+<tr>
+<td>F-1</td>
+<td>Which permissions and roles does the organization need?</td>
+<td><a href="../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a></td>
+<td>The catalog stays large and granular; it is a menu, not a checklist.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Eligibility for an event — a separate rule engine?</td>
+<td><a href="../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a></td>
+<td>No — eligibility <strong>is</strong> capability. <code>event.register_self</code> at <code>contribute</code>, via audiences.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Is <code>unanswered</code> a stored attendance value?</td>
+<td><a href="../decisions/decision-log/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a></td>
+<td>No — absence of a row. Two stored values: <code>attending</code>, <code>not_attending</code>.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Is a weekly meeting an event?</td>
+<td><a href="../decisions/decision-log/#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit">D-058</a></td>
+<td>No — it is <code>unit_participation</code>. No recurrence, no series table.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>One owning unit per event, or several?</td>
+<td><a href="../decisions/decision-log/#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit">D-058</a></td>
+<td>Exactly one. A joint camp is one unit's event another unit participates in.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Are organizers a grant or a roster?</td>
+<td><a href="../decisions/decision-log/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a></td>
+<td>A roster on the event — labelled and ordered. Grants stay separate.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Do unit roles reach the unit's own events?</td>
+<td><a href="../decisions/decision-log/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a></td>
+<td>Yes — an event is an <strong>artifact</strong> of its unit, not a child. Not inheritance (D-031 stands).</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Does an event have a status (<code>draft</code>, <code>published</code>)?</td>
+<td><a href="../decisions/decision-log/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a></td>
+<td>No status column. Visibility <strong>is</strong> the permission model; cancellation is a fact.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>What happens when a full event gets another registration?</td>
+<td><a href="../decisions/decision-log/#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it">D-065</a></td>
+<td>Waitlisted for self-service; admitted for organizers; the overrun reported.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Does paying confirm a place?</td>
+<td><a href="../decisions/decision-log/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a></td>
+<td>Yes when the event has a fee; most events are free and confirm immediately.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Do organizers record who actually came?</td>
+<td><a href="../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a></td>
+<td>Yes — <code>was_present</code>, three-valued. It is the "who was in our care" record.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>May an event form collect medical detail?</td>
+<td><a href="../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a></td>
+<td>Effectively yes: answers are read by that event's organizers, and <strong>no event permission reaches the health record</strong>, so the form is the only route for a camp leader to learn an allergy at all. A recorded widening, restated after D-074 removed the namespace the original wording relied on.</td>
+</tr>
+<tr>
+<td>A-2</td>
+<td>Permissions conditioned on membership status</td>
+<td><a href="../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a></td>
+<td>Yes, enforced by the resolver, with guardianship and ownership carved out.</td>
+</tr>
+<tr>
+<td>A-3</td>
+<td>Activate on payment or on approval?</td>
+<td><a href="../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a></td>
+<td>On payment; the fee expires yearly and a dated renewal window replaces a grace status.</td>
+</tr>
+<tr>
+<td>A-4</td>
+<td>Background checks</td>
+<td><a href="../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a></td>
+<td>None are recorded in this system.</td>
+</tr>
+<tr>
+<td>A-4</td>
+<td>The expiry date</td>
+<td><a href="../decisions/decision-log/#d-047--the-fee-expires-on-1-january">D-047</a></td>
+<td>1 January; the organizational year runs with the calendar.</td>
+</tr>
+<tr>
+<td>A-4</td>
+<td>The renewal window length</td>
+<td><a href="../decisions/decision-log/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a></td>
+<td>60 days, stored as a parameter rather than compiled in.</td>
+</tr>
+<tr>
+<td>C-1</td>
+<td>May the root read into its sub-units?</td>
+<td><a href="../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a></td>
+<td>No. <code>scope_exposure</code> is the only crossing; no reporting channel is built.</td>
+</tr>
+<tr>
+<td>D-6</td>
+<td>How may the membership gate be waived?</td>
+<td><a href="../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a></td>
+<td>A person-level <code>system.gate_exempt</code> permission, in addition to the role flag.</td>
+</tr>
+<tr>
+<td>D-7</td>
+<td>The root participation row at renewal</td>
+<td><a href="../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a></td>
+<td>Extended across the renewed period; one row, no gap.</td>
+</tr>
+<tr>
+<td>B-3 (part)</td>
+<td>Erasure: what shape?</td>
+<td>your answer, round 5</td>
+<td>Redact the person, keep the financial and membership skeleton. <em>(The retention policy is still open — see B-3.)</em></td>
+</tr>
+<tr>
+<td>C-1 (largely)</td>
+<td>Organization-wide operational roles without downward inheritance</td>
+<td><a href="../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a></td>
+<td>The problem dissolves: the root owns the registry and the fees. What remains is a reporting question — see C-1.</td>
+</tr>
+<tr>
+<td>C-2</td>
+<td>May units be reparented retroactively?</td>
+<td><a href="../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a></td>
+<td>Not at all — a unit that moves is a new unit.</td>
+</tr>
+<tr>
+<td>D-1</td>
+<td>Fee per person or per household?</td>
+<td><a href="../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a></td>
+<td>Per person, flat, yearly.</td>
+</tr>
+<tr>
+<td>D-2</td>
+<td>One open membership, or several of different types?</td>
+<td><a href="../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>, <a href="../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a></td>
+<td>One type, so one open membership, enforced person-wide.</td>
+</tr>
+<tr>
+<td>D-3</td>
+<td>Age-out timing</td>
+<td><a href="../decisions/decision-log/#d-038--membership-is-ageless">D-038</a></td>
+<td>Retired — there is no age-out.</td>
+</tr>
+<tr>
+<td>D-4</td>
+<td>Child → adult transition</td>
+<td><a href="../decisions/decision-log/#d-038--membership-is-ageless">D-038</a></td>
+<td>Retired — there are no membership categories to transition between.</td>
+</tr>
+<tr>
+<td>D-5</td>
+<td>Membership type vocabulary</td>
+<td><a href="../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a></td>
+<td>One type, <code>member</code>; counselor is a position, not a type.</td>
+</tr>
+<tr>
+<td>E-1</td>
+<td>Default rights when a guardianship is created</td>
+<td><a href="../decisions/decision-log/#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created">D-046</a></td>
+<td><code>write</code> for a self-registered child's guardian; <code>view</code> for staff-created and imported rows; chosen at creation when recorded manually. <strong>D-074 turned the answer from a code bundle into one level</strong>, which is why the decision still stands on its original wording.</td>
+</tr>
+<tr>
+<td>F-2</td>
+<td>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable</td>
+<td>your answer, round 6</td>
+<td>Polymorphic — <code>scope_type</code> plus <code>scope_id</code>, as currently designed.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>The bulk scope-exposure tool</td>
+<td><a href="../decisions/decision-log/#d-045--the-bulk-scope-exposure-tool-is-removed">D-045</a></td>
+<td>Removed once audiences existed to cover the case it was for.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>What a membership request must contain</td>
+<td><a href="../decisions/decision-log/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a></td>
+<td>Identity and the fee. The whole requirement mechanism is gone.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Whether grants may target groups</td>
+<td><a href="../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a></td>
+<td>Yes — built-in rule-evaluated audiences plus admin-managed named groups.</td>
+</tr>
+<tr>
+<td>E-2</td>
+<td>What happens to guardianship at majority?</td>
+<td><a href="../decisions/decision-log/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a></td>
+<td>Nothing — no job, no queue, no computed date. A person ends the row. <em>(Reverses D-024.)</em></td>
+</tr>
+<tr>
+<td>F-3</td>
+<td>Must a high-authority role assignment have an end date?</td>
+<td><a href="../decisions/decision-log/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a></td>
+<td>No. The membership gate plus a human review report; the earlier "yes" recommendation is withdrawn.</td>
+</tr>
+<tr>
+<td>F-4</td>
+<td>Should <code>person.admin</code> subsume merge and redact?</td>
+<td><a href="../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></td>
+<td>Moot — there are no per-resource <code>admin</code> permissions. The choice moved into reviewable role contents. <em>(Reverses D-007.)</em></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Should every resource expose an <code>admin</code> permission?</td>
+<td><a href="../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></td>
+<td>No. Sixteen codes and the resolver's prefix match are gone; roles are the bundle.</td>
+</tr>
+<tr>
+<td>EV-1</td>
+<td>Does an event need an age ceiling?</td>
+<td><a href="../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a></td>
+<td>No. The grant is the rule; a future ceiling would be a built-in audience, not a column.</td>
+</tr>
+<tr>
+<td>EV-5</td>
+<td>Should <code>event.manage_participants</code> split?</td>
+<td>this round</td>
+<td>Yes — <code>event.presence.mark</code> at <code>contribute</code>, one level below the roster.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="i-assumption-index">I. Assumption index<a class="headerlink" href="#i-assumption-index" title="Permanent link">&para;</a></h2>
+<p>Every <em>Assumption:</em> in the documentation, so they can be reviewed as a group. Once you confirm
+one, it should be promoted to a numbered decision and struck from <a href="#r-resolved--moved-to-the-decision-log">§ R</a>.</p>
+<p>Rows marked <strong>†</strong> are now backed by a decision rather than a bare assumption — kept here
+because the docs still cite them and because the decision is worth seeing in this list.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Assumption</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PostgreSQL 14+ with <code>btree_gist</code></td>
+<td><a href="../data-model/00-conventions/#1-target-platform">data-model/00</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>No automatic merging (D-004) †</td>
+<td><a href="../domain/03-identity-and-legacy/#4-match-signals">domain/03</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Minors need guardian consent for an account</td>
+<td><a href="../domain/02-actors/#2-who-registers-and-why">domain/02</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>A self-registered child's parent gets a <code>write</code> right over the child (D-046, as amended by D-074) †</td>
+<td><a href="../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">data-model/04</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Locality orders allows only; deny is absolute (D-032) †</td>
+<td><a href="../domain/06-authorization-model/#6-the-resolver">domain/06</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Membership activates on payment (D-040) †</td>
+<td><a href="../domain/05-membership-lifecycle/#1-the-flow-you-described">domain/05</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>The fee is per person and yearly (D-037) †</td>
+<td><a href="../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">domain/05</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Renewal opens a new row, not an extended <code>valid_to</code> (D-016) †</td>
+<td><a href="../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">domain/05</a></td>
+</tr>
+<tr>
+<td>~~9~~</td>
+<td>~~Guardianship reviewed at majority, not auto-expired~~ — <strong>superseded</strong>: neither, the system takes no position (D-069)</td>
+<td><a href="../data-model/04-relationships/#1-guardianship">data-model/04</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Display name uses <code>preferred_name</code> if set</td>
+<td><a href="../data-model/01-identity/#3-person_name--name-history">data-model/01</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Merge chains allowed (B-2)</td>
+<td><a href="../data-model/01-identity/#9-views">data-model/01</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Only confirmed payments count toward a balance</td>
+<td><a href="../data-model/07-finance/#3-keeping-membershipoutstanding_balance-honest">data-model/07</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>No sub-unit types are seeded; nesting is permissive by default (D-054) †</td>
+<td><a href="../data-model/02-organization/#10-seed-data">data-model/02</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>membership_type</code> is seeded with exactly one row (D-037) †</td>
+<td><a href="../data-model/03-membership/#8-seed-data">data-model/03</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>person.gender</code> is needed for reporting</td>
+<td><a href="../data-model/01-identity/#2-person">data-model/01</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>Imported rosters end at the organizational year end (D-028) †</td>
+<td><a href="../data-model/06-audit-and-import/#3-import-pipeline">data-model/06</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>All business tables are audited</td>
+<td><a href="../data-model/06-audit-and-import/#6-open-issues">data-model/06</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Currency is EUR</td>
+<td><a href="../data-model/07-finance/#2-minimal-provisional-shape">data-model/07</a></td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>access_log</code> is not human-annotatable</td>
+<td><a href="../data-model/05-authorization/#9-access_log">data-model/05</a></td>
+</tr>
+<tr>
+<td>~~20~~</td>
+<td>~~Each permission has an <code>admin</code> sibling~~ — <strong>superseded</strong>: no per-resource wildcard codes (D-068)</td>
+<td>throughout</td>
+</tr>
+<tr>
+<td>21</td>
+<td>No downward inheritance; exposures are written by the unit (D-031) †</td>
+<td><a href="../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">domain/06</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>The person record holds no deceased flag (D-034) †</td>
+<td><a href="../data-model/01-identity/#2-person">data-model/01</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>Positions are multi-holder unless <code>max_holders</code> says otherwise (D-033) †</td>
+<td><a href="../domain/04-organization-structure/#4-positions">domain/04</a></td>
+</tr>
+<tr>
+<td>24</td>
+<td>Membership is ageless — no category, no <code>min_age</code>, no <code>max_age</code> (D-038) †</td>
+<td><a href="../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">data-model/03</a></td>
+</tr>
+<tr>
+<td>25</td>
+<td>A grant targets a person <strong>or</strong> an audience, never both (D-042) †</td>
+<td><a href="../data-model/05-authorization/#6-access_grant--the-per-item-layer">data-model/05</a></td>
+</tr>
+<tr>
+<td>26</td>
+<td>Built-in audiences are rules evaluated by the resolver, not stored lists (D-042) †</td>
+<td><a href="../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05</a></td>
+</tr>
+<tr>
+<td>27</td>
+<td>Belonging to a sub-unit is participation, not membership (D-041) †</td>
+<td><a href="../data-model/03-membership/#5-unit_participation">data-model/03</a></td>
+</tr>
+<tr>
+<td>28</td>
+<td>Roles require a current membership unless <code>requires_membership = false</code> (D-039) †</td>
+<td><a href="../data-model/05-authorization/#3-role-and-role_permission">data-model/05</a></td>
+</tr>
+<tr>
+<td>29</td>
+<td>There is no bulk exposure tool and no <code>bulk:</code> reason marker (D-045) †</td>
+<td><a href="../data-model/05-authorization/#5-scope_exposure--how-a-unit-delegates-upward">data-model/05</a></td>
+</tr>
+<tr>
+<td>30</td>
+<td>No background checks are recorded anywhere (D-043) †</td>
+<td>throughout</td>
+</tr>
+<tr>
+<td>31</td>
+<td><code>access_grant.scope_id</code> is polymorphic, with no foreign key (F-2) †</td>
+<td><a href="../data-model/05-authorization/#6-access_grant--the-per-item-layer">data-model/05</a></td>
+</tr>
+<tr>
+<td>32</td>
+<td>The organizational calendar is 1 January plus a 60-day window (D-047, D-048) †</td>
+<td><a href="../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">data-model/03</a></td>
+</tr>
+<tr>
+<td>33</td>
+<td>The root reads into a sub-unit only through <code>scope_exposure</code> (D-049) †</td>
+<td><a href="../domain/06-authorization-model/#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved">domain/06</a></td>
+</tr>
+<tr>
+<td>34</td>
+<td>A renewal extends the root participation row rather than closing it (D-050) †</td>
+<td><a href="../data-model/03-membership/#51-a-participation-row-on-the-root-unit">data-model/03</a></td>
+</tr>
+<tr>
+<td>35</td>
+<td>The membership gate is waived by a person-level permission, not only a role flag (D-051) †</td>
+<td><a href="../data-model/05-authorization/#3-role-and-role_permission">data-model/05</a></td>
+</tr>
+<tr>
+<td>36</td>
+<td>The permission catalog is deliberately comprehensive and granular (D-055) †</td>
+<td><a href="../appendix/permission-catalog/">appendix/permission-catalog.md</a></td>
+</tr>
+<tr>
+<td>37</td>
+<td>The legacy corpus is large and carries legacy member numbers (D-056) †</td>
+<td><a href="../domain/03-identity-and-legacy/#4-match-signals">domain/03</a></td>
+</tr>
+<tr>
+<td>38</td>
+<td>There is no <code>household</code> table; addresses are temporal <code>person_contact</code> rows (D-057) †</td>
+<td><a href="../data-model/04-relationships/#3-there-is-no-household-table">data-model/04</a></td>
+</tr>
+<tr>
+<td>39</td>
+<td>An event belongs to exactly one unit; meetings are participation (D-058) †</td>
+<td><a href="../data-model/08-events/#2-event">data-model/08</a></td>
+</tr>
+<tr>
+<td>40</td>
+<td>"Unanswered" is the absence of a registration row (D-059) †</td>
+<td><a href="../data-model/08-events/#4-event_registration">data-model/08</a></td>
+</tr>
+<tr>
+<td>41</td>
+<td>Eligibility is capability — there is no rule engine (D-060) †</td>
+<td><a href="../domain/07-events/#4-who-may-register-capability-not-a-separate-rule-engine">domain/07</a></td>
+</tr>
+<tr>
+<td>42</td>
+<td>Event answers are read by that event's organizers (D-061) †</td>
+<td><a href="../data-model/08-events/#7-event_question-and-event_answer">data-model/08</a></td>
+</tr>
+<tr>
+<td>43</td>
+<td>Organizers are a roster on the event, not grants (D-062) †</td>
+<td><a href="../data-model/08-events/#3-event_organizer">data-model/08</a></td>
+</tr>
+<tr>
+<td>44</td>
+<td>An event is an artifact of its unit, so unit roles reach it (D-063) †</td>
+<td><a href="../domain/07-events/#6-the-hinge-organizers-and-the-scope-mismatch">domain/07</a></td>
+</tr>
+<tr>
+<td>45</td>
+<td>There is no event status; visibility is the permission model (D-064) †</td>
+<td><a href="../data-model/08-events/#2-event">data-model/08</a></td>
+</tr>
+<tr>
+<td>46</td>
+<td>Capacity is a waitlist threshold organizers may exceed (D-065) †</td>
+<td><a href="../data-model/08-events/#5-capacity-and-the-waitlist">data-model/08</a></td>
+</tr>
+<tr>
+<td>47</td>
+<td>Payment confirms a place; free events confirm immediately (D-066) †</td>
+<td><a href="../data-model/08-events/#6-payments-and-confirmation">data-model/08</a></td>
+</tr>
+<tr>
+<td>48</td>
+<td>Presence is a three-valued fact, not a boolean (D-067) †</td>
+<td><a href="../data-model/08-events/#4-event_registration">data-model/08</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="how-to-answer">How to answer<a class="headerlink" href="#how-to-answer" title="Permanent link">&para;</a></h2>
+<p><strong>The blocking set is now empty.</strong> Four rounds have cleared every question that was holding
+the schema still, so nothing here has to be answered before implementation could start.</p>
+<p>What remains is genuinely deferrable, and the most useful next ones are:</p>
+<ol>
+<li><strong>F-5</strong> — which built-in audiences are needed, and whether parameterised ones are seeded
+   per instance or created on demand</li>
+<li><strong>F-3</strong> — should high-authority role assignments require a <code>valid_to</code>?</li>
+<li><strong>E-2 / E-4</strong> — guardianship at majority, and confirming the gate's guardianship carve-out
+   is intended</li>
+<li><strong>B-2 / B-3</strong> — merge chains, and the retention policy (the latter needs legal input,
+   not design)</li>
+</ol>
+<p>Everything else can be answered as we go. The schema is built so that most answers change
+data rather than structure — which is why the four above are worth a moment and the rest are
+not.</p>
+<p><strong>Answered in round 4:</strong> the unit type vocabulary (A-1 — not seeded, D-054); the permission
+catalog (F-1 — comprehensive and granular on purpose, D-055); the legacy corpus
+(B-1 — large, with member numbers, D-056); and <code>household</code> (D-9 — removed entirely, D-057).
+All four are in <a href="#r-resolved--moved-to-the-decision-log">§ R</a> with links to the decisions that
+settled them.</p>
+<p><strong>Answered in round 3, for reference:</strong> the organizational calendar (A-4 — 1 January, 60
+days); the root's read access into sub-units (C-1 — <code>scope_exposure</code> only); the membership
+gate's waiver (D-6 — a person-level permission, in addition to the role flag); and the root
+participation row at renewal (D-7 — extended).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

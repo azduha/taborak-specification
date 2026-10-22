@@ -1,0 +1,2606 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/03-membership/">
+      
+      
+        <link rel="prev" href="../02-organization/">
+      
+      
+        <link rel="next" href="../04-relationships/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Membership - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--membership" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Membership
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-membership_type--one-row-kept-as-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. membership_type — one row, kept as a table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. membership_type — one row, kept as a table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-this-table-still-exists-with-one-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why this table still exists with one row
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-was-removed-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was removed, and why
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-membership_request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. membership_request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-constraint-dropped-membership_type_id--that-is-the-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The constraint dropped membership_type_id — that is the point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renewed_from_membership_id-and-the-renewal-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        renewed_from_membership_id and the renewal window
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-exclusion-constraint-and-status-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The exclusion constraint and status transitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-valid_to-is-null-and-not-a-sentinel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why valid_to IS NULL and not a sentinel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renewed_from_membership_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        renewed_from_membership_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-membership-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current-membership queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-no-request-requirements--removed-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. No request requirements — removed entirely
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-unit_participation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. unit_participation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. unit_participation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-a-participation-row-on-the-root-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 A participation row on the root unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-transfers-between-sub-units-are-cheap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Transfers between sub-units are cheap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-reorganizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit reorganizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-membership-and-the-authorization-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Membership and the authorization system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-seed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Seed data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-membership_type--one-row-kept-as-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. membership_type — one row, kept as a table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. membership_type — one row, kept as a table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-this-table-still-exists-with-one-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why this table still exists with one row
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-was-removed-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was removed, and why
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-membership_request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. membership_request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-constraint-dropped-membership_type_id--that-is-the-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The constraint dropped membership_type_id — that is the point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renewed_from_membership_id-and-the-renewal-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        renewed_from_membership_id and the renewal window
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-exclusion-constraint-and-status-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The exclusion constraint and status transitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-valid_to-is-null-and-not-a-sentinel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why valid_to IS NULL and not a sentinel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renewed_from_membership_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        renewed_from_membership_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-membership-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current-membership queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-no-request-requirements--removed-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. No request requirements — removed entirely
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-unit_participation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. unit_participation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. unit_participation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-a-participation-row-on-the-root-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 A participation row on the root unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-transfers-between-sub-units-are-cheap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Transfers between sub-units are cheap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-reorganizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit reorganizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-membership-and-the-authorization-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Membership and the authorization system
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-seed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Seed data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--membership">Data Model — Membership<a class="headerlink" href="#data-model--membership" title="Permanent link">&para;</a></h1>
+<p><code>membership_type</code>, <code>membership</code>, <code>membership_request</code>, and <code>unit_participation</code>.</p>
+<p>Domain rationale: <a href="../../domain/05-membership-lifecycle/">../domain/05-membership-lifecycle.md</a>.</p>
+<hr />
+<h2 id="1-membership_type--one-row-kept-as-a-table">1. <code>membership_type</code> — one row, kept as a table<a class="headerlink" href="#1-membership_type--one-row-kept-as-a-table" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td>text, required</td>
+<td><code>'member'</code> — and nothing else, for now.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>duration_months</code></td>
+<td>integer, required, defaults to 12</td>
+<td>12: the fee is yearly. Kept as a column rather than a constant so a type with a different term could be added as a row, with no migration.</td>
+</tr>
+<tr>
+<td><code>expiry_month</code>, <code>expiry_day</code></td>
+<td>integers, required, both defaulting to 1</td>
+<td><strong>When the fee expires</strong> (D-047): 1 January. The organizational year runs with the calendar, so "a member this year" means what a reader expects, and the sweep, the campaign and the reports all land on a boundary nobody has to look up. These are columns, not a constant in a scheduled job, for the reason the user gave for the window below: the date is a parameter the organization may move, and moving it must not require a code change. Every lapse date, the yearly sweep and the renewal worklist derive from these two values.</td>
+</tr>
+<tr>
+<td><code>renewal_grace_days</code></td>
+<td>integer, required, defaults to 60</td>
+<td>The renewal window after <code>valid_to</code>, during which a payment restores the membership <strong>without re-applying</strong> and backdates the new period to the expiry date. Dates, not a status: the person is expired throughout (D-040). 60 days (D-048). <strong>Read it from here; never hardcode 60 in a job or a front end</strong> (D-048). The requirement attached to that answer was precisely that the value stays tunable.</td>
+</tr>
+<tr>
+<td><code>is_self_registerable</code></td>
+<td>boolean, required, defaults to true</td>
+<td></td>
+</tr>
+<tr>
+<td><code>requires_approval</code></td>
+<td>boolean, required, defaults to true</td>
+<td></td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>integer rank, required, defaults to 0</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code>, <code>valid_to</code></td>
+<td>period (from/to, open-ended allowed); both ends optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>code</code> is unique over <strong>all</strong> rows.</li>
+<li><code>expiry_month</code> is between 1 and 12; <code>expiry_day</code> is between 1 and 31.</li>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>. Either end may
+  be absent, and no comparison is attempted when one is.</li>
+</ul>
+<h3 id="why-this-table-still-exists-with-one-row">Why this table still exists with one row<a class="headerlink" href="#why-this-table-still-exists-with-one-row" title="Permanent link">&para;</a></h3>
+<p><strong>There is exactly one membership</strong> (D-037). Everyone who is a member holds
+<code>membership_type = 'member'</code>, the fee is flat and per person, and being a counselor or a
+leader is a <strong>position</strong>, never a type.</p>
+<p>The table survives rather than collapsing into a constant for two reasons:</p>
+<ol>
+<li><strong>Consistency with the design's own principle.</strong> Vocabularies are rows, not enums —
+   the same argument that keeps <code>org_unit_type</code> and <code>position</code> as tables. A second kind of
+   membership (a supporting or honorary one) would then be a data change.</li>
+<li><strong>A place for the organizational calendar to live.</strong> The term, the expiry date and the
+   renewal window are genuinely type-dependent parameters even when there is one type — and
+   they are the parameters most likely to be tuned. Putting them in a row rather than in code
+   is what makes <em>"it should not be hard to modify"</em> (<a href="../../decisions/decision-log/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>)
+   true by construction rather than by discipline.</li>
+</ol>
+<p>The cost is honest and small: an FK that currently always holds one value. Recorded here
+rather than hidden.</p>
+<h3 id="what-was-removed-and-why">What was removed, and why<a class="headerlink" href="#what-was-removed-and-why" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Removed</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>category</code> (<code>child</code>/<code>adult</code>/<code>special</code>)</td>
+<td>Membership is ageless (D-038). Age is a fact about the person.</td>
+</tr>
+<tr>
+<td><code>min_age</code>, <code>max_age</code></td>
+<td>No age floor, ceiling, or automatic age-out.</td>
+</tr>
+<tr>
+<td><code>requires_background_check</code></td>
+<td>The system records no background checks (D-043).</td>
+</tr>
+<tr>
+<td><code>requires_references</code>, <code>requires_guardian_consent</code></td>
+<td>Nothing gates a request but identity and payment (D-044).</td>
+</tr>
+<tr>
+<td><code>allows_concurrent</code></td>
+<td>With one type and a person-scoped overlap constraint, this cannot arise.</td>
+</tr>
+<tr>
+<td><code>grace_period_days</code> (as a status)</td>
+<td>Replaced by <code>renewal_grace_days</code> — a window, not a state (D-040).</td>
+</tr>
+<tr>
+<td><code>fee_schedule_id</code></td>
+<td>The fee is flat and per person (D-037), so there is nothing type-specific to schedule. The schedule attaches to the <strong>obligation</strong> instead — <a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The age checks that used to sit on the type go with them</strong> (<code>ck_membership_type_ages</code> was
+their name). With no ages on the row there is nothing for a migration to express and nothing left
+for a report to verify, so the removal is complete rather than a rule left hanging.</p>
+<hr />
+<h2 id="2-membership_request">2. <code>membership_request</code><a class="headerlink" href="#2-membership_request" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only.</td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>uuid, required, generated</td>
+<td>The identifier used outside the system; unique.</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to <code>person</code>, required</td>
+<td>The <strong>subject</strong>: the person who would become a member. For a minor's application this is the <strong>child</strong>, not the parent.</td>
+</tr>
+<tr>
+<td><code>submitted_by_person_id</code></td>
+<td>reference to <code>person</code>, optional</td>
+<td>Who actually submitted it. Equals <code>person_id</code> for self-application; differs when a guardian (or staff) applies on behalf. This is the act-on-behalf record.</td>
+</tr>
+<tr>
+<td><code>requested_membership_type_id</code></td>
+<td>reference to <code>membership_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>requested_unit_id</code></td>
+<td>reference to <code>org_unit</code>, optional</td>
+<td>The applicant may express a preference, or the organization may assign the unit at approval.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required, defaults to <code>draft</code></td>
+<td>One of <code>draft</code>, <code>submitted</code>, <code>under_review</code>, <code>approved</code>, <code>rejected</code>, <code>withdrawn</code>, <code>expired</code>.</td>
+</tr>
+<tr>
+<td><code>submitted_at</code></td>
+<td>timestamp, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>decided_at</code></td>
+<td>timestamp, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>decided_by</code></td>
+<td>reference to <code>person</code>, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>rejection_reason_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>rejection_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>membership_id</code></td>
+<td>reference to <code>membership</code>, optional</td>
+<td>Set on approval. The reference is added only once <code>membership</code> exists (§3): this is the design's circular pair, resolved with a deferred reference.</td>
+</tr>
+<tr>
+<td><code>previous_membership_id</code></td>
+<td>reference to <code>membership</code>, optional</td>
+<td>Links a renewal or re-application to the prior membership. This is how a returning member's chain is expressed.</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>timestamp, optional</td>
+<td>An unreviewed request eventually goes stale. Needed so the review queue does not accumulate abandoned drafts forever.</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td><code>self</code>, <code>guardian</code>, <code>staff</code> or <code>import</code>.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td>The standard audit columns.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A request in <code>approved</code> or <code>rejected</code> has <strong>both</strong> <code>decided_at</code> and <code>decided_by</code>. There is no
+  decision without a decider and a time.</li>
+<li>Any request that is not <code>draft</code> has a <code>submitted_at</code>.</li>
+<li>An <code>approved</code> request points at a <code>membership</code>. The one allowance is a request decided at a
+  time still in the future, which is how the request and the membership are inserted in two
+  steps inside one transaction; the link is not optional once that transaction is over.</li>
+<li><strong>At most one open request per person per membership type.</strong> Open means <code>draft</code>, <code>submitted</code>
+  or <code>under_review</code>. Decided requests — <code>approved</code>, <code>rejected</code>, <code>withdrawn</code>, <code>expired</code> — are
+  outside the rule, which is what lets a person apply again after being turned down.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>On <code>person_id</code> with <code>submitted_at</code> descending: one person's applications, newest first.</li>
+<li>A partial index over the review queue only — rows in <code>submitted</code> or <code>under_review</code>, which is
+  the whole queue and nothing else.</li>
+<li>On <code>submitted_by_person_id</code> and on <code>requested_unit_id</code>, each covering only the rows where
+  those optional columns are actually set.</li>
+</ul>
+<p><strong><code>person_id</code> vs <code>submitted_by_person_id</code> is the most important pair in this table.</strong> The
+subject is the child; the submitter is the parent. Collapsing them into one column — which
+is what most systems do — makes it impossible to answer "who applied for this child?" and
+falsely attributes the parent's action to the child. See
+<a href="../../domain/02-actors/#5-acting-on-behalf">../domain/02-actors.md</a>.</p>
+<p><strong>Why requests are a separate table from memberships.</strong> A rejected request produces no
+membership and must not pollute member listings; a person may submit several over time; and
+review data (who decided, why) has no meaning on a membership. See
+<a href="../../domain/05-membership-lifecycle/#2-membership-request">../domain/05-membership-lifecycle.md</a>.</p>
+<p><strong>A rejection requires a reason code</strong> (<code>ck_request_rejection_reason</code> is the rule's name): no
+rejected request may be written without one. Two columns of the same row, so a migration can state
+it directly as a check on the row — and it belongs there rather than only in the model layer,
+because the two paths that most need catching, an import and a hand-corrected row, never reach a
+model-layer guard. "Why was this
+application turned down?" is asked months later, sometimes by the family. A rejection with
+no recorded reason is an answerable question made unanswerable.</p>
+<p><strong><code>previous_membership_id</code></strong> is what makes the returning-member chain explicit rather than
+inferred from date arithmetic.</p>
+<hr />
+<h2 id="3-membership">3. <code>membership</code><a class="headerlink" href="#3-membership" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only.</td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>uuid, required, generated</td>
+<td>The identifier used outside the system; unique.</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to <code>person</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>membership_type_id</code></td>
+<td>reference to <code>membership_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>One of <code>pending_payment</code>, <code>active</code>, <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code>. No default — the state is always chosen deliberately.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = open / current.</td>
+</tr>
+<tr>
+<td><code>joined_via_request_id</code></td>
+<td>reference to <code>membership_request</code>, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>renewed_from_membership_id</code></td>
+<td>self-reference to <code>membership</code> (the previous one), optional</td>
+<td>Forms the renewal chain. See domain/05 §6.</td>
+</tr>
+<tr>
+<td><code>outstanding_balance</code></td>
+<td>money amount, optional</td>
+<td><strong>Denormalised</strong> from <code>fee_obligation</code>/<code>payment</code>. <a href="../07-finance/">07-finance.md</a> §3 recommends <strong>dropping</strong> this column in favour of <code>v_fee_obligation_balance</code> — a wrong balance suspends the wrong child. Kept here only until that decision is taken. NULL for imported historical memberships with no payment data.</td>
+</tr>
+<tr>
+<td><code>termination_reason_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>termination_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_by</code></td>
+<td>reference to <code>person</code>, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_at</code></td>
+<td>timestamp, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>data_confidence</code></td>
+<td>text, required, defaults to <code>high</code></td>
+<td>One of <code>high</code>, <code>medium</code>, <code>low</code>.</td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td>The standard audit columns.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>.</li>
+<li>A <code>terminated</code> membership has <strong>both</strong> a <code>termination_reason_code</code> and an <code>ended_at</code>.</li>
+<li>A membership may not be renewed from itself: <code>renewed_from_membership_id</code> never points at its
+  own row.</li>
+<li><strong>THE critical rule — one person, one membership, full stop.</strong> Two rows for the same person
+  may not cover the same date while either of them is <code>pending_payment</code>, <code>active</code> or
+  <code>suspended</code>. Periods are half-open, so one ending on a day and another beginning on that day
+  do not collide. Statuses outside those three are outside the rule entirely, and the rule
+  reaches every person regardless of membership type — the type is not part of it, and that
+  omission is deliberate, as the next section explains.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li><code>ix_membership_current</code> — per person, over rows that are open <strong>and</strong> <code>active</code>. The
+  membership gate reads through this, and it is the index a far-future sentinel date would
+  defeat — see <em>Why <code>valid_to IS NULL</code> and not a sentinel</em> below.</li>
+<li>On <code>valid_to</code> over active rows that have one. <strong>This drives the renewal worklist: who
+  expires soon, who is in their renewal window.</strong></li>
+<li>On (<code>status</code>, <code>valid_to</code>) over <code>active</code> and <code>pending_payment</code> rows — the states anyone is
+  actually queried in.</li>
+<li>On <code>person_id</code> with <code>valid_from</code> descending, and a period index per person: one person's
+  membership history, and the range scan the overlap rule and every point-in-time question use.</li>
+</ul>
+<h3 id="the-constraint-dropped-membership_type_id--that-is-the-point">The constraint dropped <code>membership_type_id</code> — that is the point<a class="headerlink" href="#the-constraint-dropped-membership_type_id--that-is-the-point" title="Permanent link">&para;</a></h3>
+<p>The old constraint was scoped to the type, to permit an honorary member who is also an
+active member. <strong>With one membership type (D-037) that case cannot arise</strong>, so the type is
+gone from the constraint and "one person, one open membership" becomes an enforceable
+invariant rather than a convention. It is conditional uniqueness — one open row per person —
+which is the shape <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>
+says a migration must emit by hand: a unique constraint over <em>all</em> rows is a different rule and
+the wrong one, because it forbids the second closed membership that the person's history
+requires.</p>
+<p>This is what makes the membership gate (D-039) implementable: <code>is_current_member()</code> is a
+question about <strong>one row, one status, one date</strong>, not a question that has to reconcile three
+concurrent memberships.</p>
+<h3 id="renewed_from_membership_id-and-the-renewal-window"><code>renewed_from_membership_id</code> and the renewal window<a class="headerlink" href="#renewed_from_membership_id-and-the-renewal-window" title="Permanent link">&para;</a></h3>
+<p>When a person pays inside the renewal window
+(<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
+the new membership's <code>valid_from</code> is set to the <strong>previous row's <code>valid_to</code></strong>, not to the
+payment date. Two consequences worth stating:</p>
+<ul>
+<li><strong>The history shows continuous coverage</strong> — no gap, no spurious "returning member".</li>
+<li><strong>The person is nevertheless expired during the window</strong> (D-040). The two facts are
+  compatible because the window is a <em>date range</em>, not a status: they were not a member
+  while it was open, and the record of that period is filled in retrospectively once they
+  pay. Nothing needs backdating in the audit sense, because the new row's as-of start is the
+  expiry date and its audit time is the payment date — the two-times distinction in
+  <a href="../00-conventions/">00-conventions.md</a>.</li>
+</ul>
+<p>A payment <em>after</em> the window opens the new membership at the payment date, and the gap is
+real.</p>
+<h3 id="the-exclusion-constraint-and-status-transitions">The exclusion constraint and status transitions<a class="headerlink" href="#the-exclusion-constraint-and-status-transitions" title="Permanent link">&para;</a></h3>
+<p>The overlap rule covers only <code>pending_payment</code>, <code>active</code>, <code>suspended</code>. A
+<code>terminated</code>/<code>lapsed</code>/<code>completed</code> row is excluded, so a new membership can be created with
+a <code>valid_from</code> inside an old one's period without violating the constraint. <strong>This is
+deliberate</strong> — a returning member's new membership may legitimately overlap the tail of a
+lapsed one if the dates were entered imprecisely. Historical imports rely on this.</p>
+<p><strong>Consequence:</strong> the constraint does not prevent two <em>active</em> memberships with overlapping
+periods if one was inserted while in another status and then transitioned. A status update
+re-evaluates the constraint (PostgreSQL does check exclusion constraints on UPDATE), so
+this is safe — but the transition from <code>lapsed</code> back to <code>active</code> can therefore <strong>fail with
+a constraint violation</strong>. That is correct behaviour: it means the person has two
+overlapping claims to membership and someone must resolve it. Handle it as a business
+error, not a crash.</p>
+<p><strong>Which layer carries all of that: the migration.</strong> A status transition that re-checks the overlap
+is only a violation if the constraint is in the database, and no ORM emits an exclusion over a
+period assembled from <code>valid_from</code> and <code>valid_to</code> scoped to three statuses — the migration writes
+it, as <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a> requires. The
+same check performed in the model layer returns a friendlier message a moment earlier and
+guarantees nothing: the legacy import writes memberships by the thousand and a hand-corrected
+row never passes through the model layer either. Both still meet the constraint; neither would
+ever meet a model-layer check.</p>
+<h3 id="why-valid_to-is-null-and-not-a-sentinel">Why <code>valid_to IS NULL</code> and not a sentinel<a class="headerlink" href="#why-valid_to-is-null-and-not-a-sentinel" title="Permanent link">&para;</a></h3>
+<p>Repeated from the conventions because it is the mistake most likely to be made here.
+A <code>'9999-12-31'</code> sentinel breaks <code>IS NULL</code> checks, makes <code>daterange</code> spans enormous, and
+defeats the <code>ix_membership_current</code> partial index. Use NULL.</p>
+<h3 id="renewed_from_membership_id"><code>renewed_from_membership_id</code><a class="headerlink" href="#renewed_from_membership_id" title="Permanent link">&para;</a></h3>
+<p>Renewal opens a <strong>new</strong> row (Shape A in
+<a href="../../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">../domain/05-membership-lifecycle.md</a>).
+The self-reference makes the chain explicit:</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>membership 501  member  1990-09-01 → 1991-06-30   completed
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     ↑ renewed_from
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>membership 502  member  1991-09-01 → 1992-06-30   completed
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     ↑ renewed_from
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>membership 503  member  1992-09-01 → 1993-06-30   completed
+</code></pre></div>
+<em>(The type is <code>member</code> on every row — there is only one type, and the person's age is not
+part of it: <a href="#1-membership_type--one-row-kept-as-a-table">§1</a>, D-037, D-038.)</em></p>
+<p>"Why does this person have 15 membership rows?" is then answerable by following the chain
+rather than by reasoning about dates. And a gap — a missing link — is visible as data.</p>
+<h3 id="current-membership-queries">Current-membership queries<a class="headerlink" href="#current-membership-queries" title="Permanent link">&para;</a></h3>
+<p>Five questions the membership table has to answer, each with the exact rule that decides it.
+The wording of each is load-bearing; the differences between them are the design.</p>
+<ul>
+<li><strong>Is this person a member right now?</strong> <code>is_current_member(person)</code> — true when they have a
+  membership whose status is <code>active</code> and whose period covers today: <code>valid_from</code> on or before
+  today, <code>valid_to</code> absent or after today. <strong>No grace coalescing:</strong> a lapsed membership is
+  lapsed, and the renewal window (§6) is a date range for rejoining, not a state in which the
+  person is a member.</li>
+<li><strong>Was this person a member on a given past date?</strong> <code>was_member_on(person, date)</code> — true when
+  a membership of theirs covers that date, on the same half-open terms, and its status is
+  anything <strong>except</strong> <code>pending_payment</code>. Note the asymmetry with the question above: <em>now</em>
+  demands <code>active</code>, <em>then</em> admits every terminal status, because how a membership ended does not
+  change that it existed.</li>
+<li><strong>When does the organizational year containing a date expire?</strong> <code>membership_expiry_date(as_of)</code>
+  — <code>expiry_month</code> and <code>expiry_day</code> read off the <code>member</code> row, applied to the year of <code>as_of</code>.
+  Always derived from those two columns and never from a constant (D-047).</li>
+<li><strong>May this person renew without re-applying?</strong> <code>in_renewal_window(person, as_of)</code> — true when
+  they have a membership of theirs that has ended (<code>valid_to</code> set) with <code>valid_to</code> on or before
+  <code>as_of</code>, and <code>valid_to</code> plus that type's <code>renewal_grace_days</code> still after <code>as_of</code>; in other
+  words the window is <code>[expiry, expiry + grace)</code>, half-open like every other period here. No
+  status is consulted — this is arithmetic on dates alone. D-040: expired, but inside the
+  window. This is the distinction a <code>grace_period_days</code> membership status would have blurred:
+  they are <strong>not</strong> a member, and they <strong>may</strong> rejoin cheaply. 60 days, read from the row
+  (D-048). Not a member during the window: this answers "may they rejoin cheaply?", never "do
+  they have access?".</li>
+<li><strong>How long has this person been a member?</strong> <code>membership_years(person)</code> — the sum of the
+  lengths of their memberships, with today standing in for an open <code>valid_to</code> and any
+  <code>pending_payment</code> row left out, expressed in years of 365.25 days.</li>
+</ul>
+<p><code>membership_years</code> sums the periods rather than subtracting the first join date from today.
+The difference is the 14-year gap in the returning-member case, and getting it wrong
+mislabels a returning member as having 36 years of service.</p>
+<p><strong><code>current_member_category()</code> is gone.</strong> It existed to answer "is this person currently a
+child or an adult?", which is no longer a question the membership table can answer, because
+membership is ageless (D-038). Age is a fact about the person:</p>
+<p><strong>Is this person a minor?</strong> <code>is_minor(person, as_of)</code> — true when <code>person.birth_date</code> is
+recorded <strong>and</strong> <code>as_of</code> falls before their eighteenth birthday. A person with no recorded birth
+date is not a minor by this test; nothing guesses one. A fact about the person, never about
+their membership.</p>
+<p>This matters for <strong>guardianship and safeguarding</strong>, which are where age legitimately bears —
+not for whether someone may be a member.</p>
+<hr />
+<h2 id="4-no-request-requirements--removed-entirely">4. No request requirements — removed entirely<a class="headerlink" href="#4-no-request-requirements--removed-entirely" title="Permanent link">&para;</a></h2>
+<p><code>requirement_code</code> and <code>membership_request_requirement</code> <strong>do not exist</strong> (D-044).</p>
+<p><strong>Why.</strong> Your answer, asked what a membership request must contain in order to be accepted:
+<em>"Just identity and the fee — nothing to verify."</em> The option of keeping the mechanism as
+empty infrastructure was offered and not taken, so it is gone rather than left dangling.</p>
+<p><strong>What a request therefore is:</strong> a person, a submitted timestamp, a reviewer, a decision, and
+a payment. The <code>membership_request</code> table in <a href="#2-membership_request">§2</a> is complete as it
+stands — it never referenced requirements except through this table.</p>
+<p><strong>Guardian consent is unaffected.</strong> It was never a <em>membership</em> requirement; it belongs to
+the guardianship layer, where it is a relationship fact rather than a checklist item. See
+<a href="../04-relationships/#2-the-guardians-right-none-view-or-write">04-relationships.md</a>.</p>
+<p><strong>If a requirement ever appears</strong> — a form, an interview, a document — the honest starting
+point is to add the table back deliberately, with the requirement that made it necessary
+recorded as a decision. The removed design was general enough to carry one; it is recorded
+in the decision log rather than deleted from history.</p>
+<hr />
+<h2 id="5-unit_participation">5. <code>unit_participation</code><a class="headerlink" href="#5-unit_participation" title="Permanent link">&para;</a></h2>
+<p><strong>Renamed from <code>unit_membership</code>.</strong> Belonging to a sub-unit is <strong>participation</strong>, not a
+species of membership (D-041). The old name asserted something untrue, and the rename is the
+fix.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to <code>person</code>, required</td>
+<td><strong>Deliberately <code>person_id</code>, not <code>membership_id</code>.</strong> Participation history must survive independently of how organization membership is recorded: imported 1998 rosters often have a unit and a year but no formal membership row, and linking to membership would make those unrepresentable — which would break the whole historical dataset. The trade-off is that nothing here can enforce "participation implies membership": it is application-level validation plus invariant 1 in §7, named as such rather than pretended away, in the register of <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>.</td>
+</tr>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td>May be the <strong>root</strong> unit. A participation row on the root is created alongside each membership, so that "everyone in unit X" is one uniform question whether X is the organization or a Thursday-evening pack. See §5.1.</td>
+</tr>
+<tr>
+<td><code>role_in_unit</code></td>
+<td>text, optional</td>
+<td>One of <code>member</code>, <code>leader</code>, <code>assistant</code>, <code>guest</code>. A denormalised convenience for display and historical import. <strong>Not</strong> an authorization fact — authority is in <code>role_assignment</code>.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = current.</td>
+</tr>
+<tr>
+<td><code>join_reason_code</code></td>
+<td>text, optional</td>
+<td><code>initial</code>, <code>transfer</code>, <code>promotion</code> or <code>reorganisation</code>.</td>
+</tr>
+<tr>
+<td><code>leave_reason_code</code></td>
+<td>text, optional</td>
+<td><code>transfer_out</code>, <code>unit_closed</code> or <code>stopped_attending</code>.</td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>boolean, required, defaults to true</td>
+<td>Which group to show first, for a person in several.</td>
+</tr>
+<tr>
+<td><code>data_confidence</code></td>
+<td>text, required, defaults to <code>high</code></td>
+<td>One of <code>high</code>, <code>medium</code>, <code>low</code>.</td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td><code>self</code>, <code>staff</code> or <code>legacy_import</code>.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td>The standard audit columns.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>.</li>
+<li><strong>A person takes part in a given unit only once at a time.</strong> No two participation rows for the
+  same person and the same unit may cover the same date. The rule covers <strong>every row, open and
+  closed alike</strong>; taking part again later is a separate, later period and is fine.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>On <code>person_id</code>, and on <code>org_unit_id</code>, both with <code>valid_from</code> descending: a person's roster
+  history, and a unit's, newest first.</li>
+<li>On (<code>org_unit_id</code>, <code>person_id</code>) restricted to <strong>open</strong> rows — the current roster of a unit,
+  which stays small while the history does not.</li>
+<li>A period index per unit, which is what the no-overlap rule and "was this row open on that
+  date" both scan.</li>
+</ul>
+<h3 id="51-a-participation-row-on-the-root-unit">5.1 A participation row on the root unit<a class="headerlink" href="#51-a-participation-row-on-the-root-unit" title="Permanent link">&para;</a></h3>
+<p>When a membership is created, a matching <strong><code>unit_participation</code> row for the root unit</strong> is
+created over the same period, and similarly closed when the membership ends.</p>
+<p>This buys one thing: <strong>"everyone in unit X" is one query, with one shape, at every level.</strong></p>
+<p>The question is <em>who is in unit X on date D</em>, and <code>unit_participation</code> answers it on its own:
+the rows of that unit whose <code>valid_from</code> is on or before D and whose <code>valid_to</code> is absent or
+after D, read with the person, ordered by family name and then given name. It works whether X is
+the organization (depth 0) or a Thursday group (depth 4). The date has to be applied to the
+participation rows themselves; filtering the unit, or a membership above it, by that date and
+leaving these rows unfiltered answers a different question.</p>
+<p>Without it, "who is in the organization?" would be a query against <code>membership</code> and "who is
+in a pack?" a query against <code>unit_participation</code> — two shapes for one question, and every
+report would have to know which case it was in.</p>
+<p><strong>The redundancy is deliberate and bounded.</strong> The root row and the membership always have
+the same period, so the root row is derivable — and it is derived by nothing. <strong>No write may
+change a membership's period, or open or close one, without making the matching change to that
+person's root-unit participation row in the same transaction.</strong> The two rows are one fact written
+twice, so the obligation falls on every path that writes a membership, the legacy import above
+all: it creates memberships by the thousand and must create their root rows beside them.
+Integrity check 1b in <a href="#7-integrity-checks">§7</a> is the net under that, not the guard — it finds
+the drift afterwards, on a report somebody has to run. The alternative, a <code>UNION</code> in every
+roster query, is worse.</p>
+<p><strong>The root row is the only participation row that is <em>extended</em> rather than closed and
+reopened</strong> (<a href="../../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>).
+A transfer between sub-units is still close-and-open (<a href="#52-transfers-between-sub-units-are-cheap">§5.2</a>);
+the root row is different because it mirrors a period that is itself backdated:</p>
+<ol>
+<li>The yearly expiry sweep gives the <strong>membership</strong> a <code>valid_to</code> of the expiry date and moves
+   its status to <code>lapsed</code>.</li>
+<li>The root participation row is <strong>not</strong> closed with it — it is moved forward to the same date,
+   so it is neither open-ended nor a second row (D-050). Only that person's still-open row on
+   the root unit is touched; a participation row carries no membership reference, so person and
+   unit are how it is found.</li>
+<li>A renewal inside the window opens a <strong>new</strong> membership row starting at the expiry date
+   ([D-016], D-040).</li>
+<li>The root row is then stretched to the new period's end, which is exactly "extend the existing
+   row": one row spanning both periods, no gap, no overlap.</li>
+</ol>
+<p>Steps 2 and 4 are the same edit — moving the open end of the root row — performed at two
+different moments.</p>
+<blockquote>
+<p><strong>The match in step 4 is the whole of D-050, and it is easy to get wrong.</strong>
+The root row is matched to the <em>new</em> membership by <strong>person and date</strong>, not through
+<code>renewed_from_membership_id</code> — the participation row carries no membership FK, deliberately
+(<a href="../../open-questions/#d-8--should-unit_participation-reference-the-membership">D-008</a>, §5).
+So the condition is <code>new_m.valid_from = up.valid_to</code>: the renewal begins exactly where the
+root row was swept to. Anything looser would stretch a single row across a genuine
+post-window rejoin, where the gap is real and must stay.</p>
+<p><strong>This erases the visual evidence of the lapse, and that is the accepted trade (D-050).</strong>
+A person who lapsed and renewed looks, in <code>unit_participation</code>, exactly like a person who
+never lapsed. The lapse is still fully visible in <code>membership</code>, which is the authority on
+payment. The participation table answers "who was in this unit when" — a roster question —
+and for that question a child who was in the pack across the period has exactly one answer.</p>
+</blockquote>
+<p><strong>"Who was in the 4th Pack on 1 June 1998?"</strong> is then exactly the query above.</p>
+<h3 id="52-transfers-between-sub-units-are-cheap">5.2 Transfers between sub-units are cheap<a class="headerlink" href="#52-transfers-between-sub-units-are-cheap" title="Permanent link">&para;</a></h3>
+<p>Because participation is not membership (D-041), moving a person between groups is <strong>one row
+edit</strong> — close one, open another. Nothing about their membership, their fee, or their status
+as a member changes.</p>
+<p>Moving person 100 from pack 12 to pack 31 effective 1998-09-01 is two writes, in this order:</p>
+<ol>
+<li>Close the row that is open for person 100 in pack 12: <code>valid_to</code> becomes 1998-09-01,
+   <code>leave_reason_code</code> becomes <code>transfer_out</code>, and <code>updated_at</code>/<code>updated_by</code> record who did it.</li>
+<li>Open a row for pack 31 with <code>valid_from</code> 1998-09-01, <code>join_reason_code</code> <code>transfer</code>, a
+   <code>source</code> of <code>staff</code>, and the actor recorded as <code>created_by</code>.</li>
+</ol>
+<p>Rewriting the old row would destroy the answer to "where was this child in 2003?" — the
+question the whole temporal design exists to answer. Close and open; never update
+<code>org_unit_id</code> in place.</p>
+<p><strong>Under the old model this was much more expensive</strong>: a "unit membership" was a membership,
+so moving a child between groups raised questions about which membership was which and
+whether a fee was owed twice. Participation removes the question.</p>
+<h3 id="unit-reorganizations">Unit reorganizations<a class="headerlink" href="#unit-reorganizations" title="Permanent link">&para;</a></h3>
+<p>When a unit is split or merged, members are transferred by the same close-and-open
+pattern, with <code>join_reason_code = 'reorganisation'</code> and the
+<code>org_unit_relationship</code> row recording the lineage. A bulk operation should be a single
+named procedure with a dry-run mode — it will be run on hundreds of rows during an import
+and must be testable before it commits.</p>
+<hr />
+<h2 id="6-membership-and-the-authorization-system">6. Membership and the authorization system<a class="headerlink" href="#6-membership-and-the-authorization-system" title="Permanent link">&para;</a></h2>
+<p><strong>The resolver evaluates membership state.</strong> This is settled (D-039) and it is the single
+largest coupling in the design, so it is worth stating in full rather than in a footnote.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>A role grants access ONLY IF the holder has a current membership,
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    unless  role.requires_membership = false    (appointed counselors, local leaders)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    or      the channel is guardianship         (a legal relationship, not a membership)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    or      the channel is ownership            (your own record — see below)
+</code></pre></div>
+<p><strong>The carve-outs, and why each exists:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Carve-out</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Guardianship</strong></td>
+<td>A parent's authority over their child comes from a legal relationship. An unpaid fee must not make a parent unable to act for their child.</td>
+</tr>
+<tr>
+<td><strong>Appointed counselors and local leaders</strong></td>
+<td>The organization needs them present regardless of their own fee status. Marked per-role with <code>requires_membership = false</code>.</td>
+</tr>
+<tr>
+<td><strong>Ownership</strong></td>
+<td>Otherwise a lapse locks a person out of the very screen they renew on.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The cost, named plainly:</strong></p>
+<ul>
+<li><strong>The permission cache must be invalidated on every membership transition</strong> — including
+  the yearly expiry sweep, which is a bulk event touching every member at once. The cache
+  design has to be built for this from the start; retrofitting it is where the bugs will be.</li>
+<li><strong>A lapse silently removes access.</strong> That is the intent, but "why can't I see this?" now
+  has an answer that is a date rather than a decision.</li>
+<li><strong><code>role.requires_membership</code> changed meaning</strong> — from a flag that drove a report to a value
+  the resolver enforces.</li>
+</ul>
+<p><strong>The "leaver with access" report remains valuable</strong>, but its purpose changes. It no longer
+<em>prevents</em> access — the resolver already does that — so what it now detects is a role that
+should have been <strong>closed</strong> and was not. That is still worth a worklist, because a stale
+assignment silently springs back to life the moment the person renews:</p>
+<p>Concretely: every <code>role_assignment</code> still open whose holder <code>is_current_member()</code> says is not a
+member, shown with the role's own <code>requires_membership</code> and with the enforced ones first — those
+are the assignments the resolver is holding back today, and the ones that will matter on renewal.</p>
+<p><strong>Dormant authority is a real hazard.</strong> A membership that lapses and is renewed a year later
+would otherwise resurrect every role the person held in the interim, including ones a human
+had quietly decided not to reinstate. Closing the assignment at the same time as the
+membership is the honest fix; this report finds the ones that were missed.</p>
+<p><strong>A role assignment should not outlive the membership that justified it.</strong></p>
+<hr />
+<h2 id="7-integrity-checks">7. Integrity checks<a class="headerlink" href="#7-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify</strong></p>
+<ul>
+<li><strong>1. Participation rows without a corresponding organization membership at that time.</strong>
+  Counts participation rows for which the same person has no membership that is not
+  <code>pending_payment</code> and whose period overlaps the participation's — one beginning on or before
+  the participation ends (or begins, if it is still open) and ending after the participation
+  begins. Non-zero is the case no constraint here can express, deliberately: someone taking part
+  who was never a member.</li>
+<li><strong>1b. The root participation row disagreeing with the membership it mirrors</strong> (§5.1). Counts
+  memberships whose root-unit participation row has either end of its period different from the
+  membership's own. Nothing maintains the root row on its own behalf — §5.1 makes the pairing an
+  obligation on whoever writes the membership — so a non-zero count names the path that wrote one
+  row and forgot the other.</li>
+<li><strong>2. Participants in units that do not allow minors.</strong> Counts open participation rows in a
+  unit whose type says <code>allows_minors = false</code>, where the person has a recorded birth date that
+  makes them under 18 today. A unit that does not supervise minors may not have any placed in
+  it — safeguarding, not membership: membership itself is ageless (D-038).</li>
+<li><strong>3. Non-members holding a role that requires membership.</strong> Counts open role assignments on a
+  role with <code>requires_membership</code> true whose holder is not a current member. The resolver blocks
+  these (D-039), so this is not an access breach — it is a stale assignment that will spring back
+  to life when the person renews (§6).</li>
+<li><strong>4. Approved requests that never produced a membership.</strong> Counts requests that are <code>approved</code>,
+  carry no <code>membership_id</code>, and were decided more than seven days ago. Non-zero is an approval
+  that went nowhere.</li>
+<li><strong>5. Memberships expiring soon.</strong> Counts <code>active</code> memberships ending within the next 90 days —
+  the renewal campaign worklist (§6 of domain/05), not a fault.</li>
+<li><strong>6. Renewal chains with a broken link.</strong> Counts memberships whose <code>renewed_from_membership_id</code>
+  names a row that does not exist. Non-zero means the chain is followed into nothing.</li>
+<li><strong>7. Renewals inside the window whose new period does not start at the previous expiry date.</strong>
+  Counts renewals whose <code>valid_from</code> differs from the previous membership's <code>valid_to</code> and begins
+  less than 91 days after it. The renewal rule (D-040) backdates the new period, so a mismatch
+  means either a genuine post-window rejoin or a bug.</li>
+</ul>
+<p><strong>Check 3 is the one that matters most now.</strong> Under D-039 the resolver already blocks a
+non-member's roles, so this is no longer an access breach — but it detects <em>dormant</em>
+authority, which is the failure mode the membership gate introduces: a role nobody closed
+that silently reactivates on renewal.</p>
+<p><strong>Check 5 is operational</strong> (a worklist for the renewal campaign), and <strong>check 1b</strong> guards the
+one deliberate redundancy in the model (§5.1). The rest are data-quality checks for cases no
+constraint rejects at the write.</p>
+<hr />
+<h2 id="8-seed-data">8. Seed data<a class="headerlink" href="#8-seed-data" title="Permanent link">&para;</a></h2>
+<p>The organization starts with a single membership type — <code>member</code>, named and described in plain
+words, open for a person to register themselves for, and left to <code>requires_approval</code> at its
+default of true. The term and the calendar parameters on that row are §1's, not constants
+anywhere else.</p>
+<p><strong>One row, and that is the whole vocabulary</strong> (D-037). The fee is flat and per person, so
+there is nothing to vary by type; being a counselor or leader is a position, not a type; and
+membership is ageless, so there are no age limits to seed (D-038).</p>
+<p><strong>The calendar is now settled</strong> — 1 January, 60 days
+(<a href="../../decisions/decision-log/#d-047--the-fee-expires-on-1-january">D-047</a>,
+<a href="../../decisions/decision-log/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).
+The term (12 months) remains a placeholder that nothing currently depends on. All four are
+columns rather than constants, so tuning any of them is an <code>UPDATE</code>, not a release.</p>
+<blockquote>
+<p><strong>The one rule about these four values: read them from the row.</strong> A scheduled job, a front
+end or a report that contains the literal <code>60</code> or <code>1</code> has quietly reverted a parameter to a
+constant, and the organization will discover it the first time it changes its mind.</p>
+</blockquote>
+<p><strong>No <code>requirement_code</code> seed.</strong> That table does not exist (D-044). The formerly seeded rows
+— <code>guardian_consent</code>, <code>background_check</code>, <code>medical_form</code>, <code>references</code>,
+<code>previous_unit_transfer</code>, <code>photo_consent</code> — are all gone:
+consent moved to the guardianship layer where it belongs, background checks are not recorded
+at all (D-043), and the rest were never required.</p>
+<hr />
+<h2 id="9-open-issues">9. Open issues<a class="headerlink" href="#9-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The real membership term and renewal-window length (§1, §8) — the two remaining
+  type-level parameters.</li>
+<li>Whether <code>outstanding_balance</code> should exist as a denormalised column or be computed
+  (§3) — depends on the finance design in <a href="../07-finance/">07-finance.md</a>.</li>
+<li>Whether <code>unit_participation</code> should reference <code>membership_id</code> in addition to <code>person_id</code>,
+  to get referential integrity without losing the import case. Possible as a nullable
+  column, but it would be unenforced for imports.</li>
+<li>What the root-unit participation row does when a membership is renewed inside the
+  window — it must extend across the (retrospectively filled) period without creating an
+  overlapping row (§5.1).</li>
+</ul>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: whether a person
+may hold several open memberships (no — one type, person-scoped constraint, §3); whether
+membership activates on payment (yes, §3); whether permissions depend on membership state
+(yes, with carve-outs — D-039, §6); the age limits and age-out (§8); the grace period as a
+status (§6); and the whole requirement mechanism (§4).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

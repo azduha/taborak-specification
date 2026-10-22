@@ -1,0 +1,2320 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/00-conventions/">
+      
+      
+        <link rel="prev" href="../../domain/07-events/">
+      
+      
+        <link rel="next" href="../01-identity/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Conventions - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model-conventions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Conventions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-target-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Target platform
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Naming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-primary-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Primary keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-deletion-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Deletion policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-enumerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Enumerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Enumerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical rule: status strings are ordered, and the order is not alphabetical
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-temporal-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The temporal pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. The temporal pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-four-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-days-not-timestamps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why days, not timestamps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indexing-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexing the pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6a-who-enforces-an-invariant-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6a. Who enforces an invariant now
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-standard-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Standard columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-personal-data-and-erasure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Personal data and erasure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-referential-integrity-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Referential integrity rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-migration-discipline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Migration discipline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-where-each-subject-is-described" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Where each subject is described
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-target-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Target platform
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Naming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-primary-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Primary keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-deletion-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Deletion policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-enumerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Enumerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Enumerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical rule: status strings are ordered, and the order is not alphabetical
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-temporal-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The temporal pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. The temporal pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-four-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The four rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-days-not-timestamps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why days, not timestamps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indexing-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexing the pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6a-who-enforces-an-invariant-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6a. Who enforces an invariant now
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-standard-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Standard columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-personal-data-and-erasure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Personal data and erasure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-referential-integrity-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Referential integrity rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-migration-discipline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Migration discipline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-where-each-subject-is-described" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Where each subject is described
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model-conventions">Data Model Conventions<a class="headerlink" href="#data-model-conventions" title="Permanent link">&para;</a></h1>
+<p>Read this before reading any other document in this folder. Every entity in this system is
+described using the patterns here, and the patterns are load-bearing — deviating from them in
+one table creates bugs that only appear across decades of history.</p>
+<p><strong>What this file is, since <a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>.</strong>
+It used to be the preamble to a set of <code>CREATE TABLE</code> statements. Those statements are gone —
+the schema is the ORM's job — and what remains is the part that was never about SQL: the rules
+about time, identity, deletion and rank that a generated schema will happily violate without
+noticing. <strong>Nothing here is a suggestion.</strong> A convention in this folder is a bug that has
+already happened somewhere, written down.</p>
+<hr />
+<h2 id="1-target-platform">1. Target platform<a class="headerlink" href="#1-target-platform" title="Permanent link">&para;</a></h2>
+<p><em>Assumption:</em> <strong>PostgreSQL 14+</strong>, reached through an ORM.</p>
+<p>The design relies on four things from the platform, and it is worth being exact about which
+four, because an ORM hides the list:</p>
+<ul>
+<li><strong>Range types with an overlap operator</strong> (<code>daterange</code>, <code>tstzrange</code>, <code>&amp;&amp;</code>) — for the
+  "no overlapping periods" invariants that the whole temporal model depends on.</li>
+<li><strong>Exclusion constraints</strong> (<code>EXCLUDE USING gist</code>, with <code>btree_gist</code>) — the only way to state
+  "no two open rows may overlap" that survives every possible writer.</li>
+<li><strong>A structured column type</strong> (<code>jsonb</code>) — for match signals, audit diffs, event answers and
+  other semi-structured payloads whose shape is per-row by design.</li>
+<li><strong>Recursive queries</strong> — for the unit hierarchy. Note that this one is <em>only</em> for structure:
+  no authorization path may walk the hierarchy
+  (<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>).</li>
+</ul>
+<p>Native enum types are avoided — see §5.</p>
+<p><strong>What the ORM changes, and what it must not be allowed to change: see §6a. Read it before
+generating the first migration.</strong> The short version is that most ORMs cannot emit an exclusion
+constraint, and the fallback they offer — validation in the model layer — is precisely the
+mechanism this document has always warned against. Hand-written migrations for those tables are
+not a deviation from "use the ORM", they are the condition on which it is safe.</p>
+<p>If the target turns out not to be PostgreSQL, exclusion constraints become triggers plus
+periodic consistency reports. <strong>That is a materially weaker guarantee and it must be recorded as
+an accepted decision, not discovered as an outage.</strong> Tracked in
+<a href="../../open-questions/">../open-questions.md</a>.</p>
+<hr />
+<h2 id="2-naming">2. Naming<a class="headerlink" href="#2-naming" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td><code>snake_case</code>, <strong>singular</strong></td>
+<td><code>person</code>, <code>membership_request</code></td>
+</tr>
+<tr>
+<td>Column</td>
+<td><code>snake_case</code></td>
+<td><code>valid_from</code>, <code>person_id</code></td>
+</tr>
+<tr>
+<td>Primary key</td>
+<td><code>id</code></td>
+<td>always the same name, so joins read uniformly</td>
+</tr>
+<tr>
+<td>Foreign key</td>
+<td><code>&lt;referenced_table_singular&gt;_id</code></td>
+<td><code>person_id</code> → <code>person.id</code></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td><code>is_</code> / <code>has_</code> / <code>requires_</code> prefix</td>
+<td><code>is_primary</code>, <code>requires_membership</code></td>
+</tr>
+<tr>
+<td>Timestamp</td>
+<td><code>&lt;verb&gt;_at</code></td>
+<td><code>created_at</code>, <code>verified_at</code></td>
+</tr>
+<tr>
+<td>Date/period</td>
+<td><code>valid_from</code> / <code>valid_to</code></td>
+<td>never <code>start_date</code>/<code>end_date</code></td>
+</tr>
+<tr>
+<td>Junction table</td>
+<td><code>&lt;a&gt;_&lt;b&gt;</code> in alphabetical order</td>
+<td><code>role_permission</code>, not <code>permission_role</code></td>
+</tr>
+<tr>
+<td>Lookup table</td>
+<td>singular of the vocabulary it <em>is</em></td>
+<td><code>access_level</code>, <code>reason_code</code></td>
+</tr>
+<tr>
+<td>Index</td>
+<td>names the table and what it answers</td>
+<td>"the open rows for one person", not <code>idx_3</code></td>
+</tr>
+</tbody>
+</table>
+<p>Singular table names are not aesthetic. <code>membership</code> reads correctly in a sentence about one
+row, which is how most of this system's rules are written; plural table names produce code that
+says <code>memberships[0].membership_id</code> and reviewers stop reading it.</p>
+<p>There is no <code>deleted_at</code> column. Deletion is handled by temporal closure and tombstones, never
+by a soft-delete flag — see §4.</p>
+<p>Naming survives the move to an ORM; it is the one section of this file that the ORM will follow
+without being told, provided someone wrote these rules into the ORM's own conventions.</p>
+<hr />
+<h2 id="3-primary-keys">3. Primary keys<a class="headerlink" href="#3-primary-keys" title="Permanent link">&para;</a></h2>
+<p><strong>Every table has a surrogate <code>id</code>.</strong> No natural keys as primary keys, ever.</p>
+<p>Rationale specific to this project: natural keys here are things like names, old member numbers,
+and email addresses — all of which <strong>change</strong>, <strong>repeat</strong>, and <strong>get corrected</strong>. A name is not
+unique (and was less so in 1994). An email address is reused by providers and reassigned between
+people. A legacy member number may be absent, or duplicated across two source systems. A natural
+key that turns out to be wrong is a key that must be rewritten, and a rewritten primary key
+rewrites every historical reference beside it.</p>
+<p>The surrogate key is a <strong>64-bit</strong> integer, not 32-bit, because this system accumulates rows for
+decades and because <code>access_grant.scope_id</code> must never run out of room or recycle.</p>
+<p><strong>Exception, and it is a security requirement:</strong> <code>person.public_id</code> — a separate <code>UUID</code> column,
+used for every external exposure.</p>
+<p>Rationale: <code>access_grant.scope_id</code> is a bare bigint with no foreign key, and ids appear in URLs
+and exports. Sequential ids leak record counts and — more seriously — let someone enumerate
+<code>/person/1001</code>, <code>/person/1002</code> and discover members. <strong>Expose <code>public_id</code> in all external
+interfaces; keep <code>id</code> internal.</strong> An ORM that marshals entities by primary key has, by default,
+published the internal counter.</p>
+<hr />
+<h2 id="4-deletion-policy">4. Deletion policy<a class="headerlink" href="#4-deletion-policy" title="Permanent link">&para;</a></h2>
+<p><strong>Nothing is hard-deleted.</strong> There is no <code>deleted_at</code> and no delete for business data. <strong>Two
+exceptions are named below</strong> — a staging truncate, and one delete that erasure has to make — and both
+are narrow enough to prove the rule rather than erode it.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A period ended</td>
+<td>Set <code>valid_to</code></td>
+</tr>
+<tr>
+<td>A person left the organization</td>
+<td>Close their membership; the person row remains</td>
+</tr>
+<tr>
+<td>A grant revoked</td>
+<td>Set <code>access_grant.valid_to</code>; keep the row</td>
+</tr>
+<tr>
+<td>Two people merged</td>
+<td>Tombstone: set <code>merged_into_person_id</code>; row remains</td>
+</tr>
+<tr>
+<td>A unit closed</td>
+<td>Set <code>org_unit.valid_to</code> and <code>status = 'closed'</code></td>
+</tr>
+<tr>
+<td>GDPR-style erasure requested</td>
+<td><strong>Redact</strong> field values; do not delete rows — see §8. <strong>One table is deleted rather than redacted; the exception below names it and why</strong></td>
+</tr>
+</tbody>
+</table>
+<p>This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
+forever. A hard delete breaks the audit trail and, in a youth organization, the safeguarding
+record.</p>
+<p><strong>The first exception:</strong> staging tables (<code>staging_import*</code>) may be truncated after a batch is
+applied, subject to the project's retention policy.</p>
+<p><strong>The second exception is not convenience and it should be read as a decision, not an oversight.</strong>
+Redacting a person <strong>deletes</strong> their <code>person_attribute</code> rows (<a href="#8-personal-data-and-erasure">§8 item
+2</a>). Everywhere else in this file, erasure means overwriting a value
+and keeping the row, because the row is what old references point at. A descriptive value is the one
+thing that has no row worth keeping: <strong>the row <em>is</em> the value</strong> — there is no period that closed, no
+assignment that ended, no id another table cites. Blanking the value instead would leave the shape of
+a person's erased life behind as a permanent record of it: which codes they had, how many of each,
+and the dates they were first recorded. Retiring the <em>code</em> is not the answer either, and
+<a href="../../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> is
+explicit that retirement must never destroy values — retirement is an act about the vocabulary,
+erasure is an act about the person, and the two point in opposite directions on purpose
+(<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a>).
+<strong>This exception is safe only while nothing references an attribute row, and nothing does today.</strong>
+Should a future table ever point at one — an event question bound to a stored value is the obvious
+candidate, and it is open as AT-1 — that table must be designed around this rule rather than
+discovering it, because at that point the delete stops being invisible and becomes the referential
+integrity problem §9 exists to prevent.</p>
+<p><strong>This rule is now carried entirely by discipline, and that is worth saying out loud.</strong> A
+<code>ON DELETE RESTRICT</code> default, a revoke of <code>DELETE</code> from the application role, an ORM whose delete
+method nobody has ever called — those were enforcement. What remains is an instruction to whoever
+configures the ORM: <strong>deleting business rows is not a feature this system has.</strong> Do not wire a
+"remove" button to an ORM delete call. The audit log will not save you, because it records
+changes to rows that still exist.</p>
+<hr />
+<h2 id="5-enumerations">5. Enumerations<a class="headerlink" href="#5-enumerations" title="Permanent link">&para;</a></h2>
+<p><strong>Status vocabularies are text with an allowed-value list, not the database's native enum type.</strong></p>
+<p>Why, given that native enums are more compact:</p>
+<ul>
+<li>Adding a value to a native enum is easy; <strong>removing or reordering</strong> one is painful, and over a
+  40-year lifespan a status vocabulary <em>will</em> be revised.</li>
+<li>Native enum ordering is baked in, and the order of states here is meaningful — and it is <em>not</em>
+  the order the type would infer (see below).</li>
+<li>An allowed-value list is visible in schema introspection and in every migration tool, which
+  makes review and diffing straightforward.</li>
+</ul>
+<p><strong>This section used to carry the <code>CREATE TABLE</code> and <code>CHECK</code> syntax that expressed it.</strong> D-072
+deleted it, and the rule it expressed is unchanged: the vocabulary lives with the entity, the
+values are closed, and the vocabulary is reviewable without reading application code.</p>
+<h3 id="critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical">Critical rule: status strings are ordered, and the order is not alphabetical<a class="headerlink" href="#critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical" title="Permanent link">&para;</a></h3>
+<p>Several status columns have a <strong>meaningful progression</strong>, and code must compare by <strong>rank</strong>,
+never by string. Wherever rank matters there is a lookup table carrying an integer rank, and the
+one that matters most is this one:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Rank</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>revoked</code></td>
+<td>0</td>
+<td>Explicitly denied; overrides all grants</td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td>10</td>
+<td>Read only</td>
+</tr>
+<tr>
+<td><code>contribute</code></td>
+<td>20</td>
+<td>Read and add</td>
+</tr>
+<tr>
+<td><code>manage</code></td>
+<td>30</td>
+<td>Full control of the item</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td>40</td>
+<td>Full control including granting access</td>
+</tr>
+</tbody>
+</table>
+<p>Gaps of ten are deliberate: insertions between levels (an <code>approve</code> tier between <code>view</code> and
+<code>contribute</code>) must not require renumbering a stored vocabulary.</p>
+<p><strong>Never compare level strings lexicographically.</strong> <code>'admin' &lt; 'contribute'</code> alphabetically. A
+system that sorts grants by string therefore ranks <em>full control including granting access</em>
+<strong>below</strong> <em>read and add</em> — a security bug that produces no error, no failed test, and no log
+line. This is the single most dangerous sentence in this file, and it is the reason the ladder is
+data rather than a language feature.</p>
+<p><strong>One ladder, every ladder.</strong> A guardian's right over a child is <code>none</code>, <code>view</code>, or <code>write</code>, and
+those map onto this same ladder at 0, 10 and 20 rather than getting a second scale
+(<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+Two scales would have to be kept in step and would eventually not be, which is how a guardian
+ends up able to do <em>more</em> than a manager. When adding any new ordered vocabulary, ask whether it
+is this ladder wearing a name.</p>
+<hr />
+<h2 id="6-the-temporal-pattern">6. The temporal pattern<a class="headerlink" href="#6-the-temporal-pattern" title="Permanent link">&para;</a></h2>
+<p>The pattern behind every period in this system.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>entity
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  id
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  the thing the period is about        e.g. person_id
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  valid_from    DATE        NOT NULL
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  valid_to      DATE        NULL       -- NULL = still true
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  created_at    TIMESTAMPTZ NOT NULL
+</code></pre></div>
+<h3 id="the-four-rules">The four rules<a class="headerlink" href="#the-four-rules" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><code>valid_to IS NULL</code> means "still true".</strong> Not a far-future sentinel date. A sentinel like
+   <code>'9999-12-31'</code> looks convenient and breaks every "is open" check, every range query, and every
+   index on open rows. Do not use one.</li>
+<li><strong>Periods are half-open <code>[valid_from, valid_to)</code>.</strong> A membership ending 2010-06-30 and another
+   starting 2010-06-30 <strong>do not overlap</strong>. Closed intervals make adjacent periods collide, and
+   you will spend a day debugging it. This rule is invisible in a schema and cannot be inferred
+   from column names; it must be written in whatever the ORM uses to express such a thing, and
+   tested.</li>
+<li><strong>Overlap is prevented below the application, not inside it.</strong> An import script, a manual data
+   fix, a future API, and a bulk edit all bypass model-layer validation. The invariant must hold
+   for writers that were never written. → §6a.</li>
+<li><strong><code>created_at</code> is audit time, not world time.</strong> It is distinct from <code>valid_from</code> — a membership
+   backdated to 1990 during a 2026 import has <code>valid_from = 1990-09-01</code> and <code>created_at = 2026-…</code>.
+   Never conflate them, and never derive one from the other. A system that sets <code>valid_from</code> from
+   the clock cannot import its own history.</li>
+</ol>
+<h3 id="why-days-not-timestamps">Why days, not timestamps<a class="headerlink" href="#why-days-not-timestamps" title="Permanent link">&para;</a></h3>
+<p><code>DATE</code> granularity is correct for most periods here: memberships, guardianships, unit assignments,
+fees and exposures start and end on days. Timestamps invite timezone-dependent boundary bugs on
+questions like "was this person a member on 1 June?".</p>
+<p>Where sub-day precision genuinely matters — session validity, a delegation in force during one
+meeting — the same pattern uses timestamps. Both patterns exist in this system; <strong>each entity
+states which one it uses</strong>, because a comparison between the two is where the boundary bugs live.</p>
+<h3 id="indexing-the-pattern">Indexing the pattern<a class="headerlink" href="#indexing-the-pattern" title="Permanent link">&para;</a></h3>
+<p>Two access paths carry the load and both must exist when the schema is generated:</p>
+<ul>
+<li><strong>One entity's periods, newest first</strong> — the history view.</li>
+<li><strong>The open periods for one entity</strong> — restricted to rows with no <code>valid_to</code>. <strong>This is the
+  index that matters.</strong> "Currently active" is the overwhelmingly common question, it stays small
+  because open rows are a small fraction of history, and it is the one an ORM will not create on
+  its own, because it is not an index on a column combination the model declares — it is an index
+  with a condition. If your migrations do not contain a filtered index, nobody thought about this.</li>
+</ul>
+<hr />
+<h2 id="6a-who-enforces-an-invariant-now">6a. Who enforces an invariant now<a class="headerlink" href="#6a-who-enforces-an-invariant-now" title="Permanent link">&para;</a></h2>
+<p><strong>This section did not exist before D-072. It exists because deleting the constraints moved
+responsibility, and a moved responsibility that nobody names is a responsibility nobody holds.</strong></p>
+<p>Every data-model document in this folder states its rules as prose: "no two open rows may
+overlap", "at most one primary contact", "a revoked grant must name who revoked it". Prose does
+not reject a row. Three layers could do it, and they are not equivalent:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Survives an import?</th>
+<th>Survives a manual fix?</th>
+<th>Survives a second client?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model-layer validation in the ORM</td>
+<td><strong>No</strong></td>
+<td><strong>No</strong></td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td>Migration-level database constraint</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Nightly consistency report</td>
+<td>Yes, eventually</td>
+<td>Yes, eventually</td>
+<td>Yes, eventually</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The rule for this system, stated once and applied everywhere: an invariant that is a
+correctness property of the data belongs in the database, emitted by a migration, even when the
+ORM cannot generate it and the migration must be written by hand.</strong> Model-layer validation is a
+<em>usability</em> feature — it produces a good error message before a round trip — and it is not an
+invariant. The nightly report is a safety net for the invariants that were never expressible as a
+constraint at all, and each document's "Invariants to verify" section is exactly that list.</p>
+<p>Three consequences that are easy to get wrong:</p>
+<ol>
+<li><strong>The overlap invariants need hand-written migrations on PostgreSQL.</strong> Most ORMs cannot emit
+   an exclusion constraint over a range built from two columns. Writing those twenty-odd lines
+   once, per temporal table, is cheaper than the alternative — which is duplicate open rows
+   discovered in 2031 by someone who cannot tell which one was ever real.</li>
+<li><strong>Uniqueness that depends on a condition needs a partial unique index.</strong> "One open request per
+   person and type", "one primary contact per child among open rows", "one live exposure per unit
+   and assignment" are all this shape. A unique constraint over the <em>un</em>conditioned columns is
+   not the same rule and is usually wrong in the direction of too strict — it forbids the second
+   closed row, which history requires.</li>
+<li><strong>Uniqueness decided by data cannot live in an index at all.</strong> <code>identifier_scheme.is_unique</code>
+   says per scheme whether a value may repeat
+   (<a href="../01-identity/#7-person_identifier">01-identity.md §7</a>); no index can consult a row of a
+   different table. This one is genuinely application-level plus a report, and it is documented as
+   such rather than being pretended away. <strong>The earlier version of that document had the opposite
+   bug — an index that applied to every scheme, ignoring the flag and making <code>school_id</code>
+   unrepeatable in fact.</strong></li>
+</ol>
+<p><strong>And the honest cost, stated in D-072's own terms: some rules now have no enforcement anywhere
+automatic can reach.</strong> They are written as invariants to verify and they will catch drift only if
+someone runs them. A prohibition nobody runs is a convention, not a guard.</p>
+<hr />
+<h2 id="7-standard-columns">7. Standard columns<a class="headerlink" href="#7-standard-columns" title="Permanent link">&para;</a></h2>
+<p>Every business table carries:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Kind</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>64-bit surrogate key</td>
+<td>Set by the database, never by the caller</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, required</td>
+<td>Audit time of insert</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>person, optional</td>
+<td>Who inserted. Absent for system and import jobs.</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, optional</td>
+<td>Audit time of last change</td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>person, optional</td>
+<td>Who last changed it</td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>import batch, optional</td>
+<td>Set on imported rows — the only way to undo a bad import</td>
+</tr>
+</tbody>
+</table>
+<p>Temporal entities additionally carry <code>valid_from</code> / <code>valid_to</code>.</p>
+<p>Entities that record a <em>decision about a person</em> (terminations, rejections, rejections of identity
+hypotheses) additionally carry a reason:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;verb&gt;_reason_code</code></td>
+<td>reference to <code>reason_code</code></td>
+</tr>
+<tr>
+<td><code>&lt;verb&gt;_reason_note</code></td>
+<td>free text, for the human explanation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reason codes are a lookup table, not free text.</strong> "Why was this membership terminated?" must be
+reportable and comparable across years. Free text is not. The note exists so the code does not
+have to carry the nuance, and a decision with a code and no note is fine while the reverse is not.</p>
+<p><code>updated_at</code> and <code>updated_by</code> were maintained by a database trigger. <strong>With the schema generated,
+nothing maintains them unless someone says so</strong> — and an ORM that sets them only on the paths the
+application happens to take gives you an audit trail that is silently incomplete. Either
+maintain them at the database level or accept that <code>updated_at</code> means "last changed through the
+app". Do not leave it undecided; an audit column nobody thinks about is worse than no audit
+column, because people rely on it.</p>
+<hr />
+<h2 id="8-personal-data-and-erasure">8. Personal data and erasure<a class="headerlink" href="#8-personal-data-and-erasure" title="Permanent link">&para;</a></h2>
+<p>This system holds data about <strong>children</strong>, which raises the stakes on every decision here.</p>
+<p>Requirements the design must satisfy:</p>
+<ol>
+<li><strong>A deletion request must not destroy the audit trail.</strong> Implement as <strong>redaction</strong>: set
+   <code>person.redacted_at</code>, overwrite names and contact points with a redaction marker, and keep the
+   row and its ids so historical references still resolve. The person is no longer identifiable;
+   the record that <em>someone</em> was in Troop 12 in 2003 survives.</li>
+<li><strong>Redaction must cascade.</strong> It reaches contact points, identifiers, and free-text notes that may
+   contain personal data — and it <strong>deletes every <code>person_attribute</code> row belonging to the person</strong>
+   (<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a>). That is the
+   one place in this system where erasure deletes rather than overwrites, and
+   <a href="#4-deletion-policy">§4</a> says why it is the only row that can be handled that way. A redacted
+   person with attribute values attached is a redaction that did not happen. A <code>redaction_log</code>
+   records what was redacted and when.</li>
+<li><strong>Some data must not be redacted</strong> — membership periods, unit memberships, and position
+   assignments are organizational history rather than personal data, and removing them would
+   falsify records that the organization is often obliged to keep.</li>
+<li><strong>Whatever keeps its own retention policy must be able to see <code>person.redacted_at</code>, and erasure
+   reaching it is a rule that store has to implement.</strong> This item used to read "health and
+   safeguarding records have separate retention rules and are out of scope for this document", which
+   pointed at a body of data that <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+   has since dissolved: a diagnosis is an attribute value now, with the same access, protection and
+   retention as a shoe size (<a href="../09-attributes/">09-attributes.md</a>), so there is no health store left
+   for the sentence to have pointed at. What survives is the other half, and it is worth keeping
+   precisely because it is easy to wave through: <code>audit_log</code> is the store this system has, its
+   retention is an open legal question
+   (<a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>), and a redaction that stops at
+   the business tables while the trail keeps the erased values is a redaction that failed in the one
+   place a regulator looks. <strong>This section describing erasure does not make a store honour it; the
+   check in that document's §5 is what notices.</strong></li>
+<li><strong>Sensitive attributes should not be over-collected.</strong> <code>person.gender</code> is included because
+   Scouting-type organizations typically must report it; if yours does not, remove the field
+   rather than keeping it "just in case". <strong>The same test now applies per code</strong>, since most of what
+   is collected is decided at runtime: a code nobody can justify is retired
+   (<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>), and retirement —
+   which stops the collecting without destroying what was already recorded — is the mechanism.
+   Erasing what was recorded is item 2, and only item 2.</li>
+<li><strong>Redaction is invisible in listings and visible in the database.</strong> A redacted person must not
+   appear where people are listed, and must still resolve wherever an old record points at them
+   (<a href="../01-identity/#9-views">01-identity.md §9</a>). These two requirements are one rule with two
+   halves and the first version of that document had only one of them.</li>
+<li><strong>The trail is a second copy of the person record and has to be guarded like one.</strong> For a
+   person's descriptive data the trail holds the <strong>value</strong> — the before and after image, exactly as
+   it does for a contact point or a note — because
+   <a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+   chose overwrite-in-place on the strength of the trail being the history there is, and a trail that
+   records <em>a value existed</em> without recording which one answers neither of the two questions an
+   audit entry is built for (<em>who said this</em> and <em>what did they say</em>). The consequence is therefore
+   about the log rather than about the shape of a row: <strong>an audit entry about a person is as
+   sensitive as the person data it carries</strong>, which is a requirement on a permission's sensitivity
+   mark and not on anything the schema can express — see
+   <a href="../05-authorization/#9-access_log">05-authorization.md §9</a>, which argues against copying data into
+   a less-guarded place and describes this table better than it knows: the trail <em>is</em> such a copy,
+   holding the whole person record in its payloads while historically being graded below it. Nothing
+   here makes that guard true; the catalog does, or does not
+   (<a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>).
+   The mechanism that implements erasure against this table is in
+   <a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a> and its §4, and
+   <a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> is where the
+   trade is stated next to the values.</li>
+</ol>
+<blockquote>
+<p>Legal review is required before implementing §8. This section describes the technical mechanism,
+not the compliance policy. Tracked in
+<a href="../../open-questions/">../open-questions.md</a>.</p>
+</blockquote>
+<p><strong>The key-name list is not how personal data is protected in the trail, and it helps to say so out
+loud.</strong> The redactor used to be described as the
+thing that kept personal data out of the audit trail, and it worked by holding a list of sensitive
+<em>key names</em> — <code>notes</code>, <code>custody_arrangement</code>, and the rest — and stripping any image that carried
+one. That design presupposed a sensitive <em>subset</em> of the person record, because a list of names is a
+way of pointing at some fields and not others. <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+removed the subset, and a list that was standing in for a rule about a category is now a list of
+arbitrary fields. <strong>It fails on the first value stored under a name nobody predicted</strong>, and an
+attribute layer whose whole purpose is that nobody can enumerate its names guarantees one such name
+every time the organization invents a code — so the list is not the thing keeping personal data out
+of the trail, and item 7 is. What is left for it is one job, narrow enough that a list can genuinely
+do it: <strong>the values that must never enter the trail at all</strong> — credentials, tokens, the secret half
+of an integration — the only values where <em>being in a log</em> is itself the harm. Personal data is not
+on that list and does not belong on it: the answer to <em>who may read a child's address</em> was never a
+list of field names, it is the guard on the table that holds it, and item 7 exists to make that answer
+cover the table that quotes it. So <code>notes</code>, the reason fields and an attribute value are all logged,
+in the clear, protected by who may read the log. Read the list as a credential filter and it is a
+working mechanism; read it as the personal-data filter, notice that <code>allergy</code> is not in it, and
+conclude the payload is covered — which is wrong in exactly the way described two sentences ago.
+<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> carries the same
+warning next to the values themselves.</p>
+<p><strong>Two mechanisms that used to help here are gone, and they failed in different directions.</strong>
+Redaction of the <em>audit payload</em> was automatic: a trigger stripped listed keys out of the before/after
+images on their way into the log. There is no trigger now, so what is left of that job — the credential
+stripping, and the scrub item 2 and item 7 require when a person is erased — is application behaviour,
+and forgetting the first writes a secret into a table designed to be read later by auditors, while
+forgetting the second leaves an erased person's values sitting in the trail with a <code>redaction_log</code> row
+next to them saying they are gone. (Worth recording: inside that trigger was a list of keys to scrub
+<em>unconditionally</em>, and nothing ever read it. A dead list of forbidden fields is not a protection — and a
+live one is a mechanism with a far smaller job than the sentences describing it used to imply, which is
+what the paragraph above is about.) The other half is
+the listing view that excluded redacted rows, which is §6a's problem in general.
+<strong>Neither failure is loud.</strong> Both are written down because a compliance property resting on a code
+review is the kind of thing an organization discovers from a regulator.</p>
+<hr />
+<h2 id="9-referential-integrity-rules">9. Referential integrity rules<a class="headerlink" href="#9-referential-integrity-rules" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>References <strong>restrict</strong>; none cascade a delete</td>
+<td>Nothing cascades. A person cannot be removed while memberships reference them.</td>
+</tr>
+<tr>
+<td>No cascading deletes anywhere</td>
+<td>Cascade delete is the enemy of a 40-year audit trail, and ORM relation configs default to it. <strong>Check every one.</strong></td>
+</tr>
+<tr>
+<td>Optional references document <em>why</em> they are optional</td>
+<td>An optional reference is usually a design decision worth recording, and it is invisible in the schema.</td>
+</tr>
+<tr>
+<td><code>access_grant.scope_id</code> is the <strong>one</strong> reference-less key</td>
+<td>It is polymorphic by design; see <a href="../../domain/06-authorization-model/#5-access-grants--the-per-item-layer">../domain/06-authorization-model.md</a>. Nothing else may be.</td>
+</tr>
+<tr>
+<td>Circular references are broken with an optional column, not a deferred constraint</td>
+<td><code>membership_request</code> ↔ <code>membership</code> is the one instance; the two-step insert is documented where it lives.</td>
+</tr>
+</tbody>
+</table>
+<p>The polymorphic <code>access_grant.scope_id</code> deserves its warning again now that the schema is
+generated: <strong>an ORM will want to make this a real relation, and making it one is a design
+change.</strong> It points at a person, a unit, an event or an organization depending on a sibling
+column. No foreign key can express that, and every query that joins it must filter on
+<code>scope_type</code> first. If the ORM maps it as a relation to one table, the others become silent
+wrong answers rather than errors.</p>
+<hr />
+<h2 id="10-migration-discipline">10. Migration discipline<a class="headerlink" href="#10-migration-discipline" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Every migration is reversible</strong>, or explicitly marked irreversible with a rationale. A
+  migration that drops a column holding historical data is irreversible by definition.</li>
+<li><strong>Never rewrite a historical row's meaning.</strong> Adding a column is fine; changing what an existing
+  value <em>means</em> is a data migration that needs its own review, and it is the kind of change that
+  makes old audit entries lie.</li>
+<li><strong>Backfills are separate from schema changes</strong>, in their own migration, so a failed backfill
+  does not roll back a schema change and vice versa.</li>
+<li><strong>Seed data for vocabularies</strong> (<code>access_level</code>, <code>permission</code>, <code>org_unit_type</code>, <code>reason_code</code>)
+  lives in migrations, not in application startup code, so the vocabulary is versioned with the
+  data it describes. Application-startup seeding produces environments that disagree about what
+  <code>contribute</code> means.</li>
+<li><strong>Two documents are the source of truth for what a migration must achieve:</strong> each data-model
+  file's <strong>Rules</strong> block for the constraints, and its <strong>Invariants to verify</strong> block for the
+  reports. A migration that implements neither set completely has generated a schema, not a
+  design.</li>
+</ul>
+<hr />
+<h2 id="11-where-each-subject-is-described">11. Where each subject is described<a class="headerlink" href="#11-where-each-subject-is-described" title="Permanent link">&para;</a></h2>
+<p>Not "where the DDL lives" — that question stopped meaning anything at D-072. Each document below
+states the fields, rules, invariants and open issues for its part of the model.</p>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Entities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../01-identity/">01-identity.md</a></td>
+<td><code>person</code>, <code>person_name</code>, <code>account</code>, <code>account_credential</code>, <code>person_contact</code>, <code>person_identifier</code>, <code>identity_hypothesis</code>, <code>person_merge</code></td>
+</tr>
+<tr>
+<td><a href="../02-organization/">02-organization.md</a></td>
+<td><code>org_unit</code>, <code>org_unit_type</code>, <code>org_unit_type_rule</code>, <code>org_unit_name</code>, <code>org_unit_relationship</code>, <code>position</code>, <code>position_assignment</code></td>
+</tr>
+<tr>
+<td><a href="../03-membership/">03-membership.md</a></td>
+<td><code>membership</code>, <code>membership_type</code>, <code>membership_request</code>, <code>unit_participation</code></td>
+</tr>
+<tr>
+<td><a href="../04-relationships/">04-relationships.md</a></td>
+<td><code>guardianship</code> (carrying the guardian's current <code>right_level</code>), <code>guardianship_permission</code> (the <strong>history</strong> of that value)</td>
+</tr>
+<tr>
+<td><a href="../05-authorization/">05-authorization.md</a></td>
+<td><code>permission</code>, <code>role</code>, <code>role_permission</code>, <code>role_assignment</code>, <code>scope_exposure</code>, <code>access_grant</code>, <code>permission_level</code>, <code>audience</code>, <code>audience_member</code>, <code>access_log</code></td>
+</tr>
+<tr>
+<td><a href="../06-audit-and-import/">06-audit-and-import.md</a></td>
+<td><code>audit_log</code>, <code>field_conflict</code>, <code>redaction_log</code>, <code>import_batch</code>, <code>staging_import*</code></td>
+</tr>
+<tr>
+<td><a href="../07-finance/">07-finance.md</a></td>
+<td><code>fee_schedule</code>, <code>fee_obligation</code>, <code>payment_request</code>, <code>payment</code>, <code>bank_transaction</code> — <strong>provisional on policy</strong></td>
+</tr>
+<tr>
+<td><a href="../08-events/">08-events.md</a></td>
+<td><code>event</code>, <code>event_organizer</code>, <code>event_registration</code>, <code>event_question</code>, <code>event_answer</code></td>
+</tr>
+<tr>
+<td><a href="../09-attributes/">09-attributes.md</a></td>
+<td><code>attribute_definition</code>, <code>attribute_option</code>, <code>person_attribute</code> — <strong>everything the system knows about a person other than their name, their gender and their age</strong> (<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>, <a href="../../decisions/decision-log/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>). It is last in this table because it is last in every other document's account of a person: it references <code>person</code> and nothing references it</td>
+</tr>
+</tbody>
+</table>
+<p>Each document presents its entities in <strong>dependency order</strong>: one appears only after everything it
+references. That ordering was needed to make a schema file execute; it is kept because it is also
+the order in which the model is understandable.</p>
+<p><strong>Messaging is not in this table.</strong> <code>message</code> and <code>message_recipient</code> are decided at
+<a href="../../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>
+and not yet designed; they will need their own document. The absence is tracked in
+<a href="../../open-questions/#h-not-yet-designed">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

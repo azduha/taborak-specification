@@ -1,0 +1,2353 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/04-relationships/">
+      
+      
+        <link rel="prev" href="../03-membership/">
+      
+      
+        <link rel="next" href="../05-authorization/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Relationships - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--relationships" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Relationships
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. guardianship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. guardianship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-relation-is-a-general-graph-not-a-two-level-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The relation is a general graph, not a two-level hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-dependent-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-dependent authority
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guardianship-ends--and-who-is-allowed-to-end-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guardianship ends — and who is allowed to end it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_primary_contact-vs-is_legal_decision_maker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_primary_contact vs is_legal_decision_maker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-guardians-right-none-view-or-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The guardian's right: none, view, or write
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The guardian&#39;s right: none, view, or write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#it-is-the-same-ladder-not-a-new-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        It is the same ladder, not a new one
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-collapse-gives-up-written-down-rather-than-discovered-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the collapse gives up, written down rather than discovered later
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defaults-still-depend-on-how-the-guardianship-arose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defaults still depend on how the guardianship arose
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-there-is-no-household-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. There is no household table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. There is no household table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-address-still-grants-no-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared address still grants no access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-replaced-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What replaced it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-not-a-family-person-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why not a family person row
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-the-resolver-uses-these-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. How the resolver uses these tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-acting-on-behalf--recording-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Acting on behalf — recording it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-invariants-to-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Invariants to verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-guardianship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. guardianship
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. guardianship">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-relation-is-a-general-graph-not-a-two-level-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The relation is a general graph, not a two-level hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-dependent-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-dependent authority
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guardianship-ends--and-who-is-allowed-to-end-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guardianship ends — and who is allowed to end it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_primary_contact-vs-is_legal_decision_maker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_primary_contact vs is_legal_decision_maker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-guardians-right-none-view-or-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The guardian's right: none, view, or write
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The guardian&#39;s right: none, view, or write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#it-is-the-same-ladder-not-a-new-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        It is the same ladder, not a new one
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-collapse-gives-up-written-down-rather-than-discovered-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the collapse gives up, written down rather than discovered later
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defaults-still-depend-on-how-the-guardianship-arose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defaults still depend on how the guardianship arose
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-there-is-no-household-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. There is no household table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. There is no household table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shared-address-still-grants-no-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared address still grants no access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-replaced-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What replaced it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-not-a-family-person-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why not a family person row
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-the-resolver-uses-these-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. How the resolver uses these tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-acting-on-behalf--recording-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Acting on behalf — recording it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-invariants-to-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Invariants to verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--relationships">Data Model — Relationships<a class="headerlink" href="#data-model--relationships" title="Permanent link">&para;</a></h1>
+<p><code>guardianship</code>, and the single right level that travels with it.</p>
+<p>Domain rationale: <a href="../../domain/02-actors/#5-acting-on-behalf">../domain/02-actors.md</a>.</p>
+<p>This document describes <strong>requirements</strong>. It contains no DDL
+(<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>);
+the ORM decides how each rule is enforced.</p>
+<hr />
+<h2 id="1-guardianship">1. <code>guardianship</code><a class="headerlink" href="#1-guardianship" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>internal identifier</td>
+<td>Never appears in a URL or an external reference</td>
+</tr>
+<tr>
+<td><code>guardian_person_id</code></td>
+<td>reference to person, required</td>
+<td>One side of the relationship</td>
+</tr>
+<tr>
+<td><code>dependent_person_id</code></td>
+<td>reference to person, required</td>
+<td>The other side. <strong>Must not equal the guardian</strong></td>
+</tr>
+<tr>
+<td><code>relationship</code></td>
+<td>enum: <code>parent</code> / <code>legal_guardian</code> / <code>foster_parent</code> / <code>step_parent</code> / <code>grandparent</code> / <code>sibling</code> / <code>other</code>, required</td>
+<td><code>sibling</code> and <code>other</code> exist because the organization will meet cases that do not fit, and forcing them into <code>parent</code> corrupts the data. A 19-year-old legal guardian of a 12-year-old sibling is real</td>
+</tr>
+<tr>
+<td><code>right_level</code></td>
+<td>enum: <code>none</code> / <code>view</code> / <code>write</code></td>
+<td><strong>The whole of the guardian's authority</strong> (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>). Current value, denormalised for the read that happens on every authorization check; history in <code>guardianship_permission</code> (§2)</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = current. <strong>Set by a person</strong> — a party to the row (§1 "Guardianship ends"), or a staff member asked to record it. <strong>Never by a job</strong>: the system takes no position on majority (<a href="../../decisions/decision-log/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>)</td>
+</tr>
+<tr>
+<td><code>is_primary_contact</code></td>
+<td>boolean, required, default false</td>
+<td>Who the organization calls in an emergency. <strong>Independent of <code>right_level</code></strong> — a grandparent with no system access at all can still be the emergency contact. See <a href="../../domain/02-actors/#6-effective-contact-for-a-minor">../domain/02-actors.md §6</a></td>
+</tr>
+<tr>
+<td><code>is_legal_decision_maker</code></td>
+<td>boolean, required, default false</td>
+<td>Distinguishes who may make legal decisions — consent for medical treatment, travel — from who provides day-to-day care. Often different people</td>
+</tr>
+<tr>
+<td><code>lives_with</code></td>
+<td>boolean, optional</td>
+<td>Deliberately optional: <em>false</em> means guardianship without cohabitation (shared custody, a guardian in another city), which is a different fact from <em>unknown</em>. Relevant to contact routing, never to authority</td>
+</tr>
+<tr>
+<td><code>custody_arrangement</code></td>
+<td>free text</td>
+<td>A description, not a computable fact, and kept that way on purpose (§7)</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>enum: <code>self</code> / <code>staff</code> / <code>import</code> / <code>court_order</code></td>
+<td><strong>Decides the starting <code>right_level</code></strong> (§2 defaults, <a href="../../decisions/decision-log/#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created">D-046</a>)</td>
+</tr>
+<tr>
+<td><code>verified_at</code></td>
+<td>timestamp, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>verified_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>evidence_reference</code></td>
+<td>free text</td>
+<td>Where the proof of guardianship is filed. For legal guardianship this matters: the organization must be able to show that it checked</td>
+</tr>
+<tr>
+<td><code>ended_reason_code</code></td>
+<td>free text / reason code</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_note</code></td>
+<td>free text</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>updated_at</code></td>
+<td>timestamps</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code>, <code>updated_by</code></td>
+<td>reference to person</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch</td>
+<td>Legacy rows only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A person may not be a guardian of themselves: the two person references must differ.</li>
+<li><code>valid_to</code>, when present, must be after <code>valid_from</code>.</li>
+<li><strong>At most one <em>current</em> guardianship per (guardian, dependent) pair.</strong> Their periods may not
+  overlap. Past ones are unlimited and expected: a court order lapses and is renewed.</li>
+<li>A dependent may have <strong>any number</strong> of simultaneous guardians, each with its own row and its
+  own <code>right_level</code>.</li>
+<li><code>is_primary_contact</code> is not unique per dependent. A child can have two primary contacts.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Lookups in both directions by person and <code>valid_to</code> — "who is this person's guardian" and
+  "who does this person guard" are equally common.</li>
+<li>A partial index on current rows only, and a second on current rows that are primary contacts:
+  the emergency-contact lookup must not scan history.</li>
+</ul>
+<h3 id="the-relation-is-a-general-graph-not-a-two-level-hierarchy">The relation is a general graph, not a two-level hierarchy<a class="headerlink" href="#the-relation-is-a-general-graph-not-a-two-level-hierarchy" title="Permanent link">&para;</a></h3>
+<p>The requirements permit:</p>
+<ul>
+<li><strong>One guardian → many dependents.</strong> Multiple rows with the same guardian. This is "one parent
+  can manage multiple children".</li>
+<li><strong>Many guardians → one dependent.</strong> Both parents, brothers' grandparents, a legal guardian
+  plus a step-parent. Nothing assumes a child has exactly two guardians.</li>
+<li><strong>A person being both.</strong> Person A is guardian of B and dependent of C. Costs nothing to allow,
+  and avoids a rewrite when a member reaches majority and becomes guardian to a younger sibling.</li>
+</ul>
+<p>You specified the first two explicitly. The third is free.</p>
+<h3 id="per-dependent-authority">Per-dependent authority<a class="headerlink" href="#per-dependent-authority" title="Permanent link">&para;</a></h3>
+<p>Authority is <strong>per <code>guardianship</code> row</strong>, never per person. A parent can hold <code>write</code> for one
+child and <code>view</code> for another — a realistic shared-custody arrangement, and one the model must
+represent without inventing a second parent identity.</p>
+<p>What changed with <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+is the <em>grain</em>, not the <em>location</em>. Per row it used to be a set of capability codes; per row it
+is now one of three values. See §2 for what that costs.</p>
+<h3 id="guardianship-ends--and-who-is-allowed-to-end-it">Guardianship ends — and who is allowed to end it<a class="headerlink" href="#guardianship-ends--and-who-is-allowed-to-end-it" title="Permanent link">&para;</a></h3>
+<p><code>valid_to</code> is set when:</p>
+<ul>
+<li><strong>a party to the row ends it.</strong> The guardian, or the adult who is the subject of it
+  (<a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>);</li>
+<li>a court order changes the arrangement, which staff record;</li>
+<li>the guardian dies — and note the organization does not record death
+  (<a href="../../decisions/decision-log/#d-034--the-person-record-holds-no-deceased-flag">D-034</a>), so this
+  too arrives as a person ending a row, with whatever reason the organization uses.</li>
+</ul>
+<p>Staff may always do it when asked. <strong>Staff may never be the only way it happens.</strong></p>
+<p><strong>The parties are principals, not third parties with a grant.</strong> A guardianship row is not the
+guardian's record, and it is not the subject's record. It is a record <em>of a relationship between
+them</em>, and both hold it. This is scope authority — the rule that authority over a nested thing
+originates at that thing (<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>)
+— applied to a household instead of a unit.</p>
+<p><strong>It is not the ownership channel, and the distinction is worth keeping.</strong> Ownership is <em>your own
+record</em>. Ending a guardianship over yourself is not editing your own record; it is dissolving a
+relationship you are one half of. Mechanically this is the <strong>guardianship channel gaining a
+direction</strong>: it already asks "may guardian G act on D's records?", and it now also answers "may a
+party act on the guardianship row itself?", for exactly three acts — ending it, adding another
+guardian, and changing the right level. The resolver still has four channels
+(<a href="../../decisions/decision-log/#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver">D-010</a>, and the channels' dispatch changed in D-079).</p>
+<p><strong>The three acts a party may take, and no others:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Act</th>
+<th>Guardian</th>
+<th>Subject (adult)</th>
+<th>Staff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>End the row</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Add another guardian over the same dependent</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Change <code>right_level</code> <strong>downward</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Change <code>right_level</code> <strong>upward</strong></td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Edit the dependent's records</td>
+<td>per <code>right_level</code></td>
+<td>own record</td>
+<td>per role</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Read the last row against the first four, because an implementation will get this backwards.</strong>
+The four acts above are <strong>not</strong> gated by <code>right_level</code>: a guardian whose right is <code>view</code>, or even
+<code>none</code>, may still end the guardianship, and a person who has never been a guardian at all may not.
+The level ranks <em>what you may do to the child's records</em>, which is the fifth row and nothing else —
+it is not a general competence over the relationship, and reading it as one would mean that
+lowering someone's access to a medical file also locked them out of leaving the arrangement.
+<strong>The party direction follows the same rule as the record direction: it can only say yes</strong>
+(<a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>).
+Being a party grants the act; not being one leaves the actor's own <code>guardianship.*</code> role
+permissions to be tried, which is how staff in the table above get their ✅s. An explicit deny still
+runs first and beats both.</p>
+<p><strong>The asymmetry, stated plainly.</strong> A guardian may appoint a guardian: anyone with authority over
+a child can give a second person that same authority with no approval from the organization. The
+ordinary case is a mother adding the father. The design does not prevent the non-ordinary case;
+it <strong>attributes</strong> it instead — who added whom, when, from which account, is audited, and the other
+party is notified. That is a deterrent and an evidence trail, not a wall. See
+<a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</p>
+<p><strong>The system does not notice birthdays in this connection.</strong> No job, no review queue, no computed
+candidate date (<a href="../../decisions/decision-log/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>,
+reversing D-024 and closing E-2).</p>
+<p><strong>Why not, including why the gentler version was also refused.</strong> The legal reasoning is unchanged
+and still correct: in many jurisdictions a parent's authority over health and school records does
+not end at 18, and in some it ends at a different age, so <em>any</em> computed date is a claim the
+system cannot support. What D-069 adds is that a <strong>review queue makes the same claim more
+quietly</strong>. A queue asserts <em>this arrangement is now suspect</em>, in every case, for every family,
+including the ones where the adult child actively wants their parent to keep handling the
+paperwork. Deferring a decision is not declining to make one, and the queue was a decision.</p>
+<p><strong>D-069 refused, D-073 supplies.</strong> Read as one decision in two halves: a legal relationship
+between two people ends when one of those people says so, and the organization's job is to be
+told rather than to permit it. Without D-073, D-069 was a refusal with no alternative; the exit
+it assumed had no door.</p>
+<p><strong>What is lost, precisely:</strong> a <em>prompt</em>, not a <em>record</em>. <code>valid_from</code>/<code>valid_to</code> mean "who is
+listed as my guardian, and since when?" is a query with a complete answer including the date each
+ended. What replaces the prompt is the report in §6, run by a person on purpose.</p>
+<h3 id="is_primary_contact-vs-is_legal_decision_maker"><code>is_primary_contact</code> vs <code>is_legal_decision_maker</code><a class="headerlink" href="#is_primary_contact-vs-is_legal_decision_maker" title="Permanent link">&para;</a></h3>
+<p>Two distinct questions that a single "is primary parent" flag conflates:</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Who do we phone at 2am when the child is injured at camp?</td>
+<td><code>is_primary_contact</code></td>
+</tr>
+<tr>
+<td>Who may sign the consent form for that treatment?</td>
+<td><code>is_legal_decision_maker</code></td>
+</tr>
+</tbody>
+</table>
+<p>They are often different people, and conflating them means either the wrong person is called or
+an invalid consent is accepted. Both are separate flags rather than one <code>is_primary</code>, because a
+child can have two primary contacts and one decision maker.</p>
+<hr />
+<h2 id="2-the-guardians-right-none-view-or-write">2. The guardian's right: <code>none</code>, <code>view</code>, or <code>write</code><a class="headerlink" href="#2-the-guardians-right-none-view-or-write" title="Permanent link">&para;</a></h2>
+<p><strong>A guardian either cannot see the child's records, can see them, or can change them.</strong> That is
+the entire vocabulary
+(<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</p>
+<p><strong><code>guardianship_permission</code></strong> survives as the <strong>history of that value</strong>, not as a capability
+list. One row per change, exactly one row open at a time, so "what was this guardian allowed to
+see in March 2024?" stays answerable — the same current-value-plus-temporal-history shape that
+<code>person</code> uses for names.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guardianship_id</code></td>
+<td>reference to guardianship, required</td>
+<td><strong>Scoped to the row, never to the (guardian, dependent) pair</strong></td>
+</tr>
+<tr>
+<td><code>right_level</code></td>
+<td>enum: <code>none</code> / <code>view</code> / <code>write</code>, required</td>
+<td>The value being recorded</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = current. Ending this row without ending the guardianship <em>changes</em> the right; a new row starts it again</td>
+</tr>
+<tr>
+<td><code>changed_reason</code></td>
+<td>free text</td>
+<td>e.g. <code>default for self-registered guardianship</code>, <code>court order 2026-03-14</code>, <code>guardian request</code></td>
+</tr>
+<tr>
+<td><code>changed_by</code></td>
+<td>reference to person, optional</td>
+<td>NULL when the default was applied by the application at creation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Exactly one row per <code>guardianship</code> may be open at a time.</li>
+<li>Every change is a row; the value on <code>guardianship.right_level</code> is always the open row's value.
+  If the two disagree, the row is authoritative and the copy is wrong.</li>
+<li><strong>Scoping to the guardianship row and not to the person pair is deliberate</strong> (<a href="../../decisions/decision-log/#d-020--guardian-permissions-are-scoped-to-the-guardianship-row">D-020</a>):
+  when a guardianship ends and a new one begins — a renewed court order, a lapse and
+  re-establishment — the rights must not silently carry over. A new relationship is a new row and
+  a new, deliberate level.</li>
+</ul>
+<h3 id="it-is-the-same-ladder-not-a-new-one">It is the same ladder, not a new one<a class="headerlink" href="#it-is-the-same-ladder-not-a-new-one" title="Permanent link">&para;</a></h3>
+<p>The system already ranks authority as <code>revoked</code>(0) &lt; <code>view</code>(10) &lt; <code>contribute</code>(20) &lt; <code>manage</code>(30)
+&lt; <code>admin</code>(40) and compares by integer rank, never by string. The three guardian rights map onto
+it: <strong><code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20.</strong></p>
+<p>This is not a convenience. A parallel enum would have meant a second authorization model with its
+own comparison rules, and the resolver would have needed a special case to know which ladder it
+was on. Guardian authority is a <strong>range of the existing ladder</strong>, and <code>write</code> landing on
+<code>contribute</code> rather than on <code>manage</code> or <code>admin</code> is what keeps a guardian from being able to do
+organization-wide things.</p>
+<h3 id="what-the-collapse-gives-up-written-down-rather-than-discovered-later">What the collapse gives up, written down rather than discovered later<a class="headerlink" href="#what-the-collapse-gives-up-written-down-rather-than-discovered-later" title="Permanent link">&para;</a></h3>
+<p>Before D-074, a guardianship carried a set of capability codes — <code>dependent.profile.view</code>,
+<code>dependent.medical.view</code>, <code>dependent.consent.give</code>, <code>dependent.fee.pay</code>, and thirteen others,
+with <code>dependent.admin</code> as a shorthand for all of them. <strong>Every <code>dependent.*</code> code is deleted.</strong></p>
+<p>The consequence is specific and should not be softened: <strong>it is no longer expressible that this
+guardian may register the child for events but may not read the medical record.</strong> The case the old
+model existed for — a court order restricting one parent's access to medical information while
+their other access continues — cannot be represented. A grandmother who was granted roster
+visibility and nothing else is now a <code>view</code> guardian, which means she can see the fee history and
+the medical file too.</p>
+<p>What still holds:</p>
+<ul>
+<li><code>write</code> is <code>contribute</code>, not <code>manage</code>. A guardian cannot do organization-wide things.</li>
+<li>Authority is per row, so a guardian of one child sees nothing of another's.</li>
+<li>The <strong>organization-wide deny channel is untouched</strong>: a <code>guardianship</code> row granting <code>write</code> can
+  still be refused by a deny, because deny is absolute and scope-independent
+  (<a href="../../decisions/decision-log/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>). What
+  was lost is a <em>narrow</em> deny — "not medical" — not the ability to say <em>no</em>.</li>
+</ul>
+<p><strong>If the split turns out to matter in operation it is a new decision, not a permission to be
+re-added quietly</strong> (<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7</a>).</p>
+<h3 id="defaults-still-depend-on-how-the-guardianship-arose">Defaults still depend on how the guardianship arose<a class="headerlink" href="#defaults-still-depend-on-how-the-guardianship-arose" title="Permanent link">&para;</a></h3>
+<p><a href="../../decisions/decision-log/#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created">D-046</a>
+survives, with one value where it used to have a set:</p>
+<table>
+<thead>
+<tr>
+<th><code>source</code></th>
+<th>Starting <code>right_level</code></th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self</code> — a parent registering their own child</td>
+<td><code>write</code></td>
+<td>They created the record and are asserting the relationship. There is nobody better placed to hold authority over it</td>
+</tr>
+<tr>
+<td><code>staff</code>, <code>import</code> — recorded by someone else</td>
+<td><code>view</code>, chosen at creation and raisable</td>
+<td>A person who did not assert the relationship is not handed authority by a default</td>
+</tr>
+<tr>
+<td><code>court_order</code></td>
+<td><code>view</code>, and <strong>raised only by the person who filed the order</strong></td>
+<td>The document says what the authority is; the system should not guess above it</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Applied by the code that creates the row, at creation — and this is the correct layer, not a
+compromise.</strong> A default depends on <em>why</em> the row is being created, which is a fact about the user's
+intent that no database rule can inspect. What must not happen is the default being applied only by
+a form: an import that omits it produces a <code>view</code> guardian where the person meant full rights, and
+nothing objects. <strong>And nothing in §6 catches this either</strong>, which is worth being plain about: a
+default that was never applied leaves no inconsistent row behind — only a quiet <code>view</code> where a
+<code>write</code> was intended, indistinguishable from a deliberate restriction. <strong>That gap is a consequence
+of §2's collapse.</strong> Before D-074 an omitted bundle of grants was visible as an empty set, and an
+empty set is reportable where <code>view</code> is not. What closes it is not a report but the shape of the
+write path: one place creates guardianships, it reads <code>source</code>, and it does not accept a
+<code>right_level</code> from a caller who is not entitled to choose one. The <code>staff</code> and <code>court_order</code> paths
+need a human choosing a value, and a default that fires before anybody is asked is not a default,
+it is a decision made on someone's behalf — the same refusal D-069 and D-076 make elsewhere.</p>
+<p><strong>Why <code>source</code> and <code>changed_reason</code> are both kept.</strong> The same word — "guardian" — now means two
+different starting scopes depending on paperwork, and the record has to say which was chosen and
+why. A guardian with read-only access and a guardian with full access are indistinguishable in
+the domain language and must not be in the data.</p>
+<hr />
+<h2 id="3-there-is-no-household-table">3. There is no <code>household</code> table<a class="headerlink" href="#3-there-is-no-household-table" title="Permanent link">&para;</a></h2>
+<p><strong>Removed</strong> (<a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>). An address
+is a <code>person_contact</code> row of type <code>postal</code>
+(<a href="../01-identity/#6-person_contact">01-identity.md §6</a>), which already exists, already keeps
+history (<code>valid_from</code> / <code>valid_to</code>), and already carries a <code>purpose</code> — <code>'billing'</code> for the
+address an invoice goes to. A separate household table was duplicating it under a different
+key, and the duplication had gone stale: its <code>postal_address</code> column was documented as
+denormalised <em>from</em> the billing contact's postal contact, with nothing keeping the copy true.</p>
+<h3 id="shared-address-still-grants-no-access">Shared address still grants no access<a class="headerlink" href="#shared-address-still-grants-no-access" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>Living at the same address does not grant any permission over another person at that
+address.</strong> A stepparent with no <code>guardianship</code> row has no access to the children's records.
+A grandparent at the address has no access. This is deliberate and it is a safeguarding
+property, not an oversight.</p>
+</blockquote>
+<p>This was true when <code>household</code> existed (<a href="../../decisions/decision-log/#d-019--household-membership-grants-no-access">D-019</a>)
+and it is true now, for a simple reason worth stating so nobody re-derives it: <strong>the access
+never came from the household tables.</strong> All authority over a child's records comes from
+<code>guardianship</code> (§1–2). Removing a table that granted nothing cannot grant anything.</p>
+<h3 id="what-replaced-it">What replaced it<a class="headerlink" href="#what-replaced-it" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Household feature</th>
+<th>Now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Billing address</td>
+<td><code>person_contact</code> of type <code>postal</code> with purpose <code>billing</code></td>
+</tr>
+<tr>
+<td>"Which children lived at this address in 2003?"</td>
+<td>A query over the temporal <code>person_contact</code> history (<a href="../../domain/03-identity-and-legacy/#4-match-signals">domain/03 §4</a>)</td>
+</tr>
+<tr>
+<td>One invoice for three siblings</td>
+<td>The fee is flat and per person (<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>); there is no family price to invoice</td>
+</tr>
+<tr>
+<td><code>fee_obligation.household_id</code></td>
+<td>Column and its index removed (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What was genuinely lost, recorded rather than glossed:</strong> a household was a <em>group</em> with a
+name and its own lifetime. Two people at one address are now related by a query, not by a row,
+so there is nowhere to hang "the Novák family" as a first-class thing and no <code>valid_from</code> for
+the grouping itself. Accepted, because nothing was using it — no code set
+<code>fee_obligation.household_id</code>, and <code>household.name</code> had no consumer. If family-level
+communication or a family discount is ever wanted, this is the decision to revisit, and the
+shape to bring back is a group with a period, not a fake person.</p>
+<h3 id="why-not-a-family-person-row">Why not a <code>family</code> person row<a class="headerlink" href="#why-not-a-family-person-row" title="Permanent link">&para;</a></h3>
+<p>Some systems model a household as a fake person so that memberships and payments can
+attach to it. Do not. It creates rows in <code>person</code> that are not people, which breaks
+identity matching, produces nonsense in name searches, and — because it is a person — can
+receive a membership, an account, and eventually permissions.</p>
+<hr />
+<h2 id="4-how-the-resolver-uses-these-tables">4. How the resolver uses these tables<a class="headerlink" href="#4-how-the-resolver-uses-these-tables" title="Permanent link">&para;</a></h2>
+<p>The guardianship channel is step 4 of the resolver
+(<a href="../../domain/06-authorization-model/#6-the-resolver">../domain/06-authorization-model.md</a>).</p>
+<p><strong>How the channel is selected — a change D-074 forces, and it is an improvement.</strong> It used to be
+selected by the permission code's namespace: a code beginning <code>dependent.</code> routed here, and the
+point of routing by prefix was that <em>no caller gets to choose which channel applies</em>, which is what
+stops one authorization rule being implemented twice, once wrong. With no <code>dependent.*</code> codes there
+is no prefix, so the channel is now selected by <strong>a fact about the request: the person the action is
+about is not the person performing it.</strong> Nobody picks a channel; the shape of the call picks it. And
+it catches what the prefix missed — a parent editing their child's address under a <code>person.*</code> code
+previously did not route through guardianship at all, because the code's name said otherwise.</p>
+<p>Asked about another person, it resolves in this <strong>fixed order</strong>, and it produces one of <strong>two</strong>
+outcomes: <strong>an allow, or no answer at all.</strong> It never answers "no".</p>
+<ol>
+<li><strong>Is there a current guardianship row</strong> between this actor and this subject, at the date being
+   asked about? <strong>If not, this step is not the channel's business and says nothing</strong> — the
+   resolver continues to the actor's own roles and grants. Silence, not refusal
+   (<a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>).</li>
+<li><strong>Is there an explicit deny</strong> covering this check? Deny wins here as everywhere else, and
+   independently of how broad the underlying grant is
+   (<a href="../../decisions/decision-log/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>) —
+   but note that this deny is found by <strong>channel 0 of the resolver, before this step runs</strong>, so
+   nothing in this list can override it. It is listed second only because it is the other reason a
+   guardian with a sufficient <code>right_level</code> still gets nothing.</li>
+<li><strong>Read the row's <code>right_level</code></strong> and rank it: <code>none</code> 0, <code>view</code> 10, <code>write</code> 20.</li>
+<li><strong>Compare against what the action needs.</strong> Reading a profile needs 10; editing a contact needs</li>
+<li>At or above the requirement → <strong>allow</strong>. Below it, or <code>none</code> → <strong>no answer</strong>, and the
+   actor's own roles are tried.</li>
+</ol>
+<p><strong>Why step 1 and step 4 fall through instead of refusing, when refusing is what this channel used
+to do.</strong> It used to be entered only by codes no role could hold, so its refusal was the whole
+answer. Now it is entered by ordinary codes that a role may also carry, and finality produces an
+absurd result the moment one person wears two hats: <strong>the parent who is also the event registrar,
+holding <code>view</code> over their own child, refused the right to mark attendance.</strong> The relationship
+should not be able to revoke a job. What is <em>not</em> given up: <code>none</code> still grants nothing (that is
+what D-074 promised, not a power to block other bases), and an organization that genuinely must
+stop a specific person touching a specific child's records uses <strong>an explicit deny</strong>, which runs
+first, everywhere, at any scope. The prohibition survives; it simply lives in the channel D-032
+built for it rather than in a capability level.</p>
+<p>Two further properties:</p>
+<ul>
+<li><strong>An ended guardianship never opens this channel again.</strong> For every question, forever, the row
+  is not current, so step 1 does not fire and no guardian authority flows. What a <em>former</em> guardian
+  may still do is what any other member may do — through their own assignment, on its own scope,
+  with the guardianship row doing nothing at all. That distinction did not exist while the channel
+  was the only road to a child's records, and it is the honest version now.</li>
+<li><strong>The date is a parameter of the question, not read from the clock.</strong> So "could this parent have
+  seen this record on the day they did it?" stays answerable, which is what auditing a past action
+  requires. As-of must be threaded into every step above, including the deny lookup — a check that
+  reads today's denies against a 2024 action invents history.</li>
+</ul>
+<p>Asked about the <strong>guardianship row itself</strong> rather than through it, the same channel answers for a
+party to it, and only for the three acts in §1's table. That branch is not a fifth channel; it is
+this one, pointed the other way.</p>
+<hr />
+<h2 id="5-acting-on-behalf--recording-it">5. Acting on behalf — recording it<a class="headerlink" href="#5-acting-on-behalf--recording-it" title="Permanent link">&para;</a></h2>
+<p>Every operation performed for a dependent must record both parties. This is not optional:
+without it, the audit trail attributes the parent's actions to the child.</p>
+<p>Every access-log row for an act-on-behalf carries, together:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Records</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actor_person_id</code></td>
+<td>the guardian who acted</td>
+</tr>
+<tr>
+<td><code>subject_person_id</code></td>
+<td>the child whose record was affected</td>
+</tr>
+<tr>
+<td><code>on_behalf</code></td>
+<td>true, explicitly — not inferred from the two ids differing</td>
+</tr>
+<tr>
+<td><code>authorization_channel</code></td>
+<td><code>guardianship</code></td>
+</tr>
+<tr>
+<td><code>guardianship_id</code></td>
+<td><strong>which row</strong> authorized it</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>allowed or refused</td>
+</tr>
+</tbody>
+</table>
+<p>Concretely, when a parent registers their child for an event, the record must answer:</p>
+<ul>
+<li><strong>Who did it?</strong> The parent.</li>
+<li><strong>For whom?</strong> The child.</li>
+<li><strong>By what authority?</strong> A specific <code>guardianship</code> row, and the <code>right_level</code> it held at the time.</li>
+<li><strong>Is that authority still valid?</strong> Re-checkable from the row's dates.</li>
+</ul>
+<p>A row that records only "the child registered" is not merely incomplete — it is <strong>wrong</strong>,
+and it is the kind of wrong that matters when someone later asks whether a parent consented
+to something.</p>
+<hr />
+<h2 id="6-invariants-to-verify">6. Invariants to verify<a class="headerlink" href="#6-invariants-to-verify" title="Permanent link">&para;</a></h2>
+<p>These were executable queries. They are now requirements stated in prose, and nothing runs them
+(<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>).</p>
+<ol>
+<li><strong>Adults still listed under a guardian.</strong> Every open guardianship whose subject is past
+   majority by <code>person.birth_date</code>. <strong>Expected in the ordinary case and not an error</strong> — this is
+   the periodic human review D-069 names as the entire control, and it exists precisely <em>because</em>
+   no job acts on that date. <strong>Run it deliberately, never nightly</strong>: a report nobody reads is a
+   queue, and the queue was withdrawn.</li>
+<li><strong>Rights outliving the relationship.</strong> A <code>guardianship_permission</code> history row still open while
+   its guardianship has ended. This is the exact failure that scoping to the row was meant to
+   prevent; worth verifying because an application bug or a hand-edit can still create it.</li>
+<li><strong>A dependent with no primary contact.</strong> A current guardianship set in which nobody is flagged
+   as the emergency contact.</li>
+<li><strong>A minor member or participant whom no guardian can see.</strong> Two shapes, one report, because
+   they are the same gap arriving by different routes: <strong>no guardianship row at all</strong>, and <strong>a full
+   set of guardians with every one of them at <code>right_level = none</code></strong>. Age comes from
+   <code>person.birth_date</code> — there is no membership category to read it from, because membership is
+   ageless (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>). <strong>This is a
+   safeguarding gap, not a data-quality nit</strong>: the organization holds a member it cannot contact in
+   an emergency and cannot obtain consent from. It should alert, not log. This check is one of the
+   reasons <code>guardianship</code> is a required part of the model rather than an optional convenience.</li>
+</ol>
+<p><strong>The second half was added by <a href="../../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>,
+   and it is not a hypothetical refinement.</strong> A direct message to a minor is mirrored to the
+   guardians at <code>view</code> or <code>write</code> — deliberately <em>not</em> to a guardian at <code>none</code>, because <code>none</code> means
+   the organization already decided that party sees nothing about the child. Without this half of the
+   check, a child whose guardians are all <code>none</code> would look, in every report, like a child with
+   guardians, while in fact nobody outside the child receives a copy of anything sent to them. <strong>A
+   right level that silently removes the only safeguarding net is a right level nobody understands
+   anymore</strong>, and this report is what keeps <code>none</code> meaning what it says.
+5. <strong>A guardian younger than the dependent</strong>, where both birth dates are known. Almost always a
+   data-entry error, and detectable only when both dates survived the import.
+6. <strong><code>guardianship.right_level</code> disagrees with its own open history row.</strong> A new invariant created
+   by D-074's current-value-plus-history shape. If it is ever non-empty, the copy is wrong and the
+   row is right.</p>
+<p><em>Deleted with the model that needed it:</em> "a guardian permission outside the <code>dependent.*</code>
+namespace" — there is no <code>dependent.*</code> namespace any more. "Households with no address" went with
+<a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>; the nearest surviving signal is
+a live billing purpose with no postal address behind it, which is a finance problem.</p>
+<p>Note what changed when membership became ageless. Check 4 used to read
+<code>membership_type.category = 'child'</code>; with one membership type
+(<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>)
+that column does not exist, and the question is now answered from <code>person.birth_date</code>. The signal
+is arguably better than it was: "this person is under 18 today" rather than "this person's
+membership row was categorised as a child when it was opened", which could be years out of date.</p>
+<hr />
+<h2 id="7-open-issues">7. Open issues<a class="headerlink" href="#7-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>~~Whether guardianship should auto-expire at majority, or always require review.~~
+  <strong>Neither</strong> — the system takes no position on majority, and the review queue this file
+  recommended was withdrawn with it (§1, <a href="../../decisions/decision-log/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>).</li>
+<li>~~How does an adult end a guardianship over themselves?~~ <strong>They end it, themselves, as a party
+  to the row</strong> — <a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>.</li>
+<li><strong>New:</strong> a guardian may appoint a guardian, with no approval from the organization. Attributed
+  and notified, not prevented. <a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</li>
+<li><strong>New:</strong> one right level cannot separate the medical record from the profile, which is the case
+  the deleted capability codes existed for.
+  <a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7</a>.</li>
+<li><strong>Resolved: <code>household</code> is removed entirely</strong> — answered "drop household entirely", now
+  <a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a> (§3). Addresses live on
+  <code>person_contact</code>.</li>
+<li>Whether a guardian may act for a dependent who is also a member in their own right — e.g.
+  can a parent register their adult child for an event, if the child consents? Recommend an
+  explicit consent-based delegation rather than a guardianship, since the legal basis
+  differs. The <em>group</em> version of this is now answered by audiences
+  (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
+<li>Whether <code>custody_arrangement</code> free text should be structured. Recommend not — custody
+  orders vary too much to model, and a wrong model is worse than honest prose.</li>
+<li><strong>Confirm that the membership gate's guardianship carve-out is intended.</strong> A lapsed parent keeps
+  their <code>right_level</code> (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),
+  which means an unpaid parent and a paid one are indistinguishable inside that namespace. It is
+  almost certainly right — guardianship comes from a legal relationship, not a membership — but it
+  should be a stated choice, not a side effect of where the gate was placed.</li>
+</ul>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: the default grant at
+guardianship creation (now one level, chosen by <code>source</code> — D-046); whether fees are per person or
+per household (per person, flat — D-037, which retired the load-bearing half of <code>household</code> and led
+to its removal — D-057); and background checks (none are recorded — D-043).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

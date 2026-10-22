@@ -1,0 +1,2566 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/06-audit-and-import/">
+      
+      
+        <link rel="prev" href="../05-authorization/">
+      
+      
+        <link rel="next" href="../07-finance/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Audit and Import - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--audit-and-import" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Audit and Import
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-two-audit-trails-and-why-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Two audit trails, and why both
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-audit_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. audit_log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. audit_log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-the-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 The trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-redaction-before-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Redaction before logging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-history-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 History query
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-import-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Import pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Import pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-legacy-fieldcode-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The legacy field→code mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reversibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reversibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Idempotency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-date-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-date inference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#31-what-a-roster-actually-evidences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 What a roster actually evidences
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-redaction-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Redaction log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-two-audit-trails-and-why-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Two audit trails, and why both
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-audit_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. audit_log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. audit_log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-the-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 The trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-redaction-before-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Redaction before logging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-history-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 History query
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-import-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Import pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Import pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-legacy-fieldcode-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The legacy field→code mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reversibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reversibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Idempotency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-date-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-date inference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#31-what-a-roster-actually-evidences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 What a roster actually evidences
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-redaction-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Redaction log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--audit-and-import">Data Model — Audit and Import<a class="headerlink" href="#data-model--audit-and-import" title="Permanent link">&para;</a></h1>
+<p><code>audit_log</code>, <code>import_batch</code>, staging tables, and the redaction log.</p>
+<p><code>access_log</code> (the authorization audit trail) is in
+<a href="../05-authorization/#9-access_log">05-authorization.md</a>. This document covers the
+data-change audit trail, the legacy import pipeline, and erasure.</p>
+<hr />
+<h2 id="1-two-audit-trails-and-why-both">1. Two audit trails, and why both<a class="headerlink" href="#1-two-audit-trails-and-why-both" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>access_log</code></th>
+<th><code>audit_log</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Records</td>
+<td>Who did what, and by what authority</td>
+<td>Which fields of a row changed, and their values before and after — <strong>except a person's descriptive values, which are never in the entry</strong> (§2.2)</td>
+</tr>
+<tr>
+<td>Answers</td>
+<td>"Who accessed this child's record, and were they allowed to?"</td>
+<td>"When did this person's address change, and who changed it?"</td>
+</tr>
+<tr>
+<td>Volume</td>
+<td>Very high</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Raised by</td>
+<td>Application code, on every permission check and action</td>
+<td><strong>Every write to an audited table, on every path</strong> — §2.1 names who owes that write now that no trigger is defined anywhere</td>
+</tr>
+</tbody>
+</table>
+<p>Keeping them separate is deliberate. They have different retention needs, different query
+patterns, and different access permissions. Merging them produces a table that is too
+large to query and too sensitive to expose to anyone who needs one half of it.</p>
+<p><strong>One wording change, because this table used to ask about a thing that no longer exists.</strong> The
+first cell read "who accessed this child's <em>medical record</em>", a phrase this corpus cited in five
+places and defined in none. <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+resolved it by removing the referent rather than by building it: there is one record about a person,
+and everything in it other than name, gender and age lives in <code>person_attribute</code>
+(<a href="../09-attributes/">09-attributes.md</a>). <strong>The question this trail answers is unchanged and is now
+sharper</strong> — it is asked about the whole record, which is the thing <code>person.view</code> really reaches.</p>
+<hr />
+<h2 id="2-audit_log">2. <code>audit_log</code><a class="headerlink" href="#2-audit_log" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>transaction_id</code></td>
+<td>integer, required</td>
+<td>Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership → open a unit participation) reads as one event rather than three unrelated ones</td>
+</tr>
+<tr>
+<td><code>actor_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Taken from the request context, not from the row. <code>NULL</code> for migrations, imports, and batch jobs</td>
+</tr>
+<tr>
+<td><code>actor_label</code></td>
+<td>text, optional</td>
+<td><code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code> — for changes with no person actor. Otherwise a forensic gap</td>
+</tr>
+<tr>
+<td><code>operation</code></td>
+<td>text, required</td>
+<td>One of: <code>insert</code>, <code>update</code>, <code>delete</code></td>
+</tr>
+<tr>
+<td><code>table_name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>record_id</code></td>
+<td>surrogate id, required</td>
+<td>The row that changed. No reference: the table is named per row, so it points at any table in the database</td>
+</tr>
+<tr>
+<td><code>changed_fields</code></td>
+<td>list of text</td>
+<td>Which columns changed. Enables targeted history queries without parsing JSON</td>
+</tr>
+<tr>
+<td><code>old_values</code></td>
+<td>free-form jsonb, optional</td>
+<td><strong>Redacted before insert.</strong> See §2.2</td>
+</tr>
+<tr>
+<td><code>new_values</code></td>
+<td>free-form jsonb, optional</td>
+<td><strong>Redacted before insert.</strong> See §2.2</td>
+</tr>
+<tr>
+<td><code>on_behalf_of</code></td>
+<td>reference to person, optional</td>
+<td>Set when the actor was acting for another person. Mirrors <code>access_log.on_behalf</code> (04-relationships.md §5)</td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ip_address</code></td>
+<td>network address, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>One row's history: table name and <code>record_id</code>, newest <code>occurred_at</code> first.</li>
+<li>One actor's actions, newest first.</li>
+<li>Everything in one transaction, by <code>transaction_id</code>.</li>
+<li>By time alone, newest first.</li>
+<li>Rows by a <em>member of</em> <code>changed_fields</code>. The targeted history queries ask "which rows
+  changed this column", so the list has to be searchable element-wise rather than as a whole
+  value.</li>
+</ul>
+<h3 id="21-the-trigger">2.1 The trigger<a class="headerlink" href="#21-the-trigger" title="Permanent link">&para;</a></h3>
+<p><strong>The heading is kept because the obligation under it is unchanged; what changed is that nothing
+in this repository defines a trigger any more.</strong> A trigger used to be how this section guaranteed
+its own rule, and D-072 removed it without removing the rule, so the rule is now stated as what
+it is: <strong>every insert and every update to an audited table writes exactly one <code>audit_log</code> row,
+and the change and its audit row stand or fail together.</strong> "The audit trail usually has it" is
+not a version of this rule — the trail is how the organization answers "who changed this child's
+address, and when?", and an answer that depends on which code path made the change is not an
+answer. <strong>The layer that owes it is the write itself, on every path</strong>: the screens, the legacy
+import, the yearly expiry sweep, a bulk reorganisation, and a row somebody corrects by hand.
+Model-layer validation logs the intended path, which is the only path that was never at risk;
+check 5 in §5 is the net under the rest, and it is a report, not a guard.</p>
+<p>The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
+detail: the redaction step has to run before the write, and the "nothing changed" test has to run
+before anything is spent on a row that would log noise.</p>
+<ol>
+<li>Read the acting person and the on-behalf-of person from the request context
+   (<code>app.current_person_id</code>, <code>app.on_behalf_of</code>); an unset or empty value means no actor,
+   not an error.</li>
+<li>On an <strong>insert</strong>, take the new row as the after-image.</li>
+<li>On an <strong>update</strong>, take both the old and the new row, and work out the changed fields:
+   the keys present in both images whose values differ, named in key order.</li>
+<li>If that comparison found nothing, stop and write nothing — a no-op update must not log
+   noise.</li>
+<li>On a <strong>delete</strong>, take the old row as the before-image; there is no after-image.</li>
+<li>Redact both images (§2.2): the credential values that must never be logged at all, and —
+   where the row belongs to a redacted person — the personal data erasure has already removed
+   from the business tables. Everything else is stored as it stands, including a person's
+   descriptive values, which are guarded by §8 item 7 rather than stripped here.</li>
+<li>Write one audit row carrying: the actor and the on-behalf-of persons, the operation as
+   lower-cased <code>insert</code>, <code>update</code> or <code>delete</code>, the table name, the record id taken from the
+   new row and falling back to the old one, the changed fields, both redacted images, and
+   the session id, ip address and request id from the request context.</li>
+<li>Change nothing about the row being written. The audit row describes the change and never
+   amends it — and it commits in the same transaction as the change. That togetherness is the
+   property a trigger used to supply for nothing, and the one a logging step written beside the
+   write has to supply deliberately.</li>
+</ol>
+<p><strong>The obligation covers inserts and updates on</strong> <code>person</code>, <code>membership</code>, <code>guardianship</code>,
+<code>role_assignment</code> and <code>access_grant</code>; on <code>role</code> and <code>role_permission</code> — the role <em>tables</em>,
+not just the assignments, because a role is runtime data the organization edits (D-052) and
+editing one changes effective permissions for every holder at once with no assignment
+written, so without these two tables the single largest privilege change available in the
+system leaves no trace on any other audited row; and on every remaining business table — the
+exact set is still open in §6, and the recommendation there is all of them. <strong>There is nothing
+left to attach this to, which changes what the sentence is and not what it covers.</strong> It is the
+list of tables for which a write path owes an audit row; a business table created next year is
+inside it from the day it exists; and check 5 in §5 is what notices when the list and the write
+paths drift apart.</p>
+<p><strong><code>person_attribute</code> is inside that obligation on exactly the same terms as any other business table,
+and the sentence is worth writing down because this document asked for an exception here and was
+refused.</strong> A write to a descriptive value owes its audit row like any write, and it carries its
+before and after images like any write
+(<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8 item 7</a>). The reason no exception
+survives is that both halves of the design collapse without one:
+<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+chose overwrite-in-place on the strength of this trail being the only history a value has, so a trail
+recording <em>a value changed</em> without recording which one would be a history of nothing; and
+<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+says a diagnosis is not a different kind of fact from a shoe size, so excluding attribute values from
+the payload while <code>person_contact</code> changes are logged with their values would be a sensitive <em>subset</em>
+of the person record re-enacted inside the logging rules — the privileged corner arriving as a list of
+table names after it was deleted as a list of permission names.</p>
+<p><strong>Therefore this table holds a child's allergy list in the clear, in a table designed to be read by
+auditors and kept longer than the record it describes.</strong> That is the design, not an accident of it,
+and what it means is that the guard on <code>audit_log</code> is now load-bearing in a way it was not: <strong>an audit
+entry about a person is as sensitive as the person data it quotes</strong>, which is stated as a requirement
+on <code>audit.view</code>'s sensitivity mark in
+<a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>
+and argued in <a href="../05-authorization/#9-access_log">05-authorization.md §9</a> — where the case against
+copying data into a less-guarded place applies to this table directly, since this table is the copy.
+The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
+worry is a table nobody audits, and here it is a table whose payloads outrank its own permission. No
+check in §5 can see that — a sensitivity mark is a line in a document, not a row in the database — so
+it is a review item with exactly one place it is written down, and that is the fragility.</p>
+<blockquote>
+<p><strong><code>role</code> and <code>role_permission</code> are audited for a reason the other tables do not share.</strong>
+Everywhere else, the audit log answers "who changed this record?". Here it answers the
+harder question the <em>next</em> incident will ask: <strong>"what did role X grant on the date this
+decision was made?"</strong> Because a role edit rewrites the meaning of every assignment that
+points at it, in place, there is no way to answer that from the assignments — the
+assignments did not change. The log is the only record of what the role said at the time.</p>
+</blockquote>
+<p><strong><code>DELETE</code> is intentionally outside the audited operations on business tables</strong>, because
+nothing in this data model is hard-deleted (see
+<a href="../00-conventions/#4-deletion-policy">00-conventions.md</a>). Staging tables do get deleted;
+they are not audited. The absence is a consequence of the deletion policy rather than a gap in
+the obligation above. <strong>It is, however, true of ordinary operation and false of exactly two
+moments</strong>, and saying so is the honest version of the paragraph.</p>
+<p><strong>The first is §3's import revert,</strong> which <em>does</em> hard-delete business rows — the <code>person</code>,
+<code>membership</code> and <code>unit_participation</code> rows a batch created — and those rows were live, referenced and
+visible to real users before they went. So <strong>a revert writes audit entries for its deletes, naming the
+batch and the row it removed.</strong></p>
+<p><strong>The second is §4's erasure,</strong> which deletes the <code>person_attribute</code> rows of the person being
+anonymised (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a> records why that one table is
+erased by deletion rather than by overwriting, and the condition on which that stays safe — nothing may
+reference an attribute row).
+It is recorded <strong>once, in <code>redaction_log</code>, naming <code>person_attribute</code> in <code>redacted_tables</code></strong> — and not
+as one <code>audit_log</code> row per erased value. That is a consequence of §2.2 rather than an exception to the
+revert rule, and the difference is worth seeing: revert deletes rows whose <em>contents</em> are safe to
+quote and whose <em>existence</em> is what someone will ask about, while erasure deletes rows whose contents
+must not be quotable afterwards and whose existence is the only fact that may survive. <strong>Note what
+this argument is, because §2.1's argument is the opposite one and both have to be true at once:</strong> per-value
+audit entries here would either write the erased value into a row that outlives the erasure — which is
+a redaction that failed, and precisely the copy §2.2 exists to destroy — or accumulate hundreds of
+identical rows whose entire content is "something was erased", which is exactly what §4's log is for.
+So values are quoted in the trail as a rule, and the rule stops at the moment the person they describe
+asks not to be described any more.</p>
+<p><code>DELETE</code> is outside the audited operations everywhere else only because there is no <strong>third</strong> path
+that reaches a business row with a delete. That makes revert the one place the list in §5 check 5
+cannot be derived from table names alone: an audited <em>operation</em> rather than an audited <em>table</em>,
+which is why check 5's replacement assertion enumerates the paths that may delete, not just the
+tables that may be written. Erasure is the second such path and belongs on that enumerated list too;
+it audits nothing per row, so the assertion has to know it exists rather than infer it.</p>
+<h3 id="22-redaction-before-logging">2.2 Redaction before logging<a class="headerlink" href="#22-redaction-before-logging" title="Permanent link">&para;</a></h3>
+<p><strong>Two mechanisms operate here. An earlier draft of this section described three, and the third has
+been withdrawn below rather than quietly deleted, because the mistake is the useful part.</strong></p>
+<blockquote>
+<p><strong>An audit log that stores the data it audits is a second copy of that data, with weaker access
+controls and a longer retention period.</strong> This sentence is still true, and it still describes
+<code>audit_log</code>, which holds the whole person record in its payloads. <strong>What changed is which half of it
+is treated as the defect.</strong> The first response was to empty the payload; the answer here is the
+other half — the log's access controls and retention are what is wrong about the copy, and emptying
+the payload fixes neither while destroying the reason the table exists. See
+<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md §8 item 7</a> and
+<a href="../05-authorization/#9-access_log">05-authorization.md §9</a>, which argues against copying data into a
+less-guarded place and, read against this table, names the copy in question.</p>
+</blockquote>
+<p><strong>Mechanism one is a small set of values that must never enter the trail at all.</strong> Credentials,
+tokens, the secret half of an integration: for these, <em>being in a log</em> is the harm, and no guard is
+wide enough to make them safe there. This is the only job the key-name list below has.</p>
+<p><strong>Mechanism two is erasure reaching payloads that were written lawfully at the time.</strong> Redacting a
+person removes their values from images already in the trail (§4, and check 6 in §5); nothing here
+prevents those values from having been written, and the erasure is what unmakes them.</p>
+<p>The redactor takes one table name and one row image and does this:</p>
+<ol>
+<li>If there is no image at all, there is nothing to redact — return no value.</li>
+<li>For each key in the credential list — <code>secret_hash</code> and the integration secrets beside it — if the
+   image carries that key, replace its value with the marker <code>«redacted»</code>. Keys the image does not
+   have are left alone. The list is applied wherever a listed key turns up, in any table.</li>
+<li>Return the image.</li>
+</ol>
+<p><strong>That is the whole mechanism, and the list is short on purpose.</strong> It is keyed on field names, which is
+the right shape for it: a name-based rule is the only kind that reaches a credential hidden in an
+unexpected column, and a credential is safe behind no guard, so the rule has to fire on sight.</p>
+<p><strong>The rule that used to sit above these steps, and why it is gone.</strong> An earlier draft reduced a
+<code>person_attribute</code> image to its two references — <code>person_id</code> and <code>attribute_definition_id</code>, saying
+<em>whose</em> fact and <em>which</em> fact and nothing of its content, with no <code>«redacted»</code> marker either — on the
+grounds that a log read by more people than the record should not hold what the record holds. It is
+withdrawn, for two reasons that came from the decisions this section already reflects:</p>
+<ul>
+<li><strong>It re-created, inside the logging rules, the sensitive subset D-083 deleted</strong>
+  (<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data</a>).
+  A rule that strips attribute values while <code>person_contact</code> changes are logged with their values is a
+  list of more-sensitive-than fields wearing a table name instead of a permission name.</li>
+<li><strong>It left D-085's history empty.</strong> Overwrite-in-place was chosen because the trail is the history;
+  an entry that records <em>a value changed</em> without recording which one is a history of nothing, and the
+  question this table's history is actually asked for — <em>what did we believe about this child in
+  March?</em> — would have been unanswerable by design rather than by accident.</li>
+</ul>
+<p>What the draft got right survives as the guard instead: the copy <em>is</em> as sensitive as what it quotes,
+so the permission that reads it belongs at the top of the catalog
+(<a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>), and
+that is a line in a document rather than a mechanism, which is the honest weakness.</p>
+<p><strong>What the credential list is not, stated where a reviewer will read it.</strong> It is not the thing
+protecting personal data, and it cannot become that, because <strong>a list of names is only as good as
+somebody having predicted the name of every field that would ever matter</strong> — and this system generates
+those names at runtime, one per code the organization invents. <code>allergy</code> is not on the list and never
+will be, which is now the correct state of affairs rather than a hole: an allergy is a value in
+<code>person_attribute</code>, it is logged, and it is protected by who may read the table it was logged into.</p>
+<p><strong>Which half of that sentence is the requirement, and which was a mechanism.</strong> "In the trigger"
+used to appear here, and D-072 deleted the trigger. What survives is the ordering, which is the
+part with the teeth and which now applies to mechanism one alone: <strong>credential stripping runs on the
+way in, never in a cleanup job that might not run.</strong> The trigger was one way to guarantee that; a code
+path that redacts, then writes, is another; <strong>a code path that writes and repairs afterwards is not
+that</strong>, because for one transaction the secret is in the log and readable, and because the repair <em>is</em>
+the cleanup job this sentence forbids. With no trigger there is nothing stopping the third option
+except whoever writes it, which is why the sentence is stated as a rule about ordering rather than
+about a database feature. Mechanism two runs in the opposite direction — it reaches rows already
+written, which is the only way an erasure can affect a trail that must not be rewritten — and the two
+are not in tension because one is about a value that should never have been written and the other is
+about a value that was. See
+<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md §8</a> for what else the move to
+generated schema took out of this section's defence in depth.</p>
+<p><strong>The personal-data entries in the old redaction list are gone, and they were removed rather than
+renamed.</strong> It used to read <code>secret_hash</code>, <code>notes</code>, <code>custody_arrangement</code>, <code>termination_note</code>,
+<code>rejection_note</code>, <code>status_note</code>, on the theory that free text is where a diagnosis hides; a second,
+shorter <em>always-redacted</em> set repeated <code>notes</code> and <code>custody_arrangement</code> for emphasis, which already
+told you the mechanism was running on intuition about which fields looked sensitive. All of them are
+logged now, for the same two reasons as above: the fields are person data and D-083 refuses to grade
+person data, and a scrubbed history is a history that did not happen. <strong>The residual risk is stated
+plainly rather than left implicit — an audit table holding a child's descriptive values is a wider
+surface than any single screen, and the thing standing between it and a volunteer with an interest is
+one sensitivity mark plus whoever implements it.</strong></p>
+<p><strong>What still argues against <code>person.notes</code>, and it is not this.</strong>
+Consider whether
+<code>person.notes</code> should exist at all: it is the last free text about a person outside the attribute
+vocabulary, the vocabulary is where such a sentence is visible to a report and to a curator rather
+than only to whoever next opens the record, and the open question is argued there in
+<a href="../01-identity/#what-is-deliberately-not-on-this-table">01-identity.md §2</a> as well as here.</p>
+<h3 id="23-history-query">2.3 History query<a class="headerlink" href="#23-history-query" title="Permanent link">&para;</a></h3>
+<p>The full change history of one row is found by taking the <code>audit_log</code> rows for its table
+name and record id, newest <code>occurred_at</code> first, and reading out when it happened, the
+operation, which fields changed, the old and new values, and who did it — the actor's
+person name where there is an actor, and <code>actor_label</code> where there is not.</p>
+<p><strong>For a <code>person_attribute</code> row this query <em>is</em> the history, not a shadow of it.</strong> Values are
+overwritten in place
+(<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>),
+so every value a child's allergy list ever held sits under one <code>record_id</code>, and this is where the
+question <em>"what did we believe about this child in March, and who wrote it down?"</em> gets answered. The
+consequence is the one §2.2 spends its length on, restated where it bites: <strong>a history screen over this
+table is a person-data surface.</strong> It is reached through <code>audit.view</code>, and it deserves to be reached
+through <code>person.view</code> too — a reader who may see that an allergy was recorded in 2019 but may not see
+the allergy is holding the second question and will ask it out loud. The guard on the trail is what is
+relied on; a per-entry <em>"could this reader see this field"</em> check inside the history view was
+considered and left unimplemented, because it would mean running the resolver per audit row against a
+value that no longer exists anywhere as a row to resolve against. It is a registered question rather
+than an omission now:
+<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>.</p>
+<hr />
+<h2 id="3-import-pipeline">3. Import pipeline<a class="headerlink" href="#3-import-pipeline" title="Permanent link">&para;</a></h2>
+<p>Six stages, from
+<a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md</a>.
+The guiding requirements: <strong>idempotent</strong>, <strong>reversible per batch</strong>, <strong>never overwrites
+self-registered data</strong>, <strong>preserves provenance</strong>.</p>
+<p><strong><code>import_batch</code></strong> — one run of the pipeline, and the unit revert works on.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source_type</code></td>
+<td>text, required</td>
+<td>One of: <code>csv</code>, <code>xlsx</code>, <code>json</code>, <code>sql_dump</code>, <code>manual_entry</code>, <code>other</code></td>
+</tr>
+<tr>
+<td><code>source_reference</code></td>
+<td>text, optional</td>
+<td>Where the file lives, or what it is. Enough to find the original again</td>
+</tr>
+<tr>
+<td><code>source_hash</code></td>
+<td>text, optional</td>
+<td>SHA-256 of the source file. Detects re-importing the same file under a new name</td>
+</tr>
+<tr>
+<td><code>row_count</code></td>
+<td>integer, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>One of: <code>staging</code>, <code>parsed</code>, <code>matching</code>, <code>review</code>, <code>applying</code>, <code>applied</code>, <code>reverted</code>, <code>failed</code>. Default <code>staging</code></td>
+</tr>
+<tr>
+<td><code>dry_run</code></td>
+<td>boolean, required</td>
+<td>Default false. A dry run parses and matches but writes nothing to business tables</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>applied_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reverted_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reverted_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>revert_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>field_mapping</code></td>
+<td>free-form jsonb, optional</td>
+<td><strong>This batch's raw-column → attribute-code map</strong>: one entry per raw column in the source, each naming one code or <code>discard</code> with a reason. Fixed for the batch, reviewed as a unit, editable only as a new decision — see <em>The legacy field→code mapping</em> below, which explains why the grain is a column and not a row</td>
+</tr>
+<tr>
+<td><code>error_summary</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Batches by status — the queue of runs that are not finished.</li>
+</ul>
+<p><strong><code>staging_import</code></strong> — one source row, kept exactly as it arrived.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>batch_id</code></td>
+<td>reference to import batch, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source_row_number</code></td>
+<td>integer, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>raw_data</code></td>
+<td>free-form jsonb, required</td>
+<td>The row VERBATIM. Never modified. This is the evidence</td>
+</tr>
+<tr>
+<td><code>source_row_hash</code></td>
+<td>text, required</td>
+<td>Deterministic hash of the meaningful fields. The idempotency key: re-importing a file matches on this and skips already-applied rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>(batch_id, source_row_hash)</code> is unique — one staged row per batch per source row. It
+  covers all rows, not only unapplied ones.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>The staged rows of one batch.</li>
+</ul>
+<p><strong><code>staging_import_row</code></strong> — what the parser made of that source row, and what became of it.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>staging_id</code></td>
+<td>reference to staging row, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_given_name</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_family_name</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_name_normalised</code></td>
+<td>text, optional</td>
+<td>Diacritics stripped, casefolded</td>
+</tr>
+<tr>
+<td><code>parsed_birth_date</code></td>
+<td>date, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_birth_precision</code></td>
+<td>text, optional</td>
+<td>Reuses the <code>person.birth_date_precision</code> values</td>
+</tr>
+<tr>
+<td><code>parsed_unit_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_unit_name</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_period_from</code></td>
+<td>date, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parsed_period_to</code></td>
+<td>date, optional</td>
+<td>Often NULL; see the inference rules below</td>
+</tr>
+<tr>
+<td><code>parse_status</code></td>
+<td>text, required</td>
+<td>One of: <code>ok</code>, <code>warning</code>, <code>error</code>. Default <code>ok</code></td>
+</tr>
+<tr>
+<td><code>parse_warnings</code></td>
+<td>list of text</td>
+<td>For example <code>birth_date_year_only</code>, <code>unit_not_found</code>, <code>ambiguous_name</code>. Warnings do not block; errors do</td>
+</tr>
+<tr>
+<td><code>resolution</code></td>
+<td>text, optional</td>
+<td>One of: <code>link_existing</code>, <code>create_new</code>, <code>discard</code>, <code>deferred</code></td>
+</tr>
+<tr>
+<td><code>resolved_person_id</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolved_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolved_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>resolution_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>applied</code></td>
+<td>boolean, required</td>
+<td>Default false</td>
+</tr>
+<tr>
+<td><code>applied_person_id</code></td>
+<td>reference to person, optional</td>
+<td>What this row created</td>
+</tr>
+<tr>
+<td><code>applied_membership_id</code></td>
+<td>reference to membership, optional</td>
+<td>What this row created</td>
+</tr>
+<tr>
+<td><code>applied_participation_id</code></td>
+<td>reference to unit participation, optional</td>
+<td>What this row created</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>The staged rows of one parsed row.</li>
+<li>The review queue: parse status and resolution, restricted to rows with no resolution or a
+  <code>deferred</code> one. Decided rows are not in it.</li>
+<li>Applied rows only.</li>
+</ul>
+<h3 id="the-legacy-fieldcode-mapping">The legacy field→code mapping<a class="headerlink" href="#the-legacy-fieldcode-mapping" title="Permanent link">&para;</a></h3>
+<p>Any legacy column that is not identity machinery becomes an attribute code, and <strong>this is where the
+vocabulary comes from</strong>: most of the first two hundred definitions arrive here rather than from a
+deliberate act of design (<a href="../09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">09-attributes.md §7</a>
+owns the rule, and states why; what follows is only what the pipeline has to obey).</p>
+<ul>
+<li><strong>Every raw field name in a batch maps to a code, or is mapped to <code>discard</code> with a reason, or the
+  batch stops.</strong> An unmapped column maps to a <strong><code>proposed</code></strong> code named from the raw column — never to
+  an existing code picked by similarity, because an import-time merge is invisible and unreviewable
+  and a human makes that judgement afterwards, with both codes in front of them.</li>
+<li><strong>The mapping is recorded on the batch</strong>, in <code>import_batch.field_mapping</code>, so a mapping later found
+  wrong can be re-run rather than reverse-engineered from the damage it did. The mapping is not the
+  schema: changing it is an act of curation with an audit entry, not a migration.</li>
+<li><strong>Which table it is <em>not</em> on, because the wrong one is plausible.</strong> An earlier draft of this
+  subsection said the mapping sat "on <code>staging_import_row</code> alongside the raw value", and that is the
+  wrong grain twice over: <code>staging_import_row</code> is one row per <em>person</em> and holds a fixed set of
+  <code>parsed_*</code> columns, so a per-column fact has nowhere to sit there, and anything per-row would be a
+  mapping that can differ between two people in the same batch — which is precisely how one legacy
+  column ends up as two codes, quietly, with nothing to review. The raw values themselves stay where
+  they always were, verbatim in <code>staging_import.raw_data</code>; the map is one table up.</li>
+</ul>
+<p><strong>What this costs is a stage that is allowed to fail loudly.</strong> A batch with unmapped columns does not
+apply, and somebody has to say what those columns were — friction at the worst possible moment, since
+imports are always late. It is the cheaper failure. The alternative is a silent drop, which is the
+same loss as deleting the column and the same one §3's guiding requirements were written against: in
+2031 someone asks what the old system's <code>POZNAMKA</code> column held, and the answer is that a script
+nobody still works with decided it was not interesting.</p>
+<h3 id="reversibility">Reversibility<a class="headerlink" href="#reversibility" title="Permanent link">&para;</a></h3>
+<p><code>staging_import_row</code> holding the three created ids is what makes per-batch revert possible.
+Revert removes only what this batch created, and it runs in this order:</p>
+<ol>
+<li>Take every staged row of the batch being reverted.</li>
+<li>Undo what they created, <strong>dependents first</strong>: the <code>unit_participation</code> rows, then the
+   <code>membership</code> rows, then the <code>person</code> rows — and a row the batch created outright is
+   removed rather than merely amended.</li>
+<li>Finally mark the staged rows themselves unapplied.</li>
+</ol>
+<p><strong>Revert is only safe before live data references the imported rows.</strong> Once a real person
+has been linked, or an event attendance recorded against an imported membership, deleting
+the row breaks it. Therefore:</p>
+<ul>
+<li>Revert is allowed only while <code>import_batch.status = 'applied'</code> <strong>and</strong> no row created by
+  the batch has been referenced by a later live record.</li>
+<li>Detecting that requires checking for references — implement as a pre-flight check that
+  reports which rows cannot be reverted, and refuse rather than partially applying.</li>
+<li>After that window, corrections are made by editing the data, not by reverting. This is
+  the honest behaviour; a "revert" that silently orphans references is worse than refusing.</li>
+<li><strong>Step 2's removals are audited like any other write</strong>, one entry per row deleted, each
+  naming the batch. This is the only hard delete a business row can meet, and it is precisely
+  the case where someone will later ask "this person existed in March and is gone now — what
+  happened?" An undo that erases the rows and leaves no trace of having erased them is not a
+  rollback but a cover-up, and it is the same undo a reviewer is trusting when they agree to
+  revert at all. <a href="../00-conventions/#4-deletion-policy"><code>00-conventions.md §4</code></a> is why no other
+  path is allowed to do this.</li>
+</ul>
+<blockquote>
+<p><strong>Bias toward import in small batches and review before applying.</strong> Reversibility is a
+safety net, not a workflow.</p>
+</blockquote>
+<h3 id="idempotency">Idempotency<a class="headerlink" href="#idempotency" title="Permanent link">&para;</a></h3>
+<p>The <code>(batch_id, source_row_hash)</code> uniqueness above makes re-staging cheap. Idempotency across
+<em>batches</em> needs the hash to be computed from the row's semantic content, not its position:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>source_row_hash = sha256(
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    normalise(given_name) || '|' ||
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    normalise(family_name) || '|' ||
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    coalesce(birth_date::text,'') || '|' ||
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    coalesce(unit_code,'') || '|' ||
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    coalesce(period_from::text,'')
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>)
+</code></pre></div>
+<p>Then a re-import of an overlapping roster produces rows that match already-applied ones,
+and the pipeline can skip them. <strong>The hash function must be stable</strong> — changing it
+invalidates every previously staged row. Version it if it must change.</p>
+<h3 id="end-date-inference">End-date inference<a class="headerlink" href="#end-date-inference" title="Permanent link">&para;</a></h3>
+<p>Imported rosters rarely state when a period ended. Three defensible options:</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Effect</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Leave <code>valid_to</code> NULL</td>
+<td>Person appears to be current</td>
+<td><strong>Wrong and dangerous</strong> — inflates the member count, and an open <code>membership</code> also passes the permission gate (§3.1)</td>
+</tr>
+<tr>
+<td>End at the end of the organizational year of the last roster the person appears in</td>
+<td>Defensible, documented</td>
+<td>May truncate a period that continued</td>
+</tr>
+<tr>
+<td>End at the last date the person appears in <em>any</em> roster</td>
+<td>Best fidelity, needs all rosters</td>
+<td>Requires the complete dataset</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended default:</strong> end at the end of the organizational year of the last roster in
+which the person appears, marked <code>data_confidence = 'low'</code> and with a parse warning. Never
+NULL.</p>
+<h3 id="31-what-a-roster-actually-evidences">3.1 What a roster actually evidences<a class="headerlink" href="#31-what-a-roster-actually-evidences" title="Permanent link">&para;</a></h3>
+<p>A roster proves that someone <strong>took part in a unit in a period</strong>. It does not prove they paid
+a fee, and under <a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>
+sub-unit belonging is a <code>unit_participation</code>, not a membership at all — which is the
+row the import should create by default, and the row for which "the last date they appear"
+is a genuinely good answer.</p>
+<p><strong>The dangerous case is the inferred membership.</strong> If the import <em>also</em> generates a
+<code>membership</code> row for each historical participant — plausibly, because the fee was paid — then
+an open-ended one from 1998 does something a participation row never does: it satisfies
+<code>is_current_member()</code>, so a 2003 roster member would hold current member authority today
+through every role that is gated. The end-date rule above is what prevents that, and check 1
+in §5 is what catches it when the rule is not applied.</p>
+<p><strong>Where the money is unknown, prefer participation.</strong> Import a participation row with a
+period, and leave the membership to be inferred only where there is evidence of payment —
+a receipt, a ledger, a dues column. Erring toward participation loses a little fidelity in
+"were they a member in 1998?" and removes an entire class of false-current-member.</p>
+<hr />
+<h2 id="4-redaction-log">4. Redaction log<a class="headerlink" href="#4-redaction-log" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td>The row is NOT deleted. The id survives so historical references resolve</td>
+</tr>
+<tr>
+<td><code>requested_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>requested_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>legal_basis</code></td>
+<td>text, optional</td>
+<td><code>gdpr_art17</code>, <code>court_order</code>, <code>internal_policy</code> — required for accountability</td>
+</tr>
+<tr>
+<td><code>performed_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>performed_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>redacted_tables</code></td>
+<td>list of text</td>
+<td>Which tables had values overwritten — <strong>and which had rows deleted.</strong> <code>person_attribute</code> is erased by deletion rather than by overwriting (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>), so naming it here is what records that the erasure reached the person's descriptive data, and omitting it is indistinguishable from not having reached it</td>
+</tr>
+<tr>
+<td><code>retained_reason</code></td>
+<td>text, optional</td>
+<td>Why some data was kept. Membership periods and unit participation periods are organizational history, not personal data, and removing them would falsify records the organization may be obliged to keep. This field records that judgement per case</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A redaction cannot record when it was performed without recording who performed it:
+  <code>performed_at</code> without <code>performed_by</code> is illegal.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A person's redaction history.</li>
+</ul>
+<p><strong>This log is the answer to "prove you honoured the erasure request".</strong> It records what
+was removed, when, on what legal basis, and — importantly — what was deliberately retained
+and why. A redaction performed without a record is indistinguishable from a data loss
+incident.</p>
+<p><strong>For the descriptive part of a person's record this log is the only surviving record, by design.</strong>
+The attribute rows are deleted; the audit entries that quoted their values are scrubbed by the same act
+(§2.2's mechanism two, which is the only direction in which a trail that must not be rewritten can
+still be erased); and the codes they pointed at stay live because a code belongs to the organization
+and not to the erased person
+(<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> draws the two
+directions: retiring a code is an act about the vocabulary and keeps values, erasing a person is an act
+about the person and removes them). So <code>redacted_tables</code> naming <code>person_attribute</code> is the whole of what
+the system can honestly say — <em>this person had descriptive data and it is gone</em> — and it is enough,
+because the sentence the organization is entitled to keep is that it held a record and removed it, not
+what the record said.</p>
+<hr />
+<h2 id="5-integrity-checks">5. Integrity checks<a class="headerlink" href="#5-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify</strong></p>
+<ul>
+<li><strong>Imported memberships with no end date.</strong> Count <code>membership</code> rows that carry an
+  <code>import_batch_id</code> and have no <code>valid_to</code>. Zero is the only acceptable answer: these are
+  the rows that silently satisfy the permission gate, so this is a security check as much as
+  a data-quality one (§3).</li>
+<li><strong>Imported people who were later merged away.</strong> Count people whose <code>record_origin</code> is
+  <code>legacy_import</code> and whose merge pointer is set. Non-zero is probably fine and worth an eye.</li>
+<li><strong>Batches left in a non-terminal state for a long time.</strong> Count <code>import_batch</code> rows whose
+  status is none of <code>applied</code>, <code>reverted</code>, <code>failed</code> and which were created more than 30 days
+  ago; non-zero means a run somebody stopped steering.</li>
+<li><strong>Audit rows with no actor at all.</strong> Count <code>audit_log</code> rows with neither an
+  <code>actor_person_id</code> nor an <code>actor_label</code>; any non-zero count is a forensic gap.</li>
+<li><strong>Tables whose write path does not audit.</strong> Compare the business tables this system has —
+  staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
+  writing history that is never recorded. <strong>Read this one carefully, because its meaning got worse
+  rather than weaker.</strong> While a trigger existed, a table was audited by being named in a trigger
+  definition, and forgetting one was a decision somebody made in a migration and could see. Now a
+  table is audited because the code that writes it calls the audit entry point, so <strong>the list and
+  the code are two artifacts that must agree and nothing forces them to</strong> — which makes this report
+  the entire control over the completeness of the audit trail, and the one check here that should
+  alert rather than log. If it ever reports a table, the finding is not "some history is missing";
+  it is "every change to that table since it was added is unrecorded, and that period cannot be
+  reconstructed later." </li>
+<li><strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
+  not the redaction marker and who still have a current contact point whose value is not
+  redacted; non-zero means an erasure was left half done. <strong>The count now reaches two more places.</strong>
+  First, <code>person_attribute</code>: a redacted person with <strong>any</strong> attribute row is an erasure that did not
+  happen, since those rows are deleted rather than overwritten
+  (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>). That is check 6 of
+  <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> read from this side — the same assertion,
+  not a second one. <strong>Second, and a different assertion, which only exists because values are logged
+  on purpose: for a redacted person, no <code>audit_log</code> row about one of their <code>person_attribute</code> changes
+  may still carry content.</strong> Content means <code>value</code>, <code>value_option_id</code> or <code>recorded_note</code> inside
+  <code>old_values</code> or <code>new_values</code>; <code>person_id</code>, <code>attribute_definition_id</code> and <code>source</code> are not content and
+  survive the scrub deliberately, because they are the only way this check can still find the rows after
+  the erasure deleted the business ones — an audit row keeps its <code>table_name</code> and <code>record_id</code> when the
+  row they named is gone, and its <code>person_id</code> is what ties it back to the person who asked to be
+  forgotten. Read this check correctly and it has exactly one meaning: <strong>the scrub did not run.</strong> Before
+  an erasure, a payload full of descriptive values is the design working
+  (<a href="#22-redaction-before-logging">§2.2</a>); afterwards it is the thing the person asked for the system to
+  stop having. Note what the check structurally <em>cannot</em> see — a copy that is present, readable, and
+  perfectly legal, held by somebody whose permission is graded below its contents — because that failure
+  leaves no rows to count; it is the guard, and the guard is reviewed by a person.
+  <strong>This check and check 5 are the two here that should alert rather than log.</strong> A redaction property
+  that is reported once a month is a redaction property that fails between the reports, and unlike a
+  missing audit row, a value that outlives its erasure is not something anyone notices until a regulator
+  asks what the table holds.</li>
+</ul>
+<p><strong>Check 5 is worth automating as a test</strong>, not just a nightly query — a test that reads the
+table list in these documents and asserts every business table on it appears on the audited list,
+since that is the nearest thing left to what asking the database used to answer. A new table
+added without being put on that list is a silent, permanent hole in the audit trail — and it will
+be discovered only when someone needs the history that was never recorded.</p>
+<hr />
+<h2 id="6-open-issues">6. Open issues<a class="headerlink" href="#6-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Which tables must be audited. Recommend: all business tables. The cost is storage; the
+  cost of a gap is unbounded.</li>
+<li>Retention period for <code>audit_log</code> before archival to cold storage. Legal input required.</li>
+<li>Whether <code>audit_log</code> should be partitioned by month from the start (recommend yes, given
+  the write volume and the multi-decade horizon).</li>
+<li>The definitive end-date inference rule for imported rosters
+  (<a href="#31-what-a-roster-actually-evidences">§3.1</a>) — needs your input on the organizational
+  year boundary (tracked as <a href="../../open-questions/">../open-questions.md</a> A-4).</li>
+<li><strong>Whether the import should create a <code>membership</code> at all</strong> for a historical roster, or
+  only a <code>unit_participation</code> (<a href="#31-what-a-roster-actually-evidences">§3.1</a>). The safe
+  default is participation-only; the alternative needs payment evidence per row.</li>
+<li>Exact redaction scope: which fields are personal data vs. organizational history (§4).
+  Requires legal review.</li>
+<li>Whether <code>person.notes</code> should exist at all, given the redaction burden it creates.</li>
+</ul>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

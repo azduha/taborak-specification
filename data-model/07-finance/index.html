@@ -1,0 +1,2404 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/07-finance/">
+      
+      
+        <link rel="prev" href="../06-audit-and-import/">
+      
+      
+        <link rel="next" href="../08-events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Finance - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--fees-and-payments" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Finance
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-provisional-on-policy-settled-on-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠ PROVISIONAL ON POLICY, SETTLED ON ARCHITECTURE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-the-domain-requires-from-what-you-have-said" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. What the domain requires (from what you have said)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-minimal-provisional-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Minimal provisional shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2a-how-money-actually-arrives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2a. How money actually arrives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2b-money-that-cannot-be-matched" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2b. Money that cannot be matched
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-keeping-membershipoutstanding_balance-honest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Keeping membership.outstanding_balance honest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-this-connects-to-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. How this connects to membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. How this connects to membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-yearly-expiry-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The yearly expiry sweep
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-open-issues--the-whole-of-this-document-essentially" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Open issues — the whole of this document, essentially
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-provisional-on-policy-settled-on-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠ PROVISIONAL ON POLICY, SETTLED ON ARCHITECTURE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-the-domain-requires-from-what-you-have-said" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. What the domain requires (from what you have said)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-minimal-provisional-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Minimal provisional shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2a-how-money-actually-arrives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2a. How money actually arrives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2b-money-that-cannot-be-matched" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2b. Money that cannot be matched
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-keeping-membershipoutstanding_balance-honest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Keeping membership.outstanding_balance honest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-this-connects-to-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. How this connects to membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. How this connects to membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-yearly-expiry-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The yearly expiry sweep
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-open-issues--the-whole-of-this-document-essentially" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Open issues — the whole of this document, essentially
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--fees-and-payments">Data Model — Fees and Payments<a class="headerlink" href="#data-model--fees-and-payments" title="Permanent link">&para;</a></h1>
+<blockquote>
+<h2 id="-provisional-on-policy-settled-on-architecture">⚠ PROVISIONAL ON POLICY, SETTLED ON ARCHITECTURE<a class="headerlink" href="#-provisional-on-policy-settled-on-architecture" title="Permanent link">&para;</a></h2>
+<p><strong>How money moves is now decided.</strong> Money arrives from a <strong>bank API</strong> and is requested by a
+<strong>variable symbol and a QR code</strong>
+(<a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>);
+money that cannot be matched <strong>waits for a person</strong>
+(<a href="../../decisions/decision-log/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>).
+There is no card gateway, no checkout and no dispute handling, and §2a is the consequence.</p>
+<p><strong>What the money is for is still open.</strong> Amount, proration, discounts, whether the fee buys
+insurance, and who may waive it are all unanswered — §5. Those are policy questions this
+document cannot answer, and several need somebody in the organization to be asked.</p>
+<p>This document exists because membership activation depends on payment
+(<a href="../../domain/05-membership-lifecycle/#1-the-flow-you-described">../domain/05-membership-lifecycle.md</a>),
+and because the yearly expiry and renewal window
+(<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>)
+need somewhere to read a due date from.</p>
+</blockquote>
+<hr />
+<h2 id="1-what-the-domain-requires-from-what-you-have-said">1. What the domain requires (from what you have said)<a class="headerlink" href="#1-what-the-domain-requires-from-what-you-have-said" title="Permanent link">&para;</a></h2>
+<p><strong>Settled:</strong></p>
+<ul>
+<li>There is a <strong>yearly fee</strong>, <strong>flat</strong>, <strong>per person</strong> — it does not vary by age, by
+  household, or by membership type, because there is one membership type
+  (<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>).</li>
+<li>Becoming a member requires <strong>paying</strong> it; the membership activates on payment
+  (<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>).</li>
+<li>The fee <strong>expires on a fixed organizational date</strong>, typically January. At that date the
+  membership <strong>lapses</strong> — the person is not a member — and a <strong>renewal window</strong> follows
+  during which they may renew without re-applying. A payment inside the window <strong>opens the
+  new period at the expiry date</strong>, so the record shows no gap.</li>
+<li>There is <strong>no grace <em>status</em></strong>. The window is tracked as dates, and the resolver does not
+  know it exists.</li>
+</ul>
+<p><strong>Unspecified</strong> — the fee <em>amount</em>, proration, family discounts, who may authorize a waiver,
+whether the fee buys insurance, and currency.</p>
+<p><strong>Settled in round 6, and it was the big one</strong> — the organization <strong>collects</strong>, but not through
+a card gateway: money is requested by <strong>variable symbol + QR code</strong> and <strong>arrives from the bank
+API</strong> already tagged (§2a, <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>).</p>
+<hr />
+<h2 id="2-minimal-provisional-shape">2. Minimal provisional shape<a class="headerlink" href="#2-minimal-provisional-shape" title="Permanent link">&para;</a></h2>
+<p>Four tables, deliberately small and easy to replace.</p>
+<p><strong><code>fee_schedule</code></strong> — a price, together with the period during which that price was the price.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>membership_type_id</code></td>
+<td>reference to membership type, optional</td>
+<td><code>NULL</code> = applies to any type, e.g. an organization-wide surcharge</td>
+</tr>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to org unit, optional</td>
+<td><code>NULL</code> = organization-wide. Set for a unit-level supplementary fee</td>
+</tr>
+<tr>
+<td><code>period_months</code></td>
+<td>integer, required</td>
+<td>Default 12</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td>Zero or more</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>three-letter currency code, required</td>
+<td>Default <code>EUR</code>. Explicit even though the organization is single-currency — multi-currency later is far easier with the column already present</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Fee amounts change yearly, so a price is stored against a validity period rather than overwritten</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td><code>NULL</code> = still the current price. Storing the amount this way means a historical obligation can be recomputed correctly — critical for "what did we charge in 1998?" and for correcting a mis-applied fee</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean, required</td>
+<td>Default true</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>code</code> is unique. It covers all rows, not only active ones.</li>
+<li><code>valid_to</code> is either absent or later than <code>valid_from</code>.</li>
+<li><code>amount</code> is zero or more.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>The one lookup that matters is "the schedules for one membership type, <code>valid_from</code>
+  newest first, restricted to active ones".</li>
+</ul>
+<p><strong><code>fee_obligation</code></strong> — one thing someone owes.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td>The person the fee is <strong>for</strong>. Not the payer — see <code>paid_by_person_id</code> on <code>payment</code></td>
+</tr>
+<tr>
+<td><code>membership_id</code></td>
+<td>reference to membership, optional</td>
+<td>One of the three target columns; exactly one is set</td>
+</tr>
+<tr>
+<td><code>membership_request_id</code></td>
+<td>reference to membership request, optional</td>
+<td>One of the three target columns</td>
+</tr>
+<tr>
+<td><code>event_registration_id</code></td>
+<td>reference to event registration, optional</td>
+<td>One of the three target columns. The event arm is real, not a hedge: an event with a <code>fee_schedule</code> creates one obligation per registration (D-066), and payment confirms the place. It replaced the dormant <code>household_id</code> arm that D-057 removed — same shape, but with data behind it this time</td>
+</tr>
+<tr>
+<td><code>fee_schedule_id</code></td>
+<td>reference to fee schedule, required</td>
+<td>Snapshotted so the amount is reproducible even if the schedule is edited</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>period_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>period_to</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount_due</code></td>
+<td>money, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount_discount</code></td>
+<td>money, required</td>
+<td>Default 0</td>
+</tr>
+<tr>
+<td><code>amount_paid</code></td>
+<td>money, required</td>
+<td>Default 0</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>three-letter currency code, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>Default <code>unpaid</code>. One of: <code>unpaid</code>, <code>partially_paid</code>, <code>paid</code>, <code>waived</code>, <code>refunded</code>, <code>written_off</code>, <code>overdue</code></td>
+</tr>
+<tr>
+<td><code>due_date</code></td>
+<td>date, required</td>
+<td>The yearly fee expires on a fixed organizational date (D-040); this obligation's <code>due_date</code> is what the lapse sweep compares against (§4). The renewal window that follows is carried as dates, not as a status (§1)</td>
+</tr>
+<tr>
+<td><code>waived_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>waived_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td>Set on imported rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>period_to</code> is later than <code>period_from</code>.</li>
+<li><code>amount_due</code>, <code>amount_discount</code> and <code>amount_paid</code> are each zero or more.</li>
+<li>Exactly one of <code>membership_id</code>, <code>membership_request_id</code> and <code>event_registration_id</code> is
+  set — one, not zero and not two. Every obligation is for exactly one thing: a membership
+  period, a membership request, or one person's place at one event. The per-person choice
+  for events is deliberate: the fee is flat and per person (D-037), and a per-family price
+  would need the household grouping designed again first (D-057).</li>
+<li>A status of <code>waived</code> requires both <code>waived_by</code> and <code>waived_reason</code>. There is no waived
+  obligation whose waiver is unattributed or unexplained.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>One person's obligations, by status.</li>
+<li>Obligations ordered by <code>due_date</code>, restricted to the rows still open — status <code>unpaid</code>,
+  <code>partially_paid</code> or <code>overdue</code>. Closed rows are not in it.</li>
+<li>Obligations carrying the event arm, and obligations carrying the membership arm — each
+  restricted to the rows where that column is set.</li>
+<li>Obligations within a <code>period_from</code> / <code>period_to</code> range.</li>
+</ul>
+<blockquote>
+<p><strong>The household arm is gone, and an event arm took its place — a real one.</strong> <a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>
+settled the fee as flat and per person; <a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>
+then removed the <code>household</code> table itself, so <code>household_id</code>, its CHECK arm and
+<code>ix_obligation_household</code> went with it. Events then supplied a third target that is
+genuinely used: one obligation per registration, created by the code that places the
+registration, paid to confirm the place. <strong>Nothing creates it if that code is not written</strong> — the
+obligation used to be created by a database trigger, and a trigger could not be forgotten; see
+<a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions §6a</a>. An event with a fee and
+no obligation is invisible until someone reconciles money against the roster. (<a href="../../decisions/decision-log/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a>).</p>
+<p><strong>Exactly one, never zero and never two — and unlike most rules in these documents this one can
+still be stated declaratively, so a migration should state it.</strong> Three columns, exactly one set:
+count how many are present and require that count to be one, which is a condition on the row and
+nothing else. No subquery, no other table, and therefore emittable by any migration that can put
+a condition on a row at all — the case where the ORM argument simply does not apply. <strong>It is worth naming explicitly, because it is the counterexample to the
+general worry</strong> — most of what D-072 deleted genuinely cannot be restated declaratively
+(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>),
+and this is not one of them.</p>
+<p>What is worth keeping from this rule's history is its <strong>shape</strong>: the previous version admitted
+<em>at most two</em> of the three, because one of the arms was a dormant <code>household_id</code> kept against a
+hypothetical. At most two with a hedge is not the same domain as exactly one over three real
+targets, and the difference
+only shows up when someone adds a fourth: <strong>if a new target appears, ask whether it is <em>used</em>
+before widening this, and expect the answer to be no.</strong></p>
+<p><strong>If a family discount is ever wanted</strong>, the row is still the right shape — one obligation
+covering several people — but it now needs the grouping to be re-introduced first, as a
+group with a period rather than a fake person (<a href="../04-relationships/#3-there-is-no-household-table">04 §3</a>).</p>
+</blockquote>
+<p><strong><code>payment</code></strong> — money that moved, as one recorded act.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>external identifier, required</td>
+<td>Unique. Appears in URLs and exports; <code>id</code> stays internal (00-conventions §3)</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td>Never zero. A negative amount represents a reversal</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>three-letter currency code, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>paid_at</code></td>
+<td>timestamp, required</td>
+<td>When the payment occurred, which may differ from when it was recorded — a bank transfer recorded a week later. Both matter</td>
+</tr>
+<tr>
+<td><code>recorded_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>text, required</td>
+<td>One of: <code>bank_transfer</code>, <code>cash</code>, <code>voucher</code>, <code>credit_note</code>, <code>other</code>. <strong><code>card</code> and <code>direct_debit</code> removed</strong> — there is no card gateway and no mandate system (<a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>)</td>
+</tr>
+<tr>
+<td><code>variable_symbol</code></td>
+<td>text, optional</td>
+<td>The symbol the money arrived under, copied verbatim from the bank statement. Set on every row the import created; the join back to <code>payment_request</code>. <strong>Never typed by hand</strong></td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>text, optional</td>
+<td>Bank reference, transaction id, receipt number</td>
+</tr>
+<tr>
+<td><code>paid_by_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Who actually paid. May differ from the person the fee is for — a parent paying for a child, a grandparent paying for a grandchild, a sponsor. This is the act-on-behalf record for money</td>
+</tr>
+<tr>
+<td><code>on_behalf_of</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required</td>
+<td>Default <code>confirmed</code>. <strong><code>confirmed</code> or <code>reversed</code>, and nothing else.</strong> A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network; the two remaining values describe whether <em>we</em> still stand behind the row. <code>pending</code> and <code>failed</code> were deleted with the card gateway (<a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>)</td>
+</tr>
+<tr>
+<td><code>confirmed_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td>Set on imported rows</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>amount</code> is never zero; zero is meaningless. Negative amounts are reversals.</li>
+<li><code>public_id</code> is unique.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>A payer's payments, newest <code>paid_at</code> first.</li>
+<li>Payments by date, newest first.</li>
+<li>Lookup by <code>reference</code>, restricted to rows that have one.</li>
+</ul>
+<p><strong><code>payment_allocation</code></strong> — which payments satisfy which obligations. It is many-to-many in
+both directions: one payment may cover several obligations, and one obligation may be paid in
+instalments.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>payment_id</code></td>
+<td>reference to payment, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>fee_obligation_id</code></td>
+<td>reference to fee obligation, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td>Never zero</td>
+</tr>
+<tr>
+<td><code>allocated_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default: now</td>
+</tr>
+<tr>
+<td><code>allocated_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A given payment is allocated to a given obligation at most once — one row per pair, over
+  all rows.</li>
+<li><code>amount</code> is never zero.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>Allocations of one payment, and allocations of one obligation — both directions are asked.</li>
+</ul>
+<p><strong>The allocation table is the part most likely to be right.</strong> A payment and an obligation
+are genuinely many-to-many, and any design that puts <code>payment_id</code> on the obligation (or
+vice versa) breaks the first time a parent pays for three children in one transfer. That
+is the common case in this organization, not an edge case.</p>
+<hr />
+<h2 id="2a-how-money-actually-arrives">2a. How money actually arrives<a class="headerlink" href="#2a-how-money-actually-arrives" title="Permanent link">&para;</a></h2>
+<p><a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>.
+The system <strong>requests</strong> a payment and then <strong>reads</strong> one. It never touches the money.</p>
+<p>The flow, in order:</p>
+<ol>
+<li>A liability exists — a membership period, a membership request, a place at an event.</li>
+<li>The system issues a <strong><code>payment_request</code></strong> carrying a <strong>variable symbol</strong> and an amount.</li>
+<li>The payer is shown the symbol, the amount, and a <strong>QR code</strong> that encodes all three.</li>
+<li>The payer's own bank moves the money. The system is not involved and learns nothing yet.</li>
+<li>A <strong>bank import</strong> reads the account statement and produces a <strong><code>bank_transaction</code></strong> for each
+   incoming transfer, with the variable symbol still attached.</li>
+<li>The symbol resolves to a live request. The import creates a <code>payment</code>, links it, and the
+   obligation's balance falls.</li>
+<li>If the symbol resolves to nothing live, the row goes to the <strong>queue</strong> (§2b).</li>
+</ol>
+<p><strong><code>payment_request</code></strong> — the liability rendered payable.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>variable_symbol</code></td>
+<td>text, required</td>
+<td><strong>Unique across all rows, forever, including cancelled and long-settled ones.</strong> Eleven digits from a sequence</td>
+</tr>
+<tr>
+<td><code>fee_obligation_id</code></td>
+<td>reference to fee obligation, required</td>
+<td>What is owed. The request never invents an amount of its own</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td>Copied from the obligation at issue time, so a later price change cannot rewrite what someone was asked for</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>three-letter currency code, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>recipient_account</code></td>
+<td>text, required</td>
+<td>The account the QR code tells people to pay into</td>
+</tr>
+<tr>
+<td><code>issued_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>date, optional</td>
+<td>When the request stops being payable — the close of a renewal window, or the day before an event</td>
+</tr>
+<tr>
+<td><code>voided_at</code></td>
+<td>timestamp, optional</td>
+<td>Set by a person, or by cancelling the event the request was for (§2b)</td>
+</tr>
+<tr>
+<td><code>voided_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><strong><code>variable_symbol</code> is unique over every row that ever existed</strong>, not over live rows. A symbol
+  issued in 2019 must never resolve to a 2026 obligation, because bank statements get re-imported
+  and late payments are the entire reason the renewal window exists.</li>
+<li><strong>The symbol comes from a sequence.</strong> It is never derived from a birth date, a membership id,
+  a member number, or anything else a person can guess or work out. Anyone can type eleven digits
+  into a payment form at their bank; a guessable symbol means a stranger's money lands in a
+  child's record, and the damage is not cosmetic — it reads as a paid fee, an active membership,
+  and possibly insurance cover that does not exist.</li>
+<li><code>amount</code> is a <strong>copy</strong>, not a live reference. What a person was asked to pay is a historical
+  fact about the ask, and recomputing it from the current schedule would make every price change
+  rewrite history.</li>
+<li>One obligation may have several requests over time — a first request expires, or the amount is
+  corrected — but <strong>at most one live request per obligation</strong>.</li>
+<li>A request is not an invoice. Nothing is delivered, nothing is numbered for a tax authority, and
+  whether the organization <em>also</em> owes people invoices is still an open question (§5).</li>
+</ul>
+<p><strong><code>bank_transaction</code></strong> — one incoming transfer as the bank reported it.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>bank_account</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>bank_reference</code></td>
+<td>text, required</td>
+<td><strong>Unique per bank account.</strong> This is the idempotency key: the same statement imported twice must create nothing the second time</td>
+</tr>
+<tr>
+<td><code>arrived_at</code></td>
+<td>date, required</td>
+<td>The bank's date, not the import's — this is the date D-040's renewal window is measured against</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>variable_symbol</code></td>
+<td>text, optional</td>
+<td>As reported. Can be absent, wrong, or a stranger's</td>
+</tr>
+<tr>
+<td><code>payer_description</code></td>
+<td>text, optional</td>
+<td>Whatever the bank gives: a name, sometimes an address</td>
+</tr>
+<tr>
+<td><code>matched_payment_request_id</code></td>
+<td>reference to payment request, optional</td>
+<td>NULL means <strong>unmatched</strong>, which is the queue</td>
+</tr>
+<tr>
+<td><code>imported_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to import batch, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>bank_reference</code> is unique within a bank account. Re-importing a statement is safe and must be.</li>
+<li>A transaction is <strong>immutable once imported.</strong> Corrections are new rows or a re-import, never an
+  edit — this is the organization's copy of somebody else's ledger, and the only version of it
+  that will ever agree with the bank.</li>
+</ul>
+<p><strong>The renewal window stops being a promise.</strong> <a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>
+backdates a renewal to the expiry date when payment lands inside the window, and its own note
+said that rule was only as good as the reliability of payment dates. Until now they arrived when
+somebody noticed a transfer. <strong>They now arrive from the bank</strong>, dated by the bank. The sweep in §4
+can run unattended because the thing it depends on is no longer a person remembering in February.</p>
+<p><strong>What this deletes from the design.</strong> No checkout, no card tokens, no PCI surface, no webhook
+endpoint to authenticate, no dispute or chargeback state, no reconciliation report against a
+processor's payout. <code>payment.status</code> loses <code>pending</code> and <code>failed</code>: a bank transfer the bank has
+reported is confirmed on arrival, and there is no in-between state to model. What remains in
+<code>status</code> is whether <em>we</em> still stand behind the row — <code>confirmed</code> or <code>reversed</code>.</p>
+<hr />
+<h2 id="2b-money-that-cannot-be-matched">2b. Money that cannot be matched<a class="headerlink" href="#2b-money-that-cannot-be-matched" title="Permanent link">&para;</a></h2>
+<p><a href="../../decisions/decision-log/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>.</p>
+<p><strong>An unmatched transaction is a fact with no subject, so the absence gets stored rather than
+guessed at</strong> — the same discipline as "unanswered is the absence of a row"
+(<a href="../../decisions/decision-log/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>).
+<code>matched_payment_request_id IS NULL</code> <em>is</em> the queue; there is no separate worklist table to fall
+out of sync with the rows it describes.</p>
+<p><strong>How a transaction ends up there:</strong> the symbol matches no request. The symbol matches a request
+that has been voided. The request is already settled. The amount is less than asked, or more.
+There is no symbol at all — cash-basis donors and people who type their own name in the wrong
+field.</p>
+<p><strong>What the system does with any of those: nothing.</strong> It records the money and waits.</p>
+<p><strong>A person decides, and there are exactly four outcomes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Attach</strong> it to a different request</td>
+<td>The symbol was mistyped; the real obligation is obvious from the payer</td>
+</tr>
+<tr>
+<td><strong>Split</strong> it across requests</td>
+<td>One transfer, three siblings — the ordinary shape of family payment here</td>
+</tr>
+<tr>
+<td><strong>Record as a donation</strong></td>
+<td>Money with no obligation behind it, which is not the same as money that is missing one</td>
+</tr>
+<tr>
+<td><strong>Refund</strong> it, by hand</td>
+<td>Nothing was meant to be owed. A second payment in the opposite direction (<a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why the tempting shortcut is refused.</strong> Falling back to the payer's identity when the symbol
+fails looks like it removes most of the queue. It removes most of the queue's <em>accuracy</em> instead:
+<em>a parent with two children pays one amount against one symbol</em> is the normal case, not the edge
+case, and an identity fallback resolves it to whichever child the query reaches first. <strong>A fee
+recorded against the wrong child is a finance error, a membership that appears paid when it is
+not, and — if the fee buys insurance — a coverage record that is untrue, all at once.</strong> A fallback
+is not allowed to be wrong on the common path.</p>
+<p>Auto-refunding is refused for two reasons: it needs the bank integration to work outbound as well
+as inbound, which is a second integration with its own authorization; and it returns the
+grandparent's attempt at a camp contribution.</p>
+<p><strong>Cancellation is where most of the volume comes from, and it is decided now rather than later.</strong>
+<a href="../../decisions/decision-log/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
+made cancellation a recorded fact rather than a state, so the event survives, the registrations
+survive — and so would an outstanding request against an occasion that is not going to happen.
+So:</p>
+<ul>
+<li><strong>Cancelling an event voids its outstanding payment requests</strong>, recording why.</li>
+<li><strong>Money already received for a cancelled event becomes a queue item</strong>, for a person to refund or
+  to carry forward to a later event. It is not auto-refunded, for the reasons above.</li>
+</ul>
+<p><strong>This is EV-3's answer</strong>, which is why it is closed here rather than left parked in the events
+module.</p>
+<p><strong>The queue is not allowed to be silently ignored.</strong> It is a count on a dashboard, not a page
+nobody navigates to, and its oldest item is a number someone sees monthly. Unmatched money is the
+one finance backlog that gets worse by itself: the payer believes they have paid, and the
+organization believes they have not.</p>
+<hr />
+<h2 id="3-keeping-membershipoutstanding_balance-honest">3. Keeping <code>membership.outstanding_balance</code> honest<a class="headerlink" href="#3-keeping-membershipoutstanding_balance-honest" title="Permanent link">&para;</a></h2>
+<p><a href="../03-membership/#3-membership">03-membership.md</a> has a denormalised
+<code>outstanding_balance</code>. If it stays, it must be maintained in the same transaction as any
+allocation change, or it will drift. Two options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maintain it inside the transaction that writes <code>payment_allocation</code></td>
+<td>Always current, no recompute</td>
+<td>Every path that writes an allocation has to do it — the trigger that used to do it for all of them at once is gone — and the arithmetic is easy to get subtly wrong</td>
+</tr>
+<tr>
+<td>Drop the column, compute on demand</td>
+<td>Cannot drift</td>
+<td>Slower worklist queries</td>
+</tr>
+<tr>
+<td>Keep as a materialized view</td>
+<td>Cannot drift, fast</td>
+<td>Refresh lag</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong> drop the column and use a view. The "approved but unpaid" worklist is
+not a hot path, and a wrong balance produces either a wrongly-suspended member or a
+wrongly-chased family. A wrong number here has a human consequence.</p>
+<p><strong>The definition, stated once, wherever it is implemented:</strong></p>
+<blockquote>
+<p><em>balance</em> = <code>amount_due</code> − <code>amount_discount</code> − the sum of allocations whose payment is
+<strong><code>confirmed</code></strong></p>
+</blockquote>
+<p><strong>Only confirmed payments count.</strong> An obligation is not settled by money that has been promised,
+intended, described in an email, or reported by a payer who believes they sent it. Under D-075
+this rule got sharper rather than weaker: <code>pending</code> is gone from <code>payment.status</code>, so there is no
+longer a state for a transfer that is on its way — either the bank has reported it and it is
+confirmed, or the system has not heard of it. <strong>A member is activated by the first, never by the
+second.</strong></p>
+<hr />
+<h2 id="4-how-this-connects-to-membership">4. How this connects to membership<a class="headerlink" href="#4-how-this-connects-to-membership" title="Permanent link">&para;</a></h2>
+<p><strong>The activation gate.</strong> A membership's fee is settled when <strong>no obligation attached to it has a
+positive balance after discounts</strong> — where obligations carrying <code>waived</code>, <code>written_off</code> or
+<code>refunded</code> are excluded from the question entirely, because a waived fee that nobody is going to
+collect must not read as an unpaid one. "Settled" is the only thing money says about membership;
+it does not grant permissions by itself (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).</p>
+<h3 id="the-yearly-expiry-sweep">The yearly expiry sweep<a class="headerlink" href="#the-yearly-expiry-sweep" title="Permanent link">&para;</a></h3>
+<p>Run on 1 January (<a href="../../decisions/decision-log/#d-047--the-fee-expires-on-1-january">D-047</a>).
+<strong>This is the one automatic membership transition in the system</strong>, and the only thing in this
+document that changes a person's status.</p>
+<p>For every membership that is <strong>active</strong>, has an obligation with a <strong>positive balance</strong>, and whose
+<strong>due date has passed</strong>:</p>
+<ol>
+<li>Mark it <strong>lapsed</strong>, ending it <strong>at the expiry date</strong> — not at today. The period ended on that
+   date whether or not anyone noticed.</li>
+<li><strong>Do not close the root <code>unit_participation</code> row.</strong> Move its <code>valid_to</code> forward instead, so a
+   renewal inside the window extends one continuous row rather than starting a second one
+   (<a href="../../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>,
+   <a href="../03-membership/#51-a-participation-row-on-the-root-unit">03-membership.md §5.1</a>).</li>
+<li><strong>Invalidate the permission cache per person, for every person returned</strong> — not per scope
+   (<a href="../../domain/06-authorization-model/#8-caching-and-invalidation">domain/06 §8</a>).
+   A lapsed member whose gated roles still resolve is a member who keeps leading.</li>
+<li>Open the <strong>renewal window</strong> as a date, never as a status. The resolver does not know windows
+   exist.</li>
+</ol>
+<p><strong>Note the personnel consequence, which is easy to miss and fatal to get wrong.</strong> This runs for
+everyone at once, <strong>including the person who runs it.</strong> Without <code>system.gate_exempt</code>
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>)
+the administrator locks themselves out on this date, with no permission left with which to undo
+it.</p>
+<blockquote>
+<p><strong>This reverses an earlier recommendation, and the reversal is worth recording.</strong> This
+document previously said "do not auto-lapse — produce the worklist and let a human act."
+The reasoning was sound: automatically removing membership from a child because a bank
+transfer was recorded late is a real harm.</p>
+<p><a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>
+resolves it differently, and the resolution is that <strong>the expiry is a date, not a
+decision.</strong> The fee covers a fixed period and the period ends. Nobody decides anything,
+and the renewal window exists to absorb exactly the late-transfer case: a payment inside
+it backdates the new period to the expiry date, so the record shows no gap and the person
+was never misclassified.</p>
+<p><strong>Where the old caution still applies</strong> is the case the window cannot absorb — a payment
+that <em>arrived</em> before the expiry but was <em>recorded</em> after it. That is a data-entry lag,
+not a non-payment, and it should be corrected with <code>membership.backdate</code> rather than left
+as a real gap. Worth a report: members who lapsed and then paid within a few days.</p>
+</blockquote>
+<hr />
+<h2 id="5-open-issues--the-whole-of-this-document-essentially">5. Open issues — the whole of this document, essentially<a class="headerlink" href="#5-open-issues--the-whole-of-this-document-essentially" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Is the fee prorated</strong> for mid-year joins? Note this is a sharper question than it was:
+   with the expiry on a fixed date (<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
+   someone joining in October pays for three months of a twelve-month fee unless the
+   organization prorates — and the <em>renewal</em> twelve months later is a full year. Whether
+   that is fair is a policy question; whether the data model supports it is <code>amount_due</code> vs
+   <code>amount_expected</code>.</li>
+<li><strong>Are there family/sibling discounts?</strong> <code>amount_discount</code> exists but the rules are
+   unspecified. With a flat per-person fee (<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
+   this is the only remaining fee variation, so it is worth a deliberate yes or no. Note
+   that <a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a> has now removed the
+   <code>household</code> grouping, so a <strong>per-family</strong> discount is no longer a constraint change — it
+   needs that grouping designed again first. A <strong>per-person</strong> discount is unaffected and is
+   just <code>amount_discount</code>.</li>
+<li>~~<strong>Refunds:</strong> policy, and who may authorize them. Affects the <code>payment.status</code> values.~~
+   <strong>Mostly answered by <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>:</strong>
+   a refund is a second payment in the opposite direction, not a status, so it cannot corrupt the
+   original record and there is no reversal state to authorize. <strong>Still open: who may authorize
+   initiating one</strong>, which is the part the question was actually about and which <code>fee.refund</code>
+   already flags 🔒.</li>
+<li>~~<strong>Payment methods:</strong> which does the organization actually accept? The enum is a guess.~~
+   <strong>Closed</strong> — <code>bank_transfer</code> arrives by import, <code>cash</code> is recorded by hand, and <code>card</code> plus
+   <code>direct_debit</code> are deleted (§2). <code>voucher</code> and <code>credit_note</code> stay until someone says otherwise.</li>
+<li><strong>Invoicing:</strong> does the organization issue invoices (legal requirement in some
+   jurisdictions)? If so, an <code>invoice</code> entity and a numbering sequence are needed. <strong>Sharper now:</strong>
+   a <code>payment_request</code> looks like an invoice, prints like one, and is not one — it has no
+   tax identity, no sequence required by law, and no delivery record. If invoices are legally
+   required, the honest answer is a second document over the same obligation, not a renaming of
+   this one.</li>
+<li>~~<strong>Is the organization collecting payments or only recording them?</strong>~~ <strong>Closed</strong> — it collects,
+   by bank API with a variable symbol and a QR code, and there is <strong>no card gateway</strong>
+   (<a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>,
+   §2a). The renewal window's dependence on reliable payment dates is what made this urgent, and the
+   bank import is what resolved it.</li>
+<li><strong>Accounting integration:</strong> does anything need to be exported to an accounting system?</li>
+<li><strong>Currency and jurisdiction</strong> — currently assumed <code>EUR</code>.</li>
+<li><strong>Does the fee cover insurance?</strong> If so, "member on the date of the incident" becomes a
+   legal record with its own retention needs. This one interacts directly with the new
+   lapse rule (<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>):
+   if the fee buys insurance, then <strong>the date the membership lapses is the date cover
+   ends</strong>, and the renewal window does <em>not</em> extend it. That is worth confirming with
+   whoever handles the policy, because the softer "still covered during grace" reading was
+   the alternative D-040 explicitly rejected.</li>
+<li><strong>Scholarships/hardship waivers</strong> — a <code>waived</code> status exists but the process is
+    unspecified, and in a youth organization this is often a sensitive, need-to-know
+    process that must not be visible to unit leaders.</li>
+<li>
+<p><strong>What gets a variable symbol, and one per what?</strong> — <strong>new, and raised by
+    <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>
+    rather than left over.</strong> That decision fixed <em>how</em> money arrives and named the <code>payment_request</code>
+    that carries it, but not the two choices the module is actually built from.</p>
+<ul>
+<li><strong>Scope.</strong> Do event fees get a symbol, or only membership fees? A camp fee is the same
+  mechanism, and a symbol is what lets a family pay for it at their own bank without staff
+  involvement. <strong>Recommendation: every payable</strong>, because the alternative is a second,
+  hand-recorded money path sitting beside an automatic one — and hand-recorded is what D-040's
+  renewal window just escaped.</li>
+<li><strong>Granularity.</strong> One live request per liability, matching the <code>fee_obligation</code> row exactly —
+  which is what §2a already assumes. Not per person, because a parent paying for two children in
+  one transfer is the ordinary case and per-person symbols make that impossible to match.
+  <strong>Not per person-year either</strong>: a camp is a separate liability from a fee and must never share
+  a symbol with one.</li>
+<li><strong>The amount mismatch, which D-076 defers and this question cannot.</strong> 500 sent against a 550
+  request goes to the queue, which is correct as a mechanism and silent as a policy. Whether
+  partial payment settles anything, whether 4.90 vs 5.00 is a shortfall, and what a payer is
+  told when their money lands and does not fit — those are undecided, <strong>and the queue will show
+  them at volume the first spring the import runs.</strong></li>
+</ul>
+<p><strong>Why this is question 11 and not a footnote:</strong> it decides whether the module has one money path
+or two.</p>
+</li>
+</ol>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: activation on
+payment or on approval (on payment — <a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>);
+whether the fee is per person or per household (per person, flat and ageless —
+<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>);
+and whether the household grouping survives at all (<strong>no</strong> — removed entirely,
+<a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>); and, from round 6, whether the
+organization collects or records (<strong>collects</strong>, by bank API — D-075) and what payment methods exist
+(the enum is no longer a guess — D-075 again).</p>
+<p><strong>Count honestly, because the number moved in both directions.</strong> Of the eleven above, <strong>two are
+fully closed</strong> (4, 6) and <strong>one is half closed</strong> (3: the mechanics of a refund are settled, the
+authority to initiate one is not). But <strong>a new one arrived</strong> in the same round, because D-075 fixed
+how money moves and thereby exposed what it moves <em>for</em> — question 11. And D-057 did not close
+question 2: with no grouping, a <em>per-family</em> discount needs one designed again before it can be
+priced. <strong>Nine open questions, of which one is new and one got sharper by being answered.</strong></p>
+<p><strong>The character of the list changed, and that is the real outcome.</strong> Until round 6 it held
+architectural questions — collect or record, which gateway, what statuses. It now holds only
+<strong>policy questions that require somebody in the organization to be asked</strong>: proration, discounts,
+insurance, waivers, invoices, accounting. <em>This document no longer needs a rewrite; it needs
+answers.</em></p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

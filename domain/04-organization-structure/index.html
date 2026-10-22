@@ -1,0 +1,2123 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/04-organization-structure/">
+      
+      
+        <link rel="prev" href="../08-person-data/">
+      
+      
+        <link rel="next" href="../05-membership-lifecycle/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Organization Structure - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#organization-structure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Organization Structure
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-one-root-arbitrary-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. One root, arbitrary sub-units
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. One root, arbitrary sub-units">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#membership-lives-at-the-root-participation-lives-in-the-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Membership lives at the root; participation lives in the sub-units
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sub-units-are-self-governing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sub-units are self-governing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-one-table-not-packgrouptroop-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why one table, not pack/group/troop tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-types-are-rows-not-an-enum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why types are rows, not an enum
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nesting-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Nesting rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-unit-names-and-renumbering--the-history-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Unit names and renumbering — the history problem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Unit names and renumbering — the history problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#names-are-temporal-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Names are temporal rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renumbering-is-a-rename-not-a-new-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renumbering is a rename, not a new unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splits-and-mergers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Splits and mergers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-unit-never-changes-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A unit never changes parent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Positions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Positions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-people-share-one-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple people share one position
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#positions-are-not-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positions are not permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eligibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eligibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-participation-unit_participation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Participation (unit_participation)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-historical-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Historical units
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-units-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Units and permissions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Units and permissions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-scoped-access-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit-scoped access grants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-one-root-arbitrary-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. One root, arbitrary sub-units
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. One root, arbitrary sub-units">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#membership-lives-at-the-root-participation-lives-in-the-sub-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Membership lives at the root; participation lives in the sub-units
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sub-units-are-self-governing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sub-units are self-governing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-one-table-not-packgrouptroop-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why one table, not pack/group/troop tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-types-are-rows-not-an-enum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why types are rows, not an enum
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-nesting-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Nesting rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-unit-names-and-renumbering--the-history-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Unit names and renumbering — the history problem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Unit names and renumbering — the history problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#names-are-temporal-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Names are temporal rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renumbering-is-a-rename-not-a-new-unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renumbering is a rename, not a new unit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splits-and-mergers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Splits and mergers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-unit-never-changes-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A unit never changes parent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Positions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Positions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-people-share-one-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple people share one position
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#positions-are-not-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positions are not permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eligibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eligibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-participation-unit_participation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Participation (unit_participation)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-historical-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Historical units
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-units-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Units and permissions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Units and permissions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-scoped-access-grants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit-scoped access grants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="organization-structure">Organization Structure<a class="headerlink" href="#organization-structure" title="Permanent link">&para;</a></h1>
+<p>Units, their types, their nesting, and — the part that is usually skipped — how to keep
+all of that true across four decades of reorganization.</p>
+<hr />
+<h2 id="1-one-root-arbitrary-sub-units">1. One root, arbitrary sub-units<a class="headerlink" href="#1-one-root-arbitrary-sub-units" title="Permanent link">&para;</a></h2>
+<p>There is <strong>exactly one top-level unit: the organization itself.</strong> Everything else is a
+sub-unit nested beneath it, <strong>to arbitrary depth and in arbitrary combination</strong> — weekly
+meeting groups, smaller packs, sections, teams.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    THE ORGANIZATION              ← the single root. depth 0.
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    ┌──────┴──────┬────────┐
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                 Pack A        Pack B    Pack C      ← created by the organization
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                ┌───┴───┐
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>          Thursday grp  Saturday grp                 ← created by the pack
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>              ┌───┴───┐
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>           Older  Younger                             ← arbitrary depth
+</code></pre></div>
+<p><strong>This is not a ladder of levels.</strong> There is no fixed national → region → district → group
+→ troop sequence, no required intermediate level, and no type that must appear at a
+particular depth. A sub-unit may contain sub-units to any depth, and the arrangement is the
+organization's business rather than the schema's.</p>
+<h3 id="membership-lives-at-the-root-participation-lives-in-the-sub-units">Membership lives at the root; participation lives in the sub-units<a class="headerlink" href="#membership-lives-at-the-root-participation-lives-in-the-sub-units" title="Permanent link">&para;</a></h3>
+<p>The distinction that makes this work:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Where it lives</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Membership</strong></td>
+<td><strong>The root unit</strong></td>
+<td>"This person is a member of the organization." Paid yearly.</td>
+</tr>
+<tr>
+<td><strong>Participation</strong></td>
+<td>Any sub-unit</td>
+<td>"This person takes part in this weekly group."</td>
+</tr>
+</tbody>
+</table>
+<p>People <strong>register and pay at the organization</strong>, and their membership is theirs as a member
+of the organization — not a membership of a pack. The packs they attend are recorded
+separately, as participation (<a href="#5-participation-unit_participation">§5</a>), because belonging
+to a Thursday-evening group and being a paid-up member of the organization are different
+facts with different lifetimes. See
+<a href="../../data-model/03-membership/#5-unit_participation">data-model/03-membership.md</a>.</p>
+<h3 id="sub-units-are-self-governing">Sub-units are self-governing<a class="headerlink" href="#sub-units-are-self-governing" title="Permanent link">&para;</a></h3>
+<p>A pack has <strong>its own events, its own local leadership, and its own roster</strong>. It is not an
+administrative subdivision of the root; it is a thing that runs itself and answers to the
+root. That is why <a href="../06-authorization-model/#2-scope-authority--no-downward-inheritance">authority originates at the unit</a>
+and why the root cannot decide permissions inside a pack.</p>
+<h3 id="why-one-table-not-packgrouptroop-tables">Why one table, not <code>pack</code>/<code>group</code>/<code>troop</code> tables<a class="headerlink" href="#why-one-table-not-packgrouptroop-tables" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Depth is a data question, not a schema question.</strong> The organization invents and retires
+  grouping arrangements; each one must be a row, not a migration.</li>
+<li><strong>"Who is in this pack and everything under it?"</strong> becomes one recursive query rather than
+  a hand-written union across tables.</li>
+<li><strong>Units get renamed and renumbered constantly.</strong> A <code>pack</code> table would need rename history
+  alongside; here a rename is one row in <code>org_unit_name</code>.</li>
+</ul>
+<p>A unit row carries its <code>unit_type_id</code> — the organization type for the root, and otherwise
+whatever type the organization has defined; a <code>parent_unit_id</code>, absent <strong>only</strong> for the single
+root and immutable thereafter (§3); a short human <code>code</code> such as <code>T12</code>; the current display
+<code>name</code>; the period the unit existed, as <code>valid_from</code> and <code>valid_to</code>; and a <code>status</code> of
+<code>proposed</code>, <code>active</code>, <code>merged</code> or <code>closed</code>.</p>
+<p><strong>The single root is enforced structurally</strong>, not by convention: among all unit rows, at most
+one may have no parent. The rule counts every row rather than only the open ones, so a root
+that has closed does not make room for a second one.</p>
+<h3 id="why-types-are-rows-not-an-enum">Why types are rows, not an enum<a class="headerlink" href="#why-types-are-rows-not-an-enum" title="Permanent link">&para;</a></h3>
+<p>The unit vocabulary in a long-lived organization changes — a type that existed in 1995 may
+be gone, and a new one may be needed in 2027. An enum requires a deployment to change; an
+<code>org_unit_type</code> row does not.</p>
+<blockquote>
+<p><strong>This goes further than it used to: no sub-unit types are seeded at all</strong>
+(<a href="../../decisions/decision-log/#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types">D-054</a>).
+<code>org_unit_type</code> is <em>runtime data</em>, like <code>role</code>
+(<a href="../../decisions/decision-log/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>) —
+the seed carries the root type and nothing else, and the organization creates the types it
+uses. Earlier revisions seeded <code>pack</code>/<code>group</code>/<code>team</code>, and before that a
+<code>national</code>/<code>region</code>/<code>district</code> ladder; both were invented words that read as a
+specification. <strong>The words below are still used throughout these docs as illustration</strong> —
+"a pack may only sit directly under the root" is an example of a rule, not a type the
+system ships with.</p>
+</blockquote>
+<p>A type row is a <code>code</code> and a name, plus <code>allows_minors</code>, <code>is_leaf</code> — may it contain sub-units —
+an optional <code>max_depth</code> ceiling, and a <code>sort_order</code>.</p>
+<p><code>allows_minors</code> is a <strong>safeguarding</strong> flag, not a membership rule: it lets the system
+validate that a unit which does not supervise minors never has any placed in it, without
+hardcoding which type codes those are. Membership itself is ageless — see
+<a href="../../decisions/decision-log/#d-038--membership-is-ageless">../decisions/decision-log.md</a>.</p>
+<hr />
+<h2 id="2-nesting-rules">2. Nesting rules<a class="headerlink" href="#2-nesting-rules" title="Permanent link">&para;</a></h2>
+<p>Because sub-units nest arbitrarily, the rules are <strong>permissive by default</strong> and express only
+the genuine constraints the organization wants to state. Most organizations need very few.</p>
+<p>A rule pairs two types and answers one question about them: may a unit of <code>parent_type_id</code>
+contain a unit of <code>child_type_id</code>. <code>max_children</code> is an optional cap on how many it may contain.
+<code>is_required</code> asks the separate question — must a unit of the child type have a parent of the
+parent type at all.</p>
+<p><strong>A type with no rules at all is unconstrained.</strong> That is the default and it is deliberate:
+the organization is free to invent a new kind of group and nest it wherever it likes without
+asking the schema's permission first. Rules exist to constrain where the organization has
+decided it wants constraint — a <code>pack</code> may only sit directly under the root, say.</p>
+<p>This is a table rather than a check constraint because nesting rules change over decades and
+because a constraint buried in code is invisible to the people configuring the organization.</p>
+<p><strong>Do not enforce nesting in the application layer only.</strong> A check clause cannot express it — the
+rule reads two tables and a history — and since
+<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+the trigger that used to carry it is gone from these documents too, so the obligation has to be
+placed deliberately rather than assumed from a schema. <strong>Put it in a constraint or a check inside
+the writing transaction, at the migration layer, and expose the rules in an admin UI.</strong> If it is
+only validated by the form, a data import will violate it — which is not a hypothetical here: the
+legacy corpus is precisely a data import, arriving before the admin UI exists. See
+<a href="../../data-model/00-conventions/#6a-who-enforces-an-invariant-now">../data-model/00-conventions.md §6a</a>
+for which layer survives which kind of writer.</p>
+<hr />
+<h2 id="3-unit-names-and-renumbering--the-history-problem">3. Unit names and renumbering — the history problem<a class="headerlink" href="#3-unit-names-and-renumbering--the-history-problem" title="Permanent link">&para;</a></h2>
+<p>A unit called "4th Pack" in 1998 may be "Pack 12" today, or may have been split into
+two, or merged into another. The system must answer both:</p>
+<ul>
+<li>"What was this unit called in 2001?"</li>
+<li>"Is this the same unit as the one in the 1998 roster?"</li>
+</ul>
+<h3 id="names-are-temporal-rows">Names are temporal rows<a class="headerlink" href="#names-are-temporal-rows" title="Permanent link">&para;</a></h3>
+<p>One row per name a unit has gone by: the <code>name</code> and <code>code</code> it carried, the period it carried
+them for, and a <code>change_reason</code> of <code>rename</code>, <code>renumber</code>, <code>reorganisation</code> or <code>correction</code>.</p>
+<p><code>org_unit.name</code> is a denormalised convenience holding the current name. The history lives
+here. Queries about the past read this table; they must never read <code>org_unit.name</code>.</p>
+<h3 id="renumbering-is-a-rename-not-a-new-unit">Renumbering is a rename, not a new unit<a class="headerlink" href="#renumbering-is-a-rename-not-a-new-unit" title="Permanent link">&para;</a></h3>
+<p>When "4th Pack" becomes "Pack 12" and the participants stay, that is <strong>one unit with two
+name rows</strong>. Creating a new unit would orphan all the history and make "who was in Pack 12
+in 1998?" answerable only by luck.</p>
+<h3 id="splits-and-mergers">Splits and mergers<a class="headerlink" href="#splits-and-mergers" title="Permanent link">&para;</a></h3>
+<p>These <em>do</em> create or close units:</p>
+<p>The record of one names the <code>source_unit_id</code> and the <code>target_unit_id</code>, the <code>relationship</code> from one to the
+other — <code>split_from</code>, <code>merged_into</code>, <code>successor_of</code> or <code>renamed_to</code> — the <code>effective_date</code>, and
+a <code>note</code>.</p>
+<p>A participation history must survive a split: when Pack 12 splits into Pack 12 and
+Pack 31, people who moved to 31 get a <em>new</em> <code>unit_participation</code> row starting at the split
+date, and their old row closes at the same date. No rows are rewritten. The
+<code>org_unit_relationship</code> row records that 31 came from 12, so a historical query can follow
+the lineage if asked.</p>
+<blockquote>
+<p>Design rule: <strong>never rewrite a <code>unit_participation</code> to point at a different unit.</strong> Close
+it and open a new one. Rewriting destroys the answer to "where was this child in 2003?"</p>
+</blockquote>
+<h3 id="a-unit-never-changes-parent">A unit never changes parent<a class="headerlink" href="#a-unit-never-changes-parent" title="Permanent link">&para;</a></h3>
+<p><code>parent_unit_id</code> is <strong>immutable</strong>. If a group genuinely transfers from one pack to another,
+the <strong>old unit closes and a new unit is created</strong> under the new parent, the people are moved
+across, and the lineage is recorded as an <code>org_unit_relationship</code>.</p>
+<p>This is a significant simplification rather than a limitation:</p>
+<ul>
+<li><strong>The materialized <code>path</code> never needs a subtree cascade rewrite</strong>, so the dangerous
+  operation disappears along with its danger.</li>
+<li><strong>Historical reports cannot silently change.</strong> "Who was in the 4th Pack in 2001?" keeps
+  answering the same thing forever, because no unit's ancestry is ever edited.</li>
+<li>Retroactive reparenting — the hard case — becomes unrepresentable rather than difficult.</li>
+<li><strong><code>scope_exposure</code> rows cannot shift meaning under their authors.</strong> A reparent would move
+  a unit in or out of a parent's reach, silently re-scoping rows nobody edited. It cannot
+  happen, so it cannot be forgotten.</li>
+</ul>
+<p><strong>No write may change <code>parent_unit_id</code> on a row that already has one.</strong> Until D-072 this was a
+trigger; nothing in the docs carries it now, and unlike most such rules <strong>no report catches the
+violation either</strong>, because the damage is not a bad row, it is a set of previously-correct rows
+whose meaning moved. So this one needs a positive guard in the write path — reject the update, do
+not warn about it — and a test that attempts the update. See
+<a href="../../data-model/02-organization/#a-unit-never-changes-parent">data-model/02-organization.md</a>.</p>
+<hr />
+<h2 id="4-positions">4. Positions<a class="headerlink" href="#4-positions" title="Permanent link">&para;</a></h2>
+<p>A <strong>position</strong> is a defined slot in a unit. A <strong>position assignment</strong> is a person
+filling it for a period. This split is what lets the system say "Pack 12 has no
+scoutmaster right now" and "this position has been vacant since March" — both operationally
+important, and neither expressible if positions only exist when filled.</p>
+<p>A position is defined against a <code>unit_type_id</code> and carries a <code>code</code> — <code>scoutmaster</code>,
+<code>assistant_leader</code>, <code>treasurer</code>, <code>quartermaster</code> are the ordinary ones — a <code>title</code>, a
+<code>max_holders</code>, and <code>requires_membership</code>: must the holder be a current member.</p>
+<p>An assignment joins three things and dates them: the <code>position</code>, the <code>org_unit</code> it is filled in,
+the <code>person</code> filling it, and the period. It also carries <code>is_primary</code>, because some people hold
+several positions; an <code>appointment_reference</code> to the appointment letter or record; and an
+<code>ended_reason</code>.</p>
+<h3 id="multiple-people-share-one-position">Multiple people share one position<a class="headerlink" href="#multiple-people-share-one-position" title="Permanent link">&para;</a></h3>
+<p><strong>Several people may occupy the same position at the same time, and that is the default.</strong>
+A pack with three assistant leaders, two quartermasters, or a rotating team of instructors
+is ordinary, not exceptional.</p>
+<p><code>position.max_holders</code> is how a single-holder position is expressed — <code>1</code> for a
+scoutmaster, <code>NULL</code> (unlimited) for everything else. Two consequences worth being explicit
+about:</p>
+<ul>
+<li><strong>Multiple occupancy is the default, not an exception.</strong> <code>max_holders</code> is nullable, so a
+  newly invented position accepts several holders without anyone declaring it. Single
+  occupancy is the case that has to be stated.</li>
+<li><strong>The limit belongs to the position, not the hierarchy.</strong> A parent unit cannot declare
+  that a nested unit has one scoutmaster. What positions a unit defines, and how many
+  holders each admits, is that unit's own business — the same principle as
+  <a href="../06-authorization-model/#2-scope-authority--no-downward-inheritance">authority over a unit originating at the unit</a>.</li>
+</ul>
+<p><strong>The limit is enforced below the application</strong> — a constraint or a check inside the writing
+transaction — rather than in the form, because the limit lives on a different table and because
+<code>max_holders &gt; 1</code> cannot be expressed as a unique index. <strong>The reason this cannot wait for the ORM
+to work it out is the second clause:</strong> there is no declarative shape for "at most N open rows", so
+a generated schema silently has no limit at all, and the failure is invisible until two people hold
+the one chair. See <a href="../../data-model/02-organization/#7-position-and-position_assignment">../data-model/02-organization.md</a>.</p>
+<p><strong>A person may hold the same position in the same unit across separate periods</strong> — left in
+2020, returned in 2024 — and both periods remain as distinct rows. Overlapping assignments
+of the same person to the same position are prevented; sequential ones are the point.</p>
+<h3 id="positions-are-not-permissions">Positions are not permissions<a class="headerlink" href="#positions-are-not-permissions" title="Permanent link">&para;</a></h3>
+<p>Holding the <code>scoutmaster</code> position does <strong>not</strong> by itself grant any system capability.
+The position is an organizational fact; authority comes from <code>role_assignment</code>. Keeping
+them separate means:</p>
+<ul>
+<li>The organization's structure can be recorded completely, including for historical
+  periods, without implying that a 1998 scoutmaster has system access today.</li>
+<li>A vacant position and an unfilled role are different reports.</li>
+<li>Changing what a scoutmaster can do in the system is a permission change, not a
+  restructuring of the organization's records.</li>
+</ul>
+<p>In practice a workflow will offer "appoint as scoutmaster" as one action that creates both
+a <code>position_assignment</code> and the corresponding scoped <code>role_assignment</code>. That is
+convenience; the schema stays separate.</p>
+<h3 id="eligibility">Eligibility<a class="headerlink" href="#eligibility" title="Permanent link">&para;</a></h3>
+<p><code>requires_membership</code> handles the common rule that a leader must be a current member.
+Enforcing it as a <strong>database constraint is not possible</strong> (it depends on temporal membership
+state), so it is an application rule plus a periodic consistency report. Do not attempt to
+enforce it with a foreign key.</p>
+<p>Note this is <em>reported</em> for positions but <strong>enforced for roles</strong>: the permission resolver
+itself checks membership state for roles that require it — see
+<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>
+and <a href="#7-units-and-permissions">§6</a>.</p>
+<hr />
+<h2 id="5-participation-unit_participation">5. Participation (<code>unit_participation</code>)<a class="headerlink" href="#5-participation-unit_participation" title="Permanent link">&para;</a></h2>
+<p>A <strong>sub-unit's roster is participation, not membership.</strong> These are different facts:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Membership</th>
+<th>Participation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Of what</strong></td>
+<td>The organization (the root unit)</td>
+<td>One sub-unit</td>
+</tr>
+<tr>
+<td><strong>How many</strong></td>
+<td>Exactly one at a time</td>
+<td>Zero or more, simultaneously</td>
+</tr>
+<tr>
+<td><strong>Costs money</strong></td>
+<td>Yes — the yearly fee</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Ends when</strong></td>
+<td>The fee is unpaid</td>
+<td>The person stops attending</td>
+</tr>
+</tbody>
+</table>
+<p>A person may take part in a Thursday group, a weekend pack and a summer team at once, while
+holding a single membership. Moving between groups is one row edit and costs no membership.</p>
+<p>A participation row is a <code>person</code>, an <code>org_unit</code>, and a period, with a <code>join_reason_code</code> and a
+<code>leave_reason_code</code>, an <code>is_primary</code> marking which group to show first, and a <code>role_in_unit</code>
+that is a display convenience and <strong>not an authorization fact</strong> — nothing in the permission
+model reads it.</p>
+<p><strong>A participation row is created for the root unit when the membership is created</strong>, so
+"everyone in unit X" is one uniform query whether X is the organization or a Thursday-evening
+pack. The schema detail is in
+<a href="../../data-model/03-membership/#5-unit_participation">data-model/03-membership.md</a>.</p>
+<hr />
+<h2 id="6-historical-units">6. Historical units<a class="headerlink" href="#6-historical-units" title="Permanent link">&para;</a></h2>
+<p>Units that closed must remain queryable. <code>org_unit.status = 'closed'</code> with <code>valid_to</code> set.
+They are excluded from pickers by default and included in historical reports always.</p>
+<p>Two things to get right:</p>
+<ol>
+<li><strong>A closed unit is not deleted.</strong> Historical <code>unit_participation</code> rows reference it, and
+   "who was in the 4th Pack?" must work forever.</li>
+<li><strong>Reopening reuses the row</strong> if it is genuinely the same unit, or creates a new one if
+   the organization considers it a fresh start. This is an organizational judgement, not a
+   technical one — record which was chosen and why on the unit, so the answer is not
+   re-litigated every time someone asks about the 80s unit with the same number.</li>
+</ol>
+<p><strong>A unit that changes parent is a new unit</strong> (§3), so <code>parent_unit_id</code> is immutable and the
+historical answer to "where did this unit sit?" never changes retroactively.</p>
+<hr />
+<h2 id="7-units-and-permissions">7. Units and permissions<a class="headerlink" href="#7-units-and-permissions" title="Permanent link">&para;</a></h2>
+<p>Units are a <strong>scope</strong> for authority. The same role assignment mechanism handles both
+organization-wide and unit-scoped authority:</p>
+<p>An assignment names a <code>person</code> and a <code>role</code>, the scope it applies in, and the period. The scope
+is a <code>scope_type</code> of <code>organization</code> or <code>org_unit</code>, with <code>scope_id</code> absent for the former and a
+unit for the latter — the two always agree, and there is no third shape.</p>
+<p>So "treasurer of the organization" and "treasurer of Pack 12" are the same table and the
+same role — differing only in <code>scope_type</code>/<code>scope_id</code>.</p>
+<p><strong>Authority does not flow down the hierarchy.</strong> This is the rule that most shapes the
+permission system, and it is stated in full in
+<a href="../06-authorization-model/#2-scope-authority--no-downward-inheritance">06-authorization-model.md</a>.
+In brief:</p>
+<ul>
+<li>A role assignment at a unit covers <strong>that unit only</strong>.</li>
+<li>A parent unit — including the organization itself — <strong>cannot</strong> decide permissions inside a
+  nested unit.</li>
+<li><strong>But not everything is a nested unit's business.</strong> The person registry, the memberships
+  and the fees belong to the <strong>root</strong> (<a href="../../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a>),
+  so an organization-scoped role acting on them is working at its own scope. What a sub-unit
+  owns is its own events, its own rosters, its own local leadership.</li>
+<li>Authority crosses a unit boundary downward <strong>only</strong> where the unit itself has written an
+  explicit <code>scope_exposure</code> row granting a specific role assignment coverage over it.</li>
+<li><code>system_admin</code> is the sole exception.</li>
+</ul>
+<p>A permission check therefore matches the scope <strong>exactly</strong>, plus any explicit exposures.
+<strong>There is no ancestor walk in permission resolution.</strong> <code>unit_ancestors()</code> exists in the
+schema for reporting and for the exposure-direction check, but it must never appear in a
+permission path — see
+<a href="../../data-model/02-organization/#6-hierarchy-traversal">data-model/02-organization.md</a>.</p>
+<h3 id="unit-scoped-access-grants">Unit-scoped access grants<a class="headerlink" href="#unit-scoped-access-grants" title="Permanent link">&para;</a></h3>
+<p>Beyond roles, a unit can be the target of an item-scoped grant: an <code>access_grant</code> whose scope
+type is <code>org_unit</code>, whose scope id is that unit, and whose level says how much.</p>
+<p>This is how you grant someone authority over a unit's data without giving them an
+organization-wide role — a temporary administrator for one pack, for instance. Note the
+grant is written <strong>against the unit</strong>, and creating it requires <code>access_grant.create</code> held
+at that unit. A parent unit cannot create it.</p>
+<p><strong>The grantee may also be a set of people, rather than one person</strong> (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>):
+<code>access_grant.person_id</code> and <code>access_grant.audience_id</code> are mutually exclusive. "Expose this
+event to everyone" or "to this pack's leaders" is <strong>one row</strong> with an audience — a rule the
+resolver evaluates against current state — rather than one row per person. This is what
+replaced the bulk scope-exposure tool (<a href="../../decisions/decision-log/#d-045--the-bulk-scope-exposure-tool-is-removed">D-045</a>),
+and it is why that tool had no remaining job.</p>
+<hr />
+<h2 id="8-open-issues">8. Open issues<a class="headerlink" href="#8-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The actual unit type vocabulary and nesting rules. Because nesting is permissive by
+  default and one root is mandatory, this is now a much smaller question: which types exist,
+  and which of the few genuine constraints does the organization want stated as rules.</li>
+<li>Whether the root unit may <em>see</em> what happens in its sub-units without those sub-units
+  exposing their scope — a reporting/audit question, not a permission-inheritance one.
+  <a href="../../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a>
+  argues the root already owns the registry and the fees, so this is narrower than it first
+  appears.</li>
+<li>Whether <code>is_leadership</code> should automatically create a <code>role_assignment</code>, or only suggest it.</li>
+</ul>
+<p>Resolved and no longer open, kept here so the reasoning is visible: the organizational
+structure itself (§1), retroactive reparenting (now prohibited — §3), unit types containing
+children (§1), and whether a person may belong to several units at once (yes, by
+participation — §5).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

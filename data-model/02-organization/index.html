@@ -1,0 +1,2521 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/02-organization/">
+      
+      
+        <link rel="prev" href="../09-attributes/">
+      
+      
+        <link rel="next" href="../03-membership/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Organization - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--organization-structure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Organization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-org_unit_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. org_unit_type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-org_unit_type_rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. org_unit_type_rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-org_unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. org_unit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. org_unit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-unit-never-changes-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A unit never changes parent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-org_unit_name--rename-and-renumber-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. org_unit_name — rename and renumber history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-org_unit_relationship--splits-mergers-succession" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. org_unit_relationship — splits, mergers, succession
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-hierarchy-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Hierarchy traversal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Hierarchy traversal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-materialized-path-fast-ancestordescendant-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Materialized path (fast ancestor/descendant queries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-recursive-cte-correct-regardless-of-path-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Recursive CTE (correct regardless of path integrity)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-position-and-position_assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. position and position_assignment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-unit_participation-lives-in-03-membershipmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. unit_participation lives in 03-membership.md
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-seed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Seed data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-org_unit_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. org_unit_type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-org_unit_type_rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. org_unit_type_rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-org_unit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. org_unit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. org_unit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-unit-never-changes-parent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A unit never changes parent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-org_unit_name--rename-and-renumber-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. org_unit_name — rename and renumber history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-org_unit_relationship--splits-mergers-succession" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. org_unit_relationship — splits, mergers, succession
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-hierarchy-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Hierarchy traversal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Hierarchy traversal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-materialized-path-fast-ancestordescendant-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Materialized path (fast ancestor/descendant queries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-recursive-cte-correct-regardless-of-path-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Recursive CTE (correct regardless of path integrity)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-position-and-position_assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. position and position_assignment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-unit_participation-lives-in-03-membershipmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. unit_participation lives in 03-membership.md
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-seed-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Seed data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--organization-structure">Data Model — Organization Structure<a class="headerlink" href="#data-model--organization-structure" title="Permanent link">&para;</a></h1>
+<p><code>org_unit</code>, unit types, name history, restructuring, positions, and assignments.</p>
+<p>Domain rationale: <a href="../../domain/04-organization-structure/">../domain/04-organization-structure.md</a>.</p>
+<hr />
+<h2 id="1-org_unit_type">1. <code>org_unit_type</code><a class="headerlink" href="#1-org_unit_type" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td>text, required</td>
+<td><code>'organization'</code>, then whatever the organization defines.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>allows_minors</code></td>
+<td>boolean, required, defaults to true</td>
+<td><strong>Safeguarding, not a membership rule.</strong> Membership is ageless (D-038); this flag lets the system refuse to place a minor in a unit that does not supervise them, without hardcoding which type codes those are. There is no <code>allows_adults</code> sibling: no unit in this organization excludes adults, and the units that must contain adults (anything with a leadership position) say so through position eligibility instead. See §7.</td>
+</tr>
+<tr>
+<td><code>is_leaf</code></td>
+<td>boolean, required, defaults to false</td>
+<td>A leaf may contain participants but not sub-units. A weekly meeting group is usually a leaf, but not necessarily — nesting is arbitrary (D-035).</td>
+</tr>
+<tr>
+<td><code>max_depth</code></td>
+<td>integer, optional</td>
+<td>Maximum nesting depth for this type, relative to the root. Unset = unconstrained.</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>integer rank, required, defaults to 0</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code>, <code>valid_to</code></td>
+<td>period (from/to, open-ended allowed); both ends optional</td>
+<td>Types are retired, not deleted: a 1995 <code>six</code> unit type must still resolve in historical queries.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>code</code> is unique over <strong>all</strong> rows, retired ones included — a type that has been withdrawn still holds its name against a newcomer.</li>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>. Either end may be absent, and no comparison is attempted when one is.</li>
+<li>One row per <code>code</code> is the current one; the current row for a code is found among the rows with no <code>valid_to</code>.</li>
+</ul>
+<p><strong>Types are rows, not an enum</strong>, so the vocabulary can change across decades without a
+deployment. See <a href="../../domain/04-organization-structure/#1-one-root-arbitrary-sub-units">../domain/04-organization-structure.md</a>.</p>
+<p><strong><code>allows_minors</code> is the replacement for hardcoded type checks.</strong> The validation "a minor may
+not take part in the organization's legal-and-filing unit" reads this flag rather than listing
+type codes in code. Note it constrains <em>participation</em> and <em>position assignment</em>, not
+membership: a person of any age may be a member of the organization, because membership is
+ageless and lives at the root (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).</p>
+<hr />
+<h2 id="2-org_unit_type_rule">2. <code>org_unit_type_rule</code><a class="headerlink" href="#2-org_unit_type_rule" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent_type_id</code></td>
+<td>reference to <code>org_unit_type</code>, optional</td>
+<td>A <code>parent_type_id</code> that is absent means <strong>"at the root"</strong> — this type may be a top-level unit.</td>
+</tr>
+<tr>
+<td><code>child_type_id</code></td>
+<td>reference to <code>org_unit_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_required</code></td>
+<td>boolean, required, defaults to false</td>
+<td>True: a unit of <code>child_type</code> must have a parent of <code>parent_type</code>. False: permissive.</td>
+</tr>
+<tr>
+<td><code>max_children</code></td>
+<td>integer, optional</td>
+<td>Optional cap on how many children of this type a parent may have.</td>
+</tr>
+<tr>
+<td><code>valid_from</code>, <code>valid_to</code></td>
+<td>period (from/to, open-ended allowed); both ends optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A rule may not name the same type as both its parent and its child. A rule with no parent type is exempt, because it has no parent to collide with.</li>
+<li>At most one <strong>live</strong> rule per (<code>parent_type_id</code>, <code>child_type_id</code>) pair — live rows only, so a superseded rule does not block its replacement. An absent <code>parent_type_id</code> counts as a value in that comparison; compared as plain nulls, duplicate root rules would slip through.</li>
+</ul>
+<p><strong>Why a table rather than <code>CHECK</code> constraints or code.</strong> Nesting rules in this
+organization will change (a new level added, a type retired). A rule expressed in code is
+invisible to the people configuring the organization and requires a deployment to change.
+A rule in a table can be reviewed, exported, and audited.</p>
+<p><strong>Enforcement note.</strong> A <code>CHECK</code> cannot express "the parent's type must be permitted by a
+rule", because it requires a lookup into another table — and nothing else declarative expresses
+it either. The enforcement is therefore one ordered check, run once per row <strong>inside the
+transaction that writes the unit</strong>, on insert and on any update that touches
+<code>parent_unit_id</code> or <code>unit_type_id</code>. Inside the transaction is the part worth holding onto: a
+nesting validated only in the model layer is walked straight past by the legacy import, by a row
+someone corrects by hand, and by a second client, and all three exist here by design
+(<a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>). Validating the
+same steps in the application is still worth writing, because it produces the good error
+message; it is not the enforcement. The steps and their order are the rule:</p>
+<ol>
+<li>If the unit has no parent, look for a rule with no parent type whose child type is this
+   unit's type and whose <code>valid_to</code> is absent or still in the future. (This branch reads
+   <code>valid_to</code> only; <code>valid_from</code> is not part of it.)</li>
+<li>If none was found <strong>and</strong> any rule at all names this type as its child — disregarding
+   whether that rule is still live — refuse: this unit type may not exist at the root.</li>
+<li>If none was found and no rule names this type as its child at all, accept. This is the
+   permissive default.</li>
+<li>If the unit does have a parent, read that parent unit's type.</li>
+<li>Look for a rule pairing that parent type with this unit's type whose <code>valid_from</code> is
+   absent or already reached and whose <code>valid_to</code> is absent or still in the future.</li>
+<li>If none was found <strong>and</strong> the parent type has any rule at all — again disregarding
+   validity — refuse: this unit type may not be nested under that one.</li>
+<li>Otherwise accept.</li>
+</ol>
+<p>The two refusals are each conditional on rules existing for the relevant side, and that
+condition is evaluated <em>unconditionally</em>, against retired rules as well as live ones. A type
+therefore has exactly two states: governed by rules, or untouched by them.</p>
+<p>Note the permissive fallback: a type with <strong>no</strong> rules defined at all is unconstrained.
+This matters during initial setup — the check must refuse nothing while the rule table is
+still empty, or the first units could never be created. It also means the rules are opt-in, and
+<a href="#9-integrity-checks">§9</a> verifies them.</p>
+<hr />
+<h2 id="3-org_unit">3. <code>org_unit</code><a class="headerlink" href="#3-org_unit" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td>Internal only; never exposed.</td>
+</tr>
+<tr>
+<td><code>public_id</code></td>
+<td>uuid, required, generated</td>
+<td>The identifier used outside the system, and unique.</td>
+</tr>
+<tr>
+<td><code>unit_type_id</code></td>
+<td>reference to <code>org_unit_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>parent_unit_id</code></td>
+<td>self-reference to <code>org_unit</code> (the parent), optional</td>
+<td>Nullable <strong>only</strong> for the single root unit — the organization itself. See <code>uq_org_unit_single_root</code> below, and D-035. Immutable once set — see <em>A unit never changes parent</em>, and D-036.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, optional</td>
+<td>Short human code, e.g. <code>T12</code>. Not unique globally — two sub-units may both have a <code>T1</code>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td>Current display name. <strong>Denormalised convenience.</strong> The history is in <code>org_unit_name</code> (§4). Queries about the past must read <code>org_unit_name</code>, never this column.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>text, required, defaults to <code>active</code></td>
+<td>One of <code>proposed</code>, <code>active</code>, <code>merged</code>, <code>closed</code>.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = still exists.</td>
+</tr>
+<tr>
+<td><code>closed_reason_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>closed_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>text, required</td>
+<td>Denormalised for fast ancestor queries. Maintained on write, see §6.</td>
+</tr>
+<tr>
+<td><code>depth</code></td>
+<td>integer, required</td>
+<td>Number of segments in <code>path</code>; §6.</td>
+</tr>
+<tr>
+<td><code>data_confidence</code></td>
+<td>text, required, defaults to <code>high</code></td>
+<td>One of <code>high</code>, <code>medium</code>, <code>low</code>.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td>The standard audit columns. <code>created_by</code> is NULL for system and import jobs.</td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>.</li>
+<li>A unit may not be its own parent.</li>
+<li><code>code</code> is unique <strong>within a parent</strong>, compared case-insensitively, among <strong>live units only</strong>
+  — a closed unit's code is free again. Units with no code are outside the rule, and units at
+  the root are compared with one another rather than exempted: an absent parent counts as a
+  value.</li>
+<li><strong>Exactly one unit may exist at the root.</strong> The organization itself. <code>uq_org_unit_single_root</code>
+  is the name this rule carries here, and the layer that must carry it is a migration: it is
+  uniqueness over the rows that have no parent, which is the conditional shape
+  <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a> says an ORM will not
+  emit and a migration must.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>On <code>path</code>, for prefix matching — this is what makes the set-based subtree question in §6.1
+  cheap.</li>
+<li>On <code>parent_unit_id</code>, for walking one level of the tree.</li>
+<li>On <code>unit_type_id</code>, restricted to live units, and on live units generally: "what exists
+  right now" is the question the partial indexes are for.</li>
+</ul>
+<p><strong>The one-root rule is the whole of "there is one organization", and it is the load-bearing kind:
+a constraint, not a convention.</strong> At most one row with <code>parent_unit_id IS NULL</code> may exist, and the
+rule deliberately ignores <code>valid_to</code> — even a closed root is still <em>the</em> root. A second root is not
+an untidy state but a second organization, and only something running at the database can refuse
+the insert that creates one. It is shape 2 of
+<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>
+— unique, but only among rows satisfying a condition — so the migration emits a partial unique
+index and not the plain one, which would be a different rule: a plain unique constraint over
+<code>parent_unit_id</code> would reject every sub-unit, since they all share a parent.
+See <a href="../../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a>.</p>
+<p><strong>A unit cannot be closed without an end date</strong> (<code>ck_org_unit_closed</code> is this rule's name).
+Two columns of one row, so a migration can state it directly as a check on the row — the easy
+shape, and worth stating as a requirement precisely because no object in this repository carries
+it any more. Without it you get closed units with <code>valid_to IS NULL</code>, which then appear in
+"currently active units" queries forever.</p>
+<p><strong>Why <code>code</code> is not globally unique.</strong> Unit numbering restarts and has been reused across
+decades, and with arbitrary nesting two sub-units under different parents will legitimately
+both be "1". A global unique constraint would reject real historical data during import.
+Uniqueness is scoped to the parent and to live rows.</p>
+<h3 id="a-unit-never-changes-parent">A unit never changes parent<a class="headerlink" href="#a-unit-never-changes-parent" title="Permanent link">&para;</a></h3>
+<p><code>parent_unit_id</code> is <strong>immutable</strong>. This is not a convention — it is enforced inside the
+transaction that writes the row, once per row, on any update that touches <code>parent_unit_id</code>,
+in this order:</p>
+<ol>
+<li>If <code>parent_unit_id</code> differs from its previous value in <strong>any</strong> way — including being set
+   from nothing, or cleared to nothing — refuse, naming the unit, and say what to do instead:
+   a unit that moves is a new unit; close this one and create its successor under the new
+   parent, recording the lineage in <code>org_unit_relationship</code>.</li>
+<li>Otherwise allow the write.</li>
+</ol>
+<p><strong>Why a guard inside the database rather than a rule in the application.</strong> Reparenting is the
+one edit that would silently rewrite history: it changes what every historical report means,
+moves a unit in and out of every ancestor's scope, and invalidates the materialized <code>path</code>
+for the whole subtree. None of those failures are visible at the moment of the edit — which is
+exactly why checking them in the application does not qualify, since the legacy import, the
+hand-corrected row and a second client all change parents without ever passing the screen that
+would refuse them. The comparison still costs something, and the migration must be able to pay
+it: this is shape 4 of
+<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>
+— a column that may not change once it is set — and no declarative constraint in any database
+states it, so this guard is one the migration writes by hand rather than one an ORM generates. See
+<a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>.</p>
+<p><strong>The consequence is a simplification, not a loss.</strong> Because the parent never changes, the
+<code>path</code>/<code>depth</code> denormalisation never needs a subtree cascade rewrite, and "who was in this
+unit in 2001?" keeps answering the same thing forever.</p>
+<p><strong>A genuine move is recorded as a succession</strong>, and the people are moved across explicitly —
+see <code>org_unit_relationship</code> in <a href="#5-org_unit_relationship--splits-mergers-succession">§5</a>.</p>
+<hr />
+<h2 id="4-org_unit_name--rename-and-renumber-history">4. <code>org_unit_name</code> — rename and renumber history<a class="headerlink" href="#4-org_unit_name--rename-and-renumber-history" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td>The name the unit went by in this period.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, optional</td>
+<td>The code that went with it.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = the current name.</td>
+</tr>
+<tr>
+<td><code>change_reason</code></td>
+<td>text, required</td>
+<td>One of <code>established</code>, <code>rename</code>, <code>renumber</code>, <code>reorganisation</code>, <code>correction</code>, <code>import</code>.</td>
+</tr>
+<tr>
+<td><code>change_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td><code>staff</code> or <code>legacy_import</code>.</td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>.</li>
+</ul>
+<p><strong>One unit, one current name.</strong> <code>uq_org_unit_name_open</code> is this rule's name; it is conditional
+uniqueness over the open rows, the shape <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>
+says a migration must emit by hand, and a uniqueness constraint over all rows would be a different
+and wrong rule. The denormalised
+<code>org_unit.name</code> must always equal that row, and nothing maintains the copy by itself any more:
+<strong>no write may change the current name row without setting <code>org_unit.name</code> in the same
+transaction.</strong> The failure mode is the one invariant 4 in <a href="#9-integrity-checks">§9</a> counts — a
+system that displays one name and reports under another — and it is reachable from any path that
+writes <code>org_unit_name</code>, the legacy import included, so the pairing is a requirement on the write
+rather than something a form handler remembers. Invariants 3 and 4 are the net beneath it, not
+the guard.</p>
+<p><strong>Renumbering is a rename, not a new unit.</strong> "4th Pack" becoming "Pack 12" with the same
+participants is one <code>org_unit</code> row and two <code>org_unit_name</code> rows. Creating a new unit would
+orphan all historical <code>unit_participation</code> rows and make "who was in Pack 12 in 1998?"
+unanswerable.</p>
+<p><strong><code>change_reason</code> distinguishes a correction from a rename.</strong> A correction means the
+record was wrong (a typo fixed in 2026 about a 1998 name); a rename means the world
+changed. Only the latter is real history. Conflating them corrupts historical reporting.</p>
+<hr />
+<h2 id="5-org_unit_relationship--splits-mergers-succession">5. <code>org_unit_relationship</code> — splits, mergers, succession<a class="headerlink" href="#5-org_unit_relationship--splits-mergers-succession" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>target_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>relationship</code></td>
+<td>text, required</td>
+<td>One of <code>split_from</code>, <code>merged_into</code>, <code>successor_of</code>, <code>renamed_to</code>. Direction is source → target. <code>split_from</code>: the target was created from the source. <code>merged_into</code>: the source was absorbed into the target.</td>
+</tr>
+<tr>
+<td><code>effective_date</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A unit may not have a relationship to itself.</li>
+<li>Nothing else is unique: the same pair of units may carry several relationships, and the
+  same kind of relationship more than once.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>On <code>source_unit_id</code> and, separately, on <code>target_unit_id</code>. Lineage is asked in both
+  directions — "what did this unit become?" and "what did this one come from?" — and neither
+  question may have to scan the table.</li>
+</ul>
+<p><strong>This table exists so that historical lineage is answerable.</strong> When Troop 12 splits into
+Troop 12 and Troop 31, the question "was this 2003 member in the unit that is now Troop 31?"
+requires following the relationship. Without it, the answer is only guessable from
+overlapping member sets.</p>
+<p><strong>Note it is not a tree.</strong> A unit may have been split from one parent and merged into
+another; the same pair may even have multiple relationships over time (split in 1998,
+merged back in 2005). Hence <code>effective_date</code> and no uniqueness constraint beyond the pair.</p>
+<p><strong>Do not rewrite history on a split.</strong> Participants who moved to the new unit get a <em>new</em>
+<code>unit_participation</code> row starting at the split date; their old row closes at the same date.
+Rewriting the old row destroys "where was this child in 2003?" — see
+<a href="#8-unit_participation-lives-in-03-membershipmd">§8</a>.</p>
+<hr />
+<h2 id="6-hierarchy-traversal">6. Hierarchy traversal<a class="headerlink" href="#6-hierarchy-traversal" title="Permanent link">&para;</a></h2>
+<p>Two mechanisms. One is stored and is only as correct as whatever wrote it; the other is
+computed when it is asked and is correct by construction.</p>
+<h3 id="61-materialized-path-fast-ancestordescendant-queries">6.1 Materialized path (fast ancestor/descendant queries)<a class="headerlink" href="#61-materialized-path-fast-ancestordescendant-queries" title="Permanent link">&para;</a></h3>
+<p><code>org_unit.path</code> holds a slash-delimited id path: <code>/1/7/42/103/</code>. <code>depth</code> is the number of
+segments. It is derived, never supplied: the rule runs inside the transaction that writes the
+row, once per row, on insert and on any update that touches <code>parent_unit_id</code>, in this order.
+A caller that wrote <code>path</code> itself would be writing a number nobody verified.</p>
+<ol>
+<li>A unit with no parent gets a path of its own id between two slashes, and depth 0.</li>
+<li>A unit with a parent reads that parent unit's <code>path</code> and <code>depth</code>.</li>
+<li>If there is no such unit, refuse the write — a unit cannot be placed under a parent that
+   does not exist.</li>
+<li>Its path is the parent's path with its own id appended, and its depth is the parent's
+   depth plus one.</li>
+</ol>
+<p>The order is the rule: the parent's own path must already be correct, which is why a unit can
+only be created after its parent.</p>
+<p><strong>No subtree cascade is needed, ever.</strong> Because <code>parent_unit_id</code> is immutable
+(<a href="#a-unit-never-changes-parent">§3</a>), a unit's path is computed once at insert and never
+rewritten. The repeat of this rule on an update to <code>parent_unit_id</code> is therefore defensive
+only — the no-reparenting check rejects the change before it.</p>
+<p>This is the payoff of <a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>:
+the materialized path is a pure insert-time denormalisation, which is the only kind that
+stays trustworthy without versioning.</p>
+<h3 id="62-recursive-cte-correct-regardless-of-path-integrity">6.2 Recursive CTE (correct regardless of path integrity)<a class="headerlink" href="#62-recursive-cte-correct-regardless-of-path-integrity" title="Permanent link">&para;</a></h3>
+<p>Two questions, each answered by following <code>parent_unit_id</code> one hop at a time from a starting
+unit until there is nowhere further to go:</p>
+<ul>
+<li><strong><code>unit_ancestors(unit)</code></strong> — which units are above this one? Every ancestor, <strong>nearest
+  first</strong>, and the unit itself excluded. Distance from the starting unit is part of the
+  answer, so "this unit's district" and "this unit's region" are the same question at
+  different distances.</li>
+<li><strong><code>unit_descendants(unit)</code></strong> — which units are below this one? Every descendant, the unit
+  itself again excluded.</li>
+</ul>
+<p>Both read nothing but <code>parent_unit_id</code>, so both stay correct whatever <code>path</code> currently says.</p>
+<blockquote>
+<p><strong><code>unit_ancestors()</code> must NOT be used by the permission resolver.</strong> Authority does not
+flow down the hierarchy. The resolver matches scopes exactly, plus explicit
+<code>scope_exposure</code> rows — see
+<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>.
+<code>unit_ancestors()</code> is used for <strong>reporting</strong> ("everyone in this district"), for the
+path-consistency check below, and for the exposure-direction integrity check — never in a
+permission path. Integrity check 13 in
+<a href="../05-authorization/#11-invariants-to-verify">05-authorization.md</a> asserts this in CI.</p>
+</blockquote>
+<p><strong>Both mechanisms are kept.</strong> The path is for set-based queries — one prefix test over the stored
+path rather than a walk — which is dramatically faster for "everyone in this district". The recursive CTE is the
+authority when the path might be stale, and is used by the nightly consistency check:</p>
+<p>Nightly, for every unit that has a parent: take its ancestors with <code>unit_ancestors()</code>,
+rebuild the path that chain implies — every ancestor's id nearest-first, then the unit's own
+id last, each delimited by slashes — and report the units whose stored <code>path</code> is not that
+string. Root units are excluded; their path is their own id by definition, and there is no
+chain to check it against. This is invariant 1 in <a href="#9-integrity-checks">§9</a>.</p>
+<hr />
+<h2 id="7-position-and-position_assignment">7. <code>position</code> and <code>position_assignment</code><a class="headerlink" href="#7-position-and-position_assignment" title="Permanent link">&para;</a></h2>
+<p><strong>Fields — <code>position</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unit_type_id</code></td>
+<td>reference to <code>org_unit_type</code>, required</td>
+<td>A position is defined per unit <strong>type</strong>, not per unit: every troop has a scoutmaster slot. The slot is instantiated implicitly by the unit existing.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>max_holders</code></td>
+<td>integer, optional</td>
+<td>How many people may occupy this position in one unit at the same time. Unset = unlimited. <code>1</code> = a single holder (a scoutmaster). <strong>The default is unset, i.e. unlimited</strong>, because multiple occupancy is the normal case in this organization: a troop may have several assistant leaders, several quartermasters, several instructors. Single occupancy is the exception and must be declared by the position itself. Note this is a limit a position declares about <em>itself</em>. It is never imposed from outside the unit. See domain/06-authorization-model.md §2 for why authority over a unit's structure originates at the unit.</td>
+</tr>
+<tr>
+<td><code>is_leadership</code></td>
+<td>boolean, required, defaults to false</td>
+<td>Flags positions that carry organizational authority. Used to drive the convenience workflow that also creates a <code>role_assignment</code>.</td>
+</tr>
+<tr>
+<td><code>requires_membership</code></td>
+<td>boolean, required, defaults to true</td>
+<td>What it says here is <strong>reported, not enforced</strong>. The flag drives the "leaders whose membership has lapsed" worklist below. Whether holding the corresponding <strong>role</strong> survives a lapse is a separate switch, <code>role.requires_membership</code>, and that one <em>is</em> enforced by the permission resolver (D-039). The two are deliberately not the same column: an adult volunteer commonly holds a position for years while their membership lapses and is renewed, and the organization wants to see that on a report without losing the volunteer's access.</td>
+</tr>
+<tr>
+<td><code>min_age</code></td>
+<td>integer, optional</td>
+<td>Position eligibility, a real constraint: a scoutmaster must be an adult. This is about the position, not about membership — membership is ageless (D-038).</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>integer rank, required, defaults to 0</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code>, <code>valid_to</code></td>
+<td>period (from/to, open-ended allowed); both ends optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules — <code>position</code></strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>. Either end may
+  be absent, and no comparison is attempted when one is.</li>
+<li><code>max_holders</code> is either unset or at least 1. There is no position that admits nobody.</li>
+<li>A position <code>code</code> is unique <strong>within its unit type</strong>, compared case-insensitively, among
+  <strong>live positions only</strong>.</li>
+</ul>
+<p><strong>Fields — <code>position_assignment</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>position_id</code></td>
+<td>reference to <code>position</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td>The concrete unit. <code>position.unit_type_id</code> must match that unit's <code>org_unit.unit_type_id</code>; a reference between two rows cannot express this, so it is verified on write, and invariant 6 in §9 reports what slips through.</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to <code>person</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>NULL = still in post.</td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>boolean, required, defaults to true</td>
+<td>Some people hold several positions; one is primary for display and contact.</td>
+</tr>
+<tr>
+<td><code>appointment_reference</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_reason_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
+<td>timestamp, audit time; reference to <code>person</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>import_batch_id</code></td>
+<td>reference to the import batch, optional</td>
+<td>Set on imported rows.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules — <code>position_assignment</code></strong></p>
+<ul>
+<li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>.</li>
+<li>A person may not hold the same position in the same unit over overlapping periods. The rule
+  covers <strong>every row, open and closed alike</strong> — there is no status to scope it by.</li>
+</ul>
+<p><strong>Indexes — <code>position_assignment</code></strong></p>
+<ul>
+<li>On <code>person_id</code> with <code>valid_from</code> descending, for "what does this person hold, most recent
+  first".</li>
+<li>On <code>org_unit_id</code>, and on <code>position_id</code>, each restricted to <strong>open</strong> assignments: "who runs
+  this unit now" and "who holds this slot now" are the questions that run constantly, and both
+  look only at rows that are still in post.</li>
+</ul>
+<p><strong>The holder limit.</strong> Where a position declares one, no write may leave the unit holding more
+open assignments of it than the limit allows. It is enforced inside the transaction that writes
+the assignment, once per row, on insert and on any update that touches <code>position_id</code>,
+<code>org_unit_id</code> or <code>valid_to</code> — and the count is read <em>inside</em> that transaction, not before it,
+because two inserts that each counted before either had landed are how a single-scoutmaster
+unit ends up with two scoutmasters. The order is the rule:</p>
+<ol>
+<li>Read the position's <code>max_holders</code>.</li>
+<li>If it is unset, or the row being written is itself a closed assignment, allow it — there is
+   no limit, or nothing is being opened.</li>
+<li>Count the <strong>open</strong> assignments of this position in this unit, excluding the row being
+   written from its own count.</li>
+<li>If that count has reached <code>max_holders</code>, refuse, naming the position, the unit, the current
+   holder count and the limit.</li>
+<li>Otherwise allow it.</li>
+</ol>
+<p><strong>Why no unique index does this, whatever emits it.</strong> The limit is <code>position.max_holders</code>, which
+lives in another table, so an index predicate cannot express it — and a partial index
+predicate may not contain a subquery in any case. Nothing declarative handles <code>max_holders &gt; 1</code>
+either: an index can say <em>at most one</em>, never <em>at most n, where n is a column of another table's
+row</em>. None of that argument was about the mechanism that D-072 deleted; it stands, and it now
+reads as a statement about what the migration must be able to express and cannot. <strong>This is the
+weakest-enforced rule in this document.</strong> It is shape 3 of
+<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>,
+the class whose answer comes from another table, and F-10's remedy for that class has two parts:
+a check inside the writing transaction, plus a report. The first is required above; the second
+does not exist — §9 lists no over-limit report — so if the migration omits its guard, the limit
+holds only for as long as every caller chooses to obey it.</p>
+<p><strong>Note the absence of a uniqueness rule on the assignment triple.</strong> There is deliberately
+no uniqueness over the triple of person, position and unit: a person may hold the same position in
+the same unit across <em>separate periods</em> (left in 2020, returned in 2024), which is
+historical fact and must remain representable. Overlap is still prevented, directly on the
+row:</p>
+<p>One person, one position, one unit: no two assignments of the same person to the same position
+in the same unit may cover the same date. Periods are half-open, so a row ending on a day and a
+row beginning on that same day do not collide.</p>
+<p>Without this, the same person could be double-counted as holder of the same position in the
+same unit over overlapping dates — which would defeat the holder limit itself by consuming
+two of the slots.</p>
+<p><strong>What no database constraint can enforce, and must be handled elsewhere:</strong></p>
+<p><strong>7.1 <code>requires_membership</code> and <code>min_age</code>.</strong> Both depend on temporal state in other tables, so
+no FK or check constraint can express them. They are application-level validations plus a
+periodic report:</p>
+<ul>
+<li><strong>Holders who are not currently paid-up members.</strong> Every assignment still in post, of a
+  position that asks for membership, whose holder <code>is_current_member()</code> says is not a member.
+  Needs attention, but is <strong>not</strong> an access problem — see the note below.</li>
+<li><strong>Holders below the position's minimum age.</strong> Every assignment still in post, of a position
+  that sets <code>min_age</code>, whose holder has not yet reached that age today. A holder with <strong>no
+  recorded birth date</strong> is reported as well: eligibility cannot be established for them
+  either.</li>
+</ul>
+<blockquote>
+<p><strong>An unpaid volunteer holding a position is a bookkeeping problem, not a
+safeguarding one.</strong> The important consequences:</p>
+<ul>
+<li>Note that <code>requires_membership</code> here is a <em>report</em>, while <code>role.requires_membership</code> is
+  <em>enforced</em> by the resolver (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+  The holder may lose their <strong>system access</strong> the moment the fee lapses, while still
+  legitimately holding the <strong>position</strong>. That asymmetry is intentional — see
+  <a href="../03-membership/#6-membership-and-the-authorization-system">03-membership.md §6</a> — but
+  any role that exists to make a position work should almost certainly be defined with
+  <code>requires_membership = false</code>, or the volunteer loses access to the tools their position
+  needs.</li>
+<li><strong>No background checks are recorded in this system at all</strong>
+  (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
+  If the organization ever introduces them, the natural home is a dated record with an
+  <code>expires_at</code>, plus a <code>person_identifier</code> scheme — and it would warrant a daily alerting
+  report, because a lapsed clearance is a safeguarding matter rather than a data-quality
+  one.</li>
+</ul>
+</blockquote>
+<p><strong>7.2 Holder limits are a per-position declaration, not a structural rule.</strong> See the holder
+limit above and <code>max_holders</code>. The important consequences:</p>
+<ul>
+<li><strong>Multiple occupancy is the default.</strong> <code>max_holders IS NULL</code> means unlimited, so a new
+  position kind accepts several holders without anyone having to state it.</li>
+<li><strong>Single occupancy never arises from the hierarchy.</strong> A parent unit cannot declare that a
+  nested unit has one scoutmaster. The limit is a property the position carries, and the
+  positions in a unit are that unit's own business.</li>
+<li><strong>An over-limit condition is a business error, not a crash.</strong> Two people legitimately
+  sharing a position during a handover is a normal transient state; resolution is either
+  closing one assignment or raising the limit.</li>
+</ul>
+<p><strong>Positions are not permissions.</strong> Holding <code>scoutmaster</code> grants no system capability. The
+association between a position and authority is made explicitly through <code>role_assignment</code>,
+and <code>position.is_leadership</code> exists only so a workflow can offer to create both at once.
+See <a href="../../domain/04-organization-structure/#4-positions">../domain/04-organization-structure.md</a>.</p>
+<hr />
+<h2 id="8-unit_participation-lives-in-03-membershipmd">8. <code>unit_participation</code> lives in 03-membership.md<a class="headerlink" href="#8-unit_participation-lives-in-03-membershipmd" title="Permanent link">&para;</a></h2>
+<p>Taking part in a sub-unit is a separate table from membership of the organization, because
+they have different lifetimes — a person may hold a membership while taking part in no
+sub-unit at all, or take part in several at once.</p>
+<p>The name matters: this is <strong>participation</strong>, not a second kind of membership
+(<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+Everyone registers and pays at the root; the sub-units hold rosters, not memberships.</p>
+<p>See <a href="../03-membership/#5-unit_participation">03-membership.md</a>.</p>
+<hr />
+<h2 id="9-integrity-checks">9. Integrity checks<a class="headerlink" href="#9-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify</strong></p>
+<ol>
+<li><strong>A stored <code>path</code> that disagrees with the actual tree</strong> (§6.2). Counts units whose stored
+   path is not the one their parent chain implies; any non-zero count means the insert-time
+   denormalisation has drifted.</li>
+<li><strong>A unit whose parent is closed but which is itself open.</strong> Counts live units hanging off
+   a unit that has ended; non-zero means the tree currently claims to contain something inside
+   a unit that no longer exists.</li>
+<li><strong>A live unit with no current name row.</strong> Counts live units with no open <code>org_unit_name</code>
+   row at all; non-zero violates the denormalisation invariant directly — there is no current
+   name to copy into <code>org_unit.name</code>.</li>
+<li><strong><code>org_unit.name</code> disagreeing with the unit's current <code>org_unit_name</code> row.</strong> Counts live
+   units whose denormalised display name differs from the open name row; non-zero means the
+   system displays one name and reports another.</li>
+<li><strong>A live unit type with no nesting rules at all</strong> — neither as a parent nor as a child.
+   Usually fine: nesting is permissive by default and a new type starts unconstrained. But a
+   type that has been in use for years with no rules is probably an oversight worth reviewing.</li>
+<li><strong>A position assignment whose position's unit type is not the unit's type.</strong> Counts
+   assignments pairing a position defined for one type with a unit of another; non-zero means
+   the check on write was bypassed.</li>
+<li><strong>A unit with exactly one live child.</strong> Non-zero is often a data-entry error and sometimes
+   real; it is a list to read, not a failure.</li>
+<li><strong>A position holding more people than its own limit allows.</strong> Counts, for each position
+   with <code>max_holders</code> set, its open assignments, and reports the positions where the count
+   exceeds it. Unlike event capacity (<a href="../08-events/#10-integrity-checks">08-events.md §10 check 5</a>)
+   an overrun here is <strong>not permitted</strong>: §7 calls it a business error rather than a choice an
+   adult may make deliberately, and a non-zero result therefore means the check on write was
+   bypassed — an import, a bulk reorganisation, a hand-fixed row. <strong>This check exists because
+   the guard alone is not enough to notice.</strong> The holder limit cannot be stated as a constraint
+   at all (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>),
+   so if the migration omits it the only evidence that anything was expected is §7's prose,
+   which a database cannot read. A limit nobody checks and nothing reports is a limit that
+   holds until the first import.</li>
+<li><strong>The single-root rule still exists.</strong> A second root is impossible while
+   <code>uq_org_unit_single_root</code> is carried by a migration, so what is verified here is that the
+   migration really emitted it — the rule's existence rather than the data: should it ever be
+   dropped, this fails even though nothing in the table has gone wrong, and the build must fail
+   with it. The same pattern as the
+   <code>unit_ancestors()</code> assertion in
+   <a href="../05-authorization/#11-invariants-to-verify">05-authorization.md</a>.</li>
+</ol>
+<p><strong>Checks 9 and 10 are not data-quality reports and should not be read like one.</strong> They fail on
+a <em>missing guarantee</em> rather than on bad rows, so both belong in CI: check 9 is the only thing
+that would notice an unenforced holder limit, and check 10 asserts that a migration emitted a
+constraint. Check 10 is the structural one — with reparenting prohibited
+(<a href="#a-unit-never-changes-parent">§3</a>), the single-root rule and the recursive ancestor walk are
+the two things everything else in the authorization model assumes, and both are worth asserting
+rather than trusting.</p>
+<p><strong>Checks 3 and 4 are the ones to read every morning.</strong> They detect the denormalisation drifting,
+which otherwise produces a system that displays one name and reports under another.</p>
+<hr />
+<h2 id="10-seed-data">10. Seed data<a class="headerlink" href="#10-seed-data" title="Permanent link">&para;</a></h2>
+<p>The vocabulary is data, so it belongs in a migration. Two parts: the single root, and
+whatever sub-unit types the organization actually uses.</p>
+<p>Concretely, the organization begins with two rows of data and nothing else: one unit type for
+itself — <code>organization</code>, not a leaf — and the single root unit that carries it. The root unit
+has no parent (§3), and a period that opens early enough to precede anything the organization
+will later import and never closes. No sub-unit type is seeded at all: the organization defines
+its own (D-054).</p>
+<blockquote>
+<p><strong>The sub-unit vocabulary is not seeded, and this is the decision rather than a gap.</strong>
+The seed contains the root and nothing else; <code>org_unit_type</code> is <strong>runtime data</strong>, exactly
+like <code>role</code> (<a href="../../decisions/decision-log/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>).
+The organization creates the types it actually uses, renames them, and adds new ones as its
+structure changes (<a href="../../decisions/decision-log/#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types">D-054</a>).</p>
+<p>Previous revisions seeded a guess — <code>pack</code>/<code>group</code>/<code>team</code>, and before that a
+<code>national</code>/<code>region</code>/<code>district</code> ladder. Both were invented words that read as a
+specification. <strong>Not guessing is the better answer</strong>, because a wrong vocabulary in seed
+data is harder to dislodge than an absent one.</p>
+<p><strong>The words still appear throughout these docs as illustration.</strong> "A pack has its own
+roster" explains a self-governing sub-unit; it is not a type the system ships with. Read
+them as "some sub-unit type the organization has defined".</p>
+<p><strong>Nesting is therefore entirely permissive</strong> — <code>org_unit_type_nesting</code> is seeded with
+nothing, so any type may sit under any other, including directly under the root, until the
+organization states a rule. A new type is usable the moment it is created.</p>
+<p><strong>The root type is the one exception and must stay seeded.</strong> Exactly one unit has
+<code>parent_unit_id IS NULL</code> (<a href="../../decisions/decision-log/#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it">D-035</a>)
+and it needs a type; note <code>allows_minors = false</code> on it, since no minor belongs to "The
+Organization" as a <em>unit</em> — minors hold memberships and sub-unit participation.</p>
+</blockquote>
+<p><strong>Position definitions, by contrast, are a real starting set</strong> and worth filling in — they
+are what <code>position_assignment</code> hangs off, and <code>min_age</code> / <code>requires_membership</code> on them are
+the eligibility rules §7.1 reports on — reports, because nothing rejects those two at the write.</p>
+<hr />
+<h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The real sub-unit type vocabulary (§10). One root and arbitrary nesting are settled; the
+  words are not.</li>
+<li>May the root <strong>read</strong> what happens in its sub-units, or must each sub-unit expose its
+  scope first? The root owns the registry and the fees, so this is narrower than it was —
+  it is about the sub-units' own events and rosters. See
+  <a href="../../open-questions/#c-1--may-the-root-see-what-happens-in-its-sub-units">../open-questions.md</a>.</li>
+<li>Whether a person may hold positions in units of different types simultaneously.</li>
+<li>Whether <code>is_leadership</code> should automatically create a <code>role_assignment</code>, or only suggest it.</li>
+<li>Whether <code>allows_minors</code> should also constrain <code>position_assignment</code>, or only
+  <code>unit_participation</code> — currently it is specified for participation and the position side
+  relies on <code>position.min_age</code> instead (a minor could in principle hold a position defined
+  with <code>min_age IS NULL</code> in a unit that excludes minors).</li>
+</ul>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: the organizational
+structure itself (one root, arbitrary nesting — D-035); retroactive reparenting (prohibited
+outright, and enforced inside the database rather than in the application — D-036); organization-wide operational roles (largely
+dissolved by D-035, since the root owns the registry and the fees); and background checks
+(none are recorded — D-043).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

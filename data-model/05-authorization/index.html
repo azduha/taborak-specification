@@ -1,0 +1,4323 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/05-authorization/">
+      
+      
+        <link rel="prev" href="../04-relationships/">
+      
+      
+        <link rel="next" href="../06-audit-and-import/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Authorization - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model--authorization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Authorization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-shape-of-the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The shape of the answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. permission
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. permission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-wildcard-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no wildcard permission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-namespace-does-now-and-what-it-no-longer-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What namespace does now, and what it no longer does
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-role-and-role_permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. role and role_permission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-role_assignment--system-wide-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. role_assignment — system-wide authority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. role_assignment — system-wide authority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-open-ended-assignment-is-the-classic-access-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The open-ended assignment is the classic access failure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scope--exact-match-plus-explicit-exposures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope — exact match, plus explicit exposures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delegation_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delegation_of
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-scope_exposure--how-a-unit-delegates-upward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. scope_exposure — how a unit delegates upward
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. scope_exposure — how a unit delegates upward">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-exposure-extends-an-assignment-it-never-extends-a-grant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An exposure extends an assignment. It never extends a grant.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-bulk-tool-and-no-reason-prefix-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no bulk tool and no reason-prefix convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-the-key-is-the-unit-and-not-the-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the key is the unit, and not the assignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-points-at-an-assignment-not-a-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it points at an assignment, not a role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-scopeexpose-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scope.expose permission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-scale--no-bulk-tool-and-why-that-is-now-fine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical scale — no bulk tool, and why that is now fine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-access_grant--the-per-item-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. access_grant — the per-item layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. access_grant — the per-item layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-uniqueness-rule-has-to-be-careful-with-audiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The uniqueness rule has to be careful with audiences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#level-is-the-heart-of-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        level is the heart of the design
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-grant-uniqueness-excludes-denies--deliberately" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live-grant uniqueness excludes denies — deliberately
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-foreign-key-on-scope_id--the-accepted-trade-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No foreign key on scope_id — the accepted trade-off
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-valid_to-is-discouraged-here-too" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why valid_to is discouraged here too
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-permission_level--connecting-permissions-to-grant-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. permission_level — connecting permissions to grant levels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-audience--grants-that-target-a-set-of-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. audience — grants that target a set of people
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. audience — grants that target a set of people">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-audiences-are-rules-not-lists--and-that-is-the-whole-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-in audiences are rules, not lists — and that is the whole point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-audiences-do-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What audiences do not do
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-access_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. access_log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-the-resolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. The resolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. The resolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steps-the-resolver-leans-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps the resolver leans on
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-invalidation-revisited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache invalidation, revisited
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties-to-verify-when-reviewing-this-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties to verify when reviewing this function
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-invariants-to-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Invariants to verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-what-the-organization-starts-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. What the organization starts with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-shape-of-the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The shape of the answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. permission
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. permission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-wildcard-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no wildcard permission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-namespace-does-now-and-what-it-no-longer-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What namespace does now, and what it no longer does
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-role-and-role_permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. role and role_permission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-role_assignment--system-wide-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. role_assignment — system-wide authority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. role_assignment — system-wide authority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-open-ended-assignment-is-the-classic-access-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The open-ended assignment is the classic access failure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scope--exact-match-plus-explicit-exposures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope — exact match, plus explicit exposures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delegation_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delegation_of
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-scope_exposure--how-a-unit-delegates-upward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. scope_exposure — how a unit delegates upward
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. scope_exposure — how a unit delegates upward">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-exposure-extends-an-assignment-it-never-extends-a-grant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An exposure extends an assignment. It never extends a grant.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#there-is-no-bulk-tool-and-no-reason-prefix-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no bulk tool and no reason-prefix convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-the-key-is-the-unit-and-not-the-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the key is the unit, and not the assignment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-points-at-an-assignment-not-a-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it points at an assignment, not a role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-scopeexpose-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scope.expose permission
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-scale--no-bulk-tool-and-why-that-is-now-fine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical scale — no bulk tool, and why that is now fine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-access_grant--the-per-item-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. access_grant — the per-item layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. access_grant — the per-item layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-uniqueness-rule-has-to-be-careful-with-audiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The uniqueness rule has to be careful with audiences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#level-is-the-heart-of-the-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        level is the heart of the design
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-grant-uniqueness-excludes-denies--deliberately" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live-grant uniqueness excludes denies — deliberately
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-foreign-key-on-scope_id--the-accepted-trade-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No foreign key on scope_id — the accepted trade-off
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-valid_to-is-discouraged-here-too" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why valid_to is discouraged here too
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-permission_level--connecting-permissions-to-grant-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. permission_level — connecting permissions to grant levels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-audience--grants-that-target-a-set-of-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. audience — grants that target a set of people
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. audience — grants that target a set of people">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-audiences-are-rules-not-lists--and-that-is-the-whole-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-in audiences are rules, not lists — and that is the whole point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-audiences-do-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What audiences do not do
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-access_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. access_log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-the-resolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. The resolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. The resolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steps-the-resolver-leans-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps the resolver leans on
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-invalidation-revisited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache invalidation, revisited
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties-to-verify-when-reviewing-this-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties to verify when reviewing this function
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-invariants-to-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Invariants to verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-what-the-organization-starts-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. What the organization starts with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="data-model--authorization">Data Model — Authorization<a class="headerlink" href="#data-model--authorization" title="Permanent link">&para;</a></h1>
+<p><code>permission</code>, <code>role</code>, <code>role_permission</code>, <code>role_assignment</code>, <code>scope_exposure</code>,
+<code>access_grant</code>, <code>permission_level</code>, <code>access_log</code>.</p>
+<p>This is the direct answer to your question about system-wide and per-item permissions.
+Design rationale: <a href="../../domain/06-authorization-model/">../domain/06-authorization-model.md</a>.</p>
+<hr />
+<h2 id="1-the-shape-of-the-answer">1. The shape of the answer<a class="headerlink" href="#1-the-shape-of-the-answer" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>permission ────────────── the atomic capability.      'membership.request.approve'
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     ▲
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     │ many-to-many
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>role ───────────────────── a named bundle.            'registrar', 'unit_leader'
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>     ▲
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>     │ assigned for a period, within a scope
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>role_assignment ────────── SYSTEM-WIDE authority.     person X, role R,
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                                      scope 'org_unit' 12,
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                                                      2026-01-01 → 2026-12-31
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>access_grant ───────────── PER-ITEM authority.        person X, item ('event', 55),
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                                      level 'manage', until 2026-06-30
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>guardianship_permission ── authority over a PERSON.   (04-relationships.md)
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>scope_exposure ─────────── upward delegation.         unit 7 agrees that assignment
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                                                      912's authority covers unit 7.
+</code></pre></div>
+<p>Four tables carry authority. They are separate because their lifetimes, granters, and
+revocation semantics differ — argued in
+<a href="../../domain/06-authorization-model/#1-the-four-channels-of-authority">../domain/06-authorization-model.md</a>.</p>
+<p><strong>And the rule that governs all of them:</strong> authority over a unit originates <strong>at that
+unit</strong> and cannot be claimed from outside it — not by a parent unit, and not by the
+organization. <code>scope_exposure</code> (§5) is the only way it crosses a boundary downward, and
+<code>system_admin</code> is the sole exception. See
+<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>.</p>
+<p><strong>The key insight:</strong> <code>role_assignment</code> and <code>access_grant</code> are not two unrelated
+mechanisms. They are the <strong>same idea at two granularities</strong> — authority held for a period,
+within a scope, granted by someone. They share the scope model and the resolver, and differ
+only in what they point at:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>role_assignment</code></th>
+<th><code>access_grant</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Points at</td>
+<td>A <code>role</code> (a bundle of permissions)</td>
+<td>Always exactly one permission's worth of intent, at a level</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td><code>organization</code> or <code>org_unit</code></td>
+<td>Any registered <code>scope_type</code>, including concrete items</td>
+</tr>
+<tr>
+<td>Cardinality</td>
+<td>Few rows per person, long-lived</td>
+<td>Many rows, frequently short-lived</td>
+</tr>
+<tr>
+<td>Typical use</td>
+<td>"is the treasurer"</td>
+<td>"may manage this event"</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-permission">2. <code>permission</code><a class="headerlink" href="#2-permission" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, required, unique</td>
+<td>The stable identifier — <code>membership.request.approve</code>. The <strong>code never changes</strong>; <code>display_name</code> can.</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>text, required</td>
+<td>What the permission is about — <code>membership_request</code>.</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>text, required</td>
+<td>What may be done to it — <code>approve</code>.</td>
+</tr>
+<tr>
+<td><code>namespace</code></td>
+<td>text, optional</td>
+<td><code>system</code>, or absent. It says one thing: a <code>system.</code> permission is resolved against role assignments and never against an item grant. It no longer selects a channel — see §2.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, required</td>
+<td>What it means, for whoever has to read it.</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>text, required</td>
+<td>Human label for the permission editor.</td>
+</tr>
+<tr>
+<td><code>is_system</code></td>
+<td>boolean</td>
+<td>Default false. True: seeded by the platform, cannot be deleted or have its <code>code</code> changed.</td>
+</tr>
+<tr>
+<td><code>is_assignable</code></td>
+<td>boolean</td>
+<td>Default true. False: a permission <strong>no grant may name directly</strong> — a deprecated narrow code kept only so historical audit rows still resolve to something readable. Before <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a> this also flagged wildcard <code>.admin</code> codes; there are none now.</td>
+</tr>
+<tr>
+<td><code>requires_scope</code></td>
+<td>enum: <code>organization</code>, <code>org_unit</code>, or absent</td>
+<td>A value here forces the granting role/assignment to be scoped accordingly — a unit-level permission cannot be granted organization-wide by mistake.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>code</code> is well-formed: two or more dot-separated segments of lowercase letters and
+  underscores.</li>
+<li><code>resource</code> equals the first dot-separated segment of <code>code</code>, so the code's prefix is never a
+  second, drifting copy of the resource column. <strong>One exemption</strong>, deliberate: codes beginning
+  <code>system.</code>, whose resource is the thing being administered rather than the word <code>system</code>. There
+  used to be a second exemption for the <code>dependent</code> namespace, whose codes had two meaningful
+  segments (<code>dependent.medical.view</code>); those codes are deleted
+  (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>)
+  and the exemption went with them, so nothing may be added under a namespace prefix again
+  without reopening this rule.</li>
+<li><code>code</code> is unique.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>one covering only the rows that carry a <code>namespace</code>.</li>
+</ul>
+<h3 id="there-is-no-wildcard-permission">There is no wildcard permission<a class="headerlink" href="#there-is-no-wildcard-permission" title="Permanent link">&para;</a></h3>
+<p>A check for <code>X.y</code> is satisfied by <strong>an exact grant of <code>X.y</code></strong>, or by <code>system.admin</code>, which is
+checked outright and is the only permission meaning <em>everything</em>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>A check for permission 'X.y' is satisfied by:
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    - an exact grant of 'X.y', OR
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    - a grant of 'system.admin'   (NULL-namespace permissions only)
+</code></pre></div>
+<p><strong>There are no <code>&lt;resource&gt;.admin</code> codes.</strong> The convention that every resource should expose
+one, matched by prefix in the resolver, was <strong>reversed by
+<a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></strong>,
+which also removed the resolver branch that implemented it. "Can do everything about events"
+is a <strong>role</strong> composed from the thirteen <code>event.*</code> codes, because roles are runtime data the
+organization composes (D-052) and a wildcard was the code guessing at that bundle instead.</p>
+<p><strong>The cost is the one D-007 existed to prevent, and it is accepted:</strong> a new narrow permission
+is not automatically covered by the roles that should imply it. Integrity check <strong>18</strong>
+(permissions no role grants) is the net the wildcard used to be. It fails closed.</p>
+<p><code>is_assignable = false</code> exists for permissions that only make sense as part of a bundle —
+a deprecated narrow permission kept for historical audit readability, for instance.</p>
+<h3 id="what-namespace-does-now-and-what-it-no-longer-does">What <code>namespace</code> does now, and what it no longer does<a class="headerlink" href="#what-namespace-does-now-and-what-it-no-longer-does" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th><code>namespace</code></th>
+<th>Resolved against</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>absent</td>
+<td>roles, item grants, ownership</td>
+<td><code>membership.request.approve</code></td>
+</tr>
+<tr>
+<td><code>system</code></td>
+<td><code>role_assignment</code> only (never item grants)</td>
+<td><code>system.permission.edit</code></td>
+</tr>
+</tbody>
+</table>
+<p>There used to be a third value, and this section was about it. <code>dependent.</code> prefixed every
+guardian capability, and the resolver dispatched on the prefix: a code beginning <code>dependent.</code>
+went down the guardianship channel, everything else went down the ordinary path.
+<strong><a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+deleted all eighteen of those codes,</strong> and with them the only thing the namespace column was
+being used to route on.</p>
+<p><strong>So the namespace column no longer selects a channel, and the guardianship channel is now
+selected by something the namespace could never express: whether the action is about a
+different person from the one performing it.</strong> A parent editing their child's address is checked
+under <code>person.address.edit</code> — an ordinary, un-prefixed code — and reaches the guardianship
+channel anyway, because the subject of the act is not the actor. See §10. The old prefix rule
+silently missed exactly that case: a guardian acting under a <code>person.*</code> code looked like a
+person acting on themselves.</p>
+<p>What remains for the column is <code>system</code>, and it earns its keep: a <code>system.</code> permission is
+never satisfiable by an item grant, so no one can hand someone authority over the permission
+system by sharing an item with them. A new namespace is still a data change plus one resolver
+branch — that much of the original design survives, it just has only one tenant now.</p>
+<hr />
+<h2 id="3-role-and-role_permission">3. <code>role</code> and <code>role_permission</code><a class="headerlink" href="#3-role-and-role_permission" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong> (<code>role</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, required, unique</td>
+<td><code>registrar</code>, <code>unit_leader</code>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_system</code></td>
+<td>boolean</td>
+<td>Default false. True: seeded — cannot be <strong>deleted</strong>, and its <code>code</code> cannot be changed, though its permissions may be edited. False: an ordinary role the organization created and may delete.</td>
+</tr>
+<tr>
+<td><code>scope_required</code></td>
+<td>enum: <code>organization</code>, <code>org_unit</code>, or absent</td>
+<td>Absent = assignable at either scope. <code>organization</code> = only org-wide. <code>org_unit</code> = only within a unit.</td>
+</tr>
+<tr>
+<td><code>requires_membership</code></td>
+<td>boolean</td>
+<td>Default true. <strong>The membership gate (D-039), at role level.</strong> True: the resolver honours this role only while the holder has a current membership — a lapse silently withholds the role's permissions. False: the role is honoured regardless, which is what keeps appointed counselors and local leaders able to serve while their own fee is unpaid. Enforced by the resolver, not merely reported. This is the <strong>blunt</strong> form of the exemption: it exempts everyone holding this role, everywhere. The <strong>precise</strong> form is <code>system.gate_exempt</code> (D-051), which exempts a named person across every role they hold. The resolver honours a role if <strong>either</strong> applies; the two compose and answer different questions.</td>
+</tr>
+<tr>
+<td><code>max_term_months</code></td>
+<td>integer, optional</td>
+<td>Default term length. Used to prefill <code>valid_to</code>, and to flag assignments that have run past their expected term.</td>
+</tr>
+<tr>
+<td><code>is_delegatable</code></td>
+<td>boolean</td>
+<td>Default true. False for <code>system_admin</code> and similar. See domain/06 §2.6.</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>integer, required</td>
+<td>Default 0.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person</td>
+<td>Who last changed it.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>code</code> is unique.</li>
+<li><code>scope_required</code> is <code>organization</code>, <code>org_unit</code>, or absent.</li>
+<li><code>max_term_months</code> is either absent or greater than zero.</li>
+<li>The membership gate cannot be enforced on the row: whether it bites depends on membership,
+  which is temporal state in another table. It is consulted at check time instead (D-039).</li>
+</ul>
+<blockquote>
+<p><strong><code>role</code> has no <code>valid_from</code> / <code>valid_to</code>, deliberately</strong> (<a href="../../decisions/decision-log/#d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053</a>).
+A role is a <strong>definition</strong> — a named bundle of permissions — and a definition does not come
+into and out of force. It is valid all the time, for as long as the row exists.</p>
+<p><strong>The period belongs on the assignment.</strong> <code>role_assignment.valid_from</code> / <code>valid_to</code> is where
+"this person holds this role from March until December" lives, and it is unchanged. The
+distinction is between <em>what the role is</em> and <em>who holds it</em>: the first is not a historical
+fact, the second is.</p>
+<p>This removes the whole retirement mechanism. There is no <code>role.retire</code> permission, no
+resolver check on the role's period, and no report of roles expiring while still held. A
+role the organization no longer uses is one nobody holds any more.</p>
+</blockquote>
+<p><strong>Fields</strong> (<code>role_permission</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>reference to <code>role</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>permission_id</code></td>
+<td>reference to <code>permission</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>granted_by</code></td>
+<td>reference to person, optional</td>
+<td>Who put the pair together.</td>
+</tr>
+<tr>
+<td><code>granted_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A role names a given permission at most once.</li>
+<li>The row carries no period. The pair either stands or it does not, which is why editing it
+  takes effect immediately for every holder.</li>
+</ul>
+<p><strong><code>role</code> is runtime data, not a fixed vocabulary.</strong> The organization creates roles, composes
+them from permissions, assigns them to people, edits what they grant, and deletes the ones
+nobody ever held. The seed set in §12 is a starting point to edit, not a specification.</p>
+<p>The one asymmetry: a role that has ever been assigned <strong>cannot be deleted</strong>. Three reasons, in
+order of how loudly they would bite:</p>
+<ol>
+<li><strong><code>role_assignment.role_id</code> is an FK.</strong> Deleting the row would either fail or take the
+   assignment history with it, and D-003 forbids the latter.</li>
+<li><strong>The history is the point.</strong> "What authority did this person have in 2019?" must survive
+   the role being abolished, which is exactly when someone asks.</li>
+<li><strong><code>is_system</code> roles must survive regardless</strong> — deleting <code>system_admin</code> would remove the
+   only route to <code>system.admin</code> and lock everyone out permanently.</li>
+</ol>
+<p><strong>Deletion is therefore reserved for a role created by mistake and never assigned.</strong> A role
+that was used is left as it is: it is valid always
+(<a href="../../decisions/decision-log/#d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053</a>),
+so there is nothing to switch off. A role the organization no longer wants is simply one
+nobody holds — the assignments end, and the definition stays as the answer to "what did that
+role mean?".</p>
+<p>The guard runs on each row before it is deleted, and refuses in this order:</p>
+<ol>
+<li>If any <code>role_assignment</code> references the role, the delete is refused, with a message in terms
+   the operator can act on — this role has assignments and cannot be deleted, end the
+   assignments instead so the history survives.</li>
+<li>Otherwise, if the role is marked <code>is_system</code>, the delete is refused outright.</li>
+</ol>
+<p>Both refusals are absolute. A role that clears both was created by mistake and never assigned,
+and deleting it is legitimate.</p>
+<p><strong>Editing a role's permissions takes effect immediately</strong>, with no assignment touched — every
+holder's next permission check sees the new set. That is the intended behaviour and it is also
+the sharpest edge in the whole authorization system: <code>role.edit</code> is a bulk privilege change
+wearing the clothes of a configuration screen. <code>role_permission</code> is therefore audited like any
+other business table (<a href="../06-audit-and-import/">06-audit-and-import.md</a>), so "what did this
+role grant on that date?" is answerable after the fact — which is the only defence, since
+there is nothing to check <em>before</em> the fact. The catalog marks <code>role.edit</code> 🔒🔒 for this
+reason, alongside <code>role.assign</code>.</p>
+<blockquote>
+<p><strong>This is why a role having no period matters more than it looks.</strong> Because a role is valid
+always, the <em>only</em> thing that makes authority end is the assignment ending. That puts the
+entire weight on <code>role_assignment.valid_to</code> — which is exactly where the design already
+wanted it, and why the open-ended assignment is called out as the classic access failure
+(§4).</p>
+</blockquote>
+<p><strong><code>role.requires_membership</code> is enforced by the resolver, not by a constraint.</strong> It depends on
+temporal state in another table, so no <code>CHECK</code> can express it — but unlike a mere report
+flag, it is consulted at every permission check (D-039). A role with
+<code>requires_membership = true</code> held by someone without a current membership <strong>grants nothing</strong>,
+though the assignment row survives so the history is intact and a renewal can reinstate it.</p>
+<p><strong>The "leaver with access" report is still worth running</strong> — not to prevent access, which the
+resolver already does, but to find assignments that should have been <em>closed</em> and were not.
+Dormant authority that springs back on renewal is the failure mode this gate introduces; see
+<a href="../03-membership/#6-membership-and-the-authorization-system">03-membership.md</a>.</p>
+<p><strong><code>max_term_months</code> turns "the volunteer who never got removed" into a visible expiry.</strong>
+The classic access failure is not a malicious grant; it is a legitimate one that nobody
+remembered to end. Prefilling <code>valid_to</code> from a term length makes expiry the default and
+permanence the deliberate act.</p>
+<p><strong>No permission inheritance between roles.</strong> A <code>unit_leader</code> does not get the
+<code>assistant_leader</code> permissions by being implicitly senior. Inheritance chains in an RBAC
+model produce authorization answers that nobody can predict by reading the configuration,
+which is exactly what makes such systems undebuggable. If <code>unit_leader</code> should have them,
+grant them explicitly.</p>
+<hr />
+<h2 id="4-role_assignment--system-wide-authority">4. <code>role_assignment</code> — system-wide authority<a class="headerlink" href="#4-role_assignment--system-wide-authority" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td>Who holds the role.</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>reference to <code>role</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scope_type</code></td>
+<td>enum: <code>organization</code>, <code>org_unit</code></td>
+<td>Required. Default <code>organization</code>.</td>
+</tr>
+<tr>
+<td><code>scope_id</code></td>
+<td>reference to <code>org_unit</code>, optional</td>
+<td>Absent for organization scope; a unit id otherwise.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default today.</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>Absent = open-ended. <strong>Discouraged</strong> — see below.</td>
+</tr>
+<tr>
+<td><code>granted_by</code></td>
+<td>reference to person, required</td>
+<td>An authority nobody granted is not something this table records.</td>
+</tr>
+<tr>
+<td><code>granted_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>grant_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_reason_code</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ended_note</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>delegation_of</code></td>
+<td>reference to <code>role_assignment</code>, optional</td>
+<td>Set when this assignment is a delegation of another assignment's authority. Forms a chain; the resolver re-validates the source at use time.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>scope_type</code> and <code>scope_id</code> agree exactly: organization scope means <code>scope_id</code> is absent, unit
+  scope requires one. There is no third shape.</li>
+<li><code>valid_to</code> is either absent or strictly after <code>valid_from</code>.</li>
+<li>An assignment is never its own delegation: <code>delegation_of</code> does not equal <code>id</code>.</li>
+<li>An ending is recorded only on a closed row: if <code>ended_at</code> is set, <code>valid_to</code> is set. The
+  converse is not required — a period can be closed without naming who closed it.</li>
+<li><strong>At most one open assignment</strong> of a given role to a given person in a given scope, and
+  organization-wide and one specific unit are different scopes. It counts <strong>open rows only</strong>: a
+  person may have been treasurer of unit 7 three times, and be treasurer of it once.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>over open rows only, by scope — the query is "who has authority over unit 7 right now";</li>
+<li>over open rows only, by person and role;</li>
+<li>restricted to rows expiring within the next 60 days, which is the read the nightly expiry
+  report below depends on.</li>
+</ul>
+<h3 id="the-open-ended-assignment-is-the-classic-access-failure">The open-ended assignment is the classic access failure<a class="headerlink" href="#the-open-ended-assignment-is-the-classic-access-failure" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><em>"The volunteer who stepped down in 2019 still has treasurer access in 2026."</em></p>
+</blockquote>
+<p>Every high-authority role assignment should have a <code>valid_to</code>. Two mechanisms push toward
+that:</p>
+<ol>
+<li><code>role.max_term_months</code> prefills it.</li>
+<li>A <strong>nightly report</strong> of assignments expiring within 60 days
+   (<code>ix_role_assignment_expiring</code> is the index for it), so renewal is an active decision
+   rather than a forgotten default.</li>
+</ol>
+<p><em>Assumption:</em> <code>valid_to</code> is optional in the schema but required by application validation
+for any role with <code>scope_required</code> set. Making it a database <code>NOT NULL</code> would break
+historical imports (where end dates are genuinely unknown), so the requirement is enforced
+one level up. Tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<h3 id="scope--exact-match-plus-explicit-exposures">Scope — exact match, plus explicit exposures<a class="headerlink" href="#scope--exact-match-plus-explicit-exposures" title="Permanent link">&para;</a></h3>
+<p>A unit-scoped role assignment covers <strong>that unit only</strong>. It does <strong>not</strong> cover the unit's
+children. Authority does not flow down the hierarchy — see
+<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>
+for the full reasoning.</p>
+<p>Authority crosses a unit boundary downward through exactly one mechanism: an explicit
+<code>scope_exposure</code> row, written at the subordinate unit, granting a specific role assignment
+coverage over it. See §5.</p>
+<p><strong>The resolver matches <code>scope_id</code> exactly, plus exposures.</strong> It must <strong>not</strong> call
+<code>unit_ancestors()</code>. Any occurrence of <code>unit_ancestors()</code> in a permission path is a bug —
+see §10, integrity check 13.</p>
+<h3 id="delegation_of"><code>delegation_of</code><a class="headerlink" href="#delegation_of" title="Permanent link">&para;</a></h3>
+<p>Delegations are <code>role_assignment</code> rows pointing at the assignment they delegate. Two
+required properties:</p>
+<ul>
+<li><strong>A delegation must always have <code>valid_to</code>.</strong> Enforce with a constraint:</li>
+</ul>
+<p>if <code>delegation_of</code> is set, <code>valid_to</code> must be set — a delegation is never open-ended.</p>
+<ul>
+<li><strong>The delegation may not exceed the source.</strong> Validated at grant time <em>and</em> re-validated
+  at every permission check, because the delegator may have lost the authority
+  mid-delegation. A stale delegation is a privilege-escalation vector.</li>
+</ul>
+<hr />
+<h2 id="5-scope_exposure--how-a-unit-delegates-upward">5. <code>scope_exposure</code> — how a unit delegates upward<a class="headerlink" href="#5-scope_exposure--how-a-unit-delegates-upward" title="Permanent link">&para;</a></h2>
+<p>The only mechanism by which authority crosses a unit boundary downward. Read
+<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>
+first — this table exists to implement that rule, and it is easy to misread as inheritance.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>org_unit_id</code></td>
+<td>reference to <code>org_unit</code>, required</td>
+<td><strong>The unit granting coverage over itself.</strong> This is the grantor. It is never the unit being reached into from above.</td>
+</tr>
+<tr>
+<td><code>role_assignment_id</code></td>
+<td>reference to <code>role_assignment</code>, required</td>
+<td>The assignment whose authority is honoured over this unit. Points at a specific <strong>assignment</strong>, not at a role — so a unit approves a person-in-a-role, not a role that any future holder would inherit.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default today.</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>Absent = open.</td>
+</tr>
+<tr>
+<td><code>exposed_by</code></td>
+<td>reference to person, required</td>
+<td>The person who exposed the scope. <strong>Must hold <code>scope.expose</code> at <code>org_unit_id</code>.</strong> <strong>This check cannot be a constraint</strong> — no foreign key or check clause can express "this person holds a permission at that unit as of that date", because the answer comes from the resolver. So it belongs in the write path, <strong>inside the same transaction as the row</strong>, asking the resolver for the answer as of <code>valid_from</code> rather than as of now. That placement is the requirement: checked after the insert it can be raced, checked in a form that validates a draft it can be bypassed by any writer that skips the form. <strong>The check asks the resolver, and so an ancestor-unit holder is rejected — exposure cannot be imposed from above</strong> (<a href="../../domain/06-authorization-model/#25-enforcing-the-direction-of-authority">../domain/06-authorization-model.md §2.5</a>); nothing about moving the schema into an ORM relaxes that. Because no database rule backs it, invariant 10 is not a belt-and-braces report here — it is the only thing that detects the check being missing.</td>
+</tr>
+<tr>
+<td><code>exposed_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>exposure_reason</code></td>
+<td>text, required</td>
+<td>e.g. "the treasurer handles our finances", "the registrar processes our membership". Required because the point of the rule is that coverage is deliberate and attributable.</td>
+</tr>
+<tr>
+<td><code>withdrawn_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>withdrawn_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>withdrawal_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><code>valid_to</code> is either absent or strictly after <code>valid_from</code>.</li>
+<li>A withdrawal names who made it: if <code>withdrawn_at</code> is set, <code>withdrawn_by</code> is set.</li>
+<li><strong>At most one live exposure per unit and assignment.</strong> Live means still open <em>and</em> not
+  withdrawn; withdrawn or ended rows do not count against it, so a unit may expose and withdraw
+  against the same assignment repeatedly over the years.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>both lookup directions — by unit, and by the assignment exposed — restricted to live rows,
+  which is the only state the resolver ever reads.</li>
+</ul>
+<h3 id="an-exposure-extends-an-assignment-it-never-extends-a-grant">An exposure extends an assignment. It never extends a grant.<a class="headerlink" href="#an-exposure-extends-an-assignment-it-never-extends-a-grant" title="Permanent link">&para;</a></h3>
+<p>An exposure row points at a <code>role_assignment_id</code>. Not at a role, and not at an
+<code>access_grant</code>. That is not a detail of the table, it is the whole mechanism: the unit is
+agreeing that <strong>this person, in this role, for this period</strong> may act here, which is why the
+resolver's role channel (§10, tier D) is the only channel that reads this table.</p>
+<p><strong>Direct grants are not extended, and could not be.</strong> A grant names a person and a scope;
+there is no assignment in it for an exposure to attach to, and a grant already at the checked
+unit needs no extension to work there. So the unit-grant tier matches exactly and stops.</p>
+<blockquote>
+<p><strong>How we know this, and why it is written down.</strong> Until D-072 deleted the SQL, the unit-grant
+tier had a <em>second</em> branch that looked like it consulted exposures. It did not: it joined the
+grant to the exposure's own unit, and required the exposure to be at the unit being checked,
+so the two conditions pinned the grant to the checked unit — which the first branch had just
+tested. The branch could never succeed where the first branch failed. It was dead code, and it
+had survived every review because it <em>read</em> correctly.</p>
+<p>Removing the SQL surfaced it. Nothing here changes what the system decides — a dead branch
+decides nothing — but two things are now different. The prose states one route, because
+stating two would describe a capability that never existed. And the reason the branch is
+absent is recorded here, on purpose, because "why doesn't an exposure extend my direct
+grant?" is going to look like an oversight to whoever asks it next, and the tempting repair
+would let a unit's direct grant reach a subordinate unit through an exposure written for
+someone's <em>role</em> — quietly widening an exposure to cover a person the exposing unit never
+approved. See <a href="../../decisions/decision-log/#d-078--an-exposure-extends-an-assignment-never-a-direct-grant">D-078</a>.</p>
+</blockquote>
+<h3 id="there-is-no-bulk-tool-and-no-reason-prefix-convention">There is no bulk tool and no reason-prefix convention<a class="headerlink" href="#there-is-no-bulk-tool-and-no-reason-prefix-convention" title="Permanent link">&para;</a></h3>
+<p><strong>Every row in this table is written by the unit it covers.</strong> There is no administrative
+shortcut, no <code>bulk:</code> marker, no exemption branch in the write-time check, and no review report
+(D-045).</p>
+<p>This was previously the design's most uncomfortable compromise — a tool that let a parent
+write exposures on a child's behalf, argued for on grounds of scale. Your answer removed the
+need for it: <em>"If the unit wants to expose something (a single event eg), they set the
+permissions to that event for 'everyone' or a group of people."</em> Once <strong>audiences</strong> (§8) can
+express "open this to everyone", the bulk case largely evaporates, and the rule becomes
+absolute with nothing to explain.</p>
+<p><strong>If a unit genuinely wants a higher-level officer to have authority over it,</strong> its own
+leadership writes the exposure. That is the whole rule, and now it has no exceptions.</p>
+<h3 id="why-the-key-is-the-unit-and-not-the-assignment">Why the key is the unit, and not the assignment<a class="headerlink" href="#why-the-key-is-the-unit-and-not-the-assignment" title="Permanent link">&para;</a></h3>
+<p><code>org_unit_id</code> is the <strong>subject and the grantor simultaneously</strong> — the unit is granting
+coverage over itself. This is what makes the direction of authority structural rather than
+a convention:</p>
+<ul>
+<li>A row <code>(org_unit_id = 7, role_assignment_id = 912)</code> means <em>unit 7 has agreed that the
+  authority held by assignment 912 applies to unit 7</em>.</li>
+<li>There is no way to express "assignment 912 covers unit 7 whether unit 7 likes it or not",
+  because that row would still have to be written at unit 7.</li>
+</ul>
+<p>A parent unit that wanted to reach down would have to insert a row naming the child as
+grantor — which <code>trg_exposure_direction</code> rejects (domain §2.5), and which integrity check 9 reports.</p>
+<h3 id="why-it-points-at-an-assignment-not-a-role">Why it points at an assignment, not a role<a class="headerlink" href="#why-it-points-at-an-assignment-not-a-role" title="Permanent link">&para;</a></h3>
+<p>Pointing at <code>role_id</code> would mean a unit exposes its scope to <em>"whoever holds the treasurer
+role"</em>. A person appointed treasurer two years later would silently gain access to that unit
+without the unit ever being consulted. Pointing at the assignment forces a <strong>new exposure
+decision</strong> whenever the holder changes — which is the behaviour the rule is for.</p>
+<h3 id="the-scopeexpose-permission">The <code>scope.expose</code> permission<a class="headerlink" href="#the-scopeexpose-permission" title="Permanent link">&para;</a></h3>
+<p>Creating an exposure requires:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>can(actor, 'scope.expose', 'org_unit', &lt;the unit being covered&gt;)
+</code></pre></div>
+<p>Note the scope is the unit being covered, not the actor's own unit. An officer holding
+<code>scope.expose</code> at a <strong>parent</strong> unit <strong>cannot</strong> satisfy this for a sub-unit, because they
+hold nothing at the sub-unit. That single fact is what makes the whole rule enforceable.</p>
+<p><code>scope.expose</code> is an ordinary, narrow permission with <strong>no wildcard that implies it</strong> —
+<a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+deleted <code>org_unit.admin</code>, which previously reached it by prefix match. <strong>That is an improvement
+worth naming.</strong> Under the old rule, "may administer this unit" silently included "may hand a
+parent unit authority over this unit's records" — the single most consequential act available
+at unit scope, carried as an implication of a general-purpose administrative permission and
+invisible in the role editor. It is now grantable <strong>only by naming it</strong>, which is the correct
+weight for the door it opens. See §11 for the seed row.</p>
+<h3 id="practical-scale--no-bulk-tool-and-why-that-is-now-fine">Practical scale — no bulk tool, and why that is now fine<a class="headerlink" href="#practical-scale--no-bulk-tool-and-why-that-is-now-fine" title="Permanent link">&para;</a></h3>
+<p>Exposing many units one at a time would be tedious, and the earlier design addressed that
+with a bulk tool. <strong>It is removed</strong> (D-045), for a reason worth recording: once grants can
+target <strong>audiences</strong> (§8), the common case it existed for — "let everyone / the whole group
+see this event" — has a direct expression that needs no exposure row at all.</p>
+<p>What remains is the genuinely narrower case: <em>this specific person, in this specific role,
+should have authority over our unit.</em> That is a deliberate act by the unit, it happens
+rarely, and doing it once per unit is the correct amount of friction rather than an
+obstacle.</p>
+<hr />
+<h2 id="6-access_grant--the-per-item-layer">6. <code>access_grant</code> — the per-item layer<a class="headerlink" href="#6-access_grant--the-per-item-layer" title="Permanent link">&para;</a></h2>
+<p>This is the "per-item permission" table. You specified it means a <strong>capability on that
+item</strong>: "person X may act on item Y".</p>
+<p><strong>Fields</strong> (<code>grant_scope_type</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td>text, required, unique</td>
+<td><code>event</code>, <code>document</code>, <code>org_unit</code>, <code>membership</code>. The key a grant points at.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>item_table</code></td>
+<td>text, required</td>
+<td>The table <code>scope_id</code> references — <code>event</code>.</td>
+</tr>
+<tr>
+<td><code>is_item_scoped</code></td>
+<td>boolean</td>
+<td>Default true. False for scope kinds that are organizational rather than a concrete item (<code>organization</code> itself).</td>
+</tr>
+<tr>
+<td><code>supports_levels</code></td>
+<td>boolean</td>
+<td>Default true.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong> (<code>grant_scope_type</code>)</p>
+<ul>
+<li>Every <code>access_grant.scope_type</code> names a row here. This is the one piece of referential
+  integrity the polymorphic scope does get.</li>
+</ul>
+<p><strong>Fields</strong> (<code>access_grant</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, optional</td>
+<td>The grantee, when the grant names one person.</td>
+</tr>
+<tr>
+<td><code>audience_id</code></td>
+<td>reference to <code>audience</code>, optional</td>
+<td>The grantee, when the grant names a set. This is how "open this event to everyone" or "to the whole group" is expressed (§8); a grant to an audience is evaluated against the person being checked.</td>
+</tr>
+<tr>
+<td><code>scope_type</code></td>
+<td>reference to <code>grant_scope_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scope_id</code></td>
+<td>integer, optional</td>
+<td>The concrete item id. Absent only when the scope type is not item-scoped. <strong>No foreign key: polymorphic by design.</strong> See the note below.</td>
+</tr>
+<tr>
+<td><code>level</code></td>
+<td>reference to <code>access_level</code>, required</td>
+<td><code>revoked</code>, <code>view</code>, <code>contribute</code>, <code>manage</code>, or <code>admin</code>.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default today.</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>Absent = open. Discouraged; see below.</td>
+</tr>
+<tr>
+<td><code>is_delegated</code></td>
+<td>boolean</td>
+<td>Default false.</td>
+</tr>
+<tr>
+<td><code>delegated_from</code></td>
+<td>reference to person, optional</td>
+<td>The person whose authority this delegation carries.</td>
+</tr>
+<tr>
+<td><code>granted_by</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>granted_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>grant_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>revoked_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>revoked_at</code></td>
+<td>timestamp, audit time, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>revoke_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>reference to person</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Exactly one of <code>person_id</code> and <code>audience_id</code> is set. A grant to neither is meaningless; a
+  grant to both would be ambiguous — any person in the audience, or only this one?</li>
+<li><code>valid_to</code> is either absent or strictly after <code>valid_from</code>.</li>
+<li><code>scope_id</code> is absent only at <code>organization</code> scope — and that is the whole of what the rule
+  says. It constrains the absent case alone; <code>grant_scope_type.item_table</code> is what states which
+  table an id belongs to.</li>
+<li><code>is_delegated</code> and <code>delegated_from</code> agree in both directions: the flag is true exactly when a
+  delegating person is named.</li>
+<li>A grant is never a delegation from the person it is granted to: <code>delegated_from</code> does not
+  equal <code>person_id</code>.</li>
+<li>A revocation names who made it: if <code>revoked_at</code> is set, <code>revoked_by</code> is set.</li>
+<li><strong>A delegation must expire:</strong> if <code>is_delegated</code> is true, <code>valid_to</code> is set.</li>
+</ul>
+<h3 id="the-uniqueness-rule-has-to-be-careful-with-audiences">The uniqueness rule has to be careful with audiences<a class="headerlink" href="#the-uniqueness-rule-has-to-be-careful-with-audiences" title="Permanent link">&para;</a></h3>
+<p>The obvious index — one live grant per (grantee, scope) — no longer works, because a person
+can legitimately hold a <strong>personal</strong> grant <em>and</em> be covered by an <strong>audience</strong> grant on the
+same item, and those are different rows with different lifetimes.</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li><strong>At most one live non-deny grant per person per scope</strong> — counted over the rows that name a
+  person and are open, unrevoked, and not at level <code>revoked</code>.</li>
+<li><strong>At most one live non-deny grant per audience per scope</strong>, counted the same way over the rows
+  that name an audience.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>person, audience and scope lookups, each restricted to open rows;</li>
+<li>a deny-only index over open rows at level <code>revoked</code>, keyed by grantee and scope — channel 0
+  runs a deny lookup on every check, at every scope.</li>
+</ul>
+<p><strong>Denies are excluded from both unique indexes</strong>, so a deny may coexist with a grant — which
+is exactly what makes an explicit deny meaningful. A <strong>personal deny beats an audience
+allow</strong>, because the deny check runs first and is scope-independent (§9, channel 0).</p>
+<p><strong>Audience grants cannot be delegated.</strong> <code>is_delegated</code> requires <code>delegated_from</code>, which is a
+person, and delegating "everyone" is not a coherent act — so a check constraint enforces it:</p>
+<p>If <code>audience_id</code> is set, <code>is_delegated</code> is false.</p>
+<h3 id="level-is-the-heart-of-the-design"><code>level</code> is the heart of the design<a class="headerlink" href="#level-is-the-heart-of-the-design" title="Permanent link">&para;</a></h3>
+<p>The four <strong>grant levels</strong> below are a different thing from the deleted <code>&lt;resource&gt;.admin</code>
+<em>permissions</em>, and the shared name is an accident worth guarding against: a level says <strong>how
+much</strong> authority a grant carries and is compared by rank; a permission code says <strong>which</strong>
+capability. Only the codes were deleted. The ordered levels (defined in
+<a href="../00-conventions/#5-enumerations">00-conventions.md</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Rank</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>revoked</code></td>
+<td>0</td>
+<td><strong>Explicitly denied. Overrides every other grant, including roles.</strong></td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td>10</td>
+<td>Read</td>
+</tr>
+<tr>
+<td><code>contribute</code></td>
+<td>20</td>
+<td>Read and add (sign up, comment, submit)</td>
+</tr>
+<tr>
+<td><code>manage</code></td>
+<td>30</td>
+<td>Full control of the item</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td>40</td>
+<td>Everything, including granting others access to this item</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comparisons must use <code>access_level.rank</code>, never the strings.</strong>
+<code>'admin' &lt; 'contribute'</code> lexicographically — a string comparison silently inverts the
+order and makes the most powerful level the least. This is a security bug that throws no
+error, and it is why the ranks are in a table rather than computed in code.</p>
+<h3 id="live-grant-uniqueness-excludes-denies--deliberately">Live-grant uniqueness excludes denies — deliberately<a class="headerlink" href="#live-grant-uniqueness-excludes-denies--deliberately" title="Permanent link">&para;</a></h3>
+<p>A deny must be able to coexist with a grant on the same scope, because that is the only
+way to express "this person has access to the unit's events, except this one". So the rule
+that keeps one live grant per person, item and scope — carried here as
+<code>uq_access_grant_live</code> — <strong>covers allow levels only</strong>; a <code>deny</code> row is outside it by design,
+and the resolver checks denies first.</p>
+<p><strong>This is the rule's shape, not an implementation detail of an index</strong> (<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>),
+and the distinction is load-bearing here rather than pedantic: "unique among live <em>allowing</em>
+grants" is a <strong>conditional</strong> rule, so the migration must emit a partial unique index whose
+predicate excludes <code>deny</code>. A plain unique constraint over the same columns is a different and
+wrong rule — it would refuse the deny beside the grant, which is precisely the pair the domain
+requires. See <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10, shape 2</a>.</p>
+<h3 id="no-foreign-key-on-scope_id--the-accepted-trade-off">No foreign key on <code>scope_id</code> — the accepted trade-off<a class="headerlink" href="#no-foreign-key-on-scope_id--the-accepted-trade-off" title="Permanent link">&para;</a></h3>
+<p><code>scope_id</code> has no FK because it is polymorphic. This is a deliberate choice:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Polymorphic <code>scope_id</code></th>
+<th><code>grantable_item</code> supertable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Adding a grantable type</strong></td>
+<td>One row in <code>grant_scope_type</code></td>
+<td>New table + FK from supertable + migration</td>
+</tr>
+<tr>
+<td><strong>Referential integrity</strong></td>
+<td>None — can point at a deleted item</td>
+<td>Full</td>
+</tr>
+<tr>
+<td><strong>Query cost</strong></td>
+<td>Direct</td>
+<td>Requires a join</td>
+</tr>
+<tr>
+<td><strong>Risk</strong></td>
+<td>Orphaned grants after an item is deleted</td>
+<td>Migration churn on every new feature</td>
+</tr>
+</tbody>
+</table>
+<p>You have deferred events, documents, and most other grantable things. Polymorphism means
+adding each one is a config row rather than a schema change, which matters a great deal
+given how much of this system is not yet specified.</p>
+<p>The mitigations are mandatory, not optional:</p>
+<ol>
+<li><code>grant_scope_type</code> validates the <code>scope_type</code> value (FK above).</li>
+<li>Deleting an item must close its grants — an application obligation, and tested.</li>
+<li>A <strong>nightly orphan check</strong> per scope type (§10, check 2).</li>
+<li><code>scope_id</code> is <code>BIGINT</code> and ids are never reused.</li>
+</ol>
+<p><strong>To overrule this</strong>, add a <code>grantable_item(id, item_type)</code> supertable and give every
+grantable entity an FK to it. Tracked in
+<a href="../../open-questions/">../open-questions.md</a> — it is a real fork and worth a deliberate
+decision.</p>
+<h3 id="why-valid_to-is-discouraged-here-too">Why <code>valid_to</code> is discouraged here too<a class="headerlink" href="#why-valid_to-is-discouraged-here-too" title="Permanent link">&para;</a></h3>
+<p>Same reasoning as roles, more acutely: an item grant is typically for one event, so an
+open-ended item grant is nearly always a mistake. Application validation should require
+<code>valid_to</code> for item-scoped grants, with <code>access_grant.grant_reason</code> explaining any
+exception.</p>
+<hr />
+<h2 id="7-permission_level--connecting-permissions-to-grant-levels">7. <code>permission_level</code> — connecting permissions to grant levels<a class="headerlink" href="#7-permission_level--connecting-permissions-to-grant-levels" title="Permanent link">&para;</a></h2>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>permission_id</code></td>
+<td>reference to <code>permission</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scope_type</code></td>
+<td>reference to <code>grant_scope_type</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>required_level</code></td>
+<td>reference to <code>access_level</code>, required</td>
+<td>What <code>access_grant.level</code> is needed for this permission on this scope kind.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>One row per (permission, scope type) pair.</li>
+</ul>
+<p>This table is what lets <strong>one</strong> <code>access_grant.level</code> serve many different permission codes
+without a hardcoded mapping in application code. Example:</p>
+<table>
+<thead>
+<tr>
+<th>permission</th>
+<th>scope_type</th>
+<th>required_level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event.view</code></td>
+<td>event</td>
+<td><code>view</code></td>
+</tr>
+<tr>
+<td><code>event.register_self</code></td>
+<td>event</td>
+<td><code>contribute</code></td>
+</tr>
+<tr>
+<td><code>event.edit</code></td>
+<td>event</td>
+<td><code>manage</code></td>
+</tr>
+<tr>
+<td><code>event.manage_participants</code></td>
+<td>event</td>
+<td><code>manage</code></td>
+</tr>
+<tr>
+<td><code>event.presence.mark</code></td>
+<td>event</td>
+<td><code>contribute</code></td>
+</tr>
+<tr>
+<td><code>event.grant_access</code></td>
+<td>event</td>
+<td><code>admin</code></td>
+</tr>
+<tr>
+<td><code>org_unit.view</code></td>
+<td>org_unit</td>
+<td><code>view</code></td>
+</tr>
+<tr>
+<td><code>org_unit.manage</code></td>
+<td>org_unit</td>
+<td><code>manage</code></td>
+</tr>
+</tbody>
+</table>
+<p>Without it, every permission check would need to know its own level — a mapping in code,
+invisible to the organization, and impossible to review. With it, "what does <code>manage</code> on an
+event actually let someone do?" is a query.</p>
+<p>The audit question "what does <code>contribute</code> on an event grant?" is that same read: the codes and
+display names of the permissions whose scope type is <code>event</code> and whose required level is
+<code>contribute</code>.</p>
+<hr />
+<h2 id="8-audience--grants-that-target-a-set-of-people">8. <code>audience</code> — grants that target a set of people<a class="headerlink" href="#8-audience--grants-that-target-a-set-of-people" title="Permanent link">&para;</a></h2>
+<p>A grant can name a <strong>person</strong> or an <strong>audience</strong> (D-042). This is how "open this event to
+everyone" or "let the whole group see it" is expressed — the case that surfaced when the
+question of exposing a scope was answered with <em>"they set the permissions to that event for
+'everyone' or a group of people."</em></p>
+<p><strong>Fields</strong> (<code>audience</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>text, optional, unique where set</td>
+<td>Set for <strong>built-in</strong> audiences; absent for named groups.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>text, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td>enum: <code>builtin</code>, <code>group</code></td>
+<td>Required. <code>builtin</code> — evaluated as a <strong>rule</strong> by the resolver; no membership rows exist. <code>group</code> — a stored, administered list in <code>audience_member</code>.</td>
+</tr>
+<tr>
+<td><code>resolver_key</code></td>
+<td>text, optional</td>
+<td>For built-ins, which rule the resolver applies. Set exactly when <code>kind</code> is <code>builtin</code>. The values: <code>everyone</code> — any person, including non-members and the public; <code>all_members</code> — anyone with a current membership; <code>unit_participants</code> — participants of the unit in <code>scope_parameter</code>; <code>unit_leaders</code> — holders of a live assignment to a leadership <strong>position</strong> in that unit; <code>guardians_of</code> — active guardians of the person in <code>scope_parameter</code>.</td>
+</tr>
+<tr>
+<td><code>scope_parameter</code></td>
+<td>integer, optional</td>
+<td>For the parameterised built-ins: which unit, or which person.</td>
+</tr>
+<tr>
+<td><code>is_system</code></td>
+<td>boolean</td>
+<td>Default false.</td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>Absent = open.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>reference to person</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong> (<code>audience</code>)</p>
+<ul>
+<li><code>kind</code> is <code>builtin</code> exactly when <code>resolver_key</code> is set; the two agree in both directions.</li>
+<li>A <code>group</code> has no <code>code</code>. Codes belong to built-ins.</li>
+<li><code>code</code> is unique among the rows that have one.</li>
+</ul>
+<p><strong>Fields</strong> (<code>audience_member</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>audience_id</code></td>
+<td>reference to <code>audience</code>, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>valid_from</code></td>
+<td>date, required</td>
+<td>Default today.</td>
+</tr>
+<tr>
+<td><code>valid_to</code></td>
+<td>date, optional</td>
+<td>Absent = open.</td>
+</tr>
+<tr>
+<td><code>added_by</code></td>
+<td>reference to person, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong> (<code>audience_member</code>)</p>
+<ul>
+<li><code>valid_to</code> is either absent or strictly after <code>valid_from</code>.</li>
+<li><strong>No overlapping memberships.</strong> A person may not hold two rows for the same audience whose
+  periods overlap, counted over <strong>all</strong> rows and not only the open ones. Periods are half-open,
+  so a membership ending on a day and another beginning that same day do not collide.</li>
+<li>Only named groups have members. A built-in audience is a rule, so a row here would be
+  meaningless and, worse, would look authoritative — and nothing about the row itself gives it
+  away. Integrity check 12 (§11) is what finds them.</li>
+</ul>
+<h3 id="built-in-audiences-are-rules-not-lists--and-that-is-the-whole-point">Built-in audiences are rules, not lists — and that is the whole point<a class="headerlink" href="#built-in-audiences-are-rules-not-lists--and-that-is-the-whole-point" title="Permanent link">&para;</a></h3>
+<p>The distinction is the load-bearing one:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Built-in audience</th>
+<th>Named group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>How evaluated</strong></td>
+<td>A rule the resolver applies at check time</td>
+<td>A stored list of <code>audience_member</code> rows</td>
+</tr>
+<tr>
+<td><strong>When a person joins the unit</strong></td>
+<td>They immediately receive what the unit granted — <strong>automatically</strong></td>
+<td>Nothing happens. Someone must add them.</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>None</td>
+<td>The classic stale-group problem: nobody ever removes anyone</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td><code>everyone</code>, <code>all_members</code>, the participants of unit X, the guardians of person Y</td>
+<td>"the summer camp kitchen crew"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prefer built-ins.</strong> A pack that grants <code>view</code> on its events to
+<code>unit_participants</code> of itself gets the correct behaviour forever: next year's new members
+inherit it, and people who leave stop being covered, with no rows to maintain. The same grant
+to a <em>named group</em> silently rots the moment the roster changes.</p>
+<p>Named groups exist because some sets genuinely are ad hoc — a camp kitchen crew is not a unit
+and is not derivable from anything. They are the escape hatch, and they carry their known
+cost.</p>
+<h3 id="evaluation">Evaluation<a class="headerlink" href="#evaluation" title="Permanent link">&para;</a></h3>
+<p>An audience grant is evaluated as part of the person's own permissions — the resolver
+expands it, so a grant to an audience is checked <em>as if</em> the person held it directly:</p>
+<p>An audience grant applies when <strong>one</strong> grant row satisfies all of these. These are conditions
+on a single row, tested together — their order carries no meaning:</p>
+<ol>
+<li>The grant names an audience; a personal grant is not this question's business.</li>
+<li>Its <code>scope_type</code> is the scope type being checked, and its <code>scope_id</code> matches the scope id
+   being checked, with an absent id counting as equal to an absent checked id.</li>
+<li>Its level is not <code>revoked</code> — denies belong to channel 0.</li>
+<li>It has not been revoked.</li>
+<li>It has started as of the checked date and has not ended on that date.</li>
+<li>A <code>permission_level</code> row exists for the checked permission at the grant's scope type, and the
+   grant's level ranks at least as high as the level that row requires.</li>
+<li><code>person_in_audience()</code> puts the person in that audience on the checked date.</li>
+</ol>
+<p><code>person_in_audience()</code> is where the built-in rules live:</p>
+<p>The rule the resolver applies, in this order:</p>
+<ol>
+<li>The audience itself must not have ended — no <code>valid_to</code>, or a <code>valid_to</code> after the checked
+   date. An ended audience covers nobody, of whatever kind.</li>
+<li><code>everyone</code> — always true.</li>
+<li><code>all_members</code> — the person has a current membership.</li>
+<li><code>unit_participants</code> — the person has a unit participation row for the unit named in
+   <code>scope_parameter</code>, covering the checked date.</li>
+<li><code>unit_leaders</code> — the person holds a <strong>position assignment</strong> at the unit named in
+   <code>scope_parameter</code>, live on the checked date, <strong>to a position marked <code>is_leadership</code></strong>.
+   <strong>Corrected in round 6, and the correction is the interesting part.</strong> This rule used to ask
+   for a <em>role</em> assignment "of a role marked <code>is_leadership</code>" — and no such flag is on <code>role</code>.
+   <code>is_leadership</code> lives on <code>position</code>
+   (<a href="../02-organization/#7-position-and-position_assignment">02-organization.md §7</a>), where it does
+   something else again:
+   it exists "only so a workflow can offer to create both at once". <strong>The fix cannot be to delete
+   the condition</strong>, because then <code>unit_leaders</code> would match anyone holding any assignment at the
+   unit — a member of the <code>unit_participants</code> audience by another name, and an audience whose name
+   lies about its membership is worse than a broad one. <strong>Nor can the fix be to add the flag to
+   <code>role</code></strong>, because a role is deliberately position-independent and organization-reusable: a
+   person is a leader <em>of a unit</em>, which is exactly what a position assignment records and exactly
+   what a role does not.
+   <strong>This does not contradict "position is not authority"</strong>
+   (<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>,
+   restated in D-033):
+   audience membership is not authority, it is a test of who one existing grant reaches. Being
+   elected troop leader still confers nothing until someone grants something to <code>unit_leaders</code>.
+   <strong>Note what depends on this and was therefore quietly broken.</strong> Audiences of this kind are
+   created per unit that needs one (§12), and every grant aimed at one was <strong>inert</strong>: the rule
+   matched no person, so the authority was configured, visible in the editor as granted, and
+   reached nobody. It failed closed, which is the least noisy way for a permission rule to be
+   wrong — nothing broke, which is exactly why nobody noticed.</li>
+<li><code>guardians_of</code> — the person is the guardian of the person named in <code>scope_parameter</code>, under a
+   guardianship covering the checked date. A lapsed membership does not remove a guardian, but an
+   <strong>ended</strong> guardianship does.</li>
+<li>Anything else — a named group: the person has an <code>audience_member</code> row for this audience
+   covering the checked date.</li>
+</ol>
+<p>Branch 7 is the fallback: anything whose <code>resolver_key</code> is absent, or matches no rule above, is
+read as a stored group membership.</p>
+<p><strong>Note <code>unit_leaders</code> reads the position tables without itself being an authority grant.</strong> Membership in an audience confers nothing on its own — it only decides whether <em>this
+grant</em>, which someone already created deliberately, reaches this person. A leader does not
+become able to do anything by being in the <code>unit_leaders</code> audience; they become able to do
+exactly what that grant says, on that item.</p>
+<h3 id="what-audiences-do-not-do">What audiences do <strong>not</strong> do<a class="headerlink" href="#what-audiences-do-not-do" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>They are not a permission.</strong> Being in an audience is not authority; it is membership of a
+  set. All authority still comes from a grant.</li>
+<li><strong>They do not replace <code>guardianship_permission</code>.</strong> <code>guardians_of</code> lets a unit open something
+  to a child's guardians; it does not let a guardian edit the child's record. That remains the
+  guardianship channel.</li>
+<li><strong>They do not nest.</strong> An audience cannot contain another audience — that is how you get
+  evaluation cycles and answers nobody can predict.</li>
+<li><strong><code>everyone</code> is genuinely everyone</strong>, including people with no account and no membership.
+  It is the right target for a public event page and the wrong one for anything else.</li>
+</ul>
+<hr />
+<h2 id="9-access_log">9. <code>access_log</code><a class="headerlink" href="#9-access_log" title="Permanent link">&para;</a></h2>
+<p>The audit trail. Append-only; no updates, no deletes.</p>
+<p><strong>Fields</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer identity</td>
+<td>Surrogate key.</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>timestamp, audit time</td>
+<td>Default now.</td>
+</tr>
+<tr>
+<td><code>actor_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Who performed the action. Absent for system actions.</td>
+</tr>
+<tr>
+<td><code>subject_person_id</code></td>
+<td>reference to person, optional</td>
+<td>Whose data was affected. Differs from the actor when acting on behalf.</td>
+</tr>
+<tr>
+<td><code>on_behalf</code></td>
+<td>boolean</td>
+<td>Default false. True when the actor and the subject differ and the action was performed <strong>for</strong> the subject — guardianship, delegation. See <a href="../04-relationships/">04-relationships.md</a> §6.</td>
+</tr>
+<tr>
+<td><code>authorization_channel</code></td>
+<td>enum: <code>ownership</code>, <code>guardianship</code>, <code>item_grant</code>, <code>role</code>, <code>system</code>, <code>none</code>, or absent</td>
+<td>Which channel authorized this. Makes the audit answerable: "by what authority did this person do that?" <code>none</code> records that none did.</td>
+</tr>
+<tr>
+<td><code>authorization_ref_id</code></td>
+<td>integer, optional</td>
+<td>No foreign key: it names a row in one of several tables — <code>role_assignment.id</code>, <code>access_grant.id</code>, or <code>guardianship_permission.id</code>. Lets an auditor go directly to the grant that permitted the action.</td>
+</tr>
+<tr>
+<td><code>permission_code</code></td>
+<td>text, optional</td>
+<td>The permission checked, as its code. Absent for pure read events that are logged for access-trail purposes rather than permission decisions.</td>
+</tr>
+<tr>
+<td><code>scope_type</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scope_id</code></td>
+<td>integer, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>text, required</td>
+<td><code>membership.request.approve</code>, <code>person.view</code>.</td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>integer, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>enum: <code>allowed</code>, <code>denied</code>, <code>error</code></td>
+<td>Required.</td>
+</tr>
+<tr>
+<td><code>denial_reason</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>session_id</code></td>
+<td>text, optional</td>
+<td>Acting context, for forensics.</td>
+</tr>
+<tr>
+<td><code>ip_address</code></td>
+<td>an IP address, optional</td>
+<td>Acting context, for forensics.</td>
+</tr>
+<tr>
+<td><code>user_agent</code></td>
+<td>text, optional</td>
+<td>Acting context, for forensics.</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td>text, optional</td>
+<td>Acting context, for forensics.</td>
+</tr>
+<tr>
+<td><code>before_state</code></td>
+<td>free-form jsonb, optional</td>
+<td>For write actions.</td>
+</tr>
+<tr>
+<td><code>after_state</code></td>
+<td>free-form jsonb, optional</td>
+<td>For write actions. <strong>Redacted fields must be stripped before logging</strong> — an audit log that leaks the data it audits is worse than none.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>A <code>denied</code> result carries a <code>denial_reason</code>. There is no unexplained denial in this table.</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>the subject lookup covers only rows that name a subject;</li>
+<li>one index over denied rows only, newest first;</li>
+<li>one over acting-on-behalf rows only, newest first.</li>
+</ul>
+<p><strong><code>authorization_channel</code> and <code>authorization_ref_id</code> are what make this an audit trail
+rather than a log.</strong> A record saying "person 100 changed person 200's address" answers
+<em>what</em> and <em>who</em>. A record that also names the <code>guardianship_permission</code> row that
+authorized it answers <em>why they were allowed to</em> — and whether that authority was valid at
+the time. When a custody dispute arises eighteen months later, that is the question asked.</p>
+<p><strong><code>denied</code> results are logged too.</strong> A series of denials is the signature of someone
+probing for access they do not have. Logging only successes discards the signal.</p>
+<p><strong><code>before_state</code>/<code>after_state</code> must be redacted, and the sentence is the reason this document is
+cited everywhere else.</strong> Copying a value out of a guarded record into a table guarded by different
+people, on a different path, for longer than the record is kept, produces a copy with less protection
+than the original — and the copy is the one that gets read by auditors, exported for reports and
+mirrored into backups. Redaction therefore happens <strong>before the insert</strong>, in the logging function, and
+never in a job that might not run — the ordering is the part of this rule with teeth, and it survives
+<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+taking the trigger that used to enforce it.</p>
+<p><strong>How far the argument reaches, now that the person record has no sensitive corner.</strong> It is an argument
+about <em>the copy's guard</em>, not about the copy's contents, and reading it as an instruction to empty
+payloads is the mistake this section made once and corrected. <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+removed the subset that a field list selects from — everything about a person beyond name, gender and
+age is a value in <code>person_attribute</code> (<a href="../09-attributes/">09-attributes.md</a>) — which rules out
+name-keyed scrubbing of personal data for good: there is no list, and <code>allergy</code> is not on it. It leaves
+two conclusions, and they point in opposite directions from the obvious one:</p>
+<ul>
+<li><strong>The credential case stays, and it is the only one a name list can serve.</strong> Values where <em>being in a
+  log at all</em> is the harm — secrets, tokens, credentials — are stripped on the way in, by key name,
+  everywhere a listed key turns up (<a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>).</li>
+<li><strong>The person-data case is answered by grading the copy, not by thinning it.</strong> <code>audit_log</code> holds
+  before and after images of a child's descriptive values, because
+  <a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+  made that trail the only history those values have. So <strong>"the copy must not be less guarded than the
+  original" is a requirement on <code>audit.view</code>'s sensitivity mark</strong> — the top tier, beside <code>person.view</code> —
+  and not a rule about which keys may appear in a jsonb column. Written as a requirement in
+  <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md §8 item 7</a> and demanded of the
+  catalog in <a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>;
+  erasure reaching those payloads stays absolute
+  (<a href="../06-audit-and-import/#4-redaction-log">06-audit-and-import.md §4</a>).</li>
+</ul>
+<p><strong>Append-only enforcement:</strong></p>
+<p>Any update or delete against <code>access_log</code> is refused row by row, before it happens, with an
+error saying the table is append-only. Nothing is left to the application remembering this.</p>
+<p>Consider partitioning by month once volume justifies it, and moving old partitions to
+cheaper storage — but <strong>never delete them</strong>. The partition retention policy is a legal
+question, not a technical one.</p>
+<p><em>Assumption:</em> <code>access_log</code> may be queried by staff with a specific permission, but writing
+is automatic. If the organization needs human annotation of audit entries, add a separate
+<code>access_log_note</code> table rather than making this table mutable.</p>
+<hr />
+<h2 id="10-the-resolver">10. The resolver<a class="headerlink" href="#10-the-resolver" title="Permanent link">&para;</a></h2>
+<h3 id="steps-the-resolver-leans-on">Steps the resolver leans on<a class="headerlink" href="#steps-the-resolver-leans-on" title="Permanent link">&para;</a></h3>
+<p>Two small helpers keep <code>can()</code> readable. Both are <code>STABLE</code>.</p>
+<p><strong><code>grant_satisfies(person, scope_type, scope_id, permission, at)</code></strong> — does the person hold a
+grant <strong>on this exact scope</strong> whose level meets what the permission requires at that scope kind?
+Exact match only, no inheritance. It covers both a personal grant and one made to an audience
+the person is in. Any one grant row meeting all of these satisfies it:</p>
+<ol>
+<li>Its <code>scope_type</code> equals the checked scope type and its <code>scope_id</code> matches the checked scope
+   id, with an absent id equal to an absent checked id.</li>
+<li>A <code>permission_level</code> row joins the checked permission to the grant's scope type.</li>
+<li>The grant's level ranks at least as high as the level that row requires.</li>
+<li>Its level is not <code>revoked</code> — denies are handled in channel 0.</li>
+<li>It has not been revoked.</li>
+<li>It has started as of <code>at</code> and has not ended on <code>at</code>.</li>
+<li>The grantee is this person, or an audience containing them at <code>at</code> (§8).</li>
+</ol>
+<p><strong><code>level_satisfies(level, permission, scope_type)</code></strong> — is this grant's level sufficient for the
+permission at this scope kind? The rank of the given level is compared with the <code>required_level</code>
+recorded for that pair. <strong>When no <code>permission_level</code> row exists for the pair the answer is
+false</strong>: an unmapped permission is satisfied by no level rather than by every one.</p>
+<p><strong><code>scope_exposure_covers_assignment(org_unit_id, role_assignment_id, at)</code></strong> — does an exposure at
+this unit cover this assignment? The exposure is the <strong>only</strong> way authority crosses a unit
+boundary downward. True when some <code>scope_exposure</code> row names this unit and this assignment and is
+at <code>at</code> still open, not withdrawn, and already started. Whether the assignment itself is still
+live is the caller's check, not this one's.</p>
+<p><strong><code>person_holds_gate_exempt(person, at)</code></strong> — does this person hold <code>system.gate_exempt</code>, and is
+the exemption itself still live (D-051)? True when some <code>role_assignment</code> of that person is live
+at <code>at</code> and its role grants <code>system.gate_exempt</code>, and — if that assignment is a delegation — its
+source assignment is itself live at <code>at</code>.</p>
+<p>This last one is <strong>deliberately not expressed as a call to <code>can()</code></strong>. <code>can()</code> applies the
+membership gate, and the exemption exists to lift that gate; asking the resolver would make a
+lapsed holder unable to hold the permission that says a lapse does not matter. It is read
+directly from <code>role_assignment</code>. An <code>access_grant</code> can never confer this: system-namespace
+permissions are unreachable by the item channel, which is the structural guarantee that an item
+grant cannot lift the gate.</p>
+<p>The single authorization entry point. One implementation, used everywhere. Algorithm:
+<a href="../../domain/06-authorization-model/#6-the-resolver">../domain/06-authorization-model.md</a>.</p>
+<p><strong><code>can(person, permission_code, scope_type, scope_id, at, owner_person_id)</code></strong> returns allowed
+or denied. <code>scope_type</code> and <code>scope_id</code> are optional, <code>at</code> defaults to today, and
+<code>owner_person_id</code> is supplied only where the ownership channel is in play.</p>
+<p><strong>The order of these steps is a rule.</strong> Each step either returns or falls through, so a step
+never gets to contradict an earlier one; reordering them silently changes who can do what.</p>
+<ol>
+<li><strong>Look the permission up by code.</strong> If no permission carries that code, <strong>return false</strong> —
+   an unknown permission is a deny, and it is settled before anything else is considered.</li>
+<li><strong>Resolve merge chains.</strong> Replace the person with the survivor of any merge, so permissions
+   are never evaluated for a tombstoned person.</li>
+<li>
+<p><strong>Channel 0 — explicit deny. Absolute and scope-independent.</strong> A <code>revoked</code> grant applicable
+   to this person blocks access no matter <strong>what</strong> scope it sits at: a per-event grant can never
+   restore access that an organization-wide suspension removed. Locality orders <em>allows</em> (the
+   tiers below); it never outranks a deny. See the authorization model §7.1. A grant counts when
+   it is itself unrevoked, has started as of <code>at</code>, has not ended on <code>at</code>, and applies to the
+   person — where "applies" means it names them <strong>or</strong> names an audience they are in at <code>at</code>
+   (§8). A personal deny and an audience deny are equally absolute, and a personal allow further
+   down cannot beat an audience deny, because channel 0 has already returned. Its scope applies
+   when any of these holds:</p>
+</li>
+<li>
+<p>it sits at organization scope, and then it applies everywhere;</p>
+</li>
+<li>it sits on the exact thing being checked — same scope type, same id;</li>
+<li>it sits on a unit and the check is about that same unit. A deny on a unit covers <strong>only</strong>
+     that unit: authority does not flow down, so there is no ancestor walk here either.</li>
+</ol>
+<p>Any such grant: <strong>return false.</strong>
+4. <strong>Channel 1 — ownership.</strong> If an owner was supplied and that owner resolves to this same
+   person, <strong>return true</strong>. Your own data.
+5. <strong>Channel 2 — guardianship. Consulted when the check is about someone other than the actor;
+   answers with allows only.</strong> The test is a comparison, not a name: an owner was supplied, it
+   resolves to a real person, and that person is <strong>not</strong> the actor. The question is whether the
+   actor holds a <strong>live guardianship over that subject at <code>at</code></strong> whose <code>right_level</code> is at least
+   what the checked permission needs — <code>view</code> for a read, <code>write</code> for a change; <code>none</code> satisfies
+   nothing. <strong>If such a guardianship exists and the level suffices, return true. In every other
+   case — no guardianship, <code>none</code>, or a level too low — the channel returns nothing at all and the
+   resolver continues to step 6.</strong> It does not deny. Defined in
+   <a href="../04-relationships/#4-how-the-resolver-uses-these-tables">04-relationships.md §4</a>; the
+   reasoning for both halves is
+   <a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>.</p>
+<p>Three properties of this channel, each of which has a decision behind it:</p>
+<ul>
+<li><strong>Entered by shape, not by namespace</strong> (D-079, following D-074). A parent correcting their
+     child's address is checked under <code>person.address.edit</code> — an ordinary, un-prefixed code — and
+     still routes here. A permission added next year for a field a guardian must edit is covered
+     the day the field exists.</li>
+<li><strong>Silent rather than final.</strong> Under the old prefix rule this channel gave the last word,
+     because <code>dependent.*</code> codes belonged to no role. Now that it carries ordinary codes, taking
+     the last word would deny the parent who is also the event registrar the right to run the
+     roster: <code>view</code> over their own child, asked to write, refused by their own guardianship. So a
+     shortfall falls through to the actor's own roles and grants. <strong>A real prohibition is still
+     possible and still absolute — it is an explicit deny, step 3, channel 0.</strong></li>
+<li><strong>Gate-exempt.</strong> A guardian whose own membership lapses has not stopped being the child's
+     guardian; see D-039 and D-051. No membership test appears anywhere in this step.</li>
+</ul>
+<p>The <strong>guard must not be weakened into "the subject is a minor."</strong> The existence of a guardianship
+   row is the whole test; an age lookup here would put a branch in the resolver that D-070 and
+   D-077 rule out, and it would be redundant: without a row there is no channel to enter, which is already true today.</p>
+<p><strong>Personal attributes reach this resolver through no new door, and the sentence is worth writing
+   down because the data looks like it wants one.</strong> Everything the organization knows about a person
+   beyond their name, gender and age is descriptive data in one table
+   (<a href="../09-attributes/">09-attributes.md</a>), and it is read by <code>person.view</code> and written by
+   <code>person.edit</code> — the two codes that already cover the person — through the channels already listed
+   above. No <code>attribute.*</code> read permission exists, because there is nothing to gate that
+   <code>person.view</code> does not already gate; there is no fifth channel; and there is no branch anywhere on
+   <em>what a value is about</em>, because a branch on content is the privileged medical subset returning
+   through the resolver after <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+   refused it through the permission list
+   (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes.md §4</a>). <strong>The temptation this
+   invites is precisely the age branch the paragraph above refuses</strong> — <em>"a leader may see allergy data,
+   but only for the children in their unit"</em> reads as prudent and is a rule about an age and about the
+   contents of a value, two things this resolver deliberately cannot see. The grant already says
+   everything it is entitled to say: whoever holds <code>person.view</code> over this person reads this person.
+   <strong>What changed is the reach of one existing answer, not the route to any answer</strong> — see §12 for the
+   code, which is <code>person.view</code>, and for why its mark in the catalog has to rise with its reach. The only genuinely new capability in the area is curation of the vocabulary
+   itself, <code>attribute.define</code>, and it arrives as an ordinary narrow permission through a role like
+   every other: nothing structural hangs off it.
+6. <strong>Channels 3-5 — allows, ordered by locality, most specific first.</strong> The first tier that
+   yields a determination decides the effective level for this check; if that level is
+   insufficient, fall through to the next tier. This is what "local permissions override global"
+   means, and it applies to <strong>allows only</strong> — denies were already settled in step 3. The units
+   whose grants apply to a check are the checked unit itself, and any unit that has explicitly
+   exposed its scope to a relevant assignment. <strong>No <code>unit_ancestors()</code> call appears anywhere in
+   this function.</strong></p>
+<ol>
+<li><strong>Tier A — an item grant on this exact scope</strong>, the most specific thing there is. Reached
+      only when both a scope type and a scope id were supplied. Satisfied by
+      <code>grant_satisfies(person, scope_type, scope_id, permission, at)</code>.</li>
+<li><strong>Tier B — a unit grant: <code>grant_satisfies(person, 'org_unit', scope_id, permission, at)</code>.</strong>
+      Reached only when the checked scope is a unit and an id was supplied. <strong>Exact match, and
+      one route only — an exposure does not extend a direct grant,</strong> for the reason set out in
+      §5; the role channel below is the only consumer of that table.</li>
+<li><strong>Tier C — an organization-scoped grant:</strong> <code>grant_satisfies(person, 'organization', NULL,
+      permission, at)</code>.</li>
+<li>
+<p><strong>Tier D — roles: exact scope match, or a unit exposed to the assignment.</strong> No downward
+      inheritance.</p>
+<p><strong>The membership gate (D-039):</strong> a role grants anything only while the holder has a
+  current membership, unless (a) the <strong>role</strong> is marked <code>requires_membership = false</code>, or
+  (b) the <strong>person</strong> holds <code>system.gate_exempt</code> (D-051). Guardianship and ownership were
+  already answered in steps 4 and 5 and are deliberately exempt. (b) is resolved by
+  <strong>direct lookup</strong>, not through <code>can()</code>. Routing it through the resolver would be circular:
+  a lapsed holder of the exemption would be denied it by the very rule it exists to lift,
+  and the lockout would have no error message.</p>
+<p>All of the following must hold of one assignment (these are conditions on a single row,
+  listed in the resolver's own order):</p>
+<ul>
+<li>it names this person and is live at <code>at</code>;</li>
+<li><strong>there is no check on the role's own period.</strong> A role is valid always and the temporal
+    question is the assignment's (D-053); the place such a check would have sat does not
+    exist;</li>
+<li>the gate holds: the role's <code>requires_membership</code> is false, <strong>or</strong> the person has a
+    current membership, <strong>or</strong> <code>person_holds_gate_exempt(person, at)</code>;</li>
+<li>the role grants a permission whose code equals the checked code, <strong>or</strong> the checked
+    permission has no namespace and the role grants <code>system.admin</code>. There is <strong>no <code>.admin</code>
+    prefix-match branch</strong>: there are no per-resource admin permissions (D-068, reversing
+    D-007), and a role that can do everything about events lists all thirteen <code>event.*</code>
+    codes explicitly;</li>
+<li>the scope fits, in one of three ways — the assignment is organization-scoped and the
+    check is at organization scope or unscoped, except that <code>system.admin</code> qualifies whatever
+    the checked scope is, since an organization-wide grant of it has to reach everywhere; or
+    the assignment is unit-scoped, the check is about a unit, and either that unit is the
+    assignment's own unit or it carries an open, unwithdrawn, started exposure naming
+    <strong>this</strong> assignment; or the check is unscoped ("can they do this anywhere?"), in which
+    case any live assignment qualifies — <strong>for UI decisions only; never enforce a mutation
+    on an unscoped check</strong>;</li>
+<li>and, if the assignment is a delegation, its source assignment is still live at <code>at</code>.</li>
+</ul>
+<p>Any such assignment: <strong>return true.</strong>
+7. <strong>Channel 5 — default deny. Return false.</strong></p>
+</li>
+</ol>
+<blockquote>
+<p><strong>The membership gate is one clause, and it is the clause most likely to be "optimized"
+away.</strong> <code>AND (NOT r0.requires_membership OR is_current_member(p_person_id) OR
+person_holds_gate_exempt(p_person_id, p_at))</code> is the whole of D-039 as amended by D-051.
+Removing any disjunct because "the join is expensive" reverses a decision taken
+deliberately, and nothing else in the schema would notice. If it becomes a measured
+performance problem, the fix is to cache <code>is_current_member()</code> — a single indexed lookup on
+<code>(person_id, status, valid_to)</code> — or to inline <code>person_holds_gate_exempt</code> as a join, not to
+drop a condition.</p>
+<p><strong>The third disjunct is the one that must never be routed through <code>can()</code>.</strong> It is a plain
+read of <code>role_assignment</code>; going back through the resolver would mean asking the gate
+whether the gate applies, and a lapsed holder of <code>system.gate_exempt</code> would be denied the
+permission whose entire job is to say that a lapse does not matter. That is a lockout with
+no error message, on the one day of the year it would hurt most.</p>
+</blockquote>
+<h3 id="cache-invalidation-revisited">Cache invalidation, revisited<a class="headerlink" href="#cache-invalidation-revisited" title="Permanent link">&para;</a></h3>
+<p>The membership gate makes this harder than it was, and it must be built in from the start
+(D-039):</p>
+<p><strong>Fields</strong> (<code>permission_cache</code>)</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person_id</code></td>
+<td>reference to person, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>permission_code</code></td>
+<td>text, required</td>
+<td>The code, as checked.</td>
+</tr>
+<tr>
+<td><code>scope_type</code></td>
+<td>text, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scope_id</code></td>
+<td>integer, optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>allowed</code></td>
+<td>boolean, required</td>
+<td>The answer that was computed.</td>
+</tr>
+<tr>
+<td><code>computed_at</code></td>
+<td>timestamp, audit time</td>
+<td></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>timestamp, required</td>
+<td>How long the answer may still be used.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li>One row per person, permission code, scope type and scope id — where an absent scope type and
+  an absent scope id each count as a key value of their own, not as "any scope".</li>
+</ul>
+<p><strong>Indexes</strong></p>
+<ul>
+<li>on <code>expires_at</code>, for the expiry sweep;</li>
+<li>on <code>person_id</code>, because the membership gate means a bulk expiry sweep must invalidate by
+  <strong>person</strong>, fast.</li>
+</ul>
+<p>Invalidated on any write to <code>role_assignment</code>, <code>access_grant</code>, <code>guardianship_permission</code>,
+<code>role_permission</code>, <code>audience</code>, <code>audience_member</code>, a person merge — <strong>and on every membership
+transition, including the yearly expiry sweep, which touches every member at once.</strong></p>
+<h3 id="properties-to-verify-when-reviewing-this-function">Properties to verify when reviewing this function<a class="headerlink" href="#properties-to-verify-when-reviewing-this-function" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Deny is checked before everything</strong>, including ownership. A suspended account's owner
+   permissions are denied by a <code>revoked</code> grant if that is what the organization wants.</li>
+<li><strong>Ownership short-circuits before roles.</strong> A person's access to their own record does not
+   depend on any grant, which is what makes the system usable by non-members.</li>
+<li><strong>There is no wildcard except <code>system.admin</code>.</strong> No prefix match, no implied capability.
+   If a holder can do a thing, a row says so (D-068).</li>
+<li><strong><code>p_at</code> is threaded through every branch.</strong> Permission checks are time-travel capable.</li>
+<li><strong>Delegation sources are re-validated at check time</strong>, closing the
+   stale-delegation escalation.</li>
+<li><strong><code>resolve_person</code> is called on entry</strong>, so a tombstoned person's id still resolves.</li>
+<li><strong>A deny is scope-independent.</strong> Channel 0 matches organization-level denies and
+   same-scope denies, and does <strong>not</strong> walk ancestors — so a <code>revoked</code> grant at
+   organization scope blocks every unit, which is what makes a suspension absolute.</li>
+<li><strong><code>unit_ancestors()</code> does not appear in this function.</strong> Authority does not flow down.
+   A unit's grants reach it only via exact match or an explicit <code>scope_exposure</code>. This is
+   asserted by a test, not just a comment — integrity check 13.</li>
+<li><strong>Locality orders allows only.</strong> Tiers A→D are consulted in order and the first
+   sufficient level wins; none of them can override channel 0.</li>
+<li><strong>The membership gate applies to roles only, in tier D.</strong> Ownership (channel 1) and
+    guardianship (channel 2) return before it, which is what keeps a lapsed parent able to
+    act for their child and a lapsed person able to see their own renewal screen. Item and
+    unit grants are <em>not</em> gated — a grant someone deliberately made to an unpaid person is
+    honoured, because it was an explicit act rather than an inherited role.</li>
+<li><strong>Audience grants are evaluated through the same tiers as personal ones</strong>, via
+    <code>grant_satisfies()</code>. A grant to <code>everyone</code> and a grant to a named person differ only in
+    how <code>grantee</code> is satisfied, never in how the level or the scope is resolved.</li>
+</ol>
+<p><strong>A caveat on <code>p_scope_type IS NULL</code> in tier D.</strong> An unscoped check ("can this person do
+X anywhere?") returns true if <em>any</em> assignment grants it. That is correct for UI decisions
+like "show the admin menu?" but <strong>wrong for enforcement</strong>. Every enforcing call must pass a
+scope. Enforce this in the calling convention — make scope mandatory at the API layer for
+mutating operations.</p>
+<p>The cache definition and its invalidation rules are above, immediately after the resolver —
+they are part of the resolver's contract, not a separate concern.</p>
+<p>The person-merge case remains the easiest to forget —
+see <a href="../01-identity/#8-identity_hypothesis-and-person_merge">01-identity.md</a>.</p>
+<hr />
+<h2 id="11-invariants-to-verify">11. Invariants to verify<a class="headerlink" href="#11-invariants-to-verify" title="Permanent link">&para;</a></h2>
+<p>These were queries. They are now invariants to be verified by something, in whichever way the
+implementation chooses, and what follows states what each one counts and what a non-zero result
+would mean. Two of them were CI assertions that read the text of the stored resolver to prove a
+rule was still inside it (14 and 15), and a third was the same shape again (19). Nothing can
+read that text any more. <strong>The time-bomb in check 19 — that <code>.admin</code> prefix-matching must never
+reappear in the resolver — is now a written prohibition and nothing more.</strong> A prohibition nobody
+runs is a convention, not a guard; it stays because silently forgetting it existed would be
+worse, and it should not be described as equivalent to what it was.</p>
+<p><strong>Invariants to verify</strong></p>
+<ul>
+<li><strong>1. Live grants for a person who has been merged away.</strong> An open <code>access_grant</code> whose person
+  has been merged into somebody else. A row means authority is still attached to a tombstone;
+  it should have been closed or moved at merge time.</li>
+<li><strong>2. Orphaned item grants.</strong> Per scope type, generated from <code>grant_scope_type</code>: a grant whose
+  <code>scope_id</code> names no row in the item table it points at. A row is exactly the risk the
+  polymorphic <code>scope_id</code> accepts (§6), and this is mitigation 3 of that trade.</li>
+<li><strong>3. Leavers with access.</strong> Open role assignments, for roles requiring membership, held by
+  people with no current membership. The highest-value report here; the resolver already withholds
+  the authority, so a row is an assignment that should have been closed and was not.</li>
+<li><strong>4. Assignments that violate <code>requires_scope</code>.</strong> A role assignment whose scope type differs
+  from the <code>requires_scope</code> of a permission its role grants. A row means a unit-level permission
+  is being held organization-wide, or the reverse.</li>
+<li><strong>5. Delegations whose source has ended.</strong> A delegation that is open-ended — which the row
+  rule forbids — or whose source assignment has already ended. A row is the stale-delegation
+  privilege-escalation, live.</li>
+<li><strong>6. A deny that stands alone.</strong> An open <code>revoked</code> grant on a scope where the same person has
+  no other open grant at any other level. Probably intended as a removal rather than as a deny;
+  verify the intent.</li>
+<li><strong>7. Holders of <code>system.admin</code>.</strong> Everyone with an open assignment of the <code>system_admin</code> role.
+  This should be a very short list, and it should alert on change.</li>
+<li><strong>7b. Holders of <code>system.gate_exempt</code>.</strong> Everyone who keeps authority without a current
+  membership (D-051), through any role granting it, over assignments live today. Like check 7
+  this should be a very short list and should alert on change, but it is a <strong>different</strong> list:
+  check 7 catches who can rewrite the system, this catches who keeps access while lapsed.</li>
+<li><strong>7c. The gate's own soundness.</strong> Nobody should be in the position where the direct lookup
+  says they hold the exemption, the resolver says they do not, and they have no current
+  membership. A row means <code>person_holds_gate_exempt()</code> is being routed through <code>can()</code>
+  somewhere, and the exemption has become unreachable for the person who needs it (D-051).</li>
+<li><strong>8. Permissions no level can express.</strong> A permission with no <code>permission_level</code> row at any
+  scope type — or none at a scope type where grants of it actually exist. Such a permission is
+  unreachable: every grant against it fails condition 6 of the audience evaluation and step 2 of
+  the role channel, so it reads as denied forever, and the person who was promised it will be
+  told they lack a permission that no configuration could ever grant. <strong>The scan used to be
+  narrower, and D-074 accidentally corrected that:</strong> it scanned only the <code>dependent.*</code> namespace,
+  on the theory that a guardian capability nobody could grant was the case worth catching. There
+  is no such namespace now, so nothing scopes the scan — the right outcome, because the bug was
+  never specific to guardians. Also confirm the mapping the guardianship channel depends on is
+  coherent: <code>view</code> must land at or above <code>view</code> and <code>write</code> at <code>contribute</code> or higher, or a
+  guardian's <code>write</code> cannot actually change the child's record.</li>
+<li><strong>9. Scope-authority violation.</strong> An exposure naming an assignment scoped to a unit that is
+  neither the exposing unit nor an ancestor of it — the shape that means authority is being
+  claimed from a sibling or a descendant, which is never a legitimate exposure. <strong>Note the
+  direction:</strong> it is correct, not a violation, for an exposure to name a district-scoped
+  assignment, because the row is keyed on the troop and the troop is doing the exposing
+  (domain/06-authorization-model.md §2.3). What is forbidden is a row that reaches across, not
+  one that reaches up. This is the one legitimate use of <code>unit_ancestors()</code> in this document:
+  checking for violations, never resolving permissions.</li>
+<li><strong>10. Exposures made without the permission.</strong> An exposure whose exposing person does not, as
+  of the exposure's own start, satisfy <code>scope.expose</code> at the covered unit. There is no longer
+  any exception to this — the bulk tool is removed (D-045), so <strong>every</strong> row must satisfy the
+  predicate §5 requires of every write. <strong>A row here means the write-time check was skipped, not
+  that a constraint was disabled</strong> — there is no constraint to disable. This is the report that
+  stands in for a database rule, which makes it the one exposure check worth alerting on.</li>
+<li><strong>11. Exposures pointing at a dead assignment.</strong> An open, unwithdrawn exposure naming an
+  assignment that has already ended. Harmless — the resolver re-validates — but worth cleaning
+  up.</li>
+<li><strong>12. Member rows on a built-in audience.</strong> Any <code>audience_member</code> row whose audience is
+  <code>builtin</code>. Built-ins are rules, not lists (§8); a stored member row is meaningless and would
+  look authoritative.</li>
+<li><strong>13. Named groups with no members.</strong> A live <code>group</code> audience with no open member row.
+  Probably abandoned; worth confirming.</li>
+<li><strong>14. TIME-BOMB for the resolver: no permission path may inherit.</strong> The requirement is that
+  <strong>no part of the permission path — resolver, grant lookup, guardianship lookup, or any view an
+  authorization check reads — may walk the unit hierarchy.</strong> A unit's ancestors are not in scope
+  for a check, full stop; <code>unit_ancestors()</code> exists for the <em>structural</em> questions (nesting
+  rules, paths, reports) and must never be reachable from an authorization decision. Anything
+  that reaches it means authority is flowing downward through a permission path, which the design
+  forbids. <strong>What was lost here is the mechanism, not the rule:</strong> this used to be a build-time
+  assertion that grepped the stored definitions of the three resolver functions, so an inheriting
+  view added by a later migration failed the build rather than passing review. D-072 removed the
+  SQL and with it the only form of this check that could fail automatically. It is now a code
+  review instruction, and the ORM makes it <em>harder</em>, not easier, to write the bad thing
+  conspicuously — an implicit join through a parent relation looks like ordinary fetching.
+  Whoever builds this should restore an automatic version, in whatever the ORM's test layer is.</li>
+<li><strong>15. TIME-BOMB for the membership gate (D-039).</strong> Same shape, same loss: the role channel had
+  to contain <strong>both</strong> the gate (<code>is_current_member</code>) <strong>and</strong> the role-level opt-out
+  (<code>requires_membership</code>), so that neither could be dropped quietly — deleting the gate revives
+  the problem D-039 closed, and deleting the opt-out makes a role that is supposed to survive a
+  lapse unable to. The requirement stands as written in step 6 of §10; only the grep that enforced
+  it is gone.</li>
+<li><strong>16. Role deletions.</strong> A <code>role_assignment</code> pointing at a role that is no longer there. The
+  delete guard on <code>role</code> enforces this; the check exists because a restored dump or a manually
+  disabled guard bypasses it, and the loss is unrecoverable — the assignments go with the role.
+  Zero expected.</li>
+<li><strong>17. Unused roles.</strong> A non-system role with no assignment that is open or still in the
+  future. A role nobody holds is <strong>not</strong> an error: it is either one about to be used or one
+  stopped using and not deleted, and there is no third possibility, because a role has no period
+  (D-053) and cannot be switched off, only held or not held. Expected: unused, non-system roles.
+  Delete the mistakes, keep the ones on the roadmap.</li>
+<li><strong>18. Orphaned permissions.</strong> An assignable permission that no role grants. This check exists
+  <strong>because of</strong> D-068: with no <code>.admin</code> wildcard, a permission that ought to be inside some role
+  and was never added to it is silently unusable, and no resolver rule covers it by accident any
+  more. This is the net the wildcard used to be. Expected: empty after a seeding pass. A row
+  means either a permission nobody has bundled yet — fine on a roadmap, wrong in production — or
+  a module was added and its roles were not. <strong>Note what it cannot see:</strong> a permission granted
+  to <em>a</em> role but not to the role that arguably should have it. That residual is the accepted
+  cost of D-068 and nothing closes it; it is a human reading the starter list in §12 against the
+  catalog.</li>
+<li><strong>19. TIME-BOMB for D-068: the <code>.admin</code> prefix match must stay deleted.</strong> Two parts, both
+  written as CI assertions when this document still carried SQL; both are prose now, which
+  D-072 records as a real weakening. First, <strong>no step of the resolver may build a permission code
+  by concatenating a resource with <code>.admin</code>.</strong> This is a rule about the code, not about a
+  particular query, and it survives the move to an ORM untouched — it is the one invariant here
+  that is about program text rather than about data, and it is the one an ORM migration will never
+  violate on its own. A reintroduced wildcard re-creates implied capabilities for every resource,
+  including resources added after the day it was added back. Second, no permission may have
+  <code>admin</code> as its <em>action</em> except <strong>exactly one</strong>: <code>system.admin</code>. D-068 exempted four others on
+  purpose, and <strong><a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+  withdrew all four exemptions</strong> along with the namespace they lived in, so the allow-list is a
+  single code and the check is now an equality, not a set membership. <code>system.admin</code> is explained
+  in the catalog's §1 as one of the <strong>two</strong> things still named "admin"; anything else carrying
+  <code>admin</code> as an action is a re-created wildcard. <strong>Zero rows expected.</strong> The whole point of this
+  entry is that the first version of the second half accepted five exceptions and the second
+  version accepts one: an allow-list is where a wildcard comes back to life.</li>
+</ul>
+<p>Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.</p>
+<ul>
+<li><strong>Check 7b is the new one worth wiring to an alert.</strong> Check 7 answers "who can rewrite the
+  system?"; 7b answers "who keeps authority while lapsed?" — a shorter list with a different
+  failure mode, and the one the membership gate introduces. Neither should ever grow quietly.</li>
+<li><strong>Check 7 should email someone every time its result changes</strong> — a new <code>system_admin</code> is
+  either a planned change or an incident, and either way someone should know within the hour.</li>
+<li><strong>Checks 14 and 15 are CI assertions, not reports.</strong> They are the automated guards on the
+  two rules most likely to be "simplified" away when someone optimizes the resolver: the
+  no-inheritance rule and the membership gate. Both fail the build rather than silently
+  changing who can do what.</li>
+<li><strong>Check 9 catches the direction being broken in the way the resolver cannot see.</strong> A row
+  that reaches sideways to a sibling unit, or down to a descendant, would be honoured
+  happily by <code>can()</code> — nothing else in this list would notice it, and it is precisely the
+  shape that lets authority be claimed from outside.</li>
+<li><strong>Checks 12 and 13 guard the audience model.</strong> Built-ins must not accumulate member rows
+  (they are rules), and an empty named group is usually an abandoned one.</li>
+</ul>
+<hr />
+<h2 id="12-what-the-organization-starts-with">12. What the organization starts with<a class="headerlink" href="#12-what-the-organization-starts-with" title="Permanent link">&para;</a></h2>
+<p>Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.</p>
+<blockquote>
+<p><strong>This section and <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a> are
+the same list written twice, and they drift.</strong> When this was reconciled, <strong>22 documented
+permissions had no <code>INSERT</code> row</strong> — among them <code>unit_participation.view</code>, which <strong>five</strong> of
+the catalog's own seed roles assign, and <code>person.redact</code>, which is one of the two codes
+D-068 exists to protect. A further 12 were the <code>event.*</code> set, added to the catalog when
+events were designed and never carried here. <strong>Under the old wildcard much of this was
+harmless</strong>: a role holding <code>unit_participation.admin</code> reached the code whether or not the row
+existed, so the catalog could advertise a capability the database could not name and nothing
+noticed. The permission editor was the only place the gap showed. <strong><a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+removed that cushion.</strong> Now a role that lists a code with no row either fails to insert or
+grants nothing, and integrity check 18 reads the <em>table</em>, so it cannot see that the catalog
+promised something the seed never contained.</p>
+<p><strong>There is no SQL check for this</strong> — one side is a Markdown file. The discipline is the
+check: when adding a permission, add it in <strong>both</strong> places in the same edit, and treat a
+catalog row with no <code>INSERT</code> row as a bug of the same class as a missing migration. The
+reconciliation is mechanical enough to script if this file ever grows again:</p>
+<p>a diff of the codes the catalog lists against the codes that exist. Anything in the catalog
+and not in the database is a permission that cannot be granted; anything in the database and
+not in the catalog is an undocumented capability. Both were present at the same time.</p>
+</blockquote>
+<p><strong>Roles are data, and the organization administers them at runtime.</strong> This section seeds the
+<em>permissions</em> — the vocabulary of things anyone might do. The role names used throughout the
+docs are worked examples of composing those permissions into groups, not a fixed list.
+Creating a role, changing what it grants, assigning it and deleting an unused one
+are all supported operations (<code>role.create</code>, <code>role.edit</code>, <code>role.assign</code>, <code>role.unassign</code>,
+<code>role.delete</code>).</p>
+<p>The consequence for this document: <strong>it does not need to know which roles exist, and where it
+names a role it is illustrating, not specifying.</strong> In particular, <em>which</em> roles carry
+<code>system.gate_exempt</code> is a configuration decision that belongs to the organization, not to the
+specification.</p>
+<blockquote>
+<p><strong>What §12 must fix, and does, is the <em>shape</em>.</strong> <code>system.gate_exempt</code> is a <code>system</code>-
+namespace permission: it can only arrive through a role, never through an item grant. That
+is not a configuration choice — it is the structural guarantee that an <code>access_grant</code> can
+never lift the membership gate. Whether the organization puts it in one role or five is its
+own business.</p>
+</blockquote>
+<p><strong>What the organization starts with.</strong> The platform ships a vocabulary — the permissions, each
+marked as a system row so it cannot be deleted or renamed — and that is the whole of what these
+documents fix. Roles, assignments and grants are runtime data (D-052): the organization
+composes them, edits what they grant, and deletes the ones nobody held. The starter roles the
+catalog sketches are proposals to edit, and the permissions themselves are starter material too.</p>
+<p>Those permissions span the namespaces this document and its neighbours describe: people —
+viewing, creating, editing, merging, contacts, and the two irreversible codes; the vocabulary of
+personal attributes, where <strong>recording a value needs no new code and naming a thing needs
+<code>attribute.define</code></strong>; accounts,
+including suspension, closure and credential reset; membership, including requests, activation,
+lapse, suspension, termination and backdating; participation in sub-units; units, their
+renaming, restructuring and closing; scope exposure and its review; audiences; positions;
+guardianship and the granting of guardian permissions; the administration of roles and
+permissions themselves; item grants; audit; legacy import; reporting; the thirteen <code>event.*</code>
+codes; and the messaging codes. **What is not on that list is the set that used to follow it: the
+eighteen <code>dependent.*</code> codes are deleted, because a guardian's authority is now a level on the
+guardianship row rather than a bundle of permissions
+(<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>),
+and the guardian-facing acts that survive are ordinary <code>guardianship.*</code> codes in the catalog.
+<strong>The one
+remaining list is <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a>.</strong> It
+is the catalog; this document deliberately no longer keeps a second copy of it, because the two
+copies disagreed for exactly the reason the note above describes.</p>
+<p>A few of those codes carry a decision in their shape, and those are worth naming:</p>
+<ul>
+<li><strong><code>person.merge</code>, <code>person.unmerge</code> and <code>person.redact</code> are separate codes</strong>, not flavours of
+  <code>person.edit</code>. They are irreversible, and with no <code>person.admin</code> to imply them (D-068) a role
+  that reaches them does so by listing them, visibly. <code>identity_reviewer</code> holds <code>person.merge</code>;
+  no starter role holds <code>person.redact</code>.</li>
+<li><strong><code>person.view</code> reaches the whole record, and that is a change of reach rather than a new
+  capability.</strong> Since <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  there is no privileged corner of the record for it to stop outside: whoever holds it over a person
+  reads their descriptive values — the allergy list, the insurance number, the note about who the child
+  actually lives with — on the same grant that reads their name
+  (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes.md §4</a>). It is therefore the widest
+  read permission in the system, and <strong>the catalog's sensitivity mark is where that has to be visible</strong>:
+  a mark set when "read a person" meant name and birth date now understates the code, and the honest
+  mark is the catalog's top tier — which is worded around <em>whose</em> data a grant exposes rather than
+  around a category of fields, because a category is what D-083 deleted. Read a bundling role with
+  that in front of you — <code>person.view</code> inside a role now means <em>this role reads medical facts</em>, because
+  that is what reading a person means. <strong>Any future narrowing is a decision entry about a second grant
+  scope over a defined set of data, and not a code with a suggestive name</strong>; the case for it
+  ("everything except the diagnoses") was put and declined
+  (<a href="../../domain/08-person-data/#4-what-was-refused-and-what-it-cost">domain/08-person-data.md §4</a>).</li>
+<li><strong><code>audit.view</code> is graded against what the trail quotes, not against what a log is usually for.</strong>
+  <code>audit_log</code> carries before and after images, and since
+  <a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+  those images are the only place a child's past descriptive values exist; an entry is therefore as
+  sensitive as the person data it quotes, and reading history has to sit in the same tier as reading a
+  person. <strong>The alternative — keeping the values out of the payload — was taken once during this round
+  and withdrawn</strong> (<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+  because it graded descriptive fields above a change of address and left the history empty; what is
+  left is this bullet, which is a mark on a line of a table and nothing else, and is the reason
+  <a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> calls the guard the
+  weakest link rather than the last line of defence.</li>
+<li><strong><code>attribute.define</code> is the narrow half of a deliberate pair</strong>: values are open to anyone who may
+  already edit the person, so that the fact gets recorded, and codes are held by few people, because the
+  codes are what make the data queryable
+  (<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>). It is an ordinary
+  permission — no namespace, no resolver branch, no structural consequence — and it is the only code
+  this area adds.</li>
+<li><strong><code>scope.expose</code> is scoped to the unit being covered.</strong> A parent unit's officer cannot satisfy
+  it for a child unit, which is what makes the no-inheritance rule enforceable, and there is no
+  bulk variant (D-045): every exposure row is written by the unit it covers.</li>
+<li><strong><code>role.unassign</code> is the only thing that ends authority</strong>, because a role has no period
+  (D-053) and nothing forces an assignment to end (D-071).</li>
+<li><strong><code>system.gate_exempt</code> sits in the <code>system</code> namespace on purpose</strong> (D-051), so it can only
+  arrive through a role assignment and never through an item grant. It is scope-independent by
+  design: the gate is a property of the person, so the waiver has to be. Holding it means every
+  gated role you hold keeps granting whether or not your own fee is current.</li>
+<li><strong><code>membership.terminate</code> expels</strong>, and is restricted as such; <code>membership.lapse</code> is an
+  administrative end for non-payment.</li>
+<li><strong><code>org_unit.restructure</code> is split, merge and successor units</strong> — it is not reparenting
+  (D-036).</li>
+<li><strong><code>unit_participation.view</code> held at organization scope reads the root's own participation
+  rows</strong>, not a pack roster, because scope is matched exactly. That looks like a bug and is not
+  (D-049).</li>
+<li><strong><code>event.presence.mark</code> sits one level below <code>event.manage_participants</code> on purpose</strong>, and
+  <strong><code>event.register_self</code> <em>is</em> the eligibility rule</strong> (D-060) rather than an expression of one.
+  No wildcard sits among the thirteen, so a role that runs events holds all thirteen explicitly;
+  the rationale is in catalog §8a.</li>
+<li><strong>There is no wildcard left at all, and that is worth noticing.</strong> <code>dependent.admin</code> was the
+  last deliberate one — one stored fact granting everything for one child — and D-074 replaced it
+  with <code>right_level = write</code>, which does the same job <strong>without being a permission</strong>: it is a
+  property of the relationship, so it cannot be listed in a role, granted to a unit, or
+  discovered by prefix matching. The catalog's §1 now lists two things named "admin" where it once
+  listed three. The residue is the opposite problem: with no wildcard, nothing implies anything,
+  so a role that should have a new permission must be told (invariant 18 is the net).</li>
+<li><strong><code>audit</code> has no <code>audit.admin</code></strong> — per-resource admin codes were removed (D-068).</li>
+</ul>
+<p><strong>Reporting is seeded coarse, and left open on purpose.</strong> Only <code>report.view</code> and <code>report.export</code>
+are starters. Whether reporting is per-report (<code>report.finance.view</code>,
+<code>report.membership.view</code>, <code>report.safeguarding.view</code>) or one <code>report.view</code> with row-level
+filtering is still open (catalog §12), and the starter roles in catalog §11 name the granular
+ones only to illustrate that unresolved choice. Do not ship both shapes; pick one when reporting
+is designed.</p>
+<p><strong>Levels and scope types are vocabulary, not configuration.</strong> The five levels — <code>revoked</code> at
+rank 0, then <code>view</code>, <code>contribute</code>, <code>manage</code>, <code>admin</code> — arrive with the schema, because a rank
+ordering that can be edited at runtime is a security control with no owner; their meanings are in
+§6 and in <a href="../00-conventions/#5-enumerations">00-conventions.md</a>. The grantable scope types start
+as <code>organization</code>, which is not item-scoped, then <code>org_unit</code>, <code>membership</code>, <code>event</code> (designed in
+<a href="../08-events/">08-events.md</a>) and <code>document</code> (a document layer still to be designed).</p>
+<p><strong>Built-in audiences come in two shapes.</strong> <code>everyone</code> and <code>all_members</code> exist once for the whole
+system, marked as system rows. The parameterised ones are created where they are needed rather
+than seeded everywhere: <code>unit_participants</code> and <code>unit_leaders</code> one row per unit that needs one,
+with <code>scope_parameter</code> naming that unit — the case that replaced the bulk exposure tool, and
+named by convention along the lines of <code>unit:42:participants</code> and <code>unit:42:leaders</code> — and
+<code>guardians_of</code> one per dependent whose guardians need a shared target. None of them ever has
+member rows (integrity check 12, §11).</p>
+<blockquote>
+<p><strong><code>system.admin</code> is deliberately a single top-level permission</strong>, not a
+per-resource one. Holding it satisfies everything, and check 7 in §11 alerts on its
+holders. Keeping the most dangerous capability concentrated and alarmed is safer than
+spreading equivalents of it across every resource.</p>
+</blockquote>
+<hr />
+<h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The complete permission catalog and real role definitions (§12) — needs your input.
+  Specifically: which roles are marked <code>requires_membership = false</code>. That flag is now the
+  line between "a lapse silently removes this" and "it does not", and it needs a deliberate
+  answer per role rather than a default.</li>
+<li>Whether <code>valid_to</code> should be mandatory for high-authority assignments (§4).</li>
+<li>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable (§6) — a real fork.</li>
+<li>Which built-in audiences are needed beyond <code>everyone</code> and <code>all_members</code>, and whether the
+  parameterised ones are seeded per instance or created on demand (§8).</li>
+<li>How long a <code>permission_cache</code> entry may live given the membership gate (§10) — the
+  shorter the TTL, the smaller the window in which a lapse has not yet taken effect.</li>
+<li>Cache vs materialized effective-permission table (§10).</li>
+<li>Retention policy for <code>access_log</code> — legal input required.</li>
+<li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>
+</ul>
+<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: the bulk exposure
+tool (removed — D-045); whether permissions depend on membership status (yes, with three
+carve-outs — D-039); background-check permissions (removed — D-043); and the
+organization-wide-roles tension (§4), which is much reduced now that membership and the
+registry live at the single root unit (D-035).</p>
+<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

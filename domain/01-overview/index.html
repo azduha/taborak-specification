@@ -1,0 +1,1837 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/01-overview/">
+      
+      
+        <link rel="prev" href="../../glossary/">
+      
+      
+        <link rel="next" href="../02-actors/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Overview - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#domain-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The organization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-actors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Actors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-three-lifecycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The three lifecycles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. The three lifecycles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-account-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Account lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-membership-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Membership lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-authorization-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Authorization lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-relationships-between-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The relationships between people
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. The relationships between people">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-counselor-who-is-also-a-parent-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The counselor-who-is-also-a-parent case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-multiplicity-in-both-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Multiplicity, in both directions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-four-decades-of-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The four decades of history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-what-this-design-deliberately-does-not-decide-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. What this design deliberately does not decide yet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/decision-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The organization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-actors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Actors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-three-lifecycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The three lifecycles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. The three lifecycles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-account-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Account lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-membership-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Membership lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-authorization-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Authorization lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-relationships-between-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The relationships between people
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. The relationships between people">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-counselor-who-is-also-a-parent-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The counselor-who-is-also-a-parent case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-multiplicity-in-both-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Multiplicity, in both directions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-four-decades-of-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The four decades of history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-what-this-design-deliberately-does-not-decide-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. What this design deliberately does not decide yet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="domain-overview">Domain Overview<a class="headerlink" href="#domain-overview" title="Permanent link">&para;</a></h1>
+<p>What the organization is, who interacts with the system, and how the core lifecycles
+flow. Read <a href="../../glossary/">../glossary.md</a> first — this document uses its terms
+strictly.</p>
+<hr />
+<h2 id="1-the-organization">1. The organization<a class="headerlink" href="#1-the-organization" title="Permanent link">&para;</a></h2>
+<p>A youth organization (Scout-like: uniformed groups, trained adult leadership, camps
+and weekly meetings) with:</p>
+<ul>
+<li><strong>Child members</strong> — youth participants, typically organized into units.</li>
+<li><strong>Adult members</strong> — counselors/leaders who run units and hold positions.</li>
+<li><strong>Caretakers</strong> — parents and legal guardians of child members. They may or may not
+  be members themselves.</li>
+<li><strong>Non-member supporters</strong> — people who interact with the organization (donors,
+  volunteers, alumni) without holding a membership.</li>
+</ul>
+<p>The organization has <strong>sub-units that nest</strong> and that have been <strong>reorganized repeatedly
+over four decades</strong>. Both facts are load-bearing and are handled in
+<a href="../04-organization-structure/">04-organization-structure.md</a>.</p>
+<hr />
+<h2 id="2-actors">2. Actors<a class="headerlink" href="#2-actors" title="Permanent link">&para;</a></h2>
+<p>The system distinguishes actors by <em>what they can do</em>, not by <em>what they are</em>. The full
+treatment is in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
+<table>
+<thead>
+<tr>
+<th>Actor</th>
+<th>Has account?</th>
+<th>Has membership?</th>
+<th>Can do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anonymous visitor</td>
+<td>no</td>
+<td>no</td>
+<td>see public info, submit a registration or a membership request</td>
+</tr>
+<tr>
+<td>Registered person</td>
+<td>yes</td>
+<td>no</td>
+<td>maintain own profile, submit/renew a request, view own history</td>
+</tr>
+<tr>
+<td>Member (child)</td>
+<td>yes</td>
+<td>yes</td>
+<td>own profile, unit membership, event signups, own history</td>
+</tr>
+<tr>
+<td>Member (adult)</td>
+<td>yes</td>
+<td>yes</td>
+<td>as above, plus whatever their role assignments permit</td>
+</tr>
+<tr>
+<td>Caretaker</td>
+<td>yes</td>
+<td>maybe</td>
+<td>view/act on their dependents — <strong>only</strong> as explicitly granted</td>
+</tr>
+<tr>
+<td>Staff / registrar</td>
+<td>yes</td>
+<td>maybe</td>
+<td>organization-wide administrative permissions</td>
+</tr>
+<tr>
+<td>Historical record</td>
+<td>no</td>
+<td>yes (closed)</td>
+<td>nothing. Data only, never a login.</td>
+</tr>
+</tbody>
+</table>
+<p>The last row matters: imported 1994 rosters create <code>person</code> rows with <strong>no account</strong>.
+They must never be blocked from import by a "users must have email addresses" rule.</p>
+<hr />
+<h2 id="3-the-three-lifecycles">3. The three lifecycles<a class="headerlink" href="#3-the-three-lifecycles" title="Permanent link">&para;</a></h2>
+<p>Almost everything in the system is one of three multi-step processes. They are separate
+because they succeed and fail independently: you can register without applying, apply
+without being accepted, be accepted without paying, and pay without ever joining a unit.</p>
+<h3 id="31-account-lifecycle">3.1 Account lifecycle<a class="headerlink" href="#31-account-lifecycle" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                  ┌─────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                  │                                             │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a> (none) ──register──&gt; pending_verification ──verify──&gt; active ──┴──&gt; suspended
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                                            │              │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                                            └──&gt; closed &lt;──┘
+</code></pre></div>
+<p>An account is about <strong>authentication only</strong>. It says "this person can log in". It says
+nothing about membership. A person can hold a verified, active account for years and
+never become a member — a parent who only ever manages their child is exactly this case.</p>
+<h3 id="32-membership-lifecycle">3.2 Membership lifecycle<a class="headerlink" href="#32-membership-lifecycle" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> (none)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>   ├─ request submitted ──&gt; under_review ──accept──&gt; approved ──payment confirmed──&gt; active member
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   │                             │                                                    │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   │                             └──reject──&gt; rejected                                 │
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>   │                                                                                   │
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>   │                                     ┌─────────────────────────────────────────────┤
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>   │                                     │                                             │
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>   │                                     ├──&gt; lapsed (fee expired at the yearly date)  │
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>   │                                     ├──&gt; terminated (cause, with reason)          │
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>   │                                     └──&gt; suspended (temporary hold)               │
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>   │                                                                                   │
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>   │      ┌──────────────── renewal (no new application) ────────────────────────────┘
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>   │      │        inside the renewal window → the new period opens at the expiry date
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>   │      │        after it                  → the new period opens at the payment date
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>   │      ▼
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>   │   active member again
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>   │
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>   └──────────────────────── re-apply ─────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Every transition creates or closes a row; nothing is overwritten. A person who was a
+member 1990–2010 and again from 2024 has two <code>membership</code> rows and the gap is visible
+as data, not inferred from a date.</p>
+<p><strong>Note the shape of the lapse.</strong> There is no <code>completed</code> state: it existed only for ageing
+out, and membership is ageless (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).
+And <strong>the lapse happens on a date, to everyone at once</strong> — the yearly expiry — which is why
+the renewal path matters more here than the word "grace" suggests
+(<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>).</p>
+<p>Detailed in <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a>.</p>
+<h3 id="33-authorization-lifecycle">3.3 Authorization lifecycle<a class="headerlink" href="#33-authorization-lifecycle" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a> (none) ──grant──&gt; active ──expire/revoke──&gt; inactive
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                     │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>                     └──delegate──&gt; delegated grant (with end date, provenance recorded)
+</code></pre></div>
+<p>Every grant has a start, an end, a granter, and a reason. Nothing is permanent by
+default and nothing is revoked by deletion. Detailed in
+<a href="../06-authorization-model/">06-authorization-model.md</a>.</p>
+<hr />
+<h2 id="4-the-relationships-between-people">4. The relationships between people<a class="headerlink" href="#4-the-relationships-between-people" title="Permanent link">&para;</a></h2>
+<p>Three distinct relationships, deliberately not merged:</p>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Direction</th>
+<th>Example</th>
+<th>Grants access?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Guardianship</strong></td>
+<td>guardian → dependent</td>
+<td>parent → child</td>
+<td><strong>No</strong> by itself — only the <code>right_level</code> (<code>none</code> / <code>view</code> / <code>write</code>) carried on the live <code>guardianship</code> row. Since D-074 that value is the whole authority; <code>guardianship_permission</code> keeps only its history.</td>
+</tr>
+<tr>
+<td><strong>Membership</strong></td>
+<td>member → the organization</td>
+<td>anyone → the root unit</td>
+<td>No.</td>
+</tr>
+<tr>
+<td><strong>Participation</strong></td>
+<td>participant → sub-unit</td>
+<td>child → Pack 12</td>
+<td>No.</td>
+</tr>
+<tr>
+<td><strong>Position held</strong></td>
+<td>person → position in a sub-unit</td>
+<td>adult → scoutmaster of Pack 12</td>
+<td>No. Only via <code>role_assignment</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Membership and participation are two rows, not one</strong> (<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+A person is a <strong>member of the organization</strong> and a <strong>participant in a pack</strong> — different
+facts with different lifetimes, which is why someone who stops attending on Thursdays is
+still a paid-up member, and someone who is paid up may take part in nothing.</p>
+<p>The recurring theme: <strong>participation is not authority.</strong> A person can be deeply involved
+— a parent of three members, a 20-year veteran, a pack's founder — and still have no
+administrative access. Access comes only from an explicit grant. This separation is what
+makes the permission system auditable and what prevents the classic failure where a
+relationship ends (custody changes, a leader steps down) but access silently persists.</p>
+<h3 id="the-counselor-who-is-also-a-parent-case">The counselor-who-is-also-a-parent case<a class="headerlink" href="#the-counselor-who-is-also-a-parent-case" title="Permanent link">&para;</a></h3>
+<p>You named this case explicitly. It is not special:</p>
+<ul>
+<li>One <code>person</code> row.</li>
+<li>One open <code>membership</code> — <code>member</code>, like everyone else's.</li>
+<li>A <code>position_assignment</code> making them a leader of their pack.</li>
+<li>One <code>unit_participation</code> row for the pack they lead.</li>
+<li>Two <code>guardianship</code> rows (to their own children).</li>
+<li>Separate <code>guardianship_permission</code> rows for their parental capabilities.</li>
+<li><code>role_assignment</code> rows for their leadership authority.</li>
+</ul>
+<p>Note there is no <code>counselor</code> membership type. Being a counselor is the <strong>position</strong>, not a
+kind of membership (<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>) —
+and this person's membership is identical to that of the child they lead, which is exactly
+the point.</p>
+<p>Their leadership role grants authority over <strong>the unit's members</strong>. Their guardianship
+grants authority over <strong>their own children</strong>. These are different scopes and the system
+keeps them separate — critically, being a leader does <em>not</em> give them access to other
+people's children's records beyond what their leadership role explicitly permits.</p>
+<blockquote>
+<p>This last point is a safety property, not a convenience. Child-protection rules
+generally require that a leader's access to minors' personal data be bounded by their
+function. Keeping <code>role_assignment</code> and <code>guardianship_permission</code> as separate tables
+makes that boundary enforceable and reportable.</p>
+</blockquote>
+<hr />
+<h2 id="5-multiplicity-in-both-directions">5. Multiplicity, in both directions<a class="headerlink" href="#5-multiplicity-in-both-directions" title="Permanent link">&para;</a></h2>
+<p>You specified: <em>one parent can manage multiple children; multiple children can be managed
+by the same parent.</em> The model generalizes both:</p>
+<ul>
+<li>One guardian → many dependents (many <code>guardianship</code> rows).</li>
+<li>Many guardians → one dependent (both parents, stepparents, legal guardians — the
+  schema makes no assumption that a child has exactly two, or exactly one).</li>
+<li>A guardian's authority over each dependent is <strong>per-dependent</strong>, so a parent can hold
+  full permissions for one child and only read access for another (a realistic custody
+  arrangement).</li>
+</ul>
+<p>The same person can also be a guardian <em>of</em> someone and a dependent of someone else — the
+relation is a general graph, not a two-level hierarchy. This costs nothing to allow and
+avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
+<hr />
+<h2 id="6-the-four-decades-of-history">6. The four decades of history<a class="headerlink" href="#6-the-four-decades-of-history" title="Permanent link">&para;</a></h2>
+<p>This is the constraint that most shapes the schema, so it is worth stating plainly.</p>
+<p>The system must answer, correctly and indefinitely:</p>
+<ul>
+<li>"Who was in Pack 12 on 1 June 1998?"</li>
+<li>"Was this person a member when they attended that camp in 2003?"</li>
+<li>"This person registered in 2026 claiming they were a member in the 90s — is that true?"</li>
+<li>"What was this unit called in 2001, and what is its successor unit today?"</li>
+</ul>
+<p>Consequences, all of which the data model implements:</p>
+<ol>
+<li><strong>Everything temporal is a period</strong>, never a boolean or a single date.</li>
+<li><strong>Nothing is hard-deleted.</strong> Merges leave tombstones; units that closed keep their rows.</li>
+<li><strong>Names change.</strong> Units get renamed and renumbered; people change names. Names live in
+   child tables with validity periods, not as columns that get overwritten.</li>
+<li><strong>Imported data is low-confidence.</strong> A 1994 roster has names and dates but no reliable
+   unique key. Import therefore <em>proposes</em> identities and a human confirms them.
+   See <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a>.</li>
+</ol>
+<hr />
+<h2 id="7-what-this-design-deliberately-does-not-decide-yet">7. What this design deliberately does not decide yet<a class="headerlink" href="#7-what-this-design-deliberately-does-not-decide-yet" title="Permanent link">&para;</a></h2>
+<p>These are referenced by the schema but not designed, pending your specification:</p>
+<ul>
+<li><strong>Events</strong> — the schema provides <code>access_grant.scope_type = 'event'</code> and leaves the
+  event tables to you. See <a href="../../open-questions/">../open-questions.md</a>.</li>
+<li><strong>Fees and payments</strong> — a provisional shape exists in
+  <a href="../../data-model/07-finance/">../data-model/07-finance.md</a> because membership
+  activation depends on it. Expect to rewrite it.</li>
+<li><strong>Notifications, documents, reporting, API/UI.</strong> <em>(Health records went off this list in round 7 —
+  there is no health module, because <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  found no category to build one around; the facts live in the personal-attribute layer,
+  <a href="../08-person-data/">domain/08</a>.)</em></li>
+</ul>
+<hr />
+<h2 id="8-next">8. Next<a class="headerlink" href="#8-next" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Terminology → <a href="../../glossary/">../glossary.md</a></li>
+<li>Accounts and registration → <a href="../02-actors/">02-actors.md</a></li>
+<li>Historical data → <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a></li>
+<li>Units → <a href="../04-organization-structure/">04-organization-structure.md</a></li>
+<li>Membership → <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a></li>
+<li>Permissions → <a href="../06-authorization-model/">06-authorization-model.md</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
