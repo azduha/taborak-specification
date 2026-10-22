@@ -4,6 +4,11 @@ docs_dir: docs
 site_dir: site
 use_directory_urls: true
 
+repo_url: https://github.com/azduha/taborak-specification
+repo_name: azduha/taborak-specification
+# "Edit this page" points at the Markdown source of the current page.
+edit_uri: edit/main/docs/
+
 theme:
   name: material
   language: en
@@ -13,10 +18,13 @@ theme:
     - navigation.sections
     - navigation.indexes
     - navigation.top
+    - navigation.footer
     - toc.follow
     - search.highlight
     - search.suggest
     - content.code.copy
+    - content.action.edit
+    - content.action.view
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
