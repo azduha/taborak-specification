@@ -1,0 +1,84 @@
+site_name: Information System — Design Documentation
+site_description: Design documentation for the organization's information system.
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+      # GitHub-compatible anchors so links written for GitHub keep working.
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+
+nav:
+  - Overview: README.md
+  - Glossary: glossary.md
+  - Domain:
+      - Overview: domain/01-overview.md
+      - Actors and Accounts: domain/02-actors.md
+      - Identity and Legacy: domain/03-identity-and-legacy.md
+      - Person Data: domain/08-person-data.md
+      - Organization Structure: domain/04-organization-structure.md
+      - Membership Lifecycle: domain/05-membership-lifecycle.md
+      - Authorization Model: domain/06-authorization-model.md
+      - Events: domain/07-events.md
+  - Data Model:
+      - Conventions: data-model/00-conventions.md
+      - Identity: data-model/01-identity.md
+      - Attributes: data-model/09-attributes.md
+      - Organization: data-model/02-organization.md
+      - Membership: data-model/03-membership.md
+      - Relationships: data-model/04-relationships.md
+      - Authorization: data-model/05-authorization.md
+      - Audit and Import: data-model/06-audit-and-import.md
+      - Finance: data-model/07-finance.md
+      - Events: data-model/08-events.md
+  - Reference:
+      - ERD: appendix/erd.md
+      - Permission Catalog: appendix/permission-catalog.md
+      - Decision Log: decisions/decision-log.md
+      - Open Questions: open-questions.md
+
+site_url: https://azduha.github.io/taborak-specification/
