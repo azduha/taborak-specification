@@ -470,22 +470,41 @@ The namespace that used to spell this out is deleted, the safeguarding property 
 > *"A unit leader does not get these by virtue of leading the unit — that is a safeguarding
 > property."*
 
-So a camp leader **cannot reach a child's medical record at all.** The only authority that
-reaches it is a guardian's right over that specific child, and leading the pack, running the camp
-or organizing it does not create one — nor does it borrow one, because the channel answers only
-for the person the row names.
+**Corrected in round 7, because this sentence was doing work it could no longer do.** It used to read
+*"so a camp leader cannot reach a child's medical record at all"* — and after
+[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+there is no medical record to be unreachable, so the sentence is not merely out of date, it describes a
+guarantee the model never had once the category disappeared. What is actually true, in the two forms
+that matter:
 
-Which means: an allergy recorded on a camp form is **the only way the people running the camp
-will know**. That is a coherent and defensible position — *the parent tells the people
-present, per event, and the medical file stays closed* — but it is a widening from "few
+- **No role gets it by leading.** The starting role set gives a `unit_leader` their unit's roster,
+  positions and events — and **no read over a person's data**
+  ([permission-catalog §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set)). That is
+  the safeguarding property, exactly as before: leadership is not guardianship, and the guardianship
+  channel answers only for the person its row names.
+- **It is now one grant away, deliberately.** Whoever holds `person.view` over a child's unit reads the
+  whole record, allergy list included. Nothing in the resolver will stop that and nothing should — but
+  a document that promised it was impossible would have been trusted, and a promise the model does not
+  make is worse than none.
+
+**The widening in the next paragraph is therefore unchanged in substance and better stated: the
+protection is a decision about a role, revisitable by whoever administers roles, not a wall."
+
+Which means: under the starting roles, an allergy recorded on a camp form is **the only way the people
+running the camp will know**. That is a coherent and defensible configuration — *the parent tells the
+people present, per event, and nobody outside the family holds the fact* — but it is a widening from "few
 people, via a guardianship-scoped permission" to "every organizer of any event the child
 registers for", and it is recorded as such in
 [D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers),
 with the reasoning, so that nobody later "fixes" the apparent duplication between the two
 stores by tightening this one.
 
-**Event answers are not a medical record.** They are operational detail for one event, they
-are read by that event's organizers, and they end with the event. See
+**Event answers are not the person's record.** They are operational detail for one event, read by that
+event's organizers, and they end with the event — while the same fact, recorded on the person, is
+audited, curable and erased with them. **[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+made those two copies the same class of data**, which is what turns the retention question below into
+a real one, and [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code)
+into the alternative: collect the fact once, confirm it at the door. See
 [§11](../data-model/08-events.md#11-open-issues) for the retention question, which is open.
 
 ---
@@ -498,8 +517,10 @@ tracked with the rest. The ones this module raises:
 - ~~**The age ceiling on an open event**~~ — **settled: accepted as a risk**, the grant is
   the rule, and closing it later would mean a new audience rather than a column (§4,
   [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
-- **Event answer retention** (§12). Answers end with the event — but a dietary answer citing
-  a medical condition is health data with a retention obligation, and there is no policy yet.
+- **Event answer retention** (§12). Answers end with the event — but a dietary answer naming a
+  condition is data of exactly the same class as what the person record holds, held under weaker rules
+  and fresher. No policy yet; see
+  [EV-2](../open-questions.md#ev-2--retention-of-event_answer).
 - **Cancelled events and fees** (§10–11). Cancelling keeps the registrations; whether it
   releases the obligations, refunds them, or neither is the finance module's call.
 - **Presence for minors and the safeguarding record** (§9). `was_present` is the "who was in

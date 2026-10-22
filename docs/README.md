@@ -60,6 +60,7 @@ fees belong to the root in the first place.
 | [domain/01-overview.md](domain/01-overview.md) | The model in plain language, actors, lifecycles. |
 | [domain/02-actors.md](domain/02-actors.md) | Accounts, self-registration, unauthenticated people. |
 | [domain/03-identity-and-legacy.md](domain/03-identity-and-legacy.md) | Historical records, matching, merging people. |
+| [domain/08-person-data.md](domain/08-person-data.md) | What the system knows about a person, and why it is all one kind of data. Read it next to the identity document above — together they draw the boundary. |
 | [domain/04-organization-structure.md](domain/04-organization-structure.md) | Units, nesting, restructuring over decades. |
 | [domain/05-membership-lifecycle.md](domain/05-membership-lifecycle.md) | Register → request → accept → pay → member → lapse → return. |
 | [domain/06-authorization-model.md](domain/06-authorization-model.md) | The permission model end to end. |
@@ -71,6 +72,7 @@ fees belong to the root in the first place.
 |----------|--------|
 | [data-model/00-conventions.md](data-model/00-conventions.md) | Naming, keys, temporal patterns, enums. **Read before reviewing any data-model document — §6a says who enforces what.** |
 | [data-model/01-identity.md](data-model/01-identity.md) | `person`, `account`, contact points, identifiers. |
+| [data-model/09-attributes.md](data-model/09-attributes.md) | `attribute_definition`, `person_attribute`, `attribute_option` — everything about a person that is not a name, a gender or an age. |
 | [data-model/02-organization.md](data-model/02-organization.md) | `org_unit`, types, hierarchy, positions. |
 | [data-model/03-membership.md](data-model/03-membership.md) | `membership`, `membership_request`, `unit_participation`. |
 | [data-model/04-relationships.md](data-model/04-relationships.md) | `guardianship`, `guardianship_permission`. |
@@ -92,13 +94,24 @@ fees belong to the root in the first place.
 
 ## Scope boundaries
 
-**In scope now:** identity, accounts, membership over time, organizational units,
-guardianship, and the authorization system.
+**In scope now:** identity, everything else the organization records about a person, accounts,
+membership over time, organizational units, guardianship, events, and the authorization system.
 
 **Deliberately deferred** (referenced so the data model does not block them, not designed):
-events, fees and payment processing, communication/messaging, documents, health
-records, reporting, and the API/UI layer. Each is listed in
+fees and payment processing beyond the provisional shape in
+[data-model/07-finance.md](data-model/07-finance.md), communication/messaging, documents,
+reporting, and the API/UI layer. Each is listed in
 [open-questions.md](open-questions.md) with the hooks already left for it.
+
+**Off this list, because the module it named does not exist:** *health records*. There is no health
+module waiting to be designed. [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+decided that everything the organization knows about a person beyond a name, a gender and an age is
+**one class of data**, held in fields the organization defines while it runs — so the health file
+this list used to promise is ordinary descriptive data, specified in
+[domain/08-person-data.md](domain/08-person-data.md) and
+[data-model/09-attributes.md](data-model/09-attributes.md). Events also came off this list, for the
+opposite reason — they were designed: [domain/07-events.md](domain/07-events.md) and
+[data-model/08-events.md](data-model/08-events.md).
 
 ---
 

@@ -114,7 +114,7 @@ The **Sens.** column flags permissions that need extra care:
 | Mark | Meaning |
 |------|---------|
 | ⚠ | Granting it exposes personal data |
-| ⚠⚠ | Granting it exposes children's personal data or health data |
+| ⚠⚠ | Granting it exposes children's personal data — or the same about an adult, where the code reads a whole person record rather than one field of it. Since [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) there is **no separate *health data* class to name**: the mark grades what a grant *exposes*, not which field the code points at |
 | 🔒 | Granting it confers authority over the permission system itself |
 | ⛔ | Granting it can end someone's membership or standing |
 
@@ -127,14 +127,15 @@ These marks should drive UI warnings and the alerting in
 
 | Code | Namespace | Sens. | Grants |
 |------|-----------|-------|--------|
-| `person.view` | — | ⚠ | See person records |
+| `person.view` | — | ⚠⚠ | See person records — **all of them, including every descriptive value** |
 | `person.create` | — | | Add a person record |
-| `person.edit` | — | ⚠ | Change person details |
+| `person.edit` | — | ⚠ | Change person details, including descriptive values |
 | `person.contact.view` | — | ⚠ | See contact points |
 | `person.contact.edit` | — | ⚠ | Change contact points |
 | `person.merge` | — | 🔒 | Confirm identity matches and merge people |
 | `person.unmerge` | — | 🔒 | Reverse a merge |
 | `person.redact` | — | 🔒 | Perform a GDPR-style erasure |
+| `attribute.define` | — | | **Curate the vocabulary** of descriptive data — create, rename, merge or retire a code |
 
 > `person.merge` and `person.redact` are separated from `person.edit` deliberately. Both
 > are irreversible in practice and both have privacy consequences far beyond editing a
@@ -154,6 +155,42 @@ These marks should drive UI warnings and the alerting in
 > view and nothing to record. If that changes, the permission pair and a dated record with an
 > `expires_at` are the natural shape — and it would belong here, next to `person.*`, because
 > a clearance is a fact about a person and not about their membership.
+
+> ### Descriptive data: two old codes and one new one
+>
+> Everything the system knows about a person other than their name, their gender and their age is
+> one class of data, in fields the organization defines while it runs
+> ([../domain/08-person-data.md](../domain/08-person-data.md),
+> [../data-model/09-attributes.md](../data-model/09-attributes.md),
+> [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+> [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)).
+> The catalog's whole involvement in that is one row added and none removed:
+>
+> - **Read: `person.view`. Write: `person.edit`. That is the entire access story.** **No read or
+>   write code was added** for descriptive data, because there is nothing left for one to gate —
+>   a code that separated, say, the allergy list from the rest of the record would reinstate the
+>   privileged subset [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+>   refused on the merits. There is therefore **no `health.*` or `medical.*` namespace and no
+>   per-field access rule**, deliberately: `category` on a definition groups a form and grants
+>   nothing. If a narrower tier is ever genuinely needed, the route is a decision entry about a
+>   **second grant scope over a defined set of data**, not a code with a suggestive name.
+> - **`attribute.define` is the new one, and it is the narrow one**
+>   ([D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)):
+>   it creates, renames, merges and retires a code — deciding what the organization *collects*,
+>   which is what makes the data queryable. Recording a value against a code that does not exist
+>   needs no such permission: it saves as a `proposed` definition and waits in the curation queue.
+>   The mark column stays empty for it because it reads nobody's data — the vocabulary is rows
+>   about codes, and the values underneath it are reached through `person.view` like anything else.
+> - **`person.view` moved from ⚠ to ⚠⚠**, and the reason is the same decision: the marker grades
+>   what a grant *exposes*, and this one now exposes everything known about a child — an allergy
+>   list, an insurance number, a note about who the child actually lives with — through a single
+>   code that used to be graded as ordinary personal data from when the record was smaller than
+>   the person.
+>
+> `person.redact` reaches the layer too, and in the opposite direction from retiring a code:
+> retiring one keeps the values, redacting a person erases theirs — in the audit trail as well as in
+> the row, since a trail that still reads out an erased value has preserved it rather than missed it
+> ([../data-model/09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload)).
 
 ## 3. Accounts
 
@@ -340,7 +377,7 @@ consequential permission in the authorization model.
 
 | Code | Namespace | Sens. | Grants |
 |------|-----------|-------|--------|
-| `audit.view` | — | ⚠ | Read the audit log |
+| `audit.view` | — | ⚠⚠ | Read the audit log — **including the before/after values it carries, which are person data like any other** |
 | `audit.export` | — | ⚠⚠ | Export audit records |
 | `import.view` | — | ⚠ | See import batches |
 | `import.stage` | — | | Stage an import |
@@ -348,6 +385,42 @@ consequential permission in the authorization model.
 | `import.revert` | — | 🔒 | Revert an applied import |
 | `report.view` | — | ⚠ | Run standard reports |
 | `report.export` | — | ⚠⚠ | Export report data |
+
+> **`audit.view` is graded ⚠⚠, and the reason is a property of the trail rather than of any field
+> it touches.** `audit_log` carries the before and after images of what changed, which makes it
+> **a second copy of the person record** — descriptive values included, on the same terms as a
+> `person_contact` or a note change. There is no exclusion list doing that work, and there must not
+> be one: a rule naming the person fields whose values may not be logged is a privileged *subset* of
+> the record, which is precisely what
+> [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+> refused — and it would hollow out [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
+> whose entire justification for overwriting a value in place is that the trail holds the sequence.
+> So reading the trail over a scope **is** reading person data over that scope, and reading *more*
+> than `person.view` shows: the current row is the organization's present belief, the trail is every
+> belief it has held. What protects the trail is therefore the guard on it — scope, this mark, and
+> who is granted it — exactly as the guard on `person.view` protects the record. The grading rule this
+> applies — **the mark follows what a grant exposes, not the table a code names** — is
+> [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads),
+> taken during propagation rather than from an answer, and reversible on one line.
+>
+> **The excluded-keys list survives, with a smaller and honest job.** Values that must never be
+> logged *at all* belong on it: credential secrets, tokens, session material. Personal data does
+> not, because personal data is protected by who may read the table, not by a list of its names.
+>
+> **Erasure reaches the payload.** A redaction that rewrote the business tables while the erased
+> values stayed readable in the trail is a failed redaction, not a partial one
+> ([../data-model/06-audit-and-import.md](../data-model/06-audit-and-import.md) §2,
+> [../data-model/09-attributes.md](../data-model/09-attributes.md) §6).
+>
+> **`audit.export` sits at ⚠⚠ for a reason unrelated to what it reads.** An export carries the
+> payload outside every mechanism this catalog governs: scope stops at the file, revoking the grant
+> does not recall the copy, and a later redaction cannot reach it. It is graded by where the data
+> goes, not by what the code is allowed to see.
+>
+> **Whether one permission is enough of a guard for all that is itself open** — tracked as **AT-4**
+> ([../open-questions.md](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)).
+> The grading above is what is settled: the trail is read with the guard of person data, whichever
+> permission or combination of permissions that guard turns out to be.
 
 ## 8a. Events
 
@@ -366,7 +439,7 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 | `event.register_other` | — | ⚠ | Register someone else (a minor, a walk-in) |
 | `event.manage_participants` | — | ⚠ | **Manage the roster** — add or remove registrations, work the waitlist, promote |
 | `event.presence.mark` | — | ⚠ | **Mark who turned up** — nothing else |
-| `event.answer.view` | — | ⚠ | **Read registrant answers** (tent, dietary, …) |
+| `event.answer.view` | — | ⚠⚠ | **Read registrant answers** (tent, dietary, …) — see the note in §8a |
 | `event.question.manage` | — | ⚠ | Define what the event asks |
 | `event.grant_access` | — | 🔒 | Grant access to an event. Requires level `admin` |
 | `event.delete` | — | 🔒 | Delete an event — only possible with **no** registrations |
@@ -426,15 +499,33 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 > record of who was coming deletable by everything except the intended route.
 
 > **`event.answer.view` is where [D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers) lives.** Answers to an event's questions
-> are readable by that event's organizers with no additional gate — which makes an event form
-> the route by which a camp leader learns a child has a nut allergy, because a unit leader holds
+> are readable by that event's organizers with no additional gate, because a unit leader holds
 > no guardianship over the children in their unit — guardianship authority belongs to the guardians
-> (§9). That is a deliberate widening and
-> it is recorded as one. **Note that this permission is therefore a ⚠ on health-adjacent
-> data**, and the discipline that only preference-level detail belongs on a form is guidance on
-> the form's label and nothing more. No layer enforces it and no layer can: nothing distinguishes
+> (§9). That is a deliberate widening and it is recorded as one.
+>
+> **Its premise has since been narrowed, and not by reversing it**
+> ([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+> D-061 was written when an event form was the *only* route by which a camp leader learned a child
+> has a nut allergy, because nothing else was readable. Descriptive data now exists
+> ([../domain/08-person-data.md](../domain/08-person-data.md)) and a leader holding `person.view`
+> over that unit reads a recorded allergy there, so the form is **the fallback for a fact the
+> organization has not recorded, not the ceiling on what an organizer may know**. What survives
+> unchanged is the decision itself, and the discipline below it.
+>
+> **This code is graded ⚠⚠, and it is the second time in this round that the marker followed the
+> content rather than the category.** It sat at ⚠ beside a paragraph conceding that the answers under
+> it can be clinical, which is the same mismatch `audit.view` had one section above: a payload that is
+> children's personal data, graded as though it were logistics. [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+> refuses a class of data more delicate than the rest, so either an adrenaline-pen answer is person
+> data — it is — or the grading on the audit trail was wrong. **The raise narrows nothing**: D-061
+> stands, an event's organizers read that event's answers with no additional gate, and all that changed
+> is what a reviewer should notice before ticking the box for a role handed to thirty volunteers.
+>
+> **Which leaves the discipline exactly where it was, and says so plainly:** the rule that only
+> preference-level detail belongs on a form is guidance on the form's label and nothing more. No layer
+> enforces it and no layer can: nothing distinguishes
 > "vegetarian" from "carries an adrenaline pen" to a database
-> ([../data-model/08-events.md §7](../data-model/08-events.md#health-data-and-the-discipline-this-requires)).
+> ([../data-model/08-events.md §7](../data-model/08-events.md#health-facts-and-the-discipline-this-requires)).
 > It rests entirely on whoever writes the form — a convention, not a guard, and D-072's own
 > sentence is the right way to read that.
 
@@ -455,9 +546,23 @@ there is no set of codes left for a name to stand for.**
 **What is lost, stated as plainly as it should be.** A court order restricting one parent's access
 to a child's medical record while leaving everything else in place **cannot be expressed**.
 "Read-only, but not the medical file" cannot be expressed. A grandmother granted roster visibility
-and nothing else is now a `view` guardian, which reaches the fee history and the health data too.
-The old namespace existed for exactly these cases, and D-074 traded them for a vocabulary a
-volunteer treasurer can hold in their head.
+and nothing else is now a `view` guardian, which reaches the fee history and everything else the
+system holds about that child. The old namespace existed for exactly these cases, and D-074 traded
+them for a vocabulary a volunteer treasurer can hold in their head.
+
+**The separation was then declined, not merely left unimplemented — and the difference matters to
+anyone reading this table as a to-do list.**
+[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+put the court-order story to the organization directly and it was refused on the merits
+(*"medical data is not different in any way"*), and the same answer removed the referent: there is
+no medical record inside the person record to be shut out of, because everything other than name,
+gender and age is one class of data reached by `person.view` and governed by the guardian's right
+level whole ([../domain/08-person-data.md](../domain/08-person-data.md)). So *"read everything
+except the diagnoses"* is not a sentence waiting on a mechanism somebody has yet to build; it is a
+sentence the organization declined to want, which is why
+[E-7 closed](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to)
+as a dissolved question rather than an answered one. **Read the inexpressibility above as settled,
+not as pending work.**
 
 **What still holds:**
 
@@ -473,10 +578,10 @@ volunteer treasurer can hold in their head.
   permission and never was a guardian one
   ([D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)).
 
-**If the split turns out to matter in operation it is a new decision**
-([E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile)), taken with
-the medical/consent separation argued from the current documents rather than restored from this
-table.
+**If the split turns out to matter in operation it is still a new decision** — one grant scope over
+a defined set of data, argued from the current documents — and not a restoration from this table.
+[E-7 is closed](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to),
+so reopening it means producing the case that was declined, not finding the code that was deleted.
 
 See [../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write)
 for the value, its defaults by `source`, and the ladder it is a range of.
@@ -543,6 +648,14 @@ abbreviation for *"every `person.` code listed in §2"*, and a real role holds a
    orphaned permission — one no role grants at all. It does not surface "this role arguably
    should have had it." That is the cost D-068 accepts, and it lands here, in the seed table,
    rather than being absorbed silently by the resolver.
+3. **`auditor` is a role that reads the whole person record, and does it without `person.view`.**
+   `audit.view` is graded ⚠⚠ in §8 precisely because the payload is a second copy of the record,
+   so this row grants a ⚠⚠ read over everything the system has ever believed about a child, dated
+   backwards. Nothing here forbids that — it is a plausible role — but the row must not be
+   described to anyone as "just the logs", and it is scoped and term-limited for the same reason
+   the ⚠⚠ rows above it are.
+
+`Req.` is `role.requires_membership`: whether the role stops granting anything when the
 holder's fee lapses ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 The proposals follow one rule — **staff-like roles working on the organization's own records
 require a membership; volunteer-facing roles do not.**
@@ -582,16 +695,25 @@ the system loses the ability to use it on the day it breaks.
    fees. This is deliberate. Note that the role **lost** `person.background_check.*` and
    gained nothing in its place, because the organization records no background checks
    ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
-3. **No role reaches a child's records.** There used to be a rule that no role bundles
+3. **No role is a guardian.** There used to be a rule that no role bundles
    `dependent.*`, and the namespace it named no longer exists
    ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
    The safeguarding property it protected is the one that survives, restated against the mechanism
    that now provides it: **the guardianship channel is only consulted when the subject of the act
-   is someone else, and it only finds a guardianship row.** A unit leader holding every
-   organization-side code in this catalog still cannot read the medical record of a child in their
-   unit, because leadership is not guardianship. **Do not re-derive the old rule as a list of
-   codes to keep out of roles** — the rule is about the channel, and there is no code left to
-   quarantine.
+   is someone else, and it only finds a guardianship row.** Leadership is not guardianship, so no
+   role hands anyone a guardian's right over a child — not the right to act for that child, and not
+   the row that decides what the family may see.
+   **What a role can now do, and does openly, is read the child's record.** That sentence used to
+   be false, and [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+   is why it is not: with no privileged subset inside the person record, a leader granted
+   `person.view` over their own unit reads the whole of a member's descriptive data, allergy list
+   included ([../domain/08-person-data.md](../domain/08-person-data.md)). Nothing about leading a
+   unit grants it — no channel opens on its own, and the row that would is explicit, scoped, dated
+   and readable in `role_permission`. That is also why §2 now grades that code ⚠⚠: the safeguarding
+   review moved from *"is there a code we kept out of roles?"* to *"which roles were given this
+   one?"*, which is a question the catalog can actually answer.
+   **Do not re-derive the old rule as a list of codes to keep out of roles** — the rule is about
+   the channel, and there is no code left to quarantine.
 4. **`unit_leader` and `assistant_leader` are `Req. = no`.** They are held by volunteers, and
    the failure this prevents is specific: the volunteer whose own fee is unpaid still runs
    the Thursday meeting, and must not lose their roster the night it lapses. The
@@ -626,6 +748,13 @@ the system loses the ability to use it on the day it breaks.
 - Which built-in audiences the organization needs, and who may create named groups —
   `audience_admin` is proposed, but it may belong to unit leaders instead
   ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+- **`attribute.define` is in the catalog and in no seed role, and that gap is the open half of the
+  design.** The permission and its rules are settled (§2); who holds it, and how long a `proposed`
+  code may sit before it is an embarrassment rather than a queue, are not — tracked as **AT-2** in
+  [../open-questions.md](../open-questions.md#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit). The risk of leaving it unheld is specific and slow:
+  proposals keep arriving through ordinary data entry, and a vocabulary nobody curates stops
+  answering questions while still storing everything
+  ([../data-model/09-attributes.md §8](../data-model/09-attributes.md#8-integrity-checks)).
 
 **Resolved and no longer open**, kept visible so the reasoning survives: whether
 `person.admin` should subsume `person.merge` and `person.redact` (moot — there are no

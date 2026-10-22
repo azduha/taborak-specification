@@ -25,6 +25,19 @@ False positive (two people merged) is a privacy incident. False negative (one pe
 split) is a data-quality annoyance. The design must therefore bias hard toward false
 negatives — never merge on a guess.
 
+**This document is about one half of a person.** Everything it resolves is *identity*: the fields
+that make a row a particular human — names, birth date, the account, contact points, issued
+identifiers. Everything the organization records about that human beyond those is
+**descriptive data**, and it is deliberately absent from every table below: no descriptive value is
+a match signal, and none may become one. A clothing size or a dietary habit identifies nobody, and
+making matching depend on one would make the reliability of a person's history depend on what the
+organization happened to collect about them
+([08-person-data.md](08-person-data.md),
+[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+The line between the two halves is drawn by *what a machine may act on without a human*, not by
+how delicate a fact feels; the test is stated in
+[08-person-data.md](08-person-data.md#the-three-exceptions-and-why-they-are-exceptions).
+
 ---
 
 ## 2. The three record classes
@@ -153,6 +166,7 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 |-------|--------|
 | `person_contact` | Reassigned to survivor. Conflicts (two `is_primary` of the same type) resolved by review, not by rule. |
 | `person_identifier` | Reassigned. Duplicate scheme+value collapses to one. |
+| `person_attribute` | Reassigned. **Two current values for one code is a review item, never a choice made by rule** — this table holds one value per person and code with no validity period to keep both, so unlike two past addresses a merge cannot leave the pair standing: the pair is raised as a `field_conflict` and a human decides, exactly as two `is_primary` contacts of one type are decided. Where the definition allows several values (`allow_multiple`), the two rows simply coexist and nothing is decided ([../data-model/09-attributes.md §3](../data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)). |
 | `person_name` | Reassigned, keeping validity periods — this is how a maiden name survives. |
 | `account` | Reassigned to survivor. **If the survivor already has an account, the absorbed account is closed, not deleted.** |
 | `membership` | Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level no-overlap rulet, an overlap here means a bad merge. |
@@ -238,13 +252,30 @@ Staged, reviewed, idempotent. Never a direct write into live tables.
   so a bad batch can be rolled back without touching other data.
 - **Never overwrites self-registered data.** If a legacy row matches a `self_registered`
   person, the import may *add* historical memberships but never alters names, contacts,
-  or identifiers the person maintains themselves.
+  identifiers, or descriptive values the person maintains themselves.
 - **Preserves provenance.** Every imported row records `import_batch_id` and
   `source_reference` (file + line), so any value can be traced back to the paper it came
   from. When someone disputes a historical record, you can show them where it came from.
 - **Records uncertainty rather than guessing.** A row that cannot be parsed cleanly goes
   to the review queue with the raw value intact — it does not get a best-effort guess
   written as if it were fact.
+
+### Raw columns become codes
+
+The pipeline was drawn when a legacy column could only ever be a name, a date or a unit. Old
+rosters also carry columns about the *person* — a remarks column, a "medical" column, a list of
+shirt sizes — and each of those arrives at step [5] as a value against a **code**, not as a blob
+beside the record. Two consequences for staging, where the rest of the rules for this live
+([../data-model/09-attributes.md §7](../data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from)):
+
+- **A raw column that maps to no code stops the batch**, unless someone maps it or marks it
+  `discarded` with a reason. An unmapped column is a decade of something the organization used to
+  collect vanishing quietly, which is the class of failure the rest of this document exists to
+  prevent on the identity side.
+- **A column nobody recognises becomes a `proposed` code named from the column**, never a guess at
+  an existing code: an import-time merge is invisible and unreviewable, and the review queue above
+  is for people, not for vocabulary. The column→code mapping is recorded once per batch, and
+  changing it is curation with an audit entry rather than a migration.
 
 ### Historical memberships from imports
 

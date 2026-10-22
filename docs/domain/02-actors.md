@@ -143,8 +143,13 @@ The right is **one value, not a capability list**
 ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
 The `dependent.*` codes this document used to enumerate are deleted — eighteen of them across
 the catalog — and with them go the cases they existed for: a guardian who may register the child for events but may not
-read the medical record cannot be expressed, and neither can "read-only, but not the medical
-file". What survives is what made the list worth having — the right is explicit, dated,
+read the medical record, or one who is "read-only, but not the medical file". Neither can be
+expressed — **and the separation was declined, not merely left unbuilt**
+([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)):
+there is no medical record inside the person record to be excepted from, so a guardian at `view`
+reads the child's record whole. **This is not a softening of the right.** The three levels are
+unchanged, at the same ranks and with the same bluntness; what changed is that there is nothing left
+inside the record for a finer right to withhold. What survives is what made the list worth having — the right is explicit, dated,
 revocable and audited, one deliberate value per row rather than an inference from who someone
 is. `write` ranks at `contribute` and not at `manage`, so a guardian still cannot do
 organization-wide things and cannot reach a different dependent's records. A role that needs
@@ -164,7 +169,9 @@ keeps the two authority channels distinct:
 A unit leader does not hold a guardian's right over unit members by virtue of leading
 the unit. If the organization genuinely needs leaders to see a camper's emergency contacts,
 that is granted through a *role* permission with a unit scope, resolved at the event, and
-audited — not through a fictional guardianship.
+audited — not through a fictional guardianship. That role-side code is `person.view`, and it has
+no narrower cousin to reach for if the grant turns out to feel too wide
+([08-person-data.md](08-person-data.md)).
 
 ### Recording acts on behalf
 

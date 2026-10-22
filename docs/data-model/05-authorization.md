@@ -899,10 +899,36 @@ the time. When a custody dispute arises eighteen months later, that is the quest
 **`denied` results are logged too.** A series of denials is the signature of someone
 probing for access they do not have. Logging only successes discards the signal.
 
-**`before_state`/`after_state` must be redacted.** Logging the pre-change value of a
-medical record into an audit table that fewer people guard than the original is a
-privacy regression. Redaction happens before the insert, in the logging function — not in
-a job that might not run.
+**`before_state`/`after_state` must be redacted, and the sentence is the reason this document is
+cited everywhere else.** Copying a value out of a guarded record into a table guarded by different
+people, on a different path, for longer than the record is kept, produces a copy with less protection
+than the original — and the copy is the one that gets read by auditors, exported for reports and
+mirrored into backups. Redaction therefore happens **before the insert**, in the logging function, and
+never in a job that might not run — the ordering is the part of this rule with teeth, and it survives
+[D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
+taking the trigger that used to enforce it.
+
+**How far the argument reaches, now that the person record has no sensitive corner.** It is an argument
+about *the copy's guard*, not about the copy's contents, and reading it as an instruction to empty
+payloads is the mistake this section made once and corrected. [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the subset that a field list selects from — everything about a person beyond name, gender and
+age is a value in `person_attribute` ([09-attributes.md](09-attributes.md)) — which rules out
+name-keyed scrubbing of personal data for good: there is no list, and `allergy` is not on it. It leaves
+two conclusions, and they point in opposite directions from the obvious one:
+
+- **The credential case stays, and it is the only one a name list can serve.** Values where *being in a
+  log at all* is the harm — secrets, tokens, credentials — are stripped on the way in, by key name,
+  everywhere a listed key turns up ([06-audit-and-import.md §2.2](06-audit-and-import.md#22-redaction-before-logging)).
+- **The person-data case is answered by grading the copy, not by thinning it.** `audit_log` holds
+  before and after images of a child's descriptive values, because
+  [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+  made that trail the only history those values have. So **"the copy must not be less guarded than the
+  original" is a requirement on `audit.view`'s sensitivity mark** — the top tier, beside `person.view` —
+  and not a rule about which keys may appear in a jsonb column. Written as a requirement in
+  [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and demanded of the
+  catalog in [../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system);
+  erasure reaching those payloads stays absolute
+  ([06-audit-and-import.md §4](06-audit-and-import.md#4-redaction-log)).
 
 **Append-only enforcement:**
 
@@ -1024,6 +1050,26 @@ never gets to contradict an earlier one; reordering them silently changes who ca
    The **guard must not be weakened into "the subject is a minor."** The existence of a guardianship
    row is the whole test; an age lookup here would put a branch in the resolver that D-070 and
    D-077 rule out, and it would be redundant: without a row there is no channel to enter, which is already true today.
+
+   **Personal attributes reach this resolver through no new door, and the sentence is worth writing
+   down because the data looks like it wants one.** Everything the organization knows about a person
+   beyond their name, gender and age is descriptive data in one table
+   ([09-attributes.md](09-attributes.md)), and it is read by `person.view` and written by
+   `person.edit` — the two codes that already cover the person — through the channels already listed
+   above. No `attribute.*` read permission exists, because there is nothing to gate that
+   `person.view` does not already gate; there is no fifth channel; and there is no branch anywhere on
+   *what a value is about*, because a branch on content is the privileged medical subset returning
+   through the resolver after [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+   refused it through the permission list
+   ([09-attributes.md §4](09-attributes.md#4-who-may-read-and-who-may-write)). **The temptation this
+   invites is precisely the age branch the paragraph above refuses** — *"a leader may see allergy data,
+   but only for the children in their unit"* reads as prudent and is a rule about an age and about the
+   contents of a value, two things this resolver deliberately cannot see. The grant already says
+   everything it is entitled to say: whoever holds `person.view` over this person reads this person.
+   **What changed is the reach of one existing answer, not the route to any answer** — see §12 for the
+   code, which is `person.view`, and for why its mark in the catalog has to rise with its reach. The only genuinely new capability in the area is curation of the vocabulary
+   itself, `attribute.define`, and it arrives as an ordinary narrow permission through a role like
+   every other: nothing structural hangs off it.
 6. **Channels 3-5 — allows, ordered by locality, most specific first.** The first tier that
    yields a determination decides the effective level for this check; if that level is
    insufficient, fall through to the next tier. This is what "local permissions override global"
@@ -1368,7 +1414,9 @@ composes them, edits what they grant, and deletes the ones nobody held. The star
 catalog sketches are proposals to edit, and the permissions themselves are starter material too.
 
 Those permissions span the namespaces this document and its neighbours describe: people —
-viewing, creating, editing, merging, contacts, and the two irreversible codes; accounts,
+viewing, creating, editing, merging, contacts, and the two irreversible codes; the vocabulary of
+personal attributes, where **recording a value needs no new code and naming a thing needs
+`attribute.define`**; accounts,
 including suspension, closure and credential reset; membership, including requests, activation,
 lapse, suspension, termination and backdating; participation in sub-units; units, their
 renaming, restructuring and closing; scope exposure and its review; audiences; positions;
@@ -1390,6 +1438,38 @@ A few of those codes carry a decision in their shape, and those are worth naming
   `person.edit`. They are irreversible, and with no `person.admin` to imply them (D-068) a role
   that reaches them does so by listing them, visibly. `identity_reviewer` holds `person.merge`;
   no starter role holds `person.redact`.
+- **`person.view` reaches the whole record, and that is a change of reach rather than a new
+  capability.** Since [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+  there is no privileged corner of the record for it to stop outside: whoever holds it over a person
+  reads their descriptive values — the allergy list, the insurance number, the note about who the child
+  actually lives with — on the same grant that reads their name
+  ([09-attributes.md §4](09-attributes.md#4-who-may-read-and-who-may-write)). It is therefore the widest
+  read permission in the system, and **the catalog's sensitivity mark is where that has to be visible**:
+  a mark set when "read a person" meant name and birth date now understates the code, and the honest
+  mark is the catalog's top tier — which is worded around *whose* data a grant exposes rather than
+  around a category of fields, because a category is what D-083 deleted. Read a bundling role with
+  that in front of you — `person.view` inside a role now means *this role reads medical facts*, because
+  that is what reading a person means. **Any future narrowing is a decision entry about a second grant
+  scope over a defined set of data, and not a code with a suggestive name**; the case for it
+  ("everything except the diagnoses") was put and declined
+  ([domain/08-person-data.md §4](../domain/08-person-data.md#4-what-was-refused-and-what-it-cost)).
+- **`audit.view` is graded against what the trail quotes, not against what a log is usually for.**
+  `audit_log` carries before and after images, and since
+  [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+  those images are the only place a child's past descriptive values exist; an entry is therefore as
+  sensitive as the person data it quotes, and reading history has to sit in the same tier as reading a
+  person. **The alternative — keeping the values out of the payload — was taken once during this round
+  and withdrawn** ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
+  because it graded descriptive fields above a change of address and left the history empty; what is
+  left is this bullet, which is a mark on a line of a table and nothing else, and is the reason
+  [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) calls the guard the
+  weakest link rather than the last line of defence.
+- **`attribute.define` is the narrow half of a deliberate pair**: values are open to anyone who may
+  already edit the person, so that the fact gets recorded, and codes are held by few people, because the
+  codes are what make the data queryable
+  ([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). It is an ordinary
+  permission — no namespace, no resolver branch, no structural consequence — and it is the only code
+  this area adds.
 - **`scope.expose` is scoped to the unit being covered.** A parent unit's officer cannot satisfy
   it for a child unit, which is what makes the no-inheritance rule enforceable, and there is no
   bulk variant (D-045): every exposure row is written by the unit it covers.

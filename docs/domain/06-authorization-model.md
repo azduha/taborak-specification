@@ -21,6 +21,13 @@ Channel 4 is not a table. It is the rule that a person may always act on their o
 profile, their own requests, their own memberships. It is resolved by comparing
 `person_id` before any other channel is consulted.
 
+> **What a channel reaches once one of them says yes.** Each of the four answers *whether*, never
+> *how much of a person*: there is one read rule and one write rule over a person's record, and no
+> narrower tier standing beside them, so a grant that reaches the record reaches all of it. What
+> that consists of, and why there is no sensitive corner left inside it to withhold, is
+> [08-person-data.md](08-person-data.md) — worth reading before proposing a fifth channel that
+> reaches "only" one kind of fact.
+
 **Why keep channels 1–3 apart rather than one unified grants table.** They differ in ways
 that matter:
 

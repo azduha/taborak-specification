@@ -336,31 +336,46 @@ the organization's permission — which is the whole point of D-073.
 
 **Impact.** One notification rule. No schema change.
 
-### E-7 🟡 One level cannot separate the medical record from the profile
+### E-7 ✅ **Closed** — one level cannot separate the medical record from the profile, and nobody wanted to
 
 **Raised by [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular),
 which deleted the eighteen `dependent.*` codes that existed for this case.**
 
-**What cannot be said now.** *"This guardian may register the child for events but may not read the
-medical record."* *"Read-only, except not the health data."* *"The grandmother may see the roster
-and nothing else."* A guardian either sees everything about the child or nothing. The case the old
+**What could not be said.** *"This guardian may register the child for events but may not read the
+medical record."* *"Read-only, except not the health data."* *"The grandmother may see the roster and
+nothing else."* A guardian either sees everything about the child or nothing. The case the old
 namespace was built around — a court order restricting one parent's medical access while their other
-access continues — is inexpressible.
+access continues — was inexpressible.
 
 **Why it was accepted anyway.** Three values a volunteer treasurer can hold in their head, versus
-eighteen whose differences nobody outside a court uses. And the alternative had a failure mode of
-its own: a granular list that administrators ticked without reading is not more protective than a
-coarse one, it only looks more precise.
+eighteen whose differences nobody outside a court uses. And the alternative had a failure mode of its
+own: a granular list that administrators ticked without reading is not more protective than a coarse
+one, it only looks more precise.
 
-**Recommendation.** Leave it closed until the case arrives in reality rather than in review. If it
-does, the fix is **not** the return of the code list — it is one additional, explicitly-argued
-exception on the medical sub-resource, taken as a decision with the current documents in front of
-you.
+**Answered (round 7), and the answer was not the one the question expected.** The question assumed a
+medical record worth separating. Asked directly, you answered: *"ignore 'court order', guardian has
+all rights on a child if it's permissions say so. Medical data is not different in any way."* Recorded
+as [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data).
 
-**Impact.** Would re-open the shape of guardian authority. Currently: one value, three choices.
+**So this closes as a dissolved question, not an answered one.** "Everything except the medical record"
+is not a sentence the organization wants to say, which means the missing granularity was never a gap —
+it was the absence of a feature nobody asked for. There is now no inside and outside to the person
+record, because there is no separate record: everything the system knows about a person other than
+name, gender and age is one class of data, reached by `person.view` and governed by the guardian right
+level whole.
 
-**Impact.** One branch in the ownership channel plus a check on the subject's age at
-`p_at`. No schema change.
+**What the closure trades away, in one sentence and on purpose:** a system that cannot express
+*"everything except the diagnoses"* cannot express an arrangement a court might order, and will
+express it instead as a guardian who either has the record or does not. If the case arrives in
+reality, the route back is **one new grant scope over a defined set of data, argued once as a
+decision entry** — not a namespace of eighteen codes, which is what was deleted and why this question
+existed.
+
+**Impact.** None left open. One value, three choices, over the whole record.
+
+**See:** [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[data-model/09-attributes.md](data-model/09-attributes.md),
+[glossary — Descriptive data](glossary.md#personal-data).
 
 ### E-3 🟢 Guardian acting for an adult child
 
@@ -590,8 +605,14 @@ if nobody has chosen it yet; shape 4 does not have one, and is why this question
 3. **Anything whose answer comes from another table or from the resolver** — the holder limit, the
    nesting rules, the exposure direction, per-scheme identifier uniqueness
    ([D-080](decisions/decision-log.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
-   item 1 is this class). No declarative constraint can state these; they need a check inside the
-   writing transaction plus a report.
+   item 1 is this class), and since round 7 **one current value per `(person, definition)`**, whose
+   condition lives in `attribute_definition.allow_multiple` — a uniqueness rule that some definitions
+   want and others forbid
+   ([data-model/09-attributes.md §3](data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)).
+   It is the cleanest example in the list, because the rule is not even conditional on the row's own
+   data: the same two columns are unique for one definition and repeatable for the next, so a partial
+   unique index cannot be written without knowing which definitions exist at runtime. No declarative
+   constraint can state these; they need a check inside the writing transaction plus a report.
 4. **A column that may not change once it is set** — `org_unit.parent_unit_id`
    ([D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)).
    This is not a PostgreSQL limitation that an ORM happens to inherit; **no declarative constraint
@@ -659,9 +680,18 @@ bought and D-070 defended.
 
 ### EV-2 🟡 Retention of `event_answer`
 
-**The question.** A dietary answer citing a medical condition is health data. Event answers
-end with the event — but "end" is not a defined policy, and health data has a retention
-obligation.
+**The question, restated once so it stays answerable.** It used to read "a dietary answer citing a
+medical condition is health data, and health data has a retention obligation" — and
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the second half of that sentence's subject: there is no class of health data with its own
+obligation, only personal data, of which a dietary answer is one instance. **The question survives, and
+it is now the ordinary version of a question this system has not answered anywhere**: event answers end
+with the event, "end" is not a defined policy, and a fact recorded on a form is the same kind of fact as
+the same sentence recorded as a `person_attribute` ([data-model/09-attributes.md](data-model/09-attributes.md)),
+which raises the sharper form of the question — **should an answer about a child be deleted on a
+schedule at all, when the same information held as an attribute is kept until someone retires it?** The
+paragraph at the end of this item is where that doubling is worked out; what changed here is only that
+the question can no longer be filed under a category of data that no longer exists.
 
 **Why it is not trivial.** [D-061](decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)
 made an event form the route by which a camp leader learns a child has a nut allergy. That is
@@ -673,6 +703,16 @@ The retention policy is the remaining half of that trade.
 
 **Needed.** Legal input, like B-3. The technical question — where does it live, who may read
 it — is answered; whether it must be deleted, kept, or archived is not.
+
+**Changed in round 7, in a way that strengthens the case rather than settling it.** [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+made every fact about a person one class of data held on the person, so an event answer naming an
+allergy is now **the same kind of fact stored in two places by two different rules** — one on the
+person, where it is audited, curable and erased with the person; one in an event's table, readable by
+whoever runs that event, with no retention policy. **The retention question and [AT-1](#at-1--should-an-event-question-bind-to-an-attribute-code)
+are the same question from two directions**: an answer worth keeping is an attribute that was
+collected at the wrong address, and an answer not worth keeping should be deleted on a schedule rather
+than surviving because nobody wrote a policy. Until one of the two is decided, the weakest-protected
+copy of a health fact is the one that is freshest.
 
 ### EV-3 ✅ **Closed** — cancelling voids the request, and paid money queues
 
@@ -739,6 +779,115 @@ Thirteen `event.*` codes now exist; `event.admin` is not one of them
 
 ---
 
+## Ga. Personal attributes — designed, with four things left open
+
+The module exists: [domain/08-person-data.md](domain/08-person-data.md) and
+[data-model/09-attributes.md](data-model/09-attributes.md), decided by
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[D-084](decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) and
+[D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
+It arrived instead of the health-records module, because the question "what is a health record here"
+answered itself a size larger: everything about a person except name, gender and age is one class of
+data, defined by the organization at runtime, with no privileged subset.
+
+### AT-1 🟡 Should an event question bind to an attribute code?
+
+**Raised by [D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
+which made the event form the fallback rather than the ceiling.**
+
+**The situation.** A returning camper types their allergy into every event form, every season, and
+the answer lives in `event_answer.value` for that event only. Meanwhile the organization may already
+hold the same fact as an attribute on the person, with a name, a `value_type`, and a recorded author.
+Nothing connects them.
+
+**Why this is a question and not an obvious improvement.** Prefilling an answer from the record makes
+the **record the thing a leader relies on**, and the record is: whatever was typed, by whoever,
+possibly two years ago, with no obligation on anyone to update it. Today's arrangement is worse data
+and better epistemics — *the form asks now, about this event, and the answer is dated today*. Bind
+the two and an out-of-date attribute becomes a wrong answer that looks authoritative, which is the
+one failure mode a health fact has that makes it dangerous.
+
+**Recommendation.** Prefill as a **suggestion the registrant confirms or corrects on the way in**, and
+write the confirmed value back to the attribute with today's date and this person as its author. Then
+the form stays the authority for the event, the record gets refreshed by the act of using it, and
+nobody ever relies on a two-year-old entry without a human having just looked at it. **The variant to
+reject** is reading the attribute directly into the organizer's view without the registrant's
+confirmation pass — that is the same convenience with the safety removed.
+
+**Impact.** One binding on the question definition, one write-back rule, and a rule about which is
+authoritative when they disagree. No new permission.
+
+**See:** [D-061](decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)
+(as amended), [data-model/08 §7](data-model/08-events.md#health-facts-and-the-discipline-this-requires).
+
+### AT-2 🟡 Who curates the vocabulary, and how long may a proposal sit?
+
+**Raised by [D-084](decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime),
+which made `attribute.define` a permission instead of a release.**
+
+An open vocabulary is only as good as somebody tending it, and "somebody" is currently nobody in
+particular. Two halves:
+
+- **Who holds `attribute.define`.** The starting role set
+  ([permission-catalog §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)) is the place
+  this gets answered, and the honest answer is that a volunteer organization has one or two people who
+  will do this and not a committee. Too narrow and the proposal queue is a bottleneck that teaches
+  people to file facts into notes instead; too wide and it is not a curation.
+- **How long a proposal may sit** before it is promoted, merged or discarded. The check exists
+  ([09-attributes §8](data-model/09-attributes.md#8-integrity-checks) checks 1 and 2) and the number
+  does not. A quarter is a defensible default: long enough that a seasonal field is not judged off a
+  single use, short enough that a proposal is answered inside the season that produced it.
+
+**Recommendation.** One named role, a stated age limit on proposals, and a standing decision that an
+expired proposal's **values stay** — the curation is about the name, never about deleting what was
+recorded.
+
+**Impact.** Configuration and one role, no schema change. The thing it prevents is the slow failure:
+a vocabulary nobody curates stops being queryable and the layer keeps storing everything, which looks
+like success for years.
+
+### AT-3 🟢 Do attribute labels need translation?
+
+Inherited from the multi-language row in [§H](#h-not-yet-designed), and sharper here than anywhere
+else because the vocabulary is runtime data: if a code's label is Czech-only, a Slovak-speaking
+volunteer cannot pick the field at all. Whether the answer is a translation column on
+`attribute_definition`, a separate label-per-language table, or "the organization is
+single-language, stop asking" is unrecorded. **The cost of not answering is asymmetric** — a label
+table added later is a migration; a body of codes accumulated with one label each is a data-cleaning
+project.
+
+### AT-4 🟡 Is one permission enough to guard a trail that holds person data?
+
+**Raised by the reversal recorded in
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+which decided the audit trail *does* hold a person's descriptive values** — because
+[D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+made that trail the only history such values have, and stripping them would have made the history empty
+while quietly grading health-shaped fields above a change of address. What protects the copy is then one
+thing: `audit.view`, graded ⚠⚠ beside `person.view`
+([permission-catalog §8](appendix/permission-catalog.md#8-audit-and-system)). Three positions exist and
+none is recorded as taken:
+
+- **The guard is enough** (current documents). One permission, marked honestly, and a rule that whoever
+  holds it is reading person data. Simple, and it makes the auditor role — which has `audit.view` and
+  not `person.view` — a reader of the entire person record
+  ([permission-catalog §11 note 3](appendix/permission-catalog.md#11-roles--proposed-seed-set)).
+- **Per-entry filtering in the history view:** show an audit row's values only where the reader could
+  also see the live field. Consistent with everything §9 of
+  [data-model/05-authorization.md](data-model/05-authorization.md#9-access_log) says about channels, and
+  it was considered and left unimplemented, because it means running the resolver per audit row against
+  rows that may no longer exist — a grant withdrawn last year is exactly the case a history is read for.
+- **Split the permission:** the trail's shape (who changed which table, when) apart from its payloads.
+  Honest about what an auditor usually needs, and it is the option that reintroduces a sensitive subset
+  through the back of the catalog — which is why the documents do not recommend it.
+
+**The cost of not answering is asymmetric in the uncomfortable direction:** the first position is
+already implemented by default, so leaving the question open *is* choosing it, and the choice is made
+invisible — nobody signs off on "volunteers with `audit.view` can read children's medical history"
+because there is no moment at which anybody has to say it.
+
+---
+
 ## H. Not yet designed
 
 Each of these is referenced by the schema and has hooks left for it — **except health records, which
@@ -751,7 +900,7 @@ documents. Read H-0 below before the table.**
 | **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) — **architecture settled, policy open** | **Nine open questions**, of which one is new. Round 6 closed the architectural ones: money arrives by **bank API**, is requested by **variable symbol + QR code**, there is **no card gateway**, and unmatched money **queues** ([D-075](decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code), [D-076](decisions/decision-log.md#d-076--money-that-cannot-be-matched-waits-for-a-person)). What remains needs somebody in the organization asked: proration, discounts, insurance, waivers, invoices. |
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | No `dependent.consent.*` any more — a guardian at `write` may give and manage consents ([D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). **`is_legal_decision_maker` on the guardianship row is the existing hook for "who may sign" — and it is now the only place that distinction lives**, since the right level cannot express it. |
-| **Health records** | **Nothing. There is no health entity in the data model** — see **H-0** below | **Highest-sensitivity data in the system, and the exposure grew in round 6.** [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) deleted the codes that used to gate medical visibility, so "read everything except the health file" is no longer sayable — see **E-7**. This raises the case for designing the module **before** the coarse default is relied on, rather than after: separate retention, separate access, likely separate storage, and its own legal review. |
+| **Health records** ✅ | **Designed — as [domain/08](domain/08-person-data.md) and [data-model/09](data-model/09-attributes.md)** | **Highest-sensitivity data in the system, and the exposure grew in round 6.** [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) deleted the codes that used to gate medical visibility, so "read everything except the health file" is no longer sayable — see **E-7**. This raises the case for designing the module **before** the coarse default is relied on, rather than after: separate retention, separate access, likely separate storage, and its own legal review. |
 | **Communication** | `message.send_direct`, `message.broadcast` (scoped) — shape decided, detail undesigned | **Shape decided by [D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel):** internal first, external channels are delivery; everyone may send direct; `broadcast` is one scoped permission; **the recipient picks the channel.** Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was **declined as a sender restriction** — see **MSG-1** below. |
 | **Reporting** | `report.*` permissions sketched | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-since-1985--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year since 1985) is the acceptance test. |
 | **API and UI** | — | Not started. The resolver's `p_at` parameter exists partly for this. |
@@ -761,7 +910,7 @@ documents. Read H-0 below before the table.**
 
 ---
 
-### H-0 🔴 The medical record is referred to throughout these documents and does not exist
+### H-0 ✅ **Closed** — the medical record was cited everywhere and defined nowhere, and it turns out there was nothing to define
 
 **Found while starting the health-records module, and it changes what that module is.** Sentences
 across five files discuss who may read *the medical record* as though it were a table:
@@ -769,9 +918,9 @@ across five files discuss who may read *the medical record* as though it were a 
 | Where | What it says |
 |---|---|
 | §H, this file, Health records row | "a `view` guardian already sees them" |
-| [E-7](#e-7--one-level-cannot-separate-the-medical-record-from-the-profile) | "a guardian either sees everything about the child or nothing" |
+| [E-7](#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to) | "a guardian either sees everything about the child or nothing" |
 | [permission-catalog §9](appendix/permission-catalog.md#9-there-is-no-dependent-namespace) | a `view` guardian "reaches the fee history and the health record" |
-| [data-model/08 §7](data-model/08-events.md#health-data-and-the-discipline-this-requires) | "the medical file, which **no event permission reaches**" |
+| [data-model/08 §7](data-model/08-events.md#health-facts-and-the-discipline-this-requires) | "the medical file, which **no event permission reaches**" |
 | [data-model/04 §2](data-model/04-relationships.md#2-the-guardians-right-none-view-or-write) | the case the old codes existed for is "access to medical information" |
 
 **No document defines one.** There is no health or medical entity in any
@@ -816,7 +965,19 @@ whether E-7 needs its exception — takes a different answer depending on this o
 module whose *absence* is already load-bearing: two documents cite the medical record's protections in
 order to argue that something else is safe.
 
-**Needed.** One answer above, then a round of design questions that follow from it.
+**Answered (round 7), by rejecting the framing.** You answered the three-way question with a fourth
+answer: *"I consider everything apart from name, gender and age a 'medical record'. It is fields in
+the database, not files."* So the referent was not missing — the **category** was missing, and the
+phrase in those five files was groping at a distinction nobody makes: there is no medical record
+inside the person record, because the person record is the thing, and it is fields. Recorded as
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+with the shape of the layer in [D-084](decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)
+and the boundary in [D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
+The three options above are recorded nowhere else, which is right: they were the shape of the question,
+not the shape of the answer.
+
+**See:** [section Ga](#ga-personal-attributes--designed-with-four-things-left-open),
+[data-model/09-attributes.md](data-model/09-attributes.md).
 
 ---
 

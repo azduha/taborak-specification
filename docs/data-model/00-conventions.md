@@ -99,7 +99,9 @@ published the internal counter.
 
 ## 4. Deletion policy
 
-**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data.
+**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data. **Two
+exceptions are named below** — a staging truncate, and one delete that erasure has to make — and both
+are narrow enough to prove the rule rather than erode it.
 
 | Situation | Mechanism |
 |-----------|-----------|
@@ -108,14 +110,32 @@ published the internal counter.
 | A grant revoked | Set `access_grant.valid_to`; keep the row |
 | Two people merged | Tombstone: set `merged_into_person_id`; row remains |
 | A unit closed | Set `org_unit.valid_to` and `status = 'closed'` |
-| GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8 |
+| GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8. **One table is deleted rather than redacted; the exception below names it and why** |
 
 This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
 forever. A hard delete breaks the audit trail and, in a youth organization, the safeguarding
 record.
 
-**The one exception:** staging tables (`staging_import*`) may be truncated after a batch is
+**The first exception:** staging tables (`staging_import*`) may be truncated after a batch is
 applied, subject to the project's retention policy.
+
+**The second exception is not convenience and it should be read as a decision, not an oversight.**
+Redacting a person **deletes** their `person_attribute` rows ([§8 item
+2](#8-personal-data-and-erasure)). Everywhere else in this file, erasure means overwriting a value
+and keeping the row, because the row is what old references point at. A descriptive value is the one
+thing that has no row worth keeping: **the row *is* the value** — there is no period that closed, no
+assignment that ended, no id another table cites. Blanking the value instead would leave the shape of
+a person's erased life behind as a permanent record of it: which codes they had, how many of each,
+and the dates they were first recorded. Retiring the *code* is not the answer either, and
+[D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) is
+explicit that retirement must never destroy values — retirement is an act about the vocabulary,
+erasure is an act about the person, and the two point in opposite directions on purpose
+([09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)).
+**This exception is safe only while nothing references an attribute row, and nothing does today.**
+Should a future table ever point at one — an event question bound to a stored value is the obvious
+candidate, and it is open as AT-1 — that table must be designed around this rule rather than
+discovering it, because at that point the delete stops being invisible and becomes the referential
+integrity problem §9 exists to prevent.
 
 **This rule is now carried entirely by discipline, and that is worth saying out loud.** A
 `ON DELETE RESTRICT` default, a revoke of `DELETE` from the application role, an ORM whose delete
@@ -322,33 +342,97 @@ Requirements the design must satisfy:
    `person.redacted_at`, overwrite names and contact points with a redaction marker, and keep the
    row and its ids so historical references still resolve. The person is no longer identifiable;
    the record that *someone* was in Troop 12 in 2003 survives.
-2. **Redaction must cascade** to contact points, identifiers, and free-text notes that may contain
-   personal data. A `redaction_log` records what was redacted and when.
+2. **Redaction must cascade.** It reaches contact points, identifiers, and free-text notes that may
+   contain personal data — and it **deletes every `person_attribute` row belonging to the person**
+   ([09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)). That is the
+   one place in this system where erasure deletes rather than overwrites, and
+   [§4](#4-deletion-policy) says why it is the only row that can be handled that way. A redacted
+   person with attribute values attached is a redaction that did not happen. A `redaction_log`
+   records what was redacted and when.
 3. **Some data must not be redacted** — membership periods, unit memberships, and position
    assignments are organizational history rather than personal data, and removing them would
    falsify records that the organization is often obliged to keep.
-4. **Health and safeguarding records have separate retention rules** and are out of scope for this
-   document, but the `person.redacted_at` flag must be visible to them.
+4. **Whatever keeps its own retention policy must be able to see `person.redacted_at`, and erasure
+   reaching it is a rule that store has to implement.** This item used to read "health and
+   safeguarding records have separate retention rules and are out of scope for this document", which
+   pointed at a body of data that [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+   has since dissolved: a diagnosis is an attribute value now, with the same access, protection and
+   retention as a shoe size ([09-attributes.md](09-attributes.md)), so there is no health store left
+   for the sentence to have pointed at. What survives is the other half, and it is worth keeping
+   precisely because it is easy to wave through: `audit_log` is the store this system has, its
+   retention is an open legal question
+   ([06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues)), and a redaction that stops at
+   the business tables while the trail keeps the erased values is a redaction that failed in the one
+   place a regulator looks. **This section describing erasure does not make a store honour it; the
+   check in that document's §5 is what notices.**
 5. **Sensitive attributes should not be over-collected.** `person.gender` is included because
    Scouting-type organizations typically must report it; if yours does not, remove the field
-   rather than keeping it "just in case".
+   rather than keeping it "just in case". **The same test now applies per code**, since most of what
+   is collected is decided at runtime: a code nobody can justify is retired
+   ([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)), and retirement —
+   which stops the collecting without destroying what was already recorded — is the mechanism.
+   Erasing what was recorded is item 2, and only item 2.
 6. **Redaction is invisible in listings and visible in the database.** A redacted person must not
    appear where people are listed, and must still resolve wherever an old record points at them
    ([01-identity.md §9](01-identity.md#9-views)). These two requirements are one rule with two
    halves and the first version of that document had only one of them.
+7. **The trail is a second copy of the person record and has to be guarded like one.** For a
+   person's descriptive data the trail holds the **value** — the before and after image, exactly as
+   it does for a contact point or a note — because
+   [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+   chose overwrite-in-place on the strength of the trail being the history there is, and a trail that
+   records *a value existed* without recording which one answers neither of the two questions an
+   audit entry is built for (*who said this* and *what did they say*). The consequence is therefore
+   about the log rather than about the shape of a row: **an audit entry about a person is as
+   sensitive as the person data it carries**, which is a requirement on a permission's sensitivity
+   mark and not on anything the schema can express — see
+   [05-authorization.md §9](05-authorization.md#9-access_log), which argues against copying data into
+   a less-guarded place and describes this table better than it knows: the trail *is* such a copy,
+   holding the whole person record in its payloads while historically being graded below it. Nothing
+   here makes that guard true; the catalog does, or does not
+   ([../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system)).
+   The mechanism that implements erasure against this table is in
+   [06-audit-and-import.md §2.2](06-audit-and-import.md#22-redaction-before-logging) and its §4, and
+   [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) is where the
+   trade is stated next to the values.
 
 > Legal review is required before implementing §8. This section describes the technical mechanism,
 > not the compliance policy. Tracked in
 > [../open-questions.md](../open-questions.md).
 
+**The key-name list is not how personal data is protected in the trail, and it helps to say so out
+loud.** The redactor used to be described as the
+thing that kept personal data out of the audit trail, and it worked by holding a list of sensitive
+*key names* — `notes`, `custody_arrangement`, and the rest — and stripping any image that carried
+one. That design presupposed a sensitive *subset* of the person record, because a list of names is a
+way of pointing at some fields and not others. [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the subset, and a list that was standing in for a rule about a category is now a list of
+arbitrary fields. **It fails on the first value stored under a name nobody predicted**, and an
+attribute layer whose whole purpose is that nobody can enumerate its names guarantees one such name
+every time the organization invents a code — so the list is not the thing keeping personal data out
+of the trail, and item 7 is. What is left for it is one job, narrow enough that a list can genuinely
+do it: **the values that must never enter the trail at all** — credentials, tokens, the secret half
+of an integration — the only values where *being in a log* is itself the harm. Personal data is not
+on that list and does not belong on it: the answer to *who may read a child's address* was never a
+list of field names, it is the guard on the table that holds it, and item 7 exists to make that answer
+cover the table that quotes it. So `notes`, the reason fields and an attribute value are all logged,
+in the clear, protected by who may read the log. Read the list as a credential filter and it is a
+working mechanism; read it as the personal-data filter, notice that `allergy` is not in it, and
+conclude the payload is covered — which is wrong in exactly the way described two sentences ago.
+[09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) carries the same
+warning next to the values themselves.
+
 **Two mechanisms that used to help here are gone, and they failed in different directions.**
-Redaction of the *audit payload* was automatic: a trigger scrubbed sensitive keys out of the
-before/after values on their way into the log, so a person's free-text notes could not leak into
-an audit entry merely by being edited. There is no trigger now — scrubbing the log is application
-behaviour, and forgetting it writes the secret into a table designed to be read later by
-auditors. (Worth recording: inside that trigger was a list of keys to scrub *unconditionally*, and
-nothing ever read it. A dead list of forbidden fields is not a protection.) The other half is the
-listing view that excluded redacted rows, which is §6a's problem in general.
+Redaction of the *audit payload* was automatic: a trigger stripped listed keys out of the before/after
+images on their way into the log. There is no trigger now, so what is left of that job — the credential
+stripping, and the scrub item 2 and item 7 require when a person is erased — is application behaviour,
+and forgetting the first writes a secret into a table designed to be read later by auditors, while
+forgetting the second leaves an erased person's values sitting in the trail with a `redaction_log` row
+next to them saying they are gone. (Worth recording: inside that trigger was a list of keys to scrub
+*unconditionally*, and nothing ever read it. A dead list of forbidden fields is not a protection — and a
+live one is a mechanism with a far smaller job than the sentences describing it used to imply, which is
+what the paragraph above is about.) The other half is
+the listing view that excluded redacted rows, which is §6a's problem in general.
 **Neither failure is loud.** Both are written down because a compliance property resting on a code
 review is the kind of thing an organization discovers from a regulator.
 
@@ -408,6 +492,7 @@ states the fields, rules, invariants and open issues for its part of the model.
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
+| [09-attributes.md](09-attributes.md) | `attribute_definition`, `attribute_option`, `person_attribute` — **everything the system knows about a person other than their name, their gender and their age** ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)). It is last in this table because it is last in every other document's account of a person: it references `person` and nothing references it |
 
 Each document presents its entities in **dependency order**: one appears only after everything it
 references. That ordering was needed to make a schema file execute; it is kept because it is also

@@ -38,8 +38,8 @@ a well-meaning future change.
 | `data_confidence` | text, required | One of: `high`, `medium`, `low`. Default `high`. `low` for imported rows: it drives whether a merge may absorb this row, and whether the UI warns before displaying it as fact |
 | `merged_into_person_id` | reference to person, optional | Tombstone. When set, this row is absorbed and queries must follow the pointer. Never deleted (§8) |
 | `merged_at` | timestamp, audit time, optional | |
-| `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names and contacts are overwritten; the row and its id survive so historical references still resolve |
-| `notes` | text, optional | Free text. Flagged in redaction (00-conventions §8): may contain personal data |
+| `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names and contacts are overwritten and the person's `person_attribute` rows are deleted; the row and its id survive so historical references still resolve ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)) |
+| `notes` | text, optional | Free text about a person, and the only such text that lives outside the attribute vocabulary — see *What is deliberately not on this table* below. May contain anything, including a diagnosis sitting under a column nobody would call medical. **It is logged with its contents, like every other field on this row, and it is deliberately *not* on the redactor's list** — a column named as an exception is the field-name rule [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed, and the protection is the guard on the trail ([00-conventions §8 item 7](00-conventions.md#8-personal-data-and-erasure)). Whether the column should exist at all is argued below |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 | `updated_at` | timestamp, audit time | |
@@ -85,6 +85,48 @@ member records. See [00-conventions.md](00-conventions.md#3-primary-keys).
 tables.** They are read on *every* query (every listing must exclude merged and redacted
 rows from ordinary views), so they need to be cheap. They are also the reason the two
 partial indexes above exist.
+
+### What is deliberately not on this table
+
+Everything the system knows about a person other than their **name, their gender and their age** is
+a descriptive value in `person_attribute`, and this table carries no column for any of it — no
+allergy, no medication, no insurance number, no shoe size, no preferred contact language, no
+diagnosis ([09-attributes.md](09-attributes.md),
+[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
+That is not a gap waiting for the next module. An earlier design did put the medical facts on a shelf
+of their own, behind codes of their own, and the answer that produced D-083 refused the shelf: a drug
+dosage and a clothing size are the same kind of object — recorded by the organization, wrong in three
+years, unenumerable in advance — and a permission that reads a person reads the whole record
+whatever the shelf is called ([domain/08-person-data.md](../domain/08-person-data.md)).
+
+**`given_name`/`family_name`/`preferred_name`, `gender` and `birth_date` are the only descriptive
+facts that are columns here, and they are the last the model will accept.** The test for keeping one
+is not sensitivity — `notes` sits in the field table above and is a worse exposure than most of what
+moved out. **The test is whether a rule exists that an open layer physically cannot hold.** *"One
+current name per person"*, *"exactly one primary postal contact among the open rows"*, *"a school id
+may repeat, a birth number may not"* — each is a constraint over a **known set of columns**, and a
+key/value layer has no known set of columns, which is the whole of what it is for. Folding
+`person_name`, `person_contact` or `person_identifier` into the attribute layer would have relocated
+four working constraints into application code and been called uniformity
+([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+Identity is closed because it was enumerated years ago and has not changed; description is open
+because nobody can enumerate it
+([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+
+**The rule cuts both ways, and review is where it is applied.** A fact with no such rule behind it
+does not earn a column here, however reasonable it looks — that is the sentence that keeps
+`is_deceased`'s cousins out. And a table already in this document does not lose its columns because
+the new layer looks tidier — that is the sentence that keeps a well-meaning unification of "everything
+about a person" from quietly turning four enforced rules into four hopes.
+
+**One consequence names itself.** `person.notes` is the last free text about a person kept outside the
+vocabulary, and it is the column a reviewer should ask about: a sentence typed there is invisible to
+the curation queue, to any report on a code, and to the screen a first aider reads at 23:00, while the
+same sentence recorded as a value against a `proposed` code is visible to all three
+([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). Whether the column
+should exist at all is open and already argued
+([06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues)); what is settled is that it
+carries no protection the attribute layer does not carry, and less readability.
 
 ### The answer to "who is a member?" is never on this table
 
@@ -520,6 +562,21 @@ display given name (`preferred_name` where present, `given_name` otherwise), `fa
 a display name formed by putting the two together with a space, `birth_date`,
 `birth_date_precision` and `redacted_at`.
 
+**What `v_person_display` does not carry, and why that is a rule rather than an omission.** It is a
+*display* row — the columns needed to name a person in a list — and it carries **no descriptive
+values**. It cannot: a view is a fixed list of columns and the attribute layer is the part of a
+person with no fixed list, which is §2's test arriving from the other side. Naming the boundary
+matters because the failure mode is silent. **Anything asked about a *person*, rather than about what
+they are called, reads `person` and `person_attribute` together under the one `person.view` that
+reaches both** ([09-attributes.md §4](09-attributes.md#4-who-may-read-and-who-may-write)) — the
+allergy list a first aider asks for, the record a guardian opens, the form a leader fills in. A screen
+built on `v_person_display` alone answers those questions with a name and a birth date, shows no
+empty field where an allergy should be, and looks entirely healthy while doing it
+([domain/08-person-data.md §3](../domain/08-person-data.md#3-who-needs-to-know-what)). The view stays
+narrow for the reason it exists — every picker and roster in the system reads it and none of them
+needs the record — and the obligation sits on the caller: **do not answer a question about a person
+out of a view that only knows how to print one.**
+
 `resolve_person` follows every hop because merges chain: A absorbed into B, later B absorbed
 into C. A single-level pointer lookup would return B, whose row is itself tombstoned.
 **Every place that accepts a person id from outside must call this.** Getting it wrong
@@ -559,6 +616,12 @@ above can express.
 - **Imported people with no membership.** Count people whose `record_origin` is
   `legacy_import` and who have no `membership` row at all; non-zero probably means a
   partially applied batch.
+- **A redacted person with descriptive values still attached.** Stated where the rows are, as check 6
+  of [09-attributes.md §8](09-attributes.md#8-integrity-checks) — attribute rows belonging to a
+  redacted person, and attribute values still present in `audit_log`. It is named here because the
+  redaction checks above are the same erasure guarantee read from the identity side, and a half-finished
+  erasure does not announce which table it stopped in. Of everything on either list, that is the one
+  that should alert rather than log.
 
 ---
 

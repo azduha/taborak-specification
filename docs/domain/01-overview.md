@@ -215,7 +215,10 @@ These are referenced by the schema but not designed, pending your specification:
 - **Fees and payments** — a provisional shape exists in
   [../data-model/07-finance.md](../data-model/07-finance.md) because membership
   activation depends on it. Expect to rewrite it.
-- **Notifications, documents, health records, reporting, API/UI.**
+- **Notifications, documents, reporting, API/UI.** *(Health records went off this list in round 7 —
+  there is no health module, because [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+  found no category to build one around; the facts live in the personal-attribute layer,
+  [domain/08](08-person-data.md).)*
 
 ---
 

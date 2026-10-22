@@ -446,40 +446,58 @@ tent preference does not: what one camp asks and what another needs are allowed 
 Per-event definitions keep them from having to agree, and avoid reviving a removed pattern
 for a benefit nobody asked for.
 
-### Health data, and the discipline this requires
+### Health facts, and the discipline this requires
 
-> **An event form is the route by which the people running the event learn what they need to
-> know — and it is the only one for a child's allergy, because no event permission reaches the
-> medical record** ([D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers),
+> **An event form is how the people running an event find out what they need to know about the
+> people who came.** It used to be the *only* way. [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+> ended that, and the guidance below is still worth reading as a warning rather than a nicety —
+> anything a form asks is read by whoever runs that event, and the number of such people is decided
+> by whoever creates the event
+> ([D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers),
 > [../domain/07-events.md §12](../domain/07-events.md#12-the-forms-questions-and-answers)).
 
-**Why that sentence's reason had to be rewritten, and what changed when it did.** It used to read
-"given the `dependent.*` namespace is unreachable by unit leaders". [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
-deleted that namespace, and the claim survives its deletion for a *better* reason: leadership of a
-unit was never what kept the medical record away from a leader — **no `event.*` permission
-includes it, and there is no wildcard left that could sweep it in** (D-068). The consequence is
-unchanged and still load-bearing: **the form is the only road.** Which is why the guidance below
-is worth reading as a warning rather than a nicety — anything a form asks is read by whoever runs
-that event, and the number of such people is decided by whoever creates the event.
+**This sentence's reason has now been rewritten twice, and the second rewriting killed the claim.**
+It began as "the `dependent.*` namespace is unreachable by unit leaders"; [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
+deleted that namespace and the claim survived on a better reason — no `event.*` permission includes
+the medical record, and no wildcard is left to sweep it in (D-068). **Both halves are now gone: there
+is no medical record** ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
+and the facts that would have been in one are attributes on the person, which
+**a unit leader holding `person.view` over their own unit can read**
+([09-attributes §4](09-attributes.md#4-who-may-read-and-who-may-write)). A claim that had outlived two
+of its reasons should not be repaired a third time; it is stated as what is now true:
 
-**Nothing in the data model distinguishes a preference from a condition.** "Vegetarian" and
-"coeliac" are both `data_type = 'text'` and both live in `event_answer.value`. The
-distinction is what an organizer types into `label`, so it is **form design guidance, not an
-enforced constraint**:
+- **The form is no longer the ceiling on what an organizer may know.** An organizer who is also a
+  leader of the registrant's unit may already have read the allergy. Any document implying the
+  contrary was quietly making a privacy promise the model does not keep.
+- **What the form is for changed accordingly** — it asks *now*, about *this* event, of a person who
+  may not be in the system at all, and its answer carries a date. That is a genuine property the
+  record does not have: a recorded attribute says what somebody believed, once, at no particular
+  time. Whether the two should meet at all is [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code),
+  and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
+  a stale health fact that arrives looking authoritative is worse data than an asked question.
+- **Nothing in the data model distinguishes a preference from a condition**, and now nothing *could*:
+  [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+  refused the category. "Vegetarian" and "coeliac" are both `data_type = 'text'` in
+  `event_answer.value`, so the line is what an organizer types into `label` — **form design guidance,
+  not an enforced constraint**:
 
-| Belongs on an event form | Does not |
+| Belongs on an event form | Belongs on the person, as an attribute |
 |---|---|
-| Dietary preference, T-shirt size, tent preference, bus or own transport | Diagnoses, medication, allergies, conditions |
-| What the organizers need **on the day** | The medical file, which no event permission reaches |
+| What the organizers need **on the day**, for this event | Diagnoses, medication, allergies, conditions |
+| What a visitor who is not in the system must supply | Anything already recorded, curable and audited on the record |
+| T-shirt size for a camp that is ordering shirts now | Anything whose value outlives the event that asked |
 
-The reason this is guidance rather than a constraint is honest: no rule can tell
-"coeliac" from "vegetarian", and an attempt to would be a keyword list that fails on the
-first unusual phrasing. What the data model *can* do — and does — is keep answers scoped to one
-event, readable by that event's organizers, and finite in lifetime.
+Asking a returning camper to restate a recorded allergy at every event is not a privacy measure; it
+is the same fact, fresher in one table and unmanaged in it. **The honest reading of this section is
+that the event answer is where a health fact lands when the organization has not collected it
+properly** — and the fix is the record plus a confirmation pass, not a cleverer form.
 
-**Open:** the retention policy for answers. A dietary answer citing a medical condition is
-health data with a retention obligation, and there is no policy yet
-([../open-questions.md](../open-questions.md), G. Events).
+**Open:** the retention policy for answers. A dietary answer citing a medical condition is data of
+exactly the same class as everything else the organization holds about a person — [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+settled that there is no specially-sensitive category, not that this data is insignificant — and
+there is no policy for how long answers survive their event. See
+**[EV-2](../open-questions.md#ev-2--retention-of-event_answer)**, which notes that until it is
+answered the weakest-protected copy of a health fact is the freshest one.
 
 ---
 
@@ -676,8 +694,12 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
   revisited the shape is a new **built-in audience**, not a column on the row.
 - ~~**Whether `event.manage_participants` should split.**~~ **It did**, into
   `event.presence.mark` at `contribute` (§4).
-- **Retention of `event_answer`.** Answers end with the event, but a dietary answer citing a
-  medical condition is health data with a retention obligation, and there is no policy (§7).
+- **Retention of `event_answer`.** Answers end with the event and there is no policy saying when (§7).
+  This used to be argued from the answer being *health data*, which
+  [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+  left without a referent: it is personal data, which makes the question ordinary rather than
+  answered — and sharper, since the same sentence recorded as a `person_attribute` follows a different
+  retention rule on purpose ([EV-2](../open-questions.md#ev-2--retention-of-event_answer)).
 - **Cancelled events and fees.** Cancelling keeps the registrations. Whether it releases the
   obligations, refunds them, or neither is the finance module's decision (§6). That decision
   has since been taken for events

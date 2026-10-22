@@ -29,7 +29,10 @@ A fourth, related distinction:
 
 **Person** — A human. Stores given name, family name, birth date, and gender. Nothing
 else. In particular: no member status, no child/adult flag, no troop, no role, and
-**no deceased flag** — the organization does not record death.
+**no deceased flag** — the organization does not record death. What the organization
+records *about* the human is not on this table at all: it is
+[descriptive data](#personal-data), reached by the same permission as the rest of the
+person record, because none of it is a different kind of object.
 
 **Account** — Credentials and login state for a person. A person may have zero or
 more accounts over their lifetime (e.g. a childhood account abandoned in 2010, a new
@@ -48,6 +51,70 @@ registers claiming a historical identity. Confirming one triggers a merge.
 **Merge** — The act of declaring two person rows to be one human, and collapsing them.
 Never a delete: the absorbed row survives as a tombstone pointing at the survivor, so
 that historical foreign keys keep resolving.
+
+---
+
+## Personal data
+
+Everything the system knows about a person once you subtract what they are *called* and
+*counted as*. The module is [domain/08-person-data.md](domain/08-person-data.md), the tables are
+[data-model/09-attributes.md](data-model/09-attributes.md), and the reasoning is
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[D-084](decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) and
+[D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
+
+**Descriptive data** — **Everything the system holds about a person other than their name, their
+gender and their age: one class of data, with no privileged corner inside it.** Allergies,
+medication, insurance numbers, languages, measurements, clothing sizes, dietary habits, a
+grandparent's phone manner — the same kind of fact, held in fields rather than files, none of it a
+different kind of object from any other, and all of it reached by the permission that already reads
+the person. The term exists to rule a category *out*: there is no sensitive sub-record with its own
+codes, which is what
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+declined on the merits rather than failed to build. Its cost is stated there and in
+[domain/08 §4](domain/08-person-data.md#4-what-was-refused-and-what-it-cost), and it is the reason
+`person.view` is graded in the catalog's top tier.
+
+**Attribute definition** — One thing the organization has decided to collect: a `code`, a label, a
+description of what belongs in the field, a value type, and whether several values may be current at
+once. The **type draws the form and raises the warning; it never refuses a save** a human insists on
+— `2019` recorded as the year of a checkup is a truer record than an empty field behind a validation
+error. Creating, renaming, merging or retiring a definition is `attribute.define`; recording a value
+against one needs nothing beyond `person.edit`.
+
+**Person attribute** — The value one person currently has for one code. **Overwritten in place:**
+the row is the organization's present belief, and the sequence of earlier beliefs lives in the audit
+trail, **values included** — logged on the same terms as a contact point or a note, because a list of
+person fields whose values must not be logged would be exactly the privileged corner
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+deleted, and would leave nothing behind for an overwritten value. What guards the trail is who may
+read it, not what it omits. No `valid_from` / `valid_to`, deliberately
+([data-model/09 §3](data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)).
+
+**Proposed code** — A definition that came into existence because somebody recorded a value against
+a code that did not exist. It waits in the curation queue: kept out of data entry forms and reports,
+yet **readable by anyone already entitled to read the person**, because the organization's data
+quality problem is not the family's confidentiality problem. It is where an improvised need at 23:00
+goes instead of into a notes box that nobody will read again.
+
+**Retired code** — A definition taken out of data entry and left alone everywhere else: readable,
+reportable, revivable, its values untouched. **Deleting a label must never delete the facts filed
+under it**, or the badly-named label is never retired and the vocabulary accretes instead of being
+curated. Redaction is the opposite operation and the only eraser: retiring keeps the values, erasing
+a person deletes them.
+
+**Curation** — Keeping the vocabulary meaning one thing: merging near-duplicates, promoting or
+discarding proposals, retiring codes nobody uses, and writing the description that stops one code
+meaning four things to four people. It is `attribute.define` plus somebody who reads what they are
+given, and the documents treat it as a job rather than an outcome — an open vocabulary left
+unwatched decays into `allergy`, `Allergy`, `alergie` and `allergies (2)`, after which the layer
+still stores everything and answers nothing.
+
+*Not to be confused with* **identity**, which stays structured in its own tables: a fact keeps a
+table of its own when there is a rule about it that an open layer physically cannot hold — one
+primary postal contact, one current name, a birth number that may not repeat. The boundary is that
+test, not sensitivity
+([domain/08 §1](domain/08-person-data.md#the-three-exceptions-and-why-they-are-exceptions)).
 
 ---
 
@@ -152,8 +219,17 @@ authorization model.
 
 **Being a guardian still grants nothing by itself**; `none` is a real value and the common starting
 point for anything the guardian did not assert themselves. What D-074 gives up in exchange for the
-short vocabulary is recorded in the catalog: **it is no longer possible to say "read everything
-except the medical record."**
+short vocabulary is recorded in the catalog: **it is not possible to say "read everything except the
+medical record."**
+
+**That sentence is not waiting on a mechanism, and the right level has not become softer for it.**
+[D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+was put the case the sentence was invented for — a parent keeping access to everything about their
+child except the medical file, by court order — and **declined it on the merits**: there is no
+medical record inside the person record to be excepted from, because everything other than name,
+gender and age is [descriptive data](#personal-data) of one class. So the right level is what it
+always was, `none`, `view` or `write`, applied to the record **whole** — and the thing that was
+given up is not a half-built feature but an arrangement the organization decided not to want.
 
 *Not to be confused with* **guardianship permission**, which was the deleted eighteen-code list
 (`dependent.profile.view`, `dependent.medical.admin`, …). Those codes are gone; do not write them
@@ -165,8 +241,9 @@ other contact. Two people at one address are related by a query, not by a table.
 kept here only to answer "where did the household go?": shared address never granted access,
 and still does not.
 
-**Acting on behalf** — Performing an operation as another person, under a guardianship
-permission. Every such operation records both the acting person and the subject person.
+**Acting on behalf** — Performing an operation as another person, under that guardianship row's
+right level (`view` to read it, `write` to change it). Every such operation records both the acting
+person and the subject person.
 
 ---
 

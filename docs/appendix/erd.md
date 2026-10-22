@@ -56,8 +56,72 @@ reference (no database-level foreign key). Temporal tables are marked `[T]`.
 ```
 
 **Key point:** everything hangs off `person`, and `person` itself holds only identity.
-No status, no role, no membership. See
+No status, no role, no membership — everything else the organization records about the human is
+the descriptive layer drawn next. See
 [../data-model/01-identity.md](../data-model/01-identity.md#1-the-central-claim).
+
+---
+
+## 1a. Personal attributes — everything that is not a name, a gender or an age
+
+```
+        ┌────────────────────────────────────┐
+        │        attribute_definition        │
+        │  code, label, description          │
+        │  value_type ← rendering, not law   │      ┌────────────────────────────┐
+        │  value_unit, sort_order            │◄─────│      attribute_option      │
+        │  allow_multiple                    │      │  definition_id             │
+        │  status: proposed | live | retired │      │  code, label, sort_order   │
+        │  category  ← grouping ONLY         │      │  status                    │
+        │  proposed_by, proposed_at          │      └───────────┬────────────────┘
+        │  retired_at, retired_reason        │
+        └───────┬────────────────────────────┘
+                │                                               │
+                │                    ┌──────────────────────────┘
+                │                    │
+                ▼                    ▼
+    ┌──────────────────────────────────────────────┐
+    │               person_attribute               │
+    │  person_id → person                          │
+    │  attribute_definition_id                     │
+    │  value_option_id      (a `one_of` choice)    │
+    │  value  ← always TEXT                        │
+    │  recorded_note, source                       │
+    │  created_at/_by = recorded at/by             │
+    │  NO valid_from / valid_to   ← (D-085)        │
+    └──────────────────────────────────────────────┘
+```
+
+**Key point:** these three tables are the whole of what the system knows about a person beyond
+name, gender and age. There is no health table beside them and no privileged corner inside them:
+[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the category and
+[D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)
+put an organization-maintained vocabulary in its place. Reading is `person.view`, writing is
+`person.edit`, and only the vocabulary needs a code of its own
+([`attribute.define`](permission-catalog.md#2-people-and-identity)). Fields and rules:
+[../data-model/09-attributes.md](../data-model/09-attributes.md).
+
+**None of the three is `[T]`, and the `no` beside them in §7 is a decision, not an omission.** A
+`person_attribute` row is **the current belief, overwritten in place**, and `audit_log` holds the
+sequence of beliefs, **values included** — which is why the trail is guarded as person data is
+([the permission catalog §8](permission-catalog.md#8-audit-and-system)). This corpus gives periods to things that are true *over an interval* — a
+membership, an address, a position, a guardian's authority — and a descriptive value is not one of
+those: it is a statement made now about whatever it is about, with a timestamp on the assertion. A
+`valid_from` here would ask a volunteer when an allergy began, which is a question the
+organization is not competent to record and has no rule that could use
+([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+The cost is named rather than left out: the history of a value lives in the one control
+[D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+calls the corpus's weakest, and §7 lists it as the accepted risk. It is also a deliberate
+departure from `guardianship` two sections below, which keeps its current value *and* its history
+in business tables — because authority is asked "what was it on that date?" as a routine part of
+answering whether an act was permitted, and an allergy list is not.
+
+The two vocabulary tables are non-temporal for a smaller reason of their own: a code leaves
+service by **status**, not by a period, so a value recorded against a retired option keeps meaning
+what it meant on the day it was chosen. Retiring therefore never touches a fact — only redacting a
+person erases one ([../domain/08-person-data.md](../domain/08-person-data.md#5-forgetting)).
 
 ---
 
@@ -442,6 +506,11 @@ One entry per entity: what it is, what it references, how many may exist, and wh
 temporal. `⇒` marks a polymorphic reference with no foreign key. Entries that exist **only** to
 join two other entities say so.
 
+**Read the `[T]` column as a decision, not a default.** A `no` is normally a lookup table, a
+definition, or an append-only trail — the kinds of thing that have no period to carry. Exactly one
+`no` in this inventory is a choice about a person's data rather than a lack of one:
+`person_attribute`, and the reason is written out under its own block below and in §1a.
+
 **Identity**
 
 | Entity | What it is | Points at | How many | [T] |
@@ -455,7 +524,29 @@ join two other entities say so.
 | `identifier_scheme` | The vocabulary of identifier schemes | Nothing | Lookup table, one row per scheme | no |
 | `identity_hypothesis` | A *proposal* that two person rows are the same human | `person` twice; the reviewer is a `person` | At most one live hypothesis per pair; a rejected pair may be re-proposed | no |
 | `person_merge` | The record that one row was absorbed into another, and how to undo it | `person` twice; `identity_hypothesis`, optional | One per merge performed; a reversal is recorded on the same row | no |
-| `field_conflict` | An attribute a merge could not resolve automatically | `person_merge`; `⇒ (entity_table, entity_id)` — polymorphic by nature | Many per merge | no |
+| `field_conflict` | One value a merge could not decide between two candidates — raised for either half of the record, an identity field or a descriptive value ([§1a](#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age)) | `person_merge`; `⇒ (entity_table, entity_id)` — polymorphic by nature | Many per merge | no |
+
+**Personal attributes** — everything known about a person other than name, gender and age
+([§1a](#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age))
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `attribute_definition` | One thing the organization collects about people: the code, its label, its type, and whether several values may be current at once | Nothing | One code per **normalized** spelling — `Allergy` and `allergy ` are one row; statuses `proposed`, `live`, `retired`, and retiring keeps the row and its values | no |
+| `attribute_option` | One allowed value of a `one_of` definition | `attribute_definition` | One row per code per definition; a retired option is never re-meaning, because values stored against it are historical facts | no |
+| `person_attribute` | The value one person currently has for one code | `person`, `attribute_definition`, and `attribute_option` when the type is `one_of` | One current row per person and code; more only where the definition sets `allow_multiple`, which no constraint can check (it reads another table) | **no — deliberately** |
+
+**That last `no` is the decision, and it is the reason this row spells it out.** Values are
+overwritten in place and `audit_log` — carrying the values themselves — is the only history: this is the one place in the schema where
+*"what did we believe in 2019?"* is answered from the trail rather than from business data, and
+[D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+records the trail as discipline rather than guarantee. The trade was made with that in view and is
+reversible in one entry
+([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
+[../data-model/09-attributes.md §3](../data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)).
+The two vocabulary tables carry **status instead of periods**, which is what lets a code be retired
+without touching a fact; only redacting a person erases values, and a redacted person still holding
+attribute rows, or still having their values readable in the trail, means the redaction did not happen
+([../data-model/09-attributes.md §8](../data-model/09-attributes.md#8-integrity-checks)).
 
 **Organization**
 
@@ -507,7 +598,7 @@ join two other entities say so.
 
 | Entity | What it is | Points at | How many | [T] |
 |---|---|---|---|---|
-| `audit_log` | The row-level trail of changes to business tables | `⇒ (table_name, record_id)` — polymorphic; `person` as actor, and on whose behalf | One row per change; append-only | no |
+| `audit_log` | The row-level trail of changes to business tables, **before and after values included** | `⇒ (table_name, record_id)` — polymorphic; `person` as actor, and on whose behalf | One row per change; append-only | no |
 | `redaction_log` | That a redaction happened to a person, by whom, and to what | `person`; the person who requested and the person who performed it | One per redaction performed | no |
 | `import_batch` | One arrival of historical data, and where it stands | `person` as creator, applier and reverting party | One per batch; staging rows may be truncated once applied | no |
 | `staging_import` | A raw source row, verbatim, with its file and line | `import_batch` | One per source row per batch | no |
@@ -537,9 +628,11 @@ join two other entities say so.
 **Reference vocabularies** — `reason_code`, `access_level`, `grant_scope_type`,
 `identifier_scheme`, `permission`, `org_unit_type`. Each is named by a value held elsewhere
 rather than pointing at anything, and each exists so that a vocabulary is data the organization
-can see rather than a list inside the application.
+can see rather than a list inside the application. `attribute_definition` is the same kind of thing
+in spirit and a different shape in fact — it has a curation lifecycle, a child table, and rows
+pointing back at it — so it is inventoried above rather than here.
 
-> **`event` is the only table in this schema with no `[T]`** — it has no `valid_from` /
+> **`event` carries no `[T]`** — it has no `valid_from` /
 > `valid_to`, because an event is a dated occasion rather than a period-tracked record. Its
 > lifecycle is `starts_at` / `ends_at` / `cancelled_at`, and it has no `status` column at all
 > ([D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
@@ -555,7 +648,9 @@ and `membership_request_requirement` (nothing gates a request —
 and every background-check structure
 ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
 
-**[T]** = temporal, carries `valid_from` / `valid_to`.
+**[T]** = temporal, carries `valid_from` / `valid_to`. A `no` says it does not; where the *reason*
+for not is a decision about someone's data rather than the nature of the table, the row says so —
+which in this inventory is `person_attribute`, and nowhere else.
 
 ---
 

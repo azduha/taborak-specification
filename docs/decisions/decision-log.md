@@ -2579,7 +2579,7 @@ set.
 
 **See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),
 [../appendix/permission-catalog.md](../appendix/permission-catalog.md),
-[../open-questions.md E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile).
+[../open-questions.md E-7](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to).
 
 ---
 
@@ -3175,3 +3175,262 @@ after the fact, when the storage of message bodies and the retention policy are 
 **See:** [MSG-1, closed](../open-questions.md#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians),
 [permission-catalog](../appendix/permission-catalog.md#10-deferred-namespaces),
 [glossary — Mirroring](../glossary.md#communication).
+
+---
+
+## D-083 — There is no medical record: personal data is one class of data
+
+**Status:** decided (from your answer) — **closes E-7, resolves H-0, retires the health module**
+**Date:** refinement round 7
+
+**Your answer.** *"I consider everything apart from name, gender and age a 'medical record'. It is
+fields in the database, not files. In general, ignore 'court order', guardian has all rights on a
+child if it's permissions say so. Medical data is not different in any way."*
+
+**This was asked as a scoping question and it answered itself a size larger.** The question on the
+table was how to protect a health module. The answer removes the category: there is no privileged
+subset of the person record, because the whole thing is equally the sensitive thing. Name, gender and
+age are identity — they are what a person is *called and counted as*; everything else the system
+knows is descriptive data of one kind, held in fields, and none of it is a different kind of object
+from any other.
+
+**Four things this dissolves, and none of them quietly:**
+
+| What the documents said | What it means now |
+|---|---|
+| **E-7**: one right level cannot separate the medical record from the profile | **Closed, because the sentence describes something nobody wants.** "Read everything except the diagnoses" was the case the eighteen `dependent.*` codes were built for; the answer is that the case is not real and the exception is not wanted. The guardian's right level applies to the record, whole, and that is the end of it |
+| **H-0**: the medical record is cited by five files and defined by none | **Resolved by removing the referent, not by building it.** Nothing was hiding behind the phrase; the phrase was inherited from deleted permission codes |
+| *"a `view` guardian already sees them"* — the reason the module was deferred | It was false (there was nothing to see) and it is now moot: a `view` guardian sees the person's data, which is the same sentence with a table behind it |
+| *"the medical file, which no event permission reaches"* — 08-events' reassurance | **Corrected, not restated.** No file, no reach. See [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity) for who reads what instead |
+
+**The court-order case, refused on the merits rather than waved away.** The granular model existed for
+one story: a parent with access to everything about their child except the medical file, by order of a
+court. That story was the entire justification for a sensitive sub-resource, and it is declined —
+**a guardian's rights are what the guardian's permission says, and no data inside the record changes
+that.** It is worth recording what was traded, because the story is not absurd: the model now cannot
+express an arrangement a court might order. The trade made is that a system which cannot express it
+**fails visibly** — a guardian either has the access or does not, in one place, auditable — whereas a
+system that can express it has a per-field exception nobody outside a courtroom can configure
+correctly, and a list of eighteen codes is a list somebody ticks without reading.
+
+**Where protection actually lives now — three places, two of them machinery and the third a sentence
+somebody has to keep true:**
+
+1. **Grants.** Whoever holds `person.view` over that person's scope reads the record. This is why
+   [the permission catalog](../appendix/permission-catalog.md) raises `person.view` rather than
+   inventing a code: a permission that reads everything about a child is not a ⚠, it is in the top
+   tier.
+2. **The guardian right level** ([D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)),
+   applied to the whole record.
+3. **The guard on the audit trail** ([00-conventions §8 item
+   7](../data-model/00-conventions.md#8-personal-data-and-erasure)) — the trail quotes the whole
+   record, so the permission that opens it is graded accordingly. Erasure reaching it is unchanged and
+   absolute.
+
+**The one thing that must not survive the round: protection keyed by field name.** The redactor used
+to scrub a *list of sensitive keys* out of logged row images. That list was coherent when there was a
+sensitive subset; with one class of data it is a list of exceptions to a rule that has no exceptions,
+and it fails on the first value stored under a column named `note` — or under a code named `allergy`,
+which is worse, because the attribute layer generates such names faster than anybody can list them.
+
+**What replaces it, after one reversal inside this same round.** The first answer written down here was
+that the audit payload therefore carries no descriptive values at all: who changed which code, for
+whom, when, and that a value existed. **That rule is withdrawn, and it was withdrawn by this decision's
+own logic.** Stripping attribute values from the trail while a change of address is logged with its old
+and new values is a sensitive *subset* of the person record re-enacted in the logging rules — the
+privileged corner arriving as a list of table names after it was refused as a list of permission names —
+and it empties the history that [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+chose overwrite-in-place in order to have. **So the trail holds the values, and what rises instead is
+the guard: an audit entry about a person is as sensitive as the person data it quotes, which puts
+`audit.view` in the catalog's top tier next to `person.view`.** That is a line in a document rather than
+a mechanism, and it is the weakest link in this design on purpose, so that a reader can see where the
+protection actually sits
+([09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload)
+argues it through, [06-audit-and-import.md §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging)
+keeps the withdrawn rule visible). Erasure reaching the payload is unaffected and remains absolute.
+
+**What is genuinely lost.** The ability to say *"everything except the diagnoses"* — to a court, to a
+doctor, to a future board that wants a narrower access tier. It is lost deliberately. If the case ever
+arrives in reality the way E-7 hoped it would not, the fix is a **second grant scope over a defined set
+of data**, taken as a decision with these documents in front of the reader, and **not** the return of
+a code list: one scope, argued once, rather than eighteen flags that encode the same distinction in
+the names of permissions nobody reads.
+
+**See:** [D-084](#d-084--descriptive-data-is-organization-defined-at-runtime),
+[D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
+[data-model/09-attributes.md](../data-model/09-attributes.md),
+[domain/08-person-data.md](../domain/08-person-data.md).
+
+---
+
+## D-084 — Descriptive data is organization-defined at runtime
+
+**Status:** decided (from your answer)
+**Date:** refinement round 7
+**Follows:** [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+
+**Your answer.** Asked whether the field vocabulary is a fixed typed set, a hybrid, or entirely
+organization-defined, you chose **entirely organization-defined**; on typing, **typed for rendering,
+not for law**; on curation, **values anywhere, codes by permission**; on retirement, **a retired code
+keeps its values, redaction erases**.
+
+**Decision.** Two tables. **`attribute_definition`** is the vocabulary the organization maintains:
+a code, a label, a value type, whether several values may be open at once, and a status of live or
+retired. **`person_attribute`** is a value one person has: the definition it belongs to, the value,
+who recorded it and when. Nothing in the schema names a fact about a scout.
+
+**Why this is the shape and not the safer-looking one.** The alternative — a column per fact — makes
+every collection habit a release. This organization's list of things it wants to know changes with the
+program: shoe sizes for a camp season, an insurance number for one country's requirement, a
+preferred contact language for one intake. A schema where that needs a migration produces the real
+failure instead of the apparent one: the field does not get added, and the information is collected on
+paper, photographed, and lost. **[D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the argument for a fixed set** — a closed typed set is justified by needing to *constrain* the
+important fields, and the answer was that no field is more important than another.
+
+**Typing for rendering, not for law.** A definition declares text, number, date, yes/no, one-of-a-list,
+or free text with a unit. The system uses it to draw the right input, to sort a list, and to warn —
+*"that is not a date"* — and it does not use it to refuse a save a human insists on. The reason the
+warning must not be a wall is that the value is not the system's to overrule: `2019` as a year for
+`last_checkup` is a truer record than an empty field behind a validation error, and the person typing
+it knows and the form does not. **What this costs is stated plainly in
+[09-attributes §5](../data-model/09-attributes.md#5-what-this-design-cannot-do)**: no database type
+checking, no constraint can reference a value, and no report may assume it understands a code.
+
+**Curation, because a vocabulary is the design.** Anyone who may edit a person may record a value
+against an existing code. Creating a code needs **`attribute.define`**, which is a small permission
+held by few people. An improvised need at 23:00 is recorded as a **proposal**: the value is written
+into an uncatalogued code that is visible, unusable-by-default, and waiting for whoever curates the
+vocabulary to accept, rename, or merge it. The reason is the one failure this design is exposed to
+more than any other: an open vocabulary left open becomes `allergy`, `Allergy`, `alergie` and
+`allergies (2)`, after which the layer still stores everything and answers nothing — which is the
+entirety of what the attribute table was built to do.
+
+**Two rules that keep a runtime vocabulary from decaying immediately:**
+
+- **Codes are normalized before comparison** — trimmed, case-folded, whitespace-collapsed — and
+  uniqueness is checked against the normalized form. This is not a nicety; it is the difference
+  between four spellings surviving a week and four spellings surviving a decade, and it is a rule the
+  database *can* still enforce.
+- **Retiring a code never deletes values.** A retired code disappears from data entry and remains
+  readable, reportable, and revivable. Deleting the label must not delete the fact underneath it —
+  a code discovered to have been badly named is an administrative event, and if it destroys nine years
+  of records it will never be retired, and the vocabulary accretes instead of being curated.
+  **Redaction is the opposite case and the only eraser:** when a person is anonymised
+  ([00-conventions §8](../data-model/00-conventions.md#8-personal-data-and-erasure)), their values go.
+
+**See:** [data-model/09-attributes.md](../data-model/09-attributes.md),
+[D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
+[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+for which of its rules the attribute layer can and cannot express.
+
+---
+
+## D-085 — The identity machinery stays structured; the boundary is rules, not sensitivity
+
+**Status:** decided (from your answer)
+**Date:** refinement round 7
+**Follows:** [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](#d-084--descriptive-data-is-organization-defined-at-runtime)
+
+**Your answer.** Asked where the attribute layer starts, you chose **keep the identity machinery
+structured** — attributes take everything that has no table today, not the tables that exist.
+
+**The boundary, and it is a different boundary than "sensitive versus ordinary".**
+
+| Stays structured | Becomes attributes |
+|---|---|
+| `person_name` history, `gender`, `birth_date` + `birth_date_precision` | health and medical facts, education, occupations, languages, insurance, measurements, dietary habits, preferences, notes — everything with no table today |
+| `person_contact` — purpose, primary flag, validity period | |
+| `person_identifier` — per-scheme uniqueness, decided by the scheme ([D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved) item 1) | |
+| `account`, `account_credential` | |
+
+**The test is whether a rule exists that the attribute layer physically cannot hold.** *"Exactly one
+primary postal contact among the open rows"*, *"a school id may repeat but a birth number may not"*,
+*"this person has one current name"* — each is a constraint over a **known set of columns**, and a
+key/value table has no known set. Folding those tables in would not have simplified the model; it
+would have moved four working constraints into application code and called it uniformity, which is
+[F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+manufactured on purpose. **Descriptive data is open-ended because nobody can enumerate it; identity is
+closed because it was enumerated years ago and has not changed.** That is the whole boundary.
+
+**Values are overwritten; `audit_log` is the history.** Chosen over a history table, and worth
+noticing as a **departure from the shape guardianship uses**, where
+`guardianship_permission` keeps current value plus history. The difference is real and not
+inertia: a guardianship row is **authority**, and authority is asked "what was it on that date" as a
+routine part of answering whether an action was permitted — while a descriptive value is a description,
+and nobody queries the allergy list of 2019 except in an incident, which is exactly the case the audit
+trail exists for. **The dependency is stated rather than glossed, and it has two halves.**
+[D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+records that audit completeness is now a discipline rather than a guarantee, so choosing the trail as
+the only history buys simplicity with the one control the corpus admits is weakest — and the trail here
+is not a pointer into the record, it is **the only copy of the values that ever existed**, since the row
+itself holds one belief at a time. So the history exists if, and only if: **(a)** every write path
+writes its audit row, including the import, the sweep and the hand-fix, and **(b)** the trail is guarded
+as the copy of a child's whole record that this makes it
+([D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) records why the values
+are logged rather than stripped, and what that demands of `audit.view`). If a safeguarding question is
+ever unanswerable because the trail was not written, or answerable by somebody who should not have been
+able to answer it, this is the decision that made that possible, and it should be reversed with those
+two sentences in front of the reader.
+
+**Who reads it: whoever the grants already say.** A unit leader holding `person.view` over their own
+unit's members reads their descriptive data — no age branch, no special channel, no per-event grant,
+consistent with [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)'s
+"not different in any way". **This changes D-061's status without reversing it:** the per-event answer
+form was designed as *the only* route by which an organizer learns a child has a nut allergy, because
+nothing else was readable. It is now the fallback for a fact the organization has not recorded, rather
+than the ceiling on what an organizer may know — and the discipline in
+[08-events §7](../data-model/08-events.md#health-facts-and-the-discipline-this-requires) about what
+belongs on a form survives unchanged, because it was always about not re-collecting what the
+organization already holds.
+
+**Amends [D-061](#d-061--event-answers-are-read-by-that-events-organizers).** Its decision stands —
+answers are read by that event's organizers — but its premise that this is the only route to a health
+fact is superseded by this entry.
+
+**See:** [data-model/09-attributes.md](../data-model/09-attributes.md),
+[domain/08-person-data.md](../domain/08-person-data.md),
+[data-model/01-identity.md](../data-model/01-identity.md).
+
+---
+
+## D-086 — A sensitivity mark grades what a grant exposes, not the table it reads
+
+**Status:** decided — **by the assistant, during round-7 propagation, not from an answer of yours.**
+It follows mechanically from [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+which is why it was taken rather than asked, but it changes two rows of a table you will read, so it is
+numbered and flagged rather than folded into prose. Reverse it if you read the marks differently.
+**Date:** refinement round 7
+**Follows:** [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+
+**The problem the round produced.** Two codes were found to be graded against their table's reputation
+rather than their payload's contents. `audit.view` sat at ⚠ while
+[D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+had just made its `old_values`/`new_values` the only surviving copy of a child's descriptive values — a
+log read by people who need not hold `person.view`, holding more than `person.view` shows.
+`event.answer.view` sat at ⚠ beside a note conceding that the answers under it "can be clinical".
+
+**Decision.** The mark follows the content. **`audit.view`, `event.answer.view` and `person.view` are
+all ⚠⚡**, and the legend's top tier was reworded so it names *whose* data a grant exposes instead of
+naming a category of fields — "children's personal data, or the same about an adult where the code reads
+a whole person record". Wording matters here more than usual: the previous legend read "children's
+personal data **or health data**", which is a category D-083 deleted, and a legend that names a category
+invites somebody to write the code that separates it.
+
+**What a raise does and does not do.** It changes **no grant, no scope and no channel.** An event's
+organizers still read that event's answers with no additional gate
+([D-061](#d-061--event-answers-are-read-by-that-events-organizers) stands); an auditor still reads the
+trail. A mark is the sentence a reviewer reads before ticking a box, and the reason it was worth two
+rows is the seed roles: `auditor` is now honestly described as a ⚠⚡ read over everything the system has
+ever believed about a child, which "just the logs" concealed, and `event.answer.view` arriving in a role
+handed to thirty volunteers is now visible at a glance.
+
+**Where this is enforced: nowhere.** A sensitivity mark is a line in
+[the catalog](../appendix/permission-catalog.md#1-conventions), reviewed by a human, and
+the check that a payload's contents match its code's mark does not exist and cannot be written against a
+runtime vocabulary — see [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
+which asks whether one permission is the right shape for a trail that holds person data at all.
+
+**See:** [appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system),
+[data-model/09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload).

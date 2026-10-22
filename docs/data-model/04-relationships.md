@@ -234,7 +234,7 @@ What still holds:
   was lost is a *narrow* deny — "not medical" — not the ability to say *no*.
 
 **If the split turns out to matter in operation it is a new decision, not a permission to be
-re-added quietly** ([E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile)).
+re-added quietly** ([E-7](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to)).
 
 ### Defaults still depend on how the guardianship arose
 
@@ -469,7 +469,7 @@ membership row was categorised as a child when it was opened", which could be ye
   and notified, not prevented. [E-6](../open-questions.md#e-6--a-guardian-may-appoint-a-guardian).
 - **New:** one right level cannot separate the medical record from the profile, which is the case
   the deleted capability codes existed for.
-  [E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile).
+  [E-7](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to).
 - **Resolved: `household` is removed entirely** — answered "drop household entirely", now
   [D-057](../decisions/decision-log.md#d-057--household-is-removed) (§3). Addresses live on
   `person_contact`.
