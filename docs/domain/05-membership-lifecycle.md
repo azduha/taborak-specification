@@ -35,20 +35,16 @@ member.
 
 ## 2. Membership request
 
-```
-membership_request(
-    id,
-    person_id,
-    requested_membership_type_id,    -- child | adult | counselor | ...
-    requested_unit_id,               -- nullable; may be assigned by the organization
-    status,                          -- draft | submitted | under_review | approved
-                                     -- | rejected | withdrawn | expired
-    submitted_at,
-    reviewed_by, reviewed_at,
-    rejection_reason_code, rejection_note,
-    membership_id                    -- set when approval produces a membership
-)
-```
+A request records the person it is **for**, the membership type asked for, and the unit the
+applicant would like — optional, because the organization may assign the unit at approval
+instead. `status` is one of `draft`, `submitted`, `under_review`, `approved`, `rejected`,
+`withdrawn`, `expired`, and `submitted_at` says when it went in. The review is carried on the
+same row: who took it up, when they decided, and on a rejection a
+`rejection_reason_code` with a free-text `rejection_note` beside it. When an approval produces
+a membership, `membership_id` is set to it.
+
+An approved request points at the membership it produced; the link is not optional once the
+approval exists.
 
 ### Why a request is not a membership with a status
 
@@ -81,7 +77,7 @@ because neither was a membership requirement to begin with:
 
 - **Guardian consent for a minor's account** is a fact about the guardianship relation, held
   in `guardianship_permission`, not a box ticked during an application
-  ([data-model/04](../data-model/04-relationships.md#2-guardianship_permission)).
+  ([data-model/04](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write)).
 - **Position eligibility** — a scoutmaster must be an adult — is a property of the position
   ([data-model/02 §7.1](../data-model/02-organization.md#7-position-and-position_assignment)),
   not of membership. Membership is ageless
@@ -97,33 +93,27 @@ a reason someone may not hold a role, not a reason they stop being a member.
 
 ## 3. Membership
 
-```
-membership(
-    id,
-    person_id,
-    membership_type_id,
-    status,                          -- pending_payment | active | lapsed
-                                     -- | terminated | completed | suspended
-    valid_from, valid_to,            -- the period. valid_to null = open/current
-    joined_via_request_id,
-    termination_reason_code,
-    data_confidence,                 -- high | medium | low (legacy imports are low)
-    import_batch_id                  -- nullable; set for imported rows
-)
-```
+A membership row belongs to one person and one membership type, and carries a `status` of
+`pending_payment`, `active`, `lapsed`, `terminated`, `completed` or `suspended` — always chosen
+deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an absent
+`valid_to` means the period is still open: it is the current membership, not a row someone
+forgot to close. `joined_via_request_id` records the request it came out of,
+`termination_reason_code` the reason it was ended, `data_confidence` is `high`, `medium` or
+`low` — legacy imports are `low` — and `import_batch_id` is set on imported rows and on nothing
+else.
 
 ### Overlap rules — the invariant that matters
 
-A person must not hold two **open** memberships at the same time. Enforce with a database
-constraint:
+A person must not hold two **open** memberships at the same time, and the rule is enforced by
+the database rather than by application code. Its precise statement is in
+`data-model/03-membership.md` §3; what it says, in words:
 
-```sql
--- Concrete DDL in data-model/03-membership.md §3
-EXCLUDE USING gist (
-    person_id WITH =,
-    daterange(valid_from, valid_to, '[)') WITH &&
-) WHERE (status IN ('pending_payment', 'active', 'suspended'))
-```
+- Two membership periods of one person may not cover the same date while either of them is
+  `pending_payment`, `active` or `suspended`. Those three statuses are the whole of the rule's
+  reach — a `lapsed` row, a `terminated` one and a `completed` one are outside it, which is why
+  an ending period and a later beginning one sit beside each other without complaint.
+- Periods are half-open, so a membership ending on 30 June and another opening on 30 June do
+  not collide.
 
 The constraint used to be scoped to `membership_type_id`, because a person might
 legitimately be an `honorary` and an `adult` member at once. With **one membership type**
@@ -133,21 +123,23 @@ that escape hatch is gone, and the constraint becomes the clean person-level inv
 member?" a hard question; now it is one row, one status, one date
 ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
 
-*Assumption:* `btree_gist` is available (PostgreSQL). If the target database cannot express
-exclusion constraints, this becomes a trigger plus a nightly consistency report — weaker,
-and it should be recorded as an accepted risk.
+*Assumption:* `btree_gist` is available (PostgreSQL), because a temporal overlap is the one
+rule that can only be refused *during* the write that would create it. If the target database
+cannot express exclusion constraints, the fallback is a check inside the writing transaction
+plus the nightly consistency report — **one of the strongest guarantees in the model degrading
+into the weakest class** ([data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now),
+[open question F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)):
+an application-level count is wrong exactly when two writers run at once, which is when an
+overlap is actually created, and the report finds it a day later in a form nobody can attribute.
+So it is not merely "weaker" and must be recorded as an accepted risk, chosen deliberately,
+rather than discovered in a migration tool's limitations.
 
 ### There is one membership type, and membership is ageless
 
-```
-membership_type(
-    id, code, name,
-    duration_months,                 -- 12
-    expiry_month, expiry_day,        -- 1, 1   — the fee expires 1 January (D-047)
-    renewal_grace_days,              -- 60      — the renewal window (D-048)
-    sort_order
-)
-```
+A type row is a `code` and a `name`, four calendar values, and a `sort_order`. The calendar
+values start at twelve months' duration, `expiry_month` 1 and `expiry_day` 1 — the fee expires
+on 1 January (D-047) — and `renewal_grace_days` 60, which is the renewal window and not a
+status (D-048).
 
 Seeded with **exactly one row**, `member`
 ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
@@ -212,7 +204,7 @@ Everything the system needs follows from this:
 | From | To | Trigger | Permission required |
 |------|-----|---------|---------------------|
 | — | `draft` | person starts an application | own |
-| `draft` | `submitted` | person submits | `membership.request.create` (own, or `dependent.membership.request` for a guardian) |
+| `draft` | `submitted` | person submits | `membership.request.create` (own, or the guardianship channel at `write` for a guardian — D-074) |
 | `submitted` | `under_review` | reviewer picks it up | `membership.request.review` |
 | `under_review` | `approved` | reviewer approves | `membership.request.approve` |
 | `under_review` | `rejected` | reviewer rejects | `membership.request.approve` |
@@ -274,13 +266,8 @@ cache is invalidated for everyone, the day renewal traffic peaks, and — if
 the system they administer ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
 
 
-```
-membership_type.expiry_month = 1             -- 1 January (D-047)
-membership_type.expiry_day   = 1
-membership_type.renewal_grace_days = 60      -- the window, not a status (D-048)
-```
-
-**All four calendar values are columns, and that is a requirement rather than a convenience.**
+**All four calendar values are columns —
+`duration_months`, `expiry_month`, `expiry_day`, `renewal_grace_days` — and that is a requirement rather than a convenience.**
 The organizational year runs with the calendar, and 60 days was chosen for the window on the
 explicit condition that it stays easy to change
 ([D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)):
@@ -303,19 +290,16 @@ January expiry is recorded as having a one-month gap and is misclassified as a *
 member — which would pollute the returning-member query and, worse, `is_current_member()`
 would have said "no" for a month when the person considers themselves continuously paid up.
 
-```sql
--- The renewal period starts at the old expiry, not at the payment date.
-SELECT GREATEST(m.valid_to, p.payment_date) AS new_valid_from
-  FROM membership m, payment p
- WHERE m.id = ...;
--- Inside the window this is m.valid_to (no gap); after it, the payment date.
-```
+So the rule to implement is one decision, not a formula on dates alone: **the renewal period
+starts at the old expiry, not at the payment date**, whenever the payment lands inside the
+window. Landing inside the window is what selects the expiry date, and it is what produces no
+gap; landing after it selects the payment date, and the gap stands.
 
 **Note the consequence for the permission cache.** The lapse happens to everyone at once, on
 the same date, in a bulk sweep
 ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 That is one cache-invalidation event touching every member rather than a steady trickle.
-See [data-model/05 §10](../data-model/05-authorization.md#10-the-resolver-in-sql).
+See [data-model/05 §10](../data-model/05-authorization.md#10-the-resolver).
 
 ---
 

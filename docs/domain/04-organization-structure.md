@@ -58,25 +58,15 @@ and why the root cannot decide permissions inside a pack.
 - **Units get renamed and renumbered constantly.** A `pack` table would need rename history
   alongside; here a rename is one row in `org_unit_name`.
 
-```
-org_unit(
-    id,
-    unit_type_id,             -- ('organization' for the root; otherwise whatever the org defines)
-    parent_unit_id,           -- nullable ONLY for the single root
-    code,                     -- short human code, e.g. "T12"
-    name,                     -- current display name
-    valid_from, valid_to,     -- when this unit existed
-    status                    -- proposed | active | merged | closed
-)
-```
+A unit row carries its `unit_type_id` — the organization type for the root, and otherwise
+whatever type the organization has defined; a `parent_unit_id`, absent **only** for the single
+root and immutable thereafter (§3); a short human `code` such as `T12`; the current display
+`name`; the period the unit existed, as `valid_from` and `valid_to`; and a `status` of
+`proposed`, `active`, `merged` or `closed`.
 
-**The single root is enforced structurally**, not by convention:
-
-```sql
--- At most one unit may exist at the root.
-CREATE UNIQUE INDEX uq_org_unit_single_root ON org_unit ((true))
-    WHERE parent_unit_id IS NULL;
-```
+**The single root is enforced structurally**, not by convention: among all unit rows, at most
+one may have no parent. The rule counts every row rather than only the open ones, so a root
+that has closed does not make room for a second one.
 
 ### Why types are rows, not an enum
 
@@ -95,15 +85,8 @@ be gone, and a new one may be needed in 2027. An enum requires a deployment to c
 > "a pack may only sit directly under the root" is an example of a rule, not a type the
 > system ships with.
 
-```
-org_unit_type(
-    id, code, name,
-    allows_minors,            -- may minors take part in this unit? (safeguarding, not membership)
-    is_leaf,                  -- may it contain sub-units?
-    max_depth,                -- optional ceiling
-    sort_order
-)
-```
+A type row is a `code` and a name, plus `allows_minors`, `is_leaf` — may it contain sub-units —
+an optional `max_depth` ceiling, and a `sort_order`.
 
 `allows_minors` is a **safeguarding** flag, not a membership rule: it lets the system
 validate that a unit which does not supervise minors never has any placed in it, without
@@ -117,15 +100,10 @@ hardcoding which type codes those are. Membership itself is ageless — see
 Because sub-units nest arbitrarily, the rules are **permissive by default** and express only
 the genuine constraints the organization wants to state. Most organizations need very few.
 
-```
-org_unit_type_rule(
-    id,
-    parent_type_id,           -- may a unit of parent_type_id contain...
-    child_type_id,            -- ...a unit of child_type_id?
-    max_children,             -- optional cap
-    is_required               -- must children of this type have a parent of this type?
-)
-```
+A rule pairs two types and answers one question about them: may a unit of `parent_type_id`
+contain a unit of `child_type_id`. `max_children` is an optional cap on how many it may contain.
+`is_required` asks the separate question — must a unit of the child type have a parent of the
+parent type at all.
 
 **A type with no rules at all is unconstrained.** That is the default and it is deliberate:
 the organization is free to invent a new kind of group and nest it wherever it likes without
@@ -135,9 +113,16 @@ decided it wants constraint — a `pack` may only sit directly under the root, s
 This is a table rather than a check constraint because nesting rules change over decades and
 because a constraint buried in code is invisible to the people configuring the organization.
 
-**Do not enforce nesting in the application layer only.** A `CHECK` cannot express it, so
-enforce it with a database trigger, and expose the rules in an admin UI. If it is only
-validated in the app, a data import will violate it.
+**Do not enforce nesting in the application layer only.** A check clause cannot express it — the
+rule reads two tables and a history — and since
+[D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
+the trigger that used to carry it is gone from these documents too, so the obligation has to be
+placed deliberately rather than assumed from a schema. **Put it in a constraint or a check inside
+the writing transaction, at the migration layer, and expose the rules in an admin UI.** If it is
+only validated by the form, a data import will violate it — which is not a hypothetical here: the
+legacy corpus is precisely a data import, arriving before the admin UI exists. See
+[../data-model/00-conventions.md §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now)
+for which layer survives which kind of writer.
 
 ---
 
@@ -151,14 +136,8 @@ two, or merged into another. The system must answer both:
 
 ### Names are temporal rows
 
-```
-org_unit_name(
-    id, org_unit_id,
-    name, code,
-    valid_from, valid_to,
-    change_reason             -- rename | renumber | reorganisation | correction
-)
-```
+One row per name a unit has gone by: the `name` and `code` it carried, the period it carried
+them for, and a `change_reason` of `rename`, `renumber`, `reorganisation` or `correction`.
 
 `org_unit.name` is a denormalised convenience holding the current name. The history lives
 here. Queries about the past read this table; they must never read `org_unit.name`.
@@ -173,16 +152,9 @@ in 1998?" answerable only by luck.
 
 These *do* create or close units:
 
-```
-org_unit_relationship(
-    id,
-    source_unit_id,
-    target_unit_id,
-    relationship,             -- split_from | merged_into | successor_of | renamed_to
-    effective_date,
-    note
-)
-```
+The record of one names the `source_unit_id` and the `target_unit_id`, the `relationship` from one to the
+other — `split_from`, `merged_into`, `successor_of` or `renamed_to` — the `effective_date`, and
+a `note`.
 
 A participation history must survive a split: when Pack 12 splits into Pack 12 and
 Pack 31, people who moved to 31 get a *new* `unit_participation` row starting at the split
@@ -210,7 +182,11 @@ This is a significant simplification rather than a limitation:
   a unit in or out of a parent's reach, silently re-scoping rows nobody edited. It cannot
   happen, so it cannot be forgotten.
 
-Enforced by a trigger that rejects any change to `parent_unit_id` on an existing row. See
+**No write may change `parent_unit_id` on a row that already has one.** Until D-072 this was a
+trigger; nothing in the docs carries it now, and unlike most such rules **no report catches the
+violation either**, because the damage is not a bad row, it is a set of previously-correct rows
+whose meaning moved. So this one needs a positive guard in the write path — reject the update, do
+not warn about it — and a test that attempts the update. See
 [data-model/02-organization.md](../data-model/02-organization.md#a-unit-never-changes-parent).
 
 ---
@@ -222,23 +198,14 @@ filling it for a period. This split is what lets the system say "Pack 12 has no
 scoutmaster right now" and "this position has been vacant since March" — both operationally
 important, and neither expressible if positions only exist when filled.
 
-```
-position(
-    id, unit_type_id,
-    code,                     -- scoutmaster, assistant_leader, treasurer, quartermaster
-    title,
-    max_holders,              -- NULL = unlimited (the default); 1 = single holder
-    requires_membership        -- must the holder be a current member?
-)
+A position is defined against a `unit_type_id` and carries a `code` — `scoutmaster`,
+`assistant_leader`, `treasurer`, `quartermaster` are the ordinary ones — a `title`, a
+`max_holders`, and `requires_membership`: must the holder be a current member.
 
-position_assignment(
-    id, position_id, org_unit_id, person_id,
-    valid_from, valid_to,
-    is_primary,               -- some people hold several positions
-    appointment_reference,    -- link to the appointment letter/record
-    ended_reason
-)
-```
+An assignment joins three things and dates them: the `position`, the `org_unit` it is filled in,
+the `person` filling it, and the period. It also carries `is_primary`, because some people hold
+several positions; an `appointment_reference` to the appointment letter or record; and an
+`ended_reason`.
 
 ### Multiple people share one position
 
@@ -258,9 +225,12 @@ about:
   holders each admits, is that unit's own business — the same principle as
   [authority over a unit originating at the unit](06-authorization-model.md#2-scope-authority--no-downward-inheritance).
 
-The schema enforces the limit with a trigger rather than a constraint, because the limit
-lives on a different table and because `max_holders > 1` cannot be expressed as a unique
-index. See [../data-model/02-organization.md](../data-model/02-organization.md#7-position-and-position_assignment).
+**The limit is enforced below the application** — a constraint or a check inside the writing
+transaction — rather than in the form, because the limit lives on a different table and because
+`max_holders > 1` cannot be expressed as a unique index. **The reason this cannot wait for the ORM
+to work it out is the second clause:** there is no declarative shape for "at most N open rows", so
+a generated schema silently has no limit at all, and the failure is invisible until two people hold
+the one chair. See [../data-model/02-organization.md](../data-model/02-organization.md#7-position-and-position_assignment).
 
 **A person may hold the same position in the same unit across separate periods** — left in
 2020, returned in 2024 — and both periods remain as distinct rows. Overlapping assignments
@@ -310,15 +280,10 @@ A **sub-unit's roster is participation, not membership.** These are different fa
 A person may take part in a Thursday group, a weekend pack and a summer team at once, while
 holding a single membership. Moving between groups is one row edit and costs no membership.
 
-```
-unit_participation(
-    id, person_id, org_unit_id,
-    valid_from, valid_to,
-    join_reason_code, leave_reason_code,
-    is_primary,               -- which group to show first
-    role_in_unit              -- display convenience only; NOT an authorization fact
-)
-```
+A participation row is a `person`, an `org_unit`, and a period, with a `join_reason_code` and a
+`leave_reason_code`, an `is_primary` marking which group to show first, and a `role_in_unit`
+that is a display convenience and **not an authorization fact** — nothing in the permission
+model reads it.
 
 **A participation row is created for the root unit when the membership is created**, so
 "everyone in unit X" is one uniform query whether X is the organization or a Thursday-evening
@@ -351,14 +316,9 @@ historical answer to "where did this unit sit?" never changes retroactively.
 Units are a **scope** for authority. The same role assignment mechanism handles both
 organization-wide and unit-scoped authority:
 
-```
-role_assignment(
-    id, person_id, role_id,
-    scope_type,               -- 'organization' | 'org_unit'
-    scope_id,                 -- null for organization, org_unit id otherwise
-    valid_from, valid_to
-)
-```
+An assignment names a `person` and a `role`, the scope it applies in, and the period. The scope
+is a `scope_type` of `organization` or `org_unit`, with `scope_id` absent for the former and a
+unit for the latter — the two always agree, and there is no third shape.
 
 So "treasurer of the organization" and "treasurer of Pack 12" are the same table and the
 same role — differing only in `scope_type`/`scope_id`.
@@ -387,11 +347,8 @@ permission path — see
 
 ### Unit-scoped access grants
 
-Beyond roles, a unit can be the target of an item-scoped grant:
-
-```
-access_grant(..., scope_type = 'org_unit', scope_id = <unit>, level = 'manage')
-```
+Beyond roles, a unit can be the target of an item-scoped grant: an `access_grant` whose scope
+type is `org_unit`, whose scope id is that unit, and whose level says how much.
 
 This is how you grant someone authority over a unit's data without giving them an
 organization-wide role — a temporary administrator for one pack, for instance. Note the

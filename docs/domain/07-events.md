@@ -83,15 +83,12 @@ query — [data-model/08 §9](../data-model/08-events.md#9-the-three-queries-tha
 
 ### The registration window
 
-Registration is open inside a period and closed outside it:
-
-```sql
-event.registration_opens_at  TIMESTAMPTZ   -- NULL = as soon as the event is visible
-event.registration_closes_at TIMESTAMPTZ   -- NULL = when the event starts
-```
+Registration is open inside a period and closed outside it, and the period is two columns on
+the event — `registration_opens_at` and `registration_closes_at`.
 
 `NULL` on the close means **until the event starts**, which is the "unlimited" case you
-described. `NULL` on the open means immediately — appropriate for a hike, wrong for a
+described. `NULL` on the open means the window opens as soon as the event is visible at all — appropriate
+for a hike, wrong for a
 jamboree whose sign-up should not open before the committee has decided the dates.
 
 ---
@@ -125,14 +122,8 @@ The rows are already in `permission_level`
 | `event.grant_access` | event | `admin` |
 
 **This is why audiences matter here.** Registering 200 children one at a time is 200 grant
-rows — but opening the event to members is **one**:
-
-```sql
--- "any current member may register for this camp"
-INSERT INTO access_grant (scope_type, scope_id, audience_id, level)
-VALUES ('event', :camp_id,
-        (SELECT id FROM audience WHERE code = 'all_members'), 'contribute');
-```
+rows — but opening the event to members is **one**: a grant whose scope is that event, whose
+grantee is the `all_members` audience rather than a person, and whose level is `contribute`.
 
 That single row is what D-042 was built for, and it is the normal way to run an open event.
 Per-person grants are for the exceptions.
@@ -204,7 +195,7 @@ This is the structural problem the module had to solve, and it is worth stating 
 because it is easy to "fix" wrongly later.
 
 **The resolver matches scope exactly** ([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing),
-[data-model/05 §10](../data-model/05-authorization.md#10-the-resolver-in-sql)). A check for
+[data-model/05 §10](../data-model/05-authorization.md#10-the-resolver)). A check for
 `event.view` at `('event', 42)` looks for a grant or role at **that exact scope**. A
 `unit_leader` role is at `('org_unit', 7)`.
 
@@ -371,11 +362,8 @@ So the questions that a `draft` status would answer are answered by grants:
 **Cancellation is a fact, not a status** — and this is where the logic diverges, because the
 audience is different:
 
-```sql
-event.cancelled_at    TIMESTAMPTZ
-event.cancelled_by    BIGINT REFERENCES person(id)
-event.cancel_reason   TEXT
-```
+Three columns carry it: `cancelled_at` says when, `cancelled_by` says who — a person, so the
+decision has a name attached to it — and `cancel_reason` says why.
 
 > **Cancelling by revoking grants would hide the cancellation from exactly the people who
 > need it.** The registrants are the ones who must be told the camp is off; if the event is
@@ -471,15 +459,21 @@ organizer types into a label. So the discipline is in the form design, not the c
 and it is guidance, not enforcement.
 
 **2. This is the route by which a leader learns a child has a nut allergy, and that is a
-deliberate widening.** The `dependent.*` namespace resolves **only** against
-`guardianship_permission` — never against roles or grants
-([appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-the-dependent-namespace)):
+deliberate widening.** A guardian's reach over a child is **one value on the `guardianship` row**
+— `none`, `view` or `write` — read by a channel of its own, entered only when the act is about
+someone other than the actor and never answered by a role or a grant
+([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular),
+[D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name);
+[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace)).
+The namespace that used to spell this out is deleted, the safeguarding property it carried is not:
 
 > *"A unit leader does not get these by virtue of leading the unit — that is a safeguarding
 > property."*
 
-So a camp leader **cannot reach `dependent.medical.*` at all.** Not by leading the pack, not
-by running the camp, not by being an organizer. There is no permission that changes it.
+So a camp leader **cannot reach a child's medical record at all.** The only authority that
+reaches it is a guardian's right over that specific child, and leading the pack, running the camp
+or organizing it does not create one — nor does it borrow one, because the channel answers only
+for the person the row names.
 
 Which means: an allergy recorded on a camp form is **the only way the people running the camp
 will know**. That is a coherent and defensible position — *the parent tells the people

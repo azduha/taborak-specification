@@ -8,43 +8,25 @@ Domain rationale: [../domain/04-organization-structure.md](../domain/04-organiza
 
 ## 1. `org_unit_type`
 
-```sql
-CREATE TABLE org_unit_type (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    code            TEXT NOT NULL UNIQUE,      -- 'organization', then whatever the org defines
-    name            TEXT NOT NULL,
-    description     TEXT,
+**Fields**
 
-    allows_minors   BOOLEAN NOT NULL DEFAULT true,
-    -- SAFEGUARDING, not a membership rule. Membership is ageless (D-038); this flag
-    -- lets the system refuse to place a minor in a unit that does not supervise them,
-    -- without hardcoding which type codes those are.
-    --
-    -- There is no allows_adults sibling: no unit in this organization excludes adults,
-    -- and the units that must contain adults (anything with a leadership position) say
-    -- so through position eligibility instead. See §7.
+| Field | Kind | Notes |
+|---|---|---|
+| `code` | text, required | `'organization'`, then whatever the organization defines. |
+| `name` | text, required | |
+| `description` | text, optional | |
+| `allows_minors` | boolean, required, defaults to true | **Safeguarding, not a membership rule.** Membership is ageless (D-038); this flag lets the system refuse to place a minor in a unit that does not supervise them, without hardcoding which type codes those are. There is no `allows_adults` sibling: no unit in this organization excludes adults, and the units that must contain adults (anything with a leadership position) say so through position eligibility instead. See §7. |
+| `is_leaf` | boolean, required, defaults to false | A leaf may contain participants but not sub-units. A weekly meeting group is usually a leaf, but not necessarily — nesting is arbitrary (D-035). |
+| `max_depth` | integer, optional | Maximum nesting depth for this type, relative to the root. Unset = unconstrained. |
+| `sort_order` | integer rank, required, defaults to 0 | |
+| `valid_from`, `valid_to` | period (from/to, open-ended allowed); both ends optional | Types are retired, not deleted: a 1995 `six` unit type must still resolve in historical queries. |
+| `created_at` | timestamp, audit time | |
 
-    is_leaf         BOOLEAN NOT NULL DEFAULT false,
-    -- A leaf may contain participants but not sub-units. A weekly meeting group is
-    -- usually a leaf, but not necessarily — nesting is arbitrary (D-035).
+**Rules**
 
-    max_depth       INTEGER,
-    -- Maximum nesting depth for this type, relative to the root. Null = unconstrained.
-
-    sort_order      INTEGER NOT NULL DEFAULT 0,
-    valid_from      DATE,
-    valid_to        DATE,
-    -- Types are retired, not deleted: a 1995 'six' unit type must still resolve in
-    -- historical queries.
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_unit_type_period CHECK (valid_to IS NULL OR valid_from IS NULL
-                                          OR valid_to > valid_from)
-);
-
-CREATE INDEX ix_unit_type_current ON org_unit_type (code) WHERE valid_to IS NULL;
-```
+- `code` is unique over **all** rows, retired ones included — a type that has been withdrawn still holds its name against a newcomer.
+- Where both ends of the period are set, `valid_to` is later than `valid_from`. Either end may be absent, and no comparison is attempted when one is.
+- One row per `code` is the current one; the current row for a code is found among the rows with no `valid_to`.
 
 **Types are rows, not an enum**, so the vocabulary can change across decades without a
 deployment. See [../domain/04-organization-structure.md](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units).
@@ -59,37 +41,21 @@ ageless and lives at the root ([D-038](../decisions/decision-log.md#d-038--membe
 
 ## 2. `org_unit_type_rule`
 
-```sql
-CREATE TABLE org_unit_type_rule (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+**Fields**
 
-    parent_type_id  BIGINT REFERENCES org_unit_type(id),
-    -- NULL parent_type means "at the root" — i.e. this type may be a top-level unit.
+| Field | Kind | Notes |
+|---|---|---|
+| `parent_type_id` | reference to `org_unit_type`, optional | A `parent_type_id` that is absent means **"at the root"** — this type may be a top-level unit. |
+| `child_type_id` | reference to `org_unit_type`, required | |
+| `is_required` | boolean, required, defaults to false | True: a unit of `child_type` must have a parent of `parent_type`. False: permissive. |
+| `max_children` | integer, optional | Optional cap on how many children of this type a parent may have. |
+| `valid_from`, `valid_to` | period (from/to, open-ended allowed); both ends optional | |
+| `created_at` | timestamp, audit time | |
 
-    child_type_id   BIGINT NOT NULL REFERENCES org_unit_type(id),
+**Rules**
 
-    is_required     BOOLEAN NOT NULL DEFAULT false,
-    -- True: a unit of child_type must have a parent of parent_type.
-    -- False: permissive.
-
-    max_children    INTEGER,
-    -- Optional cap on how many children of this type a parent may have.
-
-    valid_from      DATE,
-    valid_to        DATE,
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_unit_rule_distinct CHECK (
-        parent_type_id IS NULL OR parent_type_id <> child_type_id)
-);
-
--- At most one live rule per (parent_type, child_type) pair. Note NULLs need
--- COALESCE: a plain unique index would permit duplicate root rules.
-CREATE UNIQUE INDEX uq_unit_rule_pair
-    ON org_unit_type_rule (COALESCE(parent_type_id, 0), child_type_id)
-    WHERE valid_to IS NULL;
-```
+- A rule may not name the same type as both its parent and its child. A rule with no parent type is exempt, because it has no parent to collide with.
+- At most one **live** rule per (`parent_type_id`, `child_type_id`) pair — live rows only, so a superseded rule does not block its replacement. An absent `parent_type_id` counts as a value in that comparison; compared as plain nulls, duplicate root rules would slip through.
 
 **Why a table rather than `CHECK` constraints or code.** Nesting rules in this
 organization will change (a new level added, a type retired). A rule expressed in code is
@@ -97,133 +63,101 @@ invisible to the people configuring the organization and requires a deployment t
 A rule in a table can be reviewed, exported, and audited.
 
 **Enforcement note.** A `CHECK` cannot express "the parent's type must be permitted by a
-rule", because it requires a lookup. Enforce with a trigger:
+rule", because it requires a lookup into another table — and nothing else declarative expresses
+it either. The enforcement is therefore one ordered check, run once per row **inside the
+transaction that writes the unit**, on insert and on any update that touches
+`parent_unit_id` or `unit_type_id`. Inside the transaction is the part worth holding onto: a
+nesting validated only in the model layer is walked straight past by the legacy import, by a row
+someone corrects by hand, and by a second client, and all three exist here by design
+([00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now)). Validating the
+same steps in the application is still worth writing, because it produces the good error
+message; it is not the enforcement. The steps and their order are the rule:
 
-```sql
-CREATE OR REPLACE FUNCTION check_unit_nesting() RETURNS TRIGGER
-LANGUAGE plpgsql AS $$
-DECLARE
-    v_parent_type BIGINT;
-    v_ok BOOLEAN;
-BEGIN
-    IF NEW.parent_unit_id IS NULL THEN
-        SELECT EXISTS (
-            SELECT 1 FROM org_unit_type_rule r
-             WHERE r.parent_type_id IS NULL
-               AND r.child_type_id = NEW.unit_type_id
-               AND (r.valid_to IS NULL OR r.valid_to > CURRENT_DATE)
-        ) INTO v_ok;
-        -- Also permit types with no rules at all (permissive default):
-        IF NOT v_ok AND EXISTS (SELECT 1 FROM org_unit_type_rule
-                                 WHERE child_type_id = NEW.unit_type_id) THEN
-            RAISE EXCEPTION 'unit type % may not exist at the root', NEW.unit_type_id;
-        END IF;
-        RETURN NEW;
-    END IF;
+1. If the unit has no parent, look for a rule with no parent type whose child type is this
+   unit's type and whose `valid_to` is absent or still in the future. (This branch reads
+   `valid_to` only; `valid_from` is not part of it.)
+2. If none was found **and** any rule at all names this type as its child — disregarding
+   whether that rule is still live — refuse: this unit type may not exist at the root.
+3. If none was found and no rule names this type as its child at all, accept. This is the
+   permissive default.
+4. If the unit does have a parent, read that parent unit's type.
+5. Look for a rule pairing that parent type with this unit's type whose `valid_from` is
+   absent or already reached and whose `valid_to` is absent or still in the future.
+6. If none was found **and** the parent type has any rule at all — again disregarding
+   validity — refuse: this unit type may not be nested under that one.
+7. Otherwise accept.
 
-    SELECT unit_type_id INTO v_parent_type
-      FROM org_unit WHERE id = NEW.parent_unit_id;
-
-    SELECT EXISTS (
-        SELECT 1 FROM org_unit_type_rule r
-         WHERE r.parent_type_id = v_parent_type
-           AND r.child_type_id   = NEW.unit_type_id
-           AND (r.valid_from IS NULL OR r.valid_from <= CURRENT_DATE)
-           AND (r.valid_to   IS NULL OR r.valid_to   >  CURRENT_DATE)
-    ) INTO v_ok;
-
-    IF NOT v_ok AND EXISTS (
-        SELECT 1 FROM org_unit_type_rule WHERE parent_type_id = v_parent_type
-    ) THEN
-        RAISE EXCEPTION 'unit type % may not be nested under unit type %',
-            NEW.unit_type_id, v_parent_type;
-    END IF;
-
-    RETURN NEW;
-END $$;
-
-CREATE TRIGGER trg_org_unit_nesting
-    BEFORE INSERT OR UPDATE OF parent_unit_id, unit_type_id ON org_unit
-    FOR EACH ROW EXECUTE FUNCTION check_unit_nesting();
-```
+The two refusals are each conditional on rules existing for the relevant side, and that
+condition is evaluated *unconditionally*, against retired rules as well as live ones. A type
+therefore has exactly two states: governed by rules, or untouched by them.
 
 Note the permissive fallback: a type with **no** rules defined at all is unconstrained.
-This matters during initial setup — the trigger must not block creating the first units
-before the rules exist. It also means the rules are opt-in, and
+This matters during initial setup — the check must refuse nothing while the rule table is
+still empty, or the first units could never be created. It also means the rules are opt-in, and
 [§9](#9-integrity-checks) verifies them.
 
 ---
 
 ## 3. `org_unit`
 
-```sql
-CREATE TABLE org_unit (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    public_id       UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+**Fields**
 
-    unit_type_id    BIGINT NOT NULL REFERENCES org_unit_type(id),
-    parent_unit_id  BIGINT REFERENCES org_unit(id),
-    -- Nullable ONLY for the single root unit (the organization itself). See the
-    -- uq_org_unit_single_root index below, and D-035. Immutable once set — see the
-    -- trg_org_unit_no_reparent trigger, and D-036.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | Internal only; never exposed. |
+| `public_id` | uuid, required, generated | The identifier used outside the system, and unique. |
+| `unit_type_id` | reference to `org_unit_type`, required | |
+| `parent_unit_id` | self-reference to `org_unit` (the parent), optional | Nullable **only** for the single root unit — the organization itself. See `uq_org_unit_single_root` below, and D-035. Immutable once set — see *A unit never changes parent*, and D-036. |
+| `code` | text, optional | Short human code, e.g. `T12`. Not unique globally — two sub-units may both have a `T1`. |
+| `name` | text, required | Current display name. **Denormalised convenience.** The history is in `org_unit_name` (§4). Queries about the past must read `org_unit_name`, never this column. |
+| `status` | text, required, defaults to `active` | One of `proposed`, `active`, `merged`, `closed`. |
+| `valid_from` | date, required | |
+| `valid_to` | date, optional | NULL = still exists. |
+| `closed_reason_code` | text, optional | |
+| `closed_note` | text, optional | |
+| `path` | text, required | Denormalised for fast ancestor queries. Maintained on write, see §6. |
+| `depth` | integer, required | Number of segments in `path`; §6. |
+| `data_confidence` | text, required, defaults to `high` | One of `high`, `medium`, `low`. |
+| `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. `created_by` is NULL for system and import jobs. |
+| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
 
-    code            TEXT,
-    -- Short human code, e.g. 'T12'. Not unique globally — two sub-units may both have a
-    -- 'T1'. Unique per (parent, code) among live units, enforced below.
+**Rules**
 
-    name            TEXT NOT NULL,
-    -- Current display name. DENORMALISED convenience. History is in org_unit_name (§4).
-    -- Queries about the past MUST read org_unit_name, never this column.
+- Where both ends of the period are set, `valid_to` is later than `valid_from`.
+- A unit may not be its own parent.
+- `code` is unique **within a parent**, compared case-insensitively, among **live units only**
+  — a closed unit's code is free again. Units with no code are outside the rule, and units at
+  the root are compared with one another rather than exempted: an absent parent counts as a
+  value.
+- **Exactly one unit may exist at the root.** The organization itself. `uq_org_unit_single_root`
+  is the name this rule carries here, and the layer that must carry it is a migration: it is
+  uniqueness over the rows that have no parent, which is the conditional shape
+  [00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now) says an ORM will not
+  emit and a migration must.
 
-    status          TEXT NOT NULL DEFAULT 'active'
-                    CHECK (status IN ('proposed','active','merged','closed')),
+**Indexes**
 
-    valid_from      DATE NOT NULL,
-    valid_to        DATE,          -- NULL = still exists
+- On `path`, for prefix matching — this is what makes the set-based subtree question in §6.1
+  cheap.
+- On `parent_unit_id`, for walking one level of the tree.
+- On `unit_type_id`, restricted to live units, and on live units generally: "what exists
+  right now" is the question the partial indexes are for.
 
-    closed_reason_code TEXT,
-    closed_note     TEXT,
+**The one-root rule is the whole of "there is one organization", and it is the load-bearing kind:
+a constraint, not a convention.** At most one row with `parent_unit_id IS NULL` may exist, and the
+rule deliberately ignores `valid_to` — even a closed root is still *the* root. A second root is not
+an untidy state but a second organization, and only something running at the database can refuse
+the insert that creates one. It is shape 2 of
+[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+— unique, but only among rows satisfying a condition — so the migration emits a partial unique
+index and not the plain one, which would be a different rule: a plain unique constraint over
+`parent_unit_id` would reject every sub-unit, since they all share a parent.
+See [D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it).
 
-    -- Denormalised for fast ancestor queries. Maintained by trigger, see §6.
-    path            TEXT NOT NULL,
-    depth           INTEGER NOT NULL,
-
-    data_confidence TEXT NOT NULL DEFAULT 'high'
-                    CHECK (data_confidence IN ('high','medium','low')),
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by      BIGINT REFERENCES person(id),
-    updated_at      TIMESTAMPTZ,
-    updated_by      BIGINT REFERENCES person(id),
-    import_batch_id BIGINT,
-
-    CONSTRAINT ck_org_unit_period CHECK (valid_to IS NULL OR valid_to > valid_from),
-    CONSTRAINT ck_org_unit_not_self_parent CHECK (parent_unit_id IS DISTINCT FROM id),
-    CONSTRAINT ck_org_unit_closed CHECK (
-        (status <> 'closed') OR valid_to IS NOT NULL)
-);
-
-CREATE INDEX ix_org_unit_parent ON org_unit (parent_unit_id);
-CREATE INDEX ix_org_unit_type   ON org_unit (unit_type_id) WHERE valid_to IS NULL;
-CREATE INDEX ix_org_unit_path   ON org_unit (path text_pattern_ops);
-CREATE INDEX ix_org_unit_live   ON org_unit (id) WHERE valid_to IS NULL;
-
-CREATE UNIQUE INDEX uq_org_unit_code_per_parent
-    ON org_unit (COALESCE(parent_unit_id, 0), lower(code))
-    WHERE code IS NOT NULL AND valid_to IS NULL;
-
--- Exactly one unit may exist at the root. The organization itself.
-CREATE UNIQUE INDEX uq_org_unit_single_root ON org_unit ((true))
-    WHERE parent_unit_id IS NULL;
-```
-
-**`uq_org_unit_single_root` is the whole of "there is one organization".** It is an index on
-a constant expression filtered to root rows, so it permits at most one row with
-`parent_unit_id IS NULL` — while ignoring `valid_to`, deliberately: even a closed root is
-still *the* root. See [D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it).
-
-**`ck_org_unit_closed` states the invariant explicitly:** a unit cannot be closed without
-an end date. Without it you get closed units with `valid_to IS NULL`, which then appear in
+**A unit cannot be closed without an end date** (`ck_org_unit_closed` is this rule's name).
+Two columns of one row, so a migration can state it directly as a check on the row — the easy
+shape, and worth stating as a requirement precisely because no object in this repository carries
+it any more. Without it you get closed units with `valid_to IS NULL`, which then appear in
 "currently active units" queries forever.
 
 **Why `code` is not globally unique.** Unit numbering restarts and has been reused across
@@ -233,31 +167,27 @@ Uniqueness is scoped to the parent and to live rows.
 
 ### A unit never changes parent
 
-`parent_unit_id` is **immutable**. This is not a convention — a trigger enforces it:
+`parent_unit_id` is **immutable**. This is not a convention — it is enforced inside the
+transaction that writes the row, once per row, on any update that touches `parent_unit_id`,
+in this order:
 
-```sql
-CREATE OR REPLACE FUNCTION prevent_unit_reparenting() RETURNS TRIGGER
-LANGUAGE plpgsql AS $$
-BEGIN
-    IF OLD.parent_unit_id IS DISTINCT FROM NEW.parent_unit_id THEN
-        RAISE EXCEPTION
-            'org_unit.parent_unit_id is immutable (unit %): a unit that moves is a new '
-            'unit — close this one and create its successor under the new parent, '
-            'recording the lineage in org_unit_relationship',
-            OLD.id;
-    END IF;
-    RETURN NEW;
-END $$;
+1. If `parent_unit_id` differs from its previous value in **any** way — including being set
+   from nothing, or cleared to nothing — refuse, naming the unit, and say what to do instead:
+   a unit that moves is a new unit; close this one and create its successor under the new
+   parent, recording the lineage in `org_unit_relationship`.
+2. Otherwise allow the write.
 
-CREATE TRIGGER trg_org_unit_no_reparent
-    BEFORE UPDATE OF parent_unit_id ON org_unit
-    FOR EACH ROW EXECUTE FUNCTION prevent_unit_reparenting();
-```
-
-**Why this is worth a trigger rather than a rule in the application.** Reparenting is the
+**Why a guard inside the database rather than a rule in the application.** Reparenting is the
 one edit that would silently rewrite history: it changes what every historical report means,
 moves a unit in and out of every ancestor's scope, and invalidates the materialized `path`
-for the whole subtree. None of those failures are visible at the moment of the edit. See
+for the whole subtree. None of those failures are visible at the moment of the edit — which is
+exactly why checking them in the application does not qualify, since the legacy import, the
+hand-corrected row and a second client all change parents without ever passing the screen that
+would refuse them. The comparison still costs something, and the migration must be able to pay
+it: this is shape 4 of
+[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+— a column that may not change once it is set — and no declarative constraint in any database
+states it, so this guard is one the migration writes by hand rather than one an ORM generates. See
 [D-036](../decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit).
 
 **The consequence is a simplification, not a loss.** Because the parent never changes, the
@@ -271,38 +201,36 @@ see `org_unit_relationship` in [§5](#5-org_unit_relationship--splits-mergers-su
 
 ## 4. `org_unit_name` — rename and renumber history
 
-```sql
-CREATE TABLE org_unit_name (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    org_unit_id     BIGINT NOT NULL REFERENCES org_unit(id),
+**Fields**
 
-    name            TEXT NOT NULL,
-    code            TEXT,
+| Field | Kind | Notes |
+|---|---|---|
+| `org_unit_id` | reference to `org_unit`, required | |
+| `name` | text, required | The name the unit went by in this period. |
+| `code` | text, optional | The code that went with it. |
+| `valid_from` | date, required | |
+| `valid_to` | date, optional | NULL = the current name. |
+| `change_reason` | text, required | One of `established`, `rename`, `renumber`, `reorganisation`, `correction`, `import`. |
+| `change_note` | text, optional | |
+| `source` | text, optional | `staff` or `legacy_import`. |
+| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
+| `created_at`, `created_by` | timestamp, audit time; reference to `person` | |
 
-    valid_from      DATE NOT NULL,
-    valid_to        DATE,          -- NULL = current name
+**Rules**
 
-    change_reason   TEXT NOT NULL CHECK (change_reason IN
-                        ('established','rename','renumber','reorganisation',
-                         'correction','import')),
-    change_note     TEXT,
-    source          TEXT,          -- 'staff' | 'legacy_import'
-    import_batch_id BIGINT,
+- Where both ends of the period are set, `valid_to` is later than `valid_from`.
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by      BIGINT REFERENCES person(id),
-
-    CONSTRAINT ck_org_unit_name_period CHECK (valid_to IS NULL OR valid_to > valid_from)
-);
-
-CREATE INDEX ix_org_unit_name_unit ON org_unit_name (org_unit_id, valid_from DESC);
-CREATE UNIQUE INDEX uq_org_unit_name_open ON org_unit_name (org_unit_id)
-    WHERE valid_to IS NULL;   -- exactly one current name
-CREATE INDEX ix_org_unit_name_search ON org_unit_name (lower(name) text_pattern_ops);
-```
-
-**`uq_org_unit_name_open` guarantees exactly one current name per unit.** The
-denormalised `org_unit.name` must always equal it — maintained by the trigger in §6.
+**One unit, one current name.** `uq_org_unit_name_open` is this rule's name; it is conditional
+uniqueness over the open rows, the shape [00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now)
+says a migration must emit by hand, and a uniqueness constraint over all rows would be a different
+and wrong rule. The denormalised
+`org_unit.name` must always equal that row, and nothing maintains the copy by itself any more:
+**no write may change the current name row without setting `org_unit.name` in the same
+transaction.** The failure mode is the one invariant 4 in [§9](#9-integrity-checks) counts — a
+system that displays one name and reports under another — and it is reachable from any path that
+writes `org_unit_name`, the legacy import included, so the pairing is a requirement on the write
+rather than something a form handler remembers. Invariants 3 and 4 are the net beneath it, not
+the guard.
 
 **Renumbering is a rename, not a new unit.** "4th Pack" becoming "Pack 12" with the same
 participants is one `org_unit` row and two `org_unit_name` rows. Creating a new unit would
@@ -317,32 +245,30 @@ changed. Only the latter is real history. Conflating them corrupts historical re
 
 ## 5. `org_unit_relationship` — splits, mergers, succession
 
-```sql
-CREATE TABLE org_unit_relationship (
-    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+**Fields**
 
-    source_unit_id      BIGINT NOT NULL REFERENCES org_unit(id),
-    target_unit_id      BIGINT NOT NULL REFERENCES org_unit(id),
+| Field | Kind | Notes |
+|---|---|---|
+| `source_unit_id` | reference to `org_unit`, required | |
+| `target_unit_id` | reference to `org_unit`, required | |
+| `relationship` | text, required | One of `split_from`, `merged_into`, `successor_of`, `renamed_to`. Direction is source → target. `split_from`: the target was created from the source. `merged_into`: the source was absorbed into the target. |
+| `effective_date` | date, required | |
+| `note` | text, optional | |
+| `source` | text, optional | |
+| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
+| `created_at`, `created_by` | timestamp, audit time; reference to `person` | |
 
-    relationship        TEXT NOT NULL CHECK (relationship IN
-                            ('split_from','merged_into','successor_of','renamed_to')),
-    -- Direction is source → target. 'split_from': target was created from source.
-    -- 'merged_into': source was absorbed into target.
+**Rules**
 
-    effective_date      DATE NOT NULL,
-    note                TEXT,
-    source              TEXT,
-    import_batch_id     BIGINT,
+- A unit may not have a relationship to itself.
+- Nothing else is unique: the same pair of units may carry several relationships, and the
+  same kind of relationship more than once.
 
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by          BIGINT REFERENCES person(id),
+**Indexes**
 
-    CONSTRAINT ck_unit_rel_distinct CHECK (source_unit_id <> target_unit_id)
-);
-
-CREATE INDEX ix_unit_rel_source ON org_unit_relationship (source_unit_id);
-CREATE INDEX ix_unit_rel_target ON org_unit_relationship (target_unit_id);
-```
+- On `source_unit_id` and, separately, on `target_unit_id`. Lineage is asked in both
+  directions — "what did this unit become?" and "what did this one come from?" — and neither
+  question may have to scan the table.
 
 **This table exists so that historical lineage is answerable.** When Troop 12 splits into
 Troop 12 and Troop 31, the question "was this 2003 member in the unit that is now Troop 31?"
@@ -362,44 +288,30 @@ Rewriting the old row destroys "where was this child in 2003?" — see
 
 ## 6. Hierarchy traversal
 
-Two mechanisms, both maintained automatically.
+Two mechanisms. One is stored and is only as correct as whatever wrote it; the other is
+computed when it is asked and is correct by construction.
 
 ### 6.1 Materialized path (fast ancestor/descendant queries)
 
 `org_unit.path` holds a slash-delimited id path: `/1/7/42/103/`. `depth` is the number of
-segments. Maintained by trigger:
+segments. It is derived, never supplied: the rule runs inside the transaction that writes the
+row, once per row, on insert and on any update that touches `parent_unit_id`, in this order.
+A caller that wrote `path` itself would be writing a number nobody verified.
 
-```sql
-CREATE OR REPLACE FUNCTION maintain_org_unit_path() RETURNS TRIGGER
-LANGUAGE plpgsql AS $$
-DECLARE
-    v_parent_path TEXT;
-    v_parent_depth INTEGER;
-BEGIN
-    IF NEW.parent_unit_id IS NULL THEN
-        NEW.path  := '/' || NEW.id::text || '/';
-        NEW.depth := 0;
-    ELSE
-        SELECT path, depth INTO v_parent_path, v_parent_depth
-          FROM org_unit WHERE id = NEW.parent_unit_id;
-        IF v_parent_path IS NULL THEN
-            RAISE EXCEPTION 'parent unit % not found', NEW.parent_unit_id;
-        END IF;
-        NEW.path  := v_parent_path || NEW.id::text || '/';
-        NEW.depth := v_parent_depth + 1;
-    END IF;
-    RETURN NEW;
-END $$;
+1. A unit with no parent gets a path of its own id between two slashes, and depth 0.
+2. A unit with a parent reads that parent unit's `path` and `depth`.
+3. If there is no such unit, refuse the write — a unit cannot be placed under a parent that
+   does not exist.
+4. Its path is the parent's path with its own id appended, and its depth is the parent's
+   depth plus one.
 
-CREATE TRIGGER trg_org_unit_path
-    BEFORE INSERT OR UPDATE OF parent_unit_id ON org_unit
-    FOR EACH ROW EXECUTE FUNCTION maintain_org_unit_path();
-```
+The order is the rule: the parent's own path must already be correct, which is why a unit can
+only be created after its parent.
 
 **No subtree cascade is needed, ever.** Because `parent_unit_id` is immutable
 ([§3](#a-unit-never-changes-parent)), a unit's path is computed once at insert and never
-rewritten. The `UPDATE OF parent_unit_id` in the trigger above is therefore defensive only —
-the reparenting trigger rejects the change before this one runs.
+rewritten. The repeat of this rule on an update to `parent_unit_id` is therefore defensive
+only — the no-reparenting check rejects the change before it.
 
 This is the payoff of [D-036](../decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit):
 the materialized path is a pure insert-time denormalisation, which is the only kind that
@@ -407,33 +319,17 @@ stays trustworthy without versioning.
 
 ### 6.2 Recursive CTE (correct regardless of path integrity)
 
-```sql
--- All ancestors of a unit, nearest first:
-CREATE OR REPLACE FUNCTION unit_ancestors(p_unit_id BIGINT)
-RETURNS TABLE (id BIGINT, depth_from_start INTEGER)
-LANGUAGE sql STABLE AS $$
-    WITH RECURSIVE up AS (
-        SELECT u.id, u.parent_unit_id, 0 AS d FROM org_unit u WHERE u.id = p_unit_id
-        UNION ALL
-        SELECT u.id, u.parent_unit_id, up.d + 1
-          FROM org_unit u JOIN up ON u.id = up.parent_unit_id
-    )
-    SELECT id, d FROM up WHERE d > 0 ORDER BY d;
-$$;
+Two questions, each answered by following `parent_unit_id` one hop at a time from a starting
+unit until there is nowhere further to go:
 
--- All descendants of a unit:
-CREATE OR REPLACE FUNCTION unit_descendants(p_unit_id BIGINT)
-RETURNS TABLE (id BIGINT, depth_from_start INTEGER)
-LANGUAGE sql STABLE AS $$
-    WITH RECURSIVE down AS (
-        SELECT u.id, 0 AS d FROM org_unit u WHERE u.id = p_unit_id
-        UNION ALL
-        SELECT u.id, down.d + 1
-          FROM org_unit u JOIN down ON u.parent_unit_id = down.id
-    )
-    SELECT id, d FROM down WHERE d > 0;
-$$;
-```
+* **`unit_ancestors(unit)`** — which units are above this one? Every ancestor, **nearest
+  first**, and the unit itself excluded. Distance from the starting unit is part of the
+  answer, so "this unit's district" and "this unit's region" are the same question at
+  different distances.
+* **`unit_descendants(unit)`** — which units are below this one? Every descendant, the unit
+  itself again excluded.
+
+Both read nothing but `parent_unit_id`, so both stay correct whatever `path` currently says.
 
 > **`unit_ancestors()` must NOT be used by the permission resolver.** Authority does not
 > flow down the hierarchy. The resolver matches scopes exactly, plus explicit
@@ -442,211 +338,132 @@ $$;
 > `unit_ancestors()` is used for **reporting** ("everyone in this district"), for the
 > path-consistency check below, and for the exposure-direction integrity check — never in a
 > permission path. Integrity check 13 in
-> [05-authorization.md](05-authorization.md#11-integrity-checks) asserts this in CI.
+> [05-authorization.md](05-authorization.md#11-invariants-to-verify) asserts this in CI.
 
-**Both mechanisms are kept.** The path is for set-based queries (`WHERE path LIKE '/1/7/%'`),
-which is dramatically faster for "everyone in this district". The recursive CTE is the
+**Both mechanisms are kept.** The path is for set-based queries — one prefix test over the stored
+path rather than a walk — which is dramatically faster for "everyone in this district". The recursive CTE is the
 authority when the path might be stale, and is used by the nightly consistency check:
 
-```sql
--- Nightly: verify stored paths match the actual tree
-SELECT u.id, u.path,
-       (SELECT string_agg(a.id::text, '/' ORDER BY a.d DESC)
-          FROM unit_ancestors(u.id) a) AS expected_ancestors
-  FROM org_unit u
- WHERE u.parent_unit_id IS NOT NULL
-   AND u.path <> '/' || (SELECT string_agg(x.id::text,'/' ORDER BY x.d DESC)
-                           FROM (SELECT id, d FROM unit_ancestors(u.id)
-                                 UNION ALL SELECT u.id, -1) x) || '/';
-```
+Nightly, for every unit that has a parent: take its ancestors with `unit_ancestors()`,
+rebuild the path that chain implies — every ancestor's id nearest-first, then the unit's own
+id last, each delimited by slashes — and report the units whose stored `path` is not that
+string. Root units are excluded; their path is their own id by definition, and there is no
+chain to check it against. This is invariant 1 in [§9](#9-integrity-checks).
 
 ---
 
 ## 7. `position` and `position_assignment`
 
-```sql
-CREATE TABLE position (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    unit_type_id    BIGINT NOT NULL REFERENCES org_unit_type(id),
-    -- A position is defined per unit TYPE, not per unit: every troop has a scoutmaster
-    -- slot. The slot is instantiated implicitly by the unit existing.
+**Fields — `position`**
 
-    code            TEXT NOT NULL,
-    title           TEXT NOT NULL,
-    description     TEXT,
+| Field | Kind | Notes |
+|---|---|---|
+| `unit_type_id` | reference to `org_unit_type`, required | A position is defined per unit **type**, not per unit: every troop has a scoutmaster slot. The slot is instantiated implicitly by the unit existing. |
+| `code` | text, required | |
+| `title` | text, required | |
+| `description` | text, optional | |
+| `max_holders` | integer, optional | How many people may occupy this position in one unit at the same time. Unset = unlimited. `1` = a single holder (a scoutmaster). **The default is unset, i.e. unlimited**, because multiple occupancy is the normal case in this organization: a troop may have several assistant leaders, several quartermasters, several instructors. Single occupancy is the exception and must be declared by the position itself. Note this is a limit a position declares about *itself*. It is never imposed from outside the unit. See domain/06-authorization-model.md §2 for why authority over a unit's structure originates at the unit. |
+| `is_leadership` | boolean, required, defaults to false | Flags positions that carry organizational authority. Used to drive the convenience workflow that also creates a `role_assignment`. |
+| `requires_membership` | boolean, required, defaults to true | What it says here is **reported, not enforced**. The flag drives the "leaders whose membership has lapsed" worklist below. Whether holding the corresponding **role** survives a lapse is a separate switch, `role.requires_membership`, and that one *is* enforced by the permission resolver (D-039). The two are deliberately not the same column: an adult volunteer commonly holds a position for years while their membership lapses and is renewed, and the organization wants to see that on a report without losing the volunteer's access. |
+| `min_age` | integer, optional | Position eligibility, a real constraint: a scoutmaster must be an adult. This is about the position, not about membership — membership is ageless (D-038). |
+| `sort_order` | integer rank, required, defaults to 0 | |
+| `valid_from`, `valid_to` | period (from/to, open-ended allowed); both ends optional | |
+| `created_at` | timestamp, audit time | |
 
-    max_holders     INTEGER,
-    -- How many people may occupy this position in one unit at the same time.
-    -- NULL = unlimited. 1 = a single holder (a scoutmaster).
-    --
-    -- The DEFAULT IS NULL, i.e. unlimited, because multiple occupancy is the
-    -- normal case in this organization: a troop may have several assistant
-    -- leaders, several quartermasters, several instructors. Single occupancy is
-    -- the exception and must be declared by the position itself.
-    --
-    -- Note this is a limit a position declares about ITSELF. It is never imposed
-    -- from outside the unit. See domain/06-authorization-model.md §2 for why
-    -- authority over a unit's structure originates at the unit.
+**Rules — `position`**
 
-    is_leadership   BOOLEAN NOT NULL DEFAULT false,
-    -- Flags positions that carry organizational authority. Used to drive the
-    -- convenience workflow that also creates a role_assignment.
+- Where both ends of the period are set, `valid_to` is later than `valid_from`. Either end may
+  be absent, and no comparison is attempted when one is.
+- `max_holders` is either unset or at least 1. There is no position that admits nobody.
+- A position `code` is unique **within its unit type**, compared case-insensitively, among
+  **live positions only**.
 
-    requires_membership BOOLEAN NOT NULL DEFAULT true,
-    -- What it says here is REPORTED, not enforced. The flag drives the "leaders whose
-    -- membership has lapsed" worklist below. Whether holding the corresponding ROLE
-    -- survives a lapse is a separate switch, role.requires_membership, and that one IS
-    -- enforced by the permission resolver (D-039).
-    --
-    -- The two are deliberately not the same column: an adult volunteer commonly holds a
-    -- position for years while their membership lapses and is renewed, and the
-    -- organization wants to see that on a report without losing the volunteer's access.
+**Fields — `position_assignment`**
 
-    min_age         INTEGER,
-    -- Position eligibility, a real constraint: a scoutmaster must be an adult. This is
-    -- about the position, not about membership — membership is ageless (D-038).
+| Field | Kind | Notes |
+|---|---|---|
+| `position_id` | reference to `position`, required | |
+| `org_unit_id` | reference to `org_unit`, required | The concrete unit. `position.unit_type_id` must match that unit's `org_unit.unit_type_id`; a reference between two rows cannot express this, so it is verified on write, and invariant 6 in §9 reports what slips through. |
+| `person_id` | reference to `person`, required | |
+| `valid_from` | date, required | |
+| `valid_to` | date, optional | NULL = still in post. |
+| `is_primary` | boolean, required, defaults to true | Some people hold several positions; one is primary for display and contact. |
+| `appointment_reference` | text, optional | |
+| `ended_reason_code` | text, optional | |
+| `ended_note` | text, optional | |
+| `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | |
+| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
 
-    sort_order      INTEGER NOT NULL DEFAULT 0,
-    valid_from      DATE,
-    valid_to        DATE,
+**Rules — `position_assignment`**
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+- Where both ends of the period are set, `valid_to` is later than `valid_from`.
+- A person may not hold the same position in the same unit over overlapping periods. The rule
+  covers **every row, open and closed alike** — there is no status to scope it by.
 
-    CONSTRAINT ck_position_period CHECK (valid_to IS NULL OR valid_from IS NULL
-                                         OR valid_to > valid_from),
-    CONSTRAINT ck_position_max_holders CHECK (max_holders IS NULL OR max_holders >= 1)
-);
+**Indexes — `position_assignment`**
 
-CREATE UNIQUE INDEX uq_position_code_per_type
-    ON position (unit_type_id, lower(code)) WHERE valid_to IS NULL;
+- On `person_id` with `valid_from` descending, for "what does this person hold, most recent
+  first".
+- On `org_unit_id`, and on `position_id`, each restricted to **open** assignments: "who runs
+  this unit now" and "who holds this slot now" are the questions that run constantly, and both
+  look only at rows that are still in post.
 
+**The holder limit.** Where a position declares one, no write may leave the unit holding more
+open assignments of it than the limit allows. It is enforced inside the transaction that writes
+the assignment, once per row, on insert and on any update that touches `position_id`,
+`org_unit_id` or `valid_to` — and the count is read *inside* that transaction, not before it,
+because two inserts that each counted before either had landed are how a single-scoutmaster
+unit ends up with two scoutmasters. The order is the rule:
 
-CREATE TABLE position_assignment (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+1. Read the position's `max_holders`.
+2. If it is unset, or the row being written is itself a closed assignment, allow it — there is
+   no limit, or nothing is being opened.
+3. Count the **open** assignments of this position in this unit, excluding the row being
+   written from its own count.
+4. If that count has reached `max_holders`, refuse, naming the position, the unit, the current
+   holder count and the limit.
+5. Otherwise allow it.
 
-    position_id     BIGINT NOT NULL REFERENCES position(id),
-    org_unit_id     BIGINT NOT NULL REFERENCES org_unit(id),
-    -- The concrete unit. position.unit_type_id must match org_unit.unit_type_id —
-    -- enforced by trigger, since a FK cannot express it.
-
-    person_id       BIGINT NOT NULL REFERENCES person(id),
-
-    valid_from      DATE NOT NULL,
-    valid_to        DATE,          -- NULL = still in post
-
-    is_primary      BOOLEAN NOT NULL DEFAULT true,
-    -- Some people hold several positions; one is primary for display and contact.
-
-    appointment_reference TEXT,
-    ended_reason_code TEXT,
-    ended_note      TEXT,
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by      BIGINT REFERENCES person(id),
-    updated_at      TIMESTAMPTZ,
-    updated_by      BIGINT REFERENCES person(id),
-    import_batch_id BIGINT,
-
-    CONSTRAINT ck_position_assignment_period CHECK (
-        valid_to IS NULL OR valid_to > valid_from)
-);
-
-CREATE INDEX ix_position_assignment_person ON position_assignment
-    (person_id, valid_from DESC, valid_to);
-CREATE INDEX ix_position_assignment_unit ON position_assignment (org_unit_id)
-    WHERE valid_to IS NULL;
-CREATE INDEX ix_position_assignment_pos ON position_assignment (position_id)
-    WHERE valid_to IS NULL;
-
--- Where a position declares a holder limit, enforce it:
-CREATE OR REPLACE FUNCTION check_position_holder_limit() RETURNS TRIGGER
-LANGUAGE plpgsql AS $$
-DECLARE
-    v_max   INTEGER;
-    v_count INTEGER;
-BEGIN
-    SELECT max_holders INTO v_max FROM position WHERE id = NEW.position_id;
-
-    IF v_max IS NULL OR NEW.valid_to IS NOT NULL THEN
-        RETURN NEW;                     -- unlimited, or a closed assignment
-    END IF;
-
-    SELECT count(*) INTO v_count
-      FROM position_assignment pa
-     WHERE pa.position_id = NEW.position_id
-       AND pa.org_unit_id  = NEW.org_unit_id
-       AND pa.valid_to IS NULL
-       AND pa.id IS DISTINCT FROM NEW.id;
-
-    IF v_count >= v_max THEN
-        RAISE EXCEPTION
-            'position % in unit % already has % current holder(s); limit is %',
-            NEW.position_id, NEW.org_unit_id, v_count, v_max;
-    END IF;
-
-    RETURN NEW;
-END $$;
-
-CREATE TRIGGER trg_position_holder_limit
-    BEFORE INSERT OR UPDATE OF position_id, org_unit_id, valid_to
-    ON position_assignment
-    FOR EACH ROW EXECUTE FUNCTION check_position_holder_limit();
-```
-
-**Why a trigger rather than a unique index.** The limit is `position.max_holders`, which
+**Why no unique index does this, whatever emits it.** The limit is `position.max_holders`, which
 lives in another table, so an index predicate cannot express it — and a partial index
-predicate may not contain a subquery in any case. The trigger is also the only form that
-handles `max_holders > 1`.
+predicate may not contain a subquery in any case. Nothing declarative handles `max_holders > 1`
+either: an index can say *at most one*, never *at most n, where n is a column of another table's
+row*. None of that argument was about the mechanism that D-072 deleted; it stands, and it now
+reads as a statement about what the migration must be able to express and cannot. **This is the
+weakest-enforced rule in this document.** It is shape 3 of
+[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those),
+the class whose answer comes from another table, and F-10's remedy for that class has two parts:
+a check inside the writing transaction, plus a report. The first is required above; the second
+does not exist — §9 lists no over-limit report — so if the migration omits its guard, the limit
+holds only for as long as every caller chooses to obey it.
 
 **Note the absence of a uniqueness rule on the assignment triple.** There is deliberately
-no `UNIQUE (person_id, position_id, org_unit_id)`: a person may hold the same position in
+no uniqueness over the triple of person, position and unit: a person may hold the same position in
 the same unit across *separate periods* (left in 2020, returned in 2024), which is
 historical fact and must remain representable. Overlap is still prevented, directly on the
 row:
 
-```sql
-ALTER TABLE position_assignment ADD CONSTRAINT ex_position_assignment_no_overlap
-    EXCLUDE USING gist (
-        person_id   WITH =,
-        position_id WITH =,
-        org_unit_id WITH =,
-        daterange(valid_from, valid_to, '[)') WITH &&
-    );
-```
+One person, one position, one unit: no two assignments of the same person to the same position
+in the same unit may cover the same date. Periods are half-open, so a row ending on a day and a
+row beginning on that same day do not collide.
 
 Without this, the same person could be double-counted as holder of the same position in the
-same unit over overlapping dates — which would defeat the holder-limit trigger by consuming
+same unit over overlapping dates — which would defeat the holder limit itself by consuming
 two of the slots.
 
-**What the schema cannot enforce, and must be handled elsewhere:**
+**What no database constraint can enforce, and must be handled elsewhere:**
 
 **7.1 `requires_membership` and `min_age`.** Both depend on temporal state in other tables, so
 no FK or check constraint can express them. They are application-level validations plus a
 periodic report:
 
-```sql
--- Position holders who are not currently paid-up members (needs attention, but is NOT
--- an access problem — see the note below):
-SELECT pa.id, p.family_name, p.given_name, ou.name AS unit, pos.title
-  FROM position_assignment pa
-  JOIN position pos ON pos.id = pa.position_id
-  JOIN person   p   ON p.id  = pa.person_id
-  JOIN org_unit ou  ON ou.id = pa.org_unit_id
- WHERE pos.requires_membership
-   AND pa.valid_to IS NULL
-   AND NOT is_current_member(pa.person_id);
-
--- Position holders below the position's minimum age:
-SELECT pa.id, p.family_name, p.given_name, pos.title, pos.min_age,
-       p.birth_date, date_part('year', age(p.birth_date)) AS age_now
-  FROM position_assignment pa
-  JOIN position pos ON pos.id = pa.position_id
-  JOIN person   p   ON p.id  = pa.person_id
- WHERE pos.min_age IS NOT NULL
-   AND pa.valid_to IS NULL
-   AND (p.birth_date IS NULL
-        OR p.birth_date + make_interval(years => pos.min_age) > CURRENT_DATE);
-```
+* **Holders who are not currently paid-up members.** Every assignment still in post, of a
+  position that asks for membership, whose holder `is_current_member()` says is not a member.
+  Needs attention, but is **not** an access problem — see the note below.
+* **Holders below the position's minimum age.** Every assignment still in post, of a position
+  that sets `min_age`, whose holder has not yet reached that age today. A holder with **no
+  recorded birth date** is reported as well: eligibility cannot be established for them
+  either.
 
 > **An unpaid volunteer holding a position is a bookkeeping problem, not a
 > safeguarding one.** The important consequences:
@@ -666,8 +483,8 @@ SELECT pa.id, p.family_name, p.given_name, pos.title, pos.min_age,
 >   report, because a lapsed clearance is a safeguarding matter rather than a data-quality
 >   one.
 
-**7.2 Holder limits are a per-position declaration, not a structural rule.** See the trigger
-and `max_holders` above. The important consequences:
+**7.2 Holder limits are a per-position declaration, not a structural rule.** See the holder
+limit above and `max_holders`. The important consequences:
 
 - **Multiple occupancy is the default.** `max_holders IS NULL` means unlimited, so a new
   position kind accepts several holders without anyone having to state it.
@@ -702,62 +519,57 @@ See [03-membership.md](03-membership.md#5-unit_participation).
 
 ## 9. Integrity checks
 
-```sql
--- 1. Stored path disagrees with actual tree (§6.2)
--- 2. A unit whose parent is closed but which is itself open
-SELECT c.id, c.name, p.name AS parent FROM org_unit c
-  JOIN org_unit p ON p.id = c.parent_unit_id
- WHERE c.valid_to IS NULL AND p.valid_to IS NOT NULL;
+**Invariants to verify**
 
--- 3. Live units with no current name row (violates the denormalisation invariant)
-SELECT u.id FROM org_unit u
- WHERE u.valid_to IS NULL
-   AND NOT EXISTS (SELECT 1 FROM org_unit_name n
-                    WHERE n.org_unit_id = u.id AND n.valid_to IS NULL);
+1. **A stored `path` that disagrees with the actual tree** (§6.2). Counts units whose stored
+   path is not the one their parent chain implies; any non-zero count means the insert-time
+   denormalisation has drifted.
+2. **A unit whose parent is closed but which is itself open.** Counts live units hanging off
+   a unit that has ended; non-zero means the tree currently claims to contain something inside
+   a unit that no longer exists.
+3. **A live unit with no current name row.** Counts live units with no open `org_unit_name`
+   row at all; non-zero violates the denormalisation invariant directly — there is no current
+   name to copy into `org_unit.name`.
+4. **`org_unit.name` disagreeing with the unit's current `org_unit_name` row.** Counts live
+   units whose denormalised display name differs from the open name row; non-zero means the
+   system displays one name and reports another.
+5. **A live unit type with no nesting rules at all** — neither as a parent nor as a child.
+   Usually fine: nesting is permissive by default and a new type starts unconstrained. But a
+   type that has been in use for years with no rules is probably an oversight worth reviewing.
+6. **A position assignment whose position's unit type is not the unit's type.** Counts
+   assignments pairing a position defined for one type with a unit of another; non-zero means
+   the check on write was bypassed.
+7. **A unit with exactly one live child.** Non-zero is often a data-entry error and sometimes
+   real; it is a list to read, not a failure.
+9. **A position holding more people than its own limit allows.** Counts, for each position
+   with `max_holders` set, its open assignments, and reports the positions where the count
+   exceeds it. Unlike event capacity ([08-events.md §10 check 5](08-events.md#10-integrity-checks))
+   an overrun here is **not permitted**: §7 calls it a business error rather than a choice an
+   adult may make deliberately, and a non-zero result therefore means the check on write was
+   bypassed — an import, a bulk reorganisation, a hand-fixed row. **This check exists because
+   the guard alone is not enough to notice.** The holder limit cannot be stated as a constraint
+   at all ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)),
+   so if the migration omits it the only evidence that anything was expected is §7's prose,
+   which a database cannot read. A limit nobody checks and nothing reports is a limit that
+   holds until the first import.
+10. **The single-root rule still exists.** A second root is impossible while
+   `uq_org_unit_single_root` is carried by a migration, so what is verified here is that the
+   migration really emitted it — the rule's existence rather than the data: should it ever be
+   dropped, this fails even though nothing in the table has gone wrong, and the build must fail
+   with it. The same pattern as the
+   `unit_ancestors()` assertion in
+   [05-authorization.md](05-authorization.md#11-invariants-to-verify).
 
--- 4. org_unit.name disagrees with org_unit_name
-SELECT u.id, u.name, n.name FROM org_unit u
-  JOIN org_unit_name n ON n.org_unit_id = u.id AND n.valid_to IS NULL
- WHERE u.name <> n.name;
+**Checks 9 and 10 are not data-quality reports and should not be read like one.** They fail on
+a *missing guarantee* rather than on bad rows, so both belong in CI: check 9 is the only thing
+that would notice an unenforced holder limit, and check 10 asserts that a migration emitted a
+constraint. Check 10 is the structural one — with reparenting prohibited
+([§3](#a-unit-never-changes-parent)), the single-root rule and the recursive ancestor walk are
+the two things everything else in the authorization model assumes, and both are worth asserting
+rather than trusting.
 
--- 5. A unit type with no nesting rules defined at all (usually fine — nesting is
---    permissive by default and a new type starts unconstrained — but a type that has
---    been in use for years with no rules is probably an oversight worth reviewing)
-SELECT t.* FROM org_unit_type t
- WHERE t.valid_to IS NULL
-   AND NOT EXISTS (SELECT 1 FROM org_unit_type_rule r
-                    WHERE r.child_type_id = t.id
-                       OR r.parent_type_id = t.id);
-
--- 6. Position assignments whose position type does not match the unit's type
-SELECT pa.id FROM position_assignment pa
-  JOIN position pos ON pos.id = pa.position_id
-  JOIN org_unit ou  ON ou.id = pa.org_unit_id
- WHERE pos.unit_type_id <> ou.unit_type_id;
-
--- 7. Units with a single child (often a data-entry error, sometimes real)
-SELECT parent_unit_id, count(*) FROM org_unit
- WHERE valid_to IS NULL AND parent_unit_id IS NOT NULL
- GROUP BY parent_unit_id HAVING count(*) = 1;
-
--- 8. A placeholder for the CI assertion on the single-root invariant. The unique index
---    makes a second root impossible, so this queries the catalog and fails the build if
---    the index is ever dropped — the same pattern as the unit_ancestors assertion in
---    05-authorization.md §11.
-SELECT NOT EXISTS (
-    SELECT 1 FROM pg_indexes
-     WHERE schemaname = current_schema()
-       AND indexname  = 'uq_org_unit_single_root');
--- must return false.
-```
-
-Checks 3 and 4 are the important ones — they detect the denormalisation drifting, which
-otherwise produces a system that displays one name and reports under another.
-
-Check 8 is the structural guarantee rather than a data-quality report: with reparenting
-prohibited ([§3](#a-unit-never-changes-parent)), the single-root index and the recursive
-ancestor walk are the two things everything else in the authorization model assumes, and both
-are worth asserting in CI rather than trusting.
+**Checks 3 and 4 are the ones to read every morning.** They detect the denormalisation drifting,
+which otherwise produces a system that displays one name and reports under another.
 
 ---
 
@@ -766,17 +578,11 @@ are worth asserting in CI rather than trusting.
 The vocabulary is data, so it belongs in a migration. Two parts: the single root, and
 whatever sub-unit types the organization actually uses.
 
-```sql
--- The root. Exactly one row may have parent_unit_id IS NULL (§3).
-INSERT INTO org_unit_type (code, name, allows_minors, is_leaf, sort_order) VALUES
-    ('organization', 'The Organization', false, false, 10);
-
-INSERT INTO org_unit (unit_type_id, parent_unit_id, code, name, valid_from, path, depth)
-SELECT t.id, NULL, 'ORG', 'The Organization', DATE '1970-01-01', '/', 0
-  FROM org_unit_type t WHERE t.code = 'organization';
-
--- Sub-unit types: NONE are seeded. The organization defines its own (D-054).
-```
+Concretely, the organization begins with two rows of data and nothing else: one unit type for
+itself — `organization`, not a leaf — and the single root unit that carries it. The root unit
+has no parent (§3), and a period that opens early enough to precede anything the organization
+will later import and never closes. No sub-unit type is seeded at all: the organization defines
+its own (D-054).
 
 > **The sub-unit vocabulary is not seeded, and this is the decision rather than a gap.**
 > The seed contains the root and nothing else; `org_unit_type` is **runtime data**, exactly
@@ -804,7 +610,7 @@ SELECT t.id, NULL, 'ORG', 'The Organization', DATE '1970-01-01', '/', 0
 
 **Position definitions, by contrast, are a real starting set** and worth filling in — they
 are what `position_assignment` hangs off, and `min_age` / `requires_membership` on them are
-the eligibility rules the reports in §7.1 enforce.
+the eligibility rules §7.1 reports on — reports, because nothing rejects those two at the write.
 
 ---
 
@@ -825,7 +631,7 @@ the eligibility rules the reports in §7.1 enforce.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: the organizational
 structure itself (one root, arbitrary nesting — D-035); retroactive reparenting (prohibited
-outright, and enforced by trigger — D-036); organization-wide operational roles (largely
+outright, and enforced inside the database rather than in the application — D-036); organization-wide operational roles (largely
 dissolved by D-035, since the root owns the registry and the fees); and background checks
 (none are recorded — D-043).
 

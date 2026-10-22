@@ -1,5 +1,9 @@
 # Appendix — Entity Relationship Diagrams
 
+This appendix describes **relationships** — what points at what, how many, and whether the
+link is temporal. Field-level definitions live in the data-model documents, each in the one
+that owns the entity, and are deliberately not repeated here.
+
 Diagrams of the schema in [../data-model/00-conventions.md](../data-model/00-conventions.md).
 Split by subject area so each
 stays readable; the areas connect through `person`, which appears in all of them.
@@ -137,7 +141,7 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
   │  renewed_from ──┐ self    │        │  membership_id ──────────┼──► membership
   │                 └─────────┘        │  previous_membership_id ─┼──► membership
   │  outstanding_balance      │        └──────────────────────────┘
-  │  EXCLUDE no-overlap       │
+  │  NO overlap of open rows  │
   │   on person_id ALONE      │   ← no membership_type_id: one type, so
   └───────────────────────────┘     "one person, one open membership" is absolute
 
@@ -149,7 +153,7 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
   │  org_unit_id ────────────┼──► org_unit
   │  valid_from/to      [T]  │
   │  join_reason_code        │
-  │  EXCLUDE no-overlap      │
+  │  NO overlap of open rows │
   └──────────────────────────┘
      ↑ PARTICIPATION, not membership. Every member also gets a row on the
        ROOT unit, so "everyone in unit X" is one query whether X is the
@@ -181,20 +185,22 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
         │  guardian_person_id  ───────────────────┼──► person
         │  dependent_person_id ───────────────────┼──► person
         │  relationship                           │
+        │  right_level      ← none | view | write │
         │  valid_from / valid_to            [T]   │
         │  is_primary_contact      ← who to phone │
         │  is_legal_decision_maker ← who may sign │
-        │  EXCLUDE no-overlap on the pair         │
+        │  NO overlap of open rows on the pair    │
         └───────────────────┬─────────────────────┘
                             │
                             ▼
         ┌─────────────────────────────────────────┐
         │        guardianship_permission          │
         │  guardianship_id ───────────────────────┘
-        │  permission_code  ──────────────────────┼──► permission
-        │       (namespace = 'dependent')         │
-        │  is_granted       ← false = explicit DENY│
+        │  right_level     ← none | view | write  │
+        │  changed_reason / changed_by            │
         │  valid_from / valid_to            [T]   │
+        │  (HISTORY of the right — the current    │
+        │   value is on the parent row)  (D-074)  │
         └─────────────────────────────────────────┘
 
         ┌─────────────────────────────────────────┐
@@ -203,13 +209,16 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
         │  (contact_type = 'postal', purpose =    │
         │  'billing'), temporal like any contact. │
         └─────────────────────────────────────────┘
-          ↑ SHARED ADDRESS GRANTS NO ACCESS — all dependent.* authority comes from
-            guardianship + guardianship_permission (D-019, which outlives the table)
+          ↑ SHARED ADDRESS GRANTS NO ACCESS. Authority over a child comes from the
+            `guardianship` row and the `right_level` it carries, never from sleeping at
+            the same address (D-019, which outlives the table; D-057; D-074)
 ```
 
 **Key point:** guardianship is a general graph — one guardian → many dependents, many
-guardians → one dependent, and a person may be both. Authority is per `guardianship` row,
-so a parent can have full access to one child and read-only to another. See
+guardians → one dependent, and a person may be both. Authority is per `guardianship` row, and
+since [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
+that row carries one value — `none`, `view` or `write` — so a parent may write one child's
+records and only read another's. See
 [../data-model/04-relationships.md](../data-model/04-relationships.md).
 
 ---
@@ -219,7 +228,7 @@ so a parent can have full access to one child and read-only to another. See
 ```
                     ┌──────────────────┐
                     │    permission    │   'membership.request.approve'
-                    │  code, resource  │   'dependent.medical.view'
+                    │  code, resource  │   'guardianship.change_right'
                     │  namespace       │   'event.register_self'
                     └────────┬─────────┘
                              │
@@ -300,9 +309,9 @@ so a parent can have full access to one child and read-only to another. See
               ▼              ▼              ▼               ▼              ▼
        0. explicit      1. ownership   2. guardian-    3. ALLOW:      4. default
           DENY           (own row)      ship            most specific    DENY
-          (revoked)      ─ gate-exempt  (dependent.*)   scope wins
+          (revoked)      ─ gate-exempt  (subject≠actor) scope wins
           ABSOLUTE at                   ─ gate-exempt   the LEVEL
-          ANY scope                                     │
+          ANY scope                     allows only     │
           ─ to a person                                │
             OR an                                     │
             audience                                 │
@@ -313,13 +322,14 @@ so a parent can have full access to one child and read-only to another. See
                                       grant)          grant)          grant)
                                        │              │              │
                                        │              │ exact scope  │
-                                       │              │ or exposed   │
-                                       │              │ via scope_   │
-                                       │              │ exposure     │
+                                       │              │ only — never │
+                                       │              │ widened by   │
+                                       │              │ an exposure  │
                                        └──────────────┴──────────────┴──► d. ROLE
                                                                             (role_assignment;
-                                                                             org role or
-                                                                             exact unit;
+                                                                             org role, exact unit,
+                                                                             or a unit exposed to
+                                                                             THAT assignment (D-078).
                                                                              NOT inherited)
                                                                             ⚠ MEMBERSHIP GATE
                                                                               applies HERE ONLY
@@ -343,6 +353,11 @@ so a parent can have full access to one child and read-only to another. See
 - **Deny is absolute.** An explicit `revoked` at any scope is checked *first* and beats
   everything — including the `admin` level, ownership, and guardianship. "Most specific
   scope wins" applies **only to allows** (step 3).
+- **The guardianship channel is entered by shape, not by permission name** ([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)):
+  the check is about someone other than the actor, and the channel answers with **allows only**. A
+  sufficient `right_level` returns true; no row, `none`, or too low a level returns nothing at all
+  and the actor's own grants are tried. A prohibition is therefore a `revoked` grant, never a low
+  level.
 - **Authority never inherits downward.** A role assigned over a parent unit does **not**
   cover its sub-units. `unit_ancestors()` is not called by the resolver at all. A sub-unit's
   authority reaches outward **only** through a `scope_exposure` row, and the row is written
@@ -362,6 +377,10 @@ so a parent can have full access to one child and read-only to another. See
 - `scope_exposure` points at a specific `role_assignment`, not at a role, so coverage is
   per-person and expires with the assignment. There is **no bulk tool** and no `bulk:` marker
   ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)).
+  The **role tier is the table's only consumer**: an exposure extends an assignment, and a direct
+  `access_grant` carries no assignment for one to attach to, so the unit-grant tier matches
+  exactly and stops
+  ([D-078](../decisions/decision-log.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)).
 - `scope_id` is polymorphic (no FK) so a new grantable item type is a config row, not a
   migration. Accepted cost, with mandatory mitigations.
 
@@ -392,9 +411,9 @@ person 100 — Jan Novák
 │                       the person-level alternative is system.gate_exempt, D-051)
 │
 ├─ guardianship → child A    2015-03-01 ──────────► NULL
-│    guardianship_permission  dependent.admin          (source='self' → full)
+│    guardianship_permission  right_level = write      (source='self' → write)
 └─ guardianship → child B    2018-07-01 ──────────► NULL
-     guardianship_permission  dependent.profile.view   (court-restricted)
+     guardianship_permission  right_level = view       (court-restricted)
 ```
 
 Note the two membership rows have the **same type**. They differ only in period and end
@@ -402,31 +421,123 @@ reason — this person was a member twice, and was a child and then an adult thr
 old diagram called them `child` and `adult`; that was the framing the ageless decision
 replaced ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
 
-Queries this shape supports, all of which fail against a design with `person.is_member`:
+Questions this shape supports, all of which fail against a design with `person.is_member`:
 
-```sql
--- "Was this person a member on 1998-06-01?"
--- "How many years of membership, excluding the gap?"
--- "Which unit were they in during 2003?"
--- "How old were they when they joined the second time?"   ← from person.birth_date
--- "Who are the returning members?" (more than one membership with a gap)
-```
+- Was this person a member on 1998-06-01?
+- How many years of membership, excluding the gap?
+- Which unit were they in during 2003?
+- How old were they when they joined the second time? — answered from `person.birth_date`,
+  which the membership rows never copy.
+- Who are the returning members — more than one membership with a gap between?
+
+Every one of them is answered as of a date, and an as-of date must be applied to every join in
+the answer, not only to the root row — a period joined without it leaks the present into the
+past. That is what the `[T]` marking on the tables above exists to make visible.
 
 ---
 
 ## 7. Table inventory
 
-| Domain | Tables |
-|--------|--------|
-| Identity | `person`, `person_name`[T], `account`, `account_credential`[T], `person_contact`[T], `person_identifier`[T], `identifier_scheme`, `identity_hypothesis`, `person_merge`, `field_conflict` |
-| Organization | `org_unit_type`, `org_unit_type_rule`, `org_unit`[T], `org_unit_name`[T], `org_unit_relationship`, `position`, `position_assignment`[T] |
-| Membership | `membership_type`, `membership`[T], `membership_request`, `unit_participation`[T] |
-| Relationships | `guardianship`[T], `guardianship_permission`[T] (`household` removed — D-057) |
-| Authorization | `permission`, `role`, `role_permission`, `role_assignment`[T], `scope_exposure`[T], `audience`[T], `audience_member`[T], `access_level`, `grant_scope_type`, `access_grant`[T], `permission_level`, `access_log`, `permission_cache` |
-| Audit / import | `audit_log`, `redaction_log`, `import_batch`, `staging_import`, `staging_import_row` |
-| Finance *(provisional)* | `fee_schedule`[T], `fee_obligation`, `payment`, `payment_allocation` |
-| Events | `event`, `event_organizer`, `event_registration`, `event_question`[T], `event_answer` |
-| Reference | `reason_code`, `access_level`, `grant_scope_type`, `identifier_scheme`, `permission`, `org_unit_type` |
+One entry per entity: what it is, what it references, how many may exist, and whether it is
+temporal. `⇒` marks a polymorphic reference with no foreign key. Entries that exist **only** to
+join two other entities say so.
+
+**Identity**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `person` | The human being. Holds identity only — no status, no role, no membership | Nothing, except itself: `merged_into_person_id` ⇒ self | One per human, effectively; a merged row survives as a tombstone and is never deleted | no |
+| `person_name` | One name a person has had, and when | `person` | Many per person; one current row per `name_type` | yes |
+| `account` | The ability to log in. Optional, and independent of membership | `person` | Zero or many per person over a lifetime; at most one **live** row | no |
+| `account_credential` | One authentication method's secret or external handle | `account` — deliberately not `person` | Many per account; one current row per external issuer and reference pair | yes |
+| `person_contact` | An email, phone or postal address, as a dated row rather than a column | `person` | Many per person; one current primary per type and purpose | yes |
+| `person_identifier` | An identifier issued outside the system | `person`; `identifier_scheme` for its `scheme` | Many per person; `(scheme, value)` unique among current rows | yes |
+| `identifier_scheme` | The vocabulary of identifier schemes | Nothing | Lookup table, one row per scheme | no |
+| `identity_hypothesis` | A *proposal* that two person rows are the same human | `person` twice; the reviewer is a `person` | At most one live hypothesis per pair; a rejected pair may be re-proposed | no |
+| `person_merge` | The record that one row was absorbed into another, and how to undo it | `person` twice; `identity_hypothesis`, optional | One per merge performed; a reversal is recorded on the same row | no |
+| `field_conflict` | An attribute a merge could not resolve automatically | `person_merge`; `⇒ (entity_table, entity_id)` — polymorphic by nature | Many per merge | no |
+
+**Organization**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `org_unit_type` | The organization's own vocabulary of kinds of unit | Nothing | One current row per `code`; retired rows keep theirs | yes |
+| `org_unit_type_rule` | Join entity: one permitted parent-type / child-type pairing, and nothing else | `org_unit_type` at both ends | At most one live rule per pair | yes |
+| `org_unit` | A unit — the root, or anything nested beneath it to any depth | `org_unit_type`; `org_unit` as parent, which is **immutable** once set | Exactly one unit at the root, over all rows; children unlimited | yes |
+| `org_unit_name` | One name or code a unit has carried | `org_unit` | Many per unit; exactly one current, and `org_unit.name` copies it | yes |
+| `org_unit_relationship` | A typed lineage between two units — `split_from`, `merged_into`, `successor_of`, `renamed_to` | `org_unit` twice | As many as the truth requires; the same pair, and the same kind, may repeat | no |
+| `position` | A defined slot in a kind of unit, filled or not | `org_unit_type` | One live `code` per unit type | yes |
+| `position_assignment` | A person filling a position in a unit for a period | `position`, `org_unit`, `person` | Many per position — several holders is the default; never overlapping for the same person and position, over all rows | yes |
+
+**Membership**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `membership_type` | The fee and renewal parameters. One row, `member`, kept as a table so the vocabulary can grow | Nothing | Exactly one row today (D-037) | yes |
+| `membership` | One period of membership, with its own ending | `person`, `membership_type`; itself via `renewed_from_membership_id` | Many per person over a lifetime; **one open at a time, ever** | yes |
+| `membership_request` | An application. Two person references on purpose: the subject and the submitter | `person` twice, `membership_type`, `org_unit`, and `membership` twice (what it produced, what it renews) | At most one **open** request per person | no |
+| `unit_participation` | Belonging to one unit — the root's mirror of a membership, or a sub-unit's roster | `person` (**not** `membership` — the import case), `org_unit` | Many per person at once; one at a time per unit, over all rows | yes |
+
+**Relationships**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `guardianship` | One adult's responsibility for one dependent, carrying one `right_level` | `person` twice — never the same person twice | One current row per pair; unlimited past rows; a dependent may have any number of guardians at once | yes |
+| `guardianship_permission` | The temporal history of that row's right level — not a capability list since D-074 | `guardianship` | Exactly one open row per guardianship; its value is what `guardianship.right_level` copies | yes |
+
+**Authorization**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `permission` | One coded capability — the only thing a check looks at | Nothing | One row per code; the code never changes | no |
+| `role` | A named bundle of permissions. A definition, valid always — the period lives on the assignment | Nothing | One row per `code`; a role ever assigned cannot be deleted | no |
+| `role_permission` | Join entity: this role carries this permission, and nothing else | `role`, `permission` | One row per pair | no |
+| `role_assignment` | Authority held for a period over a scope — system-wide authority | `person`, `role`; `org_unit` when unit-scoped; itself when it is a delegation | At most one open assignment per person, role and scope | yes |
+| `scope_exposure` | A unit granting one named assignment coverage over **itself** — the only downward crossing | `org_unit` (the grantor), `role_assignment` (never a role); the people who exposed and withdrew it | At most one live exposure per unit and assignment | yes |
+| `access_grant` | Authority over one item, for a person or for a set of them | `person` **or** `audience`, never both; `grant_scope_type` and `⇒ scope_id`; `access_level`; `person` when delegated | As many as needed; a delegation must carry an end date | yes |
+| `access_level` | The ordered ladder — `revoked`, `view`, `contribute`, `manage`, `admin` | Nothing | Lookup table, five rows, compared by rank and never by string | no |
+| `grant_scope_type` | The registry of things a grant may point at, and the table its id lives in | Nothing | One row per scope kind; every grant's `scope_type` names one | no |
+| `permission_level` | Join entity: this permission needs this level on this kind of scope | `permission`, `grant_scope_type`, `access_level` | One row per permission and scope kind | no |
+| `audience` | A set of people a grant may name: a built-in rule, or a stored group | Nothing directly; `resolver_key` names the rule a built-in evaluates | One row per code among built-ins; named groups carry no code | yes |
+| `audience_member` | Join entity: a person in a **named group**, for a period | `audience`, `person` | No overlapping periods per audience and person, over all rows; built-ins have none, being rules | yes |
+| `access_log` | The audit trail — who did what, by what authority, with what result | `person` as actor and as subject; `⇒ authorization_ref_id` across `role_assignment`, `access_grant` and `guardianship_permission`; `⇒ entity_id` | Append-only; nothing is ever updated or deleted | no |
+| `permission_cache` | A computed answer kept briefly so checks are cheap | `person`, plus the code and scope it answers for | One row per person, code, scope type and scope id, each with an expiry. Derived and disposable — never a source of truth | no |
+
+**Audit and import**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `audit_log` | The row-level trail of changes to business tables | `⇒ (table_name, record_id)` — polymorphic; `person` as actor, and on whose behalf | One row per change; append-only | no |
+| `redaction_log` | That a redaction happened to a person, by whom, and to what | `person`; the person who requested and the person who performed it | One per redaction performed | no |
+| `import_batch` | One arrival of historical data, and where it stands | `person` as creator, applier and reverting party | One per batch; staging rows may be truncated once applied | no |
+| `staging_import` | A raw source row, verbatim, with its file and line | `import_batch` | One per source row per batch | no |
+| `staging_import_row` | That row parsed, plus what the parse could not decide, and what it eventually created | `staging_import`; `person` as resolver, and the `membership` and `unit_participation` rows it produced | One per staged row | no |
+
+**Finance** *(provisional)*
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `fee_schedule` | What may be charged, for what kind of period | `membership_type` and `org_unit`, both optional — absent means it applies broadly | As the organization defines | yes |
+| `fee_obligation` | What one person owes for exactly one thing | `person` (who it is *for*), `fee_schedule`, and **exactly one** of `membership`, `membership_request`, `event_registration` | Many per person; the target is never two and never none | no |
+| `payment` | Money that arrived | `person` as payer — deliberately not the person the fee is for | One per recorded receipt | no |
+| `payment_allocation` | Join entity: this payment counted towards this obligation, by how much | `payment`, `fee_obligation` | A given payment is allocated to a given obligation at most once | no |
+| `payment_request` | The ask, carrying the variable symbol that ties a bank transfer back to it | `fee_obligation` — the amount is copied, never recomputed | Several per obligation over time; **at most one live**; the symbol is unique over every symbol ever issued | no |
+| `bank_transaction` | One incoming transfer as the bank reported it | `payment_request` when matched — absent means it is in the queue; `import_batch` | Unique per bank reference within an account; immutable once imported | no |
+
+**Events**
+
+| Entity | What it is | Points at | How many | [T] |
+|---|---|---|---|---|
+| `event` | A dated occasion people register for, owned by exactly one unit | `org_unit` — required, exactly one owner (D-049); `fee_schedule` when it costs money | One row per occasion; no recurrence, no series | no |
+| `event_organizer` | Who is running an event, with a label and an order — an appointment, not a grant | `event`, `person` | Many per event; the list is the domain answer to "who runs this" | no |
+| `event_registration` | One person's answer about one event, plus whether they turned up | `event`, `person` | One per person per event; unanswered is the **absence** of a row (D-059) | no |
+| `event_question` | One thing this event asks, of attendees, organizers or both | `event` | As many as the event asks | yes |
+| `event_answer` | What one person said to one question, stored as a row and not as JSON | `event_question`, `event_registration` | One row per question per person | no |
+
+**Reference vocabularies** — `reason_code`, `access_level`, `grant_scope_type`,
+`identifier_scheme`, `permission`, `org_unit_type`. Each is named by a value held elsewhere
+rather than pointing at anything, and each exists so that a vocabulary is data the organization
+can see rather than a list inside the application.
 
 > **`event` is the only table in this schema with no `[T]`** — it has no `valid_from` /
 > `valid_to`, because an event is a dated occasion rather than a period-tracked record. Its
@@ -462,9 +573,9 @@ Tables with no FK on a column, and why:
 | `audit_log.record_id` | Polymorphic; recorded alongside `table_name`. |
 
 `access_grant.grantee` is the one **mutual-exclusion** rather than missing-FK case: exactly
-one of `person_id` / `audience_id` is set, enforced by a check constraint
-(`(person_id IS NOT NULL) <> (audience_id IS NOT NULL)`) rather than by two nullable FKs
-with nothing between them.
+one of `person_id` / `audience_id` is set — never both, never neither. The two columns are
+nullable, so nothing but that rule says which one a grant means; a grant naming neither is
+meaningless and a grant naming both is ambiguous about whom in the audience it speaks for.
 
 Every other column ending in `_id` has a real foreign key with `ON DELETE RESTRICT`.
 **No table anywhere uses `ON DELETE CASCADE`** — see

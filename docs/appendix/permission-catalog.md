@@ -3,7 +3,7 @@
 Every permission code, its namespace, and the channel that resolves it.
 
 This is the **proposed** catalog, seeded in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#12-seed-data--permissions).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#12-what-the-organization-starts-with).
 
 > **Deliberately comprehensive and granular, and staying that way**
 > ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
@@ -14,7 +14,7 @@ This is the **proposed** catalog, seeded in
 >
 > **This is the opposite disposition from roles, and the asymmetry is deliberate.** Roles are
 > *runtime data* the organization invents ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification));
-> permissions are *capabilities the code implements*. You cannot assign a power the schema
+> permissions are *capabilities the code implements*. You cannot assign a power the data model
 > cannot express, so a comprehensive permission catalog costs only rows — while a
 > comprehensive *role* list would be a specification pretending to be data.
 >
@@ -62,33 +62,50 @@ wildcard used to be — it lists permissions no role grants, which is what a mis
 like. It fails **closed**: a capability goes unheld and somebody says so, rather than a
 capability going unmeant and nobody saying so.
 
-### Three things named "admin", which are not the same thing
+### Two things named "admin", which are not the same thing
 
-The word survives in three unrelated places. When it comes up in conversation, say which:
+The word used to be ambiguous three ways. Two rounds of deletion left two, and the third is
+recorded as deleted rather than quietly dropped:
 
-| Shape | What it is | Deleted by D-068? |
-|-------|-----------|-------------------|
-| `access_level.admin` (rank 40) | A **grant level** — how much authority a grant carries, in `view` < `contribute` < `manage` < `admin`. Used by `permission_level` to decide whether a given grant satisfies a given permission. | **No** — different mechanism, shares only a name |
-| `<resource>.admin` | A **wildcard permission code** implying every sibling on that resource | **Yes** — all sixteen gone |
-| `dependent.medical.admin` | An **action** meaning "edit", paired against `.view` inside a sub-resource. Implies nothing. | **No** — not a wildcard |
+| Shape | What it is | Status |
+|-------|-----------|--------|
+| `access_level.admin` (rank 40) | A **grant level** — how much authority a grant carries, in `view` < `contribute` < `manage` < `admin`. Used by `permission_level` to decide whether a given grant satisfies a given permission. | **Real, untouched** |
+| `system.admin` | The **one wildcard permission**: everything, held through a role, never through an item grant | **Real, untouched** |
+| `<resource>.admin` | A **wildcard permission code** implying every sibling on that resource | **Deleted** — all sixteen, by [D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) |
+| `dependent.medical.admin`, `dependent.admin` | An **action** meaning "edit", paired against `.view` inside a sub-resource; plus a shorthand for the whole set | **Deleted** — by [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular), which reduced a guardian's rights to `none` / `view` / `write` |
 
-**`dependent.admin` also survives, and is worth understanding rather than pattern-matching.**
-It is not a prefix-match artefact: it is a code a staff member *chooses and stores*, one row
-in `guardianship_permission`, granting the full set for **one child**. A wildcard somebody
-deliberately wrote is what D-068 endorses. It also has a property no resolver rule can have —
-an explicit `is_granted = false` row **overrides** it, so a court-ordered restriction survives
-a broad grant. See §9.
+**D-068 exempted `dependent.admin` on purpose, and D-074 withdrew the exemption.** The reason
+D-068 kept it was sound at the time: it was not a prefix match inferred by code but a value a
+person deliberately stored on one row about one child. What changed is not the reasoning about
+wildcards but the thing it was a value *of* — there is no longer a set of guardian capabilities for
+a shorthand to stand for. **Read the two decisions together before reinstating anything that
+spells `admin`.**
 
 ### Namespaces
 
 | Namespace | Resolved against | Channel |
 |-----------|------------------|---------|
 | `NULL` | `role_assignment`, `access_grant`, ownership | 1, 3, 4 |
-| `dependent` | `guardianship_permission` | 2 |
 | `system` | `role_assignment` only — **never** item grants | 4 |
 
-`system` permissions are deliberately non-grantable by item grant or guardianship:
-`system.admin` must never be delegable to a single event or to a parent.
+**There is no `dependent` namespace** ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular));
+§9 explains what replaced it, and what was lost with it.
+
+**That leaves the guardianship channel with no prefix to dispatch on, which has to be answered
+rather than left implied.** It used to route on `dependent.`, and the reason for routing by prefix
+was that **no caller should decide which channel applies** — otherwise the same authorization rule
+gets implemented twice, once correctly. It now routes on a fact about the request instead of a fact
+about the name: **the channel is consulted whenever the person the action is *about* differs from
+the person performing it.** That is stronger than the prefix rule, not weaker — under the old rule a
+guardian asking to change their child's address with a `person.contact.edit` code would not have
+routed through guardianship at all, because the code did not carry the right prefix. Nobody chooses
+a channel; the shape of the request selects it.
+
+The `guardianship.*` codes are additionally satisfiable by **being a party to the row**, and not
+only by a grant ([D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)).
+
+`system` permissions remain non-grantable by item grant: `system.admin` must never be delegable to
+a single event or to a parent.
 
 ### Sensitivity marker
 
@@ -102,7 +119,7 @@ The **Sens.** column flags permissions that need extra care:
 | ⛔ | Granting it can end someone's membership or standing |
 
 These marks should drive UI warnings and the alerting in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#11-integrity-checks).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#11-invariants-to-verify).
 
 ---
 
@@ -245,7 +262,19 @@ consequential permission in the authorization model.
 | `guardianship.view` | — | ⚠⚠ | See guardianship relationships |
 | `guardianship.create` | — | ⚠⚠ | Record a guardianship |
 | `guardianship.end` | — | ⚠⚠ | End a guardianship |
-| `guardianship.permission.grant` | — | 🔒 | **Grant guardian permissions** |
+| `guardianship.assign` | — | ⚠⚠ | Add another guardian over the same dependent |
+| `guardianship.change_right` | — | 🔒 | Change a guardianship's `right_level` |
+
+> **These four are the only codes in the catalog that a private individual holds over their own
+> household, without being granted them.** [D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)
+> makes the parties to a guardianship principals on the row: a guardian may end it, add another
+> guardian, and change its level; the adult subject may end it over themselves. Staff hold the same
+> codes and are **an** route, never **the** route.
+>
+> `guardianship.permission.grant` is **deleted** — it granted individual codes from the
+> `dependent.*` namespace, and there is no such namespace to grant from
+> ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+> `guardianship.change_right` replaces it, and does less: one value, three choices.
 
 ## 7. Permissions administration
 
@@ -290,11 +319,18 @@ consequential permission in the authorization model.
 > two are different powers — `role.assign` escalates one person, `role.edit` escalates
 > everyone holding the role — and neither is implied by the other.
 >
-> **`role.delete` only works on a role that has never been assigned** and is not `is_system`;
-> the trigger in
+> **`role.delete` only works on a role that has never been assigned** and is not `is_system`.
+> No delete may leave a `role_assignment` pointing at a role that is gone:
 > [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission)
-> enforces it. A role that has been held is left in place, so the answer to "what authority
-> did this person have in 2019?" survives — which is precisely when someone asks it.
+> states the guard and the order it refuses in. The two halves are not equally strong, and the
+> difference is the reason this permission is not self-policing. The first is referential
+> integrity — `role_assignment.role_id` references `role.id`, which is a migration-level
+> constraint, so it refuses a delete that arrives from an import, from a manual fix, or from a
+> second client as surely as from the screens. The second, `is_system`, is a property of the row
+> being deleted and no index can see it: it is a check inside the transaction that deletes, and
+> a model-layer guard there is a friendlier message, not the refusal. A role that has been held
+> is left in place, so the answer to "what authority did this person have in 2019?" survives —
+> which is precisely when someone asks it.
 >
 > **`access_grant.create` is scoped by `permission_level`:** holding it lets you grant
 > others access *to items you have `admin` on*, and only at a level at or below your own.
@@ -359,13 +395,10 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 > **It was previously an open question (EV-5); it is resolved here as a split.**
 
 > **`event.register_self` at `contribute` is the whole of [D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine).** Granting a
-> whole audience `contribute` on an event — one row — is how an open camp is opened:
->
-> ```sql
-> INSERT INTO access_grant (scope_type, scope_id, audience_id, level)
-> VALUES ('event', :camp, (SELECT id FROM audience WHERE code = 'all_members'),
->         'contribute');
-> ```
+> whole audience `contribute` on an event is how an open camp is opened, and it is **one row**: an
+> `access_grant` scoped to that event, addressed to the `all_members` audience, at level
+> `contribute`. One row is the point — nobody is enumerated, so nobody is left out when the roster
+> changes, and nothing has to be re-run when someone joins.
 >
 > An age-restricted camp is a `unit:<id>:participants` audience instead. **There is no age
 > rule on the event and there will not be one** — an open event with an age ceiling is
@@ -381,54 +414,72 @@ there is no separate eligibility mechanism ([D-060](../decisions/decision-log.md
 > when?" harder to answer than it should be.
 
 > **`event.delete` is on this list and `org_unit` has no equivalent, because events are the
-> one thing in this schema that can be deleted.** A draft event with no registrations is a
+> one thing in this data model that can be deleted.** A draft event with no registrations is a
 > mistake to be cleaned up; anything else is cancelled, not deleted
 > ([D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
-> The trigger refuses deletion once anyone has registered.
+> **No event with even one registration row may be deleted** — Guard 2 in
+> [../data-model/08-events.md §8](../data-model/08-events.md#guards) is the rule, and cancelling
+> is what to do instead. The obligation is not the permission's to carry: `event.delete` decides
+> who may ask, and only a migration-level constraint — `event_registration.event_id` referencing
+> `event.id` with no cascade — refuses the same delete when it arrives from an import or a
+> hand-written fix instead of a screen. Enforcing this in the model layer alone would leave the
+> record of who was coming deletable by everything except the intended route.
 
 > **`event.answer.view` is where [D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers) lives.** Answers to an event's questions
 > are readable by that event's organizers with no additional gate — which makes an event form
-> the route by which a camp leader learns a child has a nut allergy, because the
-> `dependent.*` namespace is unreachable by unit leaders. That is a deliberate widening and
+> the route by which a camp leader learns a child has a nut allergy, because a unit leader holds
+> no guardianship over the children in their unit — guardianship authority belongs to the guardians
+> (§9). That is a deliberate widening and
 > it is recorded as one. **Note that this permission is therefore a ⚠ on health-adjacent
-> data**, and the discipline that only preference-level detail belongs on a form is guidance
-> on the form's label, not a constraint the schema enforces.
+> data**, and the discipline that only preference-level detail belongs on a form is guidance on
+> the form's label and nothing more. No layer enforces it and no layer can: nothing distinguishes
+> "vegetarian" from "carries an adrenaline pen" to a database
+> ([../data-model/08-events.md §7](../data-model/08-events.md#health-data-and-the-discipline-this-requires)).
+> It rests entirely on whoever writes the form — a convention, not a guard, and D-072's own
+> sentence is the right way to read that.
 
-## 9. The `dependent.*` namespace
+## 9. There is no `dependent.*` namespace
 
-Resolved **only** against `guardianship_permission`, never against roles. A unit leader
-does not get these by virtue of leading the unit — that is a safeguarding property, argued
-in [../domain/02-actors.md](../domain/02-actors.md#5-acting-on-behalf).
+**Eighteen codes deleted by [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular).**
+A guardian's rights are `none`, `view`, or `write` — one value on the guardianship row, not a
+capability list. **Nothing in this namespace may be reinstated by pattern-matching the old names;
+there is no set of codes left for a name to stand for.**
 
-| Code | Sens. | Grants | Typical default |
-|------|-------|--------|-----------------|
-| `dependent.profile.view` | ⚠ | See name, birth date, membership state | Granted |
-| `dependent.profile.admin` | ⚠ | View and edit the profile | On request |
-| `dependent.contact.view` | ⚠ | See contact points | Granted |
-| `dependent.contact.manage` | ⚠ | Edit contact points | Granted (self-registered) |
-| `dependent.membership.view` | ⚠ | See membership history | Granted |
-| `dependent.membership.request` | | Submit or renew a membership | Granted (self-registered) |
-| `dependent.event.view` | ⚠ | See the dependent's event registrations | Granted |
-| `dependent.event.register` | | Register the dependent for events | Granted (self-registered) |
-| `dependent.event.answer` | ⚠ | Answer an event's questions on their behalf | Granted (self-registered) |
-| `dependent.fee.view` | ⚠ | See fee and payment records | Granted |
-| `dependent.fee.pay` | | Pay fees | Granted (self-registered) |
-| `dependent.medical.view` | ⚠⚠ | **See medical and allergy records** | Granted; **often restricted** |
-| `dependent.medical.admin` | ⚠⚠ | Edit medical records | On request |
-| `dependent.consent.give` | ⚠ | Give consents (photo, transport, activity) | Granted |
-| `dependent.consent.admin` | ⚠ | Manage consent records | On request |
-| `dependent.achievement.view` | | See badges, awards, progress | Granted |
-| `dependent.document.view` | ⚠ | See the dependent's documents | Granted |
-| `dependent.admin` | 🔒 | **All of the above** | On request |
+| Old code | Became |
+|---|---|
+| `dependent.profile.view`, `dependent.contact.view`, `dependent.membership.view`, `dependent.event.view`, `dependent.fee.view`, `dependent.medical.view`, `dependent.achievement.view`, `dependent.document.view` | **`view`** — all of them, together. They can no longer be separated |
+| `dependent.profile.admin`, `dependent.contact.manage`, `dependent.medical.admin`, `dependent.consent.admin` | **`write`** |
+| `dependent.membership.request`, `dependent.event.register`, `dependent.event.answer`, `dependent.fee.pay`, `dependent.consent.give` | **`write`** — an act is not a narrower category than an edit |
+| `dependent.admin` | Nothing. There is no set left to be a shorthand for |
 
-> **`dependent.medical.view` and `dependent.consent.give` are deliberately separate.** A
-> parent who may consent to a camp is not necessarily a parent who may read a medical file,
-> and a court order frequently restricts one without the other. Conflating them makes the
-> common restriction inexpressible.
->
-> An explicit `is_granted = false` row **overrides** `dependent.admin`. A court-ordered
-> restriction is not overridable by a broader grant — see
-> [../data-model/04-relationships.md](../data-model/04-relationships.md#2-guardianship_permission).
+**What is lost, stated as plainly as it should be.** A court order restricting one parent's access
+to a child's medical record while leaving everything else in place **cannot be expressed**.
+"Read-only, but not the medical file" cannot be expressed. A grandmother granted roster visibility
+and nothing else is now a `view` guardian, which reaches the fee history and the health data too.
+The old namespace existed for exactly these cases, and D-074 traded them for a vocabulary a
+volunteer treasurer can hold in their head.
+
+**What still holds:**
+
+- `write` ranks at `contribute` (20), **not** `manage`. A guardian cannot do organization-wide
+  things, and cannot reach a different dependent's records — authority is per guardianship row.
+- The **organization-wide deny channel is untouched.** A deny still beats any grant, at any scope
+  ([D-032](../decisions/decision-log.md#d-032--deny-is-absolute-locality-orders-allows-only)), so
+  "this guardian, nothing" remains expressible. What was lost is a *narrow* deny, not the ability
+  to refuse.
+- A guardianship at `none` grants literally nothing, so **being a guardian still grants nothing by
+  itself** — the safeguarding property that motivated the eighteen codes survives without them.
+- Answers to an event's questions are still read through `event.answer.view`, which is a role-side
+  permission and never was a guardian one
+  ([D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)).
+
+**If the split turns out to matter in operation it is a new decision**
+([E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile)), taken with
+the medical/consent separation argued from the current documents rather than restored from this
+table.
+
+See [../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write)
+for the value, its defaults by `source`, and the ladder it is a range of.
 
 ## 10. Deferred namespaces
 
@@ -442,7 +493,7 @@ established before anyone invents an inconsistent one.
 | `payment` | `payment.view`, `payment.record`, `payment.reverse` | |
 | `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view` | ⚠⚠ `report.safeguarding.view` |
 | `consent` | `consent.template.edit`, `consent.record.view` | |
-| `message` | `message.send_to_unit`, `message.send_to_org` | |
+| `message` | `message.send_direct`, `message.broadcast` | **Decided in shape, undesigned in detail** ([D-077](../decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)). Everyone may send direct; `broadcast` is an ordinary **scoped** permission, so granted on a unit it reaches that unit and granted organization-wide it reaches everyone. The older `send_to_unit` / `send_to_org` pair is replaced by one code at two scopes. Recipient chooses the channel, which is not a permission at all |
 | `partner` | *(namespace)* | For external organizations, if the model expands. |
 
 Generate each resource's `permission_level` rows at the same time — see
@@ -531,9 +582,16 @@ the system loses the ability to use it on the day it breaks.
    fees. This is deliberate. Note that the role **lost** `person.background_check.*` and
    gained nothing in its place, because the organization records no background checks
    ([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
-3. **No role bundles `dependent.*` permissions.** Those come only from guardianship. A role
-   that granted them would let a unit leader see members' medical records by virtue of a
-   role assignment, which fails safeguarding review.
+3. **No role reaches a child's records.** There used to be a rule that no role bundles
+   `dependent.*`, and the namespace it named no longer exists
+   ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+   The safeguarding property it protected is the one that survives, restated against the mechanism
+   that now provides it: **the guardianship channel is only consulted when the subject of the act
+   is someone else, and it only finds a guardianship row.** A unit leader holding every
+   organization-side code in this catalog still cannot read the medical record of a child in their
+   unit, because leadership is not guardianship. **Do not re-derive the old rule as a list of
+   codes to keep out of roles** — the rule is about the channel, and there is no code left to
+   quarantine.
 4. **`unit_leader` and `assistant_leader` are `Req. = no`.** They are held by volunteers, and
    the failure this prevents is specific: the volunteer whose own fee is unpaid still runs
    the Thursday meeting, and must not lose their roster the night it lapses. The
@@ -564,7 +622,7 @@ the system loses the ability to use it on the day it breaks.
   row-level filtering.
 - Whether the organization has roles this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief). **This is now answerable by the organization itself** rather
-  than by a schema change — which is the point of roles being runtime data.
+  than by a change to the data model and a migration — which is the point of roles being runtime data.
 - Which built-in audiences the organization needs, and who may create named groups —
   `audience_admin` is proposed, but it may belong to unit leaders instead
   ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).

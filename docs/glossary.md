@@ -132,15 +132,32 @@ this rather than treating them as new. This is the case you described: 1990–20
 ## Relationships
 
 **Guardianship** — A period during which one person is responsible for another. Directional:
-guardian → dependent. Carries relationship kind (`parent`, `legal_guardian`, `foster`,
-`other`) and an optional expiry, because guardianship ends when a child turns 18 or when
-a court order changes.
+guardian → dependent. Carries relationship kind (`parent`, `legal_guardian`, `foster_parent`,
+`step_parent`, `grandparent`, `sibling`, `other`) and an end date that **a person sets**.
+**Not a birthday**: the system takes no position on majority, and no job ends one
+([D-069](decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
 
-**Guardianship permission** — An explicit grant that a guardian may *do* something with
-the dependent's records: view, edit contacts, register for events, pay fees. **Being a
-guardian grants nothing by itself.** Every capability is a separate, revocable,
-audited row. This is a deliberate consequence of your answer that both read and write
-permissions should be explicit.
+**Party to a guardianship** — The guardian and the subject, both. **They, and not staff, run the
+arrangement:** either may end it, a guardian may add another guardian, and no request has to go
+through the organization
+([D-073](decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)).
+Staff hold the same powers and are *a* route, never *the* route. This is scope authority applied to
+a household: authority over a nested thing originates at that thing.
+
+**Guardian's right** — **One of exactly three values on the guardianship row: `none`, `view`, or
+`write`.** Nothing more granular exists
+([D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+They rank onto the same ladder as every other grant — 0, 10, 20 — so a guardian is not a second
+authorization model.
+
+**Being a guardian still grants nothing by itself**; `none` is a real value and the common starting
+point for anything the guardian did not assert themselves. What D-074 gives up in exchange for the
+short vocabulary is recorded in the catalog: **it is no longer possible to say "read everything
+except the medical record."**
+
+*Not to be confused with* **guardianship permission**, which was the deleted eighteen-code list
+(`dependent.profile.view`, `dependent.medical.admin`, …). Those codes are gone; do not write them
+into a role, a query, or a screen.
 
 **Household** — **No longer a thing in this system** ([D-057](decisions/decision-log.md#d-057--household-is-removed)).
 A person's address is a `person_contact` row of type `postal`, which is temporal like any
@@ -206,24 +223,40 @@ over everything, at any scope.** See
 **Scope** — What a grant applies to. Either an org unit, a concrete item (via
 `scope_type` + `scope_id`), or the whole organization.
 
-**`admin`** — **Ambiguous in three unrelated ways, and the ambiguity is load-bearing.** Say
-which you mean:
+**`admin`** — **Was ambiguous three ways; two deletions later, two remain.** Say which you mean:
 
 | Meaning | What it does | Status |
 |---|---|---|
 | **Grant level** — `access_level.admin`, rank 40 | *How much* authority a grant carries. `revoked` < `view` < `contribute` < `manage` < `admin`, compared by **integer rank, never by string**. A check asks "at least level X?" | **Real, untouched** |
 | **Resource wildcard** — `person.admin`, `event.admin` | A permission code implying every sibling capability on that resource, matched by prefix in the resolver | **Deleted** — all sixteen codes and the prefix match ([D-068](decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)) |
-| **Edit action** — `dependent.medical.admin` | Means "edit", paired against `.view` inside a sub-resource. Implies nothing | **Real, untouched** |
+| **Edit action** — `dependent.medical.admin` | Means "edit", paired against `.view` inside a sub-resource. Implies nothing | **Deleted** — with the whole `dependent.*` namespace ([D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) |
 
 What survives of "can do everything": **`system.admin`** (the only wildcard permission, held
 through a role, never an item grant) and **roles** — a bundle the organization composes, which
 is where "someone who can do everything about events" now lives, written out as thirteen rows
 rather than implied by a resolver rule.
 
-**Scope exposure** — An explicit row by which a unit grants a parent unit's role
-assignment coverage over it. This is the *only* way authority crosses a unit boundary
-downward, and it is created at the subordinate unit's own level, never assumed from the
-hierarchy. See [data-model/05-authorization.md](data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+**Scope exposure** — An explicit row by which a unit accepts one named **role assignment** as
+authority over itself. This is the *only* way authority crosses a unit boundary downward, and it
+is created at the subordinate unit's own level, never assumed from the hierarchy. It names an
+assignment — a particular person in a particular role for a particular period — which is why a
+unit is approving a person rather than opening a door any future holder may walk through.
+**An exposure extends that assignment and nothing else: not the role, and never a direct access
+grant** ([D-078](decisions/decision-log.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)).
+See [data-model/05-authorization.md](data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+
+**Channel** — Which of the resolver's four questions answers a check: ownership, guardianship,
+item grants, roles, with an absolute deny in front of all of them. **How a check reaches a channel
+changed in round 6 and it is easy to state backwards.** It used to be the permission's namespace —
+a code beginning `dependent.` went to guardianship. That silently skipped every guardian act whose
+code was an ordinary one, like a parent editing their child's address under `person.address.edit`.
+Now guardianship is reached **when the person the act is about is not the person performing it**,
+which nobody has to remember, because the shape of the call decides
+([D-079](decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
+**Corollary, and the part people get wrong:** the guardianship channel can only say *yes*. When
+there is no guardianship, or the right is too low, it says nothing and the person's own roles are
+still tried — otherwise a parent who is also the event registrar would be blocked from the roster
+by their own `view` over their child. Prohibitions are not made here; they are explicit denies.
 
 **Effective permission** — The union of everything a person may do right now, computed
 from role assignments and access grants that are currently valid. Never stored, always
@@ -283,6 +316,52 @@ Not the same as registration — a no-show is a registration with `was_present =
 
 ---
 
+## Money
+
+**Payment request** — A liability rendered payable: an amount, a recipient account, a start, and
+an optional expiry. **The request, not the payment, is the entity the finance module is built
+around**, because it is the only thing that connects "we expect money" to "money arrived"
+([D-075](decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)).
+It is not an invoice; the organization may also owe people invoices, which is still open.
+
+**Variable symbol** — The number a payer types into their bank, and the number the bank reports
+back against the money. **Unique across every symbol ever issued, not merely across live ones**,
+and taken from a sequence — never derived from a birth date, a member number, or anything else a
+stranger could guess. Anyone can type eleven digits into a payment form; guessing a symbol puts a
+stranger's money into a child's financial record.
+
+**A QR code is a rendering, not data.** It encodes the symbol, the amount and the recipient that
+already exist. Nothing stores it and nothing invalidates it.
+
+**There is no card gateway.** The organization **collects**, but by bank API rather than checkout:
+no card tokens, no disputes, no chargebacks, no processor reconciliation, and **no `pending` or
+`failed` payment status** — a bank transfer the bank has reported does not later fail. A refund is
+a second payment going the other way, never a reversal of the first.
+
+**Unmatched money** — A transfer whose symbol resolves to nothing live: mistyped, belonging to a
+cancelled event, already settled, or the wrong amount. It **waits for a person**
+([D-076](decisions/decision-log.md#d-076--money-that-cannot-be-matched-waits-for-a-person)). It is
+never auto-applied by payer identity — *a parent with two children pays one amount* is the normal
+case, not the edge case, and the fallback would be wrong on the common path.
+
+## Communication
+
+**Direct message** — One person to one person. **Everyone can send one**; there is no permission for
+it ([D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)).
+
+**Broadcast** — The only messaging permission, and **an ordinary scoped one**: granted on a unit it
+reaches that unit, granted organization-wide it reaches everyone. There is deliberately no global
+broadcast flag, because the alternative leaves a pack leader choosing between an organization-wide
+power and typing the same sentence twelve times.
+
+**Delivery channel** — Email, push, or in-app, **chosen by the recipient**, not the sender. The
+sender chooses *who*; the recipient chooses *how it arrives*. This is why the system is the medium
+rather than a mail relay: a bounced email is a failed delivery on one channel, not a lost message.
+
+**Age is not a sender concept.** Nothing in the model restricts who may address a child; the tier is
+broadcast versus direct. The residue is stated rather than hidden — see
+[E-6](open-questions.md#msg-1--any-account-can-address-a-child-directly).
+
 ## Time
 
 **Temporal row** — Any row with `valid_from` / `valid_to`. `valid_to IS NULL` means
@@ -301,11 +380,11 @@ session has as-of 1990–2010 and audit time 2026. Do not conflate them.
 
 ---
 
-## Roles in conversation (informal terms — not schema terms)
+## Roles in conversation (informal terms — not names in the model)
 
 The words you and the organization will naturally use, and what they map to:
 
-| Informal term | Evidence in the schema |
+| Informal term | What it is in the model |
 |---------------|------------------------|
 | "child member" | a person with an open `membership` whose `birth_date` makes them a minor — **age is a fact about the person, not a kind of membership** |
 | "counselor" / "leader" | a `position_assignment` held by a member — **never a membership type** |

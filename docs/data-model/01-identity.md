@@ -22,84 +22,53 @@ a well-meaning future change.
 
 ## 2. `person`
 
-```sql
-CREATE TABLE person (
-    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    public_id           UUID        NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+**Fields**
 
-    given_name          TEXT        NOT NULL,
-    family_name         TEXT        NOT NULL,
-    -- Names are ALSO stored as temporal rows in person_name (see §3). These two columns
-    -- are the current/canonical form, denormalised for display and search. History and
-    -- legal-name variants live in person_name.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | Internal only |
+| `public_id` | external identifier, required | Unique. Generated when the row is created. This is what URLs and exports carry |
+| `given_name` | text, required | Names are **also** stored as temporal rows in `person_name` (§3). These two columns are the current, canonical form, denormalised for display and search; history and legal-name variants live in `person_name` |
+| `family_name` | text, required | As above |
+| `birth_date` | date, optional | Nullable because legacy records frequently lack it. **Never required** — a 1994 roster with no birth date must still import |
+| `birth_date_precision` | text, optional | One of: `exact`, `month`, `year`, `unknown`. Because an imported birth date of `1990-01-01` often means "year 1990, month and day unknown". Storing the precision prevents false matches on a guessed day and prevents "happy 1 January birthday" emails |
+| `gender` | text, optional | One of: `male`, `female`, `other`, `unknown`. Included because youth organizations typically must report it. Remove if yours does not need it — do not collect what you cannot justify |
+| `preferred_name` | text, optional | What the person is actually called. Distinct from `given_name` so that the organization's records stay legally correct while the person is addressed correctly — "Alexandra" recorded, "Lex" displayed |
+| `record_origin` | text, required | One of: `self_registered`, `staff_created`, `legacy_import`. Default `self_registered` |
+| `data_confidence` | text, required | One of: `high`, `medium`, `low`. Default `high`. `low` for imported rows: it drives whether a merge may absorb this row, and whether the UI warns before displaying it as fact |
+| `merged_into_person_id` | reference to person, optional | Tombstone. When set, this row is absorbed and queries must follow the pointer. Never deleted (§8) |
+| `merged_at` | timestamp, audit time, optional | |
+| `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names and contacts are overwritten; the row and its id survive so historical references still resolve |
+| `notes` | text, optional | Free text. Flagged in redaction (00-conventions §8): may contain personal data |
+| `created_at` | timestamp, audit time | |
+| `created_by` | reference to person, optional | |
+| `updated_at` | timestamp, audit time | |
+| `updated_by` | reference to person, optional | |
+| `import_batch_id` | reference to import batch, optional | Set on imported rows. Its link to `import_batch` can only be made once that table exists |
 
-    birth_date          DATE,
-    -- Nullable: legacy records frequently lack it. Never NOT NULL — a 1994 roster
-    -- with no birth date must still import.
+**Rules**
 
-    birth_date_precision TEXT CHECK (birth_date_precision IN
-                            ('exact','month','year','unknown')),
-    -- Because an imported birth date of '1990-01-01' often means "year 1990, month
-    -- and day unknown". Storing the precision prevents false matches on a guessed
-    -- day and prevents "happy 1 January birthday" emails.
+- There is deliberately **no deceased flag**. The organization does not record whether a
+  person has died. A membership simply ends; the reason for the ending lives in the generic
+  reason-code fields (`membership.termination_reason_code`, `membership.ended_note`) like any
+  other ending, and the organization's own vocabulary for such reasons is theirs to define.
+  Do not add `is_deceased` or `deceased_at` back: it is not data the organization keeps.
+- `public_id` is unique.
+- A person may not be merged into themselves — `merged_into_person_id` may never name this
+  same row.
+- `merged_into_person_id` and `merged_at` are set together or both left null. A pointer with
+  no date, or a date with no pointer, cannot be explained to anyone.
+- A `birth_date_precision` may be recorded without a `birth_date` only when it says
+  `unknown`. Every other precision claims something about a date that is not there.
 
-    gender              TEXT CHECK (gender IN ('male','female','other','unknown')),
-    -- Included because youth organizations typically must report it. Remove if yours
-    -- does not need it — do not collect what you cannot justify.
+**Indexes**
 
-    preferred_name      TEXT,
-    -- What the person is actually called. Distinct from given_name so that the
-    -- organization's records stay legally correct while the person is addressed
-    -- correctly ("Alexandra" recorded, "Lex" displayed).
-
-    -- NOTE: there is deliberately NO deceased flag. The organization does not record
-    -- whether a person has died. A membership simply ends; the reason for the ending
-    -- lives in the generic reason-code tables (membership.termination_reason_code,
-    -- membership.ended_note) like any other ending, and the organization's own
-    -- vocabulary for such reasons is theirs to define. Do not add is_deceased or
-    -- deceased_at back: it is not data the organization keeps.
-
-    record_origin       TEXT        NOT NULL DEFAULT 'self_registered'
-                        CHECK (record_origin IN
-                            ('self_registered','staff_created','legacy_import')),
-
-    data_confidence     TEXT        NOT NULL DEFAULT 'high'
-                        CHECK (data_confidence IN ('high','medium','low')),
-    -- 'low' for imported rows. Drives whether a merge may absorb this row, and whether
-    -- the UI warns before displaying it as fact.
-
-    merged_into_person_id BIGINT    REFERENCES person(id),
-    merged_at           TIMESTAMPTZ,
-    -- Tombstone. When set, this row is absorbed; queries must follow the pointer.
-    -- Never deleted. See §7.
-
-    redacted_at         TIMESTAMPTZ,
-    -- Set when a GDPR-style erasure was performed. Names and contacts are overwritten;
-    -- the row and its id survive so historical references still resolve.
-
-    notes               TEXT,
-    -- Free text. Flagged in redaction (§8 of conventions): may contain personal data.
-
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by          BIGINT      REFERENCES person(id),
-    updated_at          TIMESTAMPTZ,
-    updated_by          BIGINT      REFERENCES person(id),
-    import_batch_id     BIGINT,     -- FK added after import_batch exists
-
-    CONSTRAINT ck_person_not_own_merge CHECK (merged_into_person_id IS DISTINCT FROM id),
-    CONSTRAINT ck_person_merge_consistent CHECK (
-        (merged_into_person_id IS NULL) = (merged_at IS NULL)),
-    CONSTRAINT ck_person_birth_precision CHECK (
-        birth_date IS NOT NULL OR birth_date_precision IS NULL
-        OR birth_date_precision = 'unknown')
-);
-
-CREATE INDEX ix_person_family_given  ON person (lower(family_name), lower(given_name));
-CREATE INDEX ix_person_birth_date    ON person (birth_date) WHERE birth_date IS NOT NULL;
-CREATE INDEX ix_person_not_merged    ON person (id) WHERE merged_into_person_id IS NULL;
-CREATE INDEX ix_person_not_redacted  ON person (id) WHERE redacted_at IS NULL;
-CREATE INDEX ix_person_public_id     ON person (public_id);
-```
+- Person search by name, with both names compared case-insensitively.
+- Persons by `birth_date`, restricted to rows that have one.
+- **Persons that have not been merged** — a partial index, because every ordinary listing
+  must exclude merged rows and it has to stay cheap.
+- **Persons that have not been redacted** — same reason.
+- Lookup by `public_id`.
 
 ### Notes on specific choices
 
@@ -119,23 +88,15 @@ partial indexes above exist.
 
 ### The answer to "who is a member?" is never on this table
 
-To be unambiguous, the queries:
+To be unambiguous, the two facts:
 
-```sql
--- Currently a member
-SELECT p.* FROM person p
- JOIN membership m ON m.person_id = p.id
- WHERE m.valid_to IS NULL AND m.status = 'active';
+- **Currently a member** — the person has a `membership` whose `valid_to` is absent and whose
+  status is `active`.
+- **Was a member on 1998-06-01** — the person has a `membership` whose period contains that
+  date: `valid_from` on or before it, and `valid_to` either absent or after it. Its status is
+  one of `active`, `completed`, `lapsed`, `terminated`.
 
--- Was a member on 1998-06-01
-SELECT p.* FROM person p
- JOIN membership m ON m.person_id = p.id
- WHERE m.valid_from <= DATE '1998-06-01'
-   AND (m.valid_to IS NULL OR m.valid_to > DATE '1998-06-01')
-   AND m.status IN ('active','completed','lapsed','terminated');
-```
-
-Note the second query includes closed statuses — "was a member in 1998" is true regardless
+Note the second fact includes closed statuses — "was a member in 1998" is true regardless
 of how the membership later ended. Getting this wrong is why "years of membership" reports
 are usually wrong.
 
@@ -143,31 +104,31 @@ are usually wrong.
 
 ## 3. `person_name` — name history
 
-```sql
-CREATE TABLE person_name (
-    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id   BIGINT NOT NULL REFERENCES person(id),
+**Fields**
 
-    name_type   TEXT   NOT NULL CHECK (name_type IN
-                    ('legal','preferred','maiden','former','alias','imported')),
-    given_name  TEXT   NOT NULL,
-    family_name TEXT   NOT NULL,
-    middle_name TEXT,
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_id` | reference to person, required | |
+| `name_type` | text, required | One of: `legal`, `preferred`, `maiden`, `former`, `alias`, `imported` |
+| `given_name` | text, required | |
+| `family_name` | text, required | |
+| `middle_name` | text, optional | |
+| `valid_from` | date, optional | Optional because an imported name often arrives with no start date at all |
+| `valid_to` | date, optional | `NULL` = current for this `name_type` |
+| `source` | text, optional | `self`, `staff`, `legacy_import` |
+| `import_batch_id` | reference to import batch, optional | |
 
-    valid_from  DATE,
-    valid_to    DATE,          -- NULL = current for this name_type
-    source      TEXT,          -- 'self' | 'staff' | 'legacy_import'
-    import_batch_id BIGINT,
+**Rules**
 
-    CONSTRAINT ck_person_name_period CHECK (valid_to IS NULL OR valid_from IS NULL
-                                            OR valid_to > valid_from)
-);
+- `valid_to` is either absent, or `valid_from` is absent, or `valid_to` is later than
+  `valid_from`.
 
-CREATE INDEX ix_person_name_person ON person_name (person_id);
--- Fuzzy search across all historical names, which is what legacy matching reads:
-CREATE INDEX ix_person_name_search ON person_name
-    (lower(family_name) text_pattern_ops, lower(given_name) text_pattern_ops);
-```
+**Indexes**
+
+- A person's names.
+- Fuzzy search across all historical names — both names lowercased, family name first, and
+  usable for prefix matching. This is what legacy matching reads.
 
 **Why name history is a table.** Three concrete cases:
 
@@ -192,50 +153,40 @@ layer, not here.
 
 ## 4. `account`
 
-```sql
-CREATE TABLE account (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id       BIGINT      NOT NULL REFERENCES person(id),
-    -- NOT unique: a person may have several accounts over a lifetime (one abandoned in
-    -- 2010, a new one in 2024). Uniqueness applies only to *active* accounts, below.
+**Fields**
 
-    username        TEXT,
-    status          TEXT        NOT NULL DEFAULT 'pending_verification'
-                    CHECK (status IN
-                        ('pending_verification','active','suspended','closed')),
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_id` | reference to person, required | Not unique. Uniqueness applies only to live accounts, under **Rules** |
+| `username` | text, optional | |
+| `status` | text, required | One of: `pending_verification`, `active`, `suspended`, `closed`. Default `pending_verification` |
+| `verified_at` | timestamp, audit time, optional | |
+| `guardian_consent_at` | timestamp, audit time, optional | Set when a guardian confirmed a minor's account. `NULL` for adults (domain/02-actors.md §2) |
+| `created_by_staff` | boolean, required | Default false |
+| `last_login_at` | timestamp, audit time, optional | |
+| `failed_login_count` | integer, required | Default 0 |
+| `locked_until` | timestamp, audit time, optional | |
+| `status_reason_code` | text, optional | Why suspended or closed |
+| `status_note` | text, optional | The human explanation |
+| `created_at` | timestamp, audit time | |
+| `created_by` | reference to person, optional | |
+| `updated_at` | timestamp, audit time | |
+| `updated_by` | reference to person, optional | |
 
-    verified_at     TIMESTAMPTZ,
-    guardian_consent_at TIMESTAMPTZ,
-    -- Set when a guardian confirmed a minor's account. NULL for adults.
-    -- See domain/02-actors.md §2.
+**Rules**
 
-    created_by_staff BOOLEAN    NOT NULL DEFAULT false,
-    last_login_at   TIMESTAMPTZ,
-    failed_login_count INTEGER  NOT NULL DEFAULT 0,
-    locked_until    TIMESTAMPTZ,
+- At most one live account per person: unique over `person_id` across the rows whose status
+  is `pending_verification`, `active` or `suspended`. Closed rows are not covered, so a
+  person may accumulate as many closed accounts as their history contains.
+- `username` is unique compared case-insensitively, over the rows that have one and are not
+  closed. A closed account releases its username for someone else to take. It covers live
+  rows only, not all rows.
+- An account may not reach `active` while `verified_at` is absent.
 
-    status_reason_code TEXT,    -- why suspended/closed
-    status_note     TEXT,
+**Indexes**
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by      BIGINT      REFERENCES person(id),
-    updated_at      TIMESTAMPTZ,
-    updated_by      BIGINT      REFERENCES person(id),
-
-    CONSTRAINT ck_account_verified CHECK (
-        status <> 'active' OR verified_at IS NOT NULL)
-);
-
--- At most one non-closed account per person:
-CREATE UNIQUE INDEX uq_account_one_active_per_person
-    ON account (person_id)
-    WHERE status IN ('pending_verification','active','suspended');
-
-CREATE UNIQUE INDEX uq_account_username ON account (lower(username))
-    WHERE username IS NOT NULL AND status <> 'closed';
-
-CREATE INDEX ix_account_person ON account (person_id);
-```
+- A person's accounts.
 
 **Why `person_id` is not unique.** The partial unique index expresses the real rule:
 *one live account per person*, while permitting closed historical accounts. A plain
@@ -254,41 +205,37 @@ The schema enforces this by simply not linking them.
 
 ## 5. `account_credential`
 
-```sql
-CREATE TABLE account_credential (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    account_id      BIGINT      NOT NULL REFERENCES account(id),
+**Fields**
 
-    credential_type TEXT        NOT NULL CHECK (credential_type IN
-                        ('password','passkey','totp','oauth','staff_link')),
-    -- Multiple methods per account. 'oauth' supports a national Scout identity provider;
-    -- 'staff_link' supports a one-time link issued to a member who cannot self-serve.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `account_id` | reference to account, required | |
+| `credential_type` | text, required | One of: `password`, `passkey`, `totp`, `oauth`, `staff_link`. Multiple methods per account. `oauth` supports a national Scout identity provider; `staff_link` supports a one-time link issued to a member who cannot self-serve |
+| `secret_hash` | text, optional | Password/OTP hash. Absent for passkey and oauth |
+| `external_ref` | text, optional | OAuth subject id, or WebAuthn credential id |
+| `external_issuer` | text, optional | OAuth issuer |
+| `valid_from` | timestamp, audit time, required | Default: now |
+| `valid_to` | timestamp, audit time, optional | `NULL` = current |
+| `last_used_at` | timestamp, audit time, optional | |
+| `revoked_reason` | text, optional | |
+| `created_at` | timestamp, audit time | |
 
-    secret_hash     TEXT,       -- password/OTP hash. NULL for passkey/oauth.
-    external_ref    TEXT,       -- OAuth subject id, or WebAuthn credential id
-    external_issuer TEXT,       -- OAuth issuer
+**Rules**
 
-    valid_from      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    valid_to        TIMESTAMPTZ,-- NULL = current
-    last_used_at    TIMESTAMPTZ,
-    revoked_reason  TEXT,
+- A `password`, `totp` or `staff_link` credential must carry a `secret_hash`. A `passkey` or
+  `oauth` credential must carry both `external_ref` and `external_issuer`. A credential with
+  nothing to check against cannot exist.
+- `valid_to` is either absent or later than `valid_from`.
+- One current credential per `(external_issuer, external_ref)` pair among `oauth` rows that
+  are still current. It covers open rows only — an expired credential does not hold its
+  external identity back.
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+**Indexes**
 
-    CONSTRAINT ck_credential_has_secret CHECK (
-        (credential_type IN ('password','totp','staff_link') AND secret_hash IS NOT NULL)
-     OR (credential_type IN ('passkey','oauth')
-         AND external_ref IS NOT NULL AND external_issuer IS NOT NULL)),
-    CONSTRAINT ck_credential_period CHECK (
-        valid_to IS NULL OR valid_to > valid_from)
-);
-
-CREATE INDEX ix_credential_account ON account_credential (account_id)
-    WHERE valid_to IS NULL;
-CREATE UNIQUE INDEX uq_credential_oauth ON account_credential
-    (external_issuer, external_ref)
-    WHERE credential_type = 'oauth' AND valid_to IS NULL;
-```
+- An account's current credentials — the open half of the period only.
+- The `oauth` uniqueness above, which is itself a lookup: given an issuer and a subject id,
+  which account is this.
 
 **Why credentials are not columns on `account`.** Adding passkeys, an organizational SSO,
 or a one-time-link flow later must not require restructuring `account` and migrating every
@@ -303,108 +250,108 @@ that has since been revoked?" is answerable.
 
 ## 6. `person_contact`
 
-```sql
-CREATE TABLE person_contact (
-    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id   BIGINT NOT NULL REFERENCES person(id),
+**Fields**
 
-    contact_type TEXT NOT NULL CHECK (contact_type IN
-                    ('email','phone','postal','website','messaging')),
-    purpose      TEXT NOT NULL CHECK (purpose IN
-                    ('login','membership','emergency','billing','guardian','general')),
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_id` | reference to person, required | |
+| `contact_type` | text, required | One of: `email`, `phone`, `postal`, `website`, `messaging` |
+| `purpose` | text, required | One of: `login`, `membership`, `emergency`, `billing`, `guardian`, `general` |
+| `value` | text, required | Normalised per type: emails lowercased, phones E.164, postal as structured JSON |
+| `value_detail` | free-form jsonb, optional | For postal addresses: `{street, city, postal_code, country}`. Avoids six optional fields that only apply to one `contact_type` |
+| `label` | text, optional | `home`, `work`, `school` — display only |
+| `is_primary` | boolean, required | Default false |
+| `verified_at` | timestamp, audit time, optional | |
+| `verified_by` | text, optional | One of: `self`, `staff`, `bounce_check`, `import` |
+| `valid_from` | date, required | Default: today |
+| `valid_to` | date, optional | `NULL` = current. Addresses change; history is required |
+| `source` | text, optional | `self`, `staff`, `legacy_import` |
+| `import_batch_id` | reference to import batch, optional | |
+| `created_at` | timestamp, audit time | |
+| `created_by` | reference to person, optional | |
 
-    value        TEXT NOT NULL,
-    -- Normalised per type: emails lowercased, phones E.164, postal as structured JSON.
+**Rules**
 
-    value_detail JSONB,
-    -- For postal addresses: {street, city, postal_code, country}. Avoids six nullable
-    -- columns that only apply to one contact_type.
+- `valid_to` is either absent or later than `valid_from`.
+- At most one current primary per `(person, contact_type, purpose)`. It covers open rows
+  only: a superseded primary does not block the new one.
 
-    label        TEXT,          -- 'home', 'work', 'school' — display only
-    is_primary   BOOLEAN NOT NULL DEFAULT false,
-    verified_at  TIMESTAMPTZ,
-    verified_by  TEXT CHECK (verified_by IN ('self','staff','bounce_check','import')),
+**Indexes**
 
-    valid_from   DATE NOT NULL DEFAULT CURRENT_DATE,
-    valid_to     DATE,          -- NULL = current. Addresses change; history is required.
-    source       TEXT,          -- 'self' | 'staff' | 'legacy_import'
-    import_batch_id BIGINT,
-
-    created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by   BIGINT REFERENCES person(id),
-
-    CONSTRAINT ck_contact_period CHECK (valid_to IS NULL OR valid_to > valid_from)
-);
-
-CREATE INDEX ix_contact_person    ON person_contact (person_id);
-CREATE INDEX ix_contact_type      ON person_contact (person_id, contact_type, purpose)
-    WHERE valid_to IS NULL;
-CREATE INDEX ix_contact_email     ON person_contact (lower(value))
-    WHERE contact_type = 'email' AND valid_to IS NULL;
-CREATE INDEX ix_contact_phone     ON person_contact (value)
-    WHERE contact_type = 'phone' AND valid_to IS NULL;
-
--- At most one current primary per (person, type, purpose):
-CREATE UNIQUE INDEX uq_contact_primary ON person_contact
-    (person_id, contact_type, purpose)
-    WHERE is_primary AND valid_to IS NULL;
-```
+- A person's contact points.
+- A person's current contact points by type and purpose — open rows only.
+- Email lookup on `value` lowercased, over current email rows only.
+- Phone lookup on `value` as stored, over current phone rows only.
 
 **`purpose` is the column that makes this operationally useful.** It lets the permission
 system distinguish "a unit leader may see emergency contacts for camp" from "only billing
 staff may see payment email addresses". Without `purpose`, every contact is equally
 sensitive and the only safe choice is to hide all of them.
 
-**The `uq_contact_primary` partial unique index** enforces "one primary email per person
+**The partial unique index on the primary contact** enforces "one primary email per person
 per purpose" without preventing a person from having four non-primary addresses. Note this
 index is what makes the merge conflict in
 [§8](#8-identity_hypothesis-and-person_merge) possible — resolving two `is_primary` rows is a review
 step, not a rule.
 
-**`ix_contact_email` is a functional index on `lower(value)`** because email matching in
+**The email index is functional — it indexes `value` lowercased** because email matching in
 the legacy importer must be case-insensitive, and a plain index cannot serve that.
 
 ---
 
 ## 7. `person_identifier`
 
-```sql
-CREATE TABLE person_identifier (
-    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id   BIGINT NOT NULL REFERENCES person(id),
+**Fields**
 
-    scheme      TEXT NOT NULL,
-    -- 'national_scout_id' | 'legacy_member_no' | 'legacy_member_no_oldsystem'
-    -- | 'government_id' | 'school_id' | 'insurance_no'
-    -- Validated against identifier_scheme (below).
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_id` | reference to person, required | |
+| `scheme` | text, required | `national_scout_id`, `legacy_member_no`, `legacy_member_no_oldsystem`, `government_id`, `school_id`, `insurance_no`. Validated against `identifier_scheme` below |
+| `value` | text, required | |
+| `issued_at` | date, optional | |
+| `valid_to` | date, optional | IDs expire or are superseded |
+| `verified_at` | timestamp, audit time, optional | |
+| `source` | text, optional | |
+| `import_batch_id` | reference to import batch, optional | |
+| `created_at` | timestamp, audit time | |
 
-    value       TEXT NOT NULL,
+**`identifier_scheme`** — the vocabulary of schemes.
 
-    issued_at   DATE,
-    valid_to    DATE,           -- IDs expire or are superseded
-    verified_at TIMESTAMPTZ,
-    source      TEXT,
-    import_batch_id BIGINT,
+**Fields**
 
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+| Field | Kind | Notes |
+|---|---|---|
+| `code` | text, required | The value `person_identifier.scheme` holds |
+| `name` | text, required | |
+| `is_unique` | boolean, required | Default true. True: a value may appear on only one person (national id, member number). False: values legitimately repeat (school id across schools) |
+| `description` | text, optional | |
 
-CREATE TABLE identifier_scheme (
-    code            TEXT PRIMARY KEY,
-    name            TEXT NOT NULL,
-    is_unique       BOOLEAN NOT NULL DEFAULT true,
-    -- True: a value may appear on only one person (national id, member number).
-    -- False: values legitimately repeat (school id across schools).
-    description     TEXT
-);
+**Rules**
 
--- Enforce uniqueness only for schemes flagged unique:
-CREATE UNIQUE INDEX uq_identifier_unique_scheme
-    ON person_identifier (scheme, value)
-    WHERE valid_to IS NULL;
+- **Uniqueness is per scheme, and `identifier_scheme.is_unique` decides it.** For a scheme
+  flagged unique, `(scheme, value)` is unique over the identifiers that are still current — those
+  with no `valid_to`. A superseded number may be reused; a current one may not be shared. The rule
+  covers open rows only.
+- **For a scheme flagged not-unique there is no such rule, and that is the point of the flag.**
+  `school_id` repeats by design: the same school issues the same number to many children, and each
+  of them is a different person who genuinely carries it. `is_unique = false` means one value may
+  appear on any number of people, and means it *at enforcement time*, not as a note in a
+  description column.
+- **Corrected here, and worth reading as a lesson.** The rule as first written applied to every
+  scheme and never read the flag; the flag and the rule were the same idea stated twice, once
+  enforced and once decorative. The effect was that `school_id` could not in fact repeat — the
+  second child at that school with the same number would have been rejected as a duplicate
+  identifier, at import time, by a constraint whose own table said it should not exist. **A column
+  that no rule reads is not documentation, it is a promise.** This is the same failure D-072 warns
+  about from the other side: a rule nobody runs is a convention, and a flag nothing consults is
+  decoration. Both read correctly on the page.
 
-CREATE INDEX ix_identifier_person ON person_identifier (person_id);
-```
+**Indexes**
+
+- A person's identifiers.
+- The uniqueness lookup above.
 
 **This table is the highest-value asset in the legacy import.** If the old system issued
 member numbers, an exact `(scheme='legacy_member_no', value=…)` match is the strongest
@@ -420,83 +367,70 @@ change per scheme and a nullable-unique mess.
 
 ## 8. `identity_hypothesis` and `person_merge`
 
-```sql
-CREATE TABLE identity_hypothesis (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+**Fields**
 
-    -- Canonical ordering enforced so that (a,b) and (b,a) cannot both exist:
-    person_a_id     BIGINT NOT NULL REFERENCES person(id),
-    person_b_id     BIGINT NOT NULL REFERENCES person(id),
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_a_id` | reference to person, required | The lower of the two ids — canonical ordering, so that `(a,b)` and `(b,a)` cannot both exist |
+| `person_b_id` | reference to person, required | |
+| `confidence` | number between 0 and 1, required | Inclusive of both ends |
+| `match_signals` | jsonb, required | A list of signals, each with a name, a weight and whether it matched — `[{signal: 'birth_date_exact', weight: 0.4, matched: true}, {signal: 'name_normalised', weight: 0.3, matched: true}, …]`. Stored so a human reviewer can see **WHY** the matcher proposed this |
+| `status` | text, required | One of: `proposed`, `needs_review`, `confirmed`, `rejected`, `superseded`. Default `proposed` |
+| `proposed_by` | text, required | One of: `import_job`, `match_job`, `person`, `staff`. `match_job` is the nightly batch matcher, as opposed to a person suggesting a match by hand. (Named `background_match` before background checks were removed from the design; renamed so the two never get confused.) |
+| `proposed_by_person_id` | reference to person, optional | Set when a person proposed it |
+| `proposed_at` | timestamp, audit time | Default: now |
+| `reviewed_by` | reference to person, optional | |
+| `reviewed_at` | timestamp, audit time, optional | |
+| `review_note` | text, optional | |
+| `created_at` | timestamp, audit time | |
 
-    confidence      NUMERIC(4,3) NOT NULL CHECK (confidence BETWEEN 0 AND 1),
-    match_signals   JSONB NOT NULL,
-    -- [{signal:'birth_date_exact', weight:0.4, matched:true},
-    --  {signal:'name_normalised',  weight:0.3, matched:true}, ...]
-    -- Stored so a human reviewer can see WHY the matcher proposed this.
+**Rules**
 
-    status          TEXT NOT NULL DEFAULT 'proposed'
-                    CHECK (status IN ('proposed','needs_review','confirmed',
-                                      'rejected','superseded')),
+- `person_a_id` names a lower person id than `person_b_id`, and the two are never the same
+  person.
+- A hypothesis cannot be `confirmed` or `rejected` without a `reviewed_at`.
+- One live hypothesis per pair: unique over `(person_a_id, person_b_id)` while the status is
+  `proposed`, `needs_review` or `confirmed`. A `rejected` or `superseded` hypothesis does not
+  block a new one, so the pair can be re-proposed later.
 
-    proposed_by     TEXT NOT NULL CHECK (proposed_by IN
-                        ('import_job','match_job','person','staff')),
-    -- 'match_job' = the nightly batch matcher, as opposed to a person suggesting a match
-    -- by hand. (Named 'background_match' before background checks were removed from the
-    -- design; renamed so the two never get confused.)
-    proposed_by_person_id BIGINT REFERENCES person(id),
-    proposed_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+**Indexes**
 
-    reviewed_by     BIGINT REFERENCES person(id),
-    reviewed_at     TIMESTAMPTZ,
-    review_note     TEXT,
+- The review queue: status, then `confidence` highest first, restricted to the rows still
+  waiting — `proposed` and `needs_review`.
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+**`person_merge`** — the record that one person row was absorbed into another.
 
-    CONSTRAINT ck_hypothesis_ordering CHECK (person_a_id < person_b_id),
-    CONSTRAINT ck_hypothesis_distinct   CHECK (person_a_id <> person_b_id),
-    CONSTRAINT ck_hypothesis_reviewed CHECK (
-        status NOT IN ('confirmed','rejected') OR reviewed_at IS NOT NULL)
-);
+**Fields**
 
--- One live hypothesis per pair:
-CREATE UNIQUE INDEX uq_hypothesis_pair_live
-    ON identity_hypothesis (person_a_id, person_b_id)
-    WHERE status IN ('proposed','needs_review','confirmed');
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `surviving_person_id` | reference to person, required | |
+| `merged_person_id` | reference to person, required | The absorbed row. It keeps its id; `person.merged_into_person_id` points here |
+| `hypothesis_id` | reference to identity hypothesis, optional | The hypothesis this merge came from, when one did |
+| `merged_at` | timestamp, audit time | Default: now |
+| `merged_by` | reference to person, required | |
+| `reason` | text, optional | |
+| `reversed_at` | timestamp, audit time, optional | |
+| `reversed_by` | reference to person, optional | |
+| `reversal_note` | text, optional | |
+| `created_at` | timestamp, audit time | |
 
-CREATE INDEX ix_hypothesis_queue ON identity_hypothesis (status, confidence DESC)
-    WHERE status IN ('proposed','needs_review');
+**Rules**
 
+- A person may not be merged into themselves: `surviving_person_id` and `merged_person_id`
+  are never the same person.
 
-CREATE TABLE person_merge (
-    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    surviving_person_id BIGINT NOT NULL REFERENCES person(id),
-    merged_person_id    BIGINT NOT NULL REFERENCES person(id),
-    -- The absorbed row. It keeps its id; person.merged_into_person_id points here.
+**Indexes**
 
-    hypothesis_id       BIGINT REFERENCES identity_hypothesis(id),
-    merged_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
-    merged_by           BIGINT NOT NULL REFERENCES person(id),
-    reason              TEXT,
+- Merges by surviving person, and merges by merged person — both directions get asked.
+- Merges by merged person that have not been reversed — the "who is this person now" query.
 
-    reversed_at         TIMESTAMPTZ,
-    reversed_by         BIGINT REFERENCES person(id),
-    reversal_note       TEXT,
-
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_merge_distinct CHECK (surviving_person_id <> merged_person_id)
-);
-
-CREATE INDEX ix_merge_surviving ON person_merge (surviving_person_id);
-CREATE INDEX ix_merge_merged    ON person_merge (merged_person_id);
-CREATE INDEX ix_merge_active    ON person_merge (merged_person_id)
-    WHERE reversed_at IS NULL;
-```
-
-**`ck_hypothesis_ordering` (`a < b`) is not cosmetic.** Without it the matcher can create
-both `(100, 847)` and `(847, 100)`, and a reviewer will confirm one while the other sits in
-the queue forever — or worse, confirm both. The check plus the partial unique index makes
-the pair identity unambiguous.
+**The canonical ordering (`person_a_id` before `person_b_id`) is not cosmetic.** Without it
+the matcher can create both `(100, 847)` and `(847, 100)`, and a reviewer will confirm one
+while the other sits in the queue forever — or worse, confirm both. The ordering rule plus
+the partial unique index makes the pair identity unambiguous.
 
 **`match_signals` as JSONB** rather than columns, because the signal set will evolve as the
 matcher improves, and because these are write-once-read-for-review, never queried
@@ -509,29 +443,29 @@ the mistake is visible. See
 
 ### Merge conflicts
 
-```sql
-CREATE TABLE field_conflict (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    merge_id        BIGINT NOT NULL REFERENCES person_merge(id),
+**`field_conflict`** — one field the merge could not decide.
 
-    entity_table    TEXT NOT NULL,     -- 'person' | 'person_contact' | 'membership' | ...
-    entity_id       BIGINT NOT NULL,
-    field_name      TEXT NOT NULL,
+**Fields**
 
-    surviving_value TEXT,
-    merged_value    TEXT,
-    resolution      TEXT CHECK (resolution IN
-                        ('kept_surviving','took_merged','manual','unresolved')),
-    resolved_value  TEXT,
-    resolved_by     BIGINT REFERENCES person(id),
-    resolved_at     TIMESTAMPTZ,
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `merge_id` | reference to person merge, required | |
+| `entity_table` | text, required | `person`, `person_contact`, `membership`, … |
+| `entity_id` | surrogate id, required | The row in `entity_table`. No reference — with the table named per row it would point at any table in the schema |
+| `field_name` | text, required | |
+| `surviving_value` | text, optional | |
+| `merged_value` | text, optional | |
+| `resolution` | text, optional | One of: `kept_surviving`, `took_merged`, `manual`, `unresolved` |
+| `resolved_value` | text, optional | |
+| `resolved_by` | reference to person, optional | |
+| `resolved_at` | timestamp, audit time, optional | |
+| `created_at` | timestamp, audit time | |
 
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+**Indexes**
 
-CREATE INDEX ix_conflict_merge ON field_conflict (merge_id, resolution);
-CREATE INDEX ix_conflict_open  ON field_conflict (merge_id) WHERE resolution = 'unresolved';
-```
+- A merge's conflicts by resolution.
+- A merge's conflicts that are still `unresolved` — the reportable set.
 
 Every field the merge could not resolve automatically lands here as `unresolved`. **A
 merge with unresolved conflicts must be visible in an operational report** — otherwise
@@ -554,36 +488,39 @@ Conflict cases worth naming, because each needs a human decision and none has a 
 Convenience views that encode the "always exclude merged and redacted" and "point in
 time" rules, so that application code cannot forget them.
 
-```sql
--- The person most queries actually want:
-CREATE VIEW v_person AS
-SELECT * FROM person
- WHERE merged_into_person_id IS NULL;
+**`v_person`** — the person rows most queries actually want: a person who is neither merged
+away nor redacted. **Both exclusions, not one.** They are different reasons and they must not be
+collapsed: a merged row is a *duplicate* that points at the real answer, while a redacted row is a
+*person who was erased*, whose names and contacts no longer exist. Neither belongs in a list of
+people, and a listing that shows one and hides the other is worse than either, because it teaches
+the reader that the redacted child is a data-entry error.
 
--- Resolve a possibly-merged id to its survivor (follows chains):
-CREATE OR REPLACE FUNCTION resolve_person(p_id BIGINT)
-RETURNS BIGINT LANGUAGE sql STABLE AS $$
-    WITH RECURSIVE chain AS (
-        SELECT id, merged_into_person_id FROM person WHERE id = p_id
-        UNION ALL
-        SELECT p.id, p.merged_into_person_id
-          FROM person p JOIN chain c ON p.id = c.merged_into_person_id
-    )
-    SELECT id FROM chain WHERE merged_into_person_id IS NULL LIMIT 1;
-$$;
+> **This is a correction, not a restatement.** The view as this document first carried it
+> excluded merged rows only, while §1 and §2 both said every listing must exclude redacted ones
+> too, and §9's own opening sentence claimed the views encoded both. Three statements, one of them
+> the code. The code lost. It is fixed here rather than noted as a discrepancy, because with the
+> SQL gone (§1 of D-072) there is nothing left to disagree with the prose — **the prose is now the
+> only place the rule lives, so it has to be right.**
 
--- Display name, honouring preferred_name:
-CREATE VIEW v_person_display AS
-SELECT p.id, p.public_id,
-       COALESCE(p.preferred_name, p.given_name) AS display_given_name,
-       p.family_name,
-       COALESCE(p.preferred_name, p.given_name) || ' ' || p.family_name AS display_name,
-       p.birth_date, p.birth_date_precision, p.redacted_at
-  FROM person p
- WHERE p.merged_into_person_id IS NULL;
-```
+**What is deliberately *not* excluded anywhere: the row itself.** A redacted person is still a
+row with a still-working id, so historical references keep resolving
+([§2](#2-person)'s `redacted_at`). Anything that must reach a merged or redacted
+row — audit, as-of reconstruction, `resolve_person` — queries `person` directly and says so.
+`v_person` is the view for "people", and people is not what an audit trail is asking for.
 
-`resolve_person` uses `RECURSIVE` because merges chain: A absorbed into B, later B absorbed
+**`resolve_person(id)`** — turns a possibly-merged id into the survivor. These steps run in
+this order, and the order is the rule:
+
+1. Begin at the person row carrying the given id.
+2. If that row has no `merged_into_person_id`, stop; this id is the answer.
+3. Otherwise move to the row its `merged_into_person_id` names and repeat from step 2.
+
+**`v_person_display`** — one row per person `v_person` admits, carrying `id`, `public_id`, a
+display given name (`preferred_name` where present, `given_name` otherwise), `family_name`,
+a display name formed by putting the two together with a space, `birth_date`,
+`birth_date_precision` and `redacted_at`.
+
+`resolve_person` follows every hop because merges chain: A absorbed into B, later B absorbed
 into C. A single-level pointer lookup would return B, whose row is itself tombstoned.
 **Every place that accepts a person id from outside must call this.** Getting it wrong
 means a historical record links to a tombstone and the UI shows a blank name — or the
@@ -598,38 +535,30 @@ rewrites history and makes unmerge nearly impossible. Tracked in
 
 ## 10. Integrity checks
 
-Queries that should run nightly and alert. These encode invariants the schema cannot
-express on its own.
+Checks that should run nightly and alert. These encode invariants that no per-column rule
+above can express.
 
-```sql
--- 1. A person with more than one live account (should be zero; index permits
---    pending+active simultaneously? no — verify the index covers all cases)
-SELECT person_id, count(*) FROM account
- WHERE status IN ('pending_verification','active','suspended')
- GROUP BY person_id HAVING count(*) > 1;
+**Invariants to verify**
 
--- 2. Merge chains longer than expected (signals repeated bad merges)
-SELECT * FROM person WHERE merged_into_person_id IS NOT NULL
- EXCEPT SELECT merged_person_id FROM person_merge WHERE reversed_at IS NULL;
-
--- 3. Tombstoned rows that are still referenced as survivors
-SELECT m.* FROM person_merge m
- JOIN person p ON p.id = m.surviving_person_id
- WHERE p.merged_into_person_id IS NOT NULL;
-
--- 4. Unresolved merge conflicts older than 30 days
-SELECT * FROM field_conflict
- WHERE resolution = 'unresolved' AND created_at < now() - INTERVAL '30 days';
-
--- 5. Redacted people still referenced by a live account
-SELECT p.id FROM person p JOIN account a ON a.person_id = p.id
- WHERE p.redacted_at IS NOT NULL AND a.status <> 'closed';
-
--- 6. Imported people with no membership (probably a partially applied batch)
-SELECT p.* FROM person p
- WHERE p.record_origin = 'legacy_import'
-   AND NOT EXISTS (SELECT 1 FROM membership m WHERE m.person_id = p.id);
-```
+- **A person with more than one live account.** Count `account` rows per person whose status
+  is `pending_verification`, `active` or `suspended`; anything above one is a breach of the
+  rule in §4, and the point of the check is to confirm that rule really does exclude the
+  pending-plus-active combination.
+- **A tombstoned person with no merge record.** Count persons whose merge pointer is set but
+  who do not appear as the merged person of any un-reversed `person_merge` row; non-zero
+  means merge chains longer than expected, which signals repeated bad merges.
+- **A tombstoned row still referenced as a survivor.** Count `person_merge` rows whose
+  `surviving_person_id` has its own merge pointer set; non-zero means a merge names as its
+  survivor a person who has themselves been absorbed.
+- **Unresolved merge conflicts older than 30 days.** Count `field_conflict` rows resolved to
+  `unresolved` and created more than 30 days ago; non-zero means the review queue is being
+  ignored and the data is quietly wrong.
+- **Redacted people still referenced by a live account.** Count `account` rows that are not
+  closed and belong to a person with `redacted_at` set; non-zero means an erasure left a
+  working login behind.
+- **Imported people with no membership.** Count people whose `record_origin` is
+  `legacy_import` and who have no `membership` row at all; non-zero probably means a
+  partially applied batch.
 
 ---
 

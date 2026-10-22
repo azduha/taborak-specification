@@ -52,26 +52,24 @@ The core mechanism. An **identity hypothesis** is a *proposal* that two person r
 the same human. It is a first-class table row, with a confidence score, evidence, a
 status, and a human decision.
 
-```
-identity_hypothesis(
-    id,
-    person_a_id, person_b_id,       -- canonical ordering enforced (a < b)
-    confidence,                      -- 0.00–1.00, from the matcher
-    match_signals,                   -- jsonb: which fields agreed, and how strongly
-    status,                          -- proposed | confirmed | rejected | superseded
-    proposed_by,                     -- 'import_job' | 'system' | 'person' | 'staff'
-    proposed_at,
-    reviewed_by, reviewed_at,
-    review_note
-)
-```
+The row holds the pair as `person_a_id` and `person_b_id`, stored in one order: `person_a_id`
+names the lower id, and the two are never the same person — a pair has one canonical spelling
+rather than two.
+
+`confidence` is the matcher's score between 0 and 1; `match_signals` records which fields
+agreed and how strongly, which is what a reviewer reads to see *why* it was proposed. `status`
+is one of `proposed`, `needs_review`, `confirmed`, `rejected`, `superseded`. `proposed_by`
+says where the proposal came from — `import_job`, `system`, `person` or `staff` — and
+`proposed_at` when. `reviewed_by`, `reviewed_at` and `review_note` are the human part, and a
+hypothesis may not reach `confirmed` or `rejected` without a `reviewed_at`. At most one live
+hypothesis exists per pair — live means `proposed`, `needs_review` or `confirmed`.
 
 ### Lifecycle
 
 ```
   matcher proposes ──> proposed ──┬── staff confirms ──> confirmed ──> [merge executed]
-                                  ├── staff rejects  ──> rejected (and never re-proposed
-                                  │                       for the same pair)
+                                  ├── staff rejects  ──> rejected (the pair becomes
+                                  │                       proposable again — see §4)
                                   └── person asserts ──> needs_review → staff confirms/rejects
 ```
 
@@ -157,7 +155,7 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 | `person_identifier` | Reassigned. Duplicate scheme+value collapses to one. |
 | `person_name` | Reassigned, keeping validity periods — this is how a maiden name survives. |
 | `account` | Reassigned to survivor. **If the survivor already has an account, the absorbed account is closed, not deleted.** |
-| `membership` | Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level exclusion constraint, an overlap here means a bad merge. |
+| `membership` | Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level no-overlap rulet, an overlap here means a bad merge. |
 | `unit_participation` | Reassigned, with the same overlap check. |
 | `guardianship` (as dependent) | Reassigned. |
 | `guardianship` (as guardian) | Reassigned. |
@@ -195,13 +193,11 @@ gains the absorbed person's access. Therefore:
 Support **unmerge**, because mistakes will happen. It is not symmetric — you cannot know
 which grants were exercised while merged — but you can restore the row split:
 
-```
-unmerge(merge_id):
-  - clear person.merged_into_person_id on the absorbed row
-  - reassign rows created before merged_at back to the absorbed person
-  - flag rows created after merged_at for human review  ← ambiguous, must be reviewed
-  - log the unmerge in person_merge with reversed_at / reversed_by
-```
+1. Clear `person.merged_into_person_id` on the absorbed row. The tombstone comes off.
+2. Reassign rows **created before** `merged_at` back to the absorbed person.
+3. Flag rows **created after** `merged_at` for human review. Those are the ambiguous ones, and
+   they are reviewed rather than split by a rule.
+4. Record the unmerge on the `person_merge` row, as `reversed_at` and `reversed_by`.
 
 The `access_grant` rows are the specific hazard. Any grant created *during* the merged
 window might belong to either human. Flag every one of them; do not guess.
@@ -276,7 +272,8 @@ old data model implied. **Do it, but mark it as inferred**, because
 `is_current_member()` and the permission gate ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership))
 both read `membership`, and an inferred membership from 1998 is harmless while an inferred
 membership row that runs to `valid_to IS NULL` would make someone a member today. The
-exclusion constraint makes this concrete: a person-level "one open membership" rule means
+**no-overlap rule** makes this concrete, whatever ends up enforcing it: a person-level "one open
+membership" rule means
 the import must **not** leave an open membership for someone whose only evidence is a
 roster.
 

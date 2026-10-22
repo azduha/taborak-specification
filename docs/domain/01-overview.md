@@ -120,7 +120,7 @@ Three distinct relationships, deliberately not merged:
 
 | Relationship | Direction | Example | Grants access? |
 |--------------|-----------|---------|----------------|
-| **Guardianship** | guardian → dependent | parent → child | **No.** Only via explicit `guardianship_permission` rows. |
+| **Guardianship** | guardian → dependent | parent → child | **No** by itself — only the `right_level` (`none` / `view` / `write`) carried on the live `guardianship` row. Since D-074 that value is the whole authority; `guardianship_permission` keeps only its history. |
 | **Membership** | member → the organization | anyone → the root unit | No. |
 | **Participation** | participant → sub-unit | child → Pack 12 | No. |
 | **Position held** | person → position in a sub-unit | adult → scoutmaster of Pack 12 | No. Only via `role_assignment`. |

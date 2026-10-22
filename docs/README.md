@@ -26,7 +26,7 @@ September 1990 to June 2010, and again from October 2024 to the present. They we
 **two `membership` rows**. A model that puts `is_member` or `member_type` on the person
 cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
 
-So there are four rules the schema obeys throughout:
+So there are five rules the data model obeys throughout:
 
 | # | Rule | Consequence |
 |---|------|-------------|
@@ -69,7 +69,7 @@ fees belong to the root in the first place.
 
 | Document | Covers |
 |----------|--------|
-| [data-model/00-conventions.md](data-model/00-conventions.md) | Naming, keys, temporal patterns, enums. **Read before reviewing any DDL.** |
+| [data-model/00-conventions.md](data-model/00-conventions.md) | Naming, keys, temporal patterns, enums. **Read before reviewing any data-model document — §6a says who enforces what.** |
 | [data-model/01-identity.md](data-model/01-identity.md) | `person`, `account`, contact points, identifiers. |
 | [data-model/02-organization.md](data-model/02-organization.md) | `org_unit`, types, hierarchy, positions. |
 | [data-model/03-membership.md](data-model/03-membership.md) | `membership`, `membership_request`, `unit_participation`. |
@@ -95,7 +95,7 @@ fees belong to the root in the first place.
 **In scope now:** identity, accounts, membership over time, organizational units,
 guardianship, and the authorization system.
 
-**Deliberately deferred** (referenced so the schema does not block them, not designed):
+**Deliberately deferred** (referenced so the data model does not block them, not designed):
 events, fees and payment processing, communication/messaging, documents, health
 records, reporting, and the API/UI layer. Each is listed in
 [open-questions.md](open-questions.md) with the hooks already left for it.
@@ -106,7 +106,7 @@ records, reporting, and the API/UI layer. Each is listed in
 
 You are expected to iterate. When refining:
 
-1. Update the affected document(s) — data model files carry the DDL, domain files carry the reasoning.
+1. Update the affected document(s) — data model files carry the rules and the fields they bind, domain files carry the reasoning. No data model file carries SQL: since [D-072](decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) a rule is written as a requirement, and [data-model/00-conventions.md §6a](data-model/00-conventions.md#6a-who-enforces-an-invariant-now) names the layer that must carry it.
 2. Record anything non-obvious that you overrule in [decisions/decision-log.md](decisions/decision-log.md).
 3. Move resolved items out of [open-questions.md](open-questions.md) rather than deleting them, so the reasoning survives.
 

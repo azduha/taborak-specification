@@ -1,26 +1,47 @@
 # Data Model Conventions
 
-Read this before reviewing any DDL in this folder. Every table follows the patterns
-here, and the patterns are load-bearing — deviating from them in one table creates bugs
-that only appear across decades of history.
+Read this before reading any other document in this folder. Every entity in this system is
+described using the patterns here, and the patterns are load-bearing — deviating from them in
+one table creates bugs that only appear across decades of history.
+
+**What this file is, since [D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).**
+It used to be the preamble to a set of `CREATE TABLE` statements. Those statements are gone —
+the schema is the ORM's job — and what remains is the part that was never about SQL: the rules
+about time, identity, deletion and rank that a generated schema will happily violate without
+noticing. **Nothing here is a suggestion.** A convention in this folder is a bug that has
+already happened somewhere, written down.
 
 ---
 
 ## 1. Target platform
 
-*Assumption:* **PostgreSQL 14+**. The design relies on:
+*Assumption:* **PostgreSQL 14+**, reached through an ORM.
 
-- `daterange` / `tstzrange` types and `&&` overlap operators — for the "no overlapping
-  periods" invariants that the whole temporal model depends on.
-- `EXCLUDE USING gist` constraints — the only clean way to enforce those invariants.
-- `btree_gist` extension — required for the exclusion constraints.
-- `jsonb` — for match signals, audit diffs, and other semi-structured payloads.
-- Recursive CTEs — for the unit hierarchy.
-- Native `ENUM` types *avoided* (see §5).
+The design relies on four things from the platform, and it is worth being exact about which
+four, because an ORM hides the list:
 
-If the target is MySQL/MariaDB, the exclusion constraints become triggers plus periodic
-consistency reports; that is a materially weaker guarantee and should be recorded as an
-accepted risk in [../decisions/decision-log.md](../decisions/decision-log.md).
+- **Range types with an overlap operator** (`daterange`, `tstzrange`, `&&`) — for the
+  "no overlapping periods" invariants that the whole temporal model depends on.
+- **Exclusion constraints** (`EXCLUDE USING gist`, with `btree_gist`) — the only way to state
+  "no two open rows may overlap" that survives every possible writer.
+- **A structured column type** (`jsonb`) — for match signals, audit diffs, event answers and
+  other semi-structured payloads whose shape is per-row by design.
+- **Recursive queries** — for the unit hierarchy. Note that this one is *only* for structure:
+  no authorization path may walk the hierarchy
+  ([../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance)).
+
+Native enum types are avoided — see §5.
+
+**What the ORM changes, and what it must not be allowed to change: see §6a. Read it before
+generating the first migration.** The short version is that most ORMs cannot emit an exclusion
+constraint, and the fallback they offer — validation in the model layer — is precisely the
+mechanism this document has always warned against. Hand-written migrations for those tables are
+not a deviation from "use the ORM", they are the condition on which it is safe.
+
+If the target turns out not to be PostgreSQL, exclusion constraints become triggers plus
+periodic consistency reports. **That is a materially weaker guarantee and it must be recorded as
+an accepted decision, not discovered as an outage.** Tracked in
+[../open-questions.md](../open-questions.md).
 
 ---
 
@@ -32,16 +53,22 @@ accepted risk in [../decisions/decision-log.md](../decisions/decision-log.md).
 | Column | `snake_case` | `valid_from`, `person_id` |
 | Primary key | `id` | always the same name, so joins read uniformly |
 | Foreign key | `<referenced_table_singular>_id` | `person_id` → `person.id` |
-| Boolean | `is_` / `has_` / `requires_` prefix | `is_primary`, `has_account` |
+| Boolean | `is_` / `has_` / `requires_` prefix | `is_primary`, `requires_membership` |
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
 | Junction table | `<a>_<b>` in alphabetical order | `role_permission`, not `permission_role` |
-| View | `v_<name>` | `v_active_member` |
-| Index | `ix_<table>_<cols>` | `ix_membership_person_period` |
-| Constraint | `ck_` / `fk_` / `uq_` / `ex_` prefix | `ex_membership_no_overlap` |
+| Lookup table | singular of the vocabulary it *is* | `access_level`, `reason_code` |
+| Index | names the table and what it answers | "the open rows for one person", not `idx_3` |
 
-There is no `deleted_at` column. Deletion is handled by temporal closure and tombstones,
-never by a soft-delete flag — see §4.
+Singular table names are not aesthetic. `membership` reads correctly in a sentence about one
+row, which is how most of this system's rules are written; plural table names produce code that
+says `memberships[0].membership_id` and reviewers stop reading it.
+
+There is no `deleted_at` column. Deletion is handled by temporal closure and tombstones, never
+by a soft-delete flag — see §4.
+
+Naming survives the move to an ORM; it is the one section of this file that the ORM will follow
+without being told, provided someone wrote these rules into the ORM's own conventions.
 
 ---
 
@@ -49,31 +76,30 @@ never by a soft-delete flag — see §4.
 
 **Every table has a surrogate `id`.** No natural keys as primary keys, ever.
 
-Rationale specific to this project: natural keys here are things like names, old member
-numbers, and email addresses — all of which **change**, **repeat**, and **get corrected**.
-A name is not unique (and was less so in 1994). An email address is reused by providers
-and reassigned between people. A legacy member number may be absent, or duplicated across
-two source systems.
+Rationale specific to this project: natural keys here are things like names, old member numbers,
+and email addresses — all of which **change**, **repeat**, and **get corrected**. A name is not
+unique (and was less so in 1994). An email address is reused by providers and reassigned between
+people. A legacy member number may be absent, or duplicated across two source systems. A natural
+key that turns out to be wrong is a key that must be rewritten, and a rewritten primary key
+rewrites every historical reference beside it.
 
-```
-id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-```
+The surrogate key is a **64-bit** integer, not 32-bit, because this system accumulates rows for
+decades and because `access_grant.scope_id` must never run out of room or recycle.
 
-`BIGINT` rather than `INT` because this system accumulates rows for decades and the
-polymorphic `access_grant.scope_id` must never have its ids reused.
+**Exception, and it is a security requirement:** `person.public_id` — a separate `UUID` column,
+used for every external exposure.
 
-**Exception:** `person.public_id` — a separate `UUID` column for external exposure.
-
-Rationale: `access_grant.scope_id` is a bare bigint with no foreign key, and ids appear in
-URLs and exports. Sequential ids leak record counts and — more seriously — let someone
-enumerate `/person/1001`, `/person/1002` and discover members. Expose `public_id` in all
-external interfaces; keep `id` internal.
+Rationale: `access_grant.scope_id` is a bare bigint with no foreign key, and ids appear in URLs
+and exports. Sequential ids leak record counts and — more seriously — let someone enumerate
+`/person/1001`, `/person/1002` and discover members. **Expose `public_id` in all external
+interfaces; keep `id` internal.** An ORM that marshals entities by primary key has, by default,
+published the internal counter.
 
 ---
 
 ## 4. Deletion policy
 
-**Nothing is hard-deleted.** There is no `deleted_at` and no `DELETE` for business data.
+**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data.
 
 | Situation | Mechanism |
 |-----------|-----------|
@@ -82,57 +108,70 @@ external interfaces; keep `id` internal.
 | A grant revoked | Set `access_grant.valid_to`; keep the row |
 | Two people merged | Tombstone: set `merged_into_person_id`; row remains |
 | A unit closed | Set `org_unit.valid_to` and `status = 'closed'` |
-| GPDR-style erasure requested | **Redact** field values; do not delete rows — see §8 |
+| GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8 |
 
-This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must
-resolve forever. A hard delete breaks the audit trail and, in a youth organization, the
-safeguarding record.
+This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
+forever. A hard delete breaks the audit trail and, in a youth organization, the safeguarding
+record.
 
 **The one exception:** staging tables (`staging_import*`) may be truncated after a batch is
 applied, subject to the project's retention policy.
+
+**This rule is now carried entirely by discipline, and that is worth saying out loud.** A
+`ON DELETE RESTRICT` default, a revoke of `DELETE` from the application role, an ORM whose delete
+method nobody has ever called — those were enforcement. What remains is an instruction to whoever
+configures the ORM: **deleting business rows is not a feature this system has.** Do not wire a
+"remove" button to an ORM delete call. The audit log will not save you, because it records
+changes to rows that still exist.
 
 ---
 
 ## 5. Enumerations
 
-**Use `TEXT` with a `CHECK` constraint, not the native `ENUM` type.**
-
-```sql
-status TEXT NOT NULL CHECK (status IN ('draft', 'submitted', 'approved'))
-```
+**Status vocabularies are text with an allowed-value list, not the database's native enum type.**
 
 Why, given that native enums are more compact:
 
-- Adding a value to a native enum is easy; **removing or reordering** one is painful, and
-  over a 40-year lifespan a status vocabulary *will* be revised.
-- Native enum ordering is baked in, and the order of states here is meaningful (see below).
-- `CHECK` constraints are visible in `information_schema` and in every migration tool,
-  which makes review and diffing straightforward.
+- Adding a value to a native enum is easy; **removing or reordering** one is painful, and over a
+  40-year lifespan a status vocabulary *will* be revised.
+- Native enum ordering is baked in, and the order of states here is meaningful — and it is *not*
+  the order the type would infer (see below).
+- An allowed-value list is visible in schema introspection and in every migration tool, which
+  makes review and diffing straightforward.
 
-### Critical rule: status strings are ordered
+**This section used to carry the `CREATE TABLE` and `CHECK` syntax that expressed it.** D-072
+deleted it, and the rule it expressed is unchanged: the vocabulary lives with the entity, the
+values are closed, and the vocabulary is reviewable without reading application code.
 
-Several status columns have a **meaningful progression**, and code must compare by rank,
-never by string. A `CHECK` on the value list does not capture rank, so **also add a lookup
-table** wherever rank matters:
+### Critical rule: status strings are ordered, and the order is not alphabetical
 
-```sql
-CREATE TABLE access_level (
-    level       TEXT PRIMARY KEY,      -- 'revoked','view','contribute','manage','admin'
-    rank        INTEGER NOT NULL UNIQUE,
-    description TEXT NOT NULL
-);
-INSERT INTO access_level VALUES
-    ('revoked',    0, 'Explicitly denied; overrides all grants'),
-    ('view',      10, 'Read only'),
-    ('contribute',20, 'Read and add'),
-    ('manage',    30, 'Full control of the item'),
-    ('admin',     40, 'Full control including granting access');
-```
+Several status columns have a **meaningful progression**, and code must compare by **rank**,
+never by string. Wherever rank matters there is a lookup table carrying an integer rank, and the
+one that matters most is this one:
 
-Then `WHERE l.rank >= (SELECT rank FROM access_level WHERE level = 'manage')`. **Never**
-compare level strings lexicographically — doing so silently inverts the ordering of
-`admin` and `contribute` (`'admin' < 'contribute'` alphabetically), which is a security bug
-that produces no error.
+| Level | Rank | Meaning |
+|---|---|---|
+| `revoked` | 0 | Explicitly denied; overrides all grants |
+| `view` | 10 | Read only |
+| `contribute` | 20 | Read and add |
+| `manage` | 30 | Full control of the item |
+| `admin` | 40 | Full control including granting access |
+
+Gaps of ten are deliberate: insertions between levels (an `approve` tier between `view` and
+`contribute`) must not require renumbering a stored vocabulary.
+
+**Never compare level strings lexicographically.** `'admin' < 'contribute'` alphabetically. A
+system that sorts grants by string therefore ranks *full control including granting access*
+**below** *read and add* — a security bug that produces no error, no failed test, and no log
+line. This is the single most dangerous sentence in this file, and it is the reason the ladder is
+data rather than a language feature.
+
+**One ladder, every ladder.** A guardian's right over a child is `none`, `view`, or `write`, and
+those map onto this same ladder at 0, 10 and 20 rather than getting a second scale
+([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+Two scales would have to be kept in step and would eventually not be, which is how a guardian
+ends up able to do *more* than a manager. When adding any new ordered vocabulary, ask whether it
+is this ladder wearing a name.
 
 ---
 
@@ -140,62 +179,100 @@ that produces no error.
 
 The pattern behind every period in this system.
 
-```sql
-CREATE TABLE example (
-    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id   BIGINT NOT NULL REFERENCES person(id),
-
-    valid_from  DATE        NOT NULL,
-    valid_to    DATE,                          -- NULL = still true
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-    CONSTRAINT ck_example_period CHECK (valid_to IS NULL OR valid_to > valid_from),
-    CONSTRAINT ex_example_no_overlap EXCLUDE USING gist (
-        person_id WITH =,
-        daterange(valid_from, valid_to, '[)') WITH &&
-    )
-);
+```
+entity
+  id
+  the thing the period is about        e.g. person_id
+  valid_from    DATE        NOT NULL
+  valid_to      DATE        NULL       -- NULL = still true
+  created_at    TIMESTAMPTZ NOT NULL
 ```
 
 ### The four rules
 
-1. **`valid_to IS NULL` means "still true".** Not a far-future sentinel date. A sentinel
-   like `'9999-12-31'` looks convenient and breaks every `IS NULL` check, every range
-   query, and every "currently active" index. Do not use one.
-2. **Ranges are half-open `[valid_from, valid_to)`.** A membership ending 2010-06-30 and
-   another starting 2010-06-30 do not overlap. Closed intervals make adjacent periods
-   collide, and you will spend a day debugging it.
-3. **Overlap is prevented by an exclusion constraint**, not by application code. An
-   import script, a manual SQL fix, or a future API will bypass application validation.
-   The database is the only place the invariant can be trusted.
-4. **`created_at` is audit time, not world time.** It is distinct from `valid_from` — a
-   membership backdated to 1990 during a 2026 import has `valid_from = 1990-09-01` and
-   `created_at = 2026-…`. Never conflate them, and never derive one from the other.
+1. **`valid_to IS NULL` means "still true".** Not a far-future sentinel date. A sentinel like
+   `'9999-12-31'` looks convenient and breaks every "is open" check, every range query, and every
+   index on open rows. Do not use one.
+2. **Periods are half-open `[valid_from, valid_to)`.** A membership ending 2010-06-30 and another
+   starting 2010-06-30 **do not overlap**. Closed intervals make adjacent periods collide, and
+   you will spend a day debugging it. This rule is invisible in a schema and cannot be inferred
+   from column names; it must be written in whatever the ORM uses to express such a thing, and
+   tested.
+3. **Overlap is prevented below the application, not inside it.** An import script, a manual data
+   fix, a future API, and a bulk edit all bypass model-layer validation. The invariant must hold
+   for writers that were never written. → §6a.
+4. **`created_at` is audit time, not world time.** It is distinct from `valid_from` — a membership
+   backdated to 1990 during a 2026 import has `valid_from = 1990-09-01` and `created_at = 2026-…`.
+   Never conflate them, and never derive one from the other. A system that sets `valid_from` from
+   the clock cannot import its own history.
 
-### Why `daterange` and not a pair of timestamps
+### Why days, not timestamps
 
-A `DATE` granularity is correct here: memberships, guardianships, and unit assignments
-start and end on days, not seconds. Using `TIMESTAMPTZ` invites timezone-dependent
-boundary bugs on things like "was this person a member on 1 June?".
+`DATE` granularity is correct for most periods here: memberships, guardianships, unit assignments,
+fees and exposures start and end on days. Timestamps invite timezone-dependent boundary bugs on
+questions like "was this person a member on 1 June?".
 
-Where sub-day precision genuinely matters (session validity, delegation during a specific
-meeting), the column pair becomes `TIMESTAMPTZ` and the exclusion uses `tstzrange`. Both
-patterns exist; each table documents which it uses.
+Where sub-day precision genuinely matters — session validity, a delegation in force during one
+meeting — the same pattern uses timestamps. Both patterns exist in this system; **each entity
+states which one it uses**, because a comparison between the two is where the boundary bugs live.
 
 ### Indexing the pattern
 
-```sql
-CREATE INDEX ix_example_person_period
-    ON example (person_id, valid_from DESC, valid_to);
+Two access paths carry the load and both must exist when the schema is generated:
 
-CREATE INDEX ix_example_open
-    ON example (person_id)
-    WHERE valid_to IS NULL;
-```
+- **One entity's periods, newest first** — the history view.
+- **The open periods for one entity** — restricted to rows with no `valid_to`. **This is the
+  index that matters.** "Currently active" is the overwhelmingly common question, it stays small
+  because open rows are a small fraction of history, and it is the one an ORM will not create on
+  its own, because it is not an index on a column combination the model declares — it is an index
+  with a condition. If your migrations do not contain a filtered index, nobody thought about this.
 
-The partial index on open rows is the one that carries the load — "currently active" is
-the overwhelmingly common query, and it stays small because open rows are a small fraction
-of history.
+---
+
+## 6a. Who enforces an invariant now
+
+**This section did not exist before D-072. It exists because deleting the constraints moved
+responsibility, and a moved responsibility that nobody names is a responsibility nobody holds.**
+
+Every data-model document in this folder states its rules as prose: "no two open rows may
+overlap", "at most one primary contact", "a revoked grant must name who revoked it". Prose does
+not reject a row. Three layers could do it, and they are not equivalent:
+
+| Layer | Survives an import? | Survives a manual fix? | Survives a second client? |
+|---|---|---|---|
+| Model-layer validation in the ORM | **No** | **No** | **No** |
+| Migration-level database constraint | Yes | Yes | Yes |
+| Nightly consistency report | Yes, eventually | Yes, eventually | Yes, eventually |
+
+**The rule for this system, stated once and applied everywhere: an invariant that is a
+correctness property of the data belongs in the database, emitted by a migration, even when the
+ORM cannot generate it and the migration must be written by hand.** Model-layer validation is a
+*usability* feature — it produces a good error message before a round trip — and it is not an
+invariant. The nightly report is a safety net for the invariants that were never expressible as a
+constraint at all, and each document's "Invariants to verify" section is exactly that list.
+
+Three consequences that are easy to get wrong:
+
+1. **The overlap invariants need hand-written migrations on PostgreSQL.** Most ORMs cannot emit
+   an exclusion constraint over a range built from two columns. Writing those twenty-odd lines
+   once, per temporal table, is cheaper than the alternative — which is duplicate open rows
+   discovered in 2031 by someone who cannot tell which one was ever real.
+2. **Uniqueness that depends on a condition needs a partial unique index.** "One open request per
+   person and type", "one primary contact per child among open rows", "one live exposure per unit
+   and assignment" are all this shape. A unique constraint over the *un*conditioned columns is
+   not the same rule and is usually wrong in the direction of too strict — it forbids the second
+   closed row, which history requires.
+3. **Uniqueness decided by data cannot live in an index at all.** `identifier_scheme.is_unique`
+   says per scheme whether a value may repeat
+   ([01-identity.md §7](01-identity.md#7-person_identifier)); no index can consult a row of a
+   different table. This one is genuinely application-level plus a report, and it is documented as
+   such rather than being pretended away. **The earlier version of that document had the opposite
+   bug — an index that applied to every scheme, ignoring the flag and making `school_id`
+   unrepeatable in fact.**
+
+**And the honest cost, stated in D-072's own terms: some rules now have no enforcement anywhere
+automatic can reach.** They are written as invariants to verify and they will catch drift only if
+someone runs them. A prohibition nobody runs is a convention, not a guard.
 
 ---
 
@@ -203,54 +280,77 @@ of history.
 
 Every business table carries:
 
-| Column | Type | Purpose |
+| Column | Kind | Purpose |
 |--------|------|---------|
-| `id` | `BIGINT IDENTITY` | Surrogate key |
-| `created_at` | `TIMESTAMPTZ NOT NULL DEFAULT now()` | Audit time of insert |
-| `created_by` | `BIGINT REFERENCES person(id)` | Who inserted. NULL for system/import jobs. |
-| `updated_at` | `TIMESTAMPTZ` | Audit time of last change (via trigger) |
-| `updated_by` | `BIGINT REFERENCES person(id)` | Who last changed it |
-| `import_batch_id` | `BIGINT REFERENCES import_batch(id)` | Nullable; set on imported rows |
+| `id` | 64-bit surrogate key | Set by the database, never by the caller |
+| `created_at` | timestamp, required | Audit time of insert |
+| `created_by` | person, optional | Who inserted. Absent for system and import jobs. |
+| `updated_at` | timestamp, optional | Audit time of last change |
+| `updated_by` | person, optional | Who last changed it |
+| `import_batch_id` | import batch, optional | Set on imported rows — the only way to undo a bad import |
 
-Temporal tables additionally carry `valid_from` / `valid_to`.
+Temporal entities additionally carry `valid_from` / `valid_to`.
 
-Tables that record a *decision about a person* (terminations, rejections, rejections of
-identity hypotheses) additionally carry a reason:
+Entities that record a *decision about a person* (terminations, rejections, rejections of identity
+hypotheses) additionally carry a reason:
 
-| Column | Type |
+| Column | Kind |
 |--------|------|
-| `<verb>_reason_code` | `TEXT REFERENCES reason_code(code)` |
-| `<verb>_reason_note` | `TEXT` — free text, for the human explanation |
+| `<verb>_reason_code` | reference to `reason_code` |
+| `<verb>_reason_note` | free text, for the human explanation |
 
-**Reason codes are a lookup table, not free text.** "Why was this membership terminated?"
-must be reportable and comparable across years. Free text is not.
+**Reason codes are a lookup table, not free text.** "Why was this membership terminated?" must be
+reportable and comparable across years. Free text is not. The note exists so the code does not
+have to carry the nuance, and a decision with a code and no note is fine while the reverse is not.
+
+`updated_at` and `updated_by` were maintained by a database trigger. **With the schema generated,
+nothing maintains them unless someone says so** — and an ORM that sets them only on the paths the
+application happens to take gives you an audit trail that is silently incomplete. Either
+maintain them at the database level or accept that `updated_at` means "last changed through the
+app". Do not leave it undecided; an audit column nobody thinks about is worse than no audit
+column, because people rely on it.
 
 ---
 
 ## 8. Personal data and erasure
 
-This schema holds data about **children**, which raises the stakes on every decision here.
+This system holds data about **children**, which raises the stakes on every decision here.
 
 Requirements the design must satisfy:
 
-1. **A deletion request must not destroy the audit trail.** Implement as **redaction**:
-   set `person.redacted_at`, overwrite names and contact points with a redaction marker,
-   and keep the row and its ids so historical references still resolve. The person is no
-   longer identifiable; the record that *someone* was in Troop 12 in 2003 survives.
-2. **Redaction must cascade** to contact points, identifiers, and free-text notes that may
-   contain personal data. A `redaction_log` records what was redacted and when.
+1. **A deletion request must not destroy the audit trail.** Implement as **redaction**: set
+   `person.redacted_at`, overwrite names and contact points with a redaction marker, and keep the
+   row and its ids so historical references still resolve. The person is no longer identifiable;
+   the record that *someone* was in Troop 12 in 2003 survives.
+2. **Redaction must cascade** to contact points, identifiers, and free-text notes that may contain
+   personal data. A `redaction_log` records what was redacted and when.
 3. **Some data must not be redacted** — membership periods, unit memberships, and position
-   assignments are organizational history rather than personal data, and removing them
-   would falsify records that the organization is often obliged to keep.
-4. **Health and safeguarding records have separate retention rules** and are out of scope
-   for this document, but the `person.redacted_at` flag must be visible to them.
-5. **Sensitive attributes should not be over-collected.** `person.gender` is included
-   because Scouting-type organizations typically must report it; if yours does not, remove
-   the column rather than keeping it "just in case".
+   assignments are organizational history rather than personal data, and removing them would
+   falsify records that the organization is often obliged to keep.
+4. **Health and safeguarding records have separate retention rules** and are out of scope for this
+   document, but the `person.redacted_at` flag must be visible to them.
+5. **Sensitive attributes should not be over-collected.** `person.gender` is included because
+   Scouting-type organizations typically must report it; if yours does not, remove the field
+   rather than keeping it "just in case".
+6. **Redaction is invisible in listings and visible in the database.** A redacted person must not
+   appear where people are listed, and must still resolve wherever an old record points at them
+   ([01-identity.md §9](01-identity.md#9-views)). These two requirements are one rule with two
+   halves and the first version of that document had only one of them.
 
-> Legal review is required before implementing §8. This section describes the technical
-> mechanism, not the compliance policy. Tracked in
+> Legal review is required before implementing §8. This section describes the technical mechanism,
+> not the compliance policy. Tracked in
 > [../open-questions.md](../open-questions.md).
+
+**Two mechanisms that used to help here are gone, and they failed in different directions.**
+Redaction of the *audit payload* was automatic: a trigger scrubbed sensitive keys out of the
+before/after values on their way into the log, so a person's free-text notes could not leak into
+an audit entry merely by being edited. There is no trigger now — scrubbing the log is application
+behaviour, and forgetting it writes the secret into a table designed to be read later by
+auditors. (Worth recording: inside that trigger was a list of keys to scrub *unconditionally*, and
+nothing ever read it. A dead list of forbidden fields is not a protection.) The other half is the
+listing view that excluded redacted rows, which is §6a's problem in general.
+**Neither failure is loud.** Both are written down because a compliance property resting on a code
+review is the kind of thing an organization discovers from a regulator.
 
 ---
 
@@ -258,40 +358,62 @@ Requirements the design must satisfy:
 
 | Rule | Rationale |
 |------|-----------|
-| All FKs are `ON DELETE RESTRICT` | Nothing cascades. A person cannot be deleted while memberships reference them. |
-| No `ON DELETE CASCADE` anywhere | Cascade delete is the enemy of a 40-year audit trail. |
-| Nullable FKs document *why* they are nullable | In a comment. A nullable FK is usually a design decision worth recording. |
-| `access_grant.scope_id` is the **one** FK-less column | It is polymorphic by design; see [../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-access-grants--the-per-item-layer). |
-| Circular FKs are resolved with a deferred constraint or a nullable column | `membership_request.membership_id` ↔ `membership.joined_via_request_id` is the one instance. |
+| References **restrict**; none cascade a delete | Nothing cascades. A person cannot be removed while memberships reference them. |
+| No cascading deletes anywhere | Cascade delete is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one.** |
+| Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
+| `access_grant.scope_id` is the **one** reference-less key | It is polymorphic by design; see [../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-access-grants--the-per-item-layer). Nothing else may be. |
+| Circular references are broken with an optional column, not a deferred constraint | `membership_request` ↔ `membership` is the one instance; the two-step insert is documented where it lives. |
+
+The polymorphic `access_grant.scope_id` deserves its warning again now that the schema is
+generated: **an ORM will want to make this a real relation, and making it one is a design
+change.** It points at a person, a unit, an event or an organization depending on a sibling
+column. No foreign key can express that, and every query that joins it must filter on
+`scope_type` first. If the ORM maps it as a relation to one table, the others become silent
+wrong answers rather than errors.
 
 ---
 
 ## 10. Migration discipline
 
-- **Every migration is reversible** or explicitly marked irreversible with a rationale.
-  A migration that drops a column holding historical data is irreversible by definition.
-- **Never rewrite a historical row's meaning.** Adding a column is fine; changing what an
-  existing value means is a data migration that needs its own review.
-- **Backfills are separate from schema changes**, in their own migration, so a failed
-  backfill does not roll back a schema change and vice versa.
-- **Seed data for lookups** (`access_level`, `permission`, `org_unit_type`,
-  `reason_code`) lives in migrations, not in application startup code, so that the
-  vocabulary is versioned with the schema.
+- **Every migration is reversible**, or explicitly marked irreversible with a rationale. A
+  migration that drops a column holding historical data is irreversible by definition.
+- **Never rewrite a historical row's meaning.** Adding a column is fine; changing what an existing
+  value *means* is a data migration that needs its own review, and it is the kind of change that
+  makes old audit entries lie.
+- **Backfills are separate from schema changes**, in their own migration, so a failed backfill
+  does not roll back a schema change and vice versa.
+- **Seed data for vocabularies** (`access_level`, `permission`, `org_unit_type`, `reason_code`)
+  lives in migrations, not in application startup code, so the vocabulary is versioned with the
+  data it describes. Application-startup seeding produces environments that disagree about what
+  `contribute` means.
+- **Two documents are the source of truth for what a migration must achieve:** each data-model
+  file's **Rules** block for the constraints, and its **Invariants to verify** block for the
+  reports. A migration that implements neither set completely has generated a schema, not a
+  design.
 
 ---
 
-## 11. Where the DDL lives
+## 11. Where each subject is described
 
-| Document | Tables |
-|----------|--------|
+Not "where the DDL lives" — that question stopped meaning anything at D-072. Each document below
+states the fields, rules, invariants and open issues for its part of the model.
+
+| Document | Entities |
+|----------|----------|
 | [01-identity.md](01-identity.md) | `person`, `person_name`, `account`, `account_credential`, `person_contact`, `person_identifier`, `identity_hypothesis`, `person_merge` |
-| [02-organization.md](02-organization.md) | `org_unit`, `org_unit_type`, `org_unit_name`, `org_unit_relationship`, `position`, `position_assignment` |
+| [02-organization.md](02-organization.md) | `org_unit`, `org_unit_type`, `org_unit_type_rule`, `org_unit_name`, `org_unit_relationship`, `position`, `position_assignment` |
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request`, `unit_participation` |
-| [04-relationships.md](04-relationships.md) | `guardianship`, `guardianship_permission` |
-| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `access_grant`, `permission_level`, `access_log` |
-| [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `import_batch`, `staging_import*` |
-| [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment` — **provisional** |
+| [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
+| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `scope_exposure`, `access_grant`, `permission_level`, `audience`, `audience_member`, `access_log` |
+| [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
+| [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
 
-DDL is presented in **dependency order**: a table appears only after everything it
-references.
+Each document presents its entities in **dependency order**: one appears only after everything it
+references. That ordering was needed to make a schema file execute; it is kept because it is also
+the order in which the model is understandable.
+
+**Messaging is not in this table.** `message` and `message_recipient` are decided at
+[D-077](../decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+and not yet designed; they will need their own document. The absence is tracked in
+[../open-questions.md](../open-questions.md#h-not-yet-designed).

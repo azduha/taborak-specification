@@ -98,11 +98,9 @@ Two deliberate choices:
 
 ## 4. Contact points and identifiers
 
-A person's email, phone and address are **rows, not columns**:
-
-```
-person_contact(id, person_id, type, purpose, value, is_primary, verified_at, valid_from, valid_to)
-```
+A person's email, phone and address are **rows, not columns**. Each row carries its type, its
+purpose, its value, whether it is the primary one for that type and purpose, when it was
+verified, and the period it applied for.
 
 Why not just `person.email`:
 
@@ -121,9 +119,9 @@ billing details are not.
 
 ### External identifiers
 
-```
-person_identifier(id, person_id, scheme, value, verified_at)
-```
+One row per identifier held against a person: a `scheme`, a `value`, and when it was verified
+if it ever was. `(scheme, value)` is unique among the identifiers that are still current — a
+superseded number may be reused, a current one may not be shared.
 
 For identifiers issued *outside* the system: a national Scout registration number, a
 government ID, an old membership card number from a previous system, a school ID. Keeping
@@ -138,37 +136,32 @@ possible. See [03-identity-and-legacy.md](03-identity-and-legacy.md).
 Per your answer, both read and write access for a caretaker must be **explicit**. So:
 
 - A `guardianship` row establishes the *relationship*.
-- A `guardianship_permission` row grants a specific *capability* over that dependent.
+- That row carries one right — `none`, `view`, or `write`. Being the parent implies nothing;
+  a row at `none` grants literally nothing.
 
-Capability codes are granular, and a role that needs broad reach lists them explicitly —
-there is no per-resource `admin` wildcard
+The right is **one value, not a capability list**
+([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+The `dependent.*` codes this document used to enumerate are deleted — eighteen of them across
+the catalog — and with them go the cases they existed for: a guardian who may register the child for events but may not
+read the medical record cannot be expressed, and neither can "read-only, but not the medical
+file". What survives is what made the list worth having — the right is explicit, dated,
+revocable and audited, one deliberate value per row rather than an inference from who someone
+is. `write` ranks at `contribute` and not at `manage`, so a guardian still cannot do
+organization-wide things and cannot reach a different dependent's records. A role that needs
+broad reach over its own side of the model still lists what it grants explicitly — there is no
+per-resource `admin` wildcard
 ([D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
-Initial set:
+History is kept: every change of the value is a new `guardianship_permission` row, and the
+value on the `guardianship` row is always the open one's.
 
-| Code | Grants |
-|------|--------|
-| `dependent.profile.view` | See the dependent's profile and membership state |
-| `dependent.profile.admin` | View and edit the dependent's profile |
-| `dependent.contact.manage` | Edit the dependent's contact points |
-| `dependent.membership.request` | Submit and renew the dependent's membership |
-| `dependent.membership.view` | See the dependent's membership history |
-| `dependent.event.register` | Register the dependent for events |
-| `dependent.event.view` | See the dependent's event registrations |
-| `dependent.fee.pay` | Pay fees on the dependent's behalf |
-| `dependent.fee.view` | See the dependent's fee and payment records |
-| `dependent.medical.view` | See the dependent's medical/allergy records |
-| `dependent.medical.admin` | View and edit medical records |
-| `dependent.consent.admin` | Give consents (photo, transport, activity) on the dependent's behalf |
-| `dependent.admin` | All of the above |
-
-**How a check resolves.** `dependent.X` is evaluated against the `guardianship_permission`
-rows for the `(guardian, dependent)` pair, not against roles. This keeps the two authority
-channels distinct:
+**How a check resolves.** A check about a dependent is evaluated against the `guardianship`
+row for the `(guardian, dependent)` pair and the right level it holds, not against roles. This
+keeps the two authority channels distinct:
 
 - **Roles** answer "what may this person do in the organization?"
-- **Guardianship permissions** answer "what may this person do regarding this child?"
+- **Guardianship** answers "what may this person do regarding this child?"
 
-A unit leader does not get `dependent.*` permissions over unit members by virtue of leading
+A unit leader does not hold a guardian's right over unit members by virtue of leading
 the unit. If the organization genuinely needs leaders to see a camper's emergency contacts,
 that is granted through a *role* permission with a unit scope, resolved at the event, and
 audited — not through a fictional guardianship.
@@ -176,11 +169,8 @@ audited — not through a fictional guardianship.
 ### Recording acts on behalf
 
 Every operation performed on behalf of another person writes to `access_log` with both
-parties:
-
-```
-access_log(..., actor_person_id = <parent>, subject_person_id = <child>, on_behalf = true)
-```
+parties: `actor_person_id` is the parent, `subject_person_id` is the child, and `on_behalf`
+records that the actor acted *for* the subject rather than as themselves.
 
 This is not optional bookkeeping. When a parent changes a child's address or registers them
 for a camp, the record must show that the *parent* did it, not the child. Without this,
@@ -193,16 +183,13 @@ the audit trail falsely attributes the parent's actions to the child.
 A recurring operational need: "who do we call about this child?" The answer is usually a
 guardian, but not always the same one, and not always the one with the most permissions.
 
-Resolve it as:
+Resolve it as three conditions on `guardianship`, applied in this order: the row's dependent is
+this child; the row is still open today, meaning `valid_to` is absent or later than today — a
+guardianship that has ended is not an answer, so the date is checked on the row rather than
+assumed; and `is_primary_contact` is set. The answer is the contact points of *those* guardians
+whose purpose is `emergency`.
 
-```
-guardianship where dependent = <child>
-  and guardianship.valid_to is null or > now()
-  and guardianship.is_primary_contact = true
-  → their emergency-purpose contact points
-```
-
-`is_primary_contact` on `guardianship` is separate from permissions on purpose: a guardian
+`is_primary_contact` on `guardianship` is separate from the guardian's right level on purpose: a guardian
 with no system access at all can still be the emergency contact. Do not require login
 capability to be reachable in an emergency.
 
@@ -214,8 +201,10 @@ capability to be reachable in an emergency.
 - ~~Whether guardian permissions lapse automatically at majority, or by review.~~
   **Neither** — no automatic transition and no review queue
   ([D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
-  **What that leaves: whether the subject may end the guardianship themselves** once adult.
-  Today they cannot — see [E-5](../open-questions.md#e-5--how-does-an-adult-end-a-guardianship-over-themselves).
+  **What that left: whether the subject may end the guardianship themselves** once adult.
+  **They may** — the parties to a guardianship are principals on the row, and none of it
+  routes through staff ([D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)).
+  Closed — see [E-5](../open-questions.md#e-5--closed--the-parties-administer-their-own-row).
 - Whether staff-created accounts are allowed for children, or only adults.
 - Whether a person may hold more than one active account at a time (recommend: no).
 

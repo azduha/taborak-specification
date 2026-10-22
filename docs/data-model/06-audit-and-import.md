@@ -15,7 +15,7 @@ data-change audit trail, the legacy import pipeline, and erasure.
 | Records | Who did what, and by what authority | What a row's field values were before and after |
 | Answers | "Who accessed this child's medical record, and were they allowed to?" | "When did this person's address change, and who changed it?" |
 | Volume | Very high | High |
-| Trigger | Application-level, on every permission check and action | Database trigger, on every write to audited tables |
+| Raised by | Application code, on every permission check and action | **Every write to an audited table, on every path** — §2.1 names who owes that write now that no trigger is defined anywhere |
 
 Keeping them separate is deliberate. They have different retention needs, different query
 patterns, and different access permissions. Merging them produces a table that is too
@@ -25,125 +25,84 @@ large to query and too sensitive to expose to anyone who needs one half of it.
 
 ## 2. `audit_log`
 
-```sql
-CREATE TABLE audit_log (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+**Fields**
 
-    occurred_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
-    transaction_id  BIGINT NOT NULL DEFAULT txid_current(),
-    -- Groups all changes made in one transaction, so a multi-table operation
-    -- (approve a request → create a membership → open a unit participation) reads
-    -- as one event rather than three unrelated ones.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `occurred_at` | timestamp, audit time | Default: now |
+| `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership → open a unit participation) reads as one event rather than three unrelated ones |
+| `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs |
+| `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — for changes with no person actor. Otherwise a forensic gap |
+| `operation` | text, required | One of: `insert`, `update`, `delete` |
+| `table_name` | text, required | |
+| `record_id` | surrogate id, required | The row that changed. No reference: the table is named per row, so it points at any table in the database |
+| `changed_fields` | list of text | Which columns changed. Enables targeted history queries without parsing JSON |
+| `old_values` | free-form jsonb, optional | **Redacted before insert.** See §2.2 |
+| `new_values` | free-form jsonb, optional | **Redacted before insert.** See §2.2 |
+| `on_behalf_of` | reference to person, optional | Set when the actor was acting for another person. Mirrors `access_log.on_behalf` (04-relationships.md §5) |
+| `session_id` | text, optional | |
+| `ip_address` | network address, optional | |
+| `request_id` | text, optional | |
 
-    actor_person_id BIGINT REFERENCES person(id),
-    -- From the session variable app.current_person_id. NULL for migrations,
-    -- imports, and batch jobs.
+**Indexes**
 
-    actor_label     TEXT,
-    -- 'system', 'migration:0042', 'import_batch:17' — for changes with no person
-    -- actor. Otherwise a forensic gap.
-
-    operation       TEXT NOT NULL CHECK (operation IN ('insert','update','delete')),
-    table_name      TEXT NOT NULL,
-    record_id       BIGINT NOT NULL,
-
-    changed_fields  TEXT[],
-    -- Which columns changed. Enables targeted history queries without parsing JSON.
-
-    old_values      JSONB,
-    new_values      JSONB,
-    -- REDACTED before insert. See §2.2.
-
-    on_behalf_of    BIGINT REFERENCES person(id),
-    -- Set when the actor was acting for another person. Mirrors
-    -- access_log.on_behalf. See 04-relationships.md §5.
-
-    session_id      TEXT,
-    ip_address      INET,
-    request_id      TEXT
-);
-
-CREATE INDEX ix_audit_record  ON audit_log (table_name, record_id, occurred_at DESC);
-CREATE INDEX ix_audit_actor   ON audit_log (actor_person_id, occurred_at DESC);
-CREATE INDEX ix_audit_tx      ON audit_log (transaction_id);
-CREATE INDEX ix_audit_time    ON audit_log (occurred_at DESC);
-CREATE INDEX ix_audit_changed ON audit_log USING gin (changed_fields);
-```
+- One row's history: table name and `record_id`, newest `occurred_at` first.
+- One actor's actions, newest first.
+- Everything in one transaction, by `transaction_id`.
+- By time alone, newest first.
+- Rows by a *member of* `changed_fields`. The targeted history queries ask "which rows
+  changed this column", so the list has to be searchable element-wise rather than as a whole
+  value.
 
 ### 2.1 The trigger
 
-```sql
-CREATE OR REPLACE FUNCTION audit_trigger() RETURNS TRIGGER
-LANGUAGE plpgsql AS $$
-DECLARE
-    v_old       JSONB;
-    v_new       JSONB;
-    v_changed   TEXT[];
-    v_actor     BIGINT;
-    v_behalf    BIGINT;
-BEGIN
-    v_actor  := NULLIF(current_setting('app.current_person_id', true), '')::BIGINT;
-    v_behalf := NULLIF(current_setting('app.on_behalf_of', true), '')::BIGINT;
+**The heading is kept because the obligation under it is unchanged; what changed is that nothing
+in this repository defines a trigger any more.** A trigger used to be how this section guaranteed
+its own rule, and D-072 removed it without removing the rule, so the rule is now stated as what
+it is: **every insert and every update to an audited table writes exactly one `audit_log` row,
+and the change and its audit row stand or fail together.** "The audit trail usually has it" is
+not a version of this rule — the trail is how the organization answers "who changed this child's
+address, and when?", and an answer that depends on which code path made the change is not an
+answer. **The layer that owes it is the write itself, on every path**: the screens, the legacy
+import, the yearly expiry sweep, a bulk reorganisation, and a row somebody corrects by hand.
+Model-layer validation logs the intended path, which is the only path that was never at risk;
+check 5 in §5 is the net under the rest, and it is a report, not a guard.
 
-    IF TG_OP = 'INSERT' THEN
-        v_new := to_jsonb(NEW);
-    ELSIF TG_OP = 'UPDATE' THEN
-        v_old := to_jsonb(OLD);
-        v_new := to_jsonb(NEW);
-        SELECT array_agg(key ORDER BY key) INTO v_changed
-          FROM jsonb_each(v_new) n
-          JOIN jsonb_each(v_old) o USING (key)
-         WHERE n.value IS DISTINCT FROM o.value;
-        IF v_changed IS NULL THEN
-            RETURN NEW;      -- nothing actually changed; do not log noise
-        END IF;
-    ELSE
-        v_old := to_jsonb(OLD);
-    END IF;
+The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
+detail: the redaction step has to run before the write, and the "nothing changed" test has to run
+before anything is spent on a row that would log noise.
 
-    -- Redact before writing. Never store sensitive values in the audit trail.
-    v_old := redact_audit_values(TG_TABLE_NAME, v_old);
-    v_new := redact_audit_values(TG_TABLE_NAME, v_new);
+1. Read the acting person and the on-behalf-of person from the request context
+   (`app.current_person_id`, `app.on_behalf_of`); an unset or empty value means no actor,
+   not an error.
+2. On an **insert**, take the new row as the after-image.
+3. On an **update**, take both the old and the new row, and work out the changed fields:
+   the keys present in both images whose values differ, named in key order.
+4. If that comparison found nothing, stop and write nothing — a no-op update must not log
+   noise.
+5. On a **delete**, take the old row as the before-image; there is no after-image.
+6. Redact both images (§2.2). Never store sensitive values in the audit trail.
+7. Write one audit row carrying: the actor and the on-behalf-of persons, the operation as
+   lower-cased `insert`, `update` or `delete`, the table name, the record id taken from the
+   new row and falling back to the old one, the changed fields, both redacted images, and
+   the session id, ip address and request id from the request context.
+8. Change nothing about the row being written. The audit row describes the change and never
+   amends it — and it commits in the same transaction as the change. That togetherness is the
+   property a trigger used to supply for nothing, and the one a logging step written beside the
+   write has to supply deliberately.
 
-    INSERT INTO audit_log (
-        actor_person_id, on_behalf_of, operation, table_name, record_id,
-        changed_fields, old_values, new_values, session_id, ip_address, request_id
-    ) VALUES (
-        v_actor, v_behalf, lower(TG_OP), TG_TABLE_NAME,
-        COALESCE(NEW.id, OLD.id),
-        v_changed, v_old, v_new,
-        current_setting('app.session_id', true),
-        NULLIF(current_setting('app.ip_address', true), '')::INET,
-        current_setting('app.request_id', true)
-    );
-
-    RETURN COALESCE(NEW, OLD);
-END $$;
-```
-
-Apply to the audited tables:
-
-```sql
-CREATE TRIGGER trg_audit_person           AFTER INSERT OR UPDATE ON person
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
-CREATE TRIGGER trg_audit_membership       AFTER INSERT OR UPDATE ON membership
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
-CREATE TRIGGER trg_audit_guardianship     AFTER INSERT OR UPDATE ON guardianship
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
-CREATE TRIGGER trg_audit_role_assignment  AFTER INSERT OR UPDATE ON role_assignment
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
-CREATE TRIGGER trg_audit_access_grant     AFTER INSERT OR UPDATE ON access_grant
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
--- The role TABLES, not just the assignments. A role is runtime data the organization edits
--- (D-052), and editing one changes effective permissions for EVERY holder at once with no
--- assignment written — so if these two tables are not audited, the single largest privilege
--- change available in the system leaves no trace on any other audited row.
-CREATE TRIGGER trg_audit_role             AFTER INSERT OR UPDATE ON role
-    FOR EACH ROW EXECUTE FUNCTION audit_trigger();
-CREATE TRIGGER trg_audit_role_permission  AFTER INSERT OR UPDATE
-    ON role_permission FOR EACH ROW EXECUTE FUNCTION audit_trigger();
--- ... and the remaining business tables
-```
+**The obligation covers inserts and updates on** `person`, `membership`, `guardianship`,
+`role_assignment` and `access_grant`; on `role` and `role_permission` — the role *tables*,
+not just the assignments, because a role is runtime data the organization edits (D-052) and
+editing one changes effective permissions for every holder at once with no assignment
+written, so without these two tables the single largest privilege change available in the
+system leaves no trace on any other audited row; and on every remaining business table — the
+exact set is still open in §6, and the recommendation there is all of them. **There is nothing
+left to attach this to, which changes what the sentence is and not what it covers.** It is the
+list of tables for which a write path owes an audit row; a business table created next year is
+inside it from the day it exists; and check 5 in §5 is what notices when the list and the write
+paths drift apart.
 
 > **`role` and `role_permission` are audited for a reason the other tables do not share.**
 > Everywhere else, the audit log answers "who changed this record?". Here it answers the
@@ -152,53 +111,64 @@ CREATE TRIGGER trg_audit_role_permission  AFTER INSERT OR UPDATE
 > points at it, in place, there is no way to answer that from the assignments — the
 > assignments did not change. The log is the only record of what the role said at the time.
 
-**`DELETE` is intentionally absent from the trigger definitions for business tables**,
-because nothing in this schema is hard-deleted (see
+**`DELETE` is intentionally outside the audited operations on business tables**, because
+nothing in this data model is hard-deleted (see
 [00-conventions.md](00-conventions.md#4-deletion-policy)). Staging tables do get deleted;
-they are not audited.
+they are not audited. The absence is a consequence of the deletion policy rather than a gap in
+the obligation above. **It is, however, true of ordinary operation and false of exactly one
+moment**, and saying so is the honest version of the paragraph: §3's import revert *does*
+hard-delete business rows — the `person`, `membership` and `unit_participation` rows a batch
+created — and those rows were live, referenced and visible to real users before they went. So
+**a revert writes audit entries for its deletes, naming the batch and the row it removed**, and
+`DELETE` is outside the audited operations everywhere else only because there is no other path
+that reaches a business row with a delete. That makes revert the one place the list in §5 check 5
+cannot be derived from table names alone: an audited *operation* rather than an audited *table*,
+which is why check 5's replacement assertion enumerates the paths that may delete, not just the
+tables that may be written.
 
 ### 2.2 Redaction before logging
 
-```sql
-CREATE OR REPLACE FUNCTION redact_audit_values(p_table TEXT, p_data JSONB)
-RETURNS JSONB LANGUAGE plpgsql IMMUTABLE AS $$
-DECLARE
-    v_redact_keys TEXT[] := ARRAY['secret_hash','notes','custody_arrangement',
-                                  'termination_note','rejection_note','status_note'];
-    v_always_redact TEXT[] := ARRAY['notes','custody_arrangement'];
-    k TEXT;
-BEGIN
-    IF p_data IS NULL THEN RETURN NULL; END IF;
-    FOREACH k IN ARRAY v_redact_keys LOOP
-        IF p_data ? k THEN
-            p_data := jsonb_set(p_data, ARRAY[k], '"«redacted»"');
-        END IF;
-    END LOOP;
-    RETURN p_data;
-END $$;
-```
+The redactor takes one table name and one row image and does this:
+
+1. If there is no image at all, there is nothing to redact — return no value.
+2. For each key in the redaction list — `secret_hash`, `notes`, `custody_arrangement`,
+   `termination_note`, `rejection_note`, `status_note` — if the image carries that key,
+   replace its value with the marker `«redacted»`. Keys the image does not have are left
+   alone.
+3. Return the image.
+
+The rule is keyed on the field name and not on the table: the table name arrives with the
+image, and the same list is applied wherever a listed key turns up.
 
 > **An audit log that stores the data it audits is a second copy of the sensitive data,
 > with weaker access controls and a longer retention period.** Redaction happens before the
-> insert, in the trigger — never in a cleanup job that might not run.
+> insert — never in a cleanup job that might not run.
 
-`v_always_redact` covers free-text fields that could plausibly contain medical or custody
-information. `notes` is the usual offender: someone types a diagnosis into a general notes
-field, and it is now in the audit trail forever. Consider whether `person.notes` should
-exist at all.
+**Which part of that sentence is a requirement, and which was a mechanism.** "In the trigger"
+used to appear here, and D-072 deleted the trigger. What survives is the ordering, which is the
+part with the teeth: redaction runs **on the way in**, so an unredacted value never exists in the
+audit table. The trigger was one way to guarantee that; a code path that redacts, then writes, is
+another; **a code path that writes and repairs afterwards is not that**, because for one
+transaction the secret is in the log and readable, and because the repair is the cleanup job this
+paragraph forbids. With no trigger there is nothing stopping the third option except whoever
+writes it, which is why the sentence is now stated as a rule about ordering rather than about a
+database feature. See
+[00-conventions.md §8](00-conventions.md#8-personal-data-and-erasure) for what else the move to
+generated schema took out of this section's defence in depth.
+
+A second, shorter list — `notes` and `custody_arrangement` — is kept as the
+*always-redacted* set: free-text fields that could plausibly contain medical or custody
+information. Both are already in the list above, so today the second list records intent
+rather than adding behaviour. `notes` is the usual offender: someone types a diagnosis into
+a general notes field, and it is now in the audit trail forever. Consider whether
+`person.notes` should exist at all.
 
 ### 2.3 History query
 
-```sql
--- Full change history of a membership, newest first:
-SELECT a.occurred_at, a.operation, a.changed_fields,
-       a.old_values, a.new_values,
-       COALESCE(p.family_name || ' ' || p.given_name, a.actor_label) AS actor
-  FROM audit_log a
-  LEFT JOIN person p ON p.id = a.actor_person_id
- WHERE a.table_name = 'membership' AND a.record_id = 501
- ORDER BY a.occurred_at DESC;
-```
+The full change history of one row is found by taking the `audit_log` rows for its table
+name and record id, newest `occurred_at` first, and reading out when it happened, the
+operation, which fields changed, the old and new values, and who did it — the actor's
+person name where there is an actor, and `actor_label` where there is not.
 
 ---
 
@@ -209,120 +179,103 @@ Six stages, from
 The guiding requirements: **idempotent**, **reversible per batch**, **never overwrites
 self-registered data**, **preserves provenance**.
 
-```sql
-CREATE TABLE import_batch (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name            TEXT NOT NULL,
-    description     TEXT,
+**`import_batch`** — one run of the pipeline, and the unit revert works on.
 
-    source_type     TEXT NOT NULL CHECK (source_type IN
-                        ('csv','xlsx','json','sql_dump','manual_entry','other')),
-    source_reference TEXT,
-    -- Where the file lives, or what it is. Enough to find the original again.
+**Fields**
 
-    source_hash     TEXT,
-    -- SHA-256 of the source file. Detects re-importing the same file under a new name.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `name` | text, required | |
+| `description` | text, optional | |
+| `source_type` | text, required | One of: `csv`, `xlsx`, `json`, `sql_dump`, `manual_entry`, `other` |
+| `source_reference` | text, optional | Where the file lives, or what it is. Enough to find the original again |
+| `source_hash` | text, optional | SHA-256 of the source file. Detects re-importing the same file under a new name |
+| `row_count` | integer, optional | |
+| `status` | text, required | One of: `staging`, `parsed`, `matching`, `review`, `applying`, `applied`, `reverted`, `failed`. Default `staging` |
+| `dry_run` | boolean, required | Default false. A dry run parses and matches but writes nothing to business tables |
+| `created_by` | reference to person, required | |
+| `created_at` | timestamp, audit time | |
+| `applied_at` | timestamp, audit time, optional | |
+| `applied_by` | reference to person, optional | |
+| `reverted_at` | timestamp, audit time, optional | |
+| `reverted_by` | reference to person, optional | |
+| `revert_note` | text, optional | |
+| `error_summary` | text, optional | |
+| `notes` | text, optional | |
 
-    row_count       INTEGER,
-    status          TEXT NOT NULL DEFAULT 'staging' CHECK (status IN
-                        ('staging','parsed','matching','review','applying',
-                         'applied','reverted','failed')),
-    dry_run         BOOLEAN NOT NULL DEFAULT false,
-    -- A dry run parses and matches but writes nothing to business tables.
+**Indexes**
 
-    created_by      BIGINT NOT NULL REFERENCES person(id),
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    applied_at      TIMESTAMPTZ,
-    applied_by      BIGINT REFERENCES person(id),
+- Batches by status — the queue of runs that are not finished.
 
-    reverted_at     TIMESTAMPTZ,
-    reverted_by     BIGINT REFERENCES person(id),
-    revert_note     TEXT,
+**`staging_import`** — one source row, kept exactly as it arrived.
 
-    error_summary   TEXT,
-    notes           TEXT
-);
+**Fields**
 
-CREATE INDEX ix_import_batch_status ON import_batch (status);
-```
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `batch_id` | reference to import batch, required | |
+| `source_row_number` | integer, optional | |
+| `raw_data` | free-form jsonb, required | The row VERBATIM. Never modified. This is the evidence |
+| `source_row_hash` | text, required | Deterministic hash of the meaningful fields. The idempotency key: re-importing a file matches on this and skips already-applied rows |
 
-```sql
-CREATE TABLE staging_import (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    batch_id        BIGINT NOT NULL REFERENCES import_batch(id),
+**Rules**
 
-    source_row_number INTEGER,
-    raw_data        JSONB NOT NULL,
-    -- The row VERBATIM. Never modified. This is the evidence.
+- `(batch_id, source_row_hash)` is unique — one staged row per batch per source row. It
+  covers all rows, not only unapplied ones.
 
-    source_row_hash TEXT NOT NULL,
-    -- Deterministic hash of the meaningful fields. Idempotency key: re-importing
-    -- a file matches on this and skips already-applied rows.
+**Indexes**
 
-    CONSTRAINT uq_staging_row UNIQUE (batch_id, source_row_hash)
-);
+- The staged rows of one batch.
 
-CREATE INDEX ix_staging_batch ON staging_import (batch_id);
-```
+**`staging_import_row`** — what the parser made of that source row, and what became of it.
 
-```sql
-CREATE TABLE staging_import_row (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    staging_id      BIGINT NOT NULL REFERENCES staging_import(id),
+**Fields**
 
-    parsed_given_name    TEXT,
-    parsed_family_name   TEXT,
-    parsed_name_normalised TEXT,      -- diacritics stripped, casefolded
-    parsed_birth_date    DATE,
-    parsed_birth_precision TEXT,      -- reuses person.birth_date_precision values
-    parsed_unit_code     TEXT,
-    parsed_unit_name     TEXT,
-    parsed_period_from   DATE,
-    parsed_period_to     DATE,        -- often NULL; see the inference rules below
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `staging_id` | reference to staging row, required | |
+| `parsed_given_name` | text, optional | |
+| `parsed_family_name` | text, optional | |
+| `parsed_name_normalised` | text, optional | Diacritics stripped, casefolded |
+| `parsed_birth_date` | date, optional | |
+| `parsed_birth_precision` | text, optional | Reuses the `person.birth_date_precision` values |
+| `parsed_unit_code` | text, optional | |
+| `parsed_unit_name` | text, optional | |
+| `parsed_period_from` | date, optional | |
+| `parsed_period_to` | date, optional | Often NULL; see the inference rules below |
+| `parse_status` | text, required | One of: `ok`, `warning`, `error`. Default `ok` |
+| `parse_warnings` | list of text | For example `birth_date_year_only`, `unit_not_found`, `ambiguous_name`. Warnings do not block; errors do |
+| `resolution` | text, optional | One of: `link_existing`, `create_new`, `discard`, `deferred` |
+| `resolved_person_id` | reference to person, optional | |
+| `resolved_by` | reference to person, optional | |
+| `resolved_at` | timestamp, audit time, optional | |
+| `resolution_note` | text, optional | |
+| `applied` | boolean, required | Default false |
+| `applied_person_id` | reference to person, optional | What this row created |
+| `applied_membership_id` | reference to membership, optional | What this row created |
+| `applied_participation_id` | reference to unit participation, optional | What this row created |
+| `created_at` | timestamp, audit time | |
 
-    parse_status    TEXT NOT NULL DEFAULT 'ok'
-                    CHECK (parse_status IN ('ok','warning','error')),
-    parse_warnings  TEXT[],
-    -- e.g. {'birth_date_year_only', 'unit_not_found', 'ambiguous_name'}
-    -- Warnings do not block; errors do.
+**Indexes**
 
-    resolution      TEXT CHECK (resolution IN
-                        ('link_existing','create_new','discard','deferred')),
-    resolved_person_id BIGINT REFERENCES person(id),
-    resolved_by     BIGINT REFERENCES person(id),
-    resolved_at     TIMESTAMPTZ,
-    resolution_note TEXT,
-
-    applied         BOOLEAN NOT NULL DEFAULT false,
-    applied_person_id BIGINT REFERENCES person(id),
-    applied_membership_id BIGINT REFERENCES membership(id),
-    applied_participation_id  BIGINT REFERENCES unit_participation(id),
-
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE INDEX ix_staging_row_staging ON staging_import_row (staging_id);
-CREATE INDEX ix_staging_row_review  ON staging_import_row (parse_status, resolution)
-    WHERE resolution IS NULL OR resolution = 'deferred';
-CREATE INDEX ix_staging_row_applied ON staging_import_row (applied)
-    WHERE applied;
-```
+- The staged rows of one parsed row.
+- The review queue: parse status and resolution, restricted to rows with no resolution or a
+  `deferred` one. Decided rows are not in it.
+- Applied rows only.
 
 ### Reversibility
 
-`staging_import_row` holding the three created ids is what makes per-batch revert possible:
+`staging_import_row` holding the three created ids is what makes per-batch revert possible.
+Revert removes only what this batch created, and it runs in this order:
 
-```sql
--- Revert a batch: remove only what this batch created.
--- Order matters: dependents first.
-UPDATE unit_participation SET valid_to = NULL  -- (or delete if it was purely created here)
- WHERE id IN (SELECT applied_participation_id FROM staging_import_row
-               WHERE staging_id IN (SELECT id FROM staging_import WHERE batch_id = :batch)
-                 AND applied_participation_id IS NOT NULL);
--- ... similarly for membership, then person, then mark rows unapplied
-UPDATE staging_import_row SET applied = false
- WHERE staging_id IN (SELECT id FROM staging_import WHERE batch_id = :batch);
-```
+1. Take every staged row of the batch being reverted.
+2. Undo what they created, **dependents first**: the `unit_participation` rows, then the
+   `membership` rows, then the `person` rows — and a row the batch created outright is
+   removed rather than merely amended.
+3. Finally mark the staged rows themselves unapplied.
 
 **Revert is only safe before live data references the imported rows.** Once a real person
 has been linked, or an event attendance recorded against an imported membership, deleting
@@ -334,13 +287,20 @@ the row breaks it. Therefore:
   reports which rows cannot be reverted, and refuse rather than partially applying.
 - After that window, corrections are made by editing the data, not by reverting. This is
   the honest behaviour; a "revert" that silently orphans references is worse than refusing.
+- **Step 2's removals are audited like any other write**, one entry per row deleted, each
+  naming the batch. This is the only hard delete a business row can meet, and it is precisely
+  the case where someone will later ask "this person existed in March and is gone now — what
+  happened?" An undo that erases the rows and leaves no trace of having erased them is not a
+  rollback but a cover-up, and it is the same undo a reviewer is trusting when they agree to
+  revert at all. [`00-conventions.md §4`](00-conventions.md#4-deletion-policy) is why no other
+  path is allowed to do this.
 
 > **Bias toward import in small batches and review before applying.** Reversibility is a
 > safety net, not a workflow.
 
 ### Idempotency
 
-`uq_staging_row (batch_id, source_row_hash)` makes re-staging cheap. Idempotency across
+The `(batch_id, source_row_hash)` uniqueness above makes re-staging cheap. Idempotency across
 *batches* needs the hash to be computed from the row's semantic content, not its position:
 
 ```
@@ -395,36 +355,29 @@ a receipt, a ledger, a dues column. Erring toward participation loses a little f
 
 ## 4. Redaction log
 
-```sql
-CREATE TABLE redaction_log (
-    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    person_id       BIGINT NOT NULL REFERENCES person(id),
-    -- The row is NOT deleted. The id survives so historical references resolve.
+**Fields**
 
-    requested_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-    requested_by    BIGINT REFERENCES person(id),
-    legal_basis     TEXT,
-    -- 'gdpr_art17' | 'court_order' | 'internal_policy' — required for accountability.
+| Field | Kind | Notes |
+|---|---|---|
+| `id` | surrogate id | |
+| `person_id` | reference to person, required | The row is NOT deleted. The id survives so historical references resolve |
+| `requested_at` | timestamp, audit time | Default: now |
+| `requested_by` | reference to person, optional | |
+| `legal_basis` | text, optional | `gdpr_art17`, `court_order`, `internal_policy` — required for accountability |
+| `performed_at` | timestamp, audit time, optional | |
+| `performed_by` | reference to person, optional | |
+| `redacted_tables` | list of text | Which tables had values overwritten |
+| `retained_reason` | text, optional | Why some data was kept. Membership periods and unit participation periods are organizational history, not personal data, and removing them would falsify records the organization may be obliged to keep. This field records that judgement per case |
+| `note` | text, optional | |
 
-    performed_at    TIMESTAMPTZ,
-    performed_by    BIGINT REFERENCES person(id),
+**Rules**
 
-    redacted_tables TEXT[],
-    -- Which tables had values overwritten.
+- A redaction cannot record when it was performed without recording who performed it:
+  `performed_at` without `performed_by` is illegal.
 
-    retained_reason TEXT,
-    -- Why some data was kept. Membership periods and unit participation periods are
-    -- organizational history, not personal data, and removing them would falsify
-    -- records the organization may be obliged to keep. This field records that
-    -- judgement per case.
+**Indexes**
 
-    note            TEXT,
-    CONSTRAINT ck_redaction_performed CHECK (
-        performed_at IS NULL OR performed_by IS NOT NULL)
-);
-
-CREATE INDEX ix_redaction_person ON redaction_log (person_id);
-```
+- A person's redaction history.
 
 **This log is the answer to "prove you honoured the erasure request".** It records what
 was removed, when, on what legal basis, and — importantly — what was deliberately retained
@@ -435,46 +388,39 @@ incident.
 
 ## 5. Integrity checks
 
-```sql
--- 1. Imported memberships with a NULL valid_to (should be zero; see §3). These are the
---    rows that silently satisfy the permission gate, so this is a security check as much
---    as a data-quality one.
-SELECT m.id, m.person_id, m.valid_from FROM membership m
- WHERE m.import_batch_id IS NOT NULL AND m.valid_to IS NULL;
+**Invariants to verify**
 
--- 2. Imported people who were later merged away (probably fine, worth an eye)
-SELECT p.id, p.merged_into_person_id FROM person p
- WHERE p.record_origin = 'legacy_import' AND p.merged_into_person_id IS NOT NULL;
+- **Imported memberships with no end date.** Count `membership` rows that carry an
+  `import_batch_id` and have no `valid_to`. Zero is the only acceptable answer: these are
+  the rows that silently satisfy the permission gate, so this is a security check as much as
+  a data-quality one (§3).
+- **Imported people who were later merged away.** Count people whose `record_origin` is
+  `legacy_import` and whose merge pointer is set. Non-zero is probably fine and worth an eye.
+- **Batches left in a non-terminal state for a long time.** Count `import_batch` rows whose
+  status is none of `applied`, `reverted`, `failed` and which were created more than 30 days
+  ago; non-zero means a run somebody stopped steering.
+- **Audit rows with no actor at all.** Count `audit_log` rows with neither an
+  `actor_person_id` nor an `actor_label`; any non-zero count is a forensic gap.
+- **Tables whose write path does not audit.** Compare the business tables this system has —
+  staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
+  writing history that is never recorded. **Read this one carefully, because its meaning got worse
+  rather than weaker.** While a trigger existed, a table was audited by being named in a trigger
+  definition, and forgetting one was a decision somebody made in a migration and could see. Now a
+  table is audited because the code that writes it calls the audit entry point, so **the list and
+  the code are two artifacts that must agree and nothing forces them to** — which makes this report
+  the entire control over the completeness of the audit trail, and the one check here that should
+  alert rather than log. If it ever reports a table, the finding is not "some history is missing";
+  it is "every change to that table since it was added is unrecorded, and that period cannot be
+  reconstructed later." 
+- **Redacted people with surviving personal data.** Count redacted people whose names are
+  not the redaction marker and who still have a current contact point whose value is not
+  redacted; non-zero means an erasure was left half done.
 
--- 3. Staged rows left in a non-terminal state for a long time
-SELECT b.id, b.name, b.status, b.created_at FROM import_batch b
- WHERE b.status NOT IN ('applied','reverted','failed')
-   AND b.created_at < now() - INTERVAL '30 days';
-
--- 4. Audit rows with no actor at all (a forensic gap)
-SELECT * FROM audit_log
- WHERE actor_person_id IS NULL AND actor_label IS NULL;
-
--- 5. Tables missing an audit trigger (compare against a maintained list)
-SELECT c.relname
-  FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
- WHERE n.nspname = 'public' AND c.relkind = 'r'
-   AND c.relname NOT LIKE 'staging_%' AND c.relname NOT LIKE 'pg_%'
-   AND NOT EXISTS (SELECT 1 FROM pg_trigger t
-                    WHERE t.tgrelid = c.oid AND t.tgname LIKE 'trg_audit_%');
-
--- 6. Redacted people with surviving personal data
-SELECT p.id FROM person p
- WHERE p.redacted_at IS NOT NULL
-   AND (p.given_name <> '«redacted»' OR p.family_name <> '«redacted»')
-   AND EXISTS (SELECT 1 FROM person_contact c
-                WHERE c.person_id = p.id AND c.valid_to IS NULL
-                  AND c.value NOT LIKE '%redacted%');
-```
-
-**Check 5 is worth automating as a test**, not just a nightly query. A new table added
-without an audit trigger is a silent, permanent hole in the audit trail — and it will be
-discovered only when someone needs the history that was never recorded.
+**Check 5 is worth automating as a test**, not just a nightly query — a test that reads the
+table list in these documents and asserts every business table on it appears on the audited list,
+since that is the nearest thing left to what asking the database used to answer. A new table
+added without being put on that list is a silent, permanent hole in the audit trail — and it will
+be discovered only when someone needs the history that was never recorded.
 
 ---
 

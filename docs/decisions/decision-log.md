@@ -4,11 +4,24 @@ Decisions taken, with the reasoning that produced them. Recorded so they are not
 re-litigated from scratch — and so that when a decision is reversed, the reason for the
 original choice is visible.
 
-**Status values:** `decided` — settled, schema reflects it. `proposed` — recommended,
+**Status values:** `decided` — settled, the data model reflects it *(since D-072: the documents, not a schema file)*. `proposed` — recommended,
 awaiting your confirmation. `assumption` — taken by default, stated in italics in the
 docs, easily reversed. `reversed` — no longer in force; the entry is kept, marked, and the
 replacement is linked. Reversals are also listed together at the
 [bottom](#reversed-decisions).
+
+**Five SQL fences survive in this log, and only here.** [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) moved the schema out of the
+documentation, but it did not rewrite the entries that had been written *in* the schema — at
+[D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it),
+[D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
+[D-060](#d-060--eligibility-is-capability-there-is-no-separate-rule-engine),
+[D-066](#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition)
+and [D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle). Each is a
+**quotation of the shape a decision was made in**, and each says below it where the requirement
+actually lives now. No later entry adds a fence: the rule for writing this log from here is
+[D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+— state the requirement, name the layer that owes it, and let an identifier be a name rather than
+an actor.
 
 ---
 
@@ -190,6 +203,17 @@ namespace, with an absolute deny check in front of them.
 
 **Amended** (see D-031, D-032): the resolver's allow channels are now ordered by
 **locality** rather than by channel, and the deny channel is scope-independent.
+
+**Amended again by [D-079](#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name),
+and this reaches the sentence above the amendment.** "Each dispatching from the permission's
+namespace" was how the channels were *found*, and it is gone: dispatch is now `subject ≠ actor`
+for guardianship, and `system.` remains the only namespace with resolver-visible meaning. **The
+four channels themselves are untouched** — that part of this decision was durable for six rounds
+and is the part worth keeping. What the namespace rule turned out to be was a way of skipping the
+guardianship channel whenever the permission's *name* happened not to mark it as a guardian act,
+which is a thing a name cannot do. **Note the shape of the failure for future amendments: the
+channel list was right and the routing over it was wrong, and every document that cited the
+routing copied the error.**
 
 **Why.** They are the same idea at two granularities — authority for a period, in a scope,
 granted by someone. A single resolver prevents the divergence that makes the weaker of two
@@ -676,13 +700,18 @@ are totally arbitrary and can be arbitrarily nested… they all answer to the ma
 people are mainly registered (and paid) under the top unit, but they can be also part of
 the smaller packs, that can have their own events, local leadership and so on."*
 
-**Consequence.** The single root is enforced structurally, not by convention:
+**Consequence.** The single root was enforced structurally, not by convention — the statement of
+the moment, kept as it was decided:
 
 ```sql
 -- Exactly one unit may exist at the root.
 CREATE UNIQUE INDEX uq_org_unit_single_root ON org_unit ((true))
     WHERE parent_unit_id IS NULL;
 ```
+
+*The requirement now: at most one unit may have no parent, whatever emits the schema cannot emit
+it, and the migration owes it — [02-organization §3](../data-model/02-organization.md#3-org_unit),
+via [data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now).*
 
 **This largely dissolves the organization-wide-role problem (C-1).** That problem existed
 because "the organization" and "the units holding the data" were assumed to be different
@@ -726,6 +755,19 @@ all — a unit that moves is a new unit."*
 
 **Enforcement.** A trigger rejects any change to `parent_unit_id` on an existing row.
 `org_unit.transferred_to_unit_id` (or the relationship row) records where the people went.
+
+> **Amended after [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).**
+> There is no trigger, and this is the one enforcement in this log that cannot be moved down a
+> layer. `parent_unit_id` immutability is not expressible as a constraint — not because PostgreSQL
+> lacks the feature an ORM fails to emit, but because *no* declarative constraint can talk about
+> what a row used to be. So the rule now lives as a guard in the write path, and the record here
+> has to be honest about what was lost on the way:
+> This entry's original claim was that a trigger made reparenting unreachable from *any* client,
+> including the legacy import. A write-path guard is reachable from exactly the clients the trigger
+> was chosen to exclude. The
+> compensations available are narrow and named in
+> [open question F-10, shape 4](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those):
+> a single named repository operation for hierarchy writes, and a test that attempts the update.
 
 **See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession).
 
@@ -824,7 +866,7 @@ discovering later:
   detects roles that should have been closed rather than the mechanism doing the blocking.
 
 **See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#6-the-resolver),
-[../data-model/05-authorization.md](../data-model/05-authorization.md#10-the-resolver-in-sql).
+[../data-model/05-authorization.md](../data-model/05-authorization.md#10-the-resolver).
 
 ---
 
@@ -879,7 +921,8 @@ avoids.
 
 **Consequence — the overlap constraint simplifies.** With one membership type
 ([D-037](#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)), the exclusion
-constraint drops `membership_type_id` and becomes a person-level invariant:
+constraint drops `membership_type_id` and becomes a person-level invariant — quoted as decided, in
+the form the constraint had at the time:
 
 ```sql
 ALTER TABLE membership ADD CONSTRAINT ex_membership_no_overlap
@@ -889,6 +932,13 @@ ALTER TABLE membership ADD CONSTRAINT ex_membership_no_overlap
     )
     WHERE (status IN ('pending_payment','active','suspended'));
 ```
+
+*The requirement now: **one person, one open membership, ever**, where "open" means those three
+statuses — a no-overlap rule over a period, which is exactly the shape an ORM will not generate
+([open question F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those));
+the temporal pattern is in [00-conventions §6](../data-model/00-conventions.md#6-the-temporal-pattern)
+and the check that catches a bypass is 1b in
+[03-membership §7](../data-model/03-membership.md#7-integrity-checks).*
 
 **"Am I a paid-up member?" is now one row, one status, one date.** That question was the
 reason the type was in the constraint.
@@ -1240,7 +1290,7 @@ which assignment. It is a small list of people who keep authority without paying
 should be as visible as the `system.admin` holders already are.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
-[../data-model/05 §12](../data-model/05-authorization.md#12-seed-data--permissions),
+[../data-model/05 §12](../data-model/05-authorization.md#12-what-the-organization-starts-with),
 [../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
 
 ---
@@ -1685,13 +1735,18 @@ admin       may control it
 ```
 
 **Why audiences make this sufficient rather than merely simple.** Registering 200 children
-individually is 200 grant rows — but opening an event to members is **one**:
+individually is 200 grant rows — but opening an event to members is **one**, which the shape of the
+row made visible at the time:
 
 ```sql
 INSERT INTO access_grant (scope_type, scope_id, audience_id, level)
 VALUES ('event', :camp_id,
         (SELECT id FROM audience WHERE code = 'all_members'), 'contribute');
 ```
+
+*The requirement now, without the statement: an `access_grant` may address an **audience** instead of
+a person, so "everyone who is a current member may take part in this event" is one row rather than
+one per member — [05-authorization §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people).*
 
 An age-gated camp is a camp opened to `unit:<id>:participants` for a unit whose participants
 are that age. **This is the case audiences ([D-042](#d-042--grants-may-target-audiences-not-only-individuals))
@@ -1755,7 +1810,7 @@ with a retention obligation, and there is no policy yet.
 
 **See:** [../data-model/08-events.md §7](../data-model/08-events.md#7-event_question-and-event_answer),
 [../domain/07-events.md §12](../domain/07-events.md#12-the-forms-questions-and-answers),
-[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-the-dependent-namespace).
+[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
 
 ---
 
@@ -1976,7 +2031,7 @@ avoiding automatic state changes ([D-023](#d-023--nothing-is-auto-lapsed-or-auto
 and payment-confirms-the-place reintroduces one: an unpaid registration at a full event
 **releases its place to the waitlist** at `waitlist_deadline`. It is accepted because it is a
 **deadline, not a sweep** — narrowly scoped, opt-in per event, and visible in what it
-produces:
+produces. The predicate as decided:
 
 ```sql
 -- Only at a full event, only with a fee configured, only past the deadline,
@@ -1987,6 +2042,11 @@ AND e.waitlist_deadline < now()
 AND r.source = 'self' AND r.is_confirmed = false
 AND e.cancelled_at IS NULL
 ```
+
+*The requirement now, in words: release happens **only** at a full event that has a fee, a deadline
+that has passed, an unpaid self-service registration, and is not cancelled — six conditions, each of
+which is load-bearing, and the list is the rule rather than an illustration of it. Stated in
+[08-events §5](../data-model/08-events.md#when-an-unpaid-registration-releases-its-place).*
 
 `waitlist_deadline` is `NULL` by default, so **an event that does not opt in never runs this
 rule at all.** The alternative — no deadline — means a place is held forever by someone who
@@ -2098,7 +2158,8 @@ inconvenience for a quiet hazard. The reversal takes the opposite side of the sa
 **What replaces the protection** — since the wildcard is gone, reachability needs a check of
 its own. **Integrity check 18** lists permissions that **no role grants**, which is the query
 that surfaces a permission silently orphaned by the absence of a wildcard (numbering follows
-the existing list in [../data-model/05 §11](../data-model/05-authorization.md#11-integrity-checks)):
+the existing list in [../data-model/05 §11](../data-model/05-authorization.md#11-invariants-to-verify).
+It was written as an executable query, and this is it as decided:
 
 ```sql
 -- 18. ORPHANED PERMISSIONS — granted by no role at all. With no .admin wildcard
@@ -2110,6 +2171,11 @@ SELECT p.code, p.resource
    AND NOT EXISTS (SELECT 1 FROM role_permission rp WHERE rp.permission_id = p.id)
  ORDER BY p.resource, p.code;
 ```
+
+*The requirement now: **every assignable permission that no role bundles is reported**, which is the
+net the `.admin` wildcard used to be; the check is item 18 of
+[05-authorization §11](../data-model/05-authorization.md#11-invariants-to-verify), and like the other
+eighteen it is now something to be verified rather than something that runs.*
 
 **What happens to the F-4 question that prompted this.** It does not dissolve — it **moves,
 and becomes visible.** A role bundling all eleven `person.*` permissions still reaches
@@ -2222,7 +2288,7 @@ were not when a job existed to help:
 over themselves?"* That question existed before this decision and was masked by a review queue
 that would have surfaced it. It is now unavoidable.
 
-**See:** [../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-guardianship_permission),
+**See:** [../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write),
 [../domain/02-actors.md §5](../domain/02-actors.md#5-acting-on-behalf).
 
 ---
@@ -2429,6 +2495,14 @@ the people involved*. It does not. Note also that the answer is not the **owners
 ownership is *your own record*, and a guardianship row is not the subject's record any more than
 it is the guardian's. It is a record **of a relationship between them**, and both parties hold it.
 
+**Mechanically this is a direction, not a fifth channel.** The resolver has four channels and
+[D-012](#d-012--the-resolver-is-a-single-function-with-four-channels-in-a-fixed-order) keeps them
+at four. The guardianship channel already asks *"may guardian G act on D's records?"*; D-073 gives
+it a second question, *"may a party act on the guardianship row itself?"*, answered for exactly
+three acts — end the row, add another guardian, change the permission level. Adding a channel
+would have been the same capability at the price of touching every document that enumerates them,
+and enumeration is how the order stays a rule.
+
 **Read D-069 and D-073 as one decision in two halves.** D-069 refused to let a birthday end a
 guardianship and deleted the review queue, on the grounds that a person decides. It left the
 question of *which person, using what* open — the exit it assumed had no door. D-073 is the
@@ -2505,7 +2579,7 @@ set.
 
 **See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),
 [../appendix/permission-catalog.md](../appendix/permission-catalog.md),
-[../open-questions.md E-7](../open-questions.md#e-7--open--is-the-single-viewwrite-level-enough).
+[../open-questions.md E-7](../open-questions.md#e-7--one-level-cannot-separate-the-medical-record-from-the-profile).
 
 ---
 
@@ -2655,7 +2729,7 @@ sender-tier model that has no age in it. Consistent with
 resolver. **The residue is stated rather than hidden: any account in the system may send a direct
 message to any other account, including a child's.** The rule the communication section had
 promised — *"a rule against contacting minors directly"* — is **not** implemented as a
-restriction on senders. See **E-6** for the recommendation, which is to restrict *visibility*
+restriction on senders. See **MSG-1** for the recommendation, which is to restrict *visibility*
 rather than permission: direct messages reaching a minor mirrored to their guardians, so nothing
 is blocked, nothing is secretly unread, and the resolver still has no age branch.
 
@@ -2666,6 +2740,179 @@ later safeguarding rule has to be written as surveillance over a channel that al
 **See:** [../domain/02-actors.md](../domain/02-actors.md),
 [../appendix/permission-catalog.md](../appendix/permission-catalog.md),
 [../open-questions.md § Communication](../open-questions.md#h-not-yet-designed).
+
+---
+
+## D-078 — An exposure extends an assignment, never a direct grant
+
+**Status:** decided — **found by deleting the SQL, not by running it**
+**Date:** refinement round 6
+
+**What happened.** Translating the resolver out of SQL for
+[D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) meant reading each
+branch for what it *decides* rather than what it says. The unit-grant tier had two branches, and
+the second one consulted `scope_exposure`. It joined the direct grant to `se.org_unit_id` while
+also requiring `se.org_unit_id =` the unit being checked. Both conditions pin the grant to the
+checked unit — which the first branch had already tested. **The branch could never succeed where
+the first one failed.**
+
+**It was not a vulnerability.** A branch that can only ever return true where another branch
+already returned true grants nothing. The damage is to the reader: a tier that appears to widen
+direct grants through exposures is a tier that will be trusted, reviewed and extended on that
+basis. It survived every review of the SQL precisely because it reads correctly.
+
+**The rule, now stated.** `scope_exposure.role_assignment_id` points at a **specific person's
+assignment**. The unit is agreeing that *this person, in this role, for this period* may act here
+— which is what makes the exposure legible as an act of the unit rather than a grant to a
+whoever-holds. A direct `access_grant` contains no assignment for an exposure to attach to, and
+a grant already at the checked unit needs no extension to work there. **So the role channel is
+the table's only consumer, and the unit-grant tier matches exactly.**
+
+**Why the tempting repair must be refused.** "Exposures don't extend my direct grant — that looks
+like an oversight, let's add it back" produces a system where a unit that exposed *a treasurer
+role assignment* has also, silently, exposed itself to every direct grant held by every person
+who happens to hold some other assignment there. The repair would widen an exposure to cover
+people the exposing unit never approved, in the one direction the founding principle forbids.
+Anyone reaching for it should read this entry first, which is why it is a decision and not a
+comment.
+
+**What this says about D-072's trade.** The deleted SQL contained a bug and the prose cannot
+contain it, because the prose does not have a dead branch. This is the one case where removing
+the schema was an unambiguous improvement, and it is worth recording beside the cases where the
+removal cost something real.
+
+**Two-way door?** No, in the sense that matters: adding a second route back is a widening. In
+every other sense yes — nothing here constrains a future mechanism that names a grant in an
+exposure row deliberately, which would need a new column and a new argument.
+
+**See:** [../data-model/05-authorization.md §5](../data-model/05-authorization.md#an-exposure-extends-an-assignment-it-never-extends-a-grant).
+
+---
+
+## D-079 — The guardianship channel is entered by shape, not by permission name
+
+**Status:** decided — consequence of [D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
+**Date:** refinement round 6
+
+**Before.** The resolver picked a channel by string: a permission code beginning `dependent.` went
+down the guardianship channel, everything else went down the ordinary path. This was elegant, and
+it had a hole nobody noticed while it was true.
+
+**The hole.** A parent correcting their child's address is performing `person.address.edit`. That
+code has no `dependent.` prefix — it is the same code a person uses to correct their own address.
+**So the act did not route through guardianship at all.** It resolved against the parent's own
+roles and item grants, which say nothing about this child, and the answer was deny — correct by
+accident, for a reason that had nothing to do with the relationship that made the act legitimate.
+Any future `person.*` act a guardian needed would have inherited the same dead end, and the fix
+each time would have been a new `dependent.*` code, which is how the namespace grew to eighteen.
+
+**Now: the channel is entered when the subject of the act is not the actor.** The resolver is
+already handed both — the actor, and the owner of the thing being touched. Compare them; if they
+are different people, ask the guardianship question. **That question may answer only "yes".** If
+the answer is yes the check is finished and the act is allowed; in every other case the channel
+falls silent and the resolver carries on to the actor's own roles and grants. **It is not the last
+word, and the paragraph below explains why that had to change as well** — the first draft of this
+decision kept the old finality, and the two halves are inconsistent within one page, which is
+itself instructive about how a rule outlives the reason it had.
+
+**Three things this buys.** *(a)* Nothing escapes by naming: a permission added next year for a
+field a guardian must edit is covered the day the field exists, because dispatch reads the shape
+of the request rather than a list maintained beside it. *(b)* It is one comparison instead of a
+prefix match against a namespace that has to be kept in step with the catalog by hand. *(c)* The
+rule is stated in the resolver, where a reader looking for "how does a guardian get authority"
+will find it, rather than in a column's comment.
+
+**What it costs.** Dispatch is now invisible in the data. Under the prefix rule you could look at
+a permission code and know which channel would answer for it; now you have to know whether the
+check is being made about somebody else, which is a property of the call site, not of the
+permission. **This is the price of every shape-based rule and it is worth paying here**: the
+alternative was a rule that was legible and wrong. The audit side of it is unchanged — an act
+performed on behalf of a minor is recorded as such regardless of which code was checked
+([04-relationships §5](../data-model/04-relationships.md#5-acting-on-behalf--recording-it)).
+
+**Where the boundary sits, because `subject ≠ actor` is far broader than guardianship.** A
+treasurer entering a payment for a child, a leader marking a roster, a registrar correcting a name
+they imported: all of these are subject≠actor checks, and none of them is a guardian acting on a
+ward. If the channel answered for all of them, the treasurer would be asked whether they are the
+child's guardian, told no, and **denied an act their role plainly authorises.** So the channel
+speaks only when there is something to ask: **a live guardianship row joining this actor to this
+subject, at this date.** No row, no answer, and the resolver falls through to the allow tiers
+exactly as it always did. There is no age test in that guard, which is deliberate — the
+guardianship row *is* the relationship, and adults who file one for themselves
+([D-073](#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)) are covered by the
+same two words as minors are. An age branch would also contradict
+[D-070](#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule) and
+[D-077](#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel),
+both of which insist the resolver has no age in it.
+
+**The consequence is a real weakening of the channel, and it should be read as such.** Under the
+prefix rule the guardianship channel gave the **final** answer: `dependent.medical.view` was a
+guardian-only code, no role held it, so "the guardian's right is `view`, this is a write" could
+safely end the check. Now that the channel carries ordinary codes a role might also grant,
+finality turns into a trap — **the parent who is also the event registrar, holding `view` over
+their own child, denied the right to do their job.** So the guardianship channel now returns
+**allows only**: sufficient right → true; insufficient, or `none`, or no row → silence, and the
+actor's own roles and grants are still tried. What is *not* lost:
+
+- **`none` still grants nothing**, which is what D-074 actually promised. It was never a promise
+  to block unrelated authority.
+- **A genuine prohibition is still available and still absolute** — an explicit deny in channel 0,
+  which runs before everything and does not care about scope. That is where "this person must not
+  touch this child's record" belongs, and it is stronger than what a guardianship level could do.
+- Nothing an actor reaches by falling through is authority the guardianship row was hiding: their
+  role already gave it to them, guardianship row or not.
+
+**What is lost is the ability to say "not even your role".** No guardian's `view` can ever be
+that sentence again. In a safeguarding system that sentence has to exist, and D-032 already put it
+in the deny channel rather than distributed across capability levels — so the loss is of a
+convenient place to write it, not of the mechanism.
+
+**Two-way door?** Yes in principle, no in practice — the old dispatch can only be restored by
+re-inventing the namespace D-074 deleted.
+
+**See:** [../data-model/05-authorization.md §10](../data-model/05-authorization.md#10-the-resolver),
+[../data-model/04-relationships.md §4](../data-model/04-relationships.md#4-how-the-resolver-uses-these-tables),
+[../appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
+
+---
+
+## D-080 — Five contradictions the translation surfaced, and how each was resolved
+
+**Status:** decided — **each resolution is a correction, not a choice between options**
+**Date:** refinement round 6
+
+**Why this entry exists.** [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
+required every SQL block to be read for what it *decides* before it was deleted. That reading is
+the first time these documents were checked against themselves line by line, and it found five
+places where a document said two contradictory things — in three cases three things, one of them
+executable. **They had been invisible precisely because one of them worked.** A query that returns
+the wrong rows is not visibly wrong. Each is resolved here rather than left as a note, because
+with the SQL gone there is nothing left to disagree with the prose: **the prose is now the only
+place the rule lives, so it has to be right.**
+
+| # | The contradiction | Resolution |
+|---|---|---|
+| 1 | `identifier_scheme.is_unique` said a school id may repeat; the uniqueness rule applied to every scheme and never read the flag | **The flag decides.** A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. [01-identity §7](../data-model/01-identity.md#7-person_identifier) |
+| 2 | §9 of the identity document opened by saying its views encode "always exclude merged **and redacted**"; `v_person` excluded merged only, while §1 and §2 both required both | **Both exclusions.** A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. [01-identity §9](../data-model/01-identity.md#9-views) |
+| 3 | The audit redactor kept an *always-redacted* list of free-text fields — and nothing read it | **Kept, and labelled as intent.** It is the clearest illustration in the whole repository of what a declarative list nobody consults is worth. [06-audit §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging) |
+| 4 | The unit-grant tier appeared to widen direct grants through `scope_exposure`, and did not | Dead branch. **The rule is now stated once, in the direction that is true:** an exposure extends an assignment and never a grant. [D-078](#d-078--an-exposure-extends-an-assignment-never-a-direct-grant) |
+| 5 | `is_leadership` lives on `position`, and the audience rule for `unit_leaders` read it as though it lived on `role` | **Fixed where it is read.** The audience is "holds a live assignment to a leadership *position* at that unit", which is what everyone had been assuming it meant. [05-authorization §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people) |
+
+**One pattern, four instances.** Every one of these is a **second statement of a rule that the
+first statement did not consult**: a flag beside a constraint, a view beside a section heading, a
+list beside a loop, a column on the wrong table. Two copies of a rule diverge — the reason this log
+exists at all — and the divergence is only found by someone reading both. That is also why the
+permission catalog is now the catalog's alone, why §11 of the conventions points at Rules blocks
+instead of restating them, and why the count in that sentence is not a coincidence.
+
+**What was *not* resolved, in the same spirit.** Item 3's fix is a label, not an enforcement;
+item 5's check still cannot run automatically; and a correction nobody re-tests is exactly how
+item 2 got into the documents. **The five resolutions are therefore themselves invariants** — if
+someone regenerates a schema from these documents and produces a per-table identifier constraint
+or a redacted-inclusive listing, this entry is the thing that was violated.
+
+**Two-way door?** No, and deliberately: each of these was a bug whose "fix" is indistinguishable
+from a regression. If one returns, it returns as a bug report, not as a reversal.
 
 ---
 
@@ -2769,3 +3016,85 @@ later safeguarding rule has to be written as surveillance over a channel that al
   [D-070](#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule): a registration-time
   condition the capability model does not know about is the first rule-engine rule. No
   reversal, since nothing was shipped — recorded here because the idea will return.
+
+---
+
+## D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now
+
+**Status:** decided (editorial ruling, ratified this round)
+**Date:** refinement round 6
+**Follows:** [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job), [D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
+
+**What was found.** With the DDL gone, roughly sixty sentences still credited a database object
+with acting: "the trigger in §3 enforces it", "the schema cannot express", "`ck_request_rejection_reason`
+requires a reason code", "refused by trigger (§8)". None was false when it was written. Each became
+a **false claim about the present** the moment D-072 removed the thing it named, and a reader who
+trusts the sentence does the one thing this corpus cannot afford — assuming a guarantee exists and
+not writing it.
+
+**Ruling 1 — the identifiers stay; the agency goes.** `ck_org_unit_closed`,
+`uq_org_unit_single_root`, `uq_access_grant_live` and the rest are kept **as names of rules**, not
+as claims about objects:
+
+| Before | After |
+|---|---|
+| "`ck_org_unit_closed` states the invariant explicitly" | "**A unit cannot be closed without an end date** (`ck_org_unit_closed` is this rule's name)" + which layer carries it |
+| "the trigger refuses deletion" | "Guard 2 is the rule, the no-cascade reference is what refuses it, and `event.delete` only decides who may ask" |
+
+Deleting the names would be a repository-wide rename touching every cross-reference, and a rule with
+a stable handle is worth more than a purer vocabulary. **The line is agency, not vocabulary:** an
+identifier may survive its table as long as no sentence asks it to do anything.
+
+**Ruling 2 — renaming the mechanism is never the fix.** Where a rule loses its enforcement, the
+sentence must state what is now required **and which layer owes it**, in the register of
+[data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now). "The trigger
+guarantees X" and "X is validated in the model" are not adjacent statements; the first is a
+guarantee on every path and the second is a friendly message on the intended one. Softening one
+into the other without saying so is how a deleted schema turns into a silently weaker system. Where
+the honest answer is "no layer enforces this and none can", the text now says that — *a convention,
+not a guard* — rather than letting the reader infer it.
+
+**Ruling 3 — a rule that lost both its guard and its report gets a report.** Three had neither,
+which is worse than losing the guard alone, because a missing guard is at least visible to whoever
+writes the migration:
+
+| Rule | Where the guard went | Net added |
+|---|---|---|
+| `position.max_holders` | no constraint can state a count over other rows (F-10 shape 3) | [02-organization §9 check 9](../data-model/02-organization.md#9-integrity-checks) — over-limit means *bypassed*, unlike event capacity, which may be exceeded deliberately |
+| Registration outside its window | Guard 1, inside the writing transaction | [08-events §10 check 9](../data-model/08-events.md#10-integrity-checks) — a row here is evidence about the code, not the data |
+| `fee_obligation`, created by the code that places a registration | nothing ever enforced it | [08-events §10 check 10](../data-model/08-events.md#10-integrity-checks) — a confirmed place with no bill leaves every row individually correct |
+
+One rule keeps **no** net, deliberately, with the absence named instead of smoothed over:
+`org_unit.parent_unit_id` immutability ([D-036](#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)).
+A reparent leaves nothing malformed to count, so it became F-10's fourth shape rather than a check.
+
+**One contradiction of D-080's class, found and settled.** §2.1 of
+[data-model/06](../data-model/06-audit-and-import.md#21-the-trigger) said `DELETE` is outside the
+audited operations "because nothing in this data model is hard-deleted", while §3's import revert
+removes the `person`, `membership` and `unit_participation` rows a batch created. Written together
+they meant **a rollback could erase live rows without a trace** — the one event someone is most
+certain to ask about later. Settled in favour of the audit log: **a revert writes one audited entry
+per deleted row, naming the batch**, and `DELETE` stays outside the audited operations only because
+no other path reaches a business row with a delete.
+
+**The residual that could not be closed.** Audit *completeness* used to be answerable from the
+database's own catalog — ask which tables carry triggers, compare against the business tables. There
+is no catalog to ask now: a table is audited because the code writing it remembers to, so the
+nightly comparison runs between two hand-maintained lists, and **both can go stale together and
+still report zero.** The replacement is an assertion over the paths that may write or delete a
+business row; until that exists this is recorded as a known hole rather than as a solved problem.
+
+**Ruling 4 — the decision log may quote SQL; nothing else may, and a quotation must say where the
+rule lives now.** Five fences survived in this log, and deleting them would be the wrong
+correction: an entry that says "the exclusion constraint drops `membership_type_id`" is *about* that
+constraint, and rewriting it into prose would quietly revise a record of what was decided in order
+to keep the vocabulary clean — the same mistake D-080 catalogued, arriving from the opposite
+direction. So the fences stay, each followed by one italic line naming **the requirement as it is now
+stated, the document that owns it, and the layer that owes it**. The header of this log says the same
+thing once, so that no fence is read as a specification by someone who arrived at it directly.
+That is the whole distinction: **the documentation describes a system; this log records how the
+description got here, and a record is allowed to quote things it no longer endorses.**
+
+**See:** [data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now),
+[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+(now four shapes), [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).

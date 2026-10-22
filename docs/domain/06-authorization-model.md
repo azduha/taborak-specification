@@ -13,7 +13,7 @@ granters, and different revocation semantics.
 | # | Channel | Question it answers | Table | Grants authority over |
 |---|---------|--------------------|-------|----------------------|
 | 1 | **Role assignment** | What may this person do *in the organization*? | `role_assignment` | Everything within its scope |
-| 2 | **Guardianship permission** | What may this person do *regarding this child*? | `guardianship_permission` | One dependent |
+| 2 | **Guardianship** | What may this person do *regarding this child*? | `guardianship.right_level` | One dependent |
 | 3 | **Access grant** | What may this person, **or this set of people**, do *to this specific item*? | `access_grant` | One record (event, document, unit) |
 | 4 | **Resource ownership** | Is this *their own* data? | (derived) | The row's owner |
 
@@ -25,7 +25,16 @@ profile, their own requests, their own memberships. It is resolved by comparing
 that matter:
 
 - Channel 2 has a **legal** character — guardianship is a fact about the world, often
-  court-ordered, that expires when a child reaches majority. Channel 1 does not.
+  court-ordered, and the organization records what it was told rather than deciding it.
+  **It does not expire by itself.** An earlier version of this bullet said it "expires when a
+  child reaches majority", which is exactly the claim
+  [D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)
+  withdrew, together with the review queue that asserted it more quietly: a parent's authority
+  over health and school records does not end at 18 in many jurisdictions, and in some it ends at
+  a different age, so any date the system computed would be a claim it cannot support. A
+  guardianship ends when a **party to it** says so (D-073), and nobody else — not a job, not a
+  birthday. Channel 1 does not expire by itself either, for the same kind of reason: it is a fact
+  about the world.
 - Channel 3 is **per-record** and therefore high-volume and short-lived. Channel 1 is
   low-volume and long-lived. Mixing them makes both hard to reason about.
 - Channel 3 may target **a person or an audience** ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)) —
@@ -124,19 +133,12 @@ Authority crosses a unit boundary downward through exactly one mechanism: an exp
 created **at the subordinate unit's level**, granting a specific role assignment coverage
 over that unit.
 
-```
-scope_exposure(
-    id,
-    org_unit_id,          -- the unit granting coverage over ITSELF
-    role_assignment_id,   -- the parent- or organization-scoped assignment being honoured
-    exposed_by,           -- a person authorized AT org_unit_id
-    exposed_at,
-    exposure_reason,
-    valid_from, valid_to
-)
-```
+A row names the unit — `org_unit_id`, the unit granting coverage over **itself** — the
+`role_assignment_id` whose authority is to be honoured there, the person who wrote it
+(`exposed_by`, who must be authorized *at* that unit) and when (`exposed_at`), an
+`exposure_reason`, and the period it holds for.
 
-The full DDL is in [../data-model/05-authorization.md](../data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+The full field list is in [../data-model/05-authorization.md](../data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
 The three properties that matter:
 
 1. **The row is keyed on the unit being covered, and it is written at that unit.** The
@@ -230,46 +232,30 @@ It looks like an oversight and is not
 The rule is only as good as its enforcement. Three layers:
 
 **Layer 1 — the permission that gates exposure.** Creating a `scope_exposure` requires
-`scope.expose`, held at **the unit being exposed**:
-
-```
-can(actor, 'scope.expose', 'org_unit', <the unit being covered>)
-```
+`scope.expose`, held at **the unit being exposed**.
 
 Note the scope: the unit being *covered*, not the actor's own unit. Someone holding
 `scope.expose` at a parent unit cannot satisfy this for a sub-unit, because they hold nothing
-at the sub-unit. This one line is what makes the rule structural rather than advisory.
+at the sub-unit. That one detail of the wording is what makes the rule structural rather than
+advisory.
 
-**Layer 2 — a trigger that rejects exposures created from above.** Defense in depth against
-a bug or a direct SQL fix:
+**Layer 2 — a check that rejects exposures created from above**, defense in depth against
+a bug or a write that bypasses the ordinary path. It runs before a row is written, once per row,
+on both a new row and a change to an existing one, and it does this in this order:
 
-```sql
-CREATE OR REPLACE FUNCTION check_exposure_direction() RETURNS TRIGGER
-LANGUAGE plpgsql STABLE AS $$
-BEGIN
-    -- THE RULE, with no exceptions: the actor must hold scope.expose AT THE UNIT
-    -- BEING COVERED. Holding it at an ancestor, or at an unrelated unit, does not
-    -- qualify. This is the same predicate layer 1 applies, re-checked here so that
-    -- a direct INSERT cannot skip it.
-    --
-    -- There is no bulk branch. The tool that wrote rows on a unit's behalf was
-    -- removed (D-045) once audiences (D-042) covered the case it existed for.
-    IF NOT can(NEW.exposed_by, 'scope.expose', 'org_unit', NEW.org_unit_id,
-               NEW.valid_from, NULL) THEN
-        RAISE EXCEPTION
-          'person % may not expose the scope of unit % — they hold no scope.expose there',
-          NEW.exposed_by, NEW.org_unit_id;
-    END IF;
+1. Apply **the rule, with no exceptions**: the person writing the row must hold `scope.expose`
+   **at the unit being covered**. Holding it at an ancestor, or at an unrelated unit, does not
+   qualify.
+2. Ask the *same question layer 1 asks*, rather than a weaker copy of it — that is the only
+   reason this layer exists. See the two notes below.
+3. There is **no bulk branch**. The tool that wrote rows on a unit's behalf was removed
+   ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)) once
+   audiences ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals))
+   covered the case it existed for.
+4. If the answer is no, refuse the row and name both the person and the unit in the refusal —
+   a rejection that does not say who and where is not diagnosable. Otherwise the row stands.
 
-    RETURN NEW;
-END $$;
-
-CREATE TRIGGER trg_exposure_direction
-    BEFORE INSERT OR UPDATE ON scope_exposure
-    FOR EACH ROW EXECUTE FUNCTION check_exposure_direction();
-```
-
-Two things about this trigger are deliberate:
+Two things about this check are deliberate:
 
 - **It is now a single unconditional predicate.** It used to have a second branch
   permitting a `bulk:` prefixed row written by an ancestor — the design's one sanctioned
@@ -277,17 +263,24 @@ Two things about this trigger are deliberate:
   ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)),
   and its removal is what makes this function something a reviewer can hold in their head.
   **Every exposure row is written by the unit it covers**, with no marker to explain away.
-- **It re-checks layer 1 rather than being layer 1.** The permission check in the write
-  path is the primary control; the trigger exists so that a migration, a data fix, or a
-  future code path that bypasses the write path still cannot invert the direction of
-  authority.
+- **It was layer 2, and layer 2 is now missing.** Until D-072 this check ran a second time
+  inside the database, so that a migration, a data fix, or a future code path that bypassed the
+  write path still could not invert the direction of authority. **The write-path permission check
+  is now the only thing standing between a caller and an upside-down exposure** — it cannot be a
+  constraint (the answer comes from the resolver), and there is no longer a second copy of it
+  below the application. Two consequences, both load-bearing: it must run **inside the same
+  transaction as the row**, so that "checked, then written" is not two moments in time; and
+  layer 3 below stops being a backstop and becomes the only detector.
 
 **Layer 3 — the nightly integrity check** in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#11-integrity-checks),
+[../data-model/05-authorization.md](../data-model/05-authorization.md#11-invariants-to-verify),
 which reports (a) any exposure whose granting assignment sits at an **ancestor** of the
 covered unit, and (b) any exposure whose actor does not hold `scope.expose` at the covered
-unit. Layer 3 catches rows written before the trigger existed, or by a path the trigger
-misses; the trigger catches what layer 1 lets through at runtime.
+unit. **Layer 3 is now the only detection**, not the second line of it — it catches what the
+write-path check missed, inverted, or was bypassed by, and nothing else will. That makes it the
+one invariant in the authorization model worth alerting on rather than reporting: an inverted
+exposure is authority flowing in the direction the founding principle forbids, and it is invisible
+in the UI, which will show the exposure as a legitimate row either way.
 
 ### 2.6 `system_admin` is the only exception
 
@@ -337,16 +330,9 @@ are not re-litigated.
 
 A permission is a coded capability. It is the only thing the check function ever looks at.
 
-```
-permission(
-    id,
-    code,                     -- 'membership.request.approve'
-    resource,                 -- 'membership_request'
-    action,                   -- 'approve'
-    description,
-    is_system                 -- true = cannot be deleted; seeded by the platform
-)
-```
+A permission row carries its `code`, the `resource` and `action` it decomposes into, a
+`description`, and `is_system` — set for the permissions the platform ships with, which therefore
+cannot be deleted.
 
 Codes are `resource.action` and are **stable identifiers**, never display strings. The UI
 shows a human label; the code never changes. Renaming a permission code is a breaking
@@ -360,7 +346,12 @@ change and must be avoided.
 | `<resource>.create` | Create | `event.create` |
 | `<resource>.<field>.edit` | Edit a field subset | `person.contact.edit` |
 | `<resource>.delete` | Delete (soft, and audited) | `document.delete` |
-| `dependent.<x>` | Acting on a supervised person | `dependent.fee.pay` |
+
+There is no row here for acting on a supervised person, because there is no `dependent.*`
+namespace to name ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+A guardian's act is checked under the ordinary code for the thing being touched — `person.view`,
+`person.address.edit` — and reaches the guardianship channel by the shape of the request, not by
+its name (§6, and [D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
 
 **Every capability is narrow and explicit.** A check for `X.y` needs an exact grant of `X.y`,
 or `system.admin`. There is no `<resource>.admin` wildcard and no prefix match in the resolver
@@ -379,21 +370,13 @@ implied*.
 
 A role is a named set of permissions, assigned to a person for a period, within a scope.
 
-```
-role(id, code, name, description, is_system, scope_required)
-role_permission(role_id, permission_id)
+A role row is a `code`, a name, a description, `is_system`, and `scope_required` — whether an
+assignment of this role has to name a scope. `role_permission` is a join entity and nothing
+more: this role carries this permission.
 
-role_assignment(
-    id,
-    person_id, role_id,
-    scope_type,               -- 'organization' | 'org_unit'
-    scope_id,                 -- null for organization
-    valid_from, valid_to,
-    granted_by, granted_at,
-    grant_reason,
-    delegation_of             -- nullable; set if this came from a delegation
-)
-```
+An assignment joins a `person` to a `role` for a period — `valid_from`, `valid_to` — and records
+who created it (`granted_by`, `granted_at`) and why (`grant_reason`). `delegation_of` is absent
+on an ordinary assignment and set on one that was lent, naming what it came from (§9).
 
 ### Scope
 
@@ -497,21 +480,12 @@ This is the "per-item permission" you asked for, and you specified it means a **
 on that item**: "person X may act on item Y". Not a statement of attendance, and not a
 separate eligibility check — those are other tables.
 
-```
-access_grant(
-    id,
-    person_id,                -- the grantee ... OR (exactly one of these two)
-    audience_id,              -- ... a set of people, resolved by rule or by list
-    scope_type,               -- 'event' | 'document' | 'org_unit' | 'membership' | ...
-    scope_id,                 -- the concrete item
-    level,                    -- revoked | view | contribute | manage | admin
-    valid_from, valid_to,
-    is_delegated,
-    delegated_from,           -- person_id whose authority this came from
-    granted_by, granted_at,
-    grant_reason
-)
-```
+A grant names its grantee, the item it is about, and how much. The grantee is a `person_id` or
+an `audience_id`. The item is a `scope_type` — `event`, `document`, `org_unit`, `membership`, and
+whatever is invented next — and a `scope_id` naming the concrete row. The `level` is one of the
+five below, the period is `valid_from`/`valid_to`, and the provenance is `is_delegated` with
+`delegated_from` naming the person whose authority a delegation came from, plus `granted_by`,
+`granted_at` and `grant_reason`.
 
 **`person_id` or `audience_id`, never both and never neither.** The audience form is what
 makes "expose this event to everyone" expressible without writing a row per person
@@ -563,49 +537,73 @@ Mitigations, all of which are required:
 One function answers every authorization question. Written once, used everywhere — an
 authorization rule that exists in two places will diverge.
 
-```
-can(person_id, permission_code, scope_type = null, scope_id = null, at = now()) → bool
-```
+The call is `can(person, permission_code, scope_type, scope_id, at)`. The scope pair is optional
+and `at` defaults to now. Where the thing being touched has an owner, the caller passes
+`owner_person_id` too, because two of the steps below need to know whose record this is. The
+answer is allowed or denied; the function has no other output, and no part of it is stored.
 
-Algorithm:
+These steps run **in this order, and the order is a rule**
+([D-032](../decisions/decision-log.md#d-032--deny-is-absolute-locality-orders-allows-only)).
+Each one either returns an answer or falls through, so no later step can contradict an earlier
+one — and renumbering them silently changes who can do what.
 
-```
-0. DENY — ABSOLUTE, AT ANY SCOPE
-   If ANY applicable grant for this person carries level 'revoked' and covers
-   this permission — at item scope, unit scope, or organization scope, to this
-   person or to an audience they are in — return false.
-   No scope outranks a deny. A per-event grant can never restore access that an
-   organization-wide suspension removed. See §7.
+0. **Deny — absolute, at any scope.** If **any** applicable grant for this person carries level
+   `revoked` and covers this permission — at item scope, unit scope or organization scope, to this
+   person or to an audience they are in — the answer is no. No scope outranks a deny: a per-event
+   grant can never restore access that an organization-wide suspension removed (§7).
 
-1. OWNERSHIP
-   If the target resource's owner is this person → true for `*.view`, `*.edit`,
-   and self-service actions. EXEMPT from the membership gate (§6.1): a lapsed
-   person must still be able to reach the screen they renew on.
+1. **Ownership.** If the target resource's owner is this person → true for `*.view`, `*.edit` and
+   the self-service actions. **Exempt from the membership gate** (§6.1): a lapsed person must
+   still be able to reach the screen they renew on.
 
-2. GUARDIANSHIP
-   If permission_code is in the 'dependent.' namespace →
-     resolve against `guardianship_permission` for the (guardian, dependent) pair
-     (requires an active guardianship row). EXEMPT from the membership gate:
-     guardianship is a legal relationship, not a membership. See
-     [../data-model/04-relationships.md](../data-model/04-relationships.md#2-guardianship_permission).
+2. **Guardianship — entered by the shape of the request, and it answers with allows only.**
+   Compare the actor with the owner of the thing being touched. The same person, and this channel
+   is not in play at all. Different people, and the question is whether the actor holds a **live
+   guardianship over that subject as of `at`** whose right level is at least what the checked
+   permission needs — `view` for a read, `write` for a change, and `none` for nothing
+   ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+   A row at a sufficient level → **true**. Every other outcome — no row, `none`, a level too low —
+   is **not a refusal**: the channel says nothing, and the resolver continues to step 3, where the
+   actor's own grants and roles are tried exactly as they always were
+   ([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
+   A parent who is also the event registrar holds `view` over their own child and must not be
+   refused the roster by their own guardianship.
 
-3. ALLOW — MOST SPECIFIC SCOPE DETERMINES THE LEVEL
-   Evaluate from the most local scope outward. The FIRST tier that yields a
-   determination decides that permission's effective level for this check:
+   - **Nothing escapes by naming.** The act that routes here is chosen by whose record it touches,
+     so a permission written next year for a field a guardian must edit is covered the day the
+     field exists. Under the rule this replaces, dispatch read the code's prefix — and an ordinary
+     `person.address.edit` slipped past it.
+   - **An ended guardianship never opens this channel again.** What a former guardian may still do
+     is what any other member may do, through their own assignment.
+   - **The row is the whole test.** The guard must not be rewritten as "the subject is a minor":
+     the resolver contains no age branch, and [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)
+     and [D-077](../decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+     keep it that way.
 
-     a. ITEM GRANT    — access_grant on this exact (scope_type, scope_id)
-     b. UNIT GRANT    — access_grant on this org_unit, OR on an org_unit that has
-                        an explicit scope_exposure row covering this unit
-     c. ORG GRANT     — access_grant with scope_type = 'organization'
-     d. ROLE          — role_assignment at the most specific applicable scope:
-                        the exact unit, a unit with an exposure row, or organization
-                        ...and for tier d ONLY, the membership gate (§6.1) applies.
+   A genuine prohibition is still available and still absolute — it is step 0, which runs before
+   anything and does not care about scope. This step is **exempt from the membership gate** (§6.1):
+   guardianship is a legal relationship, not a membership. See
+   [../data-model/04-relationships.md](../data-model/04-relationships.md#4-how-the-resolver-uses-these-tables).
 
-   If the deciding tier's level satisfies the permission's required level
-   (per `permission_level`) → true. Otherwise fall through to the next tier.
+3. **Allow — the most specific scope determines the level.** Evaluate from the most local scope
+   outward. The **first** tier that yields a determination decides this permission's effective
+   level for this check:
 
-4. Otherwise → false
-```
+   - **a. Item grant** — an `access_grant` on this exact `(scope_type, scope_id)`.
+   - **b. Unit grant** — an `access_grant` on this `org_unit`, matched **exactly**. An exposure
+     never widens a direct grant: it names one person's role assignment, and a grant carries no
+     assignment for it to attach to
+     ([D-078](../decisions/decision-log.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)).
+   - **c. Org grant** — an `access_grant` with `scope_type = 'organization'`.
+   - **d. Role** — a `role_assignment` at the most specific applicable scope: the exact unit, a
+     unit that has written an exposure row naming **that assignment**, or the organization. This
+     tier is the only consumer of `scope_exposure`, and the membership gate (§6.1) applies to
+     tier **d** alone.
+
+   If the deciding tier's level satisfies the permission's required level (per `permission_level`)
+   → true. Otherwise fall through to the next tier.
+
+4. **Otherwise → false.**
 
 Points worth stressing:
 
@@ -617,8 +615,10 @@ Points worth stressing:
   what "local permissions override global" means: a per-event `manage` grant gives you
   `manage` **on that event** even if your only unit-level grant is `view`, and the
   unit-level `view` still applies to the unit's other events.
-- **No ancestor walk.** Step 3b matches the exact unit plus any unit that has explicitly
-  exposed its scope. `unit_ancestors()` must not appear anywhere in this path. See §2.
+- **No ancestor walk, and no widening of grants.** Step 3b matches the checked unit and nothing
+  else; an exposure enters at step 3d only, and only for the single assignment it names
+  ([D-078](../decisions/decision-log.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)).
+  `unit_ancestors()` must not appear anywhere in this path. See §2.
 - **A grant may name an audience instead of a person.** "Everyone", "all members", "the
   leaders of this unit" — the grantee is resolved by a rule, the level and scope are resolved
   exactly as for a personal grant. See §6.2.
@@ -636,12 +636,11 @@ Points worth stressing:
 This is a condition on tier d, not a source of authority — it is what makes the resolver's
 answer *time-sensitive* rather than merely *scope-sensitive*.
 
-```sql
--- Inside tier d, for every candidate role assignment r:
-AND (NOT r.requires_membership              -- (a) the carve-out for this ROLE
-     OR is_current_member(p_person_id, p_at)      -- the gate
-     OR person_holds_gate_exempt(p_person_id, p_at))  -- (b) the carve-out for this PERSON
-```
+Concretely — inside tier d, each candidate role assignment counts only if one of three things
+holds: the role does not require membership, which is the carve-out for this **role**; the person
+is a current member as of the date being checked, which is the gate; or the person holds
+`system.gate_exempt`, which is the carve-out for this **person**. One of the three is enough, and
+none of them is a source of authority — they say only whether the role's authority still applies.
 
 | Channel | Gated? | Why |
 |---|---|---|
@@ -705,9 +704,8 @@ resolution; they change only how "is this grant addressed to me?" is answered.
 
 ### Permission → required level mapping
 
-```
-permission_level(permission_id, level)   -- per scope_type
-```
+The mapping lives in `permission_level`, which pairs a permission with the level it needs, held
+per `scope_type`.
 
 Example: `event.view` requires level `view`; `event.edit` requires `contribute`;
 `event.manage` requires `manage`; `event.grant_access` requires `admin`. This table is what
@@ -726,7 +724,7 @@ section exists to prevent.
 ```
 1. Explicit deny  (level = 'revoked', at ANY scope)   ← WINS OVER EVERYTHING
 2. Ownership     (it's your own row — gate-exempt)
-3. Guardianship  (dependent.* permissions — gate-exempt)
+3. Guardianship  (the act is about someone else — allows only, gate-exempt)
 4. Allows        (see §7.2; the membership gate applies to the role tier only, §6.1)
 5. Deny          (nothing matched)
 ```
@@ -753,11 +751,12 @@ Among competing **allows**, the most specific scope determines the effective lev
 
 ```
 1. Item grant    (access_grant on this exact item)              ← most specific
-2. Unit grant    (access_grant on this unit, or on a unit that
-                  has explicitly exposed its scope to cover it)
+2. Unit grant    (access_grant on this exact unit — matched exactly.
+                  An exposure never widens a grant)
 3. Org grant     (access_grant, scope_type = 'organization')
-4. Role          (role_assignment, at the most specific
-                  applicable scope)                             ← least specific
+4. Role          (role_assignment at the most specific applicable
+                  scope, or at a unit that has exposed its scope to
+                  that assignment)                              ← least specific
 ```
 
 The first tier that yields a determination decides the level; if that level is insufficient
@@ -833,15 +832,9 @@ demands it.
 A leader going on leave, a treasurer handing over during an audit — the common need to
 lend authority temporarily.
 
-```
-access_grant(
-    ...,
-    is_delegated = true,
-    delegated_from = <person_id>,
-    valid_to = <required — delegations always expire>,
-    grant_reason = 'annual leave 2026-07-01 to 2026-08-15'
-)
-```
+A delegation is an ordinary `access_grant` with its provenance set: `is_delegated`, and
+`delegated_from` naming the person whose authority is being lent, a `grant_reason` saying what
+for, and a `valid_to`.
 
 Rules:
 
@@ -867,7 +860,7 @@ Stated explicitly, because each is a common and expensive mistake:
 | Deriving access from "is a member" without a role | Being a member is not a capability; it is a fact | The membership **gate** (§6.1) conditions roles — it never grants anything |
 | A parent-unit actor writing a `scope_exposure` covering a sub-unit | A sub-unit's records are not the root's records. A sanctioned bulk shortcut did exist for this and was removed (D-045) | The sub-unit exposes its own scope, or an **audience** grant covers the "tell everyone" case (§6.2) |
 | Role → permission mapping hardcoded in the app | Cannot be reviewed by the organization, cannot change without deployment | `role_permission` table |
-| Deriving access from guardianship without a grant | Authorization by identity is unauditable and unsafe | Explicit `guardianship_permission` |
+| Deriving access from guardianship without a right | Authorization by identity is unauditable and unsafe | The explicit `right_level` on the `guardianship` row |
 | Deleting a grant to revoke it | Loses the audit trail of what was revoked when | `valid_to` + `revoked_at` |
 | Two authorization implementations | They diverge; the weaker one becomes the exploit | One resolver, §6 |
 | Unit leader sees all member data by default | Fails safeguarding review | Scoped role permissions, resolved per operation |
