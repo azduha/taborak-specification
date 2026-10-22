@@ -5,21 +5,23 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Publishes the built site to the `gh-pages` branch. In the repository settings,
+# Pages must use "Deploy from a branch" -> `gh-pages` / `(root)`.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,27 +33,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          # Turns Pages on with the "GitHub Actions" source if it is not set up yet.
-          enablement: true
-
-      - name: Build site
-        run: mkdocs build --strict
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Build and push to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdocs gh-deploy --force --strict
