@@ -741,8 +741,9 @@ Thirteen `event.*` codes now exist; `event.admin` is not one of them
 
 ## H. Not yet designed
 
-Each of these is referenced by the schema and has hooks left for it. None blocks the current
-design.
+Each of these is referenced by the schema and has hooks left for it — **except health records, which
+has no hooks because it has no design at all, and whose missing design is load-bearing in two other
+documents. Read H-0 below before the table.**
 
 | Area | Hooks already in place | Notes |
 |------|------------------------|-------|
@@ -750,7 +751,7 @@ design.
 | **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) — **architecture settled, policy open** | **Nine open questions**, of which one is new. Round 6 closed the architectural ones: money arrives by **bank API**, is requested by **variable symbol + QR code**, there is **no card gateway**, and unmatched money **queues** ([D-075](decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code), [D-076](decisions/decision-log.md#d-076--money-that-cannot-be-matched-waits-for-a-person)). What remains needs somebody in the organization asked: proration, discounts, insurance, waivers, invoices. |
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | No `dependent.consent.*` any more — a guardian at `write` may give and manage consents ([D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). **`is_legal_decision_maker` on the guardianship row is the existing hook for "who may sign" — and it is now the only place that distinction lives**, since the right level cannot express it. |
-| **Health records** | No `dependent.medical.*` any more; a `view` guardian already sees them | **Highest-sensitivity data in the system, and the exposure grew in round 6.** [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) deleted the codes that used to gate medical visibility, so "read everything except the health file" is no longer sayable — see **E-7**. This raises the case for designing the module **before** the coarse default is relied on, rather than after: separate retention, separate access, likely separate storage, and its own legal review. |
+| **Health records** | **Nothing. There is no health entity in the data model** — see **H-0** below | **Highest-sensitivity data in the system, and the exposure grew in round 6.** [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) deleted the codes that used to gate medical visibility, so "read everything except the health file" is no longer sayable — see **E-7**. This raises the case for designing the module **before** the coarse default is relied on, rather than after: separate retention, separate access, likely separate storage, and its own legal review. |
 | **Communication** | `message.send_direct`, `message.broadcast` (scoped) — shape decided, detail undesigned | **Shape decided by [D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel):** internal first, external channels are delivery; everyone may send direct; `broadcast` is one scoped permission; **the recipient picks the channel.** Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was **declined as a sender restriction** — see **MSG-1** below. |
 | **Reporting** | `report.*` permissions sketched | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-since-1985--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year since 1985) is the acceptance test. |
 | **API and UI** | — | Not started. The resolver's `p_at` parameter exists partly for this. |
@@ -758,7 +759,68 @@ design.
 | **Payment gateway** | — | **Answered, so this row is now narrower than it was.** The organization collects via **bank API**, not a card gateway ([D-075](decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)): no webhooks, no disputes, no processor reconciliation. What remains undesigned is the **statement import** itself — file formats, the idempotency key, and what happens to an account the bank revises. |
 | **Multi-language** | — | Unit names and permission display names are all in the database. Whether they need translation columns is unanswered. |
 
-### MSG-1 🔴 Any account can address a child directly
+---
+
+### H-0 🔴 The medical record is referred to throughout these documents and does not exist
+
+**Found while starting the health-records module, and it changes what that module is.** Sentences
+across five files discuss who may read *the medical record* as though it were a table:
+
+| Where | What it says |
+|---|---|
+| §H, this file, Health records row | "a `view` guardian already sees them" |
+| [E-7](#e-7--one-level-cannot-separate-the-medical-record-from-the-profile) | "a guardian either sees everything about the child or nothing" |
+| [permission-catalog §9](appendix/permission-catalog.md#9-there-is-no-dependent-namespace) | a `view` guardian "reaches the fee history and the health record" |
+| [data-model/08 §7](data-model/08-events.md#health-data-and-the-discipline-this-requires) | "the medical file, which **no event permission reaches**" |
+| [data-model/04 §2](data-model/04-relationships.md#2-the-guardians-right-none-view-or-write) | the case the old codes existed for is "access to medical information" |
+
+**No document defines one.** There is no health or medical entity in any
+[data-model](data-model/00-conventions.md) file and no box in [the ERD](appendix/erd.md). The only
+thing that ever had a medical shape in this model was a `medical_form` **requirement code**, and
+[D-044](decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)
+deleted that table. So the referent is a habit of speech inherited from the old
+`dependent.medical.*` permission codes, which named a sub-resource of a table that was itself
+removed with [D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular).
+
+**What this does to the arguments built on it — most of them survive, one does not.**
+
+- **E-7 stands, and is sharper than it looked.** "One right level cannot separate the medical record
+  from the profile" is *still true* about a record that does not exist: it says the guardian model has
+  no granularity to offer whenever something sensitive is later attached to a person. That is a real
+  finding about the model, not about a table.
+- **"No event permission reaches the medical record" is true but empty.** Nothing reaches it, because
+  nothing is there. The paragraph in 08-events that leans on this to reassure is right about
+  permissions and wrong about the risk: **the only health data the system actually holds today is in
+  `event_answer.value`** — free text typed into a form, read by whoever runs the event, with no
+  retention policy ([EV-2](#ev-2--retention-of-event_answer)). The sensitive data is in the weakest
+  place, not the strongest.
+- **"A `view` guardian already sees them" is simply false**, and was written as a reason not to design
+  the module early. It is replaced by the question below.
+
+**The question, before any field is designed.** *What is a health record in this system?* Not "which
+fields" — the shape. Three coherent answers, and they imply different systems:
+
+1. **Structured entries** (allergy, medication, condition, instruction) — queryable, so "who in this
+   unit has a nut allergy" is answerable, and the price is that the organization is now a custodian of
+   diagnosable data with everything that implies.
+2. **Documents only** — a scanned form filed against the person, using the `document` scope that
+   already exists in the catalog. Cheap, legally simple, and useless in an emergency, because nobody
+   reads a PDF at 23:00 in a tent.
+3. **Hybrid** — a small set of structured, actionable entries plus documents behind them for anything
+   a form can hold. This is what organizations actually do on paper, and the option the rest of the
+   corpus seems to assume.
+
+**Why this is H-0 and not a row in the table.** Every other open question about health — who may read
+it, whether the guardian default changes, what event organizers get, how long answers survive,
+whether E-7 needs its exception — takes a different answer depending on this one. It is also the only
+module whose *absence* is already load-bearing: two documents cite the medical record's protections in
+order to argue that something else is safe.
+
+**Needed.** One answer above, then a round of design questions that follow from it.
+
+---
+
+### MSG-1 ✅ **Closed** — a direct message to a minor is mirrored to their guardians
 
 **Raised by [D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel),
 which declined the restriction rather than forgetting it.**
@@ -797,8 +859,31 @@ branch, and it silently tells a child that the adult messaging them has been vet
 model does not establish, and the organization records no background checks
 ([D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
 
-**Impact.** One mirroring rule and one notice to the sender. No new permission, no resolver branch.
-**The thing that must not happen is shipping direct messaging to minors with neither.**
+**Answered (round 6): the recommendation is adopted**, as
+[D-082](decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)
+— mirror to guardians, tell the sender, block nothing. Three details were settled with it, because
+"mirror it to the guardians" does not by itself say who the guardians are *to this message*:
+
+- **Which guardians.** Those whose right level is `view` or `write`. A guardian at `none` receives
+  nothing: `none` is the organization having already decided that this party sees nothing about the
+  child, and a safeguarding rule is not a licence to undo a recorded decision by side effect. **A
+  minor whose guardians are all `none` is therefore reported with the minors who have no guardian at
+  all** — otherwise the exclusion would be a way to make a child silently unwatched.
+- **Which set, as of when.** The guardianships open *at the moment the message is sent*, frozen into
+  the delivery. A guardianship closed afterwards does not lose its mirror, and a guardian added later
+  does not acquire old threads — same discipline as
+  [06-audit §2](data-model/06-audit-and-import.md#2-audit_log), which keeps the
+  trail answering "what was true then".
+- **Broadcast is not mirrored.** A scoped broadcast is already addressed to a set, recorded, and
+  attributable; mirroring exists for the *private* case, which is the one that can be invisible.
+
+**What mirroring is not.** Not approval, not a gate, and not evidence anyone read it. It buys the one
+property the safeguarding argument actually needs — **no private conversation about a child is
+secretly unread** — without putting an age into the resolver.
+
+**See:** [D-082](decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
+[permission-catalog's `message` row](appendix/permission-catalog.md#10-deferred-namespaces),
+[glossary — Mirroring](glossary.md#communication).
 
 ---
 

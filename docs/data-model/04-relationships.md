@@ -421,12 +421,23 @@ These were executable queries. They are now requirements stated in prose, and no
    prevent; worth verifying because an application bug or a hand-edit can still create it.
 3. **A dependent with no primary contact.** A current guardianship set in which nobody is flagged
    as the emergency contact.
-4. **A minor member or participant with no guardian recorded at all.** Age comes from
+4. **A minor member or participant whom no guardian can see.** Two shapes, one report, because
+   they are the same gap arriving by different routes: **no guardianship row at all**, and **a full
+   set of guardians with every one of them at `right_level = none`**. Age comes from
    `person.birth_date` — there is no membership category to read it from, because membership is
    ageless ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)). **This is a
    safeguarding gap, not a data-quality nit**: the organization holds a member it cannot contact in
    an emergency and cannot obtain consent from. It should alert, not log. This check is one of the
    reasons `guardianship` is a required part of the model rather than an optional convenience.
+
+   **The second half was added by [D-082](../decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
+   and it is not a hypothetical refinement.** A direct message to a minor is mirrored to the
+   guardians at `view` or `write` — deliberately *not* to a guardian at `none`, because `none` means
+   the organization already decided that party sees nothing about the child. Without this half of the
+   check, a child whose guardians are all `none` would look, in every report, like a child with
+   guardians, while in fact nobody outside the child receives a copy of anything sent to them. **A
+   right level that silently removes the only safeguarding net is a right level nobody understands
+   anymore**, and this report is what keeps `none` meaning what it says.
 5. **A guardian younger than the dependent**, where both birth dates are known. Almost always a
    data-entry error, and detectable only when both dates survived the import.
 6. **`guardianship.right_level` disagrees with its own open history row.** A new invariant created

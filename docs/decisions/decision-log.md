@@ -2688,7 +2688,9 @@ the absence gets stored rather than inferred.
 
 ## D-077 — Messaging is direct by default, `broadcast` is an ordinary scoped permission, and the recipient chooses the channel
 
-**Status:** decided (from your answer) — **first decision of the communication module**
+**Status:** decided (from your answer) — **first decision of the communication module** *(amended by
+[D-082](#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians), which supplied the
+thing this entry declined and left unprovided: a rule for the private message to a child)*
 **Date:** refinement round 6
 
 **Your answer.** *"There will be internal messaging through the system. Personnel with
@@ -3098,3 +3100,78 @@ description got here, and a record is allowed to quote things it no longer endor
 **See:** [data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now),
 [open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
 (now four shapes), [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).
+
+---
+
+## D-082 — A direct message to a minor is mirrored to the minor's guardians
+
+**Status:** decided (from your answer) — **closes MSG-1**
+**Date:** refinement round 7
+**Follows:** [D-077](#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+
+**Your answer.** Asked which of the two available safeguards you wanted, having been shown that
+[D-077](#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+had declined the sender restriction and left nothing in its place, you chose **mirror to guardians**.
+
+**The rule.** A direct message whose recipient is a minor is delivered **also** to that minor's
+guardians, and the sender is told, before sending, that it will be. Nothing is blocked. No permission
+is involved, and no check in the resolver looks at an age.
+
+**Why this direction and not the other one.** The corpus already refused an age branch at check time,
+for events, in [D-070](#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule), on the ground that a
+condition the capability model does not know about is the first rule in a rule engine nobody asked
+for. Messaging was going to reintroduce exactly that condition by a different door. Mirroring gets
+the safeguarding property without it: **the property nobody was ever arguing for was "an adult cannot
+reach a child", and the property actually needed was "no private exchange about a child is secretly
+unread."** Those are not the same rule, and only the second one survives contact with a volunteer
+organization, where a restriction that inconveniences a leader on a Friday evening gets bypassed by
+Monday — and a routinely-bypassed restriction is worse than none, because it teaches everyone that the
+rule is decorative.
+
+**Three things "mirror it to the guardians" does not say, settled here rather than in code:**
+
+1. **Which guardians — those at `view` or `write`.** A guardian whose right level is `none` receives
+   nothing. `none` is not an oversight; it is the organization having already decided that this party
+   sees nothing about the child, and a safeguarding convenience is not a reason to reverse a recorded
+   decision as a side effect of a message.
+   **The consequence is named rather than left to be found:** a minor whose guardians are *all* `none`
+   is exactly as unwatched as a minor with no guardian row at all, so both are reported together by
+   the existing completeness check in
+   [04-relationships §6](../data-model/04-relationships.md#6-invariants-to-verify). Mirroring must not
+   become a channel through which `none` quietly stops meaning anything.
+2. **Which set, as of when — frozen at send time.** The guardianships open at the moment the message
+   is sent are the recipients, recorded into the delivery. A guardianship closed later does not lose
+   its copy; a guardian added later does not acquire old threads. This is the same discipline that
+   makes the audit log answer "what did this role say on that date" rather than "what does it say
+   now" ([06-audit §2](../data-model/06-audit-and-import.md#2-audit_log)) — a safeguarding question
+   about a past message has to be answerable against the arrangement that existed then, because the
+   question "did anyone tell the father?" is asked months later, about a family that has since
+   separated.
+3. **Broadcast is not mirrored.** A scoped broadcast is addressed to a set, recorded, attributable,
+   and not private; mirroring exists precisely for the private case, where "nobody saw this" is a
+   claim nobody can check. Extending it to broadcast would deliver the same content twice to the same
+   guardians and would blur the one distinction the rule depends on.
+
+**What mirroring is explicitly not.** Not approval — nobody consents before a message is sent, so the
+channel stays open and the organization stays out of the middle of ordinary communication. Not
+delivery confirmation; the mirror inherits the recipient's own channel choice
+([D-077](#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel))
+and can therefore fail to be read exactly like any other message. And not a record of concern: it is
+a copy, not a report, and the organization learns of a message only through the ordinary routes.
+
+**The variant rejected, and why it will come back.** *"Only guardians and unit leaders may message a
+child."* It is the sender rule wearing the visibility rule's clothes: it needs the age branch, it is
+bypassed the first time it is in the way, and worst of all it **tells a child that the adult messaging
+them has been vetted** — a claim the system cannot support, since no background checks are recorded at
+all ([D-043](#d-043--no-background-checks-are-recorded-in-this-system)). Recorded here because the
+proposal is intuitive and will return.
+
+**Impact.** One mirroring rule, one notice to the sender, one extended completeness report. No new
+permission, no resolver branch, no new table. **The undesigned module now has a constraint on it
+before it is designed**, which is the point of taking this decision early: a messaging design that
+ships private delivery to minors with neither restriction nor mirroring would have to be reopened
+after the fact, when the storage of message bodies and the retention policy are already fixed.
+
+**See:** [MSG-1, closed](../open-questions.md#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians),
+[permission-catalog](../appendix/permission-catalog.md#10-deferred-namespaces),
+[glossary — Mirroring](../glossary.md#communication).

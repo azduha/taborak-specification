@@ -358,9 +358,20 @@ power and typing the same sentence twelve times.
 sender chooses *who*; the recipient chooses *how it arrives*. This is why the system is the medium
 rather than a mail relay: a bounced email is a failed delivery on one channel, not a lost message.
 
-**Age is not a sender concept.** Nothing in the model restricts who may address a child; the tier is
-broadcast versus direct. The residue is stated rather than hidden — see
-[E-6](open-questions.md#msg-1--any-account-can-address-a-child-directly).
+**Age is not a sender concept** — and it is not a *recipient* concept either, which is the part worth
+saying out loud. Nothing restricts who may address a child
+([D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel));
+what stops a private message to a child from being unnoticed is
+**mirroring** ([D-082](decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)):
+the guardians get a copy, the sender is told before sending that they will, and no check in the
+resolver ever looks at an age.
+
+**Mirroring** — A copy of a direct message addressed to a minor, delivered to that minor's guardians
+whose right level is `view` or `write`, fixed to that set **at the moment of sending**. Visibility,
+not approval: nobody has to agree before the message is sent. A guardian at `none` receives nothing,
+because `none` is the organization having already decided that this party sees nothing about the
+child — and a minor whose guardians are *all* `none` is the same alertable shape as a minor with no
+guardian at all, so it is reported together with it.
 
 ## Time
 
