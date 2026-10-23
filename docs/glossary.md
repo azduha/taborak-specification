@@ -36,8 +36,22 @@ person record, because none of it is a different kind of object.
 
 **Account** — Credentials and login state for a person. A person may have zero or
 more accounts over their lifetime (e.g. a childhood account abandoned in 2010, a new
-one created in 2024). Accounts are never shared between people, not even between a
-parent and child.
+one created in 2024), **but at most one live one** — closed rows aside. Accounts are
+never shared between people, not even between a parent and child.
+
+**Account activation gate** — The rule that an account may not reach `active` while an
+unresolved identity hypothesis names its person. This is what a colliding sign-up runs into:
+a sign-up that *strong*-matches an existing person — exact legacy member number, or exact birth
+date together with a normalized name, **never the fuzzy band** — raises a hypothesis. Its own rows are
+created and stay `pending_verification`: **nothing is merged, nothing is linked, nothing is
+activated.** The contact point the person typed survives as the credential it was offered as, and
+`identity_reviewer` decides it with `person.merge`. The holding message confirms nothing, since
+a sign-up form that can answer "yes, that person exists" is an existence oracle over a roster of
+children; and a hypothesis that is blocking an account gets an age check that alerts, because a
+stalled queue is no longer a data-quality problem but a specific person who cannot log in
+([D-089](decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+"I have a new e-mail address" is not this case and is not routed through it: `account_credential`
+holds many credentials for one account.
 
 **Contact point** — A single email address, phone number, or postal address belonging
 to a person. Stored as many rows per person, not as columns, so that a person can have
@@ -45,12 +59,35 @@ five email addresses, or a new kind invented later, without a migration. Each ha
 `type`, a `purpose`, and a verification timestamp.
 
 **Identity hypothesis** — A *proposed* but unconfirmed link between two `person` rows
-that may actually be the same human. Created during legacy import or when someone
-registers claiming a historical identity. Confirming one triggers a merge.
+that may actually be the same human. Created during legacy import, by the nightly matcher,
+when someone registers claiming a historical identity, or by a sign-up that strong-matches
+a person who already exists. Confirming one triggers a merge; while one is unresolved it
+also holds the account of any person it names out of `active` — see **account activation
+gate**.
 
 **Merge** — The act of declaring two person rows to be one human, and collapsing them.
 Never a delete: the absorbed row survives as a tombstone pointing at the survivor, so
-that historical foreign keys keep resolving.
+that historical foreign keys keep resolving. Always a human's decision (`person.merge`),
+including at the highest score — and refused outright when the chosen survivor turns out,
+on resolution, to be the person being absorbed.
+
+**Merge chain** — What forms when a survivor is itself later absorbed. The pointer is **not
+rewritten forward**: A→B→C stays a chain and `resolve_person()` walks it to the live row.
+This is **decided, not provisional** — chains persist because reversing a merge would otherwise
+be a reconstruction of facts nobody recorded, and flattening is closed off rather than merely
+faster ([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
+Two rules come with them, neither on the read: a cycle is impossible because the *merge* is
+refused, never because a hop limit gave up; and a chain longer than **three hops is reported**,
+which is a statement about the matcher's queue, not about the row.
+
+**Unmerge** — Reversing a merge a human approved. The tombstone comes off, rows created *before*
+the merge go back to the revived person, and rows created *inside* the window are flagged for a
+human rather than split by a rule — every `access_grant` from that window flagged, not guessed.
+**The merge is reversible; the merged window is not**: what two people did while they were one row
+stays one row's history, because the record cannot separate who did it
+([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
+No permission of its own — undoing an identity correction is the same act as making one, so it is
+`person.merge`.
 
 ---
 
@@ -84,24 +121,59 @@ against one needs nothing beyond `person.edit`.
 
 **Person attribute** — The value one person currently has for one code. **Overwritten in place:**
 the row is the organization's present belief, and the sequence of earlier beliefs lives in the audit
-trail, **values included** — logged on the same terms as a contact point or a note, because a list of
+trail, **values included, for 24 months** — logged on the same terms as a contact point or a note, because a list of
 person fields whose values must not be logged would be exactly the privileged corner
 [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 deleted, and would leave nothing behind for an overwritten value. What guards the trail is who may
-read it, not what it omits. No `valid_from` / `valid_to`, deliberately
+read it, not what it omits — **and it now omits, on a clock**: those logged values are emptied 24
+months after they were written (see **payload reduction**), so the trail is the record of *what
+changed, who did it and when* for the life of the system and the record of the *values* for two
+years. The honest name for the whole stack is therefore **no long history**, not merely *no temporal
+columns*: the value lives in one overwritten row, the copy of it depends on a write path remembering
+to log, and the copy ages out. If a case ever needs the long version, the fix is temporal columns on
+the value — [D-085](decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+reversed — and not a longer trail. No `valid_from` / `valid_to`, deliberately
 ([data-model/09 §3](data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)).
 
 **Proposed code** — A definition that came into existence because somebody recorded a value against
 a code that did not exist. It waits in the curation queue: kept out of data entry forms and reports,
 yet **readable by anyone already entitled to read the person**, because the organization's data
 quality problem is not the family's confidentiality problem. It is where an improvised need at 23:00
-goes instead of into a notes box that nobody will read again.
+goes instead of into a notes box that nobody will read again — **improvised by a person at a desk**,
+which is the whole meaning. It is emphatically *not* "whatever the legacy import did not understand":
+the codes a batch's column→code map names arrive `live`, because a curator read that map as one object
+before the batch applied, and several hundred proposals landing on day one would make this queue's age
+signal meaningless before it had ever meant anything
+([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 
 **Retired code** — A definition taken out of data entry and left alone everywhere else: readable,
 reportable, revivable, its values untouched. **Deleting a label must never delete the facts filed
 under it**, or the badly-named label is never retired and the vocabulary accretes instead of being
-curated. Redaction is the opposite operation and the only eraser: retiring keeps the values, erasing
-a person deletes them.
+curated. Redaction is the opposite operation: retiring keeps the values, erasing a person deletes
+them, immediately and whatever their age. It used to be called *the only eraser*; there is now a
+second one — **payload reduction**, below — and the distinction is that redaction answers to a
+person and is absolute, while reduction answers to a calendar and is bounded.
+
+**Payload reduction** — Emptying the `old_values` / `new_values` out of an audit row **24 months
+after it was written**, leaving everything else standing: actor, on-behalf-of, operation, table,
+record id, changed fields, transaction, session, channel. The trail goes on answering *who changed
+this row, when, and were they allowed to* for the life of the system, and stops answering *and to
+what* after two years; twelve months is the floor the window may be set to. **Not redaction**, which
+is a named person's erasure, immediate and absolute, and reaches payloads of any age; **not an
+import revert**, which deletes the rows a batch created. Reduction is the one case in this design
+that deliberately unwrites *later* than the write, so its failure mode is not running at all — hence
+a scheduled job with a check that alerts on any row past its window still carrying a payload
+([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+
+**The two clocks** — The accounting skeleton (`membership`, `fee_obligation`, `payment`, and the
+anonymised `person` row an erasure leaves behind) has **no clock at all**, now justified as the
+organization's own history rather than merely unchallenged. *Assumption:* that this indefinite
+retention of rows about a named person has a legal basis — organizational history plus accounting
+obligations, against a redacted person row that keeps the skeleton non-identifying — is unverified,
+and a decision log is not the document that grants it. The audit trail runs the opposite direction: rows
+forever, payloads for 24 months. Erasure sits outside both, immediate and absolute. The same window
+is *proposed* for `access_log` and is not yet confirmed
+([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
 
 **Curation** — Keeping the vocabulary meaning one thing: merging near-duplicates, promoting or
 discarding proposals, retiring codes nobody uses, and writing the description that stops one code
@@ -173,6 +245,9 @@ what a pack's roster is. Distinct from membership in every way: a person holds e
 membership and any number of participations, participation is free, and it ends when the
 person stops attending rather than when a fee is unpaid. A participation row for the root
 unit is created alongside each membership, so "everyone in unit X" is one uniform query.
+**It is also what a legacy roster row becomes**: an imported historical row is always a
+participation and never a membership, because the corpus carries no payment evidence to
+make a membership out of ([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 
 **Membership request** — A person's application to become a member. Separate from the
 membership itself, because a request has its own lifecycle (submitted, under review,

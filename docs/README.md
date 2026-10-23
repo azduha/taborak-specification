@@ -25,6 +25,10 @@ September 1990 to June 2010, and again from October 2024 to the present. They we
 *child member*, then nothing, then an *adult counselor*. That is one `person` row and
 **two `membership` rows**. A model that puts `is_member` or `member_type` on the person
 cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
+(The 1990–2010 membership is the *optimistic* half of that sentence: the legacy import creates
+participation only, since the corpus it reads carries no payment evidence at all, so that membership
+exists only where somebody recorded it on evidence — [D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money).
+"Who was in Pack 12 in 1998?" is answered by the participation row either way.)
 
 So there are five rules the data model obeys throughout:
 
@@ -88,7 +92,7 @@ fees belong to the root in the first place.
 | [appendix/erd.md](appendix/erd.md) | Entity-relationship diagrams. |
 | [appendix/permission-catalog.md](appendix/permission-catalog.md) | Every permission code. |
 | [decisions/decision-log.md](decisions/decision-log.md) | Decisions taken, with rationale. |
-| [open-questions.md](open-questions.md) | Unresolved items, each with a schema impact. |
+| [open-questions.md](open-questions.md) | Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: **section B, identity and history, is closed in full** — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus ([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)–[D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
 
 ---
 

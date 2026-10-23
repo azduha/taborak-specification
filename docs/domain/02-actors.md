@@ -10,7 +10,7 @@ registration is deliberately separate from membership.
 ```
    person ─────────── the human being. Exists even with no account and no membership.
      │
-     ├── account ──── the ability to log in. Optional. Zero or more per person over time.
+     ├── account ──── the ability to log in. Optional. Zero or more per person over time, one live.
      │
      └── membership ─ the state of being a member. Optional. Zero or more periods.
 ```
@@ -55,6 +55,7 @@ clean place to hang capabilities that must work before membership exists:
 | Staff-created account | registrar creates one for an adult who is not self-sufficient with computers | `person` + `account`, flagged `created_by_staff` |
 | Legacy import | no account created | `person` only, `record_origin = 'legacy_import'` |
 | Self-registration claiming history | adult registers and asserts a past membership | `person` + `account` + `identity_hypothesis` |
+| Sign-up colliding with an existing person | adult signs up again through an address the system did not know, and **strong**-matches someone who already exists | `person` + `account`, both held at `pending_verification`, + `identity_hypothesis` — and **no merge, no link, no activation**. The address typed survives as the credential it was offered as, and the hypothesis is what holds the account out of `active` ([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)) |
 
 ### Minor registration — the consent problem
 
@@ -80,6 +81,26 @@ Two deliberate choices:
   a person can be an active member with a suspended account (they'd interact by phone).
 - **Closing an account does not delete the person or their history.** The `account` row
   is closed and retained. `person` and all `membership` rows are untouched.
+
+**And a gate this table cannot express.** `active` has a second condition beyond verification: an
+account may not reach it while an unresolved `identity_hypothesis` names its person
+([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+The two rules work together — uniqueness says a person may not *hold* two live accounts, and the gate
+says the second arrival waits for a human rather than being merged into the first or quietly linked to
+it, which is the version that turns a false positive into one person's record becoming another's.
+Making a queue state block a login buys two obligations, and both are checks rather than intentions:
+
+- **A hypothesis that is blocking an account is age-checked, and it alerts.** Until now a stale
+  identity queue was a data-quality problem with no victim you could name; now it is a specific person
+  who cannot log in, whose only remaining channel is to telephone someone.
+- **The message the person sees confirms nothing.** Not that the name matched, not that the birth date
+  did, not that anyone by that name exists — because a sign-up form that can answer "yes, that person
+  exists" is an existence oracle, and this system's roster is children.
+
+The trigger is a *strong* match only — exact legacy member number, or exact birth date together with a
+normalised name. The scored band below that raises nothing at sign-up: blocking a stranger's
+registration on a fuzzy score is the failure this rule would most deserve
+([03-identity-and-legacy.md §4](03-identity-and-legacy.md#4-match-signals)).
 
 ### Credentials
 
@@ -213,6 +234,11 @@ capability to be reachable in an emergency.
   routes through staff ([D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff)).
   Closed — see [E-5](../open-questions.md#e-5--closed--the-parties-administer-their-own-row).
 - Whether staff-created accounts are allowed for children, or only adults.
-- Whether a person may hold more than one active account at a time (recommend: no).
+- ~~Whether a person may hold more than one active account at a time (recommend: no).~~ **No**, and
+  the recommendation became a rule with the part this item did not foresee: the colliding sign-up is
+  refused, files a claim in the identity review queue, and is allowed to become nothing — no second
+  *live* account, no automatic link, no activation until a human says so
+  ([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+  Closed — see [B-4](../open-questions.md#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim).
 
 All tracked in [../open-questions.md](../open-questions.md).

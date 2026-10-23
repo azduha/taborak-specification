@@ -124,6 +124,17 @@ legacy corpus is precisely a data import, arriving before the admin UI exists. S
 [../data-model/00-conventions.md §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now)
 for which layer survives which kind of writer.
 
+**"Before the admin UI exists" now costs more than it used to.** The same batch carries free-text
+columns, and under [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+the map from those columns to attribute codes has to be **authored and read before the batch applies**,
+with the codes it names arriving `live` because a curator read them
+([03-identity-and-legacy.md §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). If the import
+genuinely precedes the UI, that reading cannot happen in the UI — and `attribute.define` is held by no
+seed role ([../appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues),
+**AT-2**). So the organization's first act of vocabulary curation is currently scheduled and unstaffed.
+That is a gap in the rollout plan rather than in the model, but it is the kind that gets discovered at
+the import, not before it.
+
 ---
 
 ## 3. Unit names and renumbering — the history problem

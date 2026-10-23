@@ -908,6 +908,19 @@ never in a job that might not run — the ordering is the part of this rule with
 [D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
 taking the trigger that used to enforce it.
 
+**One clause of that sentence is now bounded, and the bounded half is not the half that mattered.**
+*For longer than the record is kept* was written when this table's state columns and `audit_log`'s
+payloads were both permanent. If
+[F-8](../open-questions.md#f-8--retention-policy-for-access_log) is confirmed, the state columns expire on
+the window
+[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+proposes for the change trail, which inverts that arithmetic: the copy becomes shorter-lived than the
+business row it was copied from. The conclusion is unmoved, because what the rule guards is the
+*audience*. A window decides how long a copied value is readable; it does not decide who may read it
+while it is readable, and the readers here are whoever holds `audit.view`, not whoever may see the record.
+A sensitive value copied into a less-protected table is a protection failure on the day it is copied, not
+only for as long as it then survives.
+
 **How far the argument reaches, now that the person record has no sensitive corner.** It is an argument
 about *the copy's guard*, not about the copy's contents, and reading it as an instruction to empty
 payloads is the mistake this section made once and corrected. [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
@@ -935,9 +948,43 @@ two conclusions, and they point in opposite directions from the obvious one:
 Any update or delete against `access_log` is refused row by row, before it happens, with an
 error saying the table is append-only. Nothing is left to the application remembering this.
 
+**That sentence has two exceptions, and written as a blanket refusal it defeats the retention policy.**
+Emptying a row's payloads once it passes the window below is an update, and so is scrubbing one person's
+values out of a row after an erasure. Neither is a correction: nobody is making a version of this table
+right, and the answer the row gives to *who, what, when, by what authority* is untouched in both cases.
+So both fall inside what "append-only" forbids in spirit and outside what it may forbid in practice.
+**State the guard as a refusal of rewrites rather than a refusal of writes** — the only actor allowed to
+change a row is the erasure or the reduction, the only columns either may touch are the state columns, and
+every other field on the row is immutable. The literal version of this rule is the more dangerous one,
+because it fails silently and what it fails is the policy. The same reasoning applies to `audit_log` and
+is stated with the operations themselves in
+[06-audit-and-import.md §2.2](06-audit-and-import.md#22-redaction-before-logging).
+
+**Retention: the same window as `audit_log`'s payloads, as a proposal rather than a decision.** This
+paragraph used to read *"never delete them — the partition retention policy is a legal question, not a
+technical one"*, and the second half of that is still exactly right. What has changed is that the decision
+which bounded the change trail's payloads
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+proposes the same window here — **24 months on the state columns, rows kept, 12 months as the floor** —
+and records it as [F-8](../open-questions.md#f-8--retention-policy-for-access_log), **which still needs
+confirming**. Until it is confirmed, that is a default awaiting a person and not this document's position.
+
+**Why the question is weaker here, which is structural and not luck: this table does not hold the
+contents of reads.** `before_state` and `after_state` are populated for write actions only, so a read
+records *who asked, for what, under which permission, through which channel, and whether it was allowed*
+— and stops. Recording what the read *saw* would copy every record a permitted glance touched into a
+table read by a wider audience than the record itself, which is the exact act this section argues against
+two paragraphs above. So the window here protects considerably less than it protects over in `audit_log`,
+and what survives it is everything this table was built to answer. **The valuable fact about a read is
+that it happened and by what authority, and that is precisely the part no reduction touches.**
+
 Consider partitioning by month once volume justifies it, and moving old partitions to
-cheaper storage — but **never delete them**. The partition retention policy is a legal
-question, not a technical one.
+cheaper storage. Rows are not deleted on either answer; the window is carried out by emptying the state
+columns, which is the job and the over-age check described for the change trail in
+[06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks). **If F-8 is confirmed, that check
+has to be written for this table too** — a reduction with no check under it is a reduction that quietly
+stops happening, which is the failure mode §2.2 of that document names as the only one this operation
+has.
 
 *Assumption:* `access_log` may be queried by staff with a specific permission, but writing
 is automatic. If the organization needs human annotation of audit entries, add a separate
@@ -1434,10 +1481,18 @@ copies disagreed for exactly the reason the note above describes.
 
 A few of those codes carry a decision in their shape, and those are worth naming:
 
-- **`person.merge`, `person.unmerge` and `person.redact` are separate codes**, not flavours of
-  `person.edit`. They are irreversible, and with no `person.admin` to imply them (D-068) a role
-  that reaches them does so by listing them, visibly. `identity_reviewer` holds `person.merge`;
-  no starter role holds `person.redact`.
+- **`person.merge` and `person.redact` are separate codes**, not flavours of `person.edit`. They are
+  irreversible, and with no `person.admin` to imply them (D-068) a role that reaches them does so by
+  listing them, visibly. `identity_reviewer` holds `person.merge`; no starter role holds
+  `person.redact`. **This bullet named a third code, `person.unmerge`, and
+  [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+  removed the premise for it.** Reversing a merge is the same act as performing one — an identity
+  correction made by a named human, through the same queue, with the same consequence for the same rows —
+  so it is `person.merge`, which that reviewer already holds. **A separate code would grade undoing a
+  mistake as safer than making one**, which inverts the only reason these acts were pulled out of
+  `person.edit` at all. [The catalog](../appendix/permission-catalog.md) carried the row and has dropped
+  it, recording the removal where the row stood so a reader of an older draft can find out where it went;
+  no seed role held it, so no role lost anything by the change.
 - **`person.view` reaches the whole record, and that is a change of reach rather than a new
   capability.** Since [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
   there is no privileged corner of the record for it to stop outside: whoever holds it over a person
@@ -1464,6 +1519,21 @@ A few of those codes carry a decision in their shape, and those are worth naming
   left is this bullet, which is a mark on a line of a table and nothing else, and is the reason
   [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) calls the guard the
   weakest link rather than the last line of defence.
+  **What the payload window adds to this bullet is a horizon, not a repair.**
+  [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+  empties those images 24 months after they are written, so a wrongly-graded grant of this permission
+  reads a child's descriptive values **for two years instead of for as long as the system survives** —
+  which bounds the exposure [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+  graded and does nothing whatsoever to fix it. **The bound is the realistic control for an organization
+  of this size, and it is the strongest argument
+  [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)
+  will receive; it is not an argument that the mark is set correctly, and it is certainly not an argument
+  for keeping one permission forever.** The mark still has to be right for two reasons the window does
+  not touch. Two years is not a short interval when the question is about a child, and it is roughly the
+  interval in which a safeguarding question actually gets asked. And a reduced row is not a harmless row:
+  it still names the person, the table, the record, the field that changed and the person who changed it,
+  which is a statement about a child even with the value gone — so the tier this code sits in survives the
+  window intact, and the window only shortens how long a mistake in it is worth exploiting.
 - **`attribute.define` is the narrow half of a deliberate pair**: values are open to anyone who may
   already edit the person, so that the fact gets recorded, and codes are held by few people, because the
   codes are what make the data queryable

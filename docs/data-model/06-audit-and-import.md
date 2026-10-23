@@ -12,7 +12,7 @@ data-change audit trail, the legacy import pipeline, and erasure.
 
 | | `access_log` | `audit_log` |
 |---|---|---|
-| Records | Who did what, and by what authority | Which fields of a row changed, and their values before and after — **except a person's descriptive values, which are never in the entry** (§2.2) |
+| Records | Who did what, and by what authority | Which fields of a row changed, and their values before and after — **including a person's descriptive values, which are in the entry deliberately** (§2.2) |
 | Answers | "Who accessed this child's record, and were they allowed to?" | "When did this person's address change, and who changed it?" |
 | Volume | Very high | High |
 | Raised by | Application code, on every permission check and action | **Every write to an audited table, on every path** — §2.1 names who owes that write now that no trigger is defined anywhere |
@@ -28,6 +28,14 @@ resolved it by removing the referent rather than by building it: there is one re
 and everything in it other than name, gender and age lives in `person_attribute`
 ([09-attributes.md](09-attributes.md)). **The question this trail answers is unchanged and is now
 sharper** — it is asked about the whole record, which is the thing `person.view` really reaches.
+
+**A second cell in that table was stale in the opposite direction, and it is corrected rather than
+quietly rewritten.** It read *"except a person's descriptive values, which are never in the entry"* —
+which was §2.2's withdrawn rule surviving in a summary row after §2.2 itself had retracted it. Anyone
+who read §1 and stopped there would have concluded the payload is clean, which is the one thing this
+table is not. **A summary that contradicts the section underneath it is the more dangerous kind of stale,
+because a summary is what people read.** The payload holds those values deliberately, and loses them 24
+months later; both halves are in the entry, and neither is a detail.
 
 ---
 
@@ -46,8 +54,8 @@ sharper** — it is asked about the whole record, which is the thing `person.vie
 | `table_name` | text, required | |
 | `record_id` | surrogate id, required | The row that changed. No reference: the table is named per row, so it points at any table in the database |
 | `changed_fields` | list of text | Which columns changed. Enables targeted history queries without parsing JSON |
-| `old_values` | free-form jsonb, optional | **Redacted before insert.** See §2.2 |
-| `new_values` | free-form jsonb, optional | **Redacted before insert.** See §2.2 |
+| `old_values` | free-form jsonb, optional | **Redacted before insert**, and **emptied once the row passes the payload window**. See §2.2 for all three operations and why they are not one |
+| `new_values` | free-form jsonb, optional | **Redacted before insert**, and **emptied once the row passes the payload window**. See §2.2 |
 | `on_behalf_of` | reference to person, optional | Set when the actor was acting for another person. Mirrors `access_log.on_behalf` (04-relationships.md §5) |
 | `session_id` | text, optional | |
 | `ip_address` | network address, optional | |
@@ -131,7 +139,9 @@ of the person record re-enacted inside the logging rules — the privileged corn
 table names after it was deleted as a list of permission names.
 
 **Therefore this table holds a child's allergy list in the clear, in a table designed to be read by
-auditors and kept longer than the record it describes.** That is the design, not an accident of it,
+auditors and kept longer than the record it describes — which since
+[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+is true of the payloads for 24 months and is untrue afterwards (§2.2).** That is the design, not an accident of it,
 and what it means is that the guard on `audit_log` is now load-bearing in a way it was not: **an audit
 entry about a person is as sensitive as the person data it quotes**, which is stated as a requirement
 on `audit.view`'s sensitivity mark in
@@ -142,6 +152,21 @@ The failure mode inverts, and it is worth naming because the shape is unfamiliar
 worry is a table nobody audits, and here it is a table whose payloads outrank its own permission. No
 check in §5 can see that — a sensitivity mark is a line in a document, not a row in the database — so
 it is a review item with exactly one place it is written down, and that is the fragility.
+
+**What the payload window does to that paragraph, and what it conspicuously does not.** The window does
+not repair the grading; it **shortens the period during which a wrong grading is a leak**, which for an
+organization of this size is the only control that will ever actually be in place
+([D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+is the decision that named the exposure, and the strongest argument
+[AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)
+will receive is that the payload is temporary rather than that the guard is good). It does not retire the
+mark either. A reduced row about a `person_attribute` change still names the table, the record id, the
+field that changed, the actor and the moment — which is to say it still says *this child had a value of
+this kind recorded, here, by this person*, and that is a statement about a child even with the value
+gone. So the mark stays where
+[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+leaves it, at the top tier, and the window is a bound on the damage rather than a discount on the
+permission.
 
 > **`role` and `role_permission` are audited for a reason the other tables do not share.**
 > Everywhere else, the audit log answers "who changed this record?". Here it answers the
@@ -187,8 +212,14 @@ it audits nothing per row, so the assertion has to know it exists rather than in
 
 ### 2.2 Redaction before logging
 
-**Two mechanisms operate here. An earlier draft of this section described three, and the third has
-been withdrawn below rather than quietly deleted, because the mistake is the useful part.**
+**Three operations act on this table's payloads, and they are told apart by two questions: when does it
+run, and whose interest does it serve. An earlier draft of this section described a fourth, and that
+fourth has been withdrawn below rather than quietly deleted, because the mistake is the useful part.**
+The three are not variations on one idea and must not be implemented as one job. Two of them run on the
+way in or on request, on the strength of a person's right or a credential's nature; the third runs on a
+calendar, on the strength of nobody's right at all. Collapsing the third into the second is the easy
+mistake available here — both empty the same two columns — and §5 carries a separate check for each
+because they fail in opposite directions.
 
 > **An audit log that stores the data it audits is a second copy of that data, with weaker access
 > controls and a longer retention period.** This sentence is still true, and it still describes
@@ -199,6 +230,12 @@ been withdrawn below rather than quietly deleted, because the mistake is the use
 > [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and
 > [05-authorization.md §9](05-authorization.md#9-access_log), which argues against copying data into a
 > less-guarded place and, read against this table, names the copy in question.
+>
+> **One clause of that sentence has since been changed from the side it complained about.** The copy's
+> *longer retention period* is no longer unbounded: the payloads are emptied 24 months after they are
+> written (mechanism three, argued in full below). That is a fix to the half the sentence called a
+> defect, and it is not the answer the first response wanted — the payload is emptied while the table
+> keeps its whole reason for existing, which is what the sentence above was warning against.
 
 **Mechanism one is a small set of values that must never enter the trail at all.** Credentials,
 tokens, the secret half of an integration: for these, *being in a log* is the harm, and no guard is
@@ -207,6 +244,16 @@ wide enough to make them safe there. This is the only job the key-name list belo
 **Mechanism two is erasure reaching payloads that were written lawfully at the time.** Redacting a
 person removes their values from images already in the trail (§4, and check 6 in §5); nothing here
 prevents those values from having been written, and the erasure is what unmakes them.
+
+**Mechanism three is the calendar doing the same thing to everybody: payload reduction.** A row older
+than the retention window has `old_values` and `new_values` emptied and every other field left exactly as
+it was. It is a scheduled job, it is owed to no one, and it applies whether or not the person whose data
+the row quotes has asked for anything. [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+is where the window was set and why; the argument that it is not a second species of redaction — and the
+reason the sentence further down about *never in a cleanup job* does not forbid it — is stated under
+**The third operation, in full** further below. That is out of order on purpose: the sentence about
+cleanup jobs belongs with the steps it governs, and this operation has to survive it before it can be
+used.
 
 The redactor takes one table name and one row image and does this:
 
@@ -262,6 +309,96 @@ about a value that was. See
 [00-conventions.md §8](00-conventions.md#8-personal-data-and-erasure) for what else the move to
 generated schema took out of this section's defence in depth.
 
+**The third operation, in full: payload reduction, and the paragraph above is the first thing it has to
+survive.** [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+set two clocks for this system and they point in opposite directions. The accounting skeleton —
+`membership`, `fee_obligation`, `payment`, and the anonymised `person` row they hang from — has **no
+clock at all** (§4, and [00-conventions §8 item 3](00-conventions.md#8-personal-data-and-erasure)). This
+table has two clocks in one row: **the rows live as long as the system does, and the payloads live 24
+months.** After the window a row is *reduced* — `old_values` and `new_values` emptied, everything else
+left untouched: actor, on-behalf-of, operation, table name, record id, changed fields, transaction,
+session, channel. The trail goes on answering *"who changed this row, when, and were they allowed to"*
+for the life of the system, and stops answering *"and to what"* after two years. Twelve months is the
+**floor** a window may be set to, not a stylistic preference: anything shorter stops covering a full
+year of a child's activities, and a year is the unit an incident is asked in.
+
+**Why the cleanup-job sentence does not forbid this, which matters because the two rules are one word
+apart.** Read literally, *"never in a cleanup job that might not run"* describes reduction exactly: it
+is late, it is a job, and it unwrites content from rows already committed. **It is still not the same
+rule, because these two are distinguished by what their failure costs and not by what their mechanism
+looks like.** The credential rule forbids the *late unwriting of a secret*, and its failure mode is
+lateness — write first and repair afterwards and the secret sits in a table that `audit.view` reaches for
+one whole transaction, which is the harm arriving before the repair can. Reduction requires the *late
+unwriting of history*, and its failure mode is not lateness but **absence**: a job that stopped running,
+an over-age row still holding a child's allergy list because nobody looked. A rule whose failure mode is
+lateness has to be pinned to the write, because the write is the only moment at which it can still be
+obeyed. A rule whose failure mode is absence cannot be pinned to the write at all — **carrying out
+reduction at the moment of writing is not obeying it, it is refusing it**, because the window is the
+entire content of the rule and at write time there is no window to have passed. So reduction is a
+scheduled job with a check underneath it, and the check *is* the rule rather than a reassurance about
+it: check 7 in §5 counts rows older than the window that still carry a payload, and alerts. The sentence
+above forbids late unwriting of a credential; this paragraph requires late unwriting of history; both
+are true at once and neither is an exception to the other.
+
+**Reduction is not redaction, and it is not revert, and the three are worth setting side by side because
+only one of them is anybody's right.**
+
+| | Runs | On whose behalf | What disappears | Row survives? | Caught by |
+|---|---|---|---|---|---|
+| **Stripping** — mechanism one | Before the insert, on every write path | No one; the value should never have been in the table | The listed credential keys, replaced by the marker | Yes — it is written once, already clean | Nothing; it is an ordering rule, and its breach is one readable transaction |
+| **Redaction** — mechanism two | When a person asks, immediately | The person the row is about | That person's values, from rows of any age, permanently | Yes, with the values gone | Check 6: a redacted person's payload still holding content |
+| **Reduction** — mechanism three | On a schedule, once a row passes the window | No one; it is policy | Both payloads of every over-age row, indiscriminately | Yes, standing empty | Check 7: an over-age row still carrying content |
+
+**What none of the three ever does is delete an `audit_log` row.** The rows are the permanent half; a
+reduction that pruned rows would quietly delete the answer to *"who changed this, and when"*, which is
+the half D-088 chose to keep. The two deletes that exist near this table are elsewhere and are about
+other tables: a revert (§3) hard-deletes *business* rows a batch created and writes audit entries for
+having done so, and an erasure (§4) deletes `person_attribute` rows and records that in
+`redaction_log` rather than one entry per value.
+
+**All three operations are updates, and an append-only guard has to be written knowing that.** Nothing in
+this repository defines an append-only trigger — D-072 removed the last of them — but the property is
+still asserted in prose, and the neighbouring trail states it as a literal refusal of updates
+([05-authorization.md §9](05-authorization.md#9-access_log)). **A blanket refusal of updates blocks the
+erasure scrub and the reduction job alike**, quietly, from the side of the rule that looks safest. What is
+worth keeping is not *nothing changes* but **nothing is corrected**: no write may alter what a row says
+about who did what, to which row, when; the only writes permitted after the fact are the two that remove
+content and never add or amend any.
+
+**Erasure is untouched by all of this and still immediate.** A redaction scrubs that person's values
+from payloads whatever their age, including rows written yesterday and rows two days from reduction; the
+window is a ceiling on how long anything may be in there, not a waiting period anything has to serve.
+**This is the sentence to keep if only one is kept: reduction never satisfies an erasure request, and an
+erasure never waits for reduction.** Check 6 and check 7 exist separately because a system can pass one
+and fail the other, and the two failures mean opposite things — check 6 firing means a person's right was
+not honoured, check 7 firing means a policy was not applied.
+
+**What it costs, stated rather than buried.** The window is the cheapest thing this design will ever do
+about the exposure [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+accepts, and it bounds that exposure without repairing it (above, after §2's paragraph on the guard).
+What it *spends* is the past: [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+was justified by the trail being the history, and now that history's values expire, so *"what did we
+believe about this child's allergy list in 2019"* is unanswerable twice over — the value was never kept
+in the business row, and the copy of it is gone. **The honest name for that trade is *no long history*,
+not *no temporal columns***, and it is drawn out next to the values in
+[09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload). If a case ever needs
+the long version, the fix is temporal columns on the value — D-085 reversed — and **not** a longer
+window, because stretching the window stretches precisely the guard D-086 graded and re-creates the
+second copy D-083 refuses to keep.
+
+**The half of this that is not settled, and is not pretending to be.** Indefinite retention of named
+`membership` and fee rows is a claim that needs a legal basis and a decision log cannot grant one. What
+the corpus now states, as an **assumption pending review** rather than as settled law, is organizational
+history plus accounting obligations, held up by a redacted person row that keeps the skeleton
+non-identifying — and the review is the one [B-3](../open-questions.md#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+already asked for, now with a concrete policy in front of it instead of a blank (§6).
+
+**The neighbouring trail takes the same window, as a proposal rather than a decision.** `access_log` is
+proposed at the same 24 months under
+[F-8](../open-questions.md#f-8--retention-policy-for-access_log), which still needs confirming; it is a
+weaker question than this one because that table keeps the payloads of *reads* out of itself to begin
+with ([05-authorization.md §9](05-authorization.md#9-access_log)).
+
 **The personal-data entries in the old redaction list are gone, and they were removed rather than
 renamed.** It used to read `secret_hash`, `notes`, `custody_arrangement`, `termination_note`,
 `rejection_note`, `status_note`, on the theory that free text is where a diagnosis hides; a second,
@@ -291,8 +428,18 @@ person name where there is an actor, and `actor_label` where there is not.
 overwritten in place
 ([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)),
 so every value a child's allergy list ever held sits under one `record_id`, and this is where the
-question *"what did we believe about this child in March, and who wrote it down?"* gets answered. The
-consequence is the one §2.2 spends its length on, restated where it bites: **a history screen over this
+question *"what did we believe about this child in March, and who wrote it down?"* gets answered — for a
+March inside the payload window. **After the window the same query returns the same rows and a different
+kind of answer**: who, when, which row, which field, and no value (§2.2, mechanism three). That is not a
+degradation to be smoothed over on the screen. An entry with a reduced payload and an entry that
+genuinely recorded no value are two different facts, and a history view that renders both as an empty
+cell tells a reader the organization never knew something it has since stopped holding — so the reduced
+state has to be *said*, the way `actor_label` is said when there is no actor person. The date the row
+crossed the window is not stored anywhere and should not be: it is the row's own `occurred_at` plus the
+window, which is configuration a reader of the screen may not have, so the honest label is that the
+values are no longer retained rather than a date of when they went.
+
+The consequence is the one §2.2 spends its length on, restated where it bites: **a history screen over this
 table is a person-data surface.** It is reached through `audit.view`, and it deserves to be reached
 through `person.view` too — a reader who may see that an allergy was recorded in 2019 but may not see
 the allergy is holding the second question and will ask it out loud. The guard on the trail is what is
@@ -388,7 +535,7 @@ self-registered data**, **preserves provenance**.
 | `resolution_note` | text, optional | |
 | `applied` | boolean, required | Default false |
 | `applied_person_id` | reference to person, optional | What this row created |
-| `applied_membership_id` | reference to membership, optional | What this row created |
+| `applied_membership_id` | reference to membership, optional | What this row created — **empty for every row of a roster batch**, which creates participations only (§3.1). A set value here on a roster batch is the rule in §3.1 having been broken, not a data-entry variant |
 | `applied_participation_id` | reference to unit participation, optional | What this row created |
 | `created_at` | timestamp, audit time | |
 
@@ -436,7 +583,8 @@ Revert removes only what this batch created, and it runs in this order:
 1. Take every staged row of the batch being reverted.
 2. Undo what they created, **dependents first**: the `unit_participation` rows, then the
    `membership` rows, then the `person` rows — and a row the batch created outright is
-   removed rather than merely amended.
+   removed rather than merely amended. The middle arm is empty for a roster batch, which
+   creates no memberships (§3.1); it exists for a batch that imported a register.
 3. Finally mark the staged rows themselves unapplied.
 
 **Revert is only safe before live data references the imported rows.** Once a real person
@@ -485,7 +633,7 @@ Imported rosters rarely state when a period ended. Three defensible options:
 
 | Rule | Effect | Risk |
 |------|--------|------|
-| Leave `valid_to` NULL | Person appears to be current | **Wrong and dangerous** — inflates the member count, and an open `membership` also passes the permission gate (§3.1) |
+| Leave `valid_to` NULL | Person appears to be current | **Wrong and dangerous** — inflates the member count, and an open row reads as present-tense belonging. An open imported `membership` would also pass the permission gate, which is a route a roster batch can no longer take because a roster batch makes no membership (§3.1) |
 | End at the end of the organizational year of the last roster the person appears in | Defensible, documented | May truncate a period that continued |
 | End at the last date the person appears in *any* roster | Best fidelity, needs all rosters | Requires the complete dataset |
 
@@ -498,20 +646,36 @@ NULL.
 A roster proves that someone **took part in a unit in a period**. It does not prove they paid
 a fee, and under [D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
 sub-unit belonging is a `unit_participation`, not a membership at all — which is the
-row the import should create by default, and the row for which "the last date they appear"
+row the import creates, always, and the row for which "the last date they appear"
 is a genuinely good answer.
+
+**There is no payment data in the corpus, so there is no conditional left to write.** This section
+used to hedge: import a participation, *unless* there is evidence of payment, in which case a membership
+may be inferred. [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+closed the exception by describing the actual input — thousands of roster rows, one export, 1990s to
+now, a legacy member number on most of them, **no payment data at all**, free-text columns alongside. An
+exception with an empty set is not an exception, so this document now states the plain rule: **a roster
+row makes a `unit_participation` and nothing else; `membership` rows come only from the current
+register.** Writing it as a conditional was not caution, it was a rule waiting to be misapplied by
+whoever found a dues column in a later file and read the older text as permission.
 
 **The dangerous case is the inferred membership.** If the import *also* generates a
 `membership` row for each historical participant — plausibly, because the fee was paid — then
 an open-ended one from 1998 does something a participation row never does: it satisfies
 `is_current_member()`, so a 2003 roster member would hold current member authority today
-through every role that is gated. The end-date rule above is what prevents that, and check 1
-in §5 is what catches it when the rule is not applied.
+through every role that is gated. The end-date rule above is what stops an imported period from
+reading as current; the rule against generating the row at all is what stops the class, and check 1
+in §5 is what catches a batch that did it anyway. **The stakes were named in D-041 and D-039 before they
+were resolved, and they are the reason the resolution is a rule rather than a preference.**
 
-**Where the money is unknown, prefer participation.** Import a participation row with a
-period, and leave the membership to be inferred only where there is evidence of payment —
-a receipt, a ledger, a dues column. Erring toward participation loses a little fidelity in
-"were they a member in 1998?" and removes an entire class of false-current-member.
+**What the resolution gave up, since it did give up something.** A person on a 1998 roster now has a
+participation and no membership, so *"were they a member in 1998?"* has no answer in this system for any
+imported period — not a low-confidence answer, not a derived one. That is the price of the corpus having
+no money in it, and it is paid deliberately: the fidelity lost is a question about status that nothing in
+the evidence could answer honestly, and what is removed is an entire class of false-current-member, in
+which a document about attendance quietly grants authority decades later. If a register of memberships
+is ever produced for a historical period, it is imported **as its own batch**, with its own field map and
+its own review, and it is the register and not the roster that makes the `membership` rows.
 
 ---
 
@@ -529,7 +693,7 @@ a receipt, a ledger, a dues column. Erring toward participation loses a little f
 | `performed_at` | timestamp, audit time, optional | |
 | `performed_by` | reference to person, optional | |
 | `redacted_tables` | list of text | Which tables had values overwritten — **and which had rows deleted.** `person_attribute` is erased by deletion rather than by overwriting ([00-conventions §4](00-conventions.md#4-deletion-policy)), so naming it here is what records that the erasure reached the person's descriptive data, and omitting it is indistinguishable from not having reached it |
-| `retained_reason` | text, optional | Why some data was kept. Membership periods and unit participation periods are organizational history, not personal data, and removing them would falsify records the organization may be obliged to keep. This field records that judgement per case |
+| `retained_reason` | text, optional | Why some data was kept. **It has a standing answer to hold now.** Membership periods, unit participation periods, fee obligations, payments and this anonymised `person` row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), nothing in these documents had actually made. What the field adds per case is that *this* erasure made it knowingly, and the reason for anything retained beyond the skeleton. The basis underneath the standing answer is an assumption pending legal review (§6), not settled law |
 | `note` | text, optional | |
 
 **Rules**
@@ -545,6 +709,24 @@ a receipt, a ledger, a dues column. Erring toward participation loses a little f
 was removed, when, on what legal basis, and — importantly — what was deliberately retained
 and why. A redaction performed without a record is indistinguishable from a data loss
 incident.
+
+**Two clocks, and this log is where the permanent one gets written down.** An erasure now performs three
+acts with three different lifetimes. It overwrites the person row's names and contact points,
+immediately and irreversibly; it deletes the `person_attribute` rows, so that `redacted_tables` naming
+that table is the only sentence left saying they existed; and it scrubs that person's values out of the
+trail's payloads — out of rows which, since
+[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
+are scheduled to lose their payloads anyway (§2.2). **What an erasure does not do is touch
+`membership`, `fee_obligation`, `payment`, or this row's `person_id`** — and the reason is now a stated
+justification rather than nobody having decided when those rows end. That difference, between a rule
+nobody defended and a rule with a reason attached, is exactly what `retained_reason` carries.
+
+**This log is not subject to payload reduction, and that is a decision rather than an oversight.**
+Reduction empties the payloads of rows past the window. A `redaction_log` row holds no values to empty —
+a person id, a legal basis, a list of table names, and the reasoning — and it is the *evidence* that a
+person's request was honoured, which is the class of statement D-088 chose to keep for the life of the
+system when it chose to keep the skeleton. **Reaching this table with reduction would delete the proof of
+an erasure in order to apply a policy about history, and those are not the same act.**
 
 **For the descriptive part of a person's record this log is the only surviving record, by design.**
 The attribute rows are deleted; the audit entries that quoted their values are scrubbed by the same act
@@ -567,7 +749,13 @@ what the record said.
 - **Imported memberships with no end date.** Count `membership` rows that carry an
   `import_batch_id` and have no `valid_to`. Zero is the only acceptable answer: these are
   the rows that silently satisfy the permission gate, so this is a security check as much as
-  a data-quality one (§3).
+  a data-quality one (§3). **The check got a stricter sibling from
+  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+  and it is the one worth reading.** A roster batch creates no memberships at all (§3.1), so the finding
+  here is no longer only "an imported membership left open" — it is "an imported membership, from a
+  batch whose source is a roster, whatever its dates say". Run both halves on the same report. The first
+  catches a missing end date; the second catches the inference somebody re-enabled because they found a
+  column that looked like dues.
 - **Imported people who were later merged away.** Count people whose `record_origin` is
   `legacy_import` and whose merge pointer is set. Non-zero is probably fine and worth an eye.
 - **Batches left in a non-terminal state for a long time.** Count `import_batch` rows whose
@@ -606,10 +794,26 @@ what the record said.
   stop having. Note what the check structurally *cannot* see — a copy that is present, readable, and
   perfectly legal, held by somebody whose permission is graded below its contents — because that failure
   leaves no rows to count; it is the guard, and the guard is reviewed by a person.
-  **This check and check 5 are the two here that should alert rather than log.** A redaction property
-  that is reported once a month is a redaction property that fails between the reports, and unlike a
-  missing audit row, a value that outlives its erasure is not something anyone notices until a regulator
-  asks what the table holds.
+  **This check, check 5 and check 7 are the three here that should alert rather than log.** A redaction
+  property that is reported once a month is a redaction property that fails between the reports, and
+  unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
+  regulator asks what the table holds.
+- **An audit row past the payload window that still carries a payload.** Count `audit_log` rows whose
+  `occurred_at` is older than the retention window and whose `old_values` or `new_values` still holds
+  anything. **This is check 6's mirror, and merging the two is the way to lose both.** Check 6 asks
+  whether an *erasure* ran, fires on one person's rows, and fails as a right not honoured; this one asks
+  whether the *calendar* ran, fires on everybody's rows alike, and fails as a policy not applied
+  (§2.2's three operations, which fail in different directions). A system passes one while failing the
+  other in both directions, so they are two queries, not one query with two clauses.
+  **It alerts rather than logs, and the reason is the one §2.2 gives: reduction's failure mode is not
+  running.** Nothing about the trail looks wrong from inside it — a reduced row and a row that escaped
+  reduction both still answer *who, what, when*, which is the half that was supposed to survive — so the
+  only difference between them is a payload nobody looks at until somebody with `audit.view` opens a
+  history screen and finds a child's allergy list still sitting there past the window it was meant to
+  have left. **Count the rows, do not sample them**: a job that stopped after the newest partition keeps
+  the oldest rows full and looks entirely healthy to a sample. And read the window from the same place
+  the job does, because a check holding one value and a job holding another reports clean forever, which
+  is the exact failure this check exists to prevent and the one it can cause by itself.
 
 **Check 5 is worth automating as a test**, not just a nightly query — a test that reads the
 table list in these documents and asserts every business table on it appears on the audited list,
@@ -622,18 +826,49 @@ be discovered only when someone needs the history that was never recorded.
 ## 6. Open issues
 
 - Which tables must be audited. Recommend: all business tables. The cost is storage; the
-  cost of a gap is unbounded.
-- Retention period for `audit_log` before archival to cold storage. Legal input required.
-- Whether `audit_log` should be partitioned by month from the start (recommend yes, given
-  the write volume and the multi-decade horizon).
+  cost of a gap is unbounded. Still open as a *decision*, closed as a *recommendation* — §2.1
+  already obligates every business table, so what is actually outstanding is somebody
+  confirming the list rather than deriving it.
+- **Retention period for `audit_log` — decided as policy, still open as law**
+  ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+  It used to read "retention period before archival to cold storage; legal input required", which got the
+  question wrong in two ways at once: it assumed the answer was a storage tier rather than a *shape*, and
+  it assumed one clock rather than two. The policy is now **rows forever, payloads 24 months, 12 months
+  as the floor a window may be set to**, enforced by the job and the check in §2.2 and §5 rather than by
+  an archive nobody queries. What remains open is the half a decision log cannot settle: whether the
+  indefinite retention of *named* `membership` and `fee_obligation` rows has a lawful basis. That is
+  recorded as an assumption with a name attached
+  ([../open-questions.md](../open-questions.md#i-assumption-index)), not as settled law, and the review
+  now has a concrete policy in front of it instead of a blank.
+- Whether `audit_log` should be partitioned by month from the start. **Recommend yes, and the reasons
+  changed when the payload window arrived.** The old reason was "the write volume and the multi-decade
+  horizon", which is still true of the *rows* — they are the permanent half — but the bulk of a row is
+  its payloads, and those are now on a 24-month clock. Monthly partitions serve the reduction job too: a
+  partition entirely past the window can be reduced as one unit rather than as a sweep across a table
+  that grows for the life of the system. The open part is which the deployment does first, not whether
+  the horizon justifies it.
 - The definitive end-date inference rule for imported rosters
   ([§3.1](#31-what-a-roster-actually-evidences)) — needs your input on the organizational
-  year boundary (tracked as [../open-questions.md](../open-questions.md) A-4).
-- **Whether the import should create a `membership` at all** for a historical roster, or
-  only a `unit_participation` ([§3.1](#31-what-a-roster-actually-evidences)). The safe
-  default is participation-only; the alternative needs payment evidence per row.
-- Exact redaction scope: which fields are personal data vs. organizational history (§4).
-  Requires legal review.
+  year boundary (tracked as [../open-questions.md](../open-questions.md) A-4). **Sharper, not smaller,
+  since [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money):**
+  with attendance and no money, §3.1 is the load-bearing section of the whole import and the year
+  boundary is what every end date in it gets inferred from.
+- **✅ Resolved — whether the import should create a `membership` at all** for a historical roster, or
+  only a `unit_participation` ([§3.1](#31-what-a-roster-actually-evidences)). Settled by
+  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+  on the shape of the corpus rather than on the merits of the two options: **the corpus carries no payment
+  data at all**, so the exception arm of "participation unless there is payment evidence" had an empty set
+  to fire on. Participation only, always; `membership` rows come only from the current register. A
+  conditional with one arm is not a safe default, it is the rule, which is why §3.1 now says so flatly
+  instead of hedging.
+- Exact redaction scope: which fields are personal data vs. organizational history (§4). Requires legal
+  review — **much narrower than it was, and still not closed.** D-083 removed the *category* question
+  (there is no specially-graded subset of the person record), and
+  [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+  has since drawn the *line*: identity and descriptive values are erased, the accounting skeleton is
+  retained, and the trail's payloads expire. What the review is asked about is therefore no longer "which
+  fields" but "on what basis does the retained half survive indefinitely" — one question about one list,
+  which is the item above.
 - Whether `person.notes` should exist at all, given the redaction burden it creates.
 
 All tracked in [../open-questions.md](../open-questions.md).

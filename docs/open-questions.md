@@ -58,83 +58,144 @@ come from the row?*
 
 ---
 
-## B. Identity and history
+## B. Identity and history — closed
 
-### B-1 (remainder) 🟢 The legacy corpus is large and number-bearing
+All four are answered, in
+[round 8](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation).
+What is kept below is the reasoning, because each of these answers bought something *and* paid for it,
+and the payment is the half a later editor is tempted to forget.
 
-**Answered: large, and the old records carry a legacy member number**
-([D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)).
+### B-1 ✅ **Closed** — thousands of roster rows, numbers present, no payment data
 
-That changes what the import has to be. The number goes into
-[person_identifier](data-model/01-identity.md#7-person_identifier) with `scheme = 'legacy'`,
-and where it is present the match is **exact rather than probabilistic** — same number, same
-person. The heuristics in [domain/03 §4](domain/03-identity-and-legacy.md#4-match-signals)
-are then for **backfilling** the number on rows that lack it, not for deciding identity from
-scratch.
+**Answered: thousands of rows, one export, 1990s to now, a legacy member number on most of them, no
+payment data, and free-text columns alongside**
+([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 
-**The consequence for [D-004](decisions/decision-log.md#d-004--no-automatic-merging-ever).**
-The "no automatic merging, ever" rule was costed on a small corpus where review was the
-bottleneck. At thousands of rows that changes shape: the **number-bearing rows are the
-trustworthy set** and the rest is a work queue. The rule is unchanged — the human still
-decides every match — but the number does the work the human would have done, so the rule
-becomes far cheaper to obey. This is a strengthening, not a relaxation.
+**The corpus answers the question the import was going to default.** This item's own warning was that
+membership-vs-participation gets *harder* with volume, because an inferred open-ended `membership` makes
+every 2003 roster a current member with authority today
+([D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)). That
+defect never arrives: **the import carries no payment data at all**, so the exception arm of
+"participation unless there is payment evidence" has nothing to fire on. Every historical row is a
+`unit_participation`; `membership` rows come only from the current register. The default was correct
+and is now simply the rule
+([data-model/06 §6](data-model/06-audit-and-import.md#6-open-issues) drops the question accordingly).
 
-**What must hold.** The legacy number is imported **verbatim and never reissued**. The
-`(scheme, value)` index is what enforces it. A second numbering era can coexist, because
-`person_identifier` carries a scheme and a period.
+**What is unchanged, and was the reason this was worth asking.** The legacy number goes to
+[person_identifier](data-model/01-identity.md#7-person_identifier) with `scheme = 'legacy'`, imported
+verbatim and never reissued; where it is present the match is **exact**, and the heuristics in
+[domain/03 §4](domain/03-identity-and-legacy.md#4-match-signals) are for **backfilling** it rather than
+for deciding identity. [D-004](decisions/decision-log.md#d-004--no-automatic-merging-ever) is
+*strengthened*, not relaxed: at this size the number-bearing rows are the trustworthy set and the rest
+is a work queue a human settles.
 
-**What gets harder, not easier: membership vs. participation.** Volume and numbers fix
-*identity*; they say nothing about *what a historical row means*. At this scale a 1998 roster
-almost certainly records which unit someone attended, not whether their fee was paid — so the
-import must decide per row which of the two it becomes
-([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-The safe default matters more at thousands of rows than at hundreds, because the failure
-compounds: **participation unless there is payment evidence**, since an inferred open-ended
-`membership` would make every 2003 roster member a *current* member today through the gate
-([D-039](decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+**One consequence this answer created that no earlier document predicted.** Under
+[D-084](decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) every
+leftover free-text column becomes an attribute code, so one file arrives carrying the organization's
+descriptive vocabulary. Those codes are `live` on arrival — a curator reviewed the map as one object,
+which is why the map lives on the batch
+([data-model/06 §3](data-model/06-audit-and-import.md#3-import-pipeline)) — and `proposed` keeps its
+meaning of *improvised later by a person at a desk*. Letting several hundred codes arrive `proposed`
+would open the curation queue full and teach everybody that its age signal is noise.
 
-**Still needed (operational, not design).** The record count, the format, and the year range.
-Those are inputs the import batch carries; they do not change the schema.
-
----
-
-### B-2 🟡 Merge chains: allowed or flattened?
-
-**Question.** If A is merged into B, and later B into C, does A point at B (a chain) or is
-A repointed at C (flattened)?
-
-**Current design.** Chains. `resolve_person()` follows them recursively.
-
-**Impact.** Flattening is faster to query but rewrites pointers and makes unmerge nearly
-impossible. Chains need `resolve_person()` called everywhere an external id enters the
-system — a rule application code can forget.
+**Still unknown, and still operational.** The exact count and the exact year range. Both are inputs the
+batch carries; neither touches a table. What they do decide is A-4's arithmetic — with attendance and
+no money, [06 §3.1](data-model/06-audit-and-import.md#31-what-a-roster-actually-evidences) is the
+load-bearing section of the import and the year boundary is what an end date gets inferred from.
 
 ---
 
-### B-3 🟡 Erasure: the policy, not the mechanism
+### B-2 ✅ **Closed** — merge chains stay, because unmerge is required
 
-**Question.** What must be redacted, what must be retained, for how long? Does the
-organization have a legal obligation to keep membership records after an erasure request?
+**Answered: chains, and an explicit unmerge**
+([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
 
-**Resolved already.** The *shape* is settled: **redact the person, keep the financial and
-membership skeleton** — the `person` row is anonymised in place and the `membership`,
-`fee_obligation` and `payment` rows survive intact, because the organization's own accounting
-and "was this person a member on that date" questions outlive the person's participation.
+**The answer ran the argument backwards, which is the interesting part.** Chains were chosen *because*
+flattening would make unmerge nearly impossible — an assumption resting on a capability nobody had
+asked for. You asked for it, so now the capability is the requirement and the chain is its consequence.
+Flattening is closed off, not merely slower, and "flattening is faster" is no longer a trade against
+tidiness but a trade against a feature someone named.
 
-**Still open.** The retention periods and the legal basis. `redaction_log.retained_reason` is
-a placeholder for that judgement.
+**What the question's own framing got wrong.** It costed the two options in query speed. The real cost
+of a permanent chain is that it needs rules it did not have: a **cycle must be impossible at the merge**
+(a merge is refused when the chosen survivor resolves to the person being absorbed — checked on the way
+in, never by a read-side hop limit, because a step limit's only achievement is choosing which wrong
+answer to return), and **chain length becomes a signal** — resolution has no bound, but a chain over
+three hops is reported, because four merges on one line of people is a statement about the matcher's
+queue and not about the row.
+[01-identity §10](data-model/01-identity.md#10-integrity-checks) treated "survivor itself tombstoned"
+as a breach; with chains decided, that is normal, and only the length means anything.
 
-**Needed.** Legal review. Not a technical question.
-
-**See:** [data-model/06 §4](data-model/06-audit-and-import.md#4-redaction-log)
+**The asymmetry worth remembering.** A merge can be undone; **the merged period cannot be.** The four
+reversal steps in [domain/03 §6](domain/03-identity-and-legacy.md#6-reversing-a-merge) lift the tombstone
+and return rows created *before* the merge, but rows created inside the window — above all the
+`access_grant` rows, which are flagged rather than guessed — stay one row's history, because the grants
+exercised there really were exercised by somebody the record can no longer separate. Unmerging needs no
+new permission code: undoing an identity correction is the same act as making one, so it is
+`person.merge`.
 
 ---
 
-### B-4 🟢 Can a person hold two live accounts?
+### B-3 ✅ **Closed** — the accounting skeleton is permanent, the audit trail is short
 
-**Recommendation.** No. Enforced by the partial unique index already in the schema.
+**Answered: the skeleton stays, the trail ages out**
+([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
 
-**Impact.** If yes, the index is dropped and identity attribution weakens.
+**The two clocks, which are deliberately opposite.** `membership`, `fee_obligation`, `payment` and the
+anonymised `person` row: **no clock**, because that is the organization's own history and the shape this
+item had already settled ("redact the person, keep the skeleton") is now *justified* rather than merely
+unopposed; `redaction_log.retained_reason` has a real value to hold. `audit_log`: **payloads for 24
+months, rows forever** — after the window a row is *reduced*, `old_values`/`new_values` emptied,
+everything else standing, so the trail answers "who changed this, when, and were they allowed to" for
+the life of the system and stops answering "and to what" after two years.
+
+**What this pays for, and it is not free.** [D-086](decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+accepts that `audit.view` exposes whatever the payloads hold; a bounded window is the cheapest control
+that organization will ever get for that, and it is the strongest thing
+[AT-4](#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data) will hear. **What it
+costs is the history that D-085 was justified by.** Values live in one overwritten row, the copy of them
+depends on a write path remembering to log, and the copy now expires — so *"what did we believe about
+this child in 2019"* is unanswerable twice over, and the honest description of the trade is **no long
+history**, not merely **no temporal columns**. If a case ever needs the long version the fix is temporal
+values (D-085 reversed), not a longer trail, since stretching the trail stretches exactly what D-086
+graded and D-083 refuses to duplicate.
+
+**Also: the legal review this item asked for is narrower now, not gone.** *Indefinite* retention of
+named membership and fee rows is a claim that needs a basis, and a decision log cannot grant one; what
+exists to review is now a concrete policy instead of a blank, and it is recorded as an
+[assumption with a name attached](#i-assumption-index) rather than as settled law.
+
+**Residual, non-technical.** Confirm the accounting retention period with whoever is liable for the
+books, and confirm the same 24-month window for `access_log` (**F-8**, proposed at the same value).
+
+---
+
+### B-4 ✅ **Closed** — one live account; a colliding sign-up files a claim
+
+**Answered: refuse, and queue a claim**
+([D-089](decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+
+**The rule that enforces it, and it is not a new table.** One live account per person stands
+([01-identity §4](data-model/01-identity.md#4-account)); joined to it, **an account may not reach
+`active` while an unresolved `identity_hypothesis` names its person.** The identity review queue already
+existed, already records its signals and already has a role for it, so the collision case is a *gate on
+activation* plus a hypothesis raised at sign-up — no fourth queue, no new permission
+(`person.merge`, already held by `identity_reviewer`).
+
+**Where the danger actually sat, and the threshold is the whole answer.** The tempting version — link
+automatically once the e-mail verifies — is [D-004](decisions/decision-log.md#d-004--no-automatic-merging-ever)
+under another name, and its failure mode is one human's descriptive data becoming another human's record.
+The version you chose has its own failure mode, which is a **brand-new person blocked by a false
+positive**, so the trigger is a *strong* match only (exact legacy number, or exact birth date with a
+normalized name) and the soft scoring band must not raise a hypothesis at all. Two obligations come with
+it and both are checks rather than intentions: **an age check on a hypothesis that is blocking an
+account**, alerting rather than logging, because a stalled identity queue is now a specific child who
+cannot sign up for a camp; and **a refusal that confirms nothing**, since a sign-up form that answers
+"yes, that person exists" is an existence oracle over a roster of children.
+
+**The everyday case is not this case.** "I have a new e-mail" was never a second account —
+`account_credential` holds many credentials for one account, so it is an addition to the login a person
+already has. The collision case is a person arriving through a door the system did not know they had.
 
 ---
 
@@ -567,8 +628,40 @@ materializing harder, not easier — every membership transition would have to r
 
 ### F-8 🟢 Retention policy for `access_log`
 
-Legal input required. Recommend monthly partitioning from the start, with archival to cold
-storage and **never deletion**.
+**Question.** How long do the login and authorization-decision rows live?
+
+**This entry used to answer itself, in the wrong direction.** It said: partition monthly, archive to
+cold storage, **never deletion**. That is right about the *rows* and wrong about everything else, and
+the mistake is the same one [D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+made salient for `audit_log`: a retention policy stated as one number silently decides what the row
+*contains*, which is the part with the person data in it.
+
+**Proposed — and it is a proposal awaiting you, not a position these documents hold:** `access_log`
+takes the **same window as `audit_log`'s payloads, 24 months**, with rows kept and their contents
+emptied on the same schedule, because a trail of *who was allowed to see what* that outlives the trail
+of *what was actually changed* answers the interesting half of an incident and not the other half.
+Monthly partitioning survives as the mechanism; it is how the window gets applied cheaply, and it was
+recommended long before anybody decided on a window.
+
+**Why the question is structurally weaker here than it is for `audit_log`.**
+[05-authorization §9](data-model/05-authorization.md#9-access_log) keeps the *contents* of a read out of
+this table to begin with — it records that a permission was exercised, not what was on the screen — so
+there is no payload-expiry argument and no long-history loss to weigh. What remains is the ordinary
+tension: a security review wants the login trail back to the start of the system, and a privacy review
+wants a record of somebody's late-night browsing to stop existing eventually.
+**Inverting the arithmetic is worth noticing:** the original "never deletion" made this table outlive
+the person record it describes; the proposal makes it shorter-lived than the business rows, which is a
+different objection and a defensible one.
+
+**Needed.** Your confirmation of the 24 months, and the same legal review assumption 49 registers —
+which now has both clocks in front of it rather than one.
+
+**Impact if unanswered.** Neither table can be shrunk afterwards without a migration over the two
+largest tables in the system, and the first time anybody wants to answer "how long have people been
+able to read this?" the honest answer is that nobody wrote down when the logging started.
+
+**See:** [data-model/05 §9](data-model/05-authorization.md#9-access_log),
+[D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short).
 
 ---
 
@@ -655,7 +748,41 @@ report is read as a data-quality problem rather than as the missing guarantee ar
 
 ---
 
-## G. Events — designed, with three things left open
+### F-11 🟢 Does the identity reviewer need to *read* the person record to settle a claim?
+
+**Question.** [D-089](decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)
+routes a colliding sign-up to `identity_reviewer` and resolves it with `person.merge`. The seed role
+holds `person.merge`, `import.view` and `import.apply` — and **not** `person.view`. So a reviewer
+decides "is this the same child?" from match signals, names and dates, without opening either record.
+
+**Why this is a question now and was not one before.** Merging already needed a human, but the
+alternative to merging was doing nothing: a wrong call left two rows side by side, visible in the
+nightly duplicate report, correctable next quarter. The activation gate changed the stakes. A reviewer
+who *rejects* a hypothesis lets an account go live; one who *confirms* it joins two lives, including a
+login, into one row. **Both directions now have a person waiting on the far side of the answer**, which
+is a different job from tidying a queue, and a job the permission set does not obviously cover.
+
+**Positions.**
+- **Leave it** — the signals are the decision, and a reviewer who needs to read both records is a
+  reviewer who is about to merge on a hunch anyway. Cheapest, and consistent with "identity is what the
+  match says, adjudicated by a person".
+- **Grant `person.view` to `identity_reviewer`** — settles it, and quietly makes an identity role one of
+  the roles that can read a child's whole record, which is a bigger thing than the role's name suggests
+  and is exactly what the catalog's top tier is reserved for.
+- **A narrower read the catalog does not have yet** — the resolver code that would expose only the two
+  candidate rows and their signals, which would be a new code and therefore a decision entry, not an
+  edit to this file. **It is not proposed here, and would need arguing.**
+
+**Recommendation.** Leave it, and watch the queue rather than the design. If reviewers start resolving
+hypotheses at a suspiciously high confirmation rate without asking for context, that is the sign the
+signals are not enough — and the honest response is a `person.view` grant discussed as a top-tier
+membership, not a new code invented at a desk.
+
+**Needed.** Nothing before implementation. Revisit when the first real import has produced a real queue.
+
+---
+
+## G. Events — designed, with three things left open — designed, with three things left open
 
 The module is written: [domain/07-events.md](domain/07-events.md) and
 [data-model/08-events.md](data-model/08-events.md). Fifteen questions have been answered
@@ -701,7 +828,7 @@ than the health record's — **and in round 6 that gap widened twice over**: the
 entitled to read an answer is whoever runs that event, a set sized by whoever creates it.
 The retention policy is the remaining half of that trade.
 
-**Needed.** Legal input, like B-3. The technical question — where does it live, who may read
+**Needed.** Legal input, of the same kind B-3's indefinite retention still needs. The technical question — where does it live, who may read
 it — is answered; whether it must be deleted, kept, or archived is not.
 
 **Changed in round 7, in a way that strengthens the case rather than settling it.** [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
@@ -1057,7 +1184,7 @@ rather than finding it silently deleted.
 |-----|----------|-----------|-------------|
 | A-1 | The organizational structure | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | One root; all sub-units nest arbitrarily beneath it. |
 | A-1 | The unit type vocabulary | [D-054](decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types) | Not seeded — `org_unit_type` is runtime data; only the root type ships. |
-| B-1 | How much legacy data, in what shape? | [D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers) | Large, with legacy member numbers — exact matches, so review is a work queue. |
+| B-1 | How much legacy data, in what shape? | [D-056](decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers) | Large, with legacy member numbers — exact matches, so review is a work queue. **Fully answered in round 8:** thousands of roster rows, no payment data at all, so every historical row is a participation ([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
 | D-9 | Is `household` load-bearing at all? | [D-057](decisions/decision-log.md#d-057--household-is-removed) | No — removed entirely. Addresses are temporal `person_contact` rows. |
 | F-1 | Which permissions and roles does the organization need? | [D-055](decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular) | The catalog stays large and granular; it is a menu, not a checklist. |
 | — | Eligibility for an event — a separate rule engine? | [D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine) | No — eligibility **is** capability. `event.register_self` at `contribute`, via audiences. |
@@ -1079,7 +1206,7 @@ rather than finding it silently deleted.
 | C-1 | May the root read into its sub-units? | [D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing) | No. `scope_exposure` is the only crossing; no reporting channel is built. |
 | D-6 | How may the membership gate be waived? | [D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag) | A person-level `system.gate_exempt` permission, in addition to the role flag. |
 | D-7 | The root participation row at renewal | [D-050](decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row) | Extended across the renewed period; one row, no gap. |
-| B-3 (part) | Erasure: what shape? | your answer, round 5 | Redact the person, keep the financial and membership skeleton. *(The retention policy is still open — see B-3.)* |
+| B-3 (part) | Erasure: what shape? | your answer, round 5 | Redact the person, keep the financial and membership skeleton. **Retention decided in round 8** — the skeleton is kept indefinitely, audit payloads expire ([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)); what is left is the legal review of the indefinite half, not the design. | |
 | C-1 (largely) | Organization-wide operational roles without downward inheritance | [D-035](decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it) | The problem dissolves: the root owns the registry and the fees. What remains is a reporting question — see C-1. |
 | C-2 | May units be reparented retroactively? | [D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit) | Not at all — a unit that moves is a new unit. |
 | D-1 | Fee per person or per household? | [D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person) | Per person, flat, yearly. |
@@ -1121,7 +1248,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 8 | Renewal opens a new row, not an extended `valid_to` (D-016) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
 | ~~9~~ | ~~Guardianship reviewed at majority, not auto-expired~~ — **superseded**: neither, the system takes no position (D-069) | [data-model/04](data-model/04-relationships.md#1-guardianship) |
 | 10 | Display name uses `preferred_name` if set | [data-model/01](data-model/01-identity.md#3-person_name--name-history) |
-| 11 | Merge chains allowed (B-2) | [data-model/01](data-model/01-identity.md#9-views) |
+| 11 | Merge chains are allowed, because reversing a merge has to stay possible (D-087) † | [data-model/01](data-model/01-identity.md#9-views) |
 | 12 | Only confirmed payments count toward a balance | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
 | 13 | No sub-unit types are seeded; nesting is permissive by default (D-054) † | [data-model/02](data-model/02-organization.md#10-seed-data) |
 | 14 | `membership_type` is seeded with exactly one row (D-037) † | [data-model/03](data-model/03-membership.md#8-seed-data) |
@@ -1159,6 +1286,8 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 46 | Capacity is a waitlist threshold organizers may exceed (D-065) † | [data-model/08](data-model/08-events.md#5-capacity-and-the-waitlist) |
 | 47 | Payment confirms a place; free events confirm immediately (D-066) † | [data-model/08](data-model/08-events.md#6-payments-and-confirmation) |
 | 48 | Presence is a three-valued fact, not a boolean (D-067) † | [data-model/08](data-model/08-events.md#4-event_registration) |
+| 49 | Keeping named membership and fee rows **indefinitely** after an erasure request has a legal basis (D-088) — **unverified, and commissioning the review is the organization's job** | [data-model/00](data-model/00-conventions.md#8-personal-data-and-erasure) |
+| 50 | `access_log` needs the same window as audit payloads, neither longer nor shorter (proposed, **F-8**) | [data-model/05](data-model/05-authorization.md#9-access_log) |
 
 ---
 
@@ -1169,17 +1298,29 @@ the schema still, so nothing here has to be answered before implementation could
 
 What remains is genuinely deferrable, and the most useful next ones are:
 
-1. **F-5** — which built-in audiences are needed, and whether parameterised ones are seeded
-   per instance or created on demand
-2. **F-3** — should high-authority role assignments require a `valid_to`?
-3. **E-2 / E-4** — guardianship at majority, and confirming the gate's guardianship carve-out
-   is intended
-4. **B-2 / B-3** — merge chains, and the retention policy (the latter needs legal input,
-   not design)
+1. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one
+   permission is trusted to guard a trail that holds person data. These are one question seen
+   from two ends: the data that lands in the trail arrives through the vocabulary.
+2. **EV-2** — how long an event answer is kept once the event it answered is gone, which is a
+   sharper question now that the audit payloads which also held those values have a clock on them
+   ([B-3](#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+3. **F-5** — which built-in audiences are needed, and whether parameterised ones are seeded per
+   instance or created on demand.
+4. **The legal review**, which is not a question this register can answer and now has a concrete
+   policy in front of it: named membership and fee rows kept indefinitely, audit payloads kept
+   24 months. Assumption 49 is that review's subject.
 
 Everything else can be answered as we go. The schema is built so that most answers change
 data rather than structure — which is why the four above are worth a moment and the rest are
 not.
+
+**Answered in round 8:** identity and history, in whole — merge chains and unmerge (B-2, D-087),
+the two retention clocks (B-3, D-088), the second account (B-4, D-089), and the shape of the
+legacy corpus (B-1, D-090). None of the four changed a table, which is why they were worth holding to
+the end: they were questions about the organization rather than about the model, and three of the four
+turned out to be answerable simply by looking at what the organization already has — a roster with no
+money in it settled a rule that had been written as a default, and a wanted feature settled a trade that
+had been written as an assumption.
 
 **Answered in round 4:** the unit type vocabulary (A-1 — not seeded, D-054); the permission
 catalog (F-1 — comprehensive and granular on purpose, D-055); the legacy corpus

@@ -99,8 +99,14 @@ deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an
 `valid_to` means the period is still open: it is the current membership, not a row someone
 forgot to close. `joined_via_request_id` records the request it came out of,
 `termination_reason_code` the reason it was ended, `data_confidence` is `high`, `medium` or
-`low` — legacy imports are `low` — and `import_batch_id` is set on imported rows and on nothing
-else.
+`low`, and `import_batch_id` is set on imported rows and on nothing else. **Since
+[D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+neither column is ever populated on a `membership` row**, because no `membership` row is ever
+imported: the corpus carries no payment evidence, so the legacy batch writes `person` and
+`unit_participation` and leaves membership to the live register. This sentence used to read "legacy
+imports are `low`", which assumed a row the import no longer creates. The provenance a historical
+membership does have is a person: entering one is `membership.backdate`, it is attributed to whoever
+typed it, and its confidence is a choice they made rather than a value inherited from a batch.
 
 ### Overlap rules — the invariant that matters
 
@@ -351,6 +357,22 @@ answerable indefinitely:
 9. Who are the returning members — more than one membership with a gap between?
 10. How many members did the organization have in each year since 1985? (historical
     reporting — must include closed memberships and must not double-count)
+
+**Four of these reach only as far back as `membership` rows reach, and the legacy import creates
+none** ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+Queries 2, 4, 9 and 10 therefore return *participation* for the decades that arrive from paper, and the
+honest form of "how many members did the organization have in 1998?" is "we know how many people took
+part in units in 1998; we do not know how many were members", because a roster with no fee behind it
+evidences presence and nothing more. The wrong answer is one decision away — generate a `membership`
+per roster row and every historical query instantly returns a confident number built on nothing, while
+`is_current_member()` quietly hands today's authority to people last seen in 2003
+([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
+These stay on the list because they are answerable, indefinitely, for everything this system registers
+itself — and that indefinite half is itself a decision now, the accounting skeleton being kept as the
+organization's history
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+For the corpus, the participation query is the answer, and printing it as such beats letting an
+inferred row answer the membership one.
 
 Query 10 is the one that fails in most systems, and it fails specifically because someone
 made membership a boolean.

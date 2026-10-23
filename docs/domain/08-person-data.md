@@ -139,6 +139,16 @@ That is a real risk, accepted in the open rather than discovered later, and
 [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
 is the entry to reverse if it ever bites.
 
+**And since [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
+a third thing about it: the trail's values are emptied after 24 months, though the rows remain.** So the
+honest name for this refusal is not *no history on the row* but **no long history anywhere**. Two years
+of a child's changing facts are recoverable, which is long enough to answer most of what is asked and
+short enough to be a control rather than an archive; what
+the organization believed in 2019 is not recoverable at all, because the values were never kept in the
+business rows and the copy of them has expired. Nobody should discover that in the middle of a case
+where it matters, which is why it is written here as well as in the data model — and why the entry to
+reverse, if the long version is ever genuinely needed, is still D-085 and not a longer trail.
+
 ---
 
 ## 5. Forgetting
@@ -173,6 +183,21 @@ documents say so where they describe it ([../data-model/09-attributes.md §6](..
 **What erasure does is absolute in a way the guard is not.** It deletes the values and reaches into the
 trail to delete them again from copies written years earlier, lawfully, when nobody was asking questions
 about them.
+
+**A third way values leave the trail, and it is a policy rather than a right.** Every two years' worth
+of audit rows have their contents emptied whether anybody asked or not
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+The distinction from erasure is worth holding onto, because the two are easy to conflate and only one of
+them is a person's entitlement: erasure is *requested* and *verifiable* — the check is that nothing
+survives — while expiry is neither requested nor satisfied by nothing surviving, since the row itself
+remains and only its values go. **So its failure mode is the opposite one: it fails by not happening.**
+That is why it is a scheduled job with a check that alerts on an over-age row still holding content, and
+not a line in a policy document
+([data-model/06 §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging) keeps that apart
+from redaction, which must never be deferred). It is also the reason the sentence *the trail is a second
+copy of the person record* — the sentence that decides who may read it — is true for two years and untrue
+afterwards, which is the whole of what this module got cheap from the same decision that made the
+history expire.
 
 ---
 

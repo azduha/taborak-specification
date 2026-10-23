@@ -670,7 +670,7 @@ and it is the reason `was_present` is three-valued rather than a boolean default
 10. **A fee-bearing event with registrations and no obligations.** Counts non-cancelled events
    that require a fee and have at least one registration, where no `fee_obligation` exists for
    some of those registrations. **The obligation is created by the code that places the
-   registration** ([§6](#6-fee_obligation)); there is no rule attached to the registration row
+   registration** ([§6](#6-payments-and-confirmation)); there is no rule attached to the registration row
    that would create it, so a path that forgets produces a person with a confirmed place and no
    bill — invisible to every check here, because every row it left behind is individually
    correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and

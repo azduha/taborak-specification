@@ -209,7 +209,7 @@ was taken with them in view rather than in the abstract.
 | Type-check at the database | Values are one text column | ISO-format by convention, and §8 check 7 reports a type that is wrong for the whole definition |
 | Compare or aggregate safely | `12` and `12 kg` and `twelve` are three strings | Report on the `one_of` codes; treat free text as a list to read, not a number |
 | Express the one-value rule as a constraint | The rule reads another table ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 4 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
-| Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** |
+| Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** — and since [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), **nothing at all** stands between it and being empty after the payload window closes (§6) |
 | Restrict one field to some readers | [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) refused a privileged subset | One scope over one record; a court-ordered exception is a decision entry, not a code |
 | Trust that a code means one thing | Codes are typed by humans | Normalized uniqueness, `description` on every definition, §8 check 2, and a named curator |
 
@@ -248,6 +248,26 @@ reading them as a dependency rather than as reassurance:
   the largest being that one of the three is already built, so declining to choose is a choice nobody has
   to sign.
 
+**Those payloads now expire, which is a consequence of [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+and not a detail of it.** Audit rows live as long as the system; their `old_values`/`new_values` are
+emptied 24 months after they are written. Read that against the paragraph above and both halves are
+true at once: **the trail is the only history this table has, and it stops being a history after two
+years.** The honest description of what §5's row costs is therefore not "no temporal columns" but **no
+long history** — three decisions stacked, none of them wrong on its own: values live in one row that is
+overwritten, the copy of them depends on a write path remembering to log, and the copy ages out.
+
+That is also the cheapest thing this module will ever do about
+[AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
+and it should be read that way rather than as a resolution: a wrongly-graded `audit.view` can still read
+a child's descriptive values, but only for as long as they are recent. **If the long history is ever
+actually needed — by a safeguarding review, or by a dispute about what was known and when — the fix is
+temporal columns on the value, which reverses
+[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).**
+It is *not* a longer payload window, because stretching the window stretches exactly the guard
+[D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+graded, and [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+refuses to keep a second copy somewhere safer.
+
 **What is left of the redactor is small, and says so.** It scrubs the values that must never be logged
 at all — credentials, tokens, integration secrets — and it stopped carrying the personal-data case
 when the sensitive subset went: a key-name list cannot protect a table whose column names this
@@ -266,8 +286,10 @@ have forgotten is not a history, it is the thing they asked to be rid of, filed 
 ## 7. The legacy import, which is where the vocabulary comes from
 
 The old system's columns become codes, and this is the largest single event in the life of the
-attribute layer — most of the first two hundred definitions arrive here rather than from a
-deliberate act of design.
+attribute layer — most of the first few hundred definitions arrive here rather than from a deliberate
+act of design, because [the corpus you have](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+is thousands of roster rows with free-text columns beside them. **That is one file arriving with the
+organization's descriptive vocabulary in it, and it changes how the mapping has to be reviewed.**
 
 - **Every raw field name in a batch must map to a code, be mapped to `discarded` with a reason, or
   stop the batch.** Silently dropping an unmapped column is how a decade of a fact the organization
@@ -275,6 +297,14 @@ deliberate act of design.
 - **An unmapped column maps to a `proposed` code**, named from the raw column, not to an existing
   code by similarity. A human merges near-duplicates afterwards; nothing guesses at import time,
   because an import-time merge is invisible and unreviewable.
+- **At this scale, `proposed` is the last resort and not the outcome.** The map is authored and read
+  *before* the batch applies — it is one artefact, top to bottom — so a column that survives that
+  reading has been named by a human and its codes arrive **`live`**. `proposed` is for what a person at
+  a desk improvises later. If several hundred codes arrive `proposed` instead, check 1 opens full, its
+  age signal means nothing from the first day, and the first lesson the organization learns about this
+  layer is that its warning queue is noise. That is a real risk of this corpus and is the honest half
+  of an answer to [AT-2](../open-questions.md#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit),
+  which stays open for the runtime case.
 - **The mapping is recorded on the batch**, in `import_batch.field_mapping`, one entry per raw column
   ([06-audit §3](06-audit-and-import.md#3-import-pipeline) explains why the grain is a column and not a
   staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an

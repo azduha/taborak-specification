@@ -9,8 +9,9 @@ This is the **proposed** catalog, seeded in
 > ([D-055](../decisions/decision-log.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
 > This is a **menu, not a checklist.** Administrators assign people only the permissions they
 > actually need; that is only possible if the capabilities exist as separate rows to assign.
-> Further permissions arrive with the modules not yet specified — events, documents,
-> communication, reporting ([§10](#10-deferred-namespaces)).
+> Further permissions arrive with the modules not yet specified — documents and communication.
+> Events were on that list and are no longer: §8a carries their thirteen codes
+> ([§10](#10-deferred-namespaces)).
 >
 > **This is the opposite disposition from roles, and the asymmetry is deliberate.** Roles are
 > *runtime data* the organization invents ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification));
@@ -132,14 +133,39 @@ These marks should drive UI warnings and the alerting in
 | `person.edit` | — | ⚠ | Change person details, including descriptive values |
 | `person.contact.view` | — | ⚠ | See contact points |
 | `person.contact.edit` | — | ⚠ | Change contact points |
-| `person.merge` | — | 🔒 | Confirm identity matches and merge people |
-| `person.unmerge` | — | 🔒 | Reverse a merge |
+| `person.merge` | — | 🔒 | Confirm identity matches and merge people — **and reverse a merge, and resolve a sign-up collision; there is no separate code for any of the three** |
 | `person.redact` | — | 🔒 | Perform a GDPR-style erasure |
 | `attribute.define` | — | | **Curate the vocabulary** of descriptive data — create, rename, merge or retire a code |
 
-> `person.merge` and `person.redact` are separated from `person.edit` deliberately. Both
-> are irreversible in practice and both have privacy consequences far beyond editing a
-> record.
+> `person.merge` and `person.redact` are separated from `person.edit` deliberately: both have privacy
+> consequences far beyond editing a record. This paragraph used to justify the separation by calling
+> both *irreversible in practice*, and
+> [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+> has withdrawn that premise for one of them — a merge can be reversed, and reversing it is a required
+> operation. What survives the correction is the half the separation actually rests on: the merged
+> **window** cannot be reversed, so the union of two people's permissions is real from the moment the
+> merge commits, whatever is discovered afterwards. The separation stands on the narrower reason.
+>
+> **Three operations, and not one new code.** Round 8 introduced two capabilities and, each time,
+> checked whether the catalog needed a row for it
+> ([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
+> [D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)):
+>
+> - **Unmerge — reversing a merge a human approved: `person.merge`.** Undoing an identity correction
+>   is the *same act* as making one, done by a named human, through the same queue, over the same rows.
+>   A `person.unmerge` code would grade undoing a mistake as safer than making one. **Such a row stood
+>   in §2 until round 8 and is removed here**; no seed role held it, so no role loses anything, and it
+>   is recorded rather than quietly deleted because a reader of an older draft will look for it.
+> - **Resolving a sign-up collision — working the claim a colliding registration files:
+>   `person.merge`.** Resolving it is confirming or rejecting an `identity_hypothesis`, which is what
+>   `person.merge` already means ([../domain/03-identity-and-legacy.md §4](../domain/03-identity-and-legacy.md#4-match-signals)).
+> - **Linking a colliding sign-up to the person it matched: nothing, deliberately.** There is no
+>   `account.link` and no `account_claim` table (§3). An automatic link once the e-mail verifies is
+>   [D-004](../decisions/decision-log.md#d-004--no-automatic-merging-ever) under another name, and its
+>   failure mode is one human's descriptive data becoming another human's record.
+>
+> The check itself is the point: this file is the only list of grantable codes, so a code minted while
+> propagating a decision is a migration nobody decided.
 >
 > **Before [D-068](../decisions/decision-log.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),**
 > the way to keep them apart was to carve them out of `person.admin`'s prefix match — a
@@ -204,6 +230,18 @@ These marks should drive UI warnings and the alerting in
 
 > `account.suspend` is **not** `membership.suspend`. Suspending a login does not remove
 > someone from the organization; the two are separate lifecycles and separate permissions.
+
+> **Nothing in this namespace links an account to a person it already belongs to, and the absence is
+> decided, not overlooked.** A sign-up that strong-matches an existing person raises an
+> `identity_hypothesis` and brings nothing into the world that a human has not approved — nothing
+> merged, nothing linked, nothing activated; the account sits at `pending_verification` until a
+> reviewer decides, and deciding is `person.merge` (§2,
+> [D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+> So there is **no `account.link` code** and no claim object for one to act on: the second live
+> account those would manage is exactly what the rule forbids, and the case they would have been asked
+> to solve most often is already handled underneath permissions — `account_credential` holds many
+> credentials for one account, so a member with a new e-mail address is adding a credential to the
+> login they have, not acquiring a second one.
 
 ## 4. Membership
 
@@ -402,6 +440,25 @@ consequential permission in the authorization model.
 > applies — **the mark follows what a grant exposes, not the table a code names** — is
 > [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads),
 > taken during propagation rather than from an answer, and reversible on one line.
+>
+> **The contents expire, which bounds this exposure without fixing it.** A row lives for the life of
+> the system; its `old_values`/`new_values` are emptied **24 months after they were written**, by a
+> scheduled job this corpus calls **payload reduction** — a third operation on the trail, distinct
+> from redaction (a person's erasure, immediate and absolute, whatever the age of the row) and from an
+> import revert ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+> So *"the trail is every belief it has held"* is, since round 8, true only of the values less than two
+> years old; about anything older the trail answers *who touched this row, when, and were they allowed
+> to* and not *and to what*. For the risk this note is actually about — a grant graded wrongly, or
+> simply held by the wrong person — that is a control worth having: it does not make the exposure
+> impossible, it puts a horizon under it, which for an organization of this size is the realistic form
+> the same protection takes. **AT-4 stays open**, because a window on the payload is an argument about
+> how *long* a bad grant can do harm, not an answer to whether one permission should guard the trail.
+>
+> **Payload reduction needs no code here, and saying so is the check that it was considered.** Nobody
+> performs it interactively: it is scheduled, and the guard on it is a check that alerts when a row
+> past the window still carries a payload
+> ([../data-model/06-audit-and-import.md §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging)).
+> A permission for it would imply a person choosing not to run it.
 >
 > **The excluded-keys list survives, with a smaller and honest job.** Values that must never be
 > logged *at all* belong on it: credential secrets, tokens, session material. Personal data does
@@ -639,10 +696,15 @@ abbreviation for *"every `person.` code listed in §2"*, and a real role holds a
 1. **`registrar` is written as `person.*` *except* `person.merge` and `person.redact`, and
    that exclusion is now literal.** It used to be a caveat about a wildcard's prefix match.
    It is now just the rows you do not insert — and it is visible in `role_permission`, dated,
-   and alarmable. `identity_reviewer` is the role that *does* hold `person.merge`, listed
-   beside it so the difference between the two is legible. **A role that bundles a resource
-   *including* its irreversible codes should be named for that**, since nothing else records
-   the choice any more.
+   and alarmable. `identity_reviewer` is the role that *does* hold `person.merge` — and since
+   round 8, `person.merge` is the whole of identity correction: merging, unmerging, and deciding a
+   sign-up collision (§2) — listed beside `registrar` so the difference between the two is legible.
+   **A role that bundles a resource *including* its 🔒 codes should be named for that**, since
+   nothing else records the choice any more. The wording here used to say *irreversible* codes;
+   [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+   removed one of the two codes that wording pointed at, and the marker is the honest referent —
+   `person.redact` is irreversible, `person.merge` is undoable but unions permissions the moment it
+   runs.
 2. **`unit_leader` holding `event.*` means thirteen explicit rows** (§8a), and a fourteenth
    added later is *not* in the role until someone adds it. Integrity check 18 surfaces an
    orphaned permission — one no role grants at all. It does not surface "this role arguably
@@ -650,8 +712,12 @@ abbreviation for *"every `person.` code listed in §2"*, and a real role holds a
    rather than being absorbed silently by the resolver.
 3. **`auditor` is a role that reads the whole person record, and does it without `person.view`.**
    `audit.view` is graded ⚠⚠ in §8 precisely because the payload is a second copy of the record,
-   so this row grants a ⚠⚠ read over everything the system has ever believed about a child, dated
-   backwards. Nothing here forbids that — it is a plausible role — but the row must not be
+   so this row grants a ⚠⚠ read over what the system believed about a child and when it believed it.
+   Since [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+   that read has a floor it did not have before: payloads older than 24 months are emptied, so what is
+   exposed reaches back two years and no further, while the who-did-what-to-which-row part reaches
+   back for the life of the system. That bounds this row's exposure and does not soften its grading.
+   Nothing here forbids it — it is a plausible role — but the row must not be
    described to anyone as "just the logs", and it is scoped and term-limited for the same reason
    the ⚠⚠ rows above it are.
 
@@ -685,7 +751,7 @@ the system loses the ability to use it on the day it breaks.
 > `scope_exposure`. Someone who assumes a parent can see its children will "fix" this by
 > widening the role, and that fix would silently reverse D-049.
 
-**Four properties worth noting:**
+**Five properties worth noting:**
 
 1. **`membership_approver` is separate from `registrar`.** Deciding who becomes a member is
    a different act from processing records. If your organization wants one person to do
@@ -721,6 +787,20 @@ the system loses the ability to use it on the day it breaks.
    up on a chase-up report — **the report is how the organization notices, the resolver is
    not how it punishes.** See
    [../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles--bundles-of-permissions).
+5. **`identity_reviewer` decides identity questions about children without a read over the person
+   record.** The row carries `person.merge`, `import.view` and `import.apply`, and **`person.view` is
+   not in it**: the reviewer works from the candidate pair, the `match_signals` recorded against it,
+   and the names and dates those signals compare. That is deliberate as it stands — the question being
+   decided is whether two rows are one human, and the descriptive values underneath are not evidence
+   about that — and it is the same shape as `auditor` reading the trail without holding `person.view`.
+   What round 8 changed is the pressure on it. This is now also the role a **blocked sign-up** lands
+   on: an account held out of `active` by an unresolved hypothesis, with an age check alerting because
+   the stalled item is a person who cannot log in
+   ([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+   **If reviewers begin asking for context they cannot see, that is the finding to act on**, and the two
+   honest answers are a scoped, dated `person.view` on this role, or a review screen that shows more of
+   the *signals*. Reaching instead for an organization-wide `person.view` would put the catalog's
+   largest ⚠⚠ read in the role with the most write authority over identity.
 
 ---
 
@@ -755,6 +835,12 @@ the system loses the ability to use it on the day it breaks.
   proposals keep arriving through ordinary data entry, and a vocabulary nobody curates stops
   answering questions while still storing everything
   ([../data-model/09-attributes.md §8](../data-model/09-attributes.md#8-integrity-checks)).
+  **The import half of this is now answered**, and only that half: the codes the legacy batch's
+  column→code map names arrive `live`, because a curator reads the map as one object before the batch
+  applies, so the queue does not open several-hundred-deep on day one
+  ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+  [../domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline)).
+  Who holds the permission afterwards, day to day, is still what is open.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: whether
 `person.admin` should subsume `person.merge` and `person.redact` (moot — there are no
@@ -764,7 +850,11 @@ D-068); whether `event.manage_participants` should split off presence (it did, i
 (§8a, thirteen codes); whether any permission should require current membership status (yes,
 via the role — D-039);
 `person.background_check.*` (removed — D-043); `membership.transfer` (obsolete once
-participation replaced unit membership — D-041); and whether `org_unit.restructure` includes
-reparenting (it cannot — D-036).
+participation replaced unit membership — D-041); whether `org_unit.restructure` includes
+reparenting (it cannot — D-036); whether reversing a merge deserves a code of its own (it does not —
+undoing an identity correction is the same act as making one, so `person.unmerge` is gone from §2 and
+unmerge is `person.merge`, D-087); and whether a colliding sign-up needs a claim object and a way to
+link it (it needs neither — the hypothesis queue already exists and deciding it is `person.merge`,
+D-089).
 
 All tracked in [../open-questions.md](../open-questions.md).

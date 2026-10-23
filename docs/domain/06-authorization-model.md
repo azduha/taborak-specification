@@ -811,9 +811,13 @@ is unsafe — use now() and a short TTL instead.
   a lapse changes the resolver's answer for a whole person, so invalidate **by `person_id`,
   not by scope**. The sweep touches everyone at once, so this must be a bulk operation the
   cache is designed for, not one delete per person in a loop.
-- **a merge** — this is the one that gets missed. Merging two people unions their
-  permissions, so the survivor's cache must be cleared. See
-  [03-identity-and-legacy.md](03-identity-and-legacy.md#5-the-merge-operation).
+- **a merge, and an unmerge** — this is the one that gets missed. Merging two people unions their
+  permissions, so the survivor's cache must be cleared; reversing a merge splits them back in two, so
+  both rows must be cleared, and it gets missed for the opposite reason — nobody thinks of an
+  undo as a permission change ([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
+  Unmerge is `person.merge`, not a separate code, so nothing here changes shape; only the list of
+  events that must invalidate does. See
+  [03-identity-and-legacy.md](03-identity-and-legacy.md#6-reversing-a-merge).
 - a unit's parent changing — **retired**, because this can no longer happen
   ([D-036](../decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)).
   It previously affected reporting and the exposure-direction check but **not** permission

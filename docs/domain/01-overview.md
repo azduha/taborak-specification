@@ -37,10 +37,16 @@ treatment is in [02-actors.md](02-actors.md); the summary:
 | Member (adult) | yes | yes | as above, plus whatever their role assignments permit |
 | Caretaker | yes | maybe | view/act on their dependents — **only** as explicitly granted |
 | Staff / registrar | yes | maybe | organization-wide administrative permissions |
-| Historical record | no | yes (closed) | nothing. Data only, never a login. |
+| Historical record | no | **no** — participation rows only | nothing. Data only, never a login. |
 
-The last row matters: imported 1994 rosters create `person` rows with **no account**.
-They must never be blocked from import by a "users must have email addresses" rule.
+The last row matters twice. Imported 1994 rosters create `person` rows with **no account**, and must
+never be blocked from import by a "users must have email addresses" rule. And they create **no
+`membership` either**: a roster evidences presence in a unit, and the corpus carries no payment
+evidence, so an imported person's history is `unit_participation` and a membership row appears only
+where a human recorded one on evidence
+([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+The earlier version of this table said "yes (closed)" in that cell, which was the membership-per-roster
+reflex the import rule exists to stop.
 
 ---
 
@@ -63,6 +69,14 @@ without being accepted, be accepted without paying, and pay without ever joining
 An account is about **authentication only**. It says "this person can log in". It says
 nothing about membership. A person can hold a verified, active account for years and
 never become a member — a parent who only ever manages their child is exactly this case.
+
+**One gate the arrows do not draw:** an account may not reach `active` while an unresolved
+`identity_hypothesis` names its person, which is what a sign-up that strong-matches someone who
+already exists runs into ([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+Verification is necessary and not sufficient; a human decision is the second condition, and because
+that makes a stalled queue a person who cannot log in, the blocking hypothesis is age-checked and
+alerts. One live account per person is the rule doing the underlying work
+([02-actors.md §3](02-actors.md#3-account-state-machine)).
 
 ### 3.2 Membership lifecycle
 
@@ -197,11 +211,26 @@ The system must answer, correctly and indefinitely:
 Consequences, all of which the data model implements:
 
 1. **Everything temporal is a period**, never a boolean or a single date.
-2. **Nothing is hard-deleted.** Merges leave tombstones; units that closed keep their rows.
+2. **Nothing is hard-deleted**, except by three named acts, each of which is somebody's decision
+   rather than a cleanup job. Merges leave tombstones and units that closed keep their rows. Against
+   that: **erasing a person** redacts their values wherever they were copied, including in the audit
+   payload, immediately and at any age; **payload reduction** empties an audit row's values 24 months
+   after they were written and leaves the row standing, so the trail keeps answering *who changed this,
+   when, and were they allowed to* indefinitely and stops answering *and to what*
+   ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short));
+   and **reverting an import batch** removes the rows that batch created. Reduction is not redaction —
+   one answers to a person and is absolute, the other answers to a calendar and is bounded — and the
+   accounting skeleton (`membership`, fees, payments) is deliberately outside all three: it is kept
+   indefinitely as the organization's own history. *Assumption:* that "forever" has a legal basis is
+   exactly the thing this document cannot establish for itself; the claim is recorded as an assumption
+   awaiting review, not as settled law.
 3. **Names change.** Units get renamed and renumbered; people change names. Names live in
    child tables with validity periods, not as columns that get overwritten.
-4. **Imported data is low-confidence.** A 1994 roster has names and dates but no reliable
-   unique key. Import therefore *proposes* identities and a human confirms them.
+4. **Imported data is low-confidence.** A 1994 roster has names, dates, and on most rows a legacy
+   member number — which keys the organization's paper, not a session, and is exactly what is missing
+   from the records that most need matching. This bullet used to say "no reliable unique key", written
+   before the corpus had been described. Import still therefore *proposes* identities and a human
+   confirms them, and where a number is present the proposal is a lookup rather than a guess.
    See [03-identity-and-legacy.md](03-identity-and-legacy.md).
 
 ---
@@ -210,8 +239,9 @@ Consequences, all of which the data model implements:
 
 These are referenced by the schema but not designed, pending your specification:
 
-- **Events** — the schema provides `access_grant.scope_type = 'event'` and leaves the
-  event tables to you. See [../open-questions.md](../open-questions.md).
+*(Events came off this list: they were specified, in [07-events.md](07-events.md) and
+[data-model/08-events.md](../data-model/08-events.md), along with the thirteen codes in the catalog.)*
+
 - **Fees and payments** — a provisional shape exists in
   [../data-model/07-finance.md](../data-model/07-finance.md) because membership
   activation depends on it. Expect to rewrite it.
