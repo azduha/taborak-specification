@@ -1469,76 +1469,113 @@ stays readable; the areas connect through <code>person</code>, which appears in 
 reference (no database-level foreign key). Temporal tables are marked <code>[T]</code>.</p>
 <hr />
 <h2 id="1-identity">1. Identity<a class="headerlink" href="#1-identity" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                          ┌─────────────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                          │            person               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                          │  id, public_id                  │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                          │  given_name, family_name        │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                          │  birth_date, birth_date_precision│
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                          │  record_origin, data_confidence │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                          │  merged_into_person_id ──┐ self  │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                          │  redacted_at             └──────┘│
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                          └───────────────┬─────────────────┘
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                          │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        ┌──────────────┬──────────────────┼──────────────────┬───────────────┐
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        │              │                  │                  │               │
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        ▼              ▼                  ▼                  ▼               ▼
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  ┌───────────┐ ┌─────────────┐  ┌────────────────┐ ┌──────────────┐ ┌────────────┐
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  │person_name│ │  account    │  │ person_contact │ │person_       │ │identity_   │
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  │    [T]    │ │             │  │      [T]       │ │identifier    │ │hypothesis  │
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  │           │ │ person_id → │  │                │ │     [T]      │ │            │
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  │ valid_from│ │ status      │  │ contact_type   │ │ scheme,value │ │ person_a_id│
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  │ valid_to  │ │             │  │ purpose        │ │              │ │ person_b_id│
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  └───────────┘ └──────┬──────┘  │ is_primary     │ └──────────────┘ │ confidence │
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                       │         │ verified_at    │                  │ match_     │
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>                       ▼         └────────────────┘                  │  signals   │
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>              ┌──────────────────┐                                  │ status     │
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>              │account_credential│                                  └─────┬──────┘
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>              │  [T]             │                                        │
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>              │ credential_type  │                                        ▼
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>              │ secret_hash      │                                 ┌──────────────┐
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>              │ external_ref     │                                 │ person_merge │
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>              │ valid_to         │                                 │ surviving_id │
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>              └──────────────────┘                                 │ merged_id    │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>                                                                   │ hypothesis_id│
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>                                                                   │ reversed_at  │
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>                                                                   └──────┬───────┘
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>                                                                          ▼
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>                                                                  ┌────────────────┐
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>                                                                  │ field_conflict │
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>                                                                  └────────────────┘
-</code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    PERSON {
+        uuid id PK
+        string public_id
+        date birth_date
+        string birth_date_precision
+        string record_origin
+        string data_confidence
+        uuid merged_into_person_id FK
+        datetime redacted_at
+    }
+    PERSON_NAME {
+        uuid person_id FK
+        string name_type
+        datetime valid_from
+        datetime valid_to
+    }
+    ACCOUNT {
+        uuid person_id FK
+        string status
+    }
+    ACCOUNT_CREDENTIAL {
+        uuid account_id FK
+        string credential_type
+        string secret_hash
+        string external_ref
+        datetime valid_to
+    }
+    PERSON_CONTACT {
+        uuid person_id FK
+        string contact_type
+        string purpose
+        boolean is_primary
+        datetime verified_at
+    }
+    PERSON_IDENTIFIER {
+        uuid person_id FK
+        string scheme
+        string value
+        datetime valid_to
+    }
+    IDENTITY_HYPOTHESIS {
+        uuid person_a_id FK
+        uuid person_b_id FK
+        decimal confidence
+        string match_signals
+        string status
+    }
+    PERSON_MERGE {
+        uuid surviving_id FK
+        uuid merged_id FK
+        uuid hypothesis_id FK
+        datetime reversed_at
+    }
+    FIELD_CONFLICT {
+        uuid person_merge_id FK
+    }
+    PERSON ||--o{ PERSON_NAME : has
+    PERSON ||--o{ ACCOUNT : owns
+    ACCOUNT ||--o{ ACCOUNT_CREDENTIAL : uses
+    PERSON ||--o{ PERSON_CONTACT : has
+    PERSON ||--o{ PERSON_IDENTIFIER : has
+    PERSON ||--o{ IDENTITY_HYPOTHESIS : "is candidate"
+    PERSON ||--o{ PERSON_MERGE : "survives or is merged"
+    IDENTITY_HYPOTHESIS ||--o| PERSON_MERGE : records
+    PERSON_MERGE ||--o{ FIELD_CONFLICT : contains
+    PERSON ||--o| PERSON : "merged into"</code></pre>
 <p><strong>Key point:</strong> everything hangs off <code>person</code>, and <code>person</code> itself holds only identity.
 No status, no role, no membership — everything else the organization records about the human is
 the descriptive layer drawn next. See
 <a href="../../data-model/01-identity/#1-the-central-claim">../data-model/01-identity.md</a>.</p>
 <hr />
 <h2 id="1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age">1a. Personal attributes — everything that is not a name, a gender or an age<a class="headerlink" href="#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>        ┌────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        │        attribute_definition        │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        │  code, label, description          │
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        │  value_type ← rendering, not law   │      ┌────────────────────────────┐
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        │  value_unit, sort_order            │◄─────│      attribute_option      │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        │  allow_multiple                    │      │  definition_id             │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        │  status: proposed | live | retired │      │  code, label, sort_order   │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        │  category  ← grouping ONLY         │      │  status                    │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        │  proposed_by, proposed_at          │      └───────────┬────────────────┘
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        │  retired_at, retired_reason        │
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        └───────┬────────────────────────────┘
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                │                                               │
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                │                    ┌──────────────────────────┘
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>                │                    │
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>                ▼                    ▼
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    ┌──────────────────────────────────────────────┐
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    │               person_attribute               │
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    │  person_id → person                          │
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    │  attribute_definition_id                     │
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    │  value_option_id      (a `one_of` choice)    │
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    │  value  ← always TEXT                        │
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    │  recorded_note, source                       │
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    │  created_at/_by = recorded at/by             │
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    │  NO valid_from / valid_to   ← (D-085)        │
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    └──────────────────────────────────────────────┘
-</code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    ATTRIBUTE_DEFINITION {
+        string code PK
+        string label
+        string description
+        string value_type
+        string value_unit
+        integer sort_order
+        boolean allow_multiple
+        string status
+        string proposed_by
+        datetime proposed_at
+        datetime retired_at
+    }
+    ATTRIBUTE_OPTION {
+        string definition_code FK
+        string code
+        string label
+        integer sort_order
+        string status
+    }
+    PERSON_ATTRIBUTE {
+        uuid person_id FK
+        string attribute_definition_code FK
+        string value_option_code FK
+        string value
+        string recorded_note
+        string source
+        datetime created_at
+    }
+    PERSON ||--o{ PERSON_ATTRIBUTE : has
+    ATTRIBUTE_DEFINITION ||--o{ ATTRIBUTE_OPTION : offers
+    ATTRIBUTE_DEFINITION ||--o{ PERSON_ATTRIBUTE : defines
+    ATTRIBUTE_OPTION o|--o{ PERSON_ATTRIBUTE : selects</code></pre>
 <p><strong>Key point:</strong> these three tables are the whole of what the system knows about a person beyond
 name, gender and age. There is no health table beside them and no privileged corner inside them:
 <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
@@ -1550,7 +1587,10 @@ put an organization-maintained vocabulary in its place. Reading is <code>person.
 <a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a>.</p>
 <p><strong>None of the three is <code>[T]</code>, and the <code>no</code> beside them in §7 is a decision, not an omission.</strong> A
 <code>person_attribute</code> row is <strong>the current belief, overwritten in place</strong>, and <code>audit_log</code> holds the
-sequence of beliefs, <strong>values included</strong> — which is why the trail is guarded as person data is
+sequence of beliefs, <strong>values included for as long as the payload window lasts — 24 months, after
+which the row is reduced and the values are gone</strong>
+(<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
+— which is why the trail is guarded as person data is
 (<a href="../permission-catalog/#8-audit-and-system">the permission catalog §8</a>). This corpus gives periods to things that are true <em>over an interval</em> — a
 membership, an address, a position, a guardian's authority — and a descriptive value is not one of
 those: it is a statement made now about whatever it is about, with a timestamp on the assertion. A
@@ -1569,51 +1609,72 @@ what it meant on the day it was chosen. Retiring therefore never touches a fact 
 person erases one (<a href="../../domain/08-person-data/#5-forgetting">../domain/08-person-data.md</a>).</p>
 <hr />
 <h2 id="2-organization">2. Organization<a class="headerlink" href="#2-organization" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  ┌────────────────┐         ┌─────────────────────┐
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  │ org_unit_type  │◄────────│ org_unit_type_rule  │
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  │  code          │  parent │  parent_type_id     │
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  │  allows_minors │  ──────►│  child_type_id      │
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  │  is_leaf       │         │  is_required        │
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  │  max_depth     │         └─────────────────────┘
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  │  sort_order    │
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  └───────┬────────┘
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>          │
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>          ▼
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  ┌──────────────────────┐          ┌──────────────────┐
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  │      org_unit        │◄─────────│  org_unit_name   │
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  │  unit_type_id ───────┘          │       [T]        │
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  │  parent_unit_id ──┐ self        │  name, code      │
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  │  code, name       └────────────►│  change_reason   │
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  │  status           [T]           │  valid_from/to   │
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  │  path, depth      │             └──────────────────┘
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>  │  valid_from/to    │
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  └────┬─────────┬────┘
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>       │         │
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>       │         ▼
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>       │  ┌───────────────────────┐
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>       │  │ org_unit_relationship │   split_from / merged_into /
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>       │  │  source_unit_id       │   successor_of / renamed_to
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>       │  │  target_unit_id       │
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>       │  │  relationship         │
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>       │  │  effective_date       │
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>       │  └───────────────────────┘
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>       │
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>       ▼
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>  ┌──────────────────┐    ┌──────────────────────┐        ┌──────────────┐
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>  │     position     │◄───│ position_assignment  │───────►│    person    │
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>  │  unit_type_id    │    │  position_id         │        └──────────────┘
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>  │  code            │    │  org_unit_id    ─────┼───► org_unit
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>  │  max_holders     │    │  person_id      ─────┘
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>  │  is_leadership   │    │  valid_from/to  [T]  │
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>  │  min_age         │    │  is_primary          │
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>  │  requires_       │    │  ended_reason_code   │
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>  │   membership     │    └──────────────────────┘
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>  │  (REPORTED, not │
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>  │   enforced — the │
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>  │   enforced flag  │
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>  │   is on `role`)  │
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>  └──────────────────┘
-</code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    ORG_UNIT_TYPE {
+        string code PK
+        boolean allows_minors
+        boolean is_leaf
+        integer max_depth
+        integer sort_order
+    }
+    ORG_UNIT_TYPE_RULE {
+        string parent_type_id FK
+        string child_type_id FK
+        boolean is_required
+    }
+    ORG_UNIT {
+        uuid id PK
+        string unit_type_id FK
+        uuid parent_unit_id FK
+        string code
+        string name
+        string status
+        string path
+        integer depth
+        datetime valid_from
+        datetime valid_to
+    }
+    ORG_UNIT_NAME {
+        uuid org_unit_id FK
+        string name
+        string code
+        string change_reason
+        datetime valid_from
+        datetime valid_to
+    }
+    ORG_UNIT_RELATIONSHIP {
+        uuid source_unit_id FK
+        uuid target_unit_id FK
+        string relationship
+        date effective_date
+    }
+    POSITION {
+        uuid unit_type_id FK
+        string code
+        integer max_holders
+        boolean is_leadership
+        integer min_age
+        boolean requires_membership
+    }
+    POSITION_ASSIGNMENT {
+        uuid position_id FK
+        uuid org_unit_id FK
+        uuid person_id FK
+        datetime valid_from
+        datetime valid_to
+        boolean is_primary
+        string ended_reason_code
+    }
+    ORG_UNIT_TYPE ||--o{ ORG_UNIT_TYPE_RULE : permits
+    ORG_UNIT_TYPE ||--o{ ORG_UNIT : classifies
+    ORG_UNIT ||--o{ ORG_UNIT : contains
+    ORG_UNIT ||--o{ ORG_UNIT_NAME : has
+    ORG_UNIT ||--o{ ORG_UNIT_RELATIONSHIP : source
+    ORG_UNIT ||--o{ ORG_UNIT_RELATIONSHIP : target
+    ORG_UNIT_TYPE ||--o{ POSITION : defines
+    POSITION ||--o{ POSITION_ASSIGNMENT : fills
+    ORG_UNIT ||--o{ POSITION_ASSIGNMENT : hosts
+    PERSON ||--o{ POSITION_ASSIGNMENT : holds</code></pre>
 <p><strong>Key point:</strong> <code>path</code>/<code>depth</code> are denormalized for fast subtree queries; <code>unit_ancestors()</code>
 and <code>unit_descendants()</code> are the authority — <strong>for reporting only</strong>. They are never used in
 a permission path: authority does not flow down the unit tree. Positions do <strong>not</strong> grant
@@ -1622,42 +1683,48 @@ permissions, and several people may occupy the same position (<code>position.max
 <a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>.</p>
 <hr />
 <h2 id="3-membership">3. Membership<a class="headerlink" href="#3-membership" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>  ┌─────────────────────────┐
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  │ membership_type         │   ONE ROW: 'member'
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  │  code = 'member'        │   The vocabulary is a table so it can grow,
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  │  duration_months        │   not because it varies today.  (D-037)
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  │  expiry_month, _day     │   ← the organizational calendar: 1 Jan  (D-047)
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  │  renewal_grace_days     │   ← the renewal WINDOW: 60 days, not a status (D-048)
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  └─────────┬───────────────┘
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>            │
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>            ▼
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>  ┌──────────────────────────┐         ┌──────────────────────────┐
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  │      membership          │         │   membership_request     │
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>  │  person_id ──────────────┼────────►│  person_id (SUBJECT) ────┼──► person
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>  │  membership_type_id ─────┘         │  submitted_by_person_id ─┼──► person
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>  │  status                   [T]      │  requested_unit_id ──────┼──► org_unit
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>  │  valid_from / valid_to    │        │  status                  │
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>  │  renewed_from ──┐ self    │        │  membership_id ──────────┼──► membership
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>  │                 └─────────┘        │  previous_membership_id ─┼──► membership
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>  │  outstanding_balance      │        └──────────────────────────┘
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>  │  NO overlap of open rows  │
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>  │   on person_id ALONE      │   ← no membership_type_id: one type, so
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>  └───────────────────────────┘     "one person, one open membership" is absolute
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>  — no membership_request_requirement table: nothing gates a request
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    except identity and payment.                          (D-044)
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>  ┌──────────────────────────┐
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>  │   unit_participation     │   person_id → person   (NOT membership_id — see below)
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>  │  org_unit_id ────────────┼──► org_unit
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>  │  valid_from/to      [T]  │
-<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>  │  join_reason_code        │
-<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>  │  NO overlap of open rows │
-<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>  └──────────────────────────┘
-<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>     ↑ PARTICIPATION, not membership. Every member also gets a row on the
-<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>       ROOT unit, so "everyone in unit X" is one query whether X is the
-<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>       organization or a Thursday-evening pack.            (D-041)
-</code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    MEMBERSHIP_TYPE {
+        string code PK
+        integer duration_months
+        integer expiry_month
+        integer expiry_day
+        integer renewal_grace_days
+    }
+    MEMBERSHIP {
+        uuid person_id FK
+        string membership_type_id FK
+        string status
+        datetime valid_from
+        datetime valid_to
+        uuid renewed_from_membership_id FK
+        decimal outstanding_balance
+    }
+    MEMBERSHIP_REQUEST {
+        uuid person_id FK
+        uuid submitted_by_person_id FK
+        uuid requested_unit_id FK
+        string status
+        uuid membership_id FK
+        uuid previous_membership_id FK
+    }
+    UNIT_PARTICIPATION {
+        uuid person_id FK
+        uuid org_unit_id FK
+        datetime valid_from
+        datetime valid_to
+        string join_reason_code
+    }
+    PERSON ||--o{ MEMBERSHIP : has
+    MEMBERSHIP_TYPE ||--o{ MEMBERSHIP : defines
+    MEMBERSHIP ||--o{ MEMBERSHIP : renews
+    PERSON ||--o{ MEMBERSHIP_REQUEST : subject
+    PERSON ||--o{ MEMBERSHIP_REQUEST : submits
+    ORG_UNIT ||--o{ MEMBERSHIP_REQUEST : requested_for
+    MEMBERSHIP o|--o{ MEMBERSHIP_REQUEST : produces
+    MEMBERSHIP ||--o{ MEMBERSHIP_REQUEST : precedes
+    PERSON ||--o{ UNIT_PARTICIPATION : participates
+    ORG_UNIT ||--o{ UNIT_PARTICIPATION : includes</code></pre>
 <p><strong>Three points that matter:</strong></p>
 <ul>
 <li><code>membership_request</code> has <strong>two</strong> person references:
@@ -1665,8 +1732,11 @@ permissions, and several people may occupy the same position (<code>position.max
   parent, who applied). Collapsing them makes the audit trail false.</li>
 <li><code>unit_participation.person_id</code> points at <strong>person</strong>, not membership. This is the deliberate
   trade-off that makes the 1990s import possible — an imported roster records who took part,
-  and frequently no membership row exists to point at:
-  <a href="../../data-model/03-membership/#5-unit_participation">../data-model/03-membership.md</a>.</li>
+  and <strong>no imported row ever has a membership to point at</strong>, because the corpus carries no payment
+  evidence and a roster therefore evidences participation only
+  (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
+  This bullet used to read "frequently", while the import still imagined membership rows. Field
+  rules: <a href="../../data-model/03-membership/#5-unit_participation">../data-model/03-membership.md</a>.</li>
 <li><strong><code>membership_type</code> exists with exactly one row</strong>, and <code>category</code>, <code>min_age</code>, <code>max_age</code>
   and <code>requires_background_check</code> are all gone. Membership is ageless
   (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>); age is read from
@@ -1675,39 +1745,29 @@ permissions, and several people may occupy the same position (<code>position.max
 </ul>
 <hr />
 <h2 id="4-guardianship">4. Guardianship<a class="headerlink" href="#4-guardianship" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>        ┌─────────────────────────────────────────┐
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        │             guardianship                │
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        │  guardian_person_id  ───────────────────┼──► person
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        │  dependent_person_id ───────────────────┼──► person
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        │  relationship                           │
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        │  right_level      ← none | view | write │
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        │  valid_from / valid_to            [T]   │
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        │  is_primary_contact      ← who to phone │
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        │  is_legal_decision_maker ← who may sign │
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        │  NO overlap of open rows on the pair    │
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        └───────────────────┬─────────────────────┘
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>                            │
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>                            ▼
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        ┌─────────────────────────────────────────┐
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        │        guardianship_permission          │
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>        │  guardianship_id ───────────────────────┘
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        │  right_level     ← none | view | write  │
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>        │  changed_reason / changed_by            │
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>        │  valid_from / valid_to            [T]   │
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>        │  (HISTORY of the right — the current    │
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>        │   value is on the parent row)  (D-074)  │
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>        └─────────────────────────────────────────┘
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>        ┌─────────────────────────────────────────┐
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>        │  NO `household` TABLE (D-057)           │
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>        │  An address is a person_contact row     │
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>        │  (contact_type = 'postal', purpose =    │
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>        │  'billing'), temporal like any contact. │
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>        └─────────────────────────────────────────┘
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>          ↑ SHARED ADDRESS GRANTS NO ACCESS. Authority over a child comes from the
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>            `guardianship` row and the `right_level` it carries, never from sleeping at
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>            the same address (D-019, which outlives the table; D-057; D-074)
-</code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    GUARDIANSHIP {
+        uuid guardian_person_id FK
+        uuid dependent_person_id FK
+        string relationship
+        string right_level
+        datetime valid_from
+        datetime valid_to
+        boolean is_primary_contact
+        boolean is_legal_decision_maker
+    }
+    GUARDIANSHIP_PERMISSION {
+        uuid guardianship_id FK
+        string right_level
+        string changed_reason
+        uuid changed_by FK
+        datetime valid_from
+        datetime valid_to
+    }
+    PERSON ||--o{ GUARDIANSHIP : guardian
+    PERSON ||--o{ GUARDIANSHIP : dependent
+    GUARDIANSHIP ||--o{ GUARDIANSHIP_PERMISSION : records
+    PERSON ||--o{ GUARDIANSHIP_PERMISSION : changes</code></pre>
 <p><strong>Key point:</strong> guardianship is a general graph — one guardian → many dependents, many
 guardians → one dependent, and a person may be both. Authority is per <code>guardianship</code> row, and
 since <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
@@ -1716,118 +1776,118 @@ records and only read another's. See
 <a href="../../data-model/04-relationships/">../data-model/04-relationships.md</a>.</p>
 <hr />
 <h2 id="5-authorization--the-whole-answer-in-one-diagram">5. Authorization — the whole answer in one diagram<a class="headerlink" href="#5-authorization--the-whole-answer-in-one-diagram" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>                    ┌──────────────────┐
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                    │    permission    │   'membership.request.approve'
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                    │  code, resource  │   'guardianship.change_right'
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                    │  namespace       │   'event.register_self'
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>                    └────────┬─────────┘
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                             │
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>              ┌──────────────┴───────────────┐
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>              │                              │
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>              ▼                              ▼
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    ┌──────────────────┐          ┌────────────────────┐
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    │ role_permission  │          │  permission_level  │
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    └────────┬─────────┘          │   scope_type       │
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>             │                    │   required_level   │  ── connects permission
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>             ▼                    └─────────┬──────────┘     codes to grant LEVELS
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    ┌──────────────────┐                    │
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    │       role       │          ┌─────────┴──────────┐
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    │  code            │          │   access_level     │
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    │  scope_required  │          │   rank 0/10/20/30/40│  ← COMPARE BY RANK,
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    │  requires_member │          │   revoked…admin     │     NEVER BY STRING
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    │   _ship         │          └─────────┬──────────┘
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    │  (no period)     │  ← a ROLE is a DEFINITION and is valid ALWAYS (D-053).
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>    └────────┬─────────┘    The period lives on role_assignment, never here. A role
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>             │              ever assigned cannot be deleted, and is never switched off
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>             │                              │
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>             │   the membership gate has TWO waivers:
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>             │     role.requires_membership = false   (this ROLE)
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>             │     system.gate_exempt, a permission   (this PERSON, D-051)
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>             │   — the second arrives by the same route as any permission,
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>             │     through role_permission, and is never reachable by a grant
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>             ▼                              ▼
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>   ╔═══════════════════════╗    ╔═════════════════════════╗
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>   ║   role_assignment     ║    ║      access_grant       ║
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>   ║  SYSTEM-WIDE AUTHORITY║    ║   PER-ITEM AUTHORITY    ║
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>   ║                       ║    ║                         ║
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>   ║ person_id             ║    ║ person_id               ║
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>   ║ role_id               ║    ║ scope_type ─────────────╫──► grant_scope_type
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>   ║ scope_type:           ║    ║ scope_id  ⇒ (polymorphic)║
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>   ║   organization        ║    ║ level ──────────────────╫──► access_level
-<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>   ║   | org_unit          ║    ║ valid_from / valid_to   ║
-<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>   ║ scope_id              ║    ║ is_delegated            ║
-<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>   ║ valid_from/valid_to[T]║    ║ delegated_from ─────────╫──► person
-<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>   ║ delegation_of ──┐self ║    ║ revoked_at              ║
-<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>   ║                 └─────║    ╚═════════════════════════╝
-<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>   ╚═══════════════════════╝
-<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>             │                              │
-<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a>             │              ┌───────────────┘
-<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>             │              │
-<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>             │              │      ╔═════════════════════════╗
-<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a>             │              │      ║     scope_exposure      ║
-<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>             │              │      ║  THE ONLY DOWNWARD      ║
-<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a>             │              │      ║  CROSSING               ║
-<a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a>             │              │      ║                         ║
-<a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a>             │              │      ║ org_unit_id  = GRANTOR  ║──► org_unit
-<a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a>             │              │      ║ role_assignment_id ─────╫──► role_assignment
-<a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a>             │              │      ║ valid_from / valid_to[T]║
-<a id="__codelineno-5-56" name="__codelineno-5-56" href="#__codelineno-5-56"></a>             │              │      ║ exposed_by / exposed_at ║
-<a id="__codelineno-5-57" name="__codelineno-5-57" href="#__codelineno-5-57"></a>             │              │      ║ withdrawn_by / _at      ║
-<a id="__codelineno-5-58" name="__codelineno-5-58" href="#__codelineno-5-58"></a>             │              │      ╚═════════════════════════╝
-<a id="__codelineno-5-59" name="__codelineno-5-59" href="#__codelineno-5-59"></a>             │              │                 │
-<a id="__codelineno-5-60" name="__codelineno-5-60" href="#__codelineno-5-60"></a>             │              │  the unit offers │ its own
-<a id="__codelineno-5-61" name="__codelineno-5-61" href="#__codelineno-5-61"></a>             │              │  coverage over   │ assignment
-<a id="__codelineno-5-62" name="__codelineno-5-62" href="#__codelineno-5-62"></a>             │              │  itself ─────────┘
-<a id="__codelineno-5-63" name="__codelineno-5-63" href="#__codelineno-5-63"></a>             │              │
-<a id="__codelineno-5-64" name="__codelineno-5-64" href="#__codelineno-5-64"></a>             │              │      ╔═════════════════════════╗
-<a id="__codelineno-5-65" name="__codelineno-5-65" href="#__codelineno-5-65"></a>             │              │      ║        audience         ║  A grant may name a
-<a id="__codelineno-5-66" name="__codelineno-5-66" href="#__codelineno-5-66"></a>             │              │      ║  kind: builtin | group  ║  SET of people instead
-<a id="__codelineno-5-67" name="__codelineno-5-67" href="#__codelineno-5-67"></a>             │              │      ║  rule_key  (builtin)    ║  of a person.      (D-042)
-<a id="__codelineno-5-68" name="__codelineno-5-68" href="#__codelineno-5-68"></a>             │              │      ║  ─────────────────────  ║
-<a id="__codelineno-5-69" name="__codelineno-5-69" href="#__codelineno-5-69"></a>             │              │      ║  audience_member [T]    ║  ← only for kind='group';
-<a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a>             │              │      ║   (named groups only)   ║    built-ins are RULES,
-<a id="__codelineno-5-71" name="__codelineno-5-71" href="#__codelineno-5-71"></a>             │              │      ╚═════════════┬═══════════╝    not stored lists
-<a id="__codelineno-5-72" name="__codelineno-5-72" href="#__codelineno-5-72"></a>             │              │                    │
-<a id="__codelineno-5-73" name="__codelineno-5-73" href="#__codelineno-5-73"></a>             └──────────────┴───────────────┬────┴──────────┘
-<a id="__codelineno-5-74" name="__codelineno-5-74" href="#__codelineno-5-74"></a>                                            ▼
-<a id="__codelineno-5-75" name="__codelineno-5-75" href="#__codelineno-5-75"></a>                 ╔═══════════════════════╗
-<a id="__codelineno-5-76" name="__codelineno-5-76" href="#__codelineno-5-76"></a>                 ║       can(p, perm,    ║   ONE resolver.
-<a id="__codelineno-5-77" name="__codelineno-5-77" href="#__codelineno-5-77"></a>                 ║         scope, at)    ║   Deny first, then
-<a id="__codelineno-5-78" name="__codelineno-5-78" href="#__codelineno-5-78"></a>                 ╚═══════════┬═══════════╝   locality. Four steps.
-<a id="__codelineno-5-79" name="__codelineno-5-79" href="#__codelineno-5-79"></a>                             │
-<a id="__codelineno-5-80" name="__codelineno-5-80" href="#__codelineno-5-80"></a>              ┌──────────────┼──────────────┬───────────────┬──────────────┐
-<a id="__codelineno-5-81" name="__codelineno-5-81" href="#__codelineno-5-81"></a>              ▼              ▼              ▼               ▼              ▼
-<a id="__codelineno-5-82" name="__codelineno-5-82" href="#__codelineno-5-82"></a>       0. explicit      1. ownership   2. guardian-    3. ALLOW:      4. default
-<a id="__codelineno-5-83" name="__codelineno-5-83" href="#__codelineno-5-83"></a>          DENY           (own row)      ship            most specific    DENY
-<a id="__codelineno-5-84" name="__codelineno-5-84" href="#__codelineno-5-84"></a>          (revoked)      ─ gate-exempt  (subject≠actor) scope wins
-<a id="__codelineno-5-85" name="__codelineno-5-85" href="#__codelineno-5-85"></a>          ABSOLUTE at                   ─ gate-exempt   the LEVEL
-<a id="__codelineno-5-86" name="__codelineno-5-86" href="#__codelineno-5-86"></a>          ANY scope                     allows only     │
-<a id="__codelineno-5-87" name="__codelineno-5-87" href="#__codelineno-5-87"></a>          ─ to a person                                │
-<a id="__codelineno-5-88" name="__codelineno-5-88" href="#__codelineno-5-88"></a>            OR an                                     │
-<a id="__codelineno-5-89" name="__codelineno-5-89" href="#__codelineno-5-89"></a>            audience                                 │
-<a id="__codelineno-5-90" name="__codelineno-5-90" href="#__codelineno-5-90"></a>                                       ┌──────────────┼──────────────┐
-<a id="__codelineno-5-91" name="__codelineno-5-91" href="#__codelineno-5-91"></a>                                       ▼              ▼              ▼
-<a id="__codelineno-5-92" name="__codelineno-5-92" href="#__codelineno-5-92"></a>                                  a. ITEM grant   b. UNIT grant   c. ORG grant
-<a id="__codelineno-5-93" name="__codelineno-5-93" href="#__codelineno-5-93"></a>                                     (access_        (access_        (access_
-<a id="__codelineno-5-94" name="__codelineno-5-94" href="#__codelineno-5-94"></a>                                      grant)          grant)          grant)
-<a id="__codelineno-5-95" name="__codelineno-5-95" href="#__codelineno-5-95"></a>                                       │              │              │
-<a id="__codelineno-5-96" name="__codelineno-5-96" href="#__codelineno-5-96"></a>                                       │              │ exact scope  │
-<a id="__codelineno-5-97" name="__codelineno-5-97" href="#__codelineno-5-97"></a>                                       │              │ only — never │
-<a id="__codelineno-5-98" name="__codelineno-5-98" href="#__codelineno-5-98"></a>                                       │              │ widened by   │
-<a id="__codelineno-5-99" name="__codelineno-5-99" href="#__codelineno-5-99"></a>                                       │              │ an exposure  │
-<a id="__codelineno-5-100" name="__codelineno-5-100" href="#__codelineno-5-100"></a>                                       └──────────────┴──────────────┴──► d. ROLE
-<a id="__codelineno-5-101" name="__codelineno-5-101" href="#__codelineno-5-101"></a>                                                                            (role_assignment;
-<a id="__codelineno-5-102" name="__codelineno-5-102" href="#__codelineno-5-102"></a>                                                                             org role, exact unit,
-<a id="__codelineno-5-103" name="__codelineno-5-103" href="#__codelineno-5-103"></a>                                                                             or a unit exposed to
-<a id="__codelineno-5-104" name="__codelineno-5-104" href="#__codelineno-5-104"></a>                                                                             THAT assignment (D-078).
-<a id="__codelineno-5-105" name="__codelineno-5-105" href="#__codelineno-5-105"></a>                                                                             NOT inherited)
-<a id="__codelineno-5-106" name="__codelineno-5-106" href="#__codelineno-5-106"></a>                                                                            ⚠ MEMBERSHIP GATE
-<a id="__codelineno-5-107" name="__codelineno-5-107" href="#__codelineno-5-107"></a>                                                                              applies HERE ONLY
-<a id="__codelineno-5-108" name="__codelineno-5-108" href="#__codelineno-5-108"></a>                                                                              (D-039): no current
-<a id="__codelineno-5-109" name="__codelineno-5-109" href="#__codelineno-5-109"></a>                                                                              membership → the
-<a id="__codelineno-5-110" name="__codelineno-5-110" href="#__codelineno-5-110"></a>                                                                              role grants nothing,
-<a id="__codelineno-5-111" name="__codelineno-5-111" href="#__codelineno-5-111"></a>                                                                              unless the role
-<a id="__codelineno-5-112" name="__codelineno-5-112" href="#__codelineno-5-112"></a>                                                                              opts out.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    ┌──────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    │    permission    │   'membership.request.approve'
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                    │  code, resource  │   'guardianship.change_right'
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                    │  namespace       │   'event.register_self'
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                    └────────┬─────────┘
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                             │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>              ┌──────────────┴───────────────┐
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>              │                              │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>              ▼                              ▼
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    ┌──────────────────┐          ┌────────────────────┐
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    │ role_permission  │          │  permission_level  │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    └────────┬─────────┘          │   scope_type       │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>             │                    │   required_level   │  ── connects permission
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>             ▼                    └─────────┬──────────┘     codes to grant LEVELS
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    ┌──────────────────┐                    │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    │       role       │          ┌─────────┴──────────┐
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    │  code            │          │   access_level     │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    │  scope_required  │          │   rank 0/10/20/30/40│  ← COMPARE BY RANK,
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    │  requires_member │          │   revoked…admin     │     NEVER BY STRING
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    │   _ship         │          └─────────┬──────────┘
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    │  (no period)     │  ← a ROLE is a DEFINITION and is valid ALWAYS (D-053).
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    └────────┬─────────┘    The period lives on role_assignment, never here. A role
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>             │              ever assigned cannot be deleted, and is never switched off
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>             │                              │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>             │   the membership gate has TWO waivers:
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>             │     role.requires_membership = false   (this ROLE)
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>             │     system.gate_exempt, a permission   (this PERSON, D-051)
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>             │   — the second arrives by the same route as any permission,
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>             │     through role_permission, and is never reachable by a grant
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>             ▼                              ▼
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>   ╔═══════════════════════╗    ╔═════════════════════════╗
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>   ║   role_assignment     ║    ║      access_grant       ║
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>   ║  SYSTEM-WIDE AUTHORITY║    ║   PER-ITEM AUTHORITY    ║
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   ║                       ║    ║                         ║
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   ║ person_id             ║    ║ person_id               ║
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   ║ role_id               ║    ║ scope_type ─────────────╫──► grant_scope_type
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   ║ scope_type:           ║    ║ scope_id  ⇒ (polymorphic)║
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   ║   organization        ║    ║ level ──────────────────╫──► access_level
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>   ║   | org_unit          ║    ║ valid_from / valid_to   ║
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   ║ scope_id              ║    ║ is_delegated            ║
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   ║ valid_from/valid_to[T]║    ║ delegated_from ─────────╫──► person
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>   ║ delegation_of ──┐self ║    ║ revoked_at              ║
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>   ║                 └─────║    ╚═════════════════════════╝
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>   ╚═══════════════════════╝
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>             │                              │
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>             │              ┌───────────────┘
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>             │              │
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>             │              │      ╔═════════════════════════╗
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>             │              │      ║     scope_exposure      ║
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>             │              │      ║  THE ONLY DOWNWARD      ║
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>             │              │      ║  CROSSING               ║
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>             │              │      ║                         ║
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>             │              │      ║ org_unit_id  = GRANTOR  ║──► org_unit
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>             │              │      ║ role_assignment_id ─────╫──► role_assignment
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>             │              │      ║ valid_from / valid_to[T]║
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>             │              │      ║ exposed_by / exposed_at ║
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>             │              │      ║ withdrawn_by / _at      ║
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>             │              │      ╚═════════════════════════╝
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>             │              │                 │
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>             │              │  the unit offers │ its own
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>             │              │  coverage over   │ assignment
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>             │              │  itself ─────────┘
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>             │              │
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>             │              │      ╔═════════════════════════╗
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>             │              │      ║        audience         ║  A grant may name a
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>             │              │      ║  kind: builtin | group  ║  SET of people instead
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>             │              │      ║  rule_key  (builtin)    ║  of a person.      (D-042)
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>             │              │      ║  ─────────────────────  ║
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>             │              │      ║  audience_member [T]    ║  ← only for kind='group';
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>             │              │      ║   (named groups only)   ║    built-ins are RULES,
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>             │              │      ╚═════════════┬═══════════╝    not stored lists
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>             │              │                    │
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>             └──────────────┴───────────────┬────┴──────────┘
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>                                            ▼
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>                 ╔═══════════════════════╗
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>                 ║       can(p, perm,    ║   ONE resolver.
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>                 ║         scope, at)    ║   Deny first, then
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>                 ╚═══════════┬═══════════╝   locality. Four steps.
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>                             │
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>              ┌──────────────┼──────────────┬───────────────┬──────────────┐
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>              ▼              ▼              ▼               ▼              ▼
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>       0. explicit      1. ownership   2. guardian-    3. ALLOW:      4. default
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>          DENY           (own row)      ship            most specific    DENY
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>          (revoked)      ─ gate-exempt  (subject≠actor) scope wins
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>          ABSOLUTE at                   ─ gate-exempt   the LEVEL
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>          ANY scope                     allows only     │
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>          ─ to a person                                │
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>            OR an                                     │
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>            audience                                 │
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>                                       ┌──────────────┼──────────────┐
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>                                       ▼              ▼              ▼
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>                                  a. ITEM grant   b. UNIT grant   c. ORG grant
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>                                     (access_        (access_        (access_
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>                                      grant)          grant)          grant)
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>                                       │              │              │
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>                                       │              │ exact scope  │
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>                                       │              │ only — never │
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>                                       │              │ widened by   │
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>                                       │              │ an exposure  │
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>                                       └──────────────┴──────────────┴──► d. ROLE
+<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>                                                                            (role_assignment;
+<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>                                                                             org role, exact unit,
+<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>                                                                             or a unit exposed to
+<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>                                                                             THAT assignment (D-078).
+<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>                                                                             NOT inherited)
+<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>                                                                            ⚠ MEMBERSHIP GATE
+<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>                                                                              applies HERE ONLY
+<a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>                                                                              (D-039): no current
+<a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>                                                                              membership → the
+<a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>                                                                              role grants nothing,
+<a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>                                                                              unless the role
+<a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>                                                                              opts out.
 </code></pre></div>
 <p><strong>Key points:</strong></p>
 <ul>
@@ -1878,31 +1938,38 @@ records and only read another's. See
 <hr />
 <h2 id="6-temporal-pattern-illustrated">6. Temporal pattern, illustrated<a class="headerlink" href="#6-temporal-pattern-illustrated" title="Permanent link">&para;</a></h2>
 <p>Every <code>[T]</code> table above uses the same shape. The returning-member case shows why:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>person 100 — Jan Novák
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├─ membership #1   member   1990-09-01 ──────────────► 2010-06-30   terminated
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│    unit_participation  Pack 12  1990-09-01 ──────► 1998-06-30
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│    unit_participation  Pack 31  1998-09-01 ──────────────► 2010-06-30
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│      ← 14-year gap, no rows. Visible as data, not inferred. →
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>├─ membership #2   member   2024-10-01 ──────────────► NULL (open, current)
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│    unit_participation  [ROOT]    2024-10-01 ──────► NULL   ← created with the
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>│    unit_participation  Pack 5    2024-10-01 ──────► NULL     membership, so the
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>│    position_assignment  scoutmaster, Pack 5  2025-01-01 ──► NULL   roster is uniform
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>│    role_assignment  unit_leader @ Pack 5     2025-01-01 ──► 2025-12-31
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>│                      (requires_membership = false → survives a lapse, D-039;
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>│                       the person-level alternative is system.gate_exempt, D-051)
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>│
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>├─ guardianship → child A    2015-03-01 ──────────► NULL
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>│    guardianship_permission  right_level = write      (source='self' → write)
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>└─ guardianship → child B    2018-07-01 ──────────► NULL
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>     guardianship_permission  right_level = view       (court-restricted)
-</code></pre></div>
+<pre class="mermaid"><code>flowchart TB
+    P["person 100 — Jan Novák"]
+    M1["membership #1 · member&lt;br/&gt;1990-09-01 → 2010-06-30 · terminated"]
+    U12["unit_participation · Pack 12&lt;br/&gt;1990-09-01 → 1998-06-30"]
+    U31["unit_participation · Pack 31&lt;br/&gt;1998-09-01 → 2010-06-30"]
+    GAP["14-year gap&lt;br/&gt;no rows; visible as data, not inferred"]
+    M2["membership #2 · member&lt;br/&gt;2024-10-01 → open"]
+    ROOT["unit_participation · ROOT&lt;br/&gt;2024-10-01 → open"]
+    U5["unit_participation · Pack 5&lt;br/&gt;2024-10-01 → open"]
+    POS["position_assignment · scoutmaster, Pack 5&lt;br/&gt;2025-01-01 → open"]
+    ROLE["role_assignment · unit_leader @ Pack 5&lt;br/&gt;2025-01-01 → 2025-12-31"]
+    GA["guardianship → child A&lt;br/&gt;2015-03-01 → open&lt;br/&gt;permission: write"]
+    GB["guardianship → child B&lt;br/&gt;2018-07-01 → open&lt;br/&gt;permission: view"]
+    P --&gt; M1 --&gt; U12
+    M1 --&gt; U31
+    M1 --&gt; GAP --&gt; M2
+    M2 --&gt; ROOT
+    M2 --&gt; U5 --&gt; POS
+    U5 --&gt; ROLE
+    P --&gt; GA
+    P --&gt; GB</code></pre>
 <p>Note the two membership rows have the <strong>same type</strong>. They differ only in period and end
 reason — this person was a member twice, and was a child and then an adult throughout. The
 old diagram called them <code>child</code> and <code>adult</code>; that was the framing the ageless decision
 replaced (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).</p>
+<p><strong>Where the first row came from is not drawn, and the answer is not "the import".</strong> Given a 1990s
+roster the pipeline produces the two <code>unit_participation</code> rows and <strong>no <code>membership</code></strong>, because the
+corpus carries no payment evidence to make one from — so membership #1 stands here only because a
+human entered that period on evidence they had read (<code>membership.backdate</code>), which is the sanctioned
+route and is attributed to somebody
+(<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
+<a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md §7</a>).</p>
 <p>Questions this shape supports, all of which fail against a design with <code>person.is_member</code>:</p>
 <ul>
 <li>Was this person a member on 1998-06-01?</li>
@@ -1940,7 +2007,7 @@ definition, or an append-only trail — the kinds of thing that have no period t
 <td><code>person</code></td>
 <td>The human being. Holds identity only — no status, no role, no membership</td>
 <td>Nothing, except itself: <code>merged_into_person_id</code> ⇒ self</td>
-<td>One per human, effectively; a merged row survives as a tombstone and is never deleted</td>
+<td>One per human, effectively; a merged row survives as a tombstone and is never deleted. The pointer is <strong>never rewritten forward</strong> when the survivor is itself absorbed, so chains persist and <code>resolve_person()</code> walks them (<a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2045,8 +2112,13 @@ definition, or an append-only trail — the kinds of thing that have no period t
 </tbody>
 </table>
 <p><strong>That last <code>no</code> is the decision, and it is the reason this row spells it out.</strong> Values are
-overwritten in place and <code>audit_log</code> — carrying the values themselves — is the only history: this is the one place in the schema where
-<em>"what did we believe in 2019?"</em> is answered from the trail rather than from business data, and
+overwritten in place and <code>audit_log</code> — carrying the values themselves, <strong>for 24 months</strong> — is the only
+history. This is the one place in the schema where <em>"what did we believe in 2019?"</em> would be answered
+from the trail rather than from business data, and since round 8 the answer is that <strong>it is answered
+for two years and not beyond</strong> (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
+the honest description of this trade is <em>no long history</em>, not merely <em>no temporal columns</em>, and if a
+case ever needs the long version the fix is temporal values — D-085 reversed — not a longer trail.
+On top of that expiry sits the older caveat:
 <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
 records the trail as discipline rather than guarantee. The trade was made with that in view and is
 reversible in one entry
@@ -2282,7 +2354,7 @@ attribute rows, or still having their values readable in the trail, means the re
 <td><code>access_log</code></td>
 <td>The audit trail — who did what, by what authority, with what result</td>
 <td><code>person</code> as actor and as subject; <code>⇒ authorization_ref_id</code> across <code>role_assignment</code>, <code>access_grant</code> and <code>guardianship_permission</code>; <code>⇒ entity_id</code></td>
-<td>Append-only; nothing is ever updated or deleted</td>
+<td>Append-only today; <strong>proposed</strong> to take the same 24-month window as the audit payload, which would make this cell wrong as written — <strong>F-8</strong>, unconfirmed (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2308,9 +2380,9 @@ attribute rows, or still having their values readable in the trail, means the re
 <tbody>
 <tr>
 <td><code>audit_log</code></td>
-<td>The row-level trail of changes to business tables, <strong>before and after values included</strong></td>
+<td>The row-level trail of changes to business tables, <strong>before and after values included until the payload window passes</strong></td>
 <td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf</td>
-<td>One row per change; append-only</td>
+<td>One row per change; the row is never deleted, but a scheduled <strong>payload reduction</strong> empties the values 24 months after writing (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2322,9 +2394,9 @@ attribute rows, or still having their values readable in the trail, means the re
 </tr>
 <tr>
 <td><code>import_batch</code></td>
-<td>One arrival of historical data, and where it stands</td>
+<td>One arrival of historical data, where it stands, and the raw-column→code map a person read before it applied</td>
 <td><code>person</code> as creator, applier and reverting party</td>
-<td>One per batch; staging rows may be truncated once applied</td>
+<td>One per batch; the map lives here as one object rather than per staged row, because it is one artefact a human reads top to bottom and the codes it names arrive <code>live</code> (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>); staging rows may be truncated once applied</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2337,7 +2409,7 @@ attribute rows, or still having their values readable in the trail, means the re
 <tr>
 <td><code>staging_import_row</code></td>
 <td>That row parsed, plus what the parse could not decide, and what it eventually created</td>
-<td><code>staging_import</code>; <code>person</code> as resolver, and the <code>membership</code> and <code>unit_participation</code> rows it produced</td>
+<td><code>staging_import</code>; <code>person</code> as resolver, and the <code>unit_participation</code> row it produced — <strong>never a <code>membership</code></strong>, since the corpus carries no payment evidence (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>)</td>
 <td>One per staged row</td>
 <td>no</td>
 </tr>
@@ -2616,6 +2688,8 @@ meaningless and a grant naming both is ambiguous about whom in the audience it s
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

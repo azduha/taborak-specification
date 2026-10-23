@@ -2941,9 +2941,13 @@ is unsafe — use now() and a short TTL instead.</p>
   a lapse changes the resolver's answer for a whole person, so invalidate <strong>by <code>person_id</code>,
   not by scope</strong>. The sweep touches everyone at once, so this must be a bulk operation the
   cache is designed for, not one delete per person in a loop.</li>
-<li><strong>a merge</strong> — this is the one that gets missed. Merging two people unions their
-  permissions, so the survivor's cache must be cleared. See
-  <a href="../03-identity-and-legacy/#5-the-merge-operation">03-identity-and-legacy.md</a>.</li>
+<li><strong>a merge, and an unmerge</strong> — this is the one that gets missed. Merging two people unions their
+  permissions, so the survivor's cache must be cleared; reversing a merge splits them back in two, so
+  both rows must be cleared, and it gets missed for the opposite reason — nobody thinks of an
+  undo as a permission change (<a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
+  Unmerge is <code>person.merge</code>, not a separate code, so nothing here changes shape; only the list of
+  events that must invalidate does. See
+  <a href="../03-identity-and-legacy/#6-reversing-a-merge">03-identity-and-legacy.md</a>.</li>
 <li>a unit's parent changing — <strong>retired</strong>, because this can no longer happen
   (<a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>).
   It previously affected reporting and the exposure-direction check but <strong>not</strong> permission
@@ -3182,6 +3186,8 @@ D-045, §2.5).</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

@@ -1744,7 +1744,8 @@ a well-meaning future change.</p>
   Do not add <code>is_deceased</code> or <code>deceased_at</code> back: it is not data the organization keeps.</li>
 <li><code>public_id</code> is unique.</li>
 <li>A person may not be merged into themselves — <code>merged_into_person_id</code> may never name this
-  same row.</li>
+  same row, <strong>nor any row that resolves to it</strong>. The one-hop case is the degenerate form of
+  the cycle banned in §8, not a separate rule beside it.</li>
 <li><code>merged_into_person_id</code> and <code>merged_at</code> are set together or both left null. A pointer with
   no date, or a date with no pointer, cannot be explained to anyone.</li>
 <li>A <code>birth_date_precision</code> may be recorded without a <code>birth_date</code> only when it says
@@ -2015,6 +2016,13 @@ layer, not here.</p>
   closed. A closed account releases its username for someone else to take. It covers live
   rows only, not all rows.</li>
 <li>An account may not reach <code>active</code> while <code>verified_at</code> is absent.</li>
+<li><strong>An account may not reach <code>active</code> while an unresolved <code>identity_hypothesis</code> names its person</strong> —
+  a hypothesis sitting in <code>proposed</code> or <code>needs_review</code>, on either side of the pair. This is the second
+  gate on the same transition and <a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>
+  is why it is here. It is written as a gate on a <em>status</em> rather than as a rule against creating the row,
+  because the row has to exist for the claim to be attached to anything, and because the queue a claim
+  lands in already exists (§8) with its signals, its ordering and its reviewer. See the collision flow
+  below for what that buys and what it costs.</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
@@ -2028,6 +2036,61 @@ which is exactly the returning-member case at the account level.</p>
 creating login credentials</em>, not about the human. A person who was registered as a child
 and later reaches majority keeps the same <code>person</code> row; the consent record stays attached
 to the account it was given for.</p>
+<p><strong>A colliding sign-up files a claim and brings nothing into the world that a human has not approved.</strong>
+This is the case the second gate above exists for
+(<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>):
+someone arrives at the sign-up form through a door the system did not know they had, and their details
+strong-match a person who already exists. <strong>The tempting answer was the convenient one</strong> — verify the
+e-mail, see that the signals are strong, link the two accounts — and it is
+<a href="../../decisions/decision-log/#d-004--no-automatic-merging-ever">D-004</a> wearing a different coat: a
+false-positive link is one human's descriptive data becoming another human's record, and a merge is the
+hard part to undo even with §9's reversal. <strong>The other tempting answer was the permissive one</strong> — let the
+second live account stand — which drops the uniqueness rule above and splits one person's consents,
+payments and attributes across two ids until somebody happens to notice, in exactly the records where
+nobody notices. So the system refuses, files the claim, and waits.</p>
+<p><strong>What actually happens, in the order it happens.</strong> The sign-up's rows are created as any sign-up creates
+them and stay <code>pending_verification</code>; an <code>identity_hypothesis</code> is raised naming the two person rows, with
+<code>proposed_by</code> of <code>person</code> because that is what happened — a person asserted this is them — and its
+<code>match_signals</code> carrying which of them matched; the gate holds the account where it is; the person at the
+form sees a holding message. <strong>Nothing is merged, nothing is linked, nothing is activated.</strong> The address
+they typed is not thrown away: it stays on the pending account as the credential it was offered as, the
+identifier awaiting verification, rather than being echoed back to a browser and lost — which matters
+because the reviewer's <em>second</em> possible answer is "this is a different person", and that answer should
+leave the applicant finishing the sign-up they started rather than starting it again.</p>
+<p><strong>The trigger is a strong match, and the threshold is the whole rule.</strong> A hypothesis is raised at sign-up
+on an <strong>exact legacy member number</strong>, or an <strong>exact birth date together with a normalized name match</strong> —
+the top of the band <a href="../../domain/03-identity-and-legacy/#4-match-signals">../domain/03-identity-and-legacy.md §4</a>
+already weights, and nothing below it. <strong>The soft band must not raise one.</strong> Blocking a stranger's
+registration on a fuzzy score is the failure this rule would most deserve to have caused, and the two
+sides of that trade are not symmetric: the cost of letting a true duplicate through is bounded,
+reviewable, and caught by the nightly matcher anyway, while the cost of stopping a new member is a child
+who cannot sign up to a camp on the day the form closes.</p>
+<p><strong>The holding message confirms nothing, and this is a security requirement rather than a tone choice.</strong>
+It says the request was received and will be checked. It says nothing about whether the name, the birth
+date or the member number matched anything at all, <strong>because a sign-up form that answers "yes, that
+person exists" is an existence oracle over a roster, and this system's roster is children</strong>
+(<a href="../05-authorization/">05-authorization.md</a> is the document that spends its length on why that
+distinction is worth a resolver). The same form that legitimately helps a returning member find their
+account is the form that lets anyone with a birth date enumerate who is enrolled. So the message is
+identical whether the match was exact, partial, or absent, and it stays identical whether or not an
+account exists to be found.</p>
+<p><strong>Resolving the claim is not a new permission and not a new queue.</strong> A reviewer confirms or rejects the
+hypothesis, which is <code>person.merge</code> and already sits with <code>identity_reviewer</code>; confirming it merges the
+two person rows under §9's rules and the pending account goes with the row that was absorbed, rejecting it
+lifts the gate and the account activates. <strong>No new code is involved on either side</strong>, for the same reason
+§9 gives for reversal needing none: undoing and correcting an identity are one act by one named human.
+Two costs come with it and both are stated rather than absorbed. <strong>A genuinely new person who happens to match now
+waits for a human</strong>, so the blocking condition carries an age check shaped like <code>field_conflict</code>'s thirty
+days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it
+could hold a login, and a person who cannot sign up has no way to say so except by telephoning someone.
+<strong>And the reviewer deciding it is deliberately half-blind</strong> — the seeded role holds the merge and no read
+over the person record, so it decides from signals and names, which is the correct conservative shape and
+also the thing to revisit if reviewers start asking for context they cannot see.</p>
+<p><strong>The everyday case is not this case, and naming it stops the rule being oversold.</strong> "I have a new
+e-mail address" has never been a second account and is not one now: <code>account_credential</code> (§5) holds many
+credentials for one account, so a new address is an <em>addition</em> to the login a person already has and runs
+past nothing here. The collision case is narrower than signing up twice — it is a person arriving through
+a door the system did not know they had.</p>
 <p><strong>A suspended account does not suspend a membership.</strong> They are independent lifecycles.
 The schema enforces this by simply not linking them.</p>
 <hr />
@@ -2535,6 +2598,15 @@ change per scheme and a nullable-unique mess.</p>
 <ul>
 <li>A person may not be merged into themselves: <code>surviving_person_id</code> and <code>merged_person_id</code>
   are never the same person.</li>
+<li><strong>A merge is refused when the chosen survivor resolves — by walking the chain — to the person being
+  absorbed.</strong> That includes the one-hop case just stated and the case that actually happens: absorbing B
+  into A when A has already been absorbed into B.
+  <a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
+  puts this check on the <strong>merge</strong> and not on the read, and the placement is the substance of the rule: a
+  cycle refused on the way in cannot be reached, whereas a step limit on <code>resolve_person()</code> achieves
+  nothing except deciding <em>which of two wrong answers to return</em> — the tombstone, or wherever the walk
+  happened to stop. There is no schema object that spans two rows of a walk, so this is a rule about an
+  operation; the cycle check in §10 is a canary for it having leaked, not the guard.</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
@@ -2552,6 +2624,24 @@ analytically.</p>
 unmerge does not remove the merge record; it records that it was undone, so the history of
 the mistake is visible. See
 <a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">../domain/03-identity-and-legacy.md</a>.</p>
+<p><strong>Reversing a merge is a required operation, not an accommodation.</strong> Those three columns exist because
+someone asked for the capability, and
+<a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
+is where it was asked for; §9 explains that this is the reason chains were kept rather than the other way
+round. Two consequences sit under it, and both are easy to lose later.</p>
+<ul>
+<li><strong>Reversal needs no permission of its own.</strong> Unmerging is the same act as merging — an identity
+  correction made by a named human — so it is <code>person.merge</code>, which <code>identity_reviewer</code> already holds.
+  A separate code would grade undoing a mistake as safer than making one, which is precisely backwards:
+  the mistake is the thing that needed the guard.</li>
+<li><strong>A merge can be undone; the merged period cannot.</strong> The reversal procedure lifts the tombstone and
+  returns the rows created <em>before</em> the merge, but the rows created <em>inside</em> the window are flagged for a
+  human rather than guessed at — and every <code>access_grant</code> from that window is flagged, not redistributed,
+  because the authority exercised in there really was exercised by somebody the record can no longer
+  separate. <strong>That asymmetry is the honest core of the feature: the row is restorable, the interval is
+  not.</strong> Anyone who reads <code>reversed_at</code> as "as if it never happened" is reading the wrong column for
+  that claim, which is why the reversal record is kept rather than deleted.</li>
+</ul>
 <h3 id="merge-conflicts">Merge conflicts<a class="headerlink" href="#merge-conflicts" title="Permanent link">&para;</a></h3>
 <p><strong><code>field_conflict</code></strong> — one field the merge could not decide.</p>
 <p><strong>Fields</strong></p>
@@ -2718,10 +2808,36 @@ into C. A single-level pointer lookup would return B, whose row is itself tombst
 <strong>Every place that accepts a person id from outside must call this.</strong> Getting it wrong
 means a historical record links to a tombstone and the UI shows a blank name — or the
 wrong one.</p>
-<p><em>Assumption:</em> merge chains are allowed rather than flattened at merge time. Flattening
-(silently repointing every existing pointer to the new survivor) is faster to query but
-rewrites history and makes unmerge nearly impossible. Tracked in
-<a href="../../open-questions/">../open-questions.md</a>.</p>
+<p><strong>Chains are a decision, not an assumption, and this used to be an assumption.</strong> The sentence this
+replaces read <em>"Assumption: merge chains are allowed rather than flattened at merge time"</em>, and it argued
+for chains on the ground that flattening makes unmerge nearly impossible — a defence resting on a
+capability nobody had asked for. Someone has since asked for it, as a requirement (§8), and
+<a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
+is that request: with chains kept a reversal is a replay, with flattening it is a rebuild. So the
+direction of the argument is reversed and the trade is now asymmetric in a way it was not before —
+<strong>flattening is closed off, not merely slower</strong>, and "flattening is faster" no longer buys anything except
+the death of a feature somebody named.</p>
+<p><strong>Two rules keep a permanent chain safe, and neither existed while this was an assumption.</strong></p>
+<ul>
+<li><strong>A cycle cannot be created, and the place it cannot be created is the merge, not the read</strong> (§8's
+  rule). A read-side hop limit is not a weaker version of this guard; it is a different and worse thing,
+  because it always returns an answer.</li>
+<li><strong>Chain length is a signal, not an error.</strong> Resolution has <strong>no hop limit</strong> — a bound would silently
+  hand back a tombstoned id, which is the single failure this function exists to prevent, and the
+  argument for following every hop above is the argument for having no bound. Instead a chain longer
+  than <strong>three hops is reported</strong>, because four merges in a row on one line of people does not mean the
+  data is odd: it means the matcher is producing duplicates faster than a human can settle them, which is
+  a statement about the queue and not about the row. Check 3 in §10, which used to treat an absorbed
+  survivor as a breach, is corrected for exactly this: <strong>a survivor that has itself been absorbed is what
+  a chain looks like when it works.</strong> Only the length means anything.</li>
+</ul>
+<p><strong>And the rule immediately above now has a check under it.</strong> "Every place that accepts a person id from
+outside must call this" is a rule about application code, which application code can forget, and
+<a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+removed the database-level ways of catching the forgetting. The net is check 4 in §10 — live rows that
+reference a tombstoned person — which is the only form of this failure that is still visible after the
+fact, and the reason §9's prose is no longer the only thing standing between a foreign key and a
+tombstone.</p>
 <hr />
 <h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
 <p>Checks that should run nightly and alert. These encode invariants that no per-column rule
@@ -2734,19 +2850,52 @@ above can express.</p>
   pending-plus-active combination.</li>
 <li><strong>A tombstoned person with no merge record.</strong> Count persons whose merge pointer is set but
   who do not appear as the merged person of any un-reversed <code>person_merge</code> row; non-zero
-  means merge chains longer than expected, which signals repeated bad merges.</li>
-<li><strong>A tombstoned row still referenced as a survivor.</strong> Count <code>person_merge</code> rows whose
-  <code>surviving_person_id</code> has its own merge pointer set; non-zero means a merge names as its
-  survivor a person who has themselves been absorbed.</li>
+  means a pointer was written without the record that explains it, which is the case the
+  append-only table in §8 exists to make impossible.</li>
+<li><strong>A merge chain longer than three hops.</strong> Walk each tombstone's pointer and count the hops to the
+  survivor; report the chains over three. <strong>This is a report about a queue, not a finding about a row.</strong>
+  It replaces a check that counted <code>person_merge</code> rows whose <code>surviving_person_id</code> has its own merge
+  pointer set and called a non-zero result a breach — with <a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
+  deciding that chains stay, <strong>that count is the normal shape of the data and its expected value is not
+  zero</strong>; a person absorbed twice has a survivor who was absorbed, by construction. What carries
+  information is the <em>depth</em>: four merges in a row on one line of people means the matcher is producing
+  duplicates faster than a human can settle them. It is read alongside the review queue's age, never on
+  its own, and it is not alertable — there is nothing wrong to fix on the row, and an alert that can only
+  be answered by "work faster" trains people to ignore alerts.</li>
+<li><strong>A live row that references a tombstoned person.</strong> Count rows in any table that names a person which
+  point at a person whose merge pointer is set, where the referring row is itself live. <strong>This is the
+  only net under §9's rule that every entry point calls <code>resolve_person()</code>, and it exists because D-072
+  took the database-level ones away.</strong> Getting that call wrong is invisible at the moment it happens — a
+  blank name in a list, at worst the wrong name — and permanent afterwards, because the row is written and
+  referenced by whatever came after it. <strong>This one alerts rather than logs</strong>: the gap is not reconstructable
+  later, and unlike a missing audit entry it misattributes a person rather than merely forgetting them.</li>
+<li><strong>A cycle in the merge graph.</strong> Walk the pointers and look for a row reachable from itself. There should
+  never be a single row here: §8 refuses a merge whose chosen survivor resolves to the person being
+  absorbed, so <strong>a non-zero count is not untidy data, it is that rule having failed</strong>, and it is the one
+  merge finding that should stop work rather than fill a report — <code>resolve_person()</code> does not terminate on
+  a cycle, and every screen and every resolver hop that touches the affected people goes with it.</li>
+<li><strong>An account held below <code>active</code> by an unresolved hypothesis for more than 30 days.</strong> Count accounts
+  whose status is not <code>active</code> or <code>closed</code>, whose person is named by a hypothesis still in <code>proposed</code> or
+  <code>needs_review</code>, where that hypothesis is older than 30 days — the same shape as the conflict-age check
+  below, for the same reason. <strong>It alerts rather than logs, and the reason is worth keeping in the check's
+  own text: a stalled identity queue stopped being a data-quality problem the day it acquired the power to
+  hold a login.</strong> Behind each row is a specific person who cannot sign up — often to a camp whose form
+  closes this week — and no channel by which to tell anyone except a telephone call.</li>
 <li><strong>Unresolved merge conflicts older than 30 days.</strong> Count <code>field_conflict</code> rows resolved to
   <code>unresolved</code> and created more than 30 days ago; non-zero means the review queue is being
   ignored and the data is quietly wrong.</li>
 <li><strong>Redacted people still referenced by a live account.</strong> Count <code>account</code> rows that are not
   closed and belong to a person with <code>redacted_at</code> set; non-zero means an erasure left a
   working login behind.</li>
-<li><strong>Imported people with no membership.</strong> Count people whose <code>record_origin</code> is
-  <code>legacy_import</code> and who have no <code>membership</code> row at all; non-zero probably means a
-  partially applied batch.</li>
+<li><strong>Imported people with no participation.</strong> Count people whose <code>record_origin</code> is
+  <code>legacy_import</code> and who have no <code>unit_participation</code> row at all; non-zero probably means a
+  partially applied batch. <strong>This check is the reverse of the one it replaced, and the reversal is
+  <a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+  and not a change of mind about imports.</strong> It counted imported people with no <code>membership</code>, which after
+  "a roster makes a participation and nothing else" is the ordinary condition of every imported row — so
+  the old version would have reported the entire legacy corpus as a failed batch, which is precisely how a
+  check stops being read. A roster that <em>did</em> create memberships is a different finding and lives in
+  <a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a>.</li>
 <li><strong>A redacted person with descriptive values still attached.</strong> Stated where the rows are, as check 6
   of <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> — attribute rows belonging to a
   redacted person, and attribute values still present in <code>audit_log</code>. It is named here because the
@@ -2757,15 +2906,30 @@ above can express.</p>
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Whether merge chains are allowed or flattened at merge time (§9).</li>
-<li>Whether a person may hold two live accounts simultaneously — recommend no, enforced by
-  the partial index in §4.</li>
-<li>Erasure policy specifics: what must be redacted vs. retained, and the retention period.
-  Requires legal input. See <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a>.</li>
+<li>Erasure policy specifics: what must be redacted vs. retained. <strong>Smaller than it used to be, and not
+  gone.</strong> The retention <em>shape</em> is decided — the trail's payloads expire on a window, the accounting
+  skeleton has no clock at all
+  (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
+  — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
+  <em>named</em> <code>membership</code> and fee rows has a basis. See
+  <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a> and
+  <a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>.</li>
 <li>Whether <code>person.gender</code> is needed at all; if so, what value set.</li>
 <li>Whether the organization has (or will have) a national SSO identity provider — this
   determines how much of <code>account_credential</code> is actually used.</li>
 </ul>
+<p><strong>Resolved, kept visible so that nobody reopens them by reading the tables alone.</strong> Whether merge chains
+are allowed or flattened at merge time (§9): <strong>chains stay</strong>, because reversing a merge is a required
+operation rather than a convenience, and the two rules a permanent chain needs are now written where they
+are obeyed — the cycle refusal in §8, the length report in §10
+(<a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>,
+<a href="../../open-questions/#b-2--closed--merge-chains-stay-because-unmerge-is-required">B-2</a>). And whether a
+person may hold two live accounts simultaneously: <strong>no</strong>, enforced by the partial unique index in §4 —
+with the case that made the question hard answered by a gate rather than by an exception, so that a
+colliding sign-up files a claim and activates nothing instead of becoming a second account or being
+silently linked
+(<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>,
+<a href="../../open-questions/#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim">B-4</a>).</p>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
 
@@ -2866,6 +3030,8 @@ above can express.</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

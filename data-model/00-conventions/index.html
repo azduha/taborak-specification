@@ -2095,9 +2095,20 @@ column, because people rely on it.</p>
    <a href="#4-deletion-policy">§4</a> says why it is the only row that can be handled that way. A redacted
    person with attribute values attached is a redaction that did not happen. A <code>redaction_log</code>
    records what was redacted and when.</li>
-<li><strong>Some data must not be redacted</strong> — membership periods, unit memberships, and position
-   assignments are organizational history rather than personal data, and removing them would
-   falsify records that the organization is often obliged to keep.</li>
+<li><strong>Some data must not be redacted, and the reason is now stated rather than left unopposed</strong> —
+   membership periods, unit participations, fee obligations, payments and position assignments are
+   organizational history rather than personal data, and removing them would falsify records that the
+   organization is often obliged to keep. Until
+   <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+   this item was a carve-out nobody had had to defend; it is now the permanent half of a pair of clocks,
+   and those rows carry <strong>no retention period at all</strong>. That is what gives
+   <code>redaction_log.retained_reason</code> a judgement worth recording instead of a formality
+   (<a href="../06-audit-and-import/#4-redaction-log">06-audit-and-import.md §4</a>). <strong>What the decision did not do
+   is supply a legal basis, and the difference should not be blurred:</strong> what stands here is an assumption
+   pending review — organizational history plus accounting obligations, leaning on a person row that the
+   erasure in item 1 has made non-identifying — recorded as an assumption and not as settled law. <strong>The
+   uncertainty about that half reaches nothing on this side:</strong> the erasure in items 1 and 2 is immediate
+   and absolute, and would be if the retained half were cut to a single year tomorrow.</li>
 <li><strong>Whatever keeps its own retention policy must be able to see <code>person.redacted_at</code>, and erasure
    reaching it is a rule that store has to implement.</strong> This item used to read "health and
    safeguarding records have separate retention rules and are out of scope for this document", which
@@ -2105,12 +2116,18 @@ column, because people rely on it.</p>
    has since dissolved: a diagnosis is an attribute value now, with the same access, protection and
    retention as a shoe size (<a href="../09-attributes/">09-attributes.md</a>), so there is no health store left
    for the sentence to have pointed at. What survives is the other half, and it is worth keeping
-   precisely because it is easy to wave through: <code>audit_log</code> is the store this system has, its
-   retention is an open legal question
-   (<a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>), and a redaction that stops at
-   the business tables while the trail keeps the erased values is a redaction that failed in the one
-   place a regulator looks. <strong>This section describing erasure does not make a store honour it; the
-   check in that document's §5 is what notices.</strong></li>
+   precisely because it is easy to wave through: <code>audit_log</code> is the store this system has. Its retention
+   used to be an entirely open question and now has half an answer — <strong>the rows are kept for the life of
+   the system and their payloads are emptied 24 months after they are written</strong>
+   (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>;
+   <a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a> keeps the legal half that remains) —
+   and a redaction that stops at the business tables while the trail keeps the erased values is a
+   redaction that failed in the one place a regulator looks. <strong>The window is a ceiling on how long a value
+   may sit there, never a waiting period: erasure reaches the same two columns on request, at any age of
+   the row, and does so immediately.</strong> That is the distinction the two separate checks in that document's
+   §5 are for — one fires when a person's erasure did not happen, the other when the clock's work did not
+   happen — and it is the reason <strong>this section describing erasure does not make a store honour it; the
+   checks are what notices.</strong></li>
 <li><strong>Sensitive attributes should not be over-collected.</strong> <code>person.gender</code> is included because
    Scouting-type organizations typically must report it; if yours does not, remove the field
    rather than keeping it "just in case". <strong>The same test now applies per code</strong>, since most of what
@@ -2140,12 +2157,27 @@ column, because people rely on it.</p>
    The mechanism that implements erasure against this table is in
    <a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a> and its §4, and
    <a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> is where the
-   trade is stated next to the values.</li>
+   trade is stated next to the values. <strong>The same section carries the fact that this copy expires</strong>: the
+   values this item names are emptied out of payloads 24 months after they were written
+   (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+   which shortens the exposure this item is complaining about and settles nothing about the guard it
+   demands — so the sentence opening this item, <em>the trail is a second copy of the person record</em>, is true
+   for two years and untrue afterwards, and the mark on the permission has to be right for the years in
+   which it is true. <strong>The clock makes erasure neither cheaper nor slower.</strong> Items 1 and 2 act on those
+   same columns on request, at any age of a row, and the row's scheduled emptying satisfies nobody's
+   erasure request.</li>
 </ol>
 <blockquote>
 <p>Legal review is required before implementing §8. This section describes the technical mechanism,
 not the compliance policy. Tracked in
 <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p><strong>What the review is handed has changed shape, which is worth saying so nobody reads this note as
+unchanged.</strong> It used to be asked "how long may this trail keep personal data, and which fields count as
+personal data". The corpus now puts a concrete policy in front of it instead of a blank: rows forever
+and payloads for a bounded window on one side (item 4), an accounting skeleton with no clock at all on
+the other (item 3), and no graded category of field anywhere for it to deliberate over, because D-083
+deleted that idea. <strong>What is asked is narrower and harder: on what basis does the retained half survive
+indefinitely.</strong> That is the assumption item 3 names, and nothing in this section makes it lawful.</p>
 </blockquote>
 <p><strong>The key-name list is not how personal data is protected in the trail, and it helps to say so out
 loud.</strong> The redactor used to be described as the
@@ -2394,6 +2426,8 @@ and not yet designed; they will need their own document. The absence is tracked 
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

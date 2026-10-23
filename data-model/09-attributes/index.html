@@ -1786,7 +1786,7 @@ was taken with them in view rather than in the abstract.</p>
 <tr>
 <td>Answer "what did we believe in 2019" from business data</td>
 <td>Rows hold the current belief only</td>
-<td><code>audit_log</code>, which holds the values themselves (§6) and which <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a> records as the corpus's weakest control. <strong>This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty</strong></td>
+<td><code>audit_log</code>, which holds the values themselves (§6) and which <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a> records as the corpus's weakest control. <strong>This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty</strong> — and since <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>, <strong>nothing at all</strong> stands between it and being empty after the payload window closes (§6)</td>
 </tr>
 <tr>
 <td>Restrict one field to some readers</td>
@@ -1833,6 +1833,24 @@ reading them as a dependency rather than as reassurance:</p>
   the largest being that one of the three is already built, so declining to choose is a choice nobody has
   to sign.</li>
 </ul>
+<p><strong>Those payloads now expire, which is a consequence of <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+and not a detail of it.</strong> Audit rows live as long as the system; their <code>old_values</code>/<code>new_values</code> are
+emptied 24 months after they are written. Read that against the paragraph above and both halves are
+true at once: <strong>the trail is the only history this table has, and it stops being a history after two
+years.</strong> The honest description of what §5's row costs is therefore not "no temporal columns" but <strong>no
+long history</strong> — three decisions stacked, none of them wrong on its own: values live in one row that is
+overwritten, the copy of them depends on a write path remembering to log, and the copy ages out.</p>
+<p>That is also the cheapest thing this module will ever do about
+<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>,
+and it should be read that way rather than as a resolution: a wrongly-graded <code>audit.view</code> can still read
+a child's descriptive values, but only for as long as they are recent. <strong>If the long history is ever
+actually needed — by a safeguarding review, or by a dispute about what was known and when — the fix is
+temporal columns on the value, which reverses
+<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>.</strong>
+It is <em>not</em> a longer payload window, because stretching the window stretches exactly the guard
+<a href="../../decisions/decision-log/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>
+graded, and <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+refuses to keep a second copy somewhere safer.</p>
 <p><strong>What is left of the redactor is small, and says so.</strong> It scrubs the values that must never be logged
 at all — credentials, tokens, integration secrets — and it stopped carrying the personal-data case
 when the sensitive subset went: a key-name list cannot protect a table whose column names this
@@ -1847,8 +1865,10 @@ have forgotten is not a history, it is the thing they asked to be rid of, filed 
 <hr />
 <h2 id="7-the-legacy-import-which-is-where-the-vocabulary-comes-from">7. The legacy import, which is where the vocabulary comes from<a class="headerlink" href="#7-the-legacy-import-which-is-where-the-vocabulary-comes-from" title="Permanent link">&para;</a></h2>
 <p>The old system's columns become codes, and this is the largest single event in the life of the
-attribute layer — most of the first two hundred definitions arrive here rather than from a
-deliberate act of design.</p>
+attribute layer — most of the first few hundred definitions arrive here rather than from a deliberate
+act of design, because <a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">the corpus you have</a>
+is thousands of roster rows with free-text columns beside them. <strong>That is one file arriving with the
+organization's descriptive vocabulary in it, and it changes how the mapping has to be reviewed.</strong></p>
 <ul>
 <li><strong>Every raw field name in a batch must map to a code, be mapped to <code>discarded</code> with a reason, or
   stop the batch.</strong> Silently dropping an unmapped column is how a decade of a fact the organization
@@ -1856,6 +1876,14 @@ deliberate act of design.</p>
 <li><strong>An unmapped column maps to a <code>proposed</code> code</strong>, named from the raw column, not to an existing
   code by similarity. A human merges near-duplicates afterwards; nothing guesses at import time,
   because an import-time merge is invisible and unreviewable.</li>
+<li><strong>At this scale, <code>proposed</code> is the last resort and not the outcome.</strong> The map is authored and read
+  <em>before</em> the batch applies — it is one artefact, top to bottom — so a column that survives that
+  reading has been named by a human and its codes arrive <strong><code>live</code></strong>. <code>proposed</code> is for what a person at
+  a desk improvises later. If several hundred codes arrive <code>proposed</code> instead, check 1 opens full, its
+  age signal means nothing from the first day, and the first lesson the organization learns about this
+  layer is that its warning queue is noise. That is a real risk of this corpus and is the honest half
+  of an answer to <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">AT-2</a>,
+  which stays open for the runtime case.</li>
 <li><strong>The mapping is recorded on the batch</strong>, in <code>import_batch.field_mapping</code>, one entry per raw column
   (<a href="../06-audit-and-import/#3-import-pipeline">06-audit §3</a> explains why the grain is a column and not a
   staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
@@ -1995,6 +2023,8 @@ question rather than as a design.</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

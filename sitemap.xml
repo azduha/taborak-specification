@@ -2,98 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://azduha.github.io/taborak-specification/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/glossary/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/open-questions/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/erd/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/permission-catalog/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/00-conventions/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/01-identity/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/02-organization/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/03-membership/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/04-relationships/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05-authorization/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/06-audit-and-import/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/07-finance/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/08-events/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/09-attributes/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/decision-log/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/01-overview/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/02-actors/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/03-identity-and-legacy/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/04-organization-structure/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/05-membership-lifecycle/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/06-authorization-model/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/07-events/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/08-person-data/</loc>
-         <lastmod>2026-10-22</lastmod>
+         <lastmod>2026-10-23</lastmod>
     </url>
 </urlset>

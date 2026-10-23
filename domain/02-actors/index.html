@@ -1579,7 +1579,7 @@ registration is deliberately separate from membership.</p>
 <h2 id="1-the-core-separation">1. The core separation<a class="headerlink" href="#1-the-core-separation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>   person ─────────── the human being. Exists even with no account and no membership.
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     ├── account ──── the ability to log in. Optional. Zero or more per person over time.
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     ├── account ──── the ability to log in. Optional. Zero or more per person over time, one live.
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     │
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>     └── membership ─ the state of being a member. Optional. Zero or more periods.
 </code></pre></div>
@@ -1666,6 +1666,11 @@ clean place to hang capabilities that must work before membership exists:</p>
 <td>adult registers and asserts a past membership</td>
 <td><code>person</code> + <code>account</code> + <code>identity_hypothesis</code></td>
 </tr>
+<tr>
+<td>Sign-up colliding with an existing person</td>
+<td>adult signs up again through an address the system did not know, and <strong>strong</strong>-matches someone who already exists</td>
+<td><code>person</code> + <code>account</code>, both held at <code>pending_verification</code>, + <code>identity_hypothesis</code> — and <strong>no merge, no link, no activation</strong>. The address typed survives as the credential it was offered as, and the hypothesis is what holds the account out of <code>active</code> (<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>)</td>
+</tr>
 </tbody>
 </table>
 <h3 id="minor-registration--the-consent-problem">Minor registration — the consent problem<a class="headerlink" href="#minor-registration--the-consent-problem" title="Permanent link">&para;</a></h3>
@@ -1708,6 +1713,25 @@ age threshold and whether consent is required at all in your jurisdiction.</p>
 <li><strong>Closing an account does not delete the person or their history.</strong> The <code>account</code> row
   is closed and retained. <code>person</code> and all <code>membership</code> rows are untouched.</li>
 </ul>
+<p><strong>And a gate this table cannot express.</strong> <code>active</code> has a second condition beyond verification: an
+account may not reach it while an unresolved <code>identity_hypothesis</code> names its person
+(<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+The two rules work together — uniqueness says a person may not <em>hold</em> two live accounts, and the gate
+says the second arrival waits for a human rather than being merged into the first or quietly linked to
+it, which is the version that turns a false positive into one person's record becoming another's.
+Making a queue state block a login buys two obligations, and both are checks rather than intentions:</p>
+<ul>
+<li><strong>A hypothesis that is blocking an account is age-checked, and it alerts.</strong> Until now a stale
+  identity queue was a data-quality problem with no victim you could name; now it is a specific person
+  who cannot log in, whose only remaining channel is to telephone someone.</li>
+<li><strong>The message the person sees confirms nothing.</strong> Not that the name matched, not that the birth date
+  did, not that anyone by that name exists — because a sign-up form that can answer "yes, that person
+  exists" is an existence oracle, and this system's roster is children.</li>
+</ul>
+<p>The trigger is a <em>strong</em> match only — exact legacy member number, or exact birth date together with a
+normalised name. The scored band below that raises nothing at sign-up: blocking a stranger's
+registration on a fuzzy score is the failure this rule would most deserve
+(<a href="../03-identity-and-legacy/#4-match-signals">03-identity-and-legacy.md §4</a>).</p>
 <h3 id="credentials">Credentials<a class="headerlink" href="#credentials" title="Permanent link">&para;</a></h3>
 <p><code>account</code> holds authentication material. Two rules worth fixing now:</p>
 <ol>
@@ -1819,7 +1843,12 @@ capability to be reachable in an emergency.</p>
   routes through staff (<a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).
   Closed — see <a href="../../open-questions/#e-5--closed--the-parties-administer-their-own-row">E-5</a>.</li>
 <li>Whether staff-created accounts are allowed for children, or only adults.</li>
-<li>Whether a person may hold more than one active account at a time (recommend: no).</li>
+<li>~~Whether a person may hold more than one active account at a time (recommend: no).~~ <strong>No</strong>, and
+  the recommendation became a rule with the part this item did not foresee: the colliding sign-up is
+  refused, files a claim in the identity review queue, and is allowed to become nothing — no second
+  <em>live</em> account, no automatic link, no activation until a human says so
+  (<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+  Closed — see <a href="../../open-questions/#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim">B-4</a>.</li>
 </ul>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
@@ -1921,6 +1950,8 @@ capability to be reachable in an emergency.</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

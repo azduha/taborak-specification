@@ -2076,7 +2076,7 @@ inferred from date arithmetic.</p>
 <tr>
 <td><code>outstanding_balance</code></td>
 <td>money amount, optional</td>
-<td><strong>Denormalised</strong> from <code>fee_obligation</code>/<code>payment</code>. <a href="../07-finance/">07-finance.md</a> §3 recommends <strong>dropping</strong> this column in favour of <code>v_fee_obligation_balance</code> — a wrong balance suspends the wrong child. Kept here only until that decision is taken. NULL for imported historical memberships with no payment data.</td>
+<td><strong>Denormalised</strong> from <code>fee_obligation</code>/<code>payment</code>. <a href="../07-finance/">07-finance.md</a> §3 recommends <strong>dropping</strong> this column in favour of <code>v_fee_obligation_balance</code> — a wrong balance suspends the wrong child. Kept here only until that decision is taken. NULL for any imported row the source says nothing about, which for the legacy corpus is every row: the export carries no payment data at all (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</td>
 </tr>
 <tr>
 <td><code>termination_reason_code</code></td>
@@ -2191,9 +2191,11 @@ is only a violation if the constraint is in the database, and no ORM emits an ex
 period assembled from <code>valid_from</code> and <code>valid_to</code> scoped to three statuses — the migration writes
 it, as <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a> requires. The
 same check performed in the model layer returns a friendlier message a moment earlier and
-guarantees nothing: the legacy import writes memberships by the thousand and a hand-corrected
-row never passes through the model layer either. Both still meet the constraint; neither would
-ever meet a model-layer check.</p>
+guarantees nothing: a batch that imports a register writes memberships by the thousand (it is
+the rosters that no longer do, since a roster produces participations only —
+<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>),
+and a hand-corrected row never passes through the model layer either. Both still meet the constraint;
+neither would ever meet a model-layer check.</p>
 <h3 id="why-valid_to-is-null-and-not-a-sentinel">Why <code>valid_to IS NULL</code> and not a sentinel<a class="headerlink" href="#why-valid_to-is-null-and-not-a-sentinel" title="Permanent link">&para;</a></h3>
 <p>Repeated from the conventions because it is the mistake most likely to be made here.
 A <code>'9999-12-31'</code> sentinel breaks <code>IS NULL</code> checks, makes <code>daterange</code> spans enormous, and
@@ -2288,7 +2290,7 @@ fix.</p>
 <tr>
 <td><code>person_id</code></td>
 <td>reference to <code>person</code>, required</td>
-<td><strong>Deliberately <code>person_id</code>, not <code>membership_id</code>.</strong> Participation history must survive independently of how organization membership is recorded: imported 1998 rosters often have a unit and a year but no formal membership row, and linking to membership would make those unrepresentable — which would break the whole historical dataset. The trade-off is that nothing here can enforce "participation implies membership": it is application-level validation plus invariant 1 in §7, named as such rather than pretended away, in the register of <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>.</td>
+<td><strong>Deliberately <code>person_id</code>, not <code>membership_id</code>.</strong> Participation history must survive independently of how organization membership is recorded: imported 1998 rosters have a unit and a year and no membership row — <strong>by rule now, not merely by omission</strong>: a roster produces a participation and nothing else (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>, <a href="../06-audit-and-import/#31-what-a-roster-actually-evidences">06-audit-and-import.md §3.1</a>) — and linking to membership would make those rows unrepresentable, which would break the whole historical dataset. The trade-off is that nothing here can enforce "participation implies membership": it is application-level validation plus invariant 1 in §7, named as such rather than pretended away, in the register of <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>.</td>
 </tr>
 <tr>
 <td><code>org_unit_id</code></td>
@@ -2380,8 +2382,14 @@ report would have to know which case it was in.</p>
 the same period, so the root row is derivable — and it is derived by nothing. <strong>No write may
 change a membership's period, or open or close one, without making the matching change to that
 person's root-unit participation row in the same transaction.</strong> The two rows are one fact written
-twice, so the obligation falls on every path that writes a membership, the legacy import above
-all: it creates memberships by the thousand and must create their root rows beside them.
+twice, so the obligation falls on every path that writes a membership. <strong>The path this section used to
+name above all others was the legacy import — "it creates memberships by the thousand" — and since
+<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+that sentence is false of a roster:</strong> a roster writes participations and no membership, and the
+participations it writes are sub-unit rows rather than root rows, so an ordinary import touches neither
+arm of this pair. The obligation is untouched by that, because it was never about one batch: a register
+import, a renewal, an extension and a hand-corrected row are the paths that write memberships, and each
+owes the root row in the same transaction.
 Integrity check 1b in <a href="#7-integrity-checks">§7</a> is the net under that, not the guard — it finds
 the drift afterwards, on a report somebody has to run. The alternative, a <code>UNION</code> in every
 roster query, is worse.</p>
@@ -2504,7 +2512,13 @@ membership is the honest fix; this report finds the ones that were missed.</p>
   <code>pending_payment</code> and whose period overlaps the participation's — one beginning on or before
   the participation ends (or begins, if it is still open) and ending after the participation
   begins. Non-zero is the case no constraint here can express, deliberately: someone taking part
-  who was never a member.</li>
+  who was never a member. <strong>The count needs an import exclusion or it is useless, and that is a
+  consequence of <a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+  rather than a tuning decision.</strong> A roster row now creates a participation and <em>no</em> membership, always,
+  so every imported row in the legacy corpus satisfies this predicate by design and the report's floor is
+  thousands. Exclude rows with <code>import_batch_id</code> set (the field is on both tables, which is exactly what
+  it is for) and read what is left: a <em>current</em> participation with no membership is the finding this check
+  was written for, and it is the only one it can still see.</li>
 <li><strong>1b. The root participation row disagreeing with the membership it mirrors</strong> (§5.1). Counts
   memberships whose root-unit participation row has either end of its period different from the
   membership's own. Nothing maintains the root row on its own behalf — §5.1 makes the pairing an
@@ -2680,6 +2694,8 @@ status (§6); and the whole requirement mechanism (§4).</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

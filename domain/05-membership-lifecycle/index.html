@@ -1744,8 +1744,14 @@ deliberately, never defaulted. The period is <code>valid_from</code> and <code>v
 <code>valid_to</code> means the period is still open: it is the current membership, not a row someone
 forgot to close. <code>joined_via_request_id</code> records the request it came out of,
 <code>termination_reason_code</code> the reason it was ended, <code>data_confidence</code> is <code>high</code>, <code>medium</code> or
-<code>low</code> — legacy imports are <code>low</code> — and <code>import_batch_id</code> is set on imported rows and on nothing
-else.</p>
+<code>low</code>, and <code>import_batch_id</code> is set on imported rows and on nothing else. <strong>Since
+<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+neither column is ever populated on a <code>membership</code> row</strong>, because no <code>membership</code> row is ever
+imported: the corpus carries no payment evidence, so the legacy batch writes <code>person</code> and
+<code>unit_participation</code> and leaves membership to the live register. This sentence used to read "legacy
+imports are <code>low</code>", which assumed a row the import no longer creates. The provenance a historical
+membership does have is a person: entering one is <code>membership.backdate</code>, it is attributed to whoever
+typed it, and its confidence is a choice they made rather than a value inherited from a batch.</p>
 <h3 id="overlap-rules--the-invariant-that-matters">Overlap rules — the invariant that matters<a class="headerlink" href="#overlap-rules--the-invariant-that-matters" title="Permanent link">&para;</a></h3>
 <p>A person must not hold two <strong>open</strong> memberships at the same time, and the rule is enforced by
 the database rather than by application code. Its precise statement is in
@@ -2060,6 +2066,21 @@ answerable indefinitely:</p>
 <li>How many members did the organization have in each year since 1985? (historical
     reporting — must include closed memberships and must not double-count)</li>
 </ol>
+<p><strong>Four of these reach only as far back as <code>membership</code> rows reach, and the legacy import creates
+none</strong> (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
+Queries 2, 4, 9 and 10 therefore return <em>participation</em> for the decades that arrive from paper, and the
+honest form of "how many members did the organization have in 1998?" is "we know how many people took
+part in units in 1998; we do not know how many were members", because a roster with no fee behind it
+evidences presence and nothing more. The wrong answer is one decision away — generate a <code>membership</code>
+per roster row and every historical query instantly returns a confident number built on nothing, while
+<code>is_current_member()</code> quietly hands today's authority to people last seen in 2003
+(<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+These stay on the list because they are answerable, indefinitely, for everything this system registers
+itself — and that indefinite half is itself a decision now, the accounting skeleton being kept as the
+organization's history
+(<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+For the corpus, the participation query is the answer, and printing it as such beats letting an
+inferred row answer the membership one.</p>
 <p>Query 10 is the one that fails in most systems, and it fails specifically because someone
 made membership a boolean.</p>
 <p>Query 1 is now <em>slightly</em> harder than it looks, and deliberately: it is not
@@ -2187,6 +2208,8 @@ renewal shape A or B (A, §6); age-out timing and the child→adult transition (
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

@@ -2894,7 +2894,7 @@ and it is the reason <code>was_present</code> is three-valued rather than a bool
 <li><strong>A fee-bearing event with registrations and no obligations.</strong> Counts non-cancelled events
    that require a fee and have at least one registration, where no <code>fee_obligation</code> exists for
    some of those registrations. <strong>The obligation is created by the code that places the
-   registration</strong> (<a href="#6-fee_obligation">§6</a>); there is no rule attached to the registration row
+   registration</strong> (<a href="#6-payments-and-confirmation">§6</a>); there is no rule attached to the registration row
    that would create it, so a path that forgets produces a person with a confirmed place and no
    bill — invisible to every check here, because every row it left behind is individually
    correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
@@ -3034,6 +3034,8 @@ is wrong, and the fix is to change the number rather than to start refusing peop
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

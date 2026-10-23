@@ -1444,7 +1444,11 @@ property of a human being. Each of those is either</p>
 September 1990 to June 2010, and again from October 2024 to the present. They were a
 <em>child member</em>, then nothing, then an <em>adult counselor</em>. That is one <code>person</code> row and
 <strong>two <code>membership</code> rows</strong>. A model that puts <code>is_member</code> or <code>member_type</code> on the person
-cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.</p>
+cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
+(The 1990–2010 membership is the <em>optimistic</em> half of that sentence: the legacy import creates
+participation only, since the corpus it reads carries no payment evidence at all, so that membership
+exists only where somebody recorded it on evidence — <a href="decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>.
+"Who was in Pack 12 in 1998?" is answered by the participation row either way.)</p>
 <p>So there are five rules the data model obeys throughout:</p>
 <table>
 <thead>
@@ -1615,7 +1619,7 @@ fees belong to the root in the first place.</p>
 </tr>
 <tr>
 <td><a href="open-questions/">open-questions.md</a></td>
-<td>Unresolved items, each with a schema impact.</td>
+<td>Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: <strong>section B, identity and history, is closed in full</strong> — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus (<a href="decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>–<a href="decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</td>
 </tr>
 </tbody>
 </table>
@@ -1730,6 +1734,8 @@ opposite reason — they were designed: <a href="domain/07-events/">domain/07-ev
     
     
       <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

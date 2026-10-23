@@ -1583,18 +1583,52 @@ records <em>about</em> the human is not on this table at all: it is
 person record, because none of it is a different kind of object.</p>
 <p><strong>Account</strong> — Credentials and login state for a person. A person may have zero or
 more accounts over their lifetime (e.g. a childhood account abandoned in 2010, a new
-one created in 2024). Accounts are never shared between people, not even between a
-parent and child.</p>
+one created in 2024), <strong>but at most one live one</strong> — closed rows aside. Accounts are
+never shared between people, not even between a parent and child.</p>
+<p><strong>Account activation gate</strong> — The rule that an account may not reach <code>active</code> while an
+unresolved identity hypothesis names its person. This is what a colliding sign-up runs into:
+a sign-up that <em>strong</em>-matches an existing person — exact legacy member number, or exact birth
+date together with a normalized name, <strong>never the fuzzy band</strong> — raises a hypothesis. Its own rows are
+created and stay <code>pending_verification</code>: <strong>nothing is merged, nothing is linked, nothing is
+activated.</strong> The contact point the person typed survives as the credential it was offered as, and
+<code>identity_reviewer</code> decides it with <code>person.merge</code>. The holding message confirms nothing, since
+a sign-up form that can answer "yes, that person exists" is an existence oracle over a roster of
+children; and a hypothesis that is blocking an account gets an age check that alerts, because a
+stalled queue is no longer a data-quality problem but a specific person who cannot log in
+(<a href="../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+"I have a new e-mail address" is not this case and is not routed through it: <code>account_credential</code>
+holds many credentials for one account.</p>
 <p><strong>Contact point</strong> — A single email address, phone number, or postal address belonging
 to a person. Stored as many rows per person, not as columns, so that a person can have
 five email addresses, or a new kind invented later, without a migration. Each has a
 <code>type</code>, a <code>purpose</code>, and a verification timestamp.</p>
 <p><strong>Identity hypothesis</strong> — A <em>proposed</em> but unconfirmed link between two <code>person</code> rows
-that may actually be the same human. Created during legacy import or when someone
-registers claiming a historical identity. Confirming one triggers a merge.</p>
+that may actually be the same human. Created during legacy import, by the nightly matcher,
+when someone registers claiming a historical identity, or by a sign-up that strong-matches
+a person who already exists. Confirming one triggers a merge; while one is unresolved it
+also holds the account of any person it names out of <code>active</code> — see <strong>account activation
+gate</strong>.</p>
 <p><strong>Merge</strong> — The act of declaring two person rows to be one human, and collapsing them.
 Never a delete: the absorbed row survives as a tombstone pointing at the survivor, so
-that historical foreign keys keep resolving.</p>
+that historical foreign keys keep resolving. Always a human's decision (<code>person.merge</code>),
+including at the highest score — and refused outright when the chosen survivor turns out,
+on resolution, to be the person being absorbed.</p>
+<p><strong>Merge chain</strong> — What forms when a survivor is itself later absorbed. The pointer is <strong>not
+rewritten forward</strong>: A→B→C stays a chain and <code>resolve_person()</code> walks it to the live row.
+This is <strong>decided, not provisional</strong> — chains persist because reversing a merge would otherwise
+be a reconstruction of facts nobody recorded, and flattening is closed off rather than merely
+faster (<a href="../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
+Two rules come with them, neither on the read: a cycle is impossible because the <em>merge</em> is
+refused, never because a hop limit gave up; and a chain longer than <strong>three hops is reported</strong>,
+which is a statement about the matcher's queue, not about the row.</p>
+<p><strong>Unmerge</strong> — Reversing a merge a human approved. The tombstone comes off, rows created <em>before</em>
+the merge go back to the revived person, and rows created <em>inside</em> the window are flagged for a
+human rather than split by a rule — every <code>access_grant</code> from that window flagged, not guessed.
+<strong>The merge is reversible; the merged window is not</strong>: what two people did while they were one row
+stays one row's history, because the record cannot separate who did it
+(<a href="../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
+No permission of its own — undoing an identity correction is the same act as making one, so it is
+<code>person.merge</code>.</p>
 <hr />
 <h2 id="personal-data">Personal data<a class="headerlink" href="#personal-data" title="Permanent link">&para;</a></h2>
 <p>Everything the system knows about a person once you subtract what they are <em>called</em> and
@@ -1622,22 +1656,55 @@ error. Creating, renaming, merging or retiring a definition is <code>attribute.d
 against one needs nothing beyond <code>person.edit</code>.</p>
 <p><strong>Person attribute</strong> — The value one person currently has for one code. <strong>Overwritten in place:</strong>
 the row is the organization's present belief, and the sequence of earlier beliefs lives in the audit
-trail, <strong>values included</strong> — logged on the same terms as a contact point or a note, because a list of
+trail, <strong>values included, for 24 months</strong> — logged on the same terms as a contact point or a note, because a list of
 person fields whose values must not be logged would be exactly the privileged corner
 <a href="../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
 deleted, and would leave nothing behind for an overwritten value. What guards the trail is who may
-read it, not what it omits. No <code>valid_from</code> / <code>valid_to</code>, deliberately
+read it, not what it omits — <strong>and it now omits, on a clock</strong>: those logged values are emptied 24
+months after they were written (see <strong>payload reduction</strong>), so the trail is the record of <em>what
+changed, who did it and when</em> for the life of the system and the record of the <em>values</em> for two
+years. The honest name for the whole stack is therefore <strong>no long history</strong>, not merely <em>no temporal
+columns</em>: the value lives in one overwritten row, the copy of it depends on a write path remembering
+to log, and the copy ages out. If a case ever needs the long version, the fix is temporal columns on
+the value — <a href="../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+reversed — and not a longer trail. No <code>valid_from</code> / <code>valid_to</code>, deliberately
 (<a href="../data-model/09-attributes/#3-person_attribute--a-value-one-person-has">data-model/09 §3</a>).</p>
 <p><strong>Proposed code</strong> — A definition that came into existence because somebody recorded a value against
 a code that did not exist. It waits in the curation queue: kept out of data entry forms and reports,
 yet <strong>readable by anyone already entitled to read the person</strong>, because the organization's data
 quality problem is not the family's confidentiality problem. It is where an improvised need at 23:00
-goes instead of into a notes box that nobody will read again.</p>
+goes instead of into a notes box that nobody will read again — <strong>improvised by a person at a desk</strong>,
+which is the whole meaning. It is emphatically <em>not</em> "whatever the legacy import did not understand":
+the codes a batch's column→code map names arrive <code>live</code>, because a curator read that map as one object
+before the batch applied, and several hundred proposals landing on day one would make this queue's age
+signal meaningless before it had ever meant anything
+(<a href="../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</p>
 <p><strong>Retired code</strong> — A definition taken out of data entry and left alone everywhere else: readable,
 reportable, revivable, its values untouched. <strong>Deleting a label must never delete the facts filed
 under it</strong>, or the badly-named label is never retired and the vocabulary accretes instead of being
-curated. Redaction is the opposite operation and the only eraser: retiring keeps the values, erasing
-a person deletes them.</p>
+curated. Redaction is the opposite operation: retiring keeps the values, erasing a person deletes
+them, immediately and whatever their age. It used to be called <em>the only eraser</em>; there is now a
+second one — <strong>payload reduction</strong>, below — and the distinction is that redaction answers to a
+person and is absolute, while reduction answers to a calendar and is bounded.</p>
+<p><strong>Payload reduction</strong> — Emptying the <code>old_values</code> / <code>new_values</code> out of an audit row <strong>24 months
+after it was written</strong>, leaving everything else standing: actor, on-behalf-of, operation, table,
+record id, changed fields, transaction, session, channel. The trail goes on answering <em>who changed
+this row, when, and were they allowed to</em> for the life of the system, and stops answering <em>and to
+what</em> after two years; twelve months is the floor the window may be set to. <strong>Not redaction</strong>, which
+is a named person's erasure, immediate and absolute, and reaches payloads of any age; <strong>not an
+import revert</strong>, which deletes the rows a batch created. Reduction is the one case in this design
+that deliberately unwrites <em>later</em> than the write, so its failure mode is not running at all — hence
+a scheduled job with a check that alerts on any row past its window still carrying a payload
+(<a href="../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).</p>
+<p><strong>The two clocks</strong> — The accounting skeleton (<code>membership</code>, <code>fee_obligation</code>, <code>payment</code>, and the
+anonymised <code>person</code> row an erasure leaves behind) has <strong>no clock at all</strong>, now justified as the
+organization's own history rather than merely unchallenged. <em>Assumption:</em> that this indefinite
+retention of rows about a named person has a legal basis — organizational history plus accounting
+obligations, against a redacted person row that keeps the skeleton non-identifying — is unverified,
+and a decision log is not the document that grants it. The audit trail runs the opposite direction: rows
+forever, payloads for 24 months. Erasure sits outside both, immediate and absolute. The same window
+is <em>proposed</em> for <code>access_log</code> and is not yet confirmed
+(<a href="../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).</p>
 <p><strong>Curation</strong> — Keeping the vocabulary meaning one thing: merging near-duplicates, promoting or
 discarding proposals, retiring codes nobody uses, and writing the description that stops one code
 meaning four things to four people. It is <code>attribute.define</code> plus somebody who reads what they are
@@ -1693,7 +1760,10 @@ The fee is flat and per person, so the type does not affect pricing either.</p>
 what a pack's roster is. Distinct from membership in every way: a person holds exactly one
 membership and any number of participations, participation is free, and it ends when the
 person stops attending rather than when a fee is unpaid. A participation row for the root
-unit is created alongside each membership, so "everyone in unit X" is one uniform query.</p>
+unit is created alongside each membership, so "everyone in unit X" is one uniform query.
+<strong>It is also what a legacy roster row becomes</strong>: an imported historical row is always a
+participation and never a membership, because the corpus carries no payment evidence to
+make a membership out of (<a href="../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</p>
 <p><strong>Membership request</strong> — A person's application to become a member. Separate from the
 membership itself, because a request has its own lifecycle (submitted, under review,
 rejected, withdrawn) and can be rejected without ever producing a membership. <strong>Nothing
@@ -2104,6 +2174,8 @@ session has as-of 1990–2010 and audit time 2026. Do not conflate them.</p>
     
     
       <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

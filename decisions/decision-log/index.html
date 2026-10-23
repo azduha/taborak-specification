@@ -2131,6 +2131,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-087 — Merge chains stay, because reversing a merge is a supported operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-088 — The accounting skeleton is permanent; the audit trail is short
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-089 — One live account; a colliding sign-up files a claim and creates nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-090 — The legacy corpus is thousands of roster rows with numbers and no money
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3169,6 +3213,50 @@
     <span class="md-ellipsis">
       
         D-086 — A sensitivity mark grades what a grant exposes, not the table it reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-087 — Merge chains stay, because reversing a merge is a supported operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-088 — The accounting skeleton is permanent; the audit trail is short
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-089 — One live account; a colliding sign-up files a claim and creates nothing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-090 — The legacy corpus is thousands of roster rows with numbers and no money
       
     </span>
   </a>
@@ -5382,7 +5470,7 @@ What must survive as written requirements, at minimum:</p>
   guardianship per pair, one open role assignment per person-role-scope, no two overlapping
   current contact points of one purpose. The <em>rule</em> is the design; the GiST index that
   PostgreSQL happens to use for it is not</li>
-<li><strong>the resolver's channels and their order</strong> (<a href="#d-012--the-resolver-is-a-single-function-with-four-channels-in-a-fixed-order">D-012</a>)</li>
+<li><strong>the resolver's channels and their order</strong> (<a href="#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver">D-010</a>)</li>
 <li><strong>three-valued <code>was_present</code></strong>, where <code>NULL</code> means "no register was taken" and not "absent"
   (<a href="#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>)</li>
 <li><strong><code>birth_date_precision</code></strong>, because an imported <code>1990-01-01</code> often means <em>year 1990</em></li>
@@ -5443,7 +5531,7 @@ the people involved</em>. It does not. Note also that the answer is not the <str
 ownership is <em>your own record</em>, and a guardianship row is not the subject's record any more than
 it is the guardian's. It is a record <strong>of a relationship between them</strong>, and both parties hold it.</p>
 <p><strong>Mechanically this is a direction, not a fifth channel.</strong> The resolver has four channels and
-<a href="#d-012--the-resolver-is-a-single-function-with-four-channels-in-a-fixed-order">D-012</a> keeps them
+<a href="#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver">D-010</a> keeps them
 at four. The guardianship channel already asks <em>"may guardian G act on D's records?"</em>; D-073 gives
 it a second question, <em>"may a party act on the guardianship row itself?"</em>, answered for exactly
 three acts — end the row, add another guardian, change the permission level. Adding a channel
@@ -5486,7 +5574,7 @@ change them.</p>
 <p><strong>It is the same ladder, not a new one — which is the part that keeps the model honest.</strong> The
 design already ranks authority as <code>revoked</code>(0) &lt; <code>view</code>(10) &lt; <code>contribute</code>(20) &lt; <code>manage</code>(30) &lt;
 <code>admin</code>(40) and compares by integer, never by string
-(<a href="#d-014--access-levels-are-an-ordered-integer-ladder-compared-by-rank-never-by-string">D-014</a>).
+(<a href="#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>).
 The three guardian rights map onto it: <code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20. <strong>Guardian
 authority is therefore a range of an existing ladder, not a parallel enum</strong>, and the resolver
 compares it with the machinery it already uses for grants. A fourth guardian value would have
@@ -5923,6 +6011,30 @@ from a regression. If one returns, it returns as a bug report, not as a reversal
   <a href="#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>: a registration-time
   condition the capability model does not know about is the first rule-engine rule. No
   reversal, since nothing was shipped — recorded here because the idea will return.</li>
+<li><strong>Merge chains as an assumption.</strong> Decided by
+  <a href="#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>, in
+  the same direction the assumption pointed — chains persist and <code>resolve_person()</code> walks them.
+  It is in this list because of <em>how</em> it was argued: the docs justified chains by saying
+  flattening would make unmerge impossible, which is a reason resting on a capability nobody
+  had asked for. Reversing a human-approved merge is now a requirement, so the conclusion is
+  unchanged and the argument behind it is not — and flattening, previously "faster", is now a
+  trade against a named feature. The integrity check that read a tombstoned survivor as a
+  breach was corrected the same round: under decided chains it is normal.</li>
+<li><strong>The audit trail as the permanent keeper of values.</strong> Narrowed by
+  <a href="#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a> to a payload
+  window of 24 months (rows survive; <code>old_values</code>/<code>new_values</code> are emptied). <a href="#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
+  is <strong>not</strong> reversed and its overwrite-in-place stands, but its stated justification —
+  "the trail is the history" — is true for two years and untrue afterwards, which changes what
+  that decision costs. Read the two entries together; neither is complete alone.</li>
+<li><strong>"A historical roster may create a <code>membership</code> if there is payment evidence"</strong> (the safe
+  default kept open in <code>06-audit-and-import.md</code> §6). Retired rather than answered by
+  <a href="#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>:
+  the corpus carries no payment data at all, so the exception arm has nothing to fire on and the
+  default is simply the rule. Historical rows are <code>unit_participation</code>; <code>membership</code> comes only
+  from the current register. Recorded because the <em>reason</em> for the rule — an inferred open-ended
+  membership would make a 2003 roster a current member with authority today
+  (<a href="#d-039--member-permissions-require-a-current-paid-membership">D-039</a>) — is the part worth
+  keeping if a corpus with money in it ever arrives.</li>
 </ul>
 <hr />
 <h2 id="d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now<a class="headerlink" href="#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now" title="Permanent link">&para;</a></h2>
@@ -6350,6 +6462,250 @@ runtime vocabulary — see <a href="../../open-questions/#at-4--is-one-permissio
 which asks whether one permission is the right shape for a trail that holds person data at all.</p>
 <p><strong>See:</strong> <a href="../../appendix/permission-catalog/#8-audit-and-system">appendix/permission-catalog.md §8</a>,
 <a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">data-model/09-attributes.md §6</a>.</p>
+<hr />
+<h2 id="d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087 — Merge chains stay, because reversing a merge is a supported operation<a class="headerlink" href="#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer)
+<strong>Date:</strong> refinement round 8
+<strong>Follows:</strong> <a href="#d-004--no-automatic-merging-ever">D-004</a>,
+<a href="#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a></p>
+<p><strong>Your answer.</strong> Asked whether the system must be able to reverse a merge that a human approved —
+framed as the question that decides B-2, since chains make a reversal a replay and flattening makes it
+a rebuild — you chose <strong>chains, and an explicit unmerge</strong>.</p>
+<p><strong>Decision.</strong> <code>person.merged_into_person_id</code> stays a pointer that is <em>not</em> rewritten forward when the
+survivor is itself later absorbed. A→B→C remains a chain and <code>resolve_person()</code> keeps walking it
+(<a href="../../data-model/01-identity/#9-views">01-identity.md §9</a>). Flattening is now <strong>closed off</strong>, not
+merely slower.</p>
+<p><strong>What this decision actually changes is the direction of the argument.</strong> These documents have argued
+for chains <em>because</em> unmerge would otherwise be impossible — an assumption resting on a capability that
+nothing had asked for. You have asked for the capability, so the reasoning runs the other way now:
+unmerge is a requirement, and chains are its consequence. That matters for how the rule is defended
+later, because "flattening is faster" is no longer a trade being weighed against an abstract
+tidiness — it is a trade against a feature someone named.</p>
+<p><strong>Two rules a permanent chain needs, and neither existed until this entry.</strong></p>
+<ol>
+<li><strong>A cycle cannot be created, and the place it cannot be created is the merge, not the read.</strong>
+   A merge is refused when the person chosen as survivor resolves — by walking the chain — to the
+   person being absorbed. That includes the one-hop case already ruled out (nobody merges into
+   themselves) and the case that actually happens: absorbing B into A when A has already been absorbed
+   into B. Checking at write time is the whole guard; a read-side step limit would merely decide which
+   of two wrong answers to return.</li>
+<li><strong>Chain length is a signal, not an error.</strong> Resolution has no hop limit — a bound would silently
+   return a tombstoned id, which is the failure the function exists to prevent. Instead, a chain longer
+   than <strong>three hops</strong> is reported. Four merges in a row on one line of people does not mean the data
+   is odd, it means the matcher is producing duplicates faster than a human can settle them, which is a
+   statement about the queue and not about the row.
+   <a href="../../data-model/01-identity/#10-integrity-checks">01-identity.md §10</a> stated this as a breach and
+   is corrected: with chains decided, <em>a survivor that has itself been absorbed is normal</em>, and only the
+   length means anything.</li>
+</ol>
+<p><strong>What was already built, and is confirmed rather than changed.</strong> <code>person_merge</code> exists and is
+append-only with <code>reversed_at</code>/<code>reversed_by</code>/<code>reversal_note</code>, so an unmerge records that a merge was
+undone instead of erasing the record of the mistake
+(<a href="../../data-model/01-identity/#8-identity_hypothesis-and-person_merge">01-identity.md §8</a>); and the
+reversal procedure is written in four steps
+(<a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03-identity-and-legacy.md §6</a>)
+— tombstone off, rows created <em>before</em> the merge go back, rows created <em>inside</em> the merged window are
+flagged for a human, and every <code>access_grant</code> from that window is flagged rather than guessed.
+<strong>That asymmetry is the honest core of this entry: a merge can be undone and the merged period cannot
+be.</strong> Whatever those two humans did while they were one row stays one row's history, because the grants
+exercised in that window were really exercised by somebody who can no longer be identified from the
+record. Two further things follow and are stated where they belong:</p>
+<ul>
+<li><strong>Reversal needs no new permission.</strong> Unmerging is the same act as merging — an identity correction
+  made by a named human — so it is <code>person.merge</code>, already held by the identity reviewer. A
+  <code>person.unmerge</code> code would grade undoing a mistake as safer than making one.</li>
+<li><strong>The resolve-on-entry rule now has a check under it.</strong> "Every place that accepts a person id from
+  outside must call <code>resolve_person()</code>" is a rule application code can forget, and D-072 removed the
+  database-level ways of catching it; the net is a report for live rows that reference a tombstoned
+  person, which is the only form of this failure that is visible afterwards.</li>
+</ul>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-2--closed--merge-chains-stay-because-unmerge-is-required">B-2</a>.</p>
+<p><strong>See:</strong> <a href="../../data-model/01-identity/#9-views">data-model/01-identity.md §9–§10</a>,
+<a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03-identity-and-legacy.md §6</a>.</p>
+<hr />
+<h2 id="d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088 — The accounting skeleton is permanent; the audit trail is short<a class="headerlink" href="#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer). The retention <em>periods</em> are a policy you have chosen; whether
+they survive a legal review is a different question and stays open, recorded as an assumption with a
+name attached rather than as settled law.
+<strong>Date:</strong> refinement round 8
+<strong>Follows:</strong> <a href="#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+<a href="#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+<a href="#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a></p>
+<p><strong>Your answer.</strong> Of the four retention shapes, <strong>the skeleton stays and the trail ages out</strong>:
+membership and fee history is the organization's own record and is kept indefinitely; the audit trail
+keeps its values for a bounded window and is then reduced to who did what to which row, when.</p>
+<p><strong>Decision — two clocks, and they are deliberately opposite.</strong></p>
+<ul>
+<li><strong><code>membership</code>, <code>fee_obligation</code>, <code>payment</code> and the anonymised <code>person</code> row: no clock.</strong> An erasure
+  redacts the person and leaves this skeleton standing, which is the shape
+  <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">00-conventions §8</a> already required;
+  what is new is that it is now <em>because it is the organization's history</em> rather than because nobody
+  decided when it ends. <code>redaction_log.retained_reason</code> has a real value to hold.</li>
+<li><strong><code>audit_log</code>: payloads live 24 months, rows live forever.</strong> After the window a row is <strong>reduced</strong> —
+  its <code>old_values</code>/<code>new_values</code> are emptied and everything else survives: actor, on-behalf-of,
+  operation, table, record id, changed fields, transaction, session, channel. The trail keeps
+  answering <em>"who changed this, and when, and were they allowed to"</em> for as long as the system exists,
+  and stops answering <em>"and to what"</em> after two years. Twelve months is the floor the window may be set
+  to; anything shorter stops covering a full year of a child's activities, which is the unit an
+  incident is asked in.</li>
+</ul>
+<p><strong>A third operation on the trail, and it is not redaction.</strong> These documents say
+<a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>-era
+(<a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>) that
+redaction runs on the way in and <em>"never in a cleanup job that might not run"</em>, and that sentence is
+about a secret that must never have existed in the table. <strong>Reduction is the opposite case and must not
+be argued from that sentence</strong>: its entire purpose is to happen later than the write, and its failure
+mode is that it does not run at all. So it is a scheduled job with a check on it — a row older than the
+window still carrying a payload is a finding that alerts — and the two rules coexist without
+contradiction because one forbids late <em>unwriting of a credential</em> and the other requires late
+<em>unwriting of history</em>.</p>
+<p><strong>What this buys, at a price, and both halves are recorded.</strong></p>
+<ul>
+<li><strong>It answers <a href="#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>
+  more cheaply than any guard could.</strong> The exposure that decision accepts is a wrongly-graded
+  <code>audit.view</code> reading a child's descriptive values. The window does not fix that — it <strong>bounds how
+  long it can</strong>, which for a small organization is the realistic control. This is the strongest argument
+  AT-4 will receive and it is not an argument for keeping one permission forever; it is an argument for
+  keeping the payload short.</li>
+<li><strong>It puts a horizon under <a href="#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+  and that has to be said plainly rather than discovered in an incident.</strong> Overwrite-in-place was chosen
+  because the trail is the history. Now the trail's values expire. So <em>"what did we believe about this
+  child's allergy list in 2019"</em> is unanswerable <strong>twice over</strong>: the values were never kept in the
+  business rows, and after 24 months they are nowhere at all. The real cost of D-085 is therefore not
+  "no temporal columns", it is <em>no long history</em> — three accepted things stacked: values live in one
+  overwritten row, the copy of them depends on a write path remembering to log, and the copy ages out.
+  <strong>If a case ever needs the long version, the fix is temporal columns on the value — D-085 reversed —
+  and not a longer trail</strong>, because stretching the trail stretches the thing D-086 graded and D-083
+  refuses to keep separately.</li>
+</ul>
+<p><strong>Erasure is unaffected and still immediate.</strong> A redaction scrubs that person's values from payloads
+whatever their age; the window is a ceiling on how long anything can be there, not a waiting period.</p>
+<p><strong>Legal status of the "forever" half.</strong> Indefinite retention of <code>membership</code> and fee rows about a named
+person is a claim that needs a basis, and this log is not the place that grants it. What the corpus
+states now, as an <strong>assumption pending review</strong>: organizational history plus accounting obligations,
+against a redacted person row that keeps the skeleton non-identifying — and the review is the same one
+B-3 already names, now with a concrete policy to review rather than a blank.</p>
+<p><strong>Also decided from here:</strong> <code>access_log</code> takes the same window as <code>audit_log</code>'s payloads as a proposed
+default (<strong>F-8</strong>, which needs your confirmation, and which is a weaker question because
+<a href="../../data-model/05-authorization/#9-access_log">05-authorization §9</a> keeps the payloads of <em>reads</em>
+out of that table to begin with).</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">B-3</a>.</p>
+<p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/">data-model/06-audit-and-import.md §2.2, §4, §6</a>,
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure">data-model/00-conventions.md §8</a>,
+<a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">data-model/09-attributes.md §6</a>.</p>
+<hr />
+<h2 id="d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089 — One live account; a colliding sign-up files a claim and creates nothing<a class="headerlink" href="#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer)
+<strong>Date:</strong> refinement round 8
+<strong>Follows:</strong> <a href="#d-004--no-automatic-merging-ever">D-004</a>,
+<a href="#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a></p>
+<p><strong>Your answer.</strong> Asked what happens when a person who already has an account signs up again with a
+different e-mail: <strong>refuse, and queue a claim</strong> — not an automatic link, and not a second account.</p>
+<p><strong>Decision, stated as the gate that enforces it.</strong> One live account per person stands
+(<a href="../../data-model/01-identity/#4-account">01-identity.md §4</a>) and is joined by a second rule: <strong>an
+account may not reach <code>active</code> while an unresolved <code>identity_hypothesis</code> names its person.</strong> That is the
+whole mechanism — there is no new table and no new queue, because the identity review queue already
+exists, already records its signals, and already has the reviewer role for it. A sign-up that
+strong-matches an existing person runs into that gate on its way to being usable, the person who typed
+it sees a holding message, and a human decides.</p>
+<p><strong>The trigger is a strong match only, and the threshold is the load-bearing part.</strong> A hypothesis is
+raised at sign-up on an exact legacy member number, or an exact birth date together with a normalized
+name match — the same signal set <a href="../../domain/03-identity-and-legacy/#4-match-signals">domain/03 §4</a>
+already weights, at the top of its band. <strong>The soft band must not raise one.</strong> Blocking a stranger's
+registration on a fuzzy score is the failure this rule would most deserve, and the cost of letting a
+true duplicate through is bounded, reviewable and nightly-matched anyway; the cost of stopping a new
+member is a child who cannot sign up to a camp on the day the form closes.</p>
+<p><strong>Two costs, both accepted in the open.</strong></p>
+<ul>
+<li><strong>A brand-new person who happens to match waits for a human.</strong> So the blocking condition gets an age
+  check shaped like <code>field_conflict</code>'s thirty days, and it alerts rather than logs, because a stalled
+  identity queue is no longer a data-quality problem — it is a specific person who cannot log in and
+  has no way to say so except to telephone someone.</li>
+<li><strong>The refusal must not confirm that an account exists.</strong> The holding message says the request was
+  received and will be checked. It says nothing about whether the name, the birth date or the number
+  matched anything, because a sign-up form that answers "yes, that person exists" is an existence
+  oracle over the roster, and this system's roster is children
+  (<a href="../../data-model/05-authorization/">05-authorization.md</a>).</li>
+</ul>
+<p><strong>What the answer refuses, and why those were the alternatives.</strong> <em>Link automatically once the e-mail
+is verified and the signals are strong</em> would have been the convenient one and is
+<a href="#d-004--no-automatic-merging-ever">D-004</a> under another name: a false-positive merge is a privacy
+incident in which one human's medical data becomes another human's record, and the merge is the hard
+part to undo even with <a href="#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>'s
+reversal. <em>Allow two live accounts</em> drops the uniqueness rule and splits a person's consents, payments
+and attributes across two ids until somebody notices — and the records that must be complete are
+exactly the ones where nobody notices.</p>
+<p><strong>The everyday case is not the collision case, and it is worth naming so this rule is not oversold.</strong>
+"I have a new e-mail address" is not a second account and was never one: <code>account_credential</code> holds
+many credentials for one account, so a new address is an <em>addition</em> to the login a person already has.
+The collision case is narrower than "signing up twice" — it is a person arriving through a door the
+system did not know they had.</p>
+<p><strong>No new permission.</strong> Resolving a claim is confirming or rejecting a hypothesis, which is <code>person.merge</code>
+and already sits with <code>identity_reviewer</code>. Note the seed role still has no read over the <em>person record</em>
+(<code>person.view</code> is not in it), so a reviewer decides identity questions from signals and names. That is
+defensible — the signals <em>are</em> the decision — but <a href="#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>'s
+gate means a reviewer's answer now decides whether a child can log in, which is more than tidying a
+queue, and it is registered as
+<a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>
+rather than settled here.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim">B-4</a>.</p>
+<p><strong>See:</strong> <a href="../../data-model/01-identity/#4-account">data-model/01-identity.md §4–§5, §8</a>,
+<a href="../../domain/03-identity-and-legacy/#4-match-signals">domain/03-identity-and-legacy.md §4</a>.</p>
+<hr />
+<h2 id="d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090 — The legacy corpus is thousands of roster rows with numbers and no money<a class="headerlink" href="#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer)
+<strong>Date:</strong> refinement round 8
+<strong>Follows:</strong> <a href="#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>,
+<a href="#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>,
+<a href="#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a></p>
+<p><strong>Your answer.</strong> Thousands of roster rows, <strong>one export</strong>, 1990s to now, carrying a legacy member
+number, <strong>no payment data</strong>, and free-text columns alongside.</p>
+<p><strong>The consequence that does most of the work: the corpus decides the question the import was going to
+default.</strong> <a href="../../data-model/06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a> had kept
+open whether a historical roster should create a <code>membership</code> or only a <code>unit_participation</code>, with
+"participation unless there is payment evidence" as the safe default. <strong>There is no payment evidence in
+the corpus at all</strong>, so the default's exception has an empty set: every imported historical row is a
+participation, and <code>membership</code> rows come only from the current register. A conditional rule with one
+arm is not a safe default, it is the rule, and saying so retires the question rather than answering it.
+The stakes were already named in D-041 and
+<a href="#d-039--member-permissions-require-a-current-paid-membership">D-039</a>: an inferred open-ended membership
+would make every 2003 roster a <em>current member</em> with authority today.</p>
+<p><strong>The vocabulary arrives all at once, which changes how the mapping has to be reviewed.</strong> Under
+<a href="#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> every legacy column that is not
+identity machinery becomes an attribute code, so the first import is the single largest event in the
+life of that vocabulary — hundreds of codes from one file. Two things follow:</p>
+<ul>
+<li><strong>The map is reviewed before the batch applies, not after.</strong> That is precisely why the mapping is
+  recorded on the batch as one object
+  (<a href="../../data-model/06-audit-and-import/#3-import-pipeline">06-audit-and-import.md §3</a>) rather than per
+  staged row: it is one artefact a person reads once, top to bottom. The codes it names arrive <strong><code>live</code></strong>,
+  because a curator has just read them.</li>
+<li><strong><code>proposed</code> keeps its meaning.</strong> It stays the status for what a <em>human at a desk</em> improvises later —
+  a fact with no code yet — and not for "whatever the import did not understand". If several hundred
+  codes arrive <code>proposed</code> on day one, the curation queue
+  (<a href="../../data-model/09-attributes/#8-integrity-checks">09-attributes.md §8</a> check 1) opens full, its age
+  signal is meaningless, and the first lesson the organization learns about the attribute layer is that
+  its warning queue is noise. <strong>This is a partial answer to AT-2, which stays open</strong> for the runtime
+  case: who holds <code>attribute.define</code> day to day, and how long a proposal may sit.</li>
+</ul>
+<p><strong>What is confirmed rather than decided.</strong> The legacy number goes to <code>person_identifier</code> with
+<code>scheme = 'legacy'</code>, imported verbatim and never reissued; where it is present the match is exact and
+the heuristics are for backfilling it, not for deciding identity (D-056). At thousands of rows the
+review is a work queue with a trustworthy set at the top of it, which
+<a href="../../open-questions/#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data">B-1</a> already
+called a strengthening of D-004 rather than a relaxation.</p>
+<p><strong>What this makes sharper rather than smaller.</strong> With attendance and no money,
+<a href="../../data-model/06-audit-and-import/#31-what-a-roster-actually-evidences">06-audit §3.1</a> is the
+load-bearing section of the whole import — a roster row evidences <em>presence in a unit</em>, and everything
+beyond that is inference. Which leaves <strong>A-4</strong>, the organizational year boundary, as the sharpest
+remaining import question, because it is what an end date gets inferred from.</p>
+<p><strong>Still not known, and it is operational.</strong> The exact record count and the year range. Both are inputs a
+batch carries; neither changes a table. B-1 is closed on the design and these two numbers are recorded
+as the import's own inputs.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data">B-1</a>.</p>
+<p><strong>See:</strong> <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>,
+<a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>,
+<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">data-model/09-attributes.md §7</a>.</p>
 
 
 
@@ -6449,6 +6805,8 @@ which asks whether one permission is the right shape for a trail that holds pers
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

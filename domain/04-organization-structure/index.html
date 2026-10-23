@@ -1865,6 +1865,16 @@ only validated by the form, a data import will violate it — which is not a hyp
 legacy corpus is precisely a data import, arriving before the admin UI exists. See
 <a href="../../data-model/00-conventions/#6a-who-enforces-an-invariant-now">../data-model/00-conventions.md §6a</a>
 for which layer survives which kind of writer.</p>
+<p><strong>"Before the admin UI exists" now costs more than it used to.</strong> The same batch carries free-text
+columns, and under <a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+the map from those columns to attribute codes has to be <strong>authored and read before the batch applies</strong>,
+with the codes it names arriving <code>live</code> because a curator read them
+(<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">03-identity-and-legacy.md §7</a>). If the import
+genuinely precedes the UI, that reading cannot happen in the UI — and <code>attribute.define</code> is held by no
+seed role (<a href="../../appendix/permission-catalog/#12-open-issues">../appendix/permission-catalog.md §12</a>,
+<strong>AT-2</strong>). So the organization's first act of vocabulary curation is currently scheduled and unstaffed.
+That is a gap in the rollout plan rather than in the model, but it is the kind that gets discovered at
+the import, not before it.</p>
 <hr />
 <h2 id="3-unit-names-and-renumbering--the-history-problem">3. Unit names and renumbering — the history problem<a class="headerlink" href="#3-unit-names-and-renumbering--the-history-problem" title="Permanent link">&para;</a></h2>
 <p>A unit called "4th Pack" in 1998 may be "Pack 12" today, or may have been split into
@@ -2197,6 +2207,8 @@ participation — §5).</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>

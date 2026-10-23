@@ -1620,13 +1620,19 @@ treatment is in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
 <tr>
 <td>Historical record</td>
 <td>no</td>
-<td>yes (closed)</td>
+<td><strong>no</strong> — participation rows only</td>
 <td>nothing. Data only, never a login.</td>
 </tr>
 </tbody>
 </table>
-<p>The last row matters: imported 1994 rosters create <code>person</code> rows with <strong>no account</strong>.
-They must never be blocked from import by a "users must have email addresses" rule.</p>
+<p>The last row matters twice. Imported 1994 rosters create <code>person</code> rows with <strong>no account</strong>, and must
+never be blocked from import by a "users must have email addresses" rule. And they create <strong>no
+<code>membership</code> either</strong>: a roster evidences presence in a unit, and the corpus carries no payment
+evidence, so an imported person's history is <code>unit_participation</code> and a membership row appears only
+where a human recorded one on evidence
+(<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
+The earlier version of this table said "yes (closed)" in that cell, which was the membership-per-roster
+reflex the import rule exists to stop.</p>
 <hr />
 <h2 id="3-the-three-lifecycles">3. The three lifecycles<a class="headerlink" href="#3-the-three-lifecycles" title="Permanent link">&para;</a></h2>
 <p>Almost everything in the system is one of three multi-step processes. They are separate
@@ -1642,6 +1648,13 @@ without being accepted, be accepted without paying, and pay without ever joining
 <p>An account is about <strong>authentication only</strong>. It says "this person can log in". It says
 nothing about membership. A person can hold a verified, active account for years and
 never become a member — a parent who only ever manages their child is exactly this case.</p>
+<p><strong>One gate the arrows do not draw:</strong> an account may not reach <code>active</code> while an unresolved
+<code>identity_hypothesis</code> names its person, which is what a sign-up that strong-matches someone who
+already exists runs into (<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+Verification is necessary and not sufficient; a human decision is the second condition, and because
+that makes a stalled queue a person who cannot log in, the blocking hypothesis is age-checked and
+alerts. One live account per person is the rule doing the underlying work
+(<a href="../02-actors/#3-account-state-machine">02-actors.md §3</a>).</p>
 <h3 id="32-membership-lifecycle">3.2 Membership lifecycle<a class="headerlink" href="#32-membership-lifecycle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> (none)
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   │
@@ -1781,19 +1794,34 @@ avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
 <p>Consequences, all of which the data model implements:</p>
 <ol>
 <li><strong>Everything temporal is a period</strong>, never a boolean or a single date.</li>
-<li><strong>Nothing is hard-deleted.</strong> Merges leave tombstones; units that closed keep their rows.</li>
+<li><strong>Nothing is hard-deleted</strong>, except by three named acts, each of which is somebody's decision
+   rather than a cleanup job. Merges leave tombstones and units that closed keep their rows. Against
+   that: <strong>erasing a person</strong> redacts their values wherever they were copied, including in the audit
+   payload, immediately and at any age; <strong>payload reduction</strong> empties an audit row's values 24 months
+   after they were written and leaves the row standing, so the trail keeps answering <em>who changed this,
+   when, and were they allowed to</em> indefinitely and stops answering <em>and to what</em>
+   (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>);
+   and <strong>reverting an import batch</strong> removes the rows that batch created. Reduction is not redaction —
+   one answers to a person and is absolute, the other answers to a calendar and is bounded — and the
+   accounting skeleton (<code>membership</code>, fees, payments) is deliberately outside all three: it is kept
+   indefinitely as the organization's own history. <em>Assumption:</em> that "forever" has a legal basis is
+   exactly the thing this document cannot establish for itself; the claim is recorded as an assumption
+   awaiting review, not as settled law.</li>
 <li><strong>Names change.</strong> Units get renamed and renumbered; people change names. Names live in
    child tables with validity periods, not as columns that get overwritten.</li>
-<li><strong>Imported data is low-confidence.</strong> A 1994 roster has names and dates but no reliable
-   unique key. Import therefore <em>proposes</em> identities and a human confirms them.
+<li><strong>Imported data is low-confidence.</strong> A 1994 roster has names, dates, and on most rows a legacy
+   member number — which keys the organization's paper, not a session, and is exactly what is missing
+   from the records that most need matching. This bullet used to say "no reliable unique key", written
+   before the corpus had been described. Import still therefore <em>proposes</em> identities and a human
+   confirms them, and where a number is present the proposal is a lookup rather than a guess.
    See <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a>.</li>
 </ol>
 <hr />
 <h2 id="7-what-this-design-deliberately-does-not-decide-yet">7. What this design deliberately does not decide yet<a class="headerlink" href="#7-what-this-design-deliberately-does-not-decide-yet" title="Permanent link">&para;</a></h2>
 <p>These are referenced by the schema but not designed, pending your specification:</p>
+<p><em>(Events came off this list: they were specified, in <a href="../07-events/">07-events.md</a> and
+<a href="../../data-model/08-events/">data-model/08-events.md</a>, along with the thirteen codes in the catalog.)</em></p>
 <ul>
-<li><strong>Events</strong> — the schema provides <code>access_grant.scope_type = 'event'</code> and leaves the
-  event tables to you. See <a href="../../open-questions/">../open-questions.md</a>.</li>
 <li><strong>Fees and payments</strong> — a provisional shape exists in
   <a href="../../data-model/07-finance/">../data-model/07-finance.md</a> because membership
   activation depends on it. Expect to rewrite it.</li>
@@ -1911,6 +1939,8 @@ avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
       
     
   </body>
