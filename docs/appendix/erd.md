@@ -15,44 +15,74 @@ reference (no database-level foreign key). Temporal tables are marked `[T]`.
 
 ## 1. Identity
 
-```
-                          ┌─────────────────────────────────┐
-                          │            person               │
-                          │  id, public_id                  │
-                          │  given_name, family_name        │
-                          │  birth_date, birth_date_precision│
-                          │  record_origin, data_confidence │
-                          │  merged_into_person_id ──┐ self  │
-                          │  redacted_at             └──────┘│
-                          └───────────────┬─────────────────┘
-                                          │
-        ┌──────────────┬──────────────────┼──────────────────┬───────────────┐
-        │              │                  │                  │               │
-        ▼              ▼                  ▼                  ▼               ▼
-  ┌───────────┐ ┌─────────────┐  ┌────────────────┐ ┌──────────────┐ ┌────────────┐
-  │person_name│ │  account    │  │ person_contact │ │person_       │ │identity_   │
-  │    [T]    │ │             │  │      [T]       │ │identifier    │ │hypothesis  │
-  │           │ │ person_id → │  │                │ │     [T]      │ │            │
-  │ valid_from│ │ status      │  │ contact_type   │ │ scheme,value │ │ person_a_id│
-  │ valid_to  │ │             │  │ purpose        │ │              │ │ person_b_id│
-  └───────────┘ └──────┬──────┘  │ is_primary     │ └──────────────┘ │ confidence │
-                       │         │ verified_at    │                  │ match_     │
-                       ▼         └────────────────┘                  │  signals   │
-              ┌──────────────────┐                                  │ status     │
-              │account_credential│                                  └─────┬──────┘
-              │  [T]             │                                        │
-              │ credential_type  │                                        ▼
-              │ secret_hash      │                                 ┌──────────────┐
-              │ external_ref     │                                 │ person_merge │
-              │ valid_to         │                                 │ surviving_id │
-              └──────────────────┘                                 │ merged_id    │
-                                                                   │ hypothesis_id│
-                                                                   │ reversed_at  │
-                                                                   └──────┬───────┘
-                                                                          ▼
-                                                                  ┌────────────────┐
-                                                                  │ field_conflict │
-                                                                  └────────────────┘
+```mermaid
+erDiagram
+    PERSON {
+        uuid id PK
+        string public_id
+        date birth_date
+        string birth_date_precision
+        string record_origin
+        string data_confidence
+        uuid merged_into_person_id FK
+        datetime redacted_at
+    }
+    PERSON_NAME {
+        uuid person_id FK
+        string name_type
+        datetime valid_from
+        datetime valid_to
+    }
+    ACCOUNT {
+        uuid person_id FK
+        string status
+    }
+    ACCOUNT_CREDENTIAL {
+        uuid account_id FK
+        string credential_type
+        string secret_hash
+        string external_ref
+        datetime valid_to
+    }
+    PERSON_CONTACT {
+        uuid person_id FK
+        string contact_type
+        string purpose
+        boolean is_primary
+        datetime verified_at
+    }
+    PERSON_IDENTIFIER {
+        uuid person_id FK
+        string scheme
+        string value
+        datetime valid_to
+    }
+    IDENTITY_HYPOTHESIS {
+        uuid person_a_id FK
+        uuid person_b_id FK
+        decimal confidence
+        string match_signals
+        string status
+    }
+    PERSON_MERGE {
+        uuid surviving_id FK
+        uuid merged_id FK
+        uuid hypothesis_id FK
+        datetime reversed_at
+    }
+    FIELD_CONFLICT {
+        uuid person_merge_id FK
+    }
+    PERSON ||--o{ PERSON_NAME : has
+    PERSON ||--o{ ACCOUNT : owns
+    ACCOUNT ||--o{ ACCOUNT_CREDENTIAL : uses
+    PERSON ||--o{ PERSON_CONTACT : has
+    PERSON ||--o{ PERSON_IDENTIFIER : has
+    PERSON ||--o{ IDENTITY_HYPOTHESIS : "is candidate"
+    PERSON ||--o{ PERSON_MERGE : "survives or is merged"
+    IDENTITY_HYPOTHESIS ||--o| PERSON_MERGE : records
+    PERSON_MERGE ||--o{ FIELD_CONFLICT : contains
+    PERSON ||--o| PERSON : "merged into"
 ```
 
 **Key point:** everything hangs off `person`, and `person` itself holds only identity.
@@ -64,32 +94,41 @@ the descriptive layer drawn next. See
 
 ## 1a. Personal attributes — everything that is not a name, a gender or an age
 
-```
-        ┌────────────────────────────────────┐
-        │        attribute_definition        │
-        │  code, label, description          │
-        │  value_type ← rendering, not law   │      ┌────────────────────────────┐
-        │  value_unit, sort_order            │◄─────│      attribute_option      │
-        │  allow_multiple                    │      │  definition_id             │
-        │  status: proposed | live | retired │      │  code, label, sort_order   │
-        │  category  ← grouping ONLY         │      │  status                    │
-        │  proposed_by, proposed_at          │      └───────────┬────────────────┘
-        │  retired_at, retired_reason        │
-        └───────┬────────────────────────────┘
-                │                                               │
-                │                    ┌──────────────────────────┘
-                │                    │
-                ▼                    ▼
-    ┌──────────────────────────────────────────────┐
-    │               person_attribute               │
-    │  person_id → person                          │
-    │  attribute_definition_id                     │
-    │  value_option_id      (a `one_of` choice)    │
-    │  value  ← always TEXT                        │
-    │  recorded_note, source                       │
-    │  created_at/_by = recorded at/by             │
-    │  NO valid_from / valid_to   ← (D-085)        │
-    └──────────────────────────────────────────────┘
+```mermaid
+erDiagram
+    ATTRIBUTE_DEFINITION {
+        string code PK
+        string label
+        string description
+        string value_type
+        string value_unit
+        integer sort_order
+        boolean allow_multiple
+        string status
+        string proposed_by
+        datetime proposed_at
+        datetime retired_at
+    }
+    ATTRIBUTE_OPTION {
+        string definition_code FK
+        string code
+        string label
+        integer sort_order
+        string status
+    }
+    PERSON_ATTRIBUTE {
+        uuid person_id FK
+        string attribute_definition_code FK
+        string value_option_code FK
+        string value
+        string recorded_note
+        string source
+        datetime created_at
+    }
+    PERSON ||--o{ PERSON_ATTRIBUTE : has
+    ATTRIBUTE_DEFINITION ||--o{ ATTRIBUTE_OPTION : offers
+    ATTRIBUTE_DEFINITION ||--o{ PERSON_ATTRIBUTE : defines
+    ATTRIBUTE_OPTION o|--o{ PERSON_ATTRIBUTE : selects
 ```
 
 **Key point:** these three tables are the whole of what the system knows about a person beyond
@@ -104,7 +143,10 @@ put an organization-maintained vocabulary in its place. Reading is `person.view`
 
 **None of the three is `[T]`, and the `no` beside them in §7 is a decision, not an omission.** A
 `person_attribute` row is **the current belief, overwritten in place**, and `audit_log` holds the
-sequence of beliefs, **values included** — which is why the trail is guarded as person data is
+sequence of beliefs, **values included for as long as the payload window lasts — 24 months, after
+which the row is reduced and the values are gone**
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+— which is why the trail is guarded as person data is
 ([the permission catalog §8](permission-catalog.md#8-audit-and-system)). This corpus gives periods to things that are true *over an interval* — a
 membership, an address, a position, a guardian's authority — and a descriptive value is not one of
 those: it is a statement made now about whatever it is about, with a timestamp on the assertion. A
@@ -127,51 +169,73 @@ person erases one ([../domain/08-person-data.md](../domain/08-person-data.md#5-f
 
 ## 2. Organization
 
-```
-  ┌────────────────┐         ┌─────────────────────┐
-  │ org_unit_type  │◄────────│ org_unit_type_rule  │
-  │  code          │  parent │  parent_type_id     │
-  │  allows_minors │  ──────►│  child_type_id      │
-  │  is_leaf       │         │  is_required        │
-  │  max_depth     │         └─────────────────────┘
-  │  sort_order    │
-  └───────┬────────┘
-          │
-          ▼
-  ┌──────────────────────┐          ┌──────────────────┐
-  │      org_unit        │◄─────────│  org_unit_name   │
-  │  unit_type_id ───────┘          │       [T]        │
-  │  parent_unit_id ──┐ self        │  name, code      │
-  │  code, name       └────────────►│  change_reason   │
-  │  status           [T]           │  valid_from/to   │
-  │  path, depth      │             └──────────────────┘
-  │  valid_from/to    │
-  └────┬─────────┬────┘
-       │         │
-       │         ▼
-       │  ┌───────────────────────┐
-       │  │ org_unit_relationship │   split_from / merged_into /
-       │  │  source_unit_id       │   successor_of / renamed_to
-       │  │  target_unit_id       │
-       │  │  relationship         │
-       │  │  effective_date       │
-       │  └───────────────────────┘
-       │
-       ▼
-  ┌──────────────────┐    ┌──────────────────────┐        ┌──────────────┐
-  │     position     │◄───│ position_assignment  │───────►│    person    │
-  │  unit_type_id    │    │  position_id         │        └──────────────┘
-  │  code            │    │  org_unit_id    ─────┼───► org_unit
-  │  max_holders     │    │  person_id      ─────┘
-  │  is_leadership   │    │  valid_from/to  [T]  │
-  │  min_age         │    │  is_primary          │
-  │  requires_       │    │  ended_reason_code   │
-  │   membership     │    └──────────────────────┘
-  │  (REPORTED, not │
-  │   enforced — the │
-  │   enforced flag  │
-  │   is on `role`)  │
-  └──────────────────┘
+```mermaid
+erDiagram
+    ORG_UNIT_TYPE {
+        string code PK
+        boolean allows_minors
+        boolean is_leaf
+        integer max_depth
+        integer sort_order
+    }
+    ORG_UNIT_TYPE_RULE {
+        string parent_type_id FK
+        string child_type_id FK
+        boolean is_required
+    }
+    ORG_UNIT {
+        uuid id PK
+        string unit_type_id FK
+        uuid parent_unit_id FK
+        string code
+        string name
+        string status
+        string path
+        integer depth
+        datetime valid_from
+        datetime valid_to
+    }
+    ORG_UNIT_NAME {
+        uuid org_unit_id FK
+        string name
+        string code
+        string change_reason
+        datetime valid_from
+        datetime valid_to
+    }
+    ORG_UNIT_RELATIONSHIP {
+        uuid source_unit_id FK
+        uuid target_unit_id FK
+        string relationship
+        date effective_date
+    }
+    POSITION {
+        uuid unit_type_id FK
+        string code
+        integer max_holders
+        boolean is_leadership
+        integer min_age
+        boolean requires_membership
+    }
+    POSITION_ASSIGNMENT {
+        uuid position_id FK
+        uuid org_unit_id FK
+        uuid person_id FK
+        datetime valid_from
+        datetime valid_to
+        boolean is_primary
+        string ended_reason_code
+    }
+    ORG_UNIT_TYPE ||--o{ ORG_UNIT_TYPE_RULE : permits
+    ORG_UNIT_TYPE ||--o{ ORG_UNIT : classifies
+    ORG_UNIT ||--o{ ORG_UNIT : contains
+    ORG_UNIT ||--o{ ORG_UNIT_NAME : has
+    ORG_UNIT ||--o{ ORG_UNIT_RELATIONSHIP : source
+    ORG_UNIT ||--o{ ORG_UNIT_RELATIONSHIP : target
+    ORG_UNIT_TYPE ||--o{ POSITION : defines
+    POSITION ||--o{ POSITION_ASSIGNMENT : fills
+    ORG_UNIT ||--o{ POSITION_ASSIGNMENT : hosts
+    PERSON ||--o{ POSITION_ASSIGNMENT : holds
 ```
 
 **Key point:** `path`/`depth` are denormalized for fast subtree queries; `unit_ancestors()`
@@ -186,42 +250,49 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
 
 ## 3. Membership
 
-```
-  ┌─────────────────────────┐
-  │ membership_type         │   ONE ROW: 'member'
-  │  code = 'member'        │   The vocabulary is a table so it can grow,
-  │  duration_months        │   not because it varies today.  (D-037)
-  │  expiry_month, _day     │   ← the organizational calendar: 1 Jan  (D-047)
-  │  renewal_grace_days     │   ← the renewal WINDOW: 60 days, not a status (D-048)
-  └─────────┬───────────────┘
-            │
-            ▼
-  ┌──────────────────────────┐         ┌──────────────────────────┐
-  │      membership          │         │   membership_request     │
-  │  person_id ──────────────┼────────►│  person_id (SUBJECT) ────┼──► person
-  │  membership_type_id ─────┘         │  submitted_by_person_id ─┼──► person
-  │  status                   [T]      │  requested_unit_id ──────┼──► org_unit
-  │  valid_from / valid_to    │        │  status                  │
-  │  renewed_from ──┐ self    │        │  membership_id ──────────┼──► membership
-  │                 └─────────┘        │  previous_membership_id ─┼──► membership
-  │  outstanding_balance      │        └──────────────────────────┘
-  │  NO overlap of open rows  │
-  │   on person_id ALONE      │   ← no membership_type_id: one type, so
-  └───────────────────────────┘     "one person, one open membership" is absolute
-
-  — no membership_request_requirement table: nothing gates a request
-    except identity and payment.                          (D-044)
-
-  ┌──────────────────────────┐
-  │   unit_participation     │   person_id → person   (NOT membership_id — see below)
-  │  org_unit_id ────────────┼──► org_unit
-  │  valid_from/to      [T]  │
-  │  join_reason_code        │
-  │  NO overlap of open rows │
-  └──────────────────────────┘
-     ↑ PARTICIPATION, not membership. Every member also gets a row on the
-       ROOT unit, so "everyone in unit X" is one query whether X is the
-       organization or a Thursday-evening pack.            (D-041)
+```mermaid
+erDiagram
+    MEMBERSHIP_TYPE {
+        string code PK
+        integer duration_months
+        integer expiry_month
+        integer expiry_day
+        integer renewal_grace_days
+    }
+    MEMBERSHIP {
+        uuid person_id FK
+        string membership_type_id FK
+        string status
+        datetime valid_from
+        datetime valid_to
+        uuid renewed_from_membership_id FK
+        decimal outstanding_balance
+    }
+    MEMBERSHIP_REQUEST {
+        uuid person_id FK
+        uuid submitted_by_person_id FK
+        uuid requested_unit_id FK
+        string status
+        uuid membership_id FK
+        uuid previous_membership_id FK
+    }
+    UNIT_PARTICIPATION {
+        uuid person_id FK
+        uuid org_unit_id FK
+        datetime valid_from
+        datetime valid_to
+        string join_reason_code
+    }
+    PERSON ||--o{ MEMBERSHIP : has
+    MEMBERSHIP_TYPE ||--o{ MEMBERSHIP : defines
+    MEMBERSHIP ||--o{ MEMBERSHIP : renews
+    PERSON ||--o{ MEMBERSHIP_REQUEST : subject
+    PERSON ||--o{ MEMBERSHIP_REQUEST : submits
+    ORG_UNIT ||--o{ MEMBERSHIP_REQUEST : requested_for
+    MEMBERSHIP o|--o{ MEMBERSHIP_REQUEST : produces
+    MEMBERSHIP ||--o{ MEMBERSHIP_REQUEST : precedes
+    PERSON ||--o{ UNIT_PARTICIPATION : participates
+    ORG_UNIT ||--o{ UNIT_PARTICIPATION : includes
 ```
 
 **Three points that matter:**
@@ -231,8 +302,11 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
   parent, who applied). Collapsing them makes the audit trail false.
 - `unit_participation.person_id` points at **person**, not membership. This is the deliberate
   trade-off that makes the 1990s import possible — an imported roster records who took part,
-  and frequently no membership row exists to point at:
-  [../data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation).
+  and **no imported row ever has a membership to point at**, because the corpus carries no payment
+  evidence and a roster therefore evidences participation only
+  ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+  This bullet used to read "frequently", while the import still imagined membership rows. Field
+  rules: [../data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation).
 - **`membership_type` exists with exactly one row**, and `category`, `min_age`, `max_age`
   and `requires_background_check` are all gone. Membership is ageless
   ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)); age is read from
@@ -243,39 +317,30 @@ See [../data-model/02-organization.md](../data-model/02-organization.md) and
 
 ## 4. Guardianship
 
-```
-        ┌─────────────────────────────────────────┐
-        │             guardianship                │
-        │  guardian_person_id  ───────────────────┼──► person
-        │  dependent_person_id ───────────────────┼──► person
-        │  relationship                           │
-        │  right_level      ← none | view | write │
-        │  valid_from / valid_to            [T]   │
-        │  is_primary_contact      ← who to phone │
-        │  is_legal_decision_maker ← who may sign │
-        │  NO overlap of open rows on the pair    │
-        └───────────────────┬─────────────────────┘
-                            │
-                            ▼
-        ┌─────────────────────────────────────────┐
-        │        guardianship_permission          │
-        │  guardianship_id ───────────────────────┘
-        │  right_level     ← none | view | write  │
-        │  changed_reason / changed_by            │
-        │  valid_from / valid_to            [T]   │
-        │  (HISTORY of the right — the current    │
-        │   value is on the parent row)  (D-074)  │
-        └─────────────────────────────────────────┘
-
-        ┌─────────────────────────────────────────┐
-        │  NO `household` TABLE (D-057)           │
-        │  An address is a person_contact row     │
-        │  (contact_type = 'postal', purpose =    │
-        │  'billing'), temporal like any contact. │
-        └─────────────────────────────────────────┘
-          ↑ SHARED ADDRESS GRANTS NO ACCESS. Authority over a child comes from the
-            `guardianship` row and the `right_level` it carries, never from sleeping at
-            the same address (D-019, which outlives the table; D-057; D-074)
+```mermaid
+erDiagram
+    GUARDIANSHIP {
+        uuid guardian_person_id FK
+        uuid dependent_person_id FK
+        string relationship
+        string right_level
+        datetime valid_from
+        datetime valid_to
+        boolean is_primary_contact
+        boolean is_legal_decision_maker
+    }
+    GUARDIANSHIP_PERMISSION {
+        uuid guardianship_id FK
+        string right_level
+        string changed_reason
+        uuid changed_by FK
+        datetime valid_from
+        datetime valid_to
+    }
+    PERSON ||--o{ GUARDIANSHIP : guardian
+    PERSON ||--o{ GUARDIANSHIP : dependent
+    GUARDIANSHIP ||--o{ GUARDIANSHIP_PERMISSION : records
+    PERSON ||--o{ GUARDIANSHIP_PERMISSION : changes
 ```
 
 **Key point:** guardianship is a general graph — one guardian → many dependents, many
@@ -457,33 +522,42 @@ See [../data-model/05-authorization.md](../data-model/05-authorization.md) and
 
 Every `[T]` table above uses the same shape. The returning-member case shows why:
 
-```
-person 100 — Jan Novák
-│
-├─ membership #1   member   1990-09-01 ──────────────► 2010-06-30   terminated
-│    unit_participation  Pack 12  1990-09-01 ──────► 1998-06-30
-│    unit_participation  Pack 31  1998-09-01 ──────────────► 2010-06-30
-│
-│      ← 14-year gap, no rows. Visible as data, not inferred. →
-│
-├─ membership #2   member   2024-10-01 ──────────────► NULL (open, current)
-│    unit_participation  [ROOT]    2024-10-01 ──────► NULL   ← created with the
-│    unit_participation  Pack 5    2024-10-01 ──────► NULL     membership, so the
-│    position_assignment  scoutmaster, Pack 5  2025-01-01 ──► NULL   roster is uniform
-│    role_assignment  unit_leader @ Pack 5     2025-01-01 ──► 2025-12-31
-│                      (requires_membership = false → survives a lapse, D-039;
-│                       the person-level alternative is system.gate_exempt, D-051)
-│
-├─ guardianship → child A    2015-03-01 ──────────► NULL
-│    guardianship_permission  right_level = write      (source='self' → write)
-└─ guardianship → child B    2018-07-01 ──────────► NULL
-     guardianship_permission  right_level = view       (court-restricted)
+```mermaid
+flowchart TB
+    P["person 100 — Jan Novák"]
+    M1["membership #1 · member<br/>1990-09-01 → 2010-06-30 · terminated"]
+    U12["unit_participation · Pack 12<br/>1990-09-01 → 1998-06-30"]
+    U31["unit_participation · Pack 31<br/>1998-09-01 → 2010-06-30"]
+    GAP["14-year gap<br/>no rows; visible as data, not inferred"]
+    M2["membership #2 · member<br/>2024-10-01 → open"]
+    ROOT["unit_participation · ROOT<br/>2024-10-01 → open"]
+    U5["unit_participation · Pack 5<br/>2024-10-01 → open"]
+    POS["position_assignment · scoutmaster, Pack 5<br/>2025-01-01 → open"]
+    ROLE["role_assignment · unit_leader @ Pack 5<br/>2025-01-01 → 2025-12-31"]
+    GA["guardianship → child A<br/>2015-03-01 → open<br/>permission: write"]
+    GB["guardianship → child B<br/>2018-07-01 → open<br/>permission: view"]
+    P --> M1 --> U12
+    M1 --> U31
+    M1 --> GAP --> M2
+    M2 --> ROOT
+    M2 --> U5 --> POS
+    U5 --> ROLE
+    P --> GA
+    P --> GB
 ```
 
 Note the two membership rows have the **same type**. They differ only in period and end
 reason — this person was a member twice, and was a child and then an adult throughout. The
 old diagram called them `child` and `adult`; that was the framing the ageless decision
 replaced ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
+
+**Where the first row came from is not drawn, and the answer is not "the import".** Given a 1990s
+roster the pipeline produces the two `unit_participation` rows and **no `membership`**, because the
+corpus carries no payment evidence to make one from — so membership #1 stands here only because a
+human entered that period on evidence they had read (`membership.backdate`), which is the sanctioned
+route and is attributed to somebody
+([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+[../domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline)).
 
 Questions this shape supports, all of which fail against a design with `person.is_member`:
 
@@ -515,7 +589,7 @@ definition, or an append-only trail — the kinds of thing that have no period t
 
 | Entity | What it is | Points at | How many | [T] |
 |---|---|---|---|---|
-| `person` | The human being. Holds identity only — no status, no role, no membership | Nothing, except itself: `merged_into_person_id` ⇒ self | One per human, effectively; a merged row survives as a tombstone and is never deleted | no |
+| `person` | The human being. Holds identity only — no status, no role, no membership | Nothing, except itself: `merged_into_person_id` ⇒ self | One per human, effectively; a merged row survives as a tombstone and is never deleted. The pointer is **never rewritten forward** when the survivor is itself absorbed, so chains persist and `resolve_person()` walks them ([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)) | no |
 | `person_name` | One name a person has had, and when | `person` | Many per person; one current row per `name_type` | yes |
 | `account` | The ability to log in. Optional, and independent of membership | `person` | Zero or many per person over a lifetime; at most one **live** row | no |
 | `account_credential` | One authentication method's secret or external handle | `account` — deliberately not `person` | Many per account; one current row per external issuer and reference pair | yes |
@@ -536,8 +610,13 @@ definition, or an append-only trail — the kinds of thing that have no period t
 | `person_attribute` | The value one person currently has for one code | `person`, `attribute_definition`, and `attribute_option` when the type is `one_of` | One current row per person and code; more only where the definition sets `allow_multiple`, which no constraint can check (it reads another table) | **no — deliberately** |
 
 **That last `no` is the decision, and it is the reason this row spells it out.** Values are
-overwritten in place and `audit_log` — carrying the values themselves — is the only history: this is the one place in the schema where
-*"what did we believe in 2019?"* is answered from the trail rather than from business data, and
+overwritten in place and `audit_log` — carrying the values themselves, **for 24 months** — is the only
+history. This is the one place in the schema where *"what did we believe in 2019?"* would be answered
+from the trail rather than from business data, and since round 8 the answer is that **it is answered
+for two years and not beyond** ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
+the honest description of this trade is *no long history*, not merely *no temporal columns*, and if a
+case ever needs the long version the fix is temporal values — D-085 reversed — not a longer trail.
+On top of that expiry sits the older caveat:
 [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
 records the trail as discipline rather than guarantee. The trade was made with that in view and is
 reversible in one entry
@@ -591,18 +670,18 @@ attribute rows, or still having their values readable in the trail, means the re
 | `permission_level` | Join entity: this permission needs this level on this kind of scope | `permission`, `grant_scope_type`, `access_level` | One row per permission and scope kind | no |
 | `audience` | A set of people a grant may name: a built-in rule, or a stored group | Nothing directly; `resolver_key` names the rule a built-in evaluates | One row per code among built-ins; named groups carry no code | yes |
 | `audience_member` | Join entity: a person in a **named group**, for a period | `audience`, `person` | No overlapping periods per audience and person, over all rows; built-ins have none, being rules | yes |
-| `access_log` | The audit trail — who did what, by what authority, with what result | `person` as actor and as subject; `⇒ authorization_ref_id` across `role_assignment`, `access_grant` and `guardianship_permission`; `⇒ entity_id` | Append-only; nothing is ever updated or deleted | no |
+| `access_log` | The audit trail — who did what, by what authority, with what result | `person` as actor and as subject; `⇒ authorization_ref_id` across `role_assignment`, `access_grant` and `guardianship_permission`; `⇒ entity_id` | Append-only today; **proposed** to take the same 24-month window as the audit payload, which would make this cell wrong as written — **F-8**, unconfirmed ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) | no |
 | `permission_cache` | A computed answer kept briefly so checks are cheap | `person`, plus the code and scope it answers for | One row per person, code, scope type and scope id, each with an expiry. Derived and disposable — never a source of truth | no |
 
 **Audit and import**
 
 | Entity | What it is | Points at | How many | [T] |
 |---|---|---|---|---|
-| `audit_log` | The row-level trail of changes to business tables, **before and after values included** | `⇒ (table_name, record_id)` — polymorphic; `person` as actor, and on whose behalf | One row per change; append-only | no |
+| `audit_log` | The row-level trail of changes to business tables, **before and after values included until the payload window passes** | `⇒ (table_name, record_id)` — polymorphic; `person` as actor, and on whose behalf | One row per change; the row is never deleted, but a scheduled **payload reduction** empties the values 24 months after writing ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) | no |
 | `redaction_log` | That a redaction happened to a person, by whom, and to what | `person`; the person who requested and the person who performed it | One per redaction performed | no |
-| `import_batch` | One arrival of historical data, and where it stands | `person` as creator, applier and reverting party | One per batch; staging rows may be truncated once applied | no |
+| `import_batch` | One arrival of historical data, where it stands, and the raw-column→code map a person read before it applied | `person` as creator, applier and reverting party | One per batch; the map lives here as one object rather than per staged row, because it is one artefact a human reads top to bottom and the codes it names arrive `live` ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)); staging rows may be truncated once applied | no |
 | `staging_import` | A raw source row, verbatim, with its file and line | `import_batch` | One per source row per batch | no |
-| `staging_import_row` | That row parsed, plus what the parse could not decide, and what it eventually created | `staging_import`; `person` as resolver, and the `membership` and `unit_participation` rows it produced | One per staged row | no |
+| `staging_import_row` | That row parsed, plus what the parse could not decide, and what it eventually created | `staging_import`; `person` as resolver, and the `unit_participation` row it produced — **never a `membership`**, since the corpus carries no payment evidence ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)) | One per staged row | no |
 
 **Finance** *(provisional)*
 
