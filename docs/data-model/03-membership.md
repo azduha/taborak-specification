@@ -545,12 +545,17 @@ in the expression or leaving it out, and the expression is a row that can be rea
 
 *Corrected in this round:* an earlier draft of this page read D-100's `PERSON(y)` as shorthand for the
 audience's own `LIST`, on the grounds that the seeded `selector_type` registry did not carry the code. **The
-registry was the side that was wrong** — `PERSON` is the thirteenth seeded selector
+registry was the side that was wrong** — `PERSON` was seeded then, as the thirteenth row
 ([data-model/05 §8](05-authorization.md#the-selector-registry), [D-101's amendment](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
-so `MEMBERS * ROLE(x) + PERSON(y)` parses as written. **`LIST` was never a substitute**, which is the part
-worth remembering: it is one set belonging to one audience, so `+ LIST` brings everybody on it and nothing on
-that list can except one person from itself. Writing the waiver as **a second grant aimed at the person** is
-still legal, still clearer for something permanent, and is no longer the only writable option.
+so `MEMBERS * ROLE(x) + PERSON(y)` parses as written. **`LIST` was never a substitute**, which was the part
+worth remembering at the time: it is one set belonging to one audience, so `+ LIST` brings everybody on it and
+nothing on that list can except one person from itself. **That confusion can no longer recur**, because
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted `LIST` and its table in the round after this correction was written, leaving twelve seeded rows and one
+way to name a person by hand — which is the outcome the paragraph was arguing for, arrived at by deleting the
+thing it had to argue against. Writing the waiver as **a second grant aimed at the person** is still legal and
+still clearer for something permanent, and is now the only way to date it
+([D-105 §2](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
 
 **Two of the three carve-outs were never carve-outs.** **Guardianship** (a parent's authority comes
 from a legal relationship, and an unpaid fee must not stop a parent acting for their child) and

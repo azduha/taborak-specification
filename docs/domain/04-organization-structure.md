@@ -150,9 +150,11 @@ columns. Authority arrives only through a grant that names the group, which is �
 **Where the line against an audience is drawn, because the two are one row apart in shape and a mile apart
 in meaning.** The round's inversion is the load-bearing part: **a group states its members; a selector
 picks them.** A group's members are a list of people that is true whether or not any permission points at
-it; an audience's `LIST` rows are an addition to an expression, meaningful only inside the expression they
-complete. A group exists to be talked about; a selector exists to be aimed at something. Two tables that
-both answer "who is in it" is exactly the shape
+it; a leaf in an audience — since
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+that means a `PERSON(y)` row, and until then it also meant a typed list held in its own table — is an addition
+to an expression, meaningful only inside the expression it completes. A group exists to be talked about; a
+selector exists to be aimed at something. Two tables that both answer "who is in it" is exactly the shape
 [D-080](../decisions/decision-log.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
 teaches a reader to distrust, so the difference is stated, not implied — and merging them would make the
 permission table the system's roster, which is the mistake
@@ -346,20 +348,27 @@ operand bracketed, a leaf left bare:
 **`PERSON` is a seeded selector, so that third row parses.** It did not when this page first printed the
 expression: the registry of seeded operands had been written from the evaluator's arm list rather than from
 D-101's grammar, and the arm nobody had implemented yet is exactly the kind of thing such a copy loses. The
-registry carries **thirteen** rows and `PERSON` is one of them — takes an argument, that argument is a
+registry carries **twelve** rows and `PERSON` is one of them — takes an argument, that argument is a
 person, binds to no item. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
 the class of defect it belongs to, a registry prose contradicts, is what
 [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
-answers.
+answers. **Twelve, not the thirteen this page printed last round:**
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted `LIST`, and the count moves for the reason the count always moves — a row was added or removed, and
+every page that recites it has to notice.
 
-**`PERSON` is an argument; `LIST` is one set belonging to one audience, and both survive because they do
-different jobs.** `LIST` is the audience's own dated list of people: `+ LIST` adds everyone on it and
-`- LIST` takes all of them back with it, because it is one operand moving as one unit. `PERSON(y)` names one
-person, so it composes and can be excepted on its own — which is why the exemption is written
-`+ PERSON(y)` inside the very grant that carries the rule, keeping the exception visible next to the thing it
-exempts (D-100's placement), and why a person who must be excepted is subtracted as themselves rather than by
-subtracting a list they happen to sit on. The kitchen example D-103 works through needs both operands, which
-is the proof they are not one operand wearing two names.
+**`PERSON(y)` is now the only way to name a human being in an expression, and that is a recent decision
+rather than how it has always been.** Until last round there were two: `PERSON(y)` named one person, and
+`LIST` named the audience's own typed set, which moved as one unit — `+ LIST` added everyone on it, `- LIST`
+took all of them back, and nothing on that list could be excepted on its own. For one round the two coexisted
+and several pages, this one included, argued that the difference was load-bearing;
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+settled it the other way, because a set of named people is written `PERSON(a) + PERSON(b)` and the table that
+held the other way had outlived the reason it was kept. **What the old argument was right about survives:** a
+person who must be excepted is subtracted as themselves, and the exemption belongs `+ PERSON(y)` inside the
+very grant that carries the rule, so the exception is read next to the thing it exempts (D-100's placement).
+What it got wrong is that a real semantic difference between two spellings obliges the model to keep both
+spellings; it does not, and one of them was a table.
 
 The posture flips from **default-on** to **opt-in per grant**, so a grant written as `ROLE(TREASURERS)`
 with no `MEMBERS` authorizes a lapsed member silently and forever. The controls are a standing report of

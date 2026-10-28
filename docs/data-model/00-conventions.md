@@ -56,7 +56,7 @@ an accepted decision, not discovered as an outage.** Tracked in
 | Boolean | `is_` / `has_` / `requires_` prefix | `is_system`, `binds_to_item` |
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
-| Junction table | `<a>_<b>` in alphabetical order | `audience_member`, not `member_audience` |
+| Junction table | `<a>_<b>` in alphabetical order | `guardianship_permission`, not `permission_guardianship`. *(The example here was `audience_member` for ten rounds, which was a better illustration because its two halves are further apart alphabetically; the table is deleted by [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), and a naming convention should not be taught with a table that does not exist.)* |
 | Lookup table | singular of the vocabulary it *is* | `selector_type`, `reason_code` |
 | Index | names the table and what it answers | "the open rows for one person", not `idx_3` |
 
@@ -533,7 +533,7 @@ states the fields, rules, invariants and open issues for its part of the model.
 | [02-organization.md](02-organization.md) | `person_group`, `person_group_member` — and nothing else, because there is no unit table: the unit is a scope ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)) |
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request` |
 | [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
-| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `audience_member` (the `LIST` leaf), `selector_type`, `grant_scope_type`, `access_log` |
+| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log` — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |

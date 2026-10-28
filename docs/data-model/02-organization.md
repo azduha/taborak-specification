@@ -295,14 +295,24 @@ moment somebody asks "can she edit the roster?". The `note` column is where any 
 prose, unread by the resolver
 ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 
-**Not the same table as `audience_member`, and the pair is kept apart on purpose.** Both are dated sets of
-people, which is the shape D-080 teaches a reader to distrust; they stay apart because their maintenance
-differs. A group's rows are the organization's record of who attends, kept by the people who run the group,
-and are true when no grant exists. `audience_member` rows are a selector's additions, kept by whoever
-composes permissions, and are meaningless outside the expression they complete
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
-[D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
-Merging them would make the permission table the system's roster.
+**There used to be a second dated set of people beside this one, and the argument for keeping them apart is
+worth keeping even though one of them is gone.** `audience_member` held the names somebody typed into one
+audience; it was the same shape D-080 teaches a reader to distrust, and this page argued at length that the
+two must never be merged, because **merging them would make the permission table the system's roster**.
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted that table and its `LIST` operand — a hand-named person is now a `PERSON(x)` leaf inside the
+expression itself — so **the duplication is gone rather than reconciled**, and one of the two tables D-080
+would have flagged no longer exists to be flagged.
+
+**What did not go is the hazard, and it is the reason this paragraph survives its subject.** The temptation
+when a grant needs one more person is to add that person to a group, because a group is the thing with a
+roster editor. That is still refused, and for the same reason
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+gave: **a group's rows are true when no grant points at them**, so editing one to move one grant's reach
+edits a roster that other grants read, and it invents a group nobody talks about. Since D-105 the refusal has
+a clean alternative next to it instead of a competing table: write `PERSON(honza)` in the expression that
+needed him, where it is visible, dated by the grant that carries it, and meaningless outside it
+([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 
 ---
 
@@ -463,9 +473,14 @@ now confers nothing at all — D-100); background checks (none are recorded — 
 ended while a live grant, or a live audience reachable from one, names it (**refused at save** — D-103 wrote
 its audience row first and extended it to `person_group` in the round after, on the `-`-widens reasoning;
 §3 and §6 check 5); whether a `PERSON` selector should exist so that D-100's one-person exemption is
-writable (it is one of the **thirteen** seeded rows, per D-101's amendment — the registry had been copied
-from the evaluator's arm list and lost the arm, which
+writable (it is one of the **twelve** seeded rows — thirteen until
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+removed `LIST` — and it arrived late by
+[D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)'s
+amendment, because the registry had been copied from the evaluator's arm list and lost the arm, which
 [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
-is the answer to).
+is the answer to); and whether a hand-typed set of people needs a table of its own (**no** — D-105 deleted
+`audience_member`, and the round that added `PERSON(x)` had already removed the only reason it had for
+existing).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -310,7 +310,10 @@ and a **group** is the opposite of a rule — a `person_group` **states its memb
 ([D-098](decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 So the union that D-091 built into one table became an operator in a language, and the hand-kept list that
 D-091 insisted on survived **twice over**: as `LIST` inside an audience, and as the whole content of a
-group. The two halves of D-091's answer that were refusals — an appointment writes no assignment, a cycle is
+group. **That was round 10; round 11 deleted one of the two** — `LIST` and `audience_member` are gone
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+so the hand-kept set survives as a group's roster, or inside an expression as `PERSON(a) + PERSON(b)`, which is
+the second of those two and not a third thing. The two halves of D-091's answer that were refusals — an appointment writes no assignment, a cycle is
 refused when the edge is saved — both stand, the first confirmed by D-100 and the second widened to
 references across audiences by D-103. What is now dead wording here is `audience.kind`, the `unit_leaders`
 rule, "level", and the link to §4 of domain/04, which was about positions.
@@ -808,10 +811,14 @@ bullet per missing fact. **No count appears in this heading, because the count c
 being written** — see the first answer below.
 
 **Answered while this entry stood open, and answered against its own assumption:** `PERSON(x)` is a seeded
-row, not shorthand, **and the registry was one row short when this entry said so in bold.** It has thirteen
-rows now and `PERSON` is the thirteenth — `takes_argument` true, `argument_type` `person`, `binds_to_item`
-false — added by the amendment paragraph at the end of D-101's grammar
+row, not shorthand, **and the registry was one row short when this entry said so in bold.** `PERSON` arrived
+as the **thirteenth** row — `takes_argument` true, `argument_type` `person`, `binds_to_item` false — added by
+the amendment paragraph at the end of D-101's grammar
 ([D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
+**The table is twelve rows now**: the round after this one deleted `LIST` and the table behind it
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+That is the honest sequence rather than the tidy one, and it is written out because this entry has now printed
+a count that stopped being true twice — which is exactly the argument for why the heading carries no number.
 What this entry got right was the *need*: a grant does not need the operand, because the grantee pair already
 names one person, but an **audience** does, because a saved expression aimed at several things cannot carry a
 grantee — so the "except Honza" in `MEMBERS * ROLE(x) + PERSON(y)`, the control that replaced the membership
@@ -822,7 +829,25 @@ used to ask for. **The wrong repair was already circulating**: the pages that no
 `PERSON(y)` as `LIST`, and that is not a wider spelling of the same thing — `LIST` is one set of several
 people belonging to one audience, so subtracting it removes everybody on it. The defect class is
 [F-19](#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two), which this
-round also closed.
+round also closed. **That particular repair is now unwritable**: one spelling is left, so there is nothing to
+substitute — the only way in which
+[D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+ended a bug this entry described without anybody deciding to end it. **The class it was an instance of is
+untouched**, and `PERSON(x)` is now the operand that would be misread, since it went from a curiosity to the
+only way to name a set of people by hand.
+
+**Round 11 found the same defect again, this time in prose.**
+[domain/06 §4.2](domain/06-authorization-model.md#the-selectors) keeps its own copy of this table for readers
+who never open the data model, and that copy had never grown a `PERSON` row or an `AUDIENCE` row while still
+carrying the `LIST` row D-105 deleted — so the page that teaches this language to everybody who is not
+implementing it taught a language in which two of the twelve operands could not be written, and taught one
+that no longer exists. **Third instance of one defect, one round apart:** a decision entry adds an operand,
+the seeded table gets the row because somebody is holding it, and every prose copy is updated by whoever
+happens to read it. **F-19 counted four instances of this defect in ten rounds, every one of them a table
+disagreeing with prose; this one is prose disagreeing with prose, which is why no diff over rows would have
+caught it either.** The remedy is the one [F-19](#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two)
+adopted and D-104 argued for, aimed at documents instead of codes: **a token written in three files is not
+one fact stored three times, and nothing in §11 can see any of the three.**
 
 **Retired by the round, listed so nobody re-raises them.**
 
@@ -858,6 +883,21 @@ round also closed.
   and an age band is a range, not a row. So either age gets a seeded band table to point at for the sake of
   two or three rows, or these documents should say plainly that **age never enters the selector language**
   and EV-1's escape hatch is closed. Leaving it unstated is the one option that gets worse quietly.
+
+**What round 11 changed here, and what this entry still does not own.** The two bullets above are the whole
+open list; `PERSON(x)` did not close either of them, and deleting `LIST` did not open a third, because **the
+language can state exactly the same facts about people as it could with thirteen operands** — the one thing
+that went with `LIST` is the *dates on individual names*, and that is not a missing operand: no row could
+restore it, and [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+ruled that a windowed exception is a second grant with its own period instead. Two adjacent questions are
+**deliberately not this entry's**, and are named so they are not folded in: `WHITELISTED` is a refused
+candidate, not a missing fact, and it is
+[F-20](#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one)'s to answer with
+[EV-6](#ev-6--whitelisted--the-word-people-reach-for-with-no-stored-state-to-name) carrying its events half —
+counting it here would be counting a refusal as a gap. And the legibility of a hand-typed set of forty names
+is [F-22](#f-22--forty-hand-typed-names-print-as-thirty-nine-pairs-of-brackets-is-that-the-editors-problem),
+which D-105 pointed at this entry's neighbourhood for but which is not a question about a missing fact: the
+language states it fine, and reading it back is the problem.
 
 **Impact.** The `GUARDIANS` bullet is the cheap one — either one row in `grant_scope_type`, or one corrected
 registry row and one corrected sentence in §8 and §12. The age bullet is the expensive one in kind rather than
@@ -896,18 +936,18 @@ convenient reading; **whether it is cheap enough to run on every edit is exactly
 [F-16](#f-16--is-the-listing-of-grants-naming-an-audience-as-cheap-as-d-103-assumes) asks, and nothing has
 measured it.** An invalidation that is too slow to run is not a slow feature, it is a stale allow.
 
-**What invalidates what, as of round 10.**
+**What invalidates what, as of round 11.**
 
 | Write | Invalidates |
 |---|---|
 | `access_grant` insert, update, revoke | that grantee × that permission × that scope (and the unit, for the dead-weight-deny report's sake) |
-| `audience_operand` — the tree, not just the rows | every answer whose expression reaches this audience, **transitively** (D-103) |
-| `audience_member` (the `LIST` leaf) | the same set, as above |
+| `audience_operand` — the tree, not just the rows | every answer whose expression reaches this audience, **transitively** (D-103). **Since D-105 this is also the row that covers "somebody added a name"**: adding a person edits the expression, so the widest cache-busting write in the module got one step more common and one step less visible, and two clerks editing one audience at once can now lose one of the two additions unless the editor carries a concurrency check |
+| ~~`audience_member` (the `LIST` leaf)~~ | **retired** — the table is deleted ([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)), and the write that replaced it is the row above |
 | `role_holder` | everyone holding that office × each permission granted to `ROLE(x)` |
 | `person_group_member` | everyone in that group × each permission granted to `GROUP(x)` — and anything naming an audience that references the group |
 | `membership` open/close, and the 1 January sweep | by **person**, not by scope, and only where an expression contains `MEMBERS` — the sweep is no longer the universal invalidator it was while the gate existed |
 | `event_registration` insert, waitlist move, `is_confirmed` | every cached answer **on that event** for the four attendance tiers, which are computed rather than stored |
-| `person` merge or unmerge | both directions, by person id, since sets are keyed on person |
+| `person` merge or unmerge | both directions, by person id, since sets are keyed on person — **and since D-105 invalidating is not enough**: every `audience_operand` leaf whose `selector_arg_id` names the absorbed person has to be *repointed*, because a leaf that resolves to nobody is the empty set, which is silent on the allow side and **widens a deny on the `-` side** ([F-10](#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)) |
 | ~~a unit's parent changing~~, ~~a `scope_exposure` write~~ | **retired** — the hierarchy and `scope_exposure` are deleted (D-097), and with them the two widest fan-outs the list used to have |
 
 **What is genuinely still a question.** The TTL, and one shape of invalidation that has no good answer yet:
@@ -1016,7 +1056,8 @@ shape 4 was the entire reason this question was red.
    second `NULL` that history requires — and here it would forbid **every** unnamed audience, which is most
    of them. Gone: "one live exposure per unit and assignment", with `scope_exposure` (D-097).
 3. **Anything whose answer comes from another table or from the resolver** — this is where round 10 worked,
-   and it now has **five** instances where it had three:
+   and it had **five** instances where it had three; round 11 added a **sixth**, and it is the first one whose
+   subject is a column that *deliberately* has no key to follow:
    - *Gone:* the holder limit (`max_holders`, deleted with positions, D-100), the nesting rules and the
      exposure direction (both D-097). Naming them keeps the count honest.
    - *Kept:* per-scheme identifier uniqueness
@@ -1048,6 +1089,19 @@ shape 4 was the entire reason this question was red.
      event arrived without its grant is a person with a title and no permissions** — which reads as a bug
      report, not a constraint violation. The legacy import owes one per event row, so the first occurrence of
      this is expected in bulk, not at the margins.
+   - *New in round 11, and the first whose subject is a column with no key on purpose:* **a person merge or a
+     redaction must repoint every `audience_operand` leaf whose `selector_arg_id` names the absorbed or erased
+     person** ([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+     The column carries no foreign key by design
+     ([D-011](decisions/decision-log.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s
+     accepted trade-off), so there is no cascade to inherit and no key for an ORM to walk: the merge
+     reassignment table gains the row, the erasure path gains the scan, and both have to reach **all five
+     argument kinds** — `person`, `role`, `person_group`, `event`, `audience`. Nothing in the schema notices a
+     missed leaf. The nightly orphan check becomes the backstop rather than the only mechanism, and the failure
+     is this module's quietest one: **a subtraction that stops subtracting**, because a leaf resolving to
+     nobody is the empty set and an empty set behind a `-` makes the result wider. Until this round the
+     hand-named people lived in a table that *did* have a key, which is the only reason the instance is new
+     rather than long overdue.
 4. **A column that may not change once it is set** — its only named instance is **gone**:
    `org_unit.parent_unit_id`
    ([D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit))
@@ -1247,6 +1301,22 @@ resolver run, not a save-time check. **So the honest design is a warning over th
 references treated as opaque atoms** — which catches operand reordering and misses everything nested, and must
 say so in the UI rather than implying an equivalence proof.
 
+**What round 11 did to it, and it was in both directions at once.** `PERSON(a) + PERSON(b)` is now the
+*ordinary* way to write a set of people
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+so the near-duplicate this entry assumed would accumulate slowly now arrives **the first time two people type
+the same twelve names in a different order**. The duplicate is no longer entropy, it is the normal output of
+hand-typing — and "the confusion is cosmetic until someone edits one copy" describes the common case rather
+than the rare one. The option that made the duplicate *syntactically* equal, storing `+` children sorted, is
+meanwhile in tension with the same round's ruling that **the tree is stored exactly as the writer wrote it,
+with no rebalancing**: sorting the children of a commutative operator is not rebalancing, but it is the same
+temptation in a milder uniform, and whether it falls inside what D-105 refused is a sentence nobody has
+written — which is now a thing that has to be said before it can be done. And the fallback already called the
+honest one, expanding the reference closure to compare two expressions, **lost its bound** with
+`selector_depth_limit`, so a warning that wanted one resolver run now wants a walk of no promised length.
+**The colour stays 🟢**: nothing depends on the answer, and a duplicate still costs one extra row and one extra
+evaluation. What changed is how often it is paid, not what it costs.
+
 **Positions.** Warn on equal fingerprints (catches the common case, false-positives on deliberately
 identical sets like two events' `ORGANIZERS`); compute nothing and let the *which grants name this audience*
 listing (F-16) do the work of showing redundancy; or normalize at write so `+` children are always stored
@@ -1283,6 +1353,22 @@ to ship.
 tree walk is cheap because it is small. Neither has been measured against a corpus of **thousands of roster
 rows** (B-1) and an event with a real registration list, and the case that hurts is the nested audience three
 levels deep, evaluated once per item in a list of items.
+
+**What round 11 took away.** The second of those assumptions used to have a backstop it never mentioned: the
+depth bound made *"the tree walk is cheap because it is small"* true by construction rather than by habit, and
+[D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted it, so the size of a preview is now bounded by the same nothing a check is bounded by — acyclicity, and
+whatever the writer typed. The hand-typed set is the new thing in the walk as well: forty names are forty
+leaves, expanded per item, where they used to be one `LIST` leaf over a table with an index. And the save-time
+cost moved too: the closure whose size a preview walks is **discovered by walking it**, so the first preview of
+a wide audience and the save that accepted it pay for the same traversal. **What this does not change is which
+answer is honest.** Of the three positions below, the third — refuse to list above a threshold, show a count —
+is now the *only* local bound on offer, and unlike a cap on the enforcement path it costs the model nothing,
+because a preview that declines to list changes what a screen shows and not whom a grant reaches. That
+distinction is the whole reason a threshold is acceptable here and refused in
+[F-21](#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones). **Still 🟡**:
+this was already a measurement the editor owes before shipping, and the round made the measurement more urgent
+without changing who takes it.
 
 **Positions.** Preview lazily, per item, on demand, and never for a list of items (the honest default: a
 count, not a name list, until somebody opens one). Cache the expansion per `(audience, item)` with the key
@@ -1323,10 +1409,27 @@ the route is right there, because naming an audience is optional, so an editor t
 teaches people to inline the subexpression instead, which removes the reference the safety rule needed.
 
 **Positions.** Add the reverse index and state it as an invariant to verify (cheap, and it is a row in §11 of
-[data-model/05](data-model/05-authorization.md#11-invariants-to-verify) rather than a design change); cap the
+[data-model/05](data-model/05-authorization.md#11-invariants-to-verify) rather than a design change); ~~cap the
 listing by depth so the walk is bounded by `selector_depth_limit`, which D-101 already enforces and which
-makes the worst case finite by construction; or drop the "and at what depth" half of the requirement, which
+makes the worst case finite by construction~~ — **this position is void, and it was the cheapest of the three**:
+the parameter and the save-time bound behind it are both deleted
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+so there is no number for a listing to inherit, and the walk is finite only because the closure is acyclic and
+is discovered by walking it; or drop the "and at what depth" half of the requirement, which
 removes the transitive walk and keeps the single-hop refusal.
+
+**What round 11 did to it: this measurement gained callers rather than changing shape.** Adding a name to an
+audience used to be an insert into `audience_member`; **it is now a save of the whole expression** (D-105), so
+every hand-typed exception added to an audience that references another one runs the editor's referrer walk —
+the listing is priced **per name added**, which is a different traffic pattern from *once, when somebody edits
+a rule*, and it arrives next to the two-writers problem D-105 names in the same breath. The same walk also
+became, in the same round, **the only structural guard the save path has at all**: the cycle check across
+audiences is a reachability walk over the closure, and with the depth bound gone it is the only thing standing
+between a saved expression and one that never terminates. One measurement therefore now answers two questions —
+is D-103's protection cheap enough to be obeyed, and does saving a wide audience cost anything an editor can
+feel — and the second is a question nobody had to ask last round. **Still 🟡**, for its original reason: the
+fallback is already written down as a decision entry (weaken the D-103 rule, in the open), so the exposure is a
+guard people route around rather than a design with no answer.
 
 **Needed.** Before an editor offers to name an audience. If the answer is "not cheap", the fallback is not a
 slower screen but **a weaker D-103 rule**, which is a decision entry, not an implementation detail — and it
@@ -1358,11 +1461,18 @@ expressions are recomputed from state that has moved, over a set — referenced 
 versioned. D-103's own note that the listing matters "more than it looks" is the same observation one hop
 away.
 
-**The uncomfortable symmetry.** D-098 kept `person_group_member` and `audience_member` as **two dated sets of
-people** on purpose, and refused to unify them, because a group states its members and an audience computes
-them. That refusal is exactly what makes one of them answerable across time and the other not. Any answer here
-pushes toward making an audience a **dated snapshot series**, which is the thing D-101 refused to store and
-D-098 refused to merge.
+**The uncomfortable symmetry, which round 11 made sharper.** D-098 kept `person_group_member` and
+`audience_member` as **two dated sets of people** on purpose, and refused to unify them, because a group states
+its members and an audience computes them — and that refusal is exactly what made one of them answerable
+across time and the other not. **D-105 deleted the second of those two tables**, so the pair these documents
+have to live with is now a group's dated roster against a `PERSON(x)` leaf that carries no date at all. The
+hand-written set, which used to be the half of an audience that *could* answer *"was she in it in 2024?"*,
+moved to the unanswerable side along with the rest of the expression: same asymmetry, one table narrower, and
+worse in one specific way — **a set somebody keeps by hand was the cheap instance of the reconstructable
+answer, and there is no hand-kept set left inside an audience that can give it.** Any answer here still pushes
+toward making an audience a **dated snapshot series**, which is what D-101 refused to store and D-098 refused
+to merge; what changed is that the pressure now arrives from the plainest audiences in the system rather than
+from the nested ones this entry was written about.
 
 **Positions.** **Accept it, and write it down** — these documents state plainly that an audience has no
 reconstructable reach beyond the audit window, and that a set you need to be able to reconstruct is a
@@ -1372,6 +1482,21 @@ live grant names — F-7's option, arriving with a sweep that must not fail sile
 failure is an access bug nothing detects. **Version the expression instead of the result** — an
 `audience_revision` row per edit, small because it is a tree of ids, which answers "what did the rule *say*"
 but not "whom did it reach", and is a much cheaper promise to keep.
+
+**What round 11 did to it: it widened the hole and raised the value of one answer.** D-105 did not dodge the
+history question — with `audience_member` deleted, *"who was on this audience in 2026?"* joins the questions
+that are a recomputation over audit payloads, the payloads expire after 24 months
+([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)), and
+so the question stops being answerable in 2028: the same hole, one table wider, **accepted rather than papered
+over**. What moved is the worth of the third position. `audience_revision` used to answer *"what did the rule
+say?"* and to stop there, because the hand-typed people lived outside the rule in a table of their own. **A
+name somebody typed is now part of the rule**, so versioning the expression versions the names with it: for a
+hand-written set — and for exactly that part of any audience — a revision row now answers the reached-set
+question outright, dated by *edit* rather than by *validity*, which is the as-of/audit-time distinction the
+glossary insists on rather than a new one. It still answers nothing for `GROUP(x)`, `ROLE(x)` or a referenced
+audience, all of which move under an expression without being written in it. **A narrower promise than the
+entry implied, and a real one.** The colour stays 🟡: this is the same question with more evidence behind one
+option, and still no question implementation waits on.
 
 **Recommendation.** The third, plus the first. Storing the *expression* per edit is nearly free, it is the
 question a reviewer actually asks, and it keeps the answer honest about what it is; the *reached set* stays a
@@ -1549,7 +1674,12 @@ having been found by nobody who had been asked to look there.)*
 existed and is only now written down; and the QR capability is **absent, not renamed** — the seeded
 `permission` row this entry was braced for is a row that never ships. The report is zero-schema (D-072), and
 what it will diff against is [data-model/05 §8](data-model/05-authorization.md#the-selector-registry) with its
-thirteen rows, the catalog's sixty-six codes, `grant_scope_type`, `reason_code` and the two seeded audiences.
+twelve rows — thirteen when this entry was written, minus the `LIST` row
+[D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted — the catalog's sixty-six codes, `grant_scope_type`, `reason_code` and the two seeded audiences. **The
+count moving under the report is the point of adopting it**: a row appearing or vanishing is exactly what the
+diff exists to notice, and the round that deleted `LIST` is the round that would have caught a page still
+naming it, had anyone run the script.
 
 **What stays open after this.** The failure mode is the only one it has, and D-104 says so plainly: **a report
 that cannot be violated, only forgotten.** The entry becomes obsolete when there is an implementation with a
@@ -1576,8 +1706,19 @@ ground rather than by inheriting that one** — because unlike `PRESENT` there *
 stored, and the refusal is therefore a decision rather than an observation.
 
 **The answer these documents already imply, stated once so it stops being re-derived.** "Let these people
-register" is an **allow grant** on the event naming `event.register_self`, aimed at a `LIST` or a `GROUP(x)`
-— dated, revocable, group-aimable, deny-able. **A `WHITELISTED` operand would reimplement grants with fewer
+register" is an **allow grant** on the event naming `event.register_self`, aimed at an audience whose
+expression is either the hand-typed `PERSON(a) + PERSON(b)` or a `GROUP(x)` — revocable, deny-able, aimed at a
+**set** rather than a flag, and **dated by the grant's own `valid_to`** now that the per-name dates of
+`audience_member` are deleted
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)):
+*"these three until August"* is that grant carrying a period, and a different set for August is a **second
+grant**, which is the shape this refusal now has to keep paying for. **Which of the two spellings the sentence
+wants is something these documents do not settle, and it is written out rather than picked**: the handful of
+names a leader ticks for one event is the sum, the standing camp-staff list is the group, and D-105 kept both
+on purpose — a set that outlives the event belongs in a roster somebody maintains, while a set that exists only
+to widen one grant must not become one, because editing a roster moves every grant that reads it
+([D-098](decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+and D-105 restates that reason as unchanged). **A `WHITELISTED` operand would reimplement grants with fewer
 powers**, and it would do it in the one place where the model has just spent a round deleting hard-coded
 sentences from the resolver and replacing them with grant rows (D-102's whole move). So: **refuse it**, and
 say why beside the `PRESENT` refusal. What is *not* answered here is the narrower sentence EV-6 carries, and
@@ -1587,6 +1728,111 @@ and the language half is the one that gets decided first, by whoever adds the co
 
 **Needed.** A paragraph where the tiers and the refusals are listed. Nothing else, and nothing before
 implementation.
+
+---
+
+### F-21 🟡 Nothing bounds an audience expansion now. Who reads the report of the widest ones?
+
+**Question.** For ten rounds a permission check cost a bounded amount, and the bound came from one place:
+`selector_depth_limit`, applied at save over the expanded tree.
+[D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted the parameter and the save-time check with it, and ruled that the tree is stored **exactly as its
+author wrote it** — one row per node, left to right, no rebalancing, because a rebalanced tree is a different
+expression than the one a person wrote. What survives as a structural guard is **the two cycle walks**: one
+inside the expression, one across audiences through every `AUDIENCE(x)` leaf. They refuse an expansion that
+never terminates and they say nothing whatsoever about one that merely costs a lot. **A check's cost is now
+bounded by acyclicity alone** — no bound on height, and none was ever asserted on breadth — and the
+expensive shapes are not exotic: `EVERYONE` is one leaf that reaches everyone the resolver can see, and a
+hand-typed set of forty names is forty leaves where the last round kept one leaf and an indexed table.
+
+**What replaced the invariant, and what kind of thing it is.** This is D-081's pattern executed exactly: the
+rule's name outlives its mechanism. *"Depth must be refused at save, over the expanded tree"* retires as an
+invariant and survives as **a standing report of the widest and deepest audiences with their per-check cost**,
+beside the operand cache. D-105 states the weak half itself rather than letting it be discovered: **a report,
+with no CI behind it — a convention, not a guard**, and the third control of this shape the authorization
+module now depends on, after [F-13](#f-13--should-a-role-grant-without-members-be-a-lint-warning-or-only-a-report)
+and [F-19](#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two). **Three
+things are missing from it and all three are this entry: no role is named as its reader, no cadence is set,
+and no number says where *wide* becomes *too wide*.**
+
+**The half that is refused on purpose, and has to stay refused.** Whoever reads this entry will reach for a
+cap on the read path — a depth the resolver declines to walk, a budget it stops at — and the design refuses
+that for a reason that got **stronger**, not weaker, when the bound went: *the cap becomes the thing that
+decides who a grant reaches*, because a walk that stops early is an operand resolving to nobody, and an empty
+set behind a `-` makes the answer wider. Until last round that refusal was the back-up position behind a
+guard that existed at save time; **now it is the entire design**, and the only sentence left to say about cost
+is a number on a report somebody has to choose to open. The line worth keeping is the one
+[F-15](#f-15--what-does-the-per-item-audience-preview-cost-at-real-event-sizes) already walks: a limit on what
+a **preview lists** changes what a person sees and is allowed; a limit on what a **check walks** changes who
+has access and is not.
+
+**Positions.** **Name a reader and a cadence** — the cheapest answer in this file, one sentence, and it changes
+no data; the report exists and nobody owns it. **Print a warning threshold** — honest only while it stays
+advice in the report's own text, because the moment somebody is forced to obey a threshold it has become the
+cap the paragraph above refuses, and a guard that pretends to be a report is worse than either. **Or accept
+unbounded per-check cost as a property of the system** and lean on the operand cache and the assumption behind
+it ([assumption 61](#i-assumption-index)) — which is what an implementation would do by default anyway, and
+the reason this entry exists: to stop that being an accident.
+
+**Schema impact.** **None, and that is the trap.** There is no column to hold a limit, deliberately: a limit in
+a column is a limit in the check, which is the refused thing, and D-072 means these documents will not write
+the query either — what exists is a walk over `audience_operand` that someone has to run.
+
+**Needed.** Before an implementation ships a resolver and no report. 🟡 and not 🔴 because nothing blocks the
+schema and the likeliest answer is one sentence naming a person; but the failure this entry describes is not a
+slow system, it is **the wide audience nobody looked at, on a check path that has no reason left to complain**,
+and unlike F-16 there is no measurement that makes it go away — only a reader.
+
+---
+
+### F-22 🟢 Forty hand-typed names print as thirty-nine pairs of brackets. Is that the editor's problem?
+
+**Question.** [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+left D-101's canonical form standing: **the stored rendering prints every bracket, always**, and a sum is a
+binary tree, so a hand-typed set of *n* people is *n*−1 nested pairs. Forty names is thirty-nine pairs before
+a single `-` or `*` appears. D-105 saw this coming and said the honest thing — storage and display both say
+what was written, and if that turns out unreadable then **a set of people big enough to be unreadable is a
+`person_group`** — and then pointed this judgement at F-5's neighbourhood. **F-5 has already declined it**, in
+its own entry: that one asks which facts about people the language cannot state, and the language states this
+one perfectly. What is left is a question about **reading**, and it belongs to whoever opens the editor.
+
+**What D-105 did not decide, and what would be decided here.** It named the destination and not the trigger.
+Nothing in the corpus says at what point a writer is *told* to reach for a group, or whether anyone is told at
+all; nothing says whether the fully-bracketed form is what a reviewer is **shown**, or merely what is stored —
+D-101's ruling is about the stored rendering, and it already has the editor rewriting what is typed into that
+form before saving, so the two are separable and nobody has said whether they are. And nothing says whether an
+unreadable-but-exact expression is an acceptable thing for a second person to audit a year later, which is the
+actual question: **the model is fine with the forty-name tree either way**, and only the editor cares.
+
+**Positions.** **Say the canonical form is storage, not display** — show a flattened `PERSON(a, b, c)` on
+screen, keep the nested tree in the rows, and write down that the screen is a rendering; cheapest, and it keeps
+D-105's "we store what was written" untouched. **Or refuse above a size** — the editor will not save a sum of
+more than *n* names and says *"make this a group"*. That is a cap, and the honest difference from the cap
+[F-21](#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones) refuses is that
+it governs what an author may *write* and not whom a stored grant reaches — but it carries the same hazard
+F-16 names for the deletion guard: **an editor that blocks the safe action teaches people the unsafe one**, and
+here the unsafe one is inventing a group other grants will read, which is the exact thing D-105 kept its whole
+argument about. **Or do nothing** and let the widest-and-deepest report be the feedback — which is dumber than
+it sounds only because of the next paragraph.
+
+**The link to F-21 that makes this entry worth more than a style preference.** With no depth bound, a
+hand-typed set is **the deepest thing most organizations will have**, and a forty-name list will top the
+deepest-audiences report while costing less than a two-level nested audience. So the report F-21 has to find a
+reader for will spend its top rows on typing rather than on structure — **the signal is about who typed a lot,
+not about who composed something expensive.** A threshold here, or a flattened display there, is what keeps
+that report legible as a cost report. Say which of the two it is, before the report is the only control left.
+
+**Why this is 🟢, and what would move it.** The corpus gives no hand-typed set bigger than a handful — every
+worked example in these documents names one to three people, and the thousands-of-rows legacy import arrives as
+memberships and participations, never as an audience expression (D-090). So the forty-name audience is a shape
+the editor must not make *painful*, not a shape that has happened. It becomes 🟡 the first time a reviewer
+quotes back an expression they could not read, or the first time somebody types twenty names because making a
+group felt like more paperwork than they were owed — **and that second one is a story about the editor, which
+is the whole point of keeping this entry separate from the model.**
+
+**Schema impact.** None. Not one column: a size rule lives in the editor, a flattened display lives in the
+editor, and the storage stays what D-105 ruled it is. **Needed:** when the audience editor is designed, which
+is also the moment someone decides what a grant looks like on a screen.
 
 ---
 
@@ -1733,9 +1979,14 @@ word, or should the model give it state?
 
 **The half that is already answered, and should be said before anything is built.** "These named people may
 register for this event" needs no new anything: it is an **allow grant on the event** naming
-`event.register_self`, aimed at a `LIST` or a `GROUP` — one row per sentence, dated, revocable, audited
-(D-099, D-102). That is the D-102 answer to the sentence, and it is better than a flag because a flag cannot
-be aimed at a group, cannot expire, and cannot be refused by a deny. **Anyone adding `is_whitelisted` is
+`event.register_self`, aimed at an audience whose expression is the hand-typed `PERSON(a) + PERSON(b)` or names
+a `GROUP` — one row per sentence, revocable, audited, and **dated by the grant rather than by the names**,
+since the dated rows those names used to live in are deleted (D-099, D-102, and
+[D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+for the deletion; [F-20](#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one) settles
+which of the two spellings a given sentence wants, and this entry does not). That is the D-102 answer to the
+sentence, and it is better than a flag because a flag cannot be aimed at a group, cannot expire, and cannot be
+refused by a deny. **Anyone adding `is_whitelisted` is
 reimplementing grants badly.**
 
 **The half that is not answered.** There is a different sentence that sounds identical and is not about
@@ -2141,7 +2392,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | ~~23~~ | ~~Positions are multi-holder unless `max_holders` says otherwise~~ (D-033) — **deleted by D-100** with `position`, `position_assignment`, `is_leadership` and `max_holders`. The vacancy question it answered is now unanswered by construction; see [F-18](#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write) | [domain/04](domain/04-organization-structure.md) |
 | 24 | Membership is ageless — no category, no `min_age`, no `max_age` (D-038) † | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |
 | 25 | A grant targets a person **or** an audience, never both (D-042) † | [data-model/05](data-model/05-authorization.md#6-access_grant--the-per-item-layer) |
-| 26 | ~~Built-in audiences are rules evaluated by the resolver, not stored lists~~ (D-042) † — **both halves are now wrong, in opposite directions**: there are no built-in audiences (two seeded rows remain, and the rules are the twelve `selector_type` operands), and an audience **does** contain a stored list — its `LIST` leaf ([D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [D-103](decisions/decision-log.md#d-103--an-audience-may-name-another-audience)) | [data-model/05](data-model/05-authorization.md#the-selector-registry) |
+| 26 | ~~Built-in audiences are rules evaluated by the resolver, not stored lists~~ (D-042) † — **reversed twice, and the second reversal is the one to keep.** Round 10 found both halves wrong in opposite directions: no built-in audiences (two seeded rows remain, and the rules are the `selector_type` operands), and an audience **does** contain a stored list — its `LIST` leaf ([D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [D-103](decisions/decision-log.md#d-103--an-audience-may-name-another-audience)). **Round 11 deleted that leaf** ([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)), so an audience stores **an expression and nothing else**: a hand-written set is `PERSON(x)` leaves *inside* the expression — rows of the tree, not rows of a roster, with no dates of their own. **D-042's original half is therefore true of an audience again, and true for a new reason**: the words are what is stored, and the words can happen to name people. (The count this row quoted was stale the moment assumption 58 recorded a thirteenth row arriving, and is twelve again now that `LIST` is gone — **right by subtraction, not by the same fact**.) | [data-model/05](data-model/05-authorization.md#the-selector-registry) |
 | ~~27~~ | ~~Belonging to a sub-unit is participation, not membership~~ (D-041) † — **deleted with the sub-units** ([D-097](decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). The distinction it drew is now drawn between a **group** (company) and a **grant** (authority), by D-098 | [data-model/02](data-model/02-organization.md#5-what-this-page-held-before-round-10) |
 | ~~28~~ | ~~Roles require a current membership unless `requires_membership = false`~~ (D-039) † — **the gate is deleted** (D-100); membership is now a term a writer puts in a grant expression, and the posture is opt-in | [data-model/05](data-model/05-authorization.md#3-role--an-office) |
 | ~~29~~ | ~~There is no bulk exposure tool and no `bulk:` reason marker~~ (D-045) † — **moot twice over**: `scope_exposure` itself is deleted (D-097), so there is no tool to build and nothing to mark | [data-model/05](data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097) |
@@ -2173,7 +2424,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 55 | Delegation is a set-membership test, and `role.is_delegatable` does not exist — the model has no column that says an office may delegate (*no decision; domain/06 carries it as an assumption*) | [domain/06](domain/06-authorization-model.md#11-open-issues) |
 | 56 | Finding **which grants name an audience, and at what depth**, is cheap enough to show before saving an edit to a referenced audience (D-103) — **stated as an assumption in the decision itself and measured by nobody** | [F-16](#f-16--is-the-listing-of-grants-naming-an-audience-as-cheap-as-d-103-assumes) |
 | 57 | A grant's scope is the unit **or exactly one item**, so the seeded answer-view grant is a **template instantiated per event** rather than one row for every event (D-102) † | [data-model/08](data-model/08-events.md#selectors-that-bind-to-an-event) |
-| 58 | ~~The `PERSON(x)` appearing in D-100's and D-101's worked expressions is **shorthand** for a second grant row, not a missing seeded operand~~ (D-101's registry amendment, class in D-104) **†** — **the opposite: it is the thirteenth seeded `selector_type` row** (`takes_argument` true, `argument_type` `person`, `binds_to_item` false), and the registry was the side that was wrong. It was written by two decision entries while the seeded table — copied from the evaluator's arm list rather than from D-101's grammar — carried twelve rows without it, so `MEMBERS * ROLE(x) + PERSON(y)` did not parse for a whole round and the wrong repair (`PERSON(y)` read as `LIST`, which subtracts everybody on the list) was already circulating. **The assumption this row recorded was the wrong answer, and saying so is the point: the registry was checked against nothing** | [D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [F-5](#f-5--which-operands-are-missing-from-the-selector-registry) |
+| 58 | ~~The `PERSON(x)` appearing in D-100's and D-101's worked expressions is **shorthand** for a second grant row, not a missing seeded operand~~ (D-101's registry amendment, class in D-104) **†** — **the opposite: it was seeded** — **as the thirteenth row to arrive** (`takes_argument` true, `argument_type` `person`, `binds_to_item` false), and **today as one of the twelve that remain**, because [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `LIST` in the round after. The ordinal belongs to round 10 and the count to round 11: **the registry has never held thirteen rows at the same time as it held twelve**, and neither number says anything about how many it holds now. The registry was the side that was wrong. It was written by two decision entries while the seeded table — copied from the evaluator's arm list rather than from D-101's grammar — carried twelve rows without it, so `MEMBERS * ROLE(x) + PERSON(y)` did not parse for a whole round and the wrong repair (`PERSON(y)` read as `LIST`, which subtracts everybody on the list) was already circulating — **a repair that is now impossible to write, the only fix this one got without a decision**. **The assumption this row recorded was the wrong answer, and saying so is the point: the registry was checked against nothing** | [D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [F-5](#f-5--which-operands-are-missing-from-the-selector-registry) |
 | 59 | Two expressions with one meaning are **two audiences**: nothing computes semantic equality, and nothing will (D-101) † | [F-14](#f-14--is-semantic-equality-of-two-expressions-worth-a-fingerprint) |
 | 60 | An audience preview is **per-item and lazy**, and no screen expands a set for more than one item at a time (consequence of D-102's per-item reached set) — **unmeasured at real event sizes** | [F-15](#f-15--what-does-the-per-item-audience-preview-cost-at-real-event-sizes) |
 | 61 | A cache key is `(person, permission, item)`, and a stale allow is the failure that matters because deny is absolute (D-102, D-099) — **the asymmetric-TTL answer is proposed in [F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it) and decided by nobody** | [data-model/05](data-model/05-authorization.md#cache-invalidation-revisited) |
@@ -2211,20 +2462,31 @@ What remains is genuinely deferrable, and the most useful next ones are:
 3. **F-6** — the cache lifetime and what invalidates it. The key gained the item (D-102) and the dependency
    set gained every referenced audience transitively (D-103); the open half is that a stale **allow** is a
    permission the organization has already withdrawn, and deny is absolute.
-4. **F-5** — three operands the language cannot state: `PERSON(x)`, which two decisions write but no seeded
-   row provides; a bound `GUARDIANS`, which no item scope can host; and age, which nothing in the model can
-   now express at all. Each is a decision entry plus a seed row, which is cheap — the argument is the cost.
-5. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one
+4. **F-21, with F-22 beside it** — round 11 deleted the last bound on what an authorization check costs and
+   replaced it with a report nobody is named as reading. Who reads it, how often, and at what number an
+   audience is *too wide*; and whether forty hand-typed names printing as thirty-nine pairs of brackets is
+   the editor's problem or the writer's. **Both are answerable in a sentence each and neither can be answered
+   by the schema**, which is why they sit above the entry that used to be fourth rather than below it.
+5. **F-5** — what the language still cannot state, and the list is **two, not three**: `PERSON(x)` **is** a
+   seeded row (it arrived as the thirteenth to fix an expression that did not parse, and is one of twelve
+   since `LIST` left — [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other));
+   a bound `GUARDIANS` still has no item scope that can host it; and age is still inexpressible in the model.
+   Each is a decision entry plus a seed row, which is cheap — the argument is the cost.
+6. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one
    permission is trusted to guard a trail that holds person data. These are one question seen
    from two ends: the data that lands in the trail arrives through the vocabulary.
-6. **EV-2** — how long an event answer is kept once the event it answered is gone, which is a
+7. **EV-2** — how long an event answer is kept once the event it answered is gone, which is a
    sharper question now that the audit payloads which also held those values have a clock on them
    ([B-3](#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
-7. **F-19** — the one thing in this file that could be settled this afternoon: three times in ten rounds
-   prose and the registry disagreed about a permission code, and the fix is a script that extracts the
-   code-shaped words from these documents and diffs them against the catalog's codes. It costs no schema and
-   would have caught all three, including the two the catalog itself wrote.
-8. **The legal review**, which is not a question this register can answer and now has a concrete
+8. **F-19** — the one thing in this file that could be settled this afternoon: **four** times in ten rounds
+   prose and a seeded registry disagreed — three about a permission code and the fourth about a *selector* in
+   a different registry — and the fix is a script that extracts the code-shaped words from these documents and
+   diffs them against the registries in both directions. It costs no schema and would have caught all four,
+   including the two the catalog itself wrote. **Round 11 found the same defect in prose rather than in a
+   table** — `domain/06`'s own selector list, which had silently kept `LIST` and never gained `PERSON` or
+   `AUDIENCE` (F-5 carries the instance) — which is the sharper argument of the two: **a diff of tokens against
+   rows catches four of them and misses the copy that is only ever read by a human.**
+9. **The legal review**, which is not a question this register can answer and now has a concrete
    policy in front of it: named membership and fee rows kept indefinitely, audit payloads kept
    24 months. Assumption 49 is that review's subject — **and since
    [D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) the
@@ -2232,7 +2494,7 @@ What remains is genuinely deferrable, and the most useful next ones are:
    the same judgement at a scale the review has not yet been shown.
 
 Everything else can be answered as we go. The schema is built so that most answers change
-data rather than structure — which is why the five above are worth a moment and the rest are
+data rather than structure — which is why the ones above are worth a moment and the rest are
 not.
 
 **Answered in round 10:** the organization's *shape*, in the other direction. **F-12 closed no** (D-100) — an

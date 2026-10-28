@@ -388,22 +388,22 @@ records and only read another's. See
    ┌──────────────────────┐                 ┌───────────────────────┐
    │         role         │  an office, and │       audience        │  an EXPRESSION over
    │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
-   │ description ·        │  NOTHING        │ selector_depth_limit  │  tree (D-101) — not a rule
-   │ is_system ·          │  by itself:     │ · valid_from/[to] [T] │  XOR a list XOR an
-   │ sort_order           │  the codes an   │ (no kind · no         │  inclusion (D-091, as
-   │ NO period (D-053)    │  office carries │  resolver_key · no    │  amended by D-103)
-   │ NO scope, no         │  are the live   │  include_depth_limit) │
+   │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101) — not a rule
+   │ is_system ·          │  by itself:     │ (no kind · no         │  XOR a list XOR an
+   │ sort_order           │  the codes an   │  resolver_key · no    │  inclusion (D-091, as
+   │ NO period (D-053)    │  office carries │  include_depth_limit  │  amended by D-103; its
+   │ NO scope, no         │  are the live   │  · no depth limit)    │  list arm closed by D-105)
    │ requires_member-     │  grants whose   └───────────┬───────────┘
-   │ ship (D-100)         │  audience names ├───────────┴────────────┬─────────────┐
-   └──────────┬───────────┘  ROLE(x)        ▼                        ▼             │
-              │ dated holders     ┌─────────────────────┐  ┌────────────────────┐  │
-              ▼                   │  audience_operand   │  │  audience_member   │  │ the audience's
-   ┌────────────────────────────┐ │ one row = ONE NODE: │  │ the audience's OWN │  │ dated list,
-   │ person · role ·            │ │ operator + left_id  │  │ dated list of      │◄─┘ reached in an
-   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  │ persons = `LIST`   │  │ expression
-   │ granted_by · note          │ │ selector_kind +     │  └────────────────────┘  │ as `LIST`
-   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │                          │
-   │ a role is held at the unit │ │ (NO FK — see below) │                          │
+   │ ship (D-100)         │  audience names ├───────────┴──────────────────────────┐
+   └──────────┬───────────┘  ROLE(x)        ▼                                      │
+              │ dated holders     ┌─────────────────────┐                          │
+              ▼                   │  audience_operand   │  hand-written people     │  the audience's
+   ┌────────────────────────────┐ │ one row = ONE NODE: │  are PERSON(a) +         │  expression is
+   │ person · role ·            │ │ operator + left_id  │  PERSON(b) leaves in     │  evaluated live
+   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  the tree — LIST and     │  at the resolver
+   │ granted_by · note          │ │ selector_kind +     │  its table are deleted   │  (D-101)
+   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │  (D-105), and so are     │
+   │ a role is held at the unit │ │ (NO FK — see below) │  their per-person dates  │
    └────────────────────────────┘ └──────────┬──────────┘                          │
                                              │ every leaf is typed by              │
                                              ▼                                     │
@@ -509,8 +509,9 @@ records and only read another's. See
   ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
   so the old sentence "built-in audiences are rules evaluated at check time; named groups are stored
   lists carrying the stale-group problem knowingly" no longer describes three arms: every operand is
-  evaluated live, only `LIST` is kept, and the composition D-091 wanted is an operand instead of an
-  edge. **Author in sets, evaluate per person** — a check compiles to a predicate and never materializes
+  evaluated live and nothing is stored as a roster — [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+  deleted `LIST` and its table, so a hand-written set is `PERSON(a) + PERSON(b)` in the expression —
+  and the composition D-091 wanted is an operand instead of an edge. **Author in sets, evaluate per person** — a check compiles to a predicate and never materializes
   a set, and an operand that does not resolve is the **empty set**: fail closed in every direction.
 - **Nothing owns an event** ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
   `event.org_unit_id` is deleted, so the people connected to an event are named by operands that bind
@@ -585,17 +586,9 @@ erDiagram
         integer id PK
         string code
         string name
-        integer selector_depth_limit
         boolean is_system
         date valid_from
         date valid_to
-    }
-    AUDIENCE_MEMBER {
-        integer audience_id FK
-        uuid person_id FK
-        date valid_from
-        date valid_to
-        uuid added_by FK
     }
     PERSON_GROUP {
         uuid id PK
@@ -617,8 +610,6 @@ erDiagram
     AUDIENCE ||--o{ ACCESS_GRANT : "is granted to"
     PERMISSION ||--o{ ACCESS_GRANT : "is its one code"
     GRANT_SCOPE_TYPE ||--o{ ACCESS_GRANT : "types the scope"
-    PERSON ||--o{ AUDIENCE_MEMBER : "is typed into the list"
-    AUDIENCE ||--o{ AUDIENCE_MEMBER : "keeps its LIST"
 ```
 
 **Key point:** `access_grant` is a pentagon of references and grants exactly one thing — a grantee
@@ -649,7 +640,10 @@ The second arrow into `person` is `granted_by`, and it is drawn to a person beca
 The **act** of appointing is what `audit_log` holds, with its actor taken from the request context rather
 than from the row ([../data-model/06-audit-and-import.md §2](../data-model/06-audit-and-import.md#2-audit_log));
 the two are not one column's job, and every other actor column here (`access_grant.granted_by`,
-`audience_member.added_by`, `person_group_member.added_by`) points the same way for the same reason.
+`person_group_member.added_by`) points the same way for the same reason — the third of the three,
+`audience_member.added_by`, is gone with its table, and what it used to answer per name is answered
+now only by *who last saved the expression* and by `audit_log`
+([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
 
 **Names are one namespace.** `role.code`, `person_group.name` and a set `audience.code` are unique
 **together**, case- and separator-folded, and every `selector_type.code` is reserved — so a group called
@@ -674,7 +668,6 @@ erDiagram
         integer id PK
         string code
         string name
-        integer selector_depth_limit
         boolean is_system
         date valid_from
         date valid_to
@@ -697,13 +690,6 @@ erDiagram
         string argument_type
         boolean is_system
     }
-    AUDIENCE_MEMBER {
-        integer audience_id FK
-        uuid person_id FK
-        date valid_from
-        date valid_to
-        uuid added_by FK
-    }
     ROLE {
         integer id PK
         string code
@@ -722,8 +708,6 @@ erDiagram
     AUDIENCE ||--o{ AUDIENCE_OPERAND : "has its tree"
     AUDIENCE_OPERAND ||--o{ AUDIENCE_OPERAND : "has a child"
     SELECTOR_TYPE ||--o{ AUDIENCE_OPERAND : "types the leaf"
-    AUDIENCE ||--o{ AUDIENCE_MEMBER : "is the LIST"
-    PERSON ||--o{ AUDIENCE_MEMBER : "is written in"
     AUDIENCE_OPERAND }o--o| ROLE : "ROLE(x) - no FK"
     AUDIENCE_OPERAND }o--o| PERSON_GROUP : "GROUP(x) - no FK"
     AUDIENCE_OPERAND }o--o| AUDIENCE : "AUDIENCE(code) - no FK"
@@ -774,22 +758,35 @@ is simply not composable. The `AUDIENCE` leaves *are* the reference edges — th
 table, so "does this cycle", "how deep", "which grants name this audience" and "may I end it" are all one
 indexed query over `selector_kind = 'AUDIENCE'` rows. One sentence of D-101 is false and stays struck:
 ~~a tree cannot cycle, so the only acyclicity guard left is the cheap parent-chain one~~ — true of one
-tree, false of a **forest of trees pointing at each other**, so the save-time reachability walk is back,
-and `selector_depth_limit` is counted on the **expanded** tree. The protection that keeps the dangerous
+tree, false of a **forest of trees pointing at each other**, so the save-time reachability walk is back
+— inside the tree, and across audiences through every `AUDIENCE(x)` leaf — and
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted `selector_depth_limit` and left those two cycle walks as the only structural guard there is.
+It walks for cycles and nothing else: the tree is stored exactly as the writer wrote it, with no
+depth bound and no rebalancing, and the standing report of the widest and deepest audiences is a
+convention, not a guard ([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)).
+The protection that keeps the dangerous
 case out is that an audience named by a live grant may not be ended or deleted while that grant lives:
 under `-`, an emptied operand makes the answer **wider**.
 
-**`audience_member` stays, re-roled as the `LIST` leaf**
-([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
-It is the audience's own dated list — the only operand with no argument behind it — and it is
-deliberately **not** merged into `GROUP(x)` even though both are dated sets of people: a group's members
-are the organization's record and are true with no grant pointing at them, while a selector's additions
-are meaningless outside the expression they complete
+**`audience_member` is deleted, and `LIST` with it**
+([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+A hand-written set of people is now written where every other set is written — in the expression, as
+`PERSON(a) + PERSON(b)` — and what the table carried that the tree does not is written as lost, not as
+managed: **no per-person dates** (a person is in the audience or not; a June-to-August exception is a
+second grant with its own period, which is what
+[D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)'s
+shape is for), and no *who added this person* beyond *who last saved the tree*. The reason it was never
+merged into `GROUP(x)` survives the table unchanged: a group's members are the organization's record
+and are true with no grant pointing at them, while a name written into an expression is meaningless
+outside the expression it completes
 ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
-Merging them would make the permission table the system's roster. The duplication is kept on purpose,
-and the mitigation is that the editor shows which operand each person arrived through.
+Naming people inside a grant must not make them group members: `(GROUP(kitchen) + LIST) - PERSON(a)`
+becomes `(GROUP(kitchen) + PERSON(honza)) - PERSON(a)` — same meaning, one fewer kind of thing — and
+merging the two would still make the permission table the system's roster.
 
-**`PERSON(x)` is drawn as the `person` argument edge, and it is the thirteenth seeded `selector_type` row.**
+**`PERSON(x)` is drawn as the `person` argument edge, and it was the thirteenth seeded `selector_type`
+row added — with `LIST` deleted, it is one of the twelve that remain.**
 It got there late and by an odd route: D-101's grammar and D-100's exemption table both wrote `PERSON(y)`
 from the start, the registry was written from the evaluator's arm list instead, and the two disagreed for a
 whole round without any check noticing
@@ -799,7 +796,12 @@ whole round without any check noticing
 [D-011](../decisions/decision-log.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key) —
 which is why this appendix drew the edge while the language was still being argued about. What the row adds
 over that storage fact is one fact of meaning: **an expression may name a single human who is on nobody's
-roster.** `PERSON`, `GUARDIANS`, `ROLE`, `GROUP` and `AUDIENCE` are the five codes whose argument names a
+roster** — and since a hand-written set is a sum of these
+([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+the edge is load-bearing: every hand-named person in the system is now a `selector_arg_id` with
+deliberately no foreign key, so a merge or a redaction must repoint every leaf that names the absorbed
+person, and the nightly orphan scan is the backstop rather than the mechanism. `PERSON`, `GUARDIANS`,
+`ROLE`, `GROUP` and `AUDIENCE` are the five codes whose argument names a
 person, an office, a group or another audience. The fifth drawn edge, to `event`, belongs to the
 item-bound codes — `ORGANIZERS`, `PLACED`, `CONFIRMED`, `ATTENDED`, `ON_WAITLIST` — whose argument is
 optional exactly because the item being checked usually supplies it
@@ -979,10 +981,10 @@ and [§4](../data-model/05-authorization.md#4-role_holder--who-holds-an-office)
 | `permission` | One coded capability — the only thing a check asks for, and a grant names exactly one | Nothing | One row per code; the code never changes. `applies_to` says whether the code may be granted at the unit or **also** on an item, checked when the grant is saved; `right_kind` exists for exactly one customer, the guardianship channel ([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)) | no |
 | `grant_scope_type` | The registry of things a grant may be written on, and the table its id lives in. **`unit` is its only non-item row** — which is where the unit now lives | Nothing | One row per scope kind: `unit`, `event`, `person_group`, `role`, and `document` deferred. Adding a grantable thing is a row here rather than a migration | no |
 | `access_grant` | **The only table that grants.** A grantee, a scope, one permission, an effect, a period | `person` **or** `audience`, never both; `grant_scope_type` and `⇒ scope_id`, absent exactly at `unit`; `permission`; `person` as grantor, delegator and revoker | At most one live **allow** per grantee, scope **and permission** — denies sit outside the rule on purpose, because allow-beside-deny is the only way to say *"the unit's events, except this one"*; a delegation must carry an end date | yes |
-| `audience` | A set of people a grant may name — **an expression over named sets, stored as a tree** ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)), not a rule XOR a list XOR an inclusion | Its own operand rows; `code` is optional and is the only thing another audience may name ([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)); `resolver_key`, `scope_parameter` and `include_depth_limit` are deleted | One row per audience. `selector_depth_limit` defaults to 3 and is counted over the **expanded** tree; an ended audience reaches nobody, so ending one is refused while a live grant names it | yes |
+| `audience` | A set of people a grant may name — **an expression over named sets, stored as a tree** ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)), not a rule XOR a list XOR an inclusion | Its own operand rows; `code` is optional and is the only thing another audience may name ([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)); `resolver_key`, `scope_parameter`, `include_depth_limit` and `selector_depth_limit` are deleted, the last of them by [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) | One row per audience; the tree is stored exactly as the writer wrote it and its height is bounded by nothing — the save-time cycle walks are the only structural guard, and the standing report of the widest and deepest audiences is a convention, not a guard ([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)); an ended audience reaches nobody, so ending one is refused while a live grant names it | yes |
 | `audience_operand` | Join entity: **one row of one audience's expression tree** — a node (`operator`, `left_id`, `right_id`) or a leaf (`selector_kind`, `⇒ selector_arg_id`), never both | `audience`, denormalized onto every row so one audience's tree is one indexed fetch; itself, `parent_id` on the child; `selector_type`; and `⇒` a `role`, `person_group`, `audience`, `person` or `event` **with no foreign key** — [D-011](../decisions/decision-log.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s accepted trade-off, extended by D-101 | One row per node or leaf; a node never belongs to another audience than its parent's; the forest is acyclic, checked on save | no |
-| `selector_type` | The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names | Nothing | **Thirteen** seeded rows, every one `is_system` and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature ([D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)) | no |
-| `audience_member` | The `LIST` leaf: this audience's own hand-typed list of people — the only operand that is not a rule about anybody | `audience`, `person`, and `person` as who added them | No overlapping periods per audience and person, over all rows. Deliberately not merged into a group: merging them would make the permission table the system's roster | yes |
+| `selector_type` | The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names | Nothing | **Twelve** seeded rows — thirteen for one round, until [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `LIST` and its seed row, so every one of them is a rule about people or takes an argument and the registry has no special case left to explain. Every row `is_system` and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature ([D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)) | no |
+| ~~`audience_member`~~ | ~~The `LIST` leaf: this audience's own hand-typed list of people — the only operand that was not a rule about anybody.~~ **Deleted by [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)**, `LIST` and its seed row with it: a hand-written set is now `PERSON(a) + PERSON(b)` in the expression, with no per-person dates — a time-windowed exception is a second grant with its own period. The refusal to merge names into a group survives the table: a `PERSON(x)` leaf is not a `GROUP(x)` because merging them would make the permission table the system's roster | — | — | — |
 | `access_log` | The audit trail — who did what, by what authority, with what result | `person` as actor and as subject; `⇒ authorization_ref_id` naming `access_grant` **or** `guardianship_permission` — `role` and `system` are gone from the channel enum, so an old row reading `role` is unreadable by this model on purpose ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)); `⇒ entity_id` | Append-only today; **proposed** to take the same 24-month window as the audit payload, which would make this cell wrong as written — **F-8**, unconfirmed ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) | no |
 | `permission_cache` | A computed answer kept briefly so checks are cheap | `person`, plus the code and scope it answers for; the operand cache beside it is keyed per person, selector kind, argument and item | One row per person, code, scope type and scope id, each with an expiry. Derived and disposable — never a source of truth | no |
 | ~~`role_permission`~~ | ~~Join entity: this role carries this permission, and nothing else.~~ Deleted by D-100: the codes an office holds are the live grants naming `ROLE(x)`, so the bundle is a query a screen can show rather than a table | — | — | — |
@@ -1059,7 +1061,9 @@ of it is
 the whole unit and position family, with `scope_exposure`
 (D-097, [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape));
 the level ladder and its per-scope requirements (D-099); the role's permission bundle and its assignment
-table (D-100); and the group-inclusion edge (D-101). Recorded here too, because it is the kind of entry
+table (D-100); the group-inclusion edge (D-101); and `audience_member` with the `LIST` operand and its
+seed row ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+the only row the selector registry has ever lost, in its one round of existence. Recorded here too, because it is the kind of entry
 this list exists for: `event.qr`, a check-in capability that never had a row in this appendix or anywhere
 else — it entered a round as prose, was argued about by name, and left as prose
 ([D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).

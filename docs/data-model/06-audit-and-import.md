@@ -851,6 +851,21 @@ is the source's claim about a status rather than a record of the act: nobody pai
 
 - A redaction cannot record when it was performed without recording who performed it:
   `performed_at` without `performed_by` is illegal.
+- **An erasure must also rewrite the expressions that named the person, and say what it changed.**
+  Since [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+  a hand-named person is a `PERSON(x)` leaf of `audience_operand`, and `selector_arg_id` carries no foreign
+  key, so nothing refuses the deletion underneath it. **The failure is not a dangling row, it is an inverted
+  grant:** a leaf that resolves to nobody is the empty set, and the empty set subtracts nothing, so an
+  expression reading `EVERYONE - PERSON(x)` begins denying everybody the moment `x` is erased. So the erasure
+  walks `audience_operand` for leaves naming that person, removes or rewrites them under the same
+  `access_grant` guard that covers any other change to reach, **prints the resolved set before and after for
+  every expression it touched** — the same report
+  [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+  adopted — and names `audience_operand` in `redacted_tables`, because a field that lists which tables the
+  erasure reached is worth nothing if the one table where the person still appears is left off it. The nightly
+  orphan scan in [05-authorization.md §11](05-authorization.md#11-invariants-to-verify) is the backstop for
+  this, and is not the control: the control is the erasure path itself, because a scan that reports a grant
+  denying everybody every night is a report somebody stops reading.
 
 **Indexes**
 

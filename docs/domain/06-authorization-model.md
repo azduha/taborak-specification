@@ -644,8 +644,10 @@ be a named, materializable set of people.* An attribute is not a set of people. 
 ```
 expr     := term ( '+' term )*
 term     := operand ( ( '*' | '-' ) operand )*
-operand  := EVERYONE | MEMBERS | LIST
+operand  := EVERYONE | MEMBERS
           | ROLE '(' name ')' | GROUP '(' name ')' | name
+          | PERSON '(' person ')'
+          | AUDIENCE '(' code ')'
           | GUARDIANS | GUARDIANS '(' person ')'
           | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
           | ATTENDED '(' event ')' | PLACED '(' event ')' | CONFIRMED '(' event ')'
@@ -653,6 +655,19 @@ operand  := EVERYONE | MEMBERS | LIST
           | PRESENT '(' event ')'        ← refused, see below
           | '(' expr ')'
 ```
+
+**Two arms were missing from this block until round 11, and one was missing in the wrong direction.**
+`PERSON(p)` and `AUDIENCE(code)` are both in the registry and neither was printed here, so a reader who
+learned the language from this page could not have written either operand — the same drift
+[F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry) records for the
+other copy of this table. `LIST` was printed here after the round that deleted it. **All three are
+corrected above**, and the correction is what makes this block the corpus's canonical grammar again
+rather than a stale copy of it.
+
+**A hand-written set of people is a sum, not an arm**: `PERSON(a) + PERSON(b)`. There is no operand for
+"the names somebody typed into this audience" and no table behind one
+([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other));
+a set of one is a set, and a set of three is the same thing three times.
 
 Operators: **`+` union, `-` difference, `*` intersection.**
 
@@ -687,15 +702,28 @@ expression in the system. What is stored is always kind + id, so **a rename neve
 | `EVERYONE` | Any person, including non-members and the public | none | Legal — and the reason the editor must show its reach (§*The cost*) |
 | `MEMBERS` | Anyone with a current membership | none | Evaluated live. §6.1 |
 | `GUARDIANS` / `GUARDIANS(p)` | Guardians of the person this item is about / of `p` | optional person | |
-| `LIST` | This audience's own dated list (`audience_member`) | none | The manual arm, re-roled as a leaf |
+| `PERSON(p)` | Just that person | a person | How a named individual's exception lives inside the expression that granted the rule; since [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) also how several named people are written — summed |
 | `ROLE(x)` / `x` | Holders of role `x` (`role_holder`) | a role name | |
 | `GROUP(x)` / `x` | Members of group `x` (`person_group_member`) | a group name | |
+| `AUDIENCE(code)` | Another saved audience's set, evaluated live | an audience code | [D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience); the one operand whose argument is a decision about access rather than a roster, so the one that can name another audience (§6.2) |
 | `ATTENDED` / `ATTENDED(e)` | Said yes to this event / to `e` | optional event | `response = attending` |
 | `PLACED` / `PLACED(e)` | Said yes and is not waitlisted — **the capacity set** | optional event | The set the events module counts |
 | `CONFIRMED` / `CONFIRMED(e)` | Holds a paid place: `PLACED` and `is_confirmed` | optional event | |
 | `ON_WAITLIST` / `ON_WAITLIST(e)` | Attending and waitlisted | optional event | |
 | `ORGANIZERS` / `ORGANIZERS(e)` | Runs this event | optional event | Appointed on the event, and still grants nothing by itself (§*Event sets*) |
 | `PRESENT(e)` | — | **refused** | §*Event sets* |
+
+**Twelve selectors, and this table is a copy of
+[data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry), which is the
+registry.** It is worth recording how far this copy had drifted before round 11 noticed: it never grew a row
+for `PERSON` ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)'s
+late amendment) or for `AUDIENCE`
+([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)) while still carrying the
+`LIST` row that round deleted, so a reader who learned the language here could not have written either
+operand — and nothing in §11's checks could have said so, because this is prose. **The instance belongs to
+[F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry)**, whose finding was
+that a second copy of the registry drifted from the first; this is a third copy, drifting the same way, one
+round later.
 
 **Bound operands — the argument-less forms — are the important half, and they exist to kill a specific
 flaw.** `ATTENDED(<event 1204>)` written on event 1204 is one grant per event with the event's own id
@@ -793,41 +821,88 @@ being implied by a word in a grammar.**
 
 The expression is stored as a tree: one row per node, a node being `operator` + `left_id` +
 `right_id`, a leaf being `selector_kind` + `selector_arg_id`, with `audience_id` denormalized onto
-every row so the read path is one indexed fetch and never walks a parent chain. `selector_depth_limit`
-on the audience row bounds how tall an expression may get.
+every row so the read path is one indexed fetch and never walks a parent chain. **Nothing bounds how tall
+or how wide an expression may get.** `selector_depth_limit` used to sit on the audience row and bound the
+height; [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted the column, the check that read it, and the placeholder number in this page's own question list, and
+**refused to replace it with another bound of either shape.** **The tree is stored exactly as the writer
+wrote it** — one row per node, two operands and one operator, left to right, no rebalancing — because a
+rebalanced tree is a different expression from the one a person wrote, and storing *that* expression rather
+than a normalized equivalent is the entire reason the tree exists. So *"a check costs a bounded amount"* is
+no longer a property of this system: **an expansion is bounded only by acyclicity**, and the sentence that
+mattered here was never about cost, it was about a number nobody had measured.
 
 - **Exactly one shape per row.** A node has an operator and children and no selector; a leaf has a
   selector and neither. Expressible, so it stays a constraint.
 - **One parent, never a DAG.** A side table letting two expressions share a node is refused: editing
   the shared node would silently widen every grant using it. Structure, plus a CI check that no such
   table exists.
-- **Cycles and over-depth are refused when the row is saved** — walk the parent chain, refuse a
-  revisit, refuse past the limit. Structurally hard to build, refused rather than trusted, for the
+- **Cycles are refused when the row is saved, and the two walks that look for them are now the only
+  structural guard this module has.** Structurally hard to build, refused rather than trusted, for the
   reason D-091 gives for its own guard: *a hand-fixed row, a restore from before the guard existed.*
-- **`selector_arg_id` has no foreign key** — it points at `role`, `person_group`, `person` or `event`
-  depending on kind. It is
+  **1. Inside one tree:** walk the parent chain from the row upward and refuse a revisit.
+  **2. Across audiences:** follow every `AUDIENCE` leaf and refuse a cycle through them at any distance
+  ([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)). **This page asserted
+  for one round that a tree cannot cycle and the walk over a graph was therefore dead, and D-103 struck that:
+  a forest of audiences naming each other is not a tree.** **D-105 deleted the height bound that used to
+  travel with these walks and deliberately kept both**, and they must not be relaxed alongside it — an
+  expansion that never terminates is the failure the deleted bound was never protecting against, and with
+  the bound gone nothing else is standing there. **The read path gets neither a hop counter nor a cycle
+  check**, which used to be a back-up position and is now the whole design: a cap on the read path *becomes
+  the thing that decides who a grant reaches*, in exactly the case where the data is already wrong. What
+  replaces the retired size rule is a **standing report** of the widest and deepest audiences — a report,
+  with nothing behind it, so **a convention and not a guard**
+  ([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)),
+  and [F-21](../open-questions.md#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones)
+  is open on who reads it.
+- **`selector_arg_id` has no foreign key** — it points at `role`, `person_group`, `person`, `event` or
+  `audience`, **five kinds**, depending on kind. It is
   [D-011](../decisions/decision-log.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s
   already-accepted trade-off, with its compensating orphan check.
+  **The trade-off stopped being cheap in round 11, and this is the bullet where that bites.** The
+  hand-typed names used to live in `audience_member`, whose `person_id` was an ordinary foreign key, so a
+  merged-away person's rows moved correctly on their own. **Now every hand-named person in the system is a
+  value in this keyless column**, so a **person merge and a redaction must repoint every leaf naming the
+  absorbed or erased person, in all five argument kinds**. The nightly orphan scan becomes the **backstop
+  rather than the mechanism**: it runs a day late, and it only fires at all if the absorbed person's row is
+  actually removed. The reason it cannot be expressed anywhere better is
+  [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s —
+  **the ORM has no key to follow.** And the failure is not tidiness: a leaf naming nobody is the empty set,
+  which is quiet on the allow side and loud on the deny side, so **`EVERYONE - PERSON(x)` with an
+  un-repointed `x` stops subtracting anybody and denies everybody.**
 - **An operand that does not resolve is the empty set**, and an expression that cannot be evaluated
   reaches nobody. Fail closed, in every direction.
 
 ~~**A group is filled three ways: a rule arm, a manual arm, and an inclusion arm naming other groups,
 and its membership is the union of whichever it has.**~~ **Superseded by D-101, which amends D-091
-rather than reversing it.** The rule arm became the selectors, the manual arm became the `LIST` leaf,
-and **the inclusion arm is gone**: `audience_include`, `include_depth_limit`, the transitive walk and
+rather than reversing it.** The rule arm became the selectors, the manual arm became the `LIST` leaf —
+**a leaf that survived one round before
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted it, so the manual arm's destination was temporary and the sentence above should be read as a step
+rather than an endpoint; the arm's function now lives in `PERSON(a) + PERSON(b)`** — and **the inclusion
+arm is gone**: `audience_include`, `include_depth_limit`, the transitive walk and
 the write-time cycle check over a *graph* all went, because a tree cannot cycle. The outcome D-091
 wanted survives and is better served — `GROUP(kitchen) + ROLE(troop_staff)` composes as much as an
 edge ever did, and does it in one grant, where the old audience had **no intersection and no
 difference at all**, which is why the counselor example above was not writable in any notation.
 
-**`audience_member` stays**, re-roled as the `LIST` leaf: the audience's own dated list of people.
-Merging it into `GROUP(x)` was weighed and refused twice over — naming three people in one grant would
-create a row in the group browser that is not a group anybody talks about, and a group's members are
-the organization's record of who is in it, true when no grant points at it, while a selector's
-additions are meaningless outside the selector they complete
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
-The duplication D-080 would flag is therefore **kept on purpose**, and the mitigation is the one D-091
-already required: the editor shows which mechanism each person arrived through.
+~~**`audience_member` stays**, re-roled as the `LIST` leaf: the audience's own dated list of people.~~
+**Deleted by [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other),
+and the sentence above is kept struck because it was this page's answer for a whole round.** A hand-written
+set of people is now written where every other set is written: `PERSON(a) + PERSON(b)`, inside the
+expression. The table, its per-person dates, its `added_by` and its row in the registry all went with it.
+
+**What survives is the refusal, not the table, and the refusal is the reason the replacement is a sum of
+`PERSON()` leaves rather than a group.** Merging the hand-written names into `GROUP(x)` was weighed and
+refused twice over, and both reasons are untouched by the deletion: naming three people in one grant would
+create a row in the group browser that is not a group anybody talks about, and **a group's members are the
+organization's record of who is in it, true when no grant points at it**
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)) —
+so editing a roster to move one grant's reach edits a fact that other grants read. **`PERSON(a)` is the
+answer that respects that rule; `GROUP(kitchen) += Honza` is not, and never was.** What did change is that
+the *apology* got smaller: `audience_member` was the second dated-member table this design kept on purpose
+and explained to D-080, and **now there is one. `person_group_member` is the only dated set of people the
+system stores.**
 
 **What is genuinely lost with the inclusion edge** is one-edit widening: *"add the kitchen crew to
 everything the troop-staff group is used for"* is no longer a single edit. The answer is that named
@@ -848,9 +923,16 @@ recorded, and composition widens how much of the permission answer depends on st
 moved on. The audit trail used to hold the change that made it true, and
 [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 empties those payloads after 24 months. So after two years the question is answered by re-running
-expressions against dated rows — which is honest for `ROLE`, `GROUP`, `LIST` and `MEMBERS`, whose rows
-are all periods, and **unanswerable for bound event operands**, since `event_registration` records the
-current fact. **[F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table) is
+expressions against dated rows — which is honest for `ROLE`, `GROUP` and `MEMBERS`, whose rows are all
+periods, and **unanswerable for bound event operands**, since `event_registration` records the current
+fact. **Round 11 moved one more case from the first group to the second:** the hand-typed names used to be
+`audience_member` rows with `valid_from` / `valid_to`, so *"was Honza on this audience in June?"* was
+answerable from the table itself the way a group's membership is; **now it is a recomputation over audit
+payloads, and those payloads expire after 24 months, so the question stops being answerable in 2028**
+([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+That is the same hole D-091 already accepted for nested audiences and
+[F-17](../open-questions.md#f-17--a-nested-audience-has-no-reconstructable-past-is-that-the-case-for-materializing)
+states for them — the same hole, one table wider, accepted rather than papered over. **[F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table) is
 the route back** — a materialized `effective_permission` snapshot kept *as history* rather than as a
 cache — which until this round looked like a performance question.
 
@@ -939,7 +1021,11 @@ keyed per person or per grant alone is now a bug
 
 **Invalidate on:**
 
-- any write to `access_grant`, `audience_operand`, `audience_member`, `guardianship_permission`
+- any write to `access_grant`, `audience_operand`, `guardianship_permission` — **and one fewer table than
+  this list carried, since `audience_member` is deleted**
+  ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)):
+  the hand-named people it used to announce are rows of `audience_operand` now, so the row above already
+  covers them
 - **`role_holder`** — an office gained or lost changes every grant whose expression names `ROLE(x)`.
   This is the index the question "what may a treasurer do?" runs on (§4), which is also why
   operand-level caching pays off: a cached operand can be reused across every grant that names it, and
