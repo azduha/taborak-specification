@@ -355,10 +355,14 @@ and [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-m
 here because a reader who joined at row fourteen cannot reconstruct it from the row count. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
 the class of defect it belongs to, a registry prose contradicts, is what
 [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
-answers. **Twelve, not the thirteen this page printed last round:**
+answers. **Twelve that round, fourteen today, and not the thirteen this page printed two rounds ago:**
 [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-deleted `LIST`, and the count moves for the reason the count always moves — a row was added or removed, and
-every page that recites it has to notice.
+deleted `LIST`, [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added two, and the count moved both times for the reason it always moves — a row was
+added or removed, and **every page that recites it has to notice**. This page had to be told twice, six lines
+apart, in two consecutive rounds, which is the strongest argument this corpus has produced for stopping the
+recital: **a page that repeats a registry's row count is a fourth copy of the registry**, and the fix is not
+better attention, it is pointing at [the table](../data-model/05-authorization.md#the-selector-registry) and
+quoting it only where the number is the argument.
 
 **`PERSON(y)` is now the only way to name a human being in an expression, and that is a recent decision
 rather than how it has always been.** Until last round there were two: `PERSON(y)` named one person, and

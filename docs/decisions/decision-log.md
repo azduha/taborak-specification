@@ -5931,7 +5931,8 @@ by what it *is*. Both stay out, on their own merits, which were always the real 
   consequences and it survives intact; what is withdrawn is the claim that the language could not express it.
 - **`WHITELISTED` — still not seeded**, because there is no state to evaluate
   ([F-20](../open-questions.md#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one)),
-  and an operand that reads nothing is a syntax error wearing a vocabulary's clothes. F-20 stays open as a
+  and an operand that reads nothing is **a word with nothing behind it** — a row whose evaluator would answer
+  the same for every person on every date, which is not what a registry row is for. F-20 stays open as a
   question about whether the *feature* is wanted, and is no longer a question about whether the type system
   forbids it.
 
@@ -5942,7 +5943,10 @@ exactly two reference-less polymorphic keys** — `access_grant.scope_id` and `a
 merge, nothing for a cascade to find, nothing for F-10's orphan check to walk. **§11's check that the count
 is two stays true, and stays true for the right reason rather than by luck**: the check is about *references*,
 and `18` is not one. `argument_type` therefore gains a scalar domain, and the pages that enumerated the
-argument kinds as though they were all entities say "five kinds, one of them not an entity" from now on.
+argument kinds as though the list were complete now say what it is: **six `argument_type` values, five of which
+are tables.** The merge and orphan scans still walk exactly the five that name something, and that is the
+sentence those pages should always have carried — the count this corpus keeps getting wrong is the count of
+things to scan, not the count of values a column may hold.
 
 **See:** [domain/06 §6 and §6.1](../domain/06-authorization-model.md) for the language and the corrected
 argument, [data-model/05 §8](../data-model/05-authorization.md#the-selector-registry) for the fourteen-row
