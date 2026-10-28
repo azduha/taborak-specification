@@ -237,27 +237,27 @@ So `event.answer.view` on an event is aimed at `ORGANIZERS`, an open camp is ope
 `(MEMBERS * ROLE(treasurers)) + PERSON(jan)` — a second grant aimed at a person is the other way to
 write the same thing, and keeps the exception off the expression everyone else reads.
 
-**Three refusals belong next to the language, because each is a temptation this catalog creates. Two of
-them changed status this round and neither changed answer**
+**Three refusals belong next to the language, because each is a temptation this catalog creates, and a
+reader could now mistake the first two for type errors. They are not, and never were**
 ([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)):
-both used to be refused *as a kind of thing* — "not materializable", "no stored state" — and with
-attribute operands in the registry, a predicate over a column is an ordinary operand, so nothing may be
-excluded by what it **is** any more. What is left is an argument about consequences, which is the argument
-both were really made of all along.
+a selector is allowed to be a hard-coded computation in the resolver, because `MEMBERS` is one today, and
+an operand may read a column against a date, because `OLDER(n)` does. **Nothing is kept out of the
+registry for what it is** — the word that sounded like it did, ~~"not materializable"~~, is retired with
+the test it belonged to — **so every refusal standing here is an argument about consequences, which is
+what all three have always been.**
 
-- **`PRESENT(<event>)` is not seeded, and this is now a decision rather than a type error.** The
-  argument that keeps it out is about what it would do: `was_present` is `NULL` until somebody takes a
-  register, so an operand over it would revoke a child's access to their own camp photos — a leader's
-  access to their own camp — because a volunteer forgot to tick a box. Presence stays a three-valued
-  safeguarding signal
+- **`PRESENT(<event>)` is not seeded, on the argument that always carried it.** `was_present` is `NULL`
+  until somebody takes a register, so an operand over it would revoke a child's access to their own camp
+  photos — a leader's access to their own camp — because a volunteer forgot to tick a box. Presence stays a
+  three-valued safeguarding signal
   ([D-067](../decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)),
-  and nowhere in this file is it a set anyone may be granted over. **What is withdrawn is the claim that
-  the language could not have expressed it.**
-- **`WHITELISTED` is not seeded either, and the reason is that there is nothing to evaluate**
+  and nowhere in this file is it a set anyone may be granted over. **The language would not stop anybody
+  writing it now, and that is exactly why the consequence has to be the thing that says no.**
+- **`WHITELISTED` is not seeded because there is nothing stored to evaluate**
   ([F-20](../open-questions.md#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one)):
-  an operand that reads no state is a syntax error wearing a vocabulary's clothes. F-20 stays open as a
-  question about whether the *feature* is wanted, and is no longer a question about whether the type
-  system forbids it.
+  no type system is objecting — there is no type system left to object — but an operand with no argument,
+  nothing bound to the checked item and no column behind it is a word pointing at a state this system does
+  not keep. F-20 stays open as a question about whether the *feature* is wanted.
 - **A bare name is one namespace across roles and groups**
   ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
   which makes §11's office names a load-bearing vocabulary, and makes every selector code a reserved
@@ -1817,19 +1817,20 @@ anything may be exposed across a unit boundary (there is no boundary to cross �
 D-045's `scope.exposure` review are all deleted together); whether leadership is a position (it is an
 office, and the elected/appointed distinction survives only as a name the organization invents, D-100);
 whether an event has an owner (no — D-102, and `can_event()` with it); whether presence is a set anyone
-may be granted over (it is not — `PRESENT` is not seeded, and the refusal is written down in three
-documents so that nobody re-adds it as a convenience; **round 12 moved the reason and not the answer**,
-since a predicate over a column became an ordinary kind of operand the moment `OLDER(n)` was seeded, so
-what keeps `PRESENT` out is now openly what was always doing it: a forgotten tick box revoking a leader's
-access to their own camp, D-107); whether a code's last segment had to be an
+may be granted over (it is not — `PRESENT` is not seeded, **on the argument it has always stood on and
+with the answer unchanged**: a forgotten tick box revoking a leader's access to their own camp. The
+refusal is written down in three documents so that nobody re-adds it as a convenience, and nothing in the
+language would have caught it structurally in any case — a selector may read a column against a date,
+because `OLDER(n)` does, and may be a hard-coded computation in the resolver, because `MEMBERS` is
+(D-107, §1)); whether a code's last segment had to be an
 action, or merely usually was (**it is a rule now — D-104 promotes §1's two shapes from description to
 requirement, names `system.admin` as the single noun allowed, and finds sixty-five of the sixty-six
 live codes already obeying it**); and whether `PERSON(x)` is in the selector language at all (it is —
 it arrived as the thirteenth seeded `selector_type` row, D-101's amendment, D-104, and with `LIST`
 deleted it was one of the twelve that remained, D-105, of the fourteen seeded today, D-107). From round
-12, whether an attribute may be an operand (**it may, and only as a named row** — `OLDER(n)` and
-`YOUNGER(n)` are seeded, `AGE >= 18` is not expressible because the language has no comparison operator to
-put in it, and D-060's refusal of a rule engine survives the sentence that used to argue for it, D-107),
+12, whether `OLDER(n)` may be an operand (**it may: an operand must be a named row of the registry, and
+this is a row** — `AGE >= 18` is not expressible because the language has no comparison operator to build
+it out of, and D-060's refusal of a rule engine survives the sentence that used to argue for it, D-107),
 and whether an unresolvable leaf should stop a save (**no** — it stays the empty set and gains a column on
 a report, D-106, §12). **What closed those two is worth
 keeping beside them:** the report D-104 adopts diffs every dotted token in prose against every seeded

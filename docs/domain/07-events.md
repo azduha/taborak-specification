@@ -410,11 +410,12 @@ photos because a volunteer forgot to tick a box. `was_present` is three-valued *
 as a safeguarding signal — **keeping it out of the selector language is what keeps it
 meaning "a person recorded this" rather than "this is who may see things"**, and
 [D-067](../decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)'s
-reasoning for the third value is the reasoning for the refusal. **The refusal is entirely
-this argument now**, since `OLDER(n)` proved that an operand may read a column and a date:
-nothing in the language would blink at `PRESENT`, which is exactly why the consequence has to
-be the thing that says no
-([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+reasoning for the third value is the reasoning for the refusal. **And this consequence is the
+whole of the refusal**, which is worth saying out loud now that the language has an operand
+that reads a column against a date: `OLDER(n)` reads `person.birth_date`
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+so nothing structural stops anybody writing `PRESENT` — there is only ever going to be this
+argument standing in the way, and it holds on its own.
 
 **`WHITELISTED` does not exist, and is not a selector.** The nearest stored facts are
 `source = 'staff'` (an organizer entered them) and promotion off the waitlist. Either the

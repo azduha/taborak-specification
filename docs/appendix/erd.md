@@ -428,12 +428,11 @@ records and only read another's. See
    nothing for a merge to repoint, nothing for a cascade to find, and the two      │
    reference-less polymorphic keys stay exactly two. Fourteen seeded rows:         │
    five argument tables, one integer, and the operators are still `+ - *`.         │
-   `PRESENT(<event>)` is not seeded, by decision and not by type: a tick box       │
+   `PRESENT(<event>)` is not seeded, and the reason is a consequence: a tick box   │
    on a check-in screen would revoke a leader's access to their own camp when      │
-   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want       │
-   of any state to evaluate (F-20). Neither is refused by the language now         │
-   that a predicate over a column is an ordinary operand; both are refused         │
-   on what they would do.                                                          │
+   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
+   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
+   in it would refuse either name — both are kept out by what they would do.       │
                                                                                    │
    can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
    ──────────────────────────────────────────────────────────────────────────────
@@ -762,9 +761,9 @@ nothing for a cascade to find, nothing for the orphan scan to walk, and the bind
 `argument_type` against a grant's item type simply does not apply to an operand that binds to no item.
 **There are still exactly two reference-less polymorphic keys** — `access_grant.scope_id` and
 `audience_operand.selector_arg_id` — and `18` is not one of them, because the check is about references
-(§8). The two operands read `person.birth_date` **as of the date being checked**, which is why they sit in
-this diagram at all: they are ordinary named operands, composed by `+ - *` like every other row of the
-registry, and the set they name changes with no write.
+(§8). The two operands read `person.birth_date` **as of the date being checked**, which is why they are a
+registry row and nothing more: they are ordinary named operands, composed by `+ - *` like every other, and
+the set they name changes with no write at all.
 
 **No leaf resolves to anything but people, and that is why there is no `GRANTS(…)`.** An operand resolves
 to a **set of people**, because a set of people is what a grantee is; a set of *grants* is a filter over
