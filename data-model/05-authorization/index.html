@@ -1359,10 +1359,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cache-invalidation-revisited" class="md-nav__link">
+  <a href="#the-cache-is-rebuilt-not-invalidated" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache invalidation, revisited
+        The cache is rebuilt, not invalidated
       
     </span>
   </a>
@@ -2164,10 +2164,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cache-invalidation-revisited" class="md-nav__link">
+  <a href="#the-cache-is-rebuilt-not-invalidated" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache invalidation, revisited
+        The cache is rebuilt, not invalidated
       
     </span>
   </a>
@@ -2315,7 +2315,7 @@ first half and is now its entire content.</p>
 with <em>"authority over a unit originates <strong>at that unit</strong> and cannot be claimed from outside it —
 not by a parent unit, and not by the organization"</em>, and named <code>scope_exposure</code> as the only
 crossing. <strong>Withdrawn by <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
-and the withdrawal is precise: <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
+and the withdrawal is precise: <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing">D-031</a>
 was not weakened, it was deprived of its subject.</strong> There is one unit, it is the organization,
 and it is not a row — so there is no "outside it" to be stopped from, and every permission is
 held either at the unit or on an item. The sentence is kept here, struck through in spirit,
@@ -2753,7 +2753,7 @@ the way: <strong>roles and audiences are the bundle, and nothing else is.</stron
 <p><strong><code>role</code> is registered in <code>grant_scope_type</code>, so an office is an item</strong>
 (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>):
 <em>"these two people may manage the counselors roster"</em> is a grant of <code>role.assign</code> on one role, which
-is <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>'s
+is <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>'s
 move applied symmetrically. Without it the only way to say that is a grant at the unit, which
 reaches every office — the exact over-reach this table's sensitivity exists to avoid.</p>
 <p><strong>Why a role and a group are two tables when they are technically the same shape</strong> is answered where
@@ -2935,7 +2935,7 @@ link to, and its content is not replaced by anything: this is the one place in t
 the honest summary is <em>lost, not replaced</em>.</p>
 <p><strong>What the table was.</strong> <code>scope_exposure</code> was the only mechanism by which authority crossed a unit
 boundary downward, and it existed to implement
-<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
+<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing">D-031</a>
 — <em>authority over a unit originates at that unit and cannot be claimed from outside it</em>. The row was
 keyed on the <strong>covered</strong> unit, which made the covered unit the grantor, and pointed at a specific
 <strong>assignment</strong> rather than a role, so a unit approved a person-in-a-role rather than a role that any
@@ -3052,7 +3052,7 @@ link to this anchor.</p>
 <tr>
 <td><code>person_group</code></td>
 <td>Yes</td>
-<td>One group (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>) — how "these two may work this group's roster" is said without inventing a scope.</td>
+<td>One group (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>) — how "these two may work this group's roster" is said without inventing a scope.</td>
 </tr>
 <tr>
 <td><code>role</code></td>
@@ -3622,8 +3622,15 @@ say</strong>, not what the machine computes:</p>
   drew it.~~ <strong>That test is wrong, and <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
   deleted it rather than repairing it.</strong> <code>OLDER(15)</code> is a property of a person and it <em>is</em> a set of
   people: the people who are fifteen or older on the checked date — <strong>the same shape of thing</strong>
-  <code>MEMBERS</code> denotes (the people who pass <code>is_current_member</code>) and <code>GUARDIANS(x)</code> denotes (the people who
-  hold a row). <strong>Every operand in the registry is a test with a set on the other side of it</strong>; reading
+  <code>MEMBERS</code> denotes (the people who pass <code>is_current_member</code>). ~~And <code>GUARDIANS(x)</code> denotes the people who
+  hold a row.~~ <strong>That second example was withdrawn with its operand one round later</strong>
+  (<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>),
+  and it is worth knowing it was the test's <em>strongest</em> example rather than hiding it: guardianship is a row
+  you can join, so it proved the rule beautifully — and the reason it is not an operand is not that it fails
+  the set test, which it passes, but that <strong>the relationship carries its own authority</strong>, so an operand naming
+  it would re-grant, one code at a time, what the guardianship channel grants whole. <strong>The set test survives
+  losing its best case, because <code>MEMBERS</code> was always the load-bearing example</strong> and <code>MEMBERS</code> stores nothing
+  at all. <strong>Every operand in the registry is a test with a set on the other side of it</strong>; reading
   one column is a different thing from joining one table, but it is not a different <em>kind of answer</em>.
   Read as written, the materializability test would have excluded <code>MEMBERS</code> too, since nothing anywhere
   stores the member list — which is how it took a round of being quoted in three documents before anybody
@@ -3654,7 +3661,7 @@ say</strong>, not what the machine computes:</p>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>term    := operand ( ( '*' | '-' ) operand )*
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>operand := EVERYONE | MEMBERS
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>         | OLDER '(' n ')' | YOUNGER '(' n ')'
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>         | GUARDIANS [ '(' person ')' ]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>         | GUARDIANS [ '(' person ')' ]   ← row deleted in round 13, D-113; not a selector
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>         | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>         | ROLE '(' name ')' | GROUP '(' name ')'
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>         | PERSON '(' person ')'
@@ -3766,18 +3773,20 @@ seeded registry in the shape <code>grant_scope_type</code> already has.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Seeded selectors</strong>, in full, because this table <em>is</em> the language — <strong>fourteen rows</strong>, all of them
-shipped. <strong>The count has moved three times in three rounds, so it is stated as a history rather than as a
+<p><strong>Seeded selectors</strong>, in full, because this table <em>is</em> the language — <strong>thirteen rows</strong>, all of them
+shipped. <strong>The count has moved four times in four rounds, so it is stated as a history rather than as a
 number:</strong> thirteen while <code>LIST</code> existed, <strong>twelve for exactly one round</strong> after
 <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-deleted it, and <strong>fourteen as of
+deleted it, <strong>fourteen as of
 <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a></strong>,
-which seeded <code>OLDER</code> and <code>YOUNGER</code>. <strong>Anyone reading a twelve-row page written last round should not carry
-that number forward: twelve was true for exactly one round and is now two rounds old.</strong> The two new rows
-are the first operands added since <code>PERSON</code> and the first whose argument is not an entity reference. What
-the deletion bought is still stated where it can be checked rather than as a mood: <strong>every one of the
-fourteen is either a rule about people or takes an argument</strong>, so the registry has no special case left to
-explain — the operand with neither property was <code>LIST</code>, and the two newcomers have both of them at once,
+which seeded <code>OLDER</code> and <code>YOUNGER</code>, and <strong>back to thirteen in the next round</strong> when
+<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>
+deleted <code>GUARDIANS</code>. <strong>Anyone reading a fourteen-row page written last round should not carry that number
+forward, and anyone reading a thirteen-row page from three rounds ago should not assume theirs is the same
+thirteen</strong> — the earlier one had <code>LIST</code> and no age operands. The two rows round 12 added are the first operands
+added since <code>PERSON</code> and the first whose argument is not an entity reference. What the deletions bought is still
+stated where it can be checked rather than as a mood: <strong>every one of the thirteen is either a rule about people
+or takes an argument</strong>, so the registry has no special case left to explain — the operand with neither property was <code>LIST</code>, and the two newcomers have both of them at once,
 since <code>OLDER(18)</code> is a rule about people <em>and</em> takes an integer. <code>PERSON</code> was the last row added <em>until
 this round</em>, and it was added <em>late, in that round, by a decision entry that
 had already said it was here</em>: this table was written from the evaluator's arm list rather than from
@@ -3826,12 +3835,6 @@ documents before a round closes, not a database constraint — see §13.</p>
 <td>required (<code>person</code>)</td>
 <td>no</td>
 <td><strong>One named person</strong> — a set of one, which is a set, so it is a named operand like every other row. How an exception for a named individual lives <em>inside</em> the expression that granted the rule, next to the thing it exempts (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>). <strong>And since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> it is how several named people are written too:</strong> a hand-written set is a sum of these — <code>PERSON(a) + PERSON(b)</code> — because a set of one is a set, and a set of three is the same thing three times. There is no separate "hand-typed list" operand and no table behind one.</td>
-</tr>
-<tr>
-<td><code>GUARDIANS</code></td>
-<td>optional (<code>person</code>)</td>
-<td>yes, <code>person</code></td>
-<td>Guardians of that person. Bound: the guardians of the person this item is about.</td>
 </tr>
 <tr>
 <td><code>ROLE</code></td>
@@ -3883,18 +3886,29 @@ documents before a round closes, not a database constraint — see §13.</p>
 </tr>
 </tbody>
 </table>
-<p><strong><code>LIST</code> is deleted from this table, and it is the only row this table has ever lost</strong>
-(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
-Its table is gone with it (§<em><code>audience_member</code>, re-roled as the <code>LIST</code> leaf — deleted by D-105</em>), and its
-grammar arm is gone too, so there is nothing left for the row to point at. <strong>The table above is exactly
-fourteen rows; a fifteenth would be a bug</strong>, and the same would have been true of whatever number this
-table held in any previous round. <strong>The number is not the point; the closure is.</strong> What the sentence
+<p><strong>Two rows have been deleted from this table, and the second is the more instructive.</strong> <code>LIST</code> went first
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>):
+its table went with it (§<em><code>audience_member</code>, re-roled as the <code>LIST</code> leaf — deleted by D-105</em>) and its grammar arm
+went too, so there was nothing left for the row to point at — a row that references nothing. <code>GUARDIANS</code> went
+second (<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>)
+<strong>with a table of its own to point at, a row in this registry, and a meaning that belonged to a different
+mechanism</strong>: guardianship is a channel carrying a <code>right_level</code> over a child, not a set a grant may be aimed at,
+and its row's <code>Binds to item</code> cell was using that column to talk about a person — while the bound form the row
+promised was unsavable on every scope, because the same registry says <code>person</code> is not a scope. <strong>The table above
+is exactly thirteen rows; a fourteenth would be a bug</strong>, and the same would have been true of whatever number
+this table held in any previous round. <strong>The number is not the point; the closure is</strong> — and D-113 adds the
+sharper half of that lesson: <strong>a row can sit in this table, be counted correctly, and still be a bug.</strong> Fourteen
+was arithmetically true of a registry containing a row nobody could legally use as described, so <em>every page
+that repeated "fourteen" was reinforcing a fiction with arithmetic.</em> What is checkable here is not the count but
+<strong>each row against the save path that must accept it</strong>. What the sentence
 asserts is that <em>this list is the language</em>, so a row appearing anywhere other than here — in a screen's
 dropdown, in a resolver's switch, in a decision entry that never reached this table — is a bug: that is
 what <code>PERSON</code> was for one round, in the other direction. The count is written down only because it is the
 cheapest way to run that check by eye, and a count that has been thirteen, then twelve for exactly one
-round, then fourteen in three rounds is the argument for writing it down rather than for trusting what a
-reader remembers. §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em> keeps the reasoning that survives
+round, then fourteen, then <strong>thirteen again for the opposite reason</strong> — a row removed rather than a pair added —
+is the argument for writing it down rather than for trusting what a reader remembers. <strong>A number that returns to
+a previous value is especially worth printing with its history</strong>, since "thirteen" read on a page written three
+rounds ago and "thirteen" read here are not the same thirteen. §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em> keeps the reasoning that survives
 the deletion.</p>
 <p><strong>Rules</strong> (<code>selector_type</code>)</p>
 <ul>
@@ -3925,7 +3939,7 @@ the deletion.</p>
   no row.</strong> <strong>Amend the check rather than admire the rule</strong>: anything reading this column now has to know
   the scalar case exists, and has to know what the scalar is <em>not</em> — <strong>it is not a reference</strong>. That is
   why §11's assertion that exactly two polymorphic keys in this design go without a foreign key
-  (<code>access_grant.scope_id</code>, <code>audience_operand.selector_arg_id</code>) <strong>is still true at fourteen rows, and true
+  (<code>access_grant.scope_id</code>, <code>audience_operand.selector_arg_id</code>) <strong>is still true at thirteen rows, and true
   for the right reason rather than by luck</strong>: an <code>18</code> sitting in <code>selector_arg_id</code> points at nothing, so
   there is nothing for a merge to repoint, nothing for a cascade to find, and nothing for the orphan scan
   to walk. The check counts <em>references</em>, and <code>18</code> is not one (§<em>A hand-named person is now a keyless
@@ -3974,7 +3988,7 @@ real reasons they were always refused
   decision, so it stays <a href="../../open-questions/">an open question</a> rather than being implied by a word
   in a grammar. <strong>An operand that reads no state is not a vocabulary item but a syntax error wearing one's
   clothes</strong>, and this refusal is untouched by round 12 — <strong>what moved is the grounds it was previously
-  given.</strong> <a href="../../open-questions/#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one">F-20</a>
+  given.</strong> <a href="../../open-questions/#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway">F-20</a>
   is now a question about whether the <em>feature</em> is wanted, and no longer about whether the language could
   hold the word: since <code>OLDER</code> arrived, a predicate over a column is an ordinary operand, and
   <code>WHITELISTED</code> is out on its merits rather than on its type
@@ -4030,7 +4044,7 @@ crew is the example the section was built around and it survives with one operan
 <code>(GROUP(kitchen) + PERSON(honza)) - PERSON(a) - PERSON(b)</code> — <strong>same meaning, one fewer kind of thing.</strong></p>
 <p><strong>What survives, because the hazard it guarded is real and unchanged.</strong> Naming three people inside a
 grant must not mean making them members of a <code>person_group</code>. A group's members are true when no grant
-points at them (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
+points at them (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>),
 so editing one to move one grant's reach edits a roster that other grants read — and it invents a group
 nobody talks about, which is the rule D-098 wrote. <strong>This is now the only argument left standing in this
 section, and D-105 keeps it deliberately:</strong> the answer to <em>"plus Honza"</em> is <code>PERSON(honza)</code>, and the
@@ -4109,7 +4123,7 @@ brackets instead of silently rewriting them".</p>
 <tr>
 <td><code>selector_arg_id</code></td>
 <td>integer, optional</td>
-<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind — <strong>or it points at nothing, which is new in <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>: <code>OLDER</code> and <code>YOUNGER</code> write their integer into this same column</strong>, because the column is an integer and the value is one. <strong>This is the one place the round could have broken an invariant and did not</strong>: §11 asserts that exactly two polymorphic columns in this design go without a foreign key, and it still holds at fourteen operands, <strong>for the right reason rather than by luck</strong> — the count is of <em>references</em>, and <code>18</code> is not one: nothing to repoint on a merge, nothing for a cascade to find, nothing for the orphan scan to walk, <strong>which is precisely why that scan filters on the selector's kind and walks the five entity kinds rather than every row in this column</strong> (§<em>A hand-named person is now a keyless reference</em>). <strong>A reader who takes "polymorphic" to mean "always a row id" will write that scan wrong, which is why the sentence is here.</strong> <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s already-accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
+<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind — <strong>or it points at nothing, which is new in <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>: <code>OLDER</code> and <code>YOUNGER</code> write their integer into this same column</strong>, because the column is an integer and the value is one. <strong>This is the one place the round could have broken an invariant and did not</strong>: §11 asserts that exactly two polymorphic columns in this design go without a foreign key, and it still holds at fourteen operands, <strong>for the right reason rather than by luck</strong> — the count is of <em>references</em>, and <code>18</code> is not one: nothing to repoint on a merge, nothing for a cascade to find, nothing for the orphan scan to walk, <strong>which is precisely why that scan filters on the selector's kind and walks the five entity kinds rather than every row in this column</strong> (§<em>A hand-named person is now a keyless reference</em>). <strong>A reader who takes "polymorphic" to mean "always a row id" will write that scan wrong, which is why the sentence is here.</strong> <a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>'s already-accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -4199,7 +4213,7 @@ brackets instead of silently rewriting them".</p>
   fail-closed <strong>and</strong> a lockout of everybody in one breath. D-103 kept the rule because a silent widening is
   discovered in an audit two years late; <strong>what round 12 added is a page, not a rule.</strong> An audience carrying
   a leaf that does not resolve is <strong>listed for its owner</strong>, in a second column of the report
-  <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a>
+  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
   already asks for. <strong>No save is refused because a leaf is broken, and no expression is pinned to the set it
   resolved to when it was saved</strong> — pinning would make the stored expression a ceiling on truth, and a grant
   would freeze at the shape it had on the day somebody typed it. <strong>The report is a query with an owner:
@@ -4265,7 +4279,7 @@ one retires completely rather than becoming a report.</p>
 grant's exception by editing a group roster stands untouched, because the hazard is real and unchanged:
 making three people members of <code>GROUP(kitchen)</code> in order to reach one grant <strong>edits a roster that other
 grants read</strong>, and it creates a row in the group browser that is not a group anybody talks about.
-<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 is still the rule that says so — <strong>a group's members are true when no grant points at them</strong> — and
 <code>PERSON(a) + PERSON(b)</code> is now the answer that respects it. What is genuinely gone from that paragraph is
 its <em>counterparty</em>: this table was one of the two dated-member tables the design apologised for, the
@@ -4342,7 +4356,7 @@ derived membership: a rule whose reach cannot be reconstructed is still the righ
 not by pretending the question has an answer. The report is the save-time listing in §<em>The cost of
 composition</em>, kept over time rather than shown once; whether that is worth building is registered in
 §13 and is the same question as
-<a href="../../open-questions/#f-7--cache-vs-materialized-effective_permission-table">F-7</a> wearing a different
+<a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a> wearing a different
 hat.</p>
 <h3 id="names-are-one-namespace-and-reserved-words-are-the-other-half">Names are one namespace, and reserved words are the other half<a class="headerlink" href="#names-are-one-namespace-and-reserved-words-are-the-other-half" title="Permanent link">&para;</a></h3>
 <p><strong>Bare <code>COUNSELORS</code> resolves against roles and groups together</strong>, since <code>ROLE()</code> and <code>GROUP()</code> no
@@ -4387,7 +4401,7 @@ made load-bearing, and no page in this corpus required it before.</strong> <code
 curiosity: the hand-typed people lived in <code>audience_member</code>, whose <code>person_id</code> was an ordinary foreign
 key, so its rows moved or vanished correctly on their own and nobody had to think about it. <strong>Now every
 hand-named person in the system is a <code>selector_arg_id</code>, and that column deliberately has no foreign key</strong>
-(<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s
+(<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>'s
 accepted trade-off, extended to this column by D-101 and backstopped by an orphan scan rather than by the
 database).</p>
 <p><strong>Requirement, and it is new: a person merge, and a redaction, must repoint every <code>audience_operand</code> leaf
@@ -4438,7 +4452,7 @@ that exists independently of the expression.</p>
 <tbody>
 <tr>
 <td>Which</td>
-<td>All thirteen of <code>EVERYONE</code>, <code>MEMBERS</code>, <code>OLDER</code>, <code>YOUNGER</code>, <code>ROLE</code>, <code>GROUP</code>, <code>GUARDIANS</code>, <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> and <code>AUDIENCE</code> — <strong>derived from another expression rather than from a fact table, which makes <code>AUDIENCE</code> the odd one and the reason this table has a footnote below</strong>, plus <code>PERSON</code>, which is neither: see below. <strong><code>OLDER</code> and <code>YOUNGER</code> sit here on the strength of the row above them</strong> — a live read of a stored fact at the checked date, exactly like <code>MEMBERS</code> reading <code>membership</code> — <strong>but they are the first whose answer to <em>"when does someone join?"</em> is not "when a row is written"</strong>: the row was written at birth, and the set changes on its own. §<em>The cost of composition</em> carries what that costs</td>
+<td>All twelve of <code>EVERYONE</code>, <code>MEMBERS</code>, <code>OLDER</code>, <code>YOUNGER</code>, <code>ROLE</code>, <code>GROUP</code>, <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> and <code>AUDIENCE</code> — <strong>derived from another expression rather than from a fact table, which makes <code>AUDIENCE</code> the odd one and the reason this table has a footnote below</strong>, plus <code>PERSON</code>, which is neither: see below. <strong><code>OLDER</code> and <code>YOUNGER</code> sit here on the strength of the row above them</strong> — a live read of a stored fact at the checked date, exactly like <code>MEMBERS</code> reading <code>membership</code> — <strong>but they are the first whose answer to <em>"when does someone join?"</em> is not "when a row is written"</strong>: the row was written at birth, and the set changes on its own. §<em>The cost of composition</em> carries what that costs</td>
 <td><strong>None since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>LIST</code>.</strong> The rows it held, the <code>valid_from</code> / <code>valid_to</code> pair, the no-overlap rule and the staleness this column existed to warn about are all gone with it</td>
 </tr>
 <tr>
@@ -4463,7 +4477,7 @@ that exists independently of the expression.</p>
 </tr>
 <tr>
 <td>Examples</td>
-<td>"everyone who holds a place on this event", "the counselors", "the guardians of this child"</td>
+<td>"everyone who holds a place on this event", "the counselors", "anyone thirteen or older"</td>
 <td>—</td>
 </tr>
 </tbody>
@@ -4609,10 +4623,21 @@ grants instead of being special-cased inside the resolver.</p>
 <ul>
 <li><strong>They are not a permission.</strong> Being in an audience is not authority; it is membership of a
   set. All authority still comes from a grant.</li>
-<li><strong>They do not replace <code>guardianship_permission</code>.</strong> <code>GUARDIANS</code> lets an organization open something
-  to a child's guardians; it does not let a guardian edit the child's record. That remains the
-  guardianship channel (§10) and its <code>right_level</code>
-  (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</li>
+<li><strong>They do not replace <code>guardianship_permission</code>, and they cannot reach guardianship at all.</strong>
+  ~~<code>GUARDIANS</code> lets an organization open something to a child's guardians; it does not let a guardian edit the
+  child's record.~~ <strong>Both halves of that sentence were wrong in the same way, and
+  <a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>
+  deleted the operand it was written about: a guardian's authority is not a set of codes an audience could
+  extend one at a time. It is a <code>right_level</code> of <code>none</code> / <code>view</code> / <code>write</code> on the live <code>guardianship</code> row
+  (§10, <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>),
+  and it reaches <strong>any action about that child</strong> — wider than any grant could assemble, and narrower in the only
+  direction that matters, because it reaches nothing that is not about the child.</strong> So an audience neither
+  opens nor closes guardianship: <strong>a deny still overrides the channel, because the deny channel runs first and
+  is scope-independent (§10)</strong>, which is the one thing an audience can do to it. What an audience <em>can</em> do with
+  a guardian is be a group the organization keeps — the six contact adults of these children are
+  <code>GROUP(x)</code>, a roster with a lifetime and no authority
+  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>)
+  — which is a different fact, written down, about different people.</li>
 <li>~~<strong>They do not nest.</strong>~~ ~~<strong>Withdrawn by D-091; the mechanism was removed by D-101.</strong>~~
   <strong>Nesting returns in the same round, through <a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>,
   and the three-stage history is worth keeping because the diagnosis never changed.</strong> The sentence read
@@ -4701,10 +4726,18 @@ rather than recorded</strong>, and round 10 added a sharper wrinkle.</p>
   that made it true, and <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
   empties those payloads after 24 months; the derived membership was never stored at all. After two
   years the question is answered by re-running expressions against state that has itself moved on, and
-  it is answered with today's confidence. <strong><a href="../../open-questions/#f-7--cache-vs-materialized-effective_permission-table">F-7</a>
-  is the route back</strong> — a materialized <code>effective_permission</code> snapshot kept <em>as history</em> rather than as
-  a cache — which until round 9 read as a performance question and is now the only thing that could
-  make the unanswerable question answerable. Caching is §10's subject; <strong>history is F-7's.</strong></li>
+  it is answered with today's confidence. ~~<strong>F-7 is the route back</strong> — a materialized
+  <code>effective_permission</code> snapshot kept <em>as history</em> rather than as a cache~~ — <strong>there is no route back, and
+  round 13 is the round that said so.</strong>
+  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>
+  was <strong>dissolved</strong>, not answered: a nightly rebuild of cached answers and a nightly materialized
+  <code>effective_permission</code> table turned out to be one job with two names, so the snapshot this bullet kept
+  proposing as the thing that would make history answerable <strong>is the cache, wearing the other name, and it
+  does not make history answerable either</strong> — a table of <em>today's</em> answers, rebuilt nightly, is as blind to
+  2011 as the cache is. <strong>The honest statement of this limitation is now the flat one: a historical check is
+  re-running today's expressions over whatever state survives, and after the payloads expire that state has
+  moved on.</strong> Caching is §10's subject; <strong>history has no owner, and that is recorded as a limit rather than
+  a to-do.</strong></li>
 <li><strong>Something has to keep count of how big expressions get, because nothing refuses them any more.</strong>
   <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
   deleted the height bound along with the parameter that held it, and refused to mint a replacement, so
@@ -4716,9 +4749,13 @@ rather than recorded</strong>, and round 10 added a sharper wrinkle.</p>
   (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
   and it is the third control of that shape this module depends on. <strong>Say it in those words wherever the
   old bound is missed</strong>, because the failure mode of a report nobody reads is that it stops being read and
-  nothing else happens. <strong>The question of who reads it is itself open —
-  <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a></strong>
-  asks exactly that, and this bullet is the mechanism F-21 is asking about.** The save-time walk that computes it is the same walk that checks acyclicity
+  nothing else happens. <strong>Who reads it was the last open half of this bullet, and round 13 answered it with
+  the cheapest object available: not a report and not a job, a
+  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">tab</a>
+  on the permissions page.</strong> The answer to <em>who reads it</em> is therefore still <em>nobody, necessarily</em> — a tab is
+  read by whoever opens it — and that is now a decision rather than an oversight, with
+  <a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s
+  stated size underneath it and a trigger on top. The save-time walk that computes it is the same walk that checks acyclicity
   (§<em>The expression tree</em>), so the number costs nothing extra to obtain; what costs something is deciding
   to look at it.</li>
 </ul>
@@ -4877,7 +4914,7 @@ taking the trigger that used to enforce it.</p>
 <p><strong>One clause of that sentence is now bounded, and the bounded half is not the half that mattered.</strong>
 <em>For longer than the record is kept</em> was written when this table's state columns and <code>audit_log</code>'s
 payloads were both permanent. If
-<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a> is confirmed, the state columns expire on
+<a href="../../open-questions/#f-8--retention-policy-for-accesslog">F-8</a> is confirmed, the state columns expire on
 the window
 <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
 proposes for the change trail, which inverts that arithmetic: the copy becomes shorter-lived than the
@@ -4928,7 +4965,7 @@ technical one"</em>, and the second half of that is still exactly right. What ha
 decision which bounded the change trail's payloads
 (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
 proposes the same window here — <strong>24 months on the state columns, rows kept, 12 months as the floor</strong> —
-and records it as <a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>, <strong>which still needs
+and records it as <a href="../../open-questions/#f-8--retention-policy-for-accesslog">F-8</a>, <strong>which still needs
 confirming</strong>. Until it is confirmed, that is a default awaiting a person and not this document's
 position.</p>
 <p><strong>Why the question is weaker here, which is structural and not luck: this table does not hold the
@@ -5137,7 +5174,12 @@ them, and the reconciliation report of
 must count people marked as counselors in the corpus against <code>role_holder</code> rows written. <strong>It fails
 closed — nothing breaks, which is exactly why nobody notices.</strong></p>
 </blockquote>
-<h3 id="cache-invalidation-revisited">Cache invalidation, revisited<a class="headerlink" href="#cache-invalidation-revisited" title="Permanent link">&para;</a></h3>
+<h3 id="the-cache-is-rebuilt-not-invalidated">The cache is rebuilt, not invalidated<a class="headerlink" href="#the-cache-is-rebuilt-not-invalidated" title="Permanent link">&para;</a></h3>
+<p>~~Cache invalidation, revisited~~ — <strong>the title was the thing that changed.</strong>
+<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
+replaced this section's invalidation policy with <strong>a nightly full rebuild, immediate invalidation on any
+ruleset write, and an explicit administrative request</strong>, and closed F-6 and F-7 with it. What did <em>not</em> change
+is the first sentence below, which is about something else.</p>
 <p>The answer cache and the operand cache are two different things, and round 10 separated them because
 D-101 made operand results reusable in a way the old union-of-arms model never was.</p>
 <p><strong>Fields</strong> (<code>permission_cache</code>)</p>
@@ -5168,7 +5210,7 @@ D-101 made operand results reusable in a way the old union-of-arms model never w
 <tr>
 <td><code>scope_id</code></td>
 <td>integer, optional</td>
-<td></td>
+<td>The item. <strong>Not optional in practice since D-102</strong> — a bound operand means the same expression yields different people on different items, so an answer computed for one item may never be served for another.</td>
 </tr>
 <tr>
 <td><code>allowed</code></td>
@@ -5178,12 +5220,17 @@ D-101 made operand results reusable in a way the old union-of-arms model never w
 <tr>
 <td><code>computed_at</code></td>
 <td>timestamp, audit time</td>
-<td></td>
+<td>When this row was built, which the nightly rebuild rewrites.</td>
 </tr>
 <tr>
-<td><code>expires_at</code></td>
-<td>timestamp, required</td>
-<td>How long the answer may still be used.</td>
+<td>~~<code>expires_at</code>~~</td>
+<td>~~timestamp, required~~</td>
+<td><strong>Replaced in round 13.</strong> A per-entry expiry was how a TTL cache decided when to stop trusting an answer, and D-111 removed every TTL from this design — no TTL, no asymmetric TTL that makes a deny visible sooner than an allow. ~~How long the answer may still be used.~~</td>
+</tr>
+<tr>
+<td><code>ruleset_version</code></td>
+<td>integer, required</td>
+<td><strong>The row that replaced it, and the mechanism that makes "rebuild immediately on a ruleset change" mean something an implementation can do.</strong> One integer on the ruleset, bumped by any write to it (§10, <em>What counts as the ruleset</em>), copied into every cache entry when the entry is built, and <strong>an entry is valid only while the two match.</strong> It exists because the writes that need global invalidation are exactly the ones that name nobody: a <code>role_holder</code> row names its person and a <code>person_group_member</code> row names its person, <strong>but an edit to a shared expression names nobody at all</strong> — the people it stops reaching are whatever it resolves to, and enumerating them means evaluating it for everyone. Bumping an integer never has to answer <em>whom does this reach</em>. <strong>The nightly rebuild is not made redundant by it</strong> — the rebuild is the correctness backstop for everything a version does not cover, which is the calendar: a birthday crossing <code>OLDER(n)</code>/<code>YOUNGER(n)</code>, the 1 January sweep, a period reaching its own <code>valid_to</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -5191,6 +5238,16 @@ D-101 made operand results reusable in a way the old union-of-arms model never w
 <ul>
 <li>One row per person, permission code, scope type and scope id — where an absent scope type and
   an absent scope id each count as a key value of their own, not as "any scope".</li>
+<li><strong>An entry is read only when its <code>ruleset_version</code> equals the ruleset's current version.</strong> Everything else
+  is a miss. There is no other validity rule, and adding one is how a TTL comes back.</li>
+<li><strong>A ruleset write bumps the version and computes nothing.</strong> Warming is the nightly job's work or the
+  operator's request, never the write path's: <strong>a write that also recomputes every answer it might touch is
+  the fan-out this section just deleted, arriving as an implementation detail.</strong></li>
+<li><strong>The <code>deprecated | hidden | disabled</code> flag is a ruleset write and therefore bumps the version</strong>
+  (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
+  That is what makes <code>disabled</code> mean <em>now</em> rather than <em>after midnight</em>, and it is worth an integrity check:
+  D-109's <em>"deprecating or hiding must not change the answer"</em> can stay true while <em>"disabling takes effect
+  now"</em> silently stops being true, and only the second one is a safeguarding property (§11).</li>
 </ul>
 <p><strong>An operand cache beside it</strong>, keyed <code>(person, selector_kind, selector_arg_id)</code> for an operand that
 does not bind, and <strong><code>(person, selector_kind, selector_arg_id, item)</code> for a bound one</strong>
@@ -5325,7 +5382,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   <code>grant_scope_type</code>: a grant whose <code>scope_id</code> names no row in the item table it points at — and the
   same scan over <code>audience_operand.selector_arg_id</code>, which is polymorphic for the same reason and
   takes the same mitigation. A row is exactly the risk the polymorphic columns accept (§6,
-  <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>,
+  <a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>,
   extended to operands by
   <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>),
   and this is that trade's compensating control. <strong>An orphaned operand is the quiet half</strong>: it
@@ -5399,7 +5456,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   <a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>
   retired, because a widening is not a noise, it is a direction: <strong>a wide failure is only better than a
   narrow one when somebody is reading</strong>, which is what this check is for and nothing more. <strong>What D-106
-  added is a second column on the report F-21 asks for</strong> — naming <em>which</em> leaf failed, not merely that one
+  added is a second column on the tab F-21 placed on the permissions page</strong> — naming <em>which</em> leaf failed, not merely that one
   did — <strong>aimed at the audience's owner</strong>, which is the same shape as this check: a listing with somebody's
   name beside the row. So the control here is <em>report, twice over</em>, and <strong>not</strong> a refusal: nothing in this
   round stops an audience whose leaf is broken from being saved, and the round's premise is why
@@ -5489,7 +5546,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
      if the report is not read. <strong>That is D-081's case stated in its purest form — the rule's name
      outlived its mechanism, and this line exists to say which of the two happened here.</strong> <strong>A retired
      invariant is not a passing test, so nothing here asserts anything about size: a build that gets an
-     enormous expression is a green build</strong>, and <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a>
+     enormous expression is a green build</strong>, and <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
      is the open question about who reads what is left. Half 3 is
      therefore the whole structural story now: acyclicity at save, and nothing else.
   3. <strong>No sharing table may exist, and the read path must grow neither a depth cap nor a cycle
@@ -5589,6 +5646,30 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   retired the depth bound it guards two things and not three: cycles, and not emptying something that is
   named.</strong> <strong>The acyclicity walk is therefore the only structural guard left on this module</strong>, and check
   15's half 3 is the assertion that nobody quietly adds a second one inside the read path.</li>
+<li><strong>18. TIME-BOMB: <code>deprecated</code> and <code>hidden</code> must never change an answer, and <code>disabled</code> must change one and
+  say whose.</strong> <a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>
+  replaced deletion with three states, and the states are only safe if two of them are inert. <strong>Assert both
+  halves, because each fails alone.</strong> <em>Inertness:</em> resolve every live expression, then flip a
+<code>selector_type</code>, <code>role</code>, <code>person_group</code> or <code>audience</code> row to <code>deprecated</code> and then to <code>hidden</code>, and <strong>the
+  resolved sets must be identical</strong> — a rule that quietly stops granting because somebody tidied a list is the
+  precise failure this design exists to make impossible, and it is exactly the kind of thing an implementation
+  gets wrong by having the editor filter non-active rows out of a list it also uses to evaluate. <em>Effect:</em>
+  flipping the same row to <code>disabled</code> must empty exactly the leaves that name it, in every expression, and the
+  write must record the rules it touched, resolved before and after. <strong>Third assertion, and the newest: the flag
+  write must bump the ruleset version</strong> (§10) — if it does not, D-109's inertness half still passes beautifully
+  while <em>"disabling takes effect now"</em> is quietly false, and a <code>true</code> cached before the flip keeps granting
+  until the nightly rebuild. <strong>Nothing else in §11 can see this one</strong>, because the flag is a legitimate value
+  in a legitimate column and every row is well-formed on its own.</li>
+<li><strong>Where these go.</strong> §11's reports now have a home rather than a schedule: <strong>the permissions page has a tab</strong>
+  (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>),
+  with <strong><code>Broken</code></strong> holding the rules that name something deprecated, hidden or disabled or that resolve to
+  nobody — checks <strong>1, 2, 3, 7's empty half, 12, 13, 14 and 18's second half</strong> all land there — and
+  <strong><code>Unusual</code></strong> holding rules that resolve correctly and look odd, which is where <strong>6</strong> lives. <strong>Checks 7's wide
+  half and 9 still go to a person rather than to a screen</strong>, because both describe authority getting bigger
+  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>What the tab replaced is four rounds
+  of "a standing report nobody is obliged to read"</strong>, and the difference is not that the tab is a guard in
+  <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
+  sense — nothing is blocked — but that <strong>it is where the person writing the rule already is.</strong></li>
 </ul>
 <hr />
 <h2 id="12-what-the-organization-starts-with">12. What the organization starts with<a class="headerlink" href="#12-what-the-organization-starts-with" title="Permanent link">&para;</a></h2>
@@ -5655,7 +5736,7 @@ branch (§2).</p>
   note above describes.</li>
 <li><strong><code>grant_scope_type</code></strong>: <code>unit</code> (the only row that is not item-scoped), <code>event</code>, <code>person_group</code>,
   <code>role</code>, and <code>document</code> (deferred).</li>
-<li><strong><code>selector_type</code></strong>: the fourteen operands of §8's language, <strong>every one of them seeded, <code>is_system</code>
+<li><strong><code>selector_type</code></strong>: the thirteen operands of §8's language, <strong>every one of them seeded, <code>is_system</code>
   and implemented in the shipped evaluator, because there is no fourth combination and no third kind</strong>
   (§8, <em>The selector registry</em>). <strong>This registry is what both the grant editor's dropdown and the
   parser's reserved words read</strong>, which is what D-101 means by <em>the language becomes data</em> — a new
@@ -5687,8 +5768,15 @@ branch (§2).</p>
   names are worth tracing because each became something smaller: <code>unit_participants</code> is <code>MEMBERS</code>
   (there is one unit), <code>unit_leaders</code> is <code>ROLE(x)</code> — <strong>and it is the case this document had to correct
   in round 6, because the stored rule matched nobody while every grant aimed at it looked granted,
-  which is the cautionary tale §8's evaluation rules are written against</strong> — and <code>guardians_of</code> is the
-  operand <code>GUARDIANS(person)</code>, or bound as <code>GUARDIANS</code> on a grant about that person. Nothing needs a
+  which is the cautionary tale §8's evaluation rules are written against</strong> — and <code>guardians_of</code> became
+  <strong>nothing at all</strong>, which is the interesting one: it was first read as the operand <code>GUARDIANS(person)</code>, and
+  that operand's row has now been deleted
+  (<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>),
+  because a guardian's authority comes from the guardianship channel's <code>right_level</code> over the child rather than
+  from anything an audience could name. <strong>So the honest trace for the third name is "became a channel, not a
+  smaller expression"</strong> — the only one of the three that did not shrink into the language. <strong>The bound spelling
+  the old text offered (<code>GUARDIANS</code> on a grant about that person) was never writable anyway</strong>: the registry says
+  <code>person</code> is not a <code>grant_scope_type</code>, so the binding check refused it on every scope that exists. Nothing needs a
   row per unit any more, because there is one unit and no per-unit audience to parameterize. <strong>What used
   to be said here — that a member row on either <code>is_system</code> row is refused — is retired rather than
   answered</strong>, because the row it refused no longer exists to be written: <code>audience_member</code> was deleted with
@@ -5758,7 +5846,7 @@ branch (§2).</p>
   (<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>). An ordinary
   permission — no namespace, no resolver branch, no structural consequence.</li>
 <li><strong><code>person_group.member.manage</code> is how "joining a group is somebody else's act" is said now</strong>
-  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
+  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>,
   carrying
   <a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
   across the rename): held at the unit, where it reaches every group, or granted on one group as an
@@ -5815,18 +5903,30 @@ need a paragraph telling readers they were different. That paragraph is now abou
   tune, and answering "is 3 right?" is not a possible act. <strong>What the bullet had discovered on the way is
   still open and is now the only half of it that is:</strong> it noted that a bound on <em>height</em> never bounded the
   thing an expression actually costs, which is how many <em>audiences</em> it reaches — a depth-3 limit allowed a
-  wide flat sum of twenty <code>AUDIENCE()</code> leaves and priced each one at a fetch. <strong>With no bound at all now,
-  neither shape is bounded, and the question "does expression size need a limit, of either shape, and who
-  decides it?" is a real open question where "is 3 right?" was a fake one.</strong> It is registered in
-  <a href="../../open-questions/#f-5--which-operands-are-missing-from-the-selector-registry">F-5</a>'s
-  neighbourhood rather than answered here, on the same grounds this page always gave: inventing a parameter
-  nobody asked for is not this page's call. <strong>The placeholder value of 3 is gone with the column, and the
+  wide flat sum of twenty <code>AUDIENCE()</code> leaves and priced each one at a fetch. **With no bound at all now,
+  neither shape is bounded — <strong>and round 13 answered that, too, in the negative.</strong>
+  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
+  closed with <em>nothing bounds what an expression costs, and at the stated size that is accepted rather than
+  merely unaddressed</em>, so the question is no longer "does it need a limit, and who decides" but <em>what would
+  make somebody wish it had one</em> — and that has a number now:
+  <a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>
+  states the size, and states the trigger (a few thousand people, or a thousand registrants on one event) at
+  which the unbounded cost stops being affordable. <strong>A fake question was retired and a real one was
+  answered with a trigger instead of a parameter</strong>, which is the same move this page has always preferred:
+  inventing a number nobody asked for is not this page's call, but naming the size at which you would
+  reconsider it is, and is cheaper. <strong>The placeholder value of 3 is gone with the column, and the
   standing report of §8 and §11 half 2 is what a real number would eventually be argued from.</strong></li>
-<li><strong>Whether an expression's <em>fingerprint</em> should be computed on save (§8).</strong> D-101 registered it
-  rather than promising it: two expressions with the same meaning are two different row sets, so "you
-  already granted exactly this set on that item" no longer falls out of storage. <strong>A warning, never a
-  refusal</strong> — normalization informing a human, not gating one — and if the expansion overflows, skip
-  the warning.</li>
+<li>~~<strong>Whether an expression's <em>fingerprint</em> should be computed on save (§8).</strong>~~ <strong>Refused, not
+  implemented and not deferred</strong> (<a href="../../open-questions/#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will">F-14</a>,
+  <a href="../../decisions/decision-log/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).
+  Two expressions with the same meaning are two different row sets, and <em>"you already granted exactly
+  this set on that item"</em> no longer falls out of storage — <strong>that is accepted, not mitigated.</strong> The
+  watered-down version this bullet proposed (a derived fingerprint, a warning, never a refusal) was put
+  to the same question and refused with it, because computing it means deciding that two expressions mean
+  the same thing, and this module computes <em>who is in a set</em>, never <em>what a string means</em>. A fingerprint
+  is a semantic-equality function wearing a warning badge: either it is exact, which is undecidable
+  without evaluating both sides, or it is a hash of a normalized string, which two spellings of one set
+  will fail to match and will therefore produce a warning that is wrong in both directions.</li>
 <li><strong>The per-item reach preview (§8) is a screen nobody has designed.</strong> <code>PLACED</code> means different people
   on different events, so the editor's expanded set must be computed <em>for an item</em> and say so on
   screen
@@ -5834,18 +5934,28 @@ need a paragraph telling readers they were different. That paragraph is now abou
   D-091 made the expanded set a requirement; D-102 made it depend on an input the grant does not
   contain. Which item the editor picks by default — the grant's item, an event the writer chooses, the
   next event with registrants — is not decided anywhere.</li>
-<li><strong><code>WHITELISTED</code> (§8): no stored state to name, so no selector.</strong> Either it means <code>source = staff</code>,
-  or it means promotion off the waitlist, or it is a new column on <code>event_registration</code> — which is an
-  events decision and not a selector decision. It is listed here so that it stays a question rather
-  than becoming a word in a grammar.</li>
+<li>~~<strong><code>WHITELISTED</code> (§8): no stored state to name, so no selector.</strong>~~ <strong>Closed by refusal</strong>
+  (<a href="../../open-questions/#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway">F-20</a>).
+  The three readings this bullet listed — <code>source = staff</code>, promotion off the waitlist, a new column on
+  <code>event_registration</code> — were never narrowed, and that is the answer rather than an evasion: <strong>there is no
+  state to evaluate, so there is nothing for an operand to resolve to</strong>, and picking a meaning in order to
+  seed a row would invent an events feature from the authorization module. <strong>The feature it was wanted for
+  arrives anyway</strong>, which is the part that made this a closure and not a parking lot: whoever needs "these
+  few people" writes grants, or a <code>GROUP(x)</code>, or <code>PERSON(a) + PERSON(b)</code>. What is kept from this bullet is
+  its discipline — the row stays unseeded so a question cannot become a word in a grammar by being typed
+  often enough.</li>
 <li><strong><code>PERSON(x)</code> — closed by this round, and the way it closed is the open item.</strong> Two decision entries wrote
   <code>PERSON()</code> and the seeded registry in §8 did not contain it, so this page concluded the operand did not
   exist and read both examples as <code>LIST</code>. <strong>That was the wrong reading</strong> (it cannot express D-103's example),
   the registry was the side that was wrong, and the row is seeded now: <code>argument_type = person</code>, and the
-  table that carries it holds <strong>fourteen</strong> rows today — thirteen while <code>LIST</code> existed, <strong>twelve for
+  table that carries it holds <strong>thirteen</strong> rows today — thirteen while <code>LIST</code> existed, <strong>twelve for
   exactly one round</strong> after
   (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>)
-  deleted it, and fourteen since round 12 seeded <code>OLDER</code> and <code>YOUNGER</code>. <strong>The twelve is quoted here only
+  deleted it, fourteen after round 12 seeded <code>OLDER</code> and <code>YOUNGER</code>, and <strong>thirteen again</strong> once round 13 deleted
+  <code>GUARDIANS</code> (<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
+  <strong>The two thirteens are not the same thirteen</strong> — one had <code>LIST</code> and no age operands, the other has both and
+  no guardian operand — which is the whole reason a count in this corpus travels with its history. <strong>The twelve
+  is quoted here only
   because this bullet is where the count was recorded when it was true</strong>; a reader who takes it forward
   repeats, one round late, exactly the mistake this bullet exists to record.
   <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
@@ -5877,7 +5987,7 @@ need a paragraph telling readers they were different. That paragraph is now abou
 <li><strong>Whether a person merge repoints every leaf that named the absorbed person, and who tests it (§8,
   §11 check 2).</strong> The requirement is D-105's and is not open; <strong>what is open is that no layer can express
   it.</strong> <code>selector_arg_id</code> has no foreign key
-  (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>),
+  (<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>),
   so the merge reassignment table has to be told about <code>audience_operand</code> the way it was told about every
   other person-referencing table, <strong>in all five argument kinds that name an entity</strong>, and the orphan scan that would otherwise
   catch it is both late and blind — late because it runs nightly, blind because a merge that leaves the
@@ -5896,35 +6006,43 @@ need a paragraph telling readers they were different. That paragraph is now abou
   a code, which makes the code mandatory in every practical sense while leaving it nullable in the
   schema. <strong>A check is being asked to assert what a column could have guaranteed</strong>; making the column
   required-where-<code>is_system</code> would be the honest fix and is not this document's call to make.</li>
-<li><strong>Whether a nested audience's past reach should be reconstructable (§8, <em>Three named sets</em>).</strong>
-  <code>GROUP(x)</code> answers <em>"was she in it on 1 June 2024?"</em> from its dated rows and <code>AUDIENCE(x)</code> cannot,
-  because it is a rule and the trail that recorded its shape is reduced after 24 months
-  (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
-  D-103 says the gap should be closed by a report rather than by pretending the question has an answer.
-  <strong>The report is the same listing as the bullet above, kept over time</strong> — which makes this a question
-  about whether to store history, i.e. <a href="../../open-questions/#f-7--cache-vs-materialized-effective_permission-table">F-7</a>,
-  and it is filed there rather than answered here.</li>
+<li>~~Whether a nested audience's past reach should be reconstructable (§8, <em>Three named sets</em>).~~ <strong>Answered in
+  round 13, in the direction of not reconstructing it:</strong> the record of whom a grant reached <strong>is the
+  expression</strong> (<a href="../../decisions/decision-log/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,
+  closing <a href="../../open-questions/#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised">F-17</a>).
+  <code>GROUP(x)</code> still answers <em>"was she in it on 1 June 2024?"</em> from its dated rows and <code>AUDIENCE(x)</code> still does
+  not, and <strong>this no longer counts as a gap, because the system never promised the answer</strong> — what it keeps is
+  the words, and D-109's refusal to delete the nouns is what keeps them evaluable. <strong>What is logged as history is
+  a rendering on a date, not a roster</strong>, and the roster alternative was refused because it stores, against
+  <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>'s
+  window, a per-person record of people who were never granted anything.</li>
 <li><strong>Whether <code>membership</code> belongs in <code>grant_scope_type</code> (§6).</strong> It is not seeded, and that is an
   inference from what D-097 and D-099 list rather than a ruling; the old seed had the row.</li>
 <li>Whether <code>valid_to</code> should be mandatory for high-authority holder rows and long-lived item grants
   (§4, §6).</li>
 <li>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable (§6) — a real fork, now covering
   <code>selector_arg_id</code> too.</li>
-<li>How long a <code>permission_cache</code> entry may live (§10) —
-  <strong><a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>, whose
-  shape
-  round 10 changed.</strong> It used to be a question about the membership sweep's TTL. It is now two caches
-  with different keys — an answer cache and a per-operand cache, the second keyed on the item whenever
-  the operand binds — and <strong>there are now two invalidations that cannot be keyed on the rows that were
-  written</strong>, not one: <code>role_holder</code> (one holder row, every grant naming that office) and a write to any
-  audience's tree, which since D-103 must also clear every audience that can <em>reach</em> the one written.
-  <strong>The blunt answer — invalidate audience-keyed entries wholesale — is the recommendation, and the
-  open question is whether it stays affordable</strong> (see the reference-listing bullet above).</li>
-<li>Cache vs materialized effective-permission table (§8, §10) —
-  <strong><a href="../../open-questions/#f-7--cache-vs-materialized-effective_permission-table">F-7</a>, and D-091 is the
-  round that made it a history question rather than a performance one.</strong></li>
+<li>~~How long a <code>permission_cache</code> entry may live (§10).~~ <strong>Closed in round 13, and the answer is: it does not
+  live, it is rebuilt.</strong> <a href="../../open-questions/#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a>
+  spent four rounds on that number and on which write invalidates how wide a fan-out, and
+  <a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
+  replaced the whole apparatus with a nightly full rebuild, immediate invalidation on any ruleset write, and an
+  operator's request — <strong>no TTL and no asymmetric TTL</strong>, which is why <code>expires_at</code> is gone from §10's table and
+  <code>ruleset_version</code> is in it. <strong>The two invalidations this bullet called impossible to key are the reason:</strong> a
+  <code>role_holder</code> row names its person, but an edit to a shared audience's tree names nobody, and the answer was
+  never to enumerate the reached people — it was to stop asking, by versioning the ruleset. <strong>The affordability
+  worry the bullet ended on is now answered by a stated size rather than by hope</strong>
+  (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>):
+  a few hundred people × 66 codes × a small number of items is a short nightly job, and D-112 carries the
+  trigger that reopens it.</li>
+<li>~~Cache vs materialized effective-permission table (§8, §10).~~ <strong>Dissolved, not decided</strong> —
+  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>.
+  A nightly full rebuild of cached answers and a nightly materialized <code>effective_permission</code> table turned out to
+  be <strong>the same job with two names</strong>, and the design was chosen for a reason outside the question. Recorded as
+  dissolved on purpose: <strong>a dissolved question is the kind that comes back if nobody writes down that it
+  dissolved</strong>, and D-091's history-not-performance framing is exactly where it would come back from.</li>
 <li>Retention policy for <code>access_log</code> — legal input required
-  (<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>).</li>
+  (<a href="../../open-questions/#f-8--retention-policy-for-accesslog">F-8</a>).</li>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>
 </ul>
 <p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: <strong>whether a role may be held

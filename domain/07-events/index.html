@@ -1772,7 +1772,7 @@ problem each one solved is still a problem; only its answer moved.</p>
 <blockquote>
 <p><strong>A weekly meeting is not an event.</strong> It is a <strong>group</strong> — a <code>person_group</code> whose dated
 member rows already say "this child takes part in this Thursday group"
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 A Thursday group that meets forty times a year is already recorded, and making each
 meeting an event would create forty rows saying what one row says, with forty capacities,
 forty organizer rosters and forty chances to be wrong. Events are the things you
@@ -2017,12 +2017,20 @@ round retired.</p>
 <p><strong>A writer still may not type <code>AGE &gt;= 13</code>, and the reason this page gave for that was wrong.</strong>
 ~~because an attribute is not a set of people~~ — <code>OLDER(13)</code> is exactly a set of people: the
 ones who are thirteen or older on the date being checked, in the same way <code>MEMBERS</code> is the set
-of people who pass <code>is_current_member</code> and <code>GUARDIANS(x)</code> is the set who hold a row. Every
+of people who pass <code>is_current_member</code> and <code>ROLE(x)</code> is the set who hold that office. Every
 operand in the registry is a test with a set behind it, so the old test would have barred
 <code>MEMBERS</code> too, since nothing here stores the member list. What was doing the work, and is the
 clause to quote from now on, is that <strong>an operand must be a named operand — a row of the
 registry</strong> — and this language has no comparison operator for <code>AGE &gt;= 13</code> to be assembled out
-of. The registry is organization-read-only, so the next predicate anyone wants arrives the way
+of. <strong>The guardianship channel is deliberately absent from that list, in both spellings</strong>
+(<code>GUARDIANS</code> and <code>GUARDIANS(x)</code>) — the parenthesised one was in the enumeration immediately above until
+round 13 removed it, and this page has no table of seeded values to have carried the other
+(<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>):
+<em>"True, GUARDIANS should not be selectable in the audience, guardians can perform ANY action (their
+read/write perms grant) on behalf of the child."</em> A check about a child asks whether a live <code>guardianship</code>
+row links the two people and reads <code>right_level ∈ none | view | write</code> off it — a lookup over a
+relationship, not a set the language resolves — so an aimed-at-guardians operand would hand those people,
+one code at a time, a subset of what the channel already gives them. The registry is organization-read-only, so the next predicate anyone wants arrives the way
 an age band did: as a deployment, with its evaluator arm shipped beside it, and not as a
 setting. Either way every answer to "who may register" keeps living in one table, which is the
 property worth defending.</p>
@@ -2264,12 +2272,27 @@ requirements on the editor and the cache, not on the schema:</p>
 <ul>
 <li>An expression containing a bound operand is previewed <strong>per item</strong>. Asking for a preview of
   such a grant at the unit is not a large computation, it is a refused one — the same refusal
-  the save applies.</li>
+  the save applies. <strong>The per-item preview carries no cap, no cache and no background job, and now
+  on stated grounds rather than hope:</strong> the system is specified against a few hundred people in the
+  organization, a few dozen registrants on a typical event and a big camp on the order of two hundred,
+  so previewing one item evaluates a couple of hundred predicates and nobody feels it
+  (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).
+  That size is <strong>stated, not measured</strong> — nothing in these documents has measured anything here — and the
+  trigger for reopening it is a few thousand people, or a thousand registrants on one event.</li>
 <li>Where no item is in hand, the editor says what the expression <em>means</em>, not who it reaches.</li>
 <li>The cache key for a bound operand <strong>includes the item</strong>
-  (<a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>),
+  (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>),
   because the same grant on two events has two answers
   (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</li>
+<li><strong>A registration write is not a ruleset write.</strong> There is one cache policy and three triggers — rebuilt
+  nightly in full, immediately on any write to the ruleset, and on explicit request — and
+  <code>event_registration</code> is not part of the ruleset
+  (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+  So an answer that runs through <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code> or <code>ON_WAITLIST</code> <strong>may be up to one
+  night behind the roster</strong>, and this is the module where an implementer would most confidently assume
+  otherwise. It is the same residual window as a birthday, and it is not the safeguarding window: every
+  withdrawal a person actually <em>performs</em> — a revoke, a deny, ending a grant's period, ending an
+  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.</li>
 </ul>
 <p>Fail closed as everywhere else in the model, <strong>with the direction stated rather than implied</strong>:
 an operand that resolves to nothing contributes the empty set, which <em>narrows</em> what a <code>+</code> or a
@@ -2278,19 +2301,38 @@ everybody, lockout and fail-closed being the same event
 (<a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).
 A person with no birth date is not that kind of failure: the operand resolves perfectly well and
 they are simply not in <code>OLDER(18)</code>, exactly as a person with no membership row is not in
-<code>MEMBERS</code>. A broken leaf is no longer silent and still stops nothing — it is listed for the
-audience's owner on the standing report, and no save is refused for it.</p>
+<code>MEMBERS</code>. A broken leaf is no longer silent and still stops nothing — it is listed on the <strong>tab on the
+permissions page</strong>, and no save is refused for it
+(<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
+<strong>And that tab has become nearly empty by construction, which is the point of the ruling:</strong> nothing a rule
+names is deleted any more. A retired office, group or audience is flagged <code>deprecated</code>, <code>hidden</code> or
+<code>disabled</code> and keeps resolving — only <code>disabled</code> changes the answer, and it changes it to the empty set
+because somebody asked for exactly that. The one thing still able to break a leaf is a person, because
+<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+lets a redaction require the row to actually go and erasure wins: <strong>a redacted person is the corpus's only
+remaining way to produce a broken leaf.</strong></p>
 <p><strong>A preview is a statement about the day it was taken.</strong> <code>OLDER(n)</code> and <code>YOUNGER(n)</code> make that
 true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
-are the people who qualify <em>today</em>, and a birthday moves the list with no write, no edit to the
-grant, and nothing for a cache to be told about
-(<a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>).
-<strong>The preview is a workbench, not a record.</strong> The record is the audit row written when the grant
-is saved: it says whom the grant reached on that date, and it is a prediction about the future
-that is honest about being one. Ask the model about a date in the past and it does not read that
-row back — it computes the answer live from a birth date and a date, which is why the row ages
-gracefully instead of becoming a lie. And a preview that cannot be computed still shows that it
-could not be computed, rather than an empty list.</p>
+are the people who qualify <em>today</em>, and a birthday moves the list with no write and no edit to the
+grant. Nothing is told about it and nothing needs to be: the cache is rebuilt nightly, on any ruleset
+write, and on request, and an answer that moved without a ruleset write is simply allowed to be one
+night stale (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+<strong>The preview is a workbench, not a record — and the record is the expression</strong>
+(<a href="../../decisions/decision-log/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).
+The audit row written when a grant is saved says <em>this person wrote these words, about this item, on this
+date</em>. What the preview printed alongside it is logged as <strong>a rendering on a date</strong>, never as a statement
+of who was in it: a stored list of everyone a rule happened to cover, kept after the rule was withdrawn,
+is the roster table this corpus has deleted twice. So <em>"whom did this grant reach in May?"</em> is answered,
+if at all, by evaluating the words against the data of May — and these documents do not promise the
+answer. Words-only is affordable rather than brave only because of
+<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>:
+since nothing a rule names is deleted, the words keep resolving long after their reason is gone.
+<strong>What that concedes, so nobody finds it later:</strong> a shared audience holds a word, not a copy, so <strong>an edit
+to a shared audience is a retrospective edit to every rule that names it</strong>, and a re-evaluation for May
+uses <em>today's</em> inner expression. That was always true and was never written; the control is the preview
+this very section is about — the editor prints the resolved set before an edit to a shared expression
+saves, so the person editing sees at least once what they are changing backwards in time. And a preview
+that cannot be computed still shows that it could not be computed, rather than an empty list.</p>
 <hr />
 <h2 id="8-capacity-and-the-waitlist">8. Capacity and the waitlist<a class="headerlink" href="#8-capacity-and-the-waitlist" title="Permanent link">&para;</a></h2>
 <p>An event may have a capacity — beds, bus seats, a fire-safety limit. When it fills:</p>

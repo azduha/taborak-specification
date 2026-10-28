@@ -1476,7 +1476,7 @@
 deleted it, and not by simplifying it: the module's subject stopped being a structure and became two
 things that were previously buried inside it — the organization, which is one unit and is not stored, and
 the <strong>group</strong>, which is a set of people and is
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 What follows says what the organization is now, what that costs, what a group is and is not, and where the
 workflows that used to end at a position now end.</p>
 <p><strong>The vocabulary, first, because everything here leans on it.</strong></p>
@@ -1537,7 +1537,7 @@ units. So now:</p>
 </ul>
 <p>Two shapes instead of one shape with a depth in it, and neither one borrows the other's table. Renewal
 narrows to exactly what it always claimed to be about — the <code>membership</code> row, a new row per renewal
-(<a href="../../decisions/decision-log/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>)
+(<a href="../../decisions/decision-log/#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto">D-016</a>)
 — because the row it used to extend on a renewal is gone with the units, and
 <a href="../../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>
 is reversed rather than narrowed.</p>
@@ -1553,7 +1553,7 @@ here rather than distributed through the page, and they are not argued away.</p>
 <ol>
 <li><strong>The unit is no longer a locus of accountability for a child's records.</strong> This is the one that matters
    and it is the founding rule's.
-   <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
+   <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing">D-031</a>
    said ~~authority over a unit originates at that unit and cannot be claimed from outside it~~ — it
    existed so that access to a pack's children had to be granted <em>by that pack</em>, by the people who
    recruited its leader and can be asked about it. <strong>Reversed by
@@ -1575,7 +1575,7 @@ here rather than distributed through the page, and they are not argued away.</p>
 <li><strong>Restructuring stops being a recorded event.</strong> Splits, mergers and successions were this module's
    whole history problem, and they are simply gone. A group that splits is an old group that ended and two
    that began, with no edge between them unless somebody writes one — and after
-   <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+   <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
    there is no table left where that edge could go (§4).</li>
 <li><strong>Unit-scoped reports have nothing to report on.</strong> "A pack's roster", "a pack's events", "which units
    exist" are not hard questions any more, they are questions with no subject. The organizational-year
@@ -1601,7 +1601,7 @@ work (<code>scope_exposure</code>, written by the unit it covered) no longer exi
 <hr />
 <h2 id="2-what-a-group-is-and-everything-a-group-is-not">2. What a group is, and everything a group is not<a class="headerlink" href="#2-what-a-group-is-and-everything-a-group-is-not" title="Permanent link">&para;</a></h2>
 <p><strong>A group is a <code>person_group</code>: a name, a description, its own lifetime, and explicitly dated members</strong>
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 It is a <strong>set of people, not a body</strong>. Somebody names it, somebody puts people in it, somebody ends it, and
 the record of who was in it when is the roster's own (§5). A weekly meeting group, a project crew, a
 trainers' pool, <code>schuzka2026-1</code> — all the same kind of thing, and the system has no opinion about which
@@ -1690,7 +1690,7 @@ the grant.</p>
 <p><strong>Nobody writes themselves onto a roster.</strong> The gate is <code>person_group.member.manage</code>, held at the unit —
 which reaches every group, because after D-097 nothing stands between a unit-scope grant and an item — or
 granted on one group as an item, which is how "these two people may work <em>this</em> roster" is said without
-inventing a scope (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
+inventing a scope (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>,
 <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
 There is no self-scoped variant and none will be added. Moving the roster from <code>unit_participation</code> to
 <code>person_group_member</code> changed the table and not the rule: D-095's reasoning transfers intact.</p>
@@ -1715,7 +1715,7 @@ decision with its enforcement layer named in D-081's terms, and <strong>not</str
 implies it enforces something.</p>
 <p><strong>A membership request is a request for membership of the unit, and carries no group.</strong> It used to carry a
 preferred unit; <code>requested_unit_id</code> is deleted, because which group a new member lands in is a write on
-the group and not a preference on the request (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+the group and not a preference on the request (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 The request flow in <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a> ends at the unit; a roster is
 somebody else's decision afterwards, which is the same fact as the paragraph above stated from the other
 side.</p>
@@ -1737,7 +1737,7 @@ corpus separates and keeps — <em>a renumber is one unit with two name rows</em
 name history, so a rename is an edit to one column and the previous name is not kept (§2).</p>
 <p><strong>The honest half: the method outlived its recording mechanism.</strong> D-096 put the continuity claim in
 <code>org_unit_relationship</code> as <code>successor_of</code>. That table is deleted, and
-<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 refuses group-to-group edges outright — no split, no merger, no succession — so the assertion has <strong>no
 field to live in</strong>. What the method still guarantees is therefore the direction of the default, which is
 the half that was ever enforceable: a returning name is a new group, and two groups that are really one
@@ -1766,7 +1766,7 @@ grant</strong> — the storage follows the method rather than the label. Mechani
 <p><strong>Member rows are dated, and that is what makes the roster answerable.</strong> <code>person_group_member</code> carries
 <code>valid_from</code> and <code>valid_to</code> per person, so joining, leaving and coming back are all periods on the same
 pair, and the roster has a history of its own instead of borrowing the audit trail's
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 "Who was in <code>schuzka2026-1</code> on 14 March 2026?" is a point-in-time read over those rows. It survives the
 audit trail's 24-month payload expiry
 (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
@@ -1793,7 +1793,7 @@ check that watch it are
 <a href="../../data-model/02-organization/#3-a-group-is-an-item-a-grant-can-be-written-on-one">../data-model/02-organization.md §3</a>).</p>
 <p><strong>A person who left in 2020 and came back in 2024 is two rows.</strong> Never one row edited in place, because
 the edit destroys the answer to "was she in the group in 2019?", which is the same argument
-<a href="../../decisions/decision-log/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>
+<a href="../../decisions/decision-log/#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto">D-016</a>
 makes about renewals and this system makes about every temporal fact
 (<a href="../../decisions/decision-log/#d-002--everything-temporal-is-a-period-never-a-boolean">D-002</a>).</p>
 <p><strong>Moving from one group to another closes one row and opens another.</strong> The transfer discipline of

@@ -2273,7 +2273,7 @@ document that changes a person's status.</p>
 <li>Mark it <strong>lapsed</strong>, ending it <strong>at the expiry date</strong> — not at today. The period ended on that
    date whether or not anyone noticed.</li>
 <li><strong>Invalidate the permission cache per person, for every person returned</strong> — not per scope
-   (<a href="../../domain/06-authorization-model/#8-caching-and-invalidation">domain/06 §8</a>). A lapsed member
+   (<a href="../../domain/06-authorization-model/#8-caching-and-the-rebuild-that-replaced-invalidation">domain/06 §8</a>). A lapsed member
    whose gated grants still resolve is a member who keeps leading. <strong>The step survives the deletion
    of the gate that motivated it, and the reason changed</strong>: there is no resolver clause to
    invalidate any more, but <code>MEMBERS</code> is evaluated live on the checked date

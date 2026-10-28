@@ -1743,7 +1743,7 @@ Their replacements are the two same-shaped tables of round 10:</p>
 <td><strong>Being in a group</strong></td>
 <td>person → group</td>
 <td>child → the Thursday group</td>
-<td><strong>No</strong> — a <code>person_group_member</code> row is a dated roster entry (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</td>
+<td><strong>No</strong> — a <code>person_group_member</code> row is a dated roster entry (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).</td>
 </tr>
 <tr>
 <td><strong>Holding an office</strong></td>
@@ -1754,7 +1754,7 @@ Their replacements are the two same-shaped tables of round 10:</p>
 </tbody>
 </table>
 <p><strong>Being a member and being in a group are two rows, not one</strong> — the distinction D-041 drew between
-membership and participation, which survives its subject (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+membership and participation, which survives its subject (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 A person is a <strong>member of the organization</strong> and <strong>on a group's roster</strong>: different facts, different
 lifetimes, different guards on who may change them, which is why someone who stops attending on Thursdays
 is still a paid-up member, and someone who is paid up may turn up to nothing. The old sentence named a
@@ -1774,7 +1774,7 @@ relationship ends (custody changes, a leader steps down) but access silently per
 <li>One <code>role_holder</code> row: they hold the office <code>counselors</code>, over a dated period. The office itself is a
   <code>role</code> row (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</li>
 <li>A <code>person_group_member</code> row or two, dated, for the companies they actually turn up to
-  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</li>
+  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).</li>
 <li>Two <code>guardianship</code> rows (to their own children), each carrying its own right.</li>
 <li>Whatever <code>access_grant</code> rows somebody wrote whose grantee names them — as <code>ROLE(counselors)</code>, or
   <code>MEMBERS * ROLE(counselors)</code> where the membership gate applies

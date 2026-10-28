@@ -2017,7 +2017,7 @@ of <strong>selectors that bind to the event being checked</strong>, specified in
 </tbody>
 </table>
 <p><strong>No recurrence.</strong> A weekly meeting is a <strong>group</strong> — a <code>person_group</code> with dated member rows
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>) —
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>) —
 not an event
 (<a href="../../domain/07-events/#1-what-an-event-is-and-what-it-is-not">../domain/07-events.md §1</a>).
 Adding <code>event_series</code> would mean every downstream table — registrations, capacity, presence,
@@ -2184,7 +2184,7 @@ The column's note used to carry the argument that forced it: a joint camp is one
 event that another unit's children register for via an audience grant, and two owners would
 have created an exception to "the root may not read a sub-unit's events" shaped exactly like
 a joint camp, with no principled place to stop. That argument was sound while
-<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>
+<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scopeexposure-is-the-only-crossing">D-049</a>
 was alive. <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
 deleted the sub-units, D-049 with them, and there is nothing left for the column to protect.</p>
 <p><strong>An event is an item in <code>grant_scope_type</code> under the code <code>event</code>, and nothing more.</strong> A
@@ -2355,7 +2355,7 @@ to make organizers matter. See §8 for the seeded grant that aims at this table.
 <tr>
 <td><code>person_id</code></td>
 <td>reference to person, required</td>
-<td><code>person_id</code>, NOT <code>membership_id</code> — the reasoning <code>unit_participation</code> gave and <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> carried over to <code>person_group_member</code>, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside <code>MEMBERS</code> today — see the note below</td>
+<td><code>person_id</code>, NOT <code>membership_id</code> — the reasoning <code>unit_participation</code> gave and <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a> carried over to <code>person_group_member</code>, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside <code>MEMBERS</code> today — see the note below</td>
 </tr>
 <tr>
 <td><code>response</code></td>
@@ -2470,7 +2470,7 @@ to make organizers matter. See §8 for the seeded grant that aims at this table.
 <h3 id="why-person_id-not-membership_id">Why <code>person_id</code>, not <code>membership_id</code><a class="headerlink" href="#why-person_id-not-membership_id" title="Permanent link">&para;</a></h3>
 <p>The argument <code>unit_participation</code> made
 (<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>, before D-097 deleted it) and
-<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 transferred to <code>person_group_member</code>, and it is stronger here. An
 imported 1998 camp roster names children who have no membership row to point at. With the
 corpus being large and number-bearing
@@ -2934,8 +2934,14 @@ not "more" than <code>ON_WAITLIST</code>, it is a different conjunction. <strong
 the set §5 counts against <code>capacity</code></strong>, and the same partial index serves both (§4).</p>
 <p><code>ORGANIZERS</code> is the fifth, and its definition is the roster in §3 — the labelled, ordered,
 domain answer to "who runs this", evaluated over <code>event_organizer</code> rows for the event
-checked. The sixth is <code>GUARDIANS</code>, which binds to the person an item is about rather than to
-an event.</p>
+checked. <strong>There is no sixth, and this page printed one until round 13.</strong> The <code>GUARDIANS</code> that sat in
+that sentence was never an operand at all, in either spelling: a guardian's authority is a
+<code>right_level ∈ none | view | write</code> held <strong>over a child</strong>, read off the <code>guardianship</code> row when the check
+is about someone other than the actor, and it is not a set that the expression language resolves
+(<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>,
+<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+Counting it alongside these five was the error, not a narrower way of stating the channel — which is why
+the paragraph below already called <code>PRESENT</code> the obvious sixth.</p>
 <p><strong><code>PRESENT(&lt;event&gt;)</code> is refused.</strong> An operand over <code>was_present</code> is the obvious sixth
 attendance tier and it is not available, and the reason is the failure direction:
 <code>was_present</code> is <code>NULL</code> until somebody takes a register, so a grant aimed at <code>PRESENT</code> would
@@ -2989,9 +2995,23 @@ say who writes the row. Integrity check 1 in §10 is the net.</p>
 of a grant row once an operand binds: <code>PLACED</code> is different people on different events. The
 editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
 against, and the cache key for a bound operand must include the item. Stated as a requirement
-in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>;
-<a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>
-carries the caching side.</p>
+in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>. That expansion
+is not capped or deferred, and the ground is now stated rather than assumed: a few dozen registrants on a
+typical event and a big camp on the order of two hundred is a preview nobody feels — a size
+<strong>stated, not measured</strong>, with a named trigger to reopen it
+(<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</p>
+<p><strong>A write to <code>event_registration</code> is not a ruleset write, and that is the whole staleness story for this
+module.</strong> There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write
+to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table to get right
+(<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+The ruleset is the grant and expression rows, the permission registry, the guardianship rows,
+<code>role_holder</code> and <code>person_group_member</code>; <strong><code>event_registration</code> is not in it</strong>. So marking a register,
+confirming a place, or promoting somebody off the waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>,
+<code>CONFIRMED</code> and <code>ON_WAITLIST</code> and rebuilds nothing: a cached answer behind those four tiers <strong>may be up to
+one night stale, by design</strong>. This is the module where an implementer would most confidently assume the
+opposite, so it is stated here rather than only in the authorization page. What stays immediate is
+everything a person actually does to authority — revoke, deny, close a grant period, end an assignment —
+because every one of those is a ruleset write.</p>
 <h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
 <p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
 window does not admit it. The guard runs inside the transaction that inserts the row, on every

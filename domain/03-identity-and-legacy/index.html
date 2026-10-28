@@ -2130,7 +2130,7 @@ name.</p>
 </tr>
 <tr>
 <td><code>audience_operand</code>, where <code>selector_kind</code> is <code>PERSON</code></td>
-<td><strong>Repointed, not reassigned, and this row is newer than the rest of the table.</strong> <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>audience_member</code>, so every hand-named person in the system is now a <code>selector_arg_id</code> — a column with deliberately no foreign key (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>), which is why this row is a requirement on the merge and not something the database notices. <strong>The failure is asymmetric and it is the loud one:</strong> a leaf that resolves to nobody is the empty set, so a grant reading <code>EVERYONE - PERSON(x)</code> where <code>x</code> was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed <code>person_group</code>, a deleted <code>role</code>, an <code>event</code>, a nested <code>audience</code> — because none of them has a key either</td>
+<td><strong>Repointed, not reassigned, and this row is newer than the rest of the table.</strong> <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>audience_member</code>, so every hand-named person in the system is now a <code>selector_arg_id</code> — a column with deliberately no foreign key (<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>), which is why this row is a requirement on the merge and not something the database notices. <strong>The failure is asymmetric and it is the loud one:</strong> a leaf that resolves to nobody is the empty set, so a grant reading <code>EVERYONE - PERSON(x)</code> where <code>x</code> was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed <code>person_group</code>, a deleted <code>role</code>, an <code>event</code>, a nested <code>audience</code> — because none of them has a key either</td>
 </tr>
 <tr>
 <td><code>person_merge</code></td>
@@ -2184,7 +2184,7 @@ gains the absorbed person's access. Therefore:</p>
    cannot be attributed to either human. Hence rule 2 — an unmerge repairs the record afterwards
    and does not repair this.</li>
 <li>Merges invalidate cached permissions. See
-   <a href="../06-authorization-model/#8-caching-and-invalidation">06-authorization-model.md</a>.</li>
+   <a href="../06-authorization-model/#8-caching-and-the-rebuild-that-replaced-invalidation">06-authorization-model.md</a>.</li>
 </ol>
 <hr />
 <h2 id="6-reversing-a-merge">6. Reversing a merge<a class="headerlink" href="#6-reversing-a-merge" title="Permanent link">&para;</a></h2>

@@ -1684,7 +1684,7 @@ What is left for this section to draw is the group — a set of people, not a bo
     PERSON_GROUP ||--o{ PERSON_GROUP_MEMBER : has</code></pre>
 <p><strong>Key point:</strong> a group is a named set of people with a lifetime, and that is the whole of it — no parent,
 no type, no <code>code</code>, no path, no nesting rule, no rename history, no split or merger edge, no leadership,
-no roles, no fee (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+no roles, no fee (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 <strong>The member row is dated</strong>, so the roster answers "who was in <code>schuzka2026-1</code> on 14 March 2026" from its
 own rows rather than from the audit trail, whose payloads expire after 24 months
 (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
@@ -1764,14 +1764,14 @@ together, but no constraint spans two tables, so that is a write-path rule and n
 <li><strong>A request asks for membership of the unit and names nothing else.</strong> <code>requested_unit_id</code> is deleted
   with the units
   (<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
-  <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
+  <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>),
   and there is therefore no edge from this diagram to any body: which group a new member lands in is a
   write on the group — one <code>person_group_member</code> row, §2 — and not a preference on the request. The
   ~~unit this request was aimed at~~ is withdrawn, not moved; the want behind the column is served by the
   free-text <code>notes</code> the row already carries.</li>
 <li><strong>Belonging lives in two shapes now, and neither is a membership.</strong> <code>person_group_member</code> (§2) is a
   group's dated roster and is keyed on <strong>person</strong>, never on <code>membership</code> — the argument <code>unit_participation</code>
-  made and <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+  made and <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
   carried over: an imported roster or a 1998 camper has no membership row to point at, and inferring an
   open-ended one would sweep that person into <code>MEMBERS</code> today. The table that held it,
   ~~<code>unit_participation</code>~~, is deleted by
@@ -1880,7 +1880,7 @@ records and only read another's. See
 <a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>                                                                   runtime         │
 <a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>                                                                                   │
 <a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>   A BOUND operand — the argument-less `PLACED`, `ORGANIZERS`, `CONFIRMED`,        │
-<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>   `ATTENDED`, `ON_WAITLIST`, `GUARDIANS` — means "relative to the item being      │
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>   `ATTENDED`, `ON_WAITLIST` — means "relative to the item being                   │
 <a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>   checked". Legal only on an item-scope grant whose type matches `argument_type`  │
 <a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>   (`PLACED` on a group grant is refused, `ORGANIZERS` on a unit grant is          │
 <a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>   refused), and the seeded `event.answer.view` → `ORGANIZERS` is therefore a      │
@@ -1889,32 +1889,35 @@ records and only read another's. See
 <a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   their argument is an integer — the registry's first non-reference — so          │
 <a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
 <a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   reference-less polymorphic keys stay exactly two. Fourteen seeded rows:         │
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   reference-less polymorphic keys stay exactly two. Thirteen seeded rows:         │
 <a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
 <a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
 <a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
 <a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
 <a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
 <a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   in it would refuse either name — both are kept out by what they would do.       │
-<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>                                                                                   │
-<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
-<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   ──────────────────────────────────────────────────────────────────────────────
-<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
-<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>       item of every type; a personal deny beats an audience allow, because this step has
-<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>       already returned (D-013 — whose `revoked` LEVEL is now an EFFECT on a grant row).
-<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    1  a live ALLOW at the unit ── reaches every item of every type: after D-097 there is
-<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>       no tier between the unit and an item, and after D-102 no owner to ask.
-<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
-<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>       `can_event()` and the unit-authority rule are deleted (D-102).
-<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
-<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
-<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
-<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
-<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    5  default DENY.
-<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
-<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>   the audit names, never what the answer is. **Locality is deleted** — it only ever ordered
-<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>   allows against each other, and a boolean has nothing to order (D-099, deleting the second
-<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>   half of D-032; the first half is step 0 and is now its entire content).
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   `GUARDIANS` is not seeded either, in either form: a guardian holds a level over │
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   a child, not a permission set, so an audience aimed at them offers one code at  │
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   a time what the guardianship channel grants outright (D-113).                   │
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>                                                                                   │
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>   ──────────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>       item of every type; a personal deny beats an audience allow, because this step has
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>       already returned (D-013 — whose `revoked` LEVEL is now an EFFECT on a grant row).
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>    1  a live ALLOW at the unit ── reaches every item of every type: after D-097 there is
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>       no tier between the unit and an item, and after D-102 no owner to ask.
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       `can_event()` and the unit-authority rule are deleted (D-102).
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>    5  default DENY.
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>   the audit names, never what the answer is. **Locality is deleted** — it only ever ordered
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>   allows against each other, and a boolean has nothing to order (D-099, deleting the second
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>   half of D-032; the first half is step 0 and is now its entire content).
 </code></pre></div>
 <p><strong>Key points:</strong></p>
 <ul>
@@ -1952,8 +1955,10 @@ records and only read another's. See
   <code>MEMBERS</code> is an operand evaluated live on the checked date, so <code>MEMBERS * ROLE(x)</code> gates and
   <code>ROLE(x)</code> alone does not, and the "except Honza" case is written inside the same expression.
   The new failure mode is a grant written <code>ROLE(x)</code> with no <code>MEMBERS</code>, authorizing a lapsed member
-  silently and forever, failing closed-looking so nobody notices — the control is a standing report
-  of exactly that shape, plus seeded grants that always carry <code>MEMBERS</code>. Ownership and guardianship
+  silently and forever, failing closed-looking so nobody notices — the control is the <strong>Unusual section of
+  the tab on the permissions page</strong>, which lists exactly that shape and refuses nothing, plus seeded grants
+  that always carry <code>MEMBERS</code> (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>,
+  <a href="../../open-questions/#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken">F-13</a>). Ownership and guardianship
   were never gated and are untouched.</li>
 <li><strong>The guardianship channel is entered by shape, not by permission name</strong> (<a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>):
   the check is about someone other than the actor, and the channel answers with <strong>allows only</strong>. A
@@ -1966,7 +1971,7 @@ records and only read another's. See
   granting coverage over itself~~ — <strong>deleted by
   <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong>,
   taking the direction-of-authority check, the <code>scope.expose</code> code and the nightly alert that was that
-  check's only detector. <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
+  check's only detector. <a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing">D-031</a>
   was not weakened, it was <strong>deprived of its subject</strong>: with one unit there is no "outside it" to be
   stopped from. What is genuinely lost and reproduced nowhere is the safeguarding property — access to
   a body's children had to be granted <strong>by that body</strong>, by people who recruited the leader and can be
@@ -1984,13 +1989,18 @@ records and only read another's. See
   a set, and an operand that does not resolve is the <strong>empty set</strong>. That has not moved; what moved in
   round 12 is the wording around it
   (<a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).
+  <strong>The compile-don't-materialize half is now load-bearing rather than tidy:</strong> it is one of the two rules
+  the stated scale names as the ones that must survive any growth — the other is that a listing is
+  paginated — which is why the system gets slow before it gets wrong
+  (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).
   ~~Fail closed in every direction~~ names a volume where there is a direction: <strong>a failed operand on <code>+</code>
   or <code>*</code> narrows the set, a failed operand on <code>-</code> widens it</strong>, so <code>EVERYONE - PERSON(x)</code> with a dead <code>x</code> is
   fail-closed <em>and</em> lockout-everybody in one step rather than a safe state. The failure stays fail-closed
-  and stops being silent — an audience carrying a leaf that resolves to nothing is <strong>listed</strong> for its
-  owner, in a second column of the report
-  <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a>
-  already asks for, and no save is refused for it. A person with no birth date is not such a failure: that
+  and stops being silent — an audience carrying a leaf that resolves to nothing is <strong>listed</strong> on the tab on
+  the permissions page (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>),
+  and no save is refused for it. <strong>One thing can still produce such a leaf: a redacted person.</strong> Nothing
+  else a rule names is deleted any more, and the empty set a <code>disabled</code> operand yields is somebody's
+  deliberate act, not a failure. A person with no birth date is not such a failure either: that
   operand resolves perfectly well, and they are simply not in the set.</li>
 <li><strong>Nothing owns an event</strong> (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
   <code>event.org_unit_id</code> is deleted, so the people connected to an event are named by operands that bind
@@ -2095,7 +2105,7 @@ the only way to say <em>"this person has the unit's events, except this one"</em
 <code>grant_scope_type</code>, the seeded registry (<code>unit</code> — the only row with <code>is_item_scoped = false</code>, <code>event</code>,
 <code>person_group</code>, <code>role</code>, <code>document</code> deferred) which is what states which table the unresolved id belongs
 to. The id itself is <code>⇒</code> polymorphic: no foreign key, validated by the registry plus a nightly orphan
-scan per type (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>,
+scan per type (<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>,
 §8). A unit grant carries <strong>no</strong> <code>scope_id</code> at all, which is the entire schema-level content of "the unit
 is a scope, not a row".</p>
 <p><strong>A role is not a permission bundle.</strong> <code>role_permission</code> is deleted by
@@ -2176,14 +2186,14 @@ nodes and leaves, one row each.</p>
     AUDIENCE_OPERAND }o--o| ROLE : "ROLE(x) - no FK"
     AUDIENCE_OPERAND }o--o| PERSON_GROUP : "GROUP(x) - no FK"
     AUDIENCE_OPERAND }o--o| AUDIENCE : "AUDIENCE(code) - no FK"
-    AUDIENCE_OPERAND }o--o| PERSON : "PERSON(x) or GUARDIANS(x) - no FK"
+    AUDIENCE_OPERAND }o--o| PERSON : "PERSON(x) - no FK"
     AUDIENCE_OPERAND }o--o| EVENT : "ORGANIZERS(x) - no FK"</code></pre>
 <p><strong>Five of these lines are <code>⇒</code> in the notation above, and not one of them is a foreign key.</strong> A leaf's
 <code>selector_arg_id</code> is one
 integer column pointing at <code>role</code>, <code>person_group</code>, <code>audience</code>, <code>person</code> or <code>event</code> depending on
 <code>selector_kind</code> — the same polymorphism, the same four mandatory mitigations and the same nightly orphan
 scan that <code>access_grant.scope_id</code> already accepted
-(<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>,
+(<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>,
 carried over by
 <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
 Drawing it as five real edges would be the lie; drawing it as no edges at all would hide the fan. The
@@ -2241,8 +2251,16 @@ tree, false of a <strong>forest of trees pointing at each other</strong>, so the
 <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
 deleted <code>selector_depth_limit</code> and left those two cycle walks as the only structural guard there is.
 It walks for cycles and nothing else: the tree is stored exactly as the writer wrote it, with no
-depth bound and no rebalancing, and the standing report of the widest and deepest audiences is a
-convention, not a guard (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
+depth bound and no rebalancing, and <strong>nothing bounds what an expression may cost</strong> — which is now an
+accepted property rather than an unaddressed one, because it is affordable at the stated size of a few
+hundred people and a few dozen registrants per event, with a named trigger to reopen it
+(<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).
+There is no report of the widest and deepest audiences: the report round 12 added was withdrawn with the
+standing reports in round 13, and what remains is <strong>the tab on the permissions page</strong>, which lists the rules
+that name something deprecated, hidden or disabled or fail to resolve, and says nothing about how wide a set
+any of them is (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
+Still a convention, not a guard
+(<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
 The protection that keeps the dangerous
 case out is that an audience named by a live grant may not be ended or deleted while that grant lives:
 under <code>-</code>, an emptied operand makes the answer <strong>wider</strong>.</p>
@@ -2257,29 +2275,47 @@ shape is for), and no <em>who added this person</em> beyond <em>who last saved t
 merged into <code>GROUP(x)</code> survives the table unchanged: a group's members are the organization's record
 and are true with no grant pointing at them, while a name written into an expression is meaningless
 outside the expression it completes
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 Naming people inside a grant must not make them group members: <code>(GROUP(kitchen) + LIST) - PERSON(a)</code>
 becomes <code>(GROUP(kitchen) + PERSON(honza)) - PERSON(a)</code> — same meaning, one fewer kind of thing — and
 merging the two would still make the permission table the system's roster.</p>
 <p><strong><code>PERSON(x)</code> is drawn as the <code>person</code> argument edge, and it was the thirteenth seeded <code>selector_type</code>
-row added — with <code>LIST</code> deleted it was one of the twelve that remained, and it is one of the fourteen
-seeded today, <code>OLDER</code> and <code>YOUNGER</code> having arrived in round 12
-(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</strong>
+row added — with <code>LIST</code> deleted it was one of the twelve that remained, it was one of the fourteen
+seeded for round 12 alone, and it is one of the <strong>thirteen</strong> seeded today, <code>OLDER</code> and <code>YOUNGER</code> having
+arrived in that same round 12 and <code>GUARDIANS</code> having left it in round 13
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>,
+<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).</strong>
 It got there late and by an odd route: D-101's grammar and D-100's exemption table both wrote <code>PERSON(y)</code>
 from the start, the registry was written from the evaluator's arm list instead, and the two disagreed for a
 whole round without any check noticing
 (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).
-<code>GUARDIANS(x)</code> takes a person argument either way, so the storage was never the disputed part —
-<code>selector_arg_id</code> may hold a person id per
-<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a> —
+<strong>The edge has exactly one occupant, and it always did.</strong> Its label used to read
+<code>PERSON(x) or GUARDIANS(x)</code>, and the second name was never a selector in either form
+(<a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>):
+<em>"True, GUARDIANS should not be selectable in the audience, guardians can perform ANY action (their
+read/write perms grant) on behalf of the child."</em> A guardian's authority is a <strong>level over a child</strong> —
+<code>none</code>, <code>view</code> or <code>write</code> read off the <code>guardianship</code> row
+(<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>) —
+and not a set the expression language resolves, so an operand aimed at guardians would offer, one code at a
+time, a subset of what those people already hold. The storage fact the old label leaned on was never the
+disputed part either way: <code>selector_arg_id</code> may hold a person id per
+<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a> —
 which is why this appendix drew the edge while the language was still being argued about. What the row adds
 over that storage fact is one fact of meaning: <strong>an expression may name a single human who is on nobody's
 roster</strong> — and since a hand-written set is a sum of these
 (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
 the edge is load-bearing: every hand-named person in the system is now a <code>selector_arg_id</code> with
-deliberately no foreign key, so a merge or a redaction must repoint every leaf that names the absorbed
-person, and the nightly orphan scan is the backstop rather than the mechanism. <code>PERSON</code>, <code>GUARDIANS</code>,
-<code>ROLE</code>, <code>GROUP</code> and <code>AUDIENCE</code> are the five codes whose argument names a
+deliberately no foreign key. <strong><code>PERSON</code> is the one argument kind the repoint duty still reaches</strong>
+(<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>):
+retiring an office, a group or an audience is now one write to that row and no expression is edited,
+because nothing a rule names is deleted any more — it goes <code>deprecated</code>, <code>hidden</code> or <code>disabled</code>, and only
+<code>disabled</code> changes the answer. A person is not in that protected set, because
+<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+lets a redaction require the row to actually go and <strong>erasure wins</strong>. So a merge repoints the <code>PERSON</code>
+leaves naming the absorbed person, a redaction leaves the rest resolving to the empty set, and <strong>a redacted
+person is the corpus's only remaining way to produce a broken leaf</strong> — shown on the permissions tab rather
+than in a report nobody opens, with the nightly orphan scan as backstop rather than mechanism. <code>PERSON</code>,
+<code>ROLE</code>, <code>GROUP</code> and <code>AUDIENCE</code> are the four codes whose argument names a
 person, an office, a group or another audience. The fifth drawn edge, to <code>event</code>, belongs to the
 item-bound codes — <code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code> — whose argument is
 optional exactly because the item being checked usually supplies it
@@ -2564,7 +2600,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 </tr>
 <tr>
 <td>~~<code>org_unit_relationship</code>~~</td>
-<td>~~A typed lineage between two units — <code>split_from</code>, <code>merged_into</code>, <code>successor_of</code>.~~ Deleted by D-097; <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> refuses group-to-group edges outright, so continuity is prose on a group's row</td>
+<td>~~A typed lineage between two units — <code>split_from</code>, <code>merged_into</code>, <code>successor_of</code>.~~ Deleted by D-097; <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a> refuses group-to-group edges outright, so continuity is prose on a group's row</td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
@@ -2607,7 +2643,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <tr>
 <td><code>membership_request</code></td>
 <td>An application. Two person references on purpose: the subject and the submitter</td>
-<td><code>person</code> twice, <code>membership_type</code>, and <code>membership</code> twice (what it produced, what it renews). <strong>No unit</strong>: <code>requested_unit_id</code> is deleted by <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> — a request asks for membership of the unit and names nothing else, because which group a new member joins is somebody's act afterwards, not a term of the application</td>
+<td><code>person</code> twice, <code>membership_type</code>, and <code>membership</code> twice (what it produced, what it renews). <strong>No unit</strong>: <code>requested_unit_id</code> is deleted by <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a> — a request asks for membership of the unit and names nothing else, because which group a new member joins is somebody's act afterwards, not a term of the application</td>
 <td>At most one <strong>open</strong> request per person</td>
 <td>no</td>
 </tr>
@@ -2686,13 +2722,13 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>audience</code></td>
 <td>A set of people a grant may name — <strong>an expression over named sets, stored as a tree</strong> (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>), not a rule XOR a list XOR an inclusion</td>
 <td>Its own operand rows; <code>code</code> is optional and is the only thing another audience may name (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>); <code>resolver_key</code>, <code>scope_parameter</code>, <code>include_depth_limit</code> and <code>selector_depth_limit</code> are deleted, the last of them by <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></td>
-<td>One row per audience; the tree is stored exactly as the writer wrote it and its height is bounded by nothing — the save-time cycle walks are the only structural guard, and the standing report of the widest and deepest audiences is a convention, not a guard (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>); an ended audience reaches nobody, so ending one is refused while a live grant names it</td>
+<td>One row per audience; the tree is stored exactly as the writer wrote it and its height is bounded by nothing — the save-time cycle walks are the only structural guard, and nothing bounds what resolving one costs, which <a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a> accepts at the stated size rather than leaves unaddressed (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>); an audience a live grant names is <strong>never deleted</strong> — it is flagged <code>deprecated</code>, <code>hidden</code> or <code>disabled</code>, the first two changing no answer and the third resolving to the empty set on purpose, as an audited ruleset write that prints the rules it touches (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>); an ended audience reaches nobody, so ending one is refused while a live grant names it</td>
 <td>yes</td>
 </tr>
 <tr>
 <td><code>audience_operand</code></td>
 <td>Join entity: <strong>one row of one audience's expression tree</strong> — a node (<code>operator</code>, <code>left_id</code>, <code>right_id</code>) or a leaf (<code>selector_kind</code>, <code>⇒ selector_arg_id</code>), never both</td>
-<td><code>audience</code>, denormalized onto every row so one audience's tree is one indexed fetch; itself, <code>parent_id</code> on the child; <code>selector_type</code>; and <code>⇒</code> a <code>role</code>, <code>person_group</code>, <code>audience</code>, <code>person</code> or <code>event</code> <strong>with no foreign key</strong> — <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s accepted trade-off, extended by D-101</td>
+<td><code>audience</code>, denormalized onto every row so one audience's tree is one indexed fetch; itself, <code>parent_id</code> on the child; <code>selector_type</code>; and <code>⇒</code> a <code>role</code>, <code>person_group</code>, <code>audience</code>, <code>person</code> or <code>event</code> <strong>with no foreign key</strong> — <a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>'s accepted trade-off, extended by D-101</td>
 <td>One row per node or leaf; a node never belongs to another audience than its parent's; the forest is acyclic, checked on save</td>
 <td>no</td>
 </tr>
@@ -2700,7 +2736,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>selector_type</code></td>
 <td>The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names</td>
 <td>Nothing</td>
-<td><strong>Fourteen</strong> seeded rows: eleven from the evaluator's arm list, <code>PERSON</code> as the thirteenth to arrive, <code>LIST</code> gone in between (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), and <code>OLDER</code> and <code>YOUNGER</code> added in round 12 (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>) — the first two whose <code>argument_type</code> is a whole number of years and not a table, and the first two whose membership changes with no write, because they read <code>person.birth_date</code> on the checked date. Six <code>argument_type</code> values, five of them tables; the operators stay <code>+ - *</code>. Every row <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
+<td><strong>Thirteen</strong> seeded rows — fourteen for round 12 alone, until <a href="../../decisions/decision-log/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a> removed a row that should never have been in the registry — built from eleven in the evaluator's arm list, <code>PERSON</code> as the thirteenth to arrive, <code>LIST</code> gone in between (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), and <code>OLDER</code> and <code>YOUNGER</code> added in round 12 (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>) — the first two whose <code>argument_type</code> is a whole number of years and not a table, and the first two whose membership changes with no write, because they read <code>person.birth_date</code> on the checked date. Six <code>argument_type</code> values, five of them tables; the operators stay <code>+ - *</code>. Every row <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2719,9 +2755,9 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 </tr>
 <tr>
 <td><code>permission_cache</code></td>
-<td>A computed answer kept briefly so checks are cheap</td>
-<td><code>person</code>, plus the code and scope it answers for; the operand cache beside it is keyed per person, selector kind, argument and item</td>
-<td>One row per person, code, scope type and scope id, each with an expiry. Derived and disposable — never a source of truth</td>
+<td>A computed answer kept so checks are cheap</td>
+<td><code>person</code>, plus the code and scope it answers for; the operand cache beside it is keyed per person, selector kind, argument and item — <strong>the item is part of the key</strong>, because a bound operand means different people on different items</td>
+<td>Rebuilt <strong>nightly in full, immediately on any write to the ruleset, and on explicit request</strong> — no per-entry expiry, no asymmetric TTL, no invalidation table to get right. An answer that moved without a ruleset write is allowed to be up to one night stale, which is where a birthday, the 1 January sweep and a registration write land; and two writes that look like bookkeeping <strong>are</strong> ruleset writes and rebuild at once — setting the <code>deprecated</code>/<code>hidden</code>/<code>disabled</code> flag on a selector, an office or a group, and an end-dated write to <code>guardianship_permission</code>, because "turn off this naming" that waits until midnight is the one failure the flag exists to prevent. Derived and disposable — never a source of truth (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -2989,7 +3025,7 @@ which in this inventory is <code>person_attribute</code>, and nowhere else.</p>
 </tr>
 <tr>
 <td><code>audience_operand.selector_arg_id</code></td>
-<td>The second one, and newer: one integer pointing at a <code>role</code>, a <code>person_group</code>, an <code>audience</code>, a <code>person</code> or an <code>event</code> depending on <code>selector_kind</code>, resolved by <code>selector_type.argument_type</code> and caught by the same nightly orphan scan. <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> carried <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s trade-off across deliberately, mitigations included — the registry is the only thing that says which table an id belongs to, so an unmapped kind is the empty set, not an error. <strong>It also sometimes holds no reference at all</strong>: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> store a whole number of years here (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>), and that does not make a third key — <code>18</code> points at nothing, so the orphan scan has nothing to walk, a merge has nothing to repoint, and this row is still describing one column that sometimes carries a reference and sometimes carries a scalar.</td>
+<td>The second one, and newer: one integer pointing at a <code>role</code>, a <code>person_group</code>, an <code>audience</code>, a <code>person</code> or an <code>event</code> depending on <code>selector_kind</code>, resolved by <code>selector_type.argument_type</code> and caught by the same nightly orphan scan. <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> carried <a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>'s trade-off across deliberately, mitigations included — the registry is the only thing that says which table an id belongs to, so an unmapped kind is the empty set, not an error. <strong>It also sometimes holds no reference at all</strong>: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> store a whole number of years here (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>), and that does not make a third key — <code>18</code> points at nothing, so the orphan scan has nothing to walk, a merge has nothing to repoint, and this row is still describing one column that sometimes carries a reference and sometimes carries a scalar.</td>
 </tr>
 <tr>
 <td><code>access_log.scope_id</code></td>

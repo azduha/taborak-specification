@@ -1605,7 +1605,7 @@ are all periods on the same pair, which is what lets the roster answer a questio
 asking the audit trail — whose payloads expire after two years
 (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
 and which must not become the history of record for anything
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
 <p><strong>Fields</strong></p>
 <table>
 <thead>
@@ -1708,7 +1708,7 @@ refuses overlapping rows when nothing yet does.</p>
 <h2 id="3-a-group-is-an-item-a-grant-can-be-written-on-one">3. A group is an item: a grant can be written on one<a class="headerlink" href="#3-a-group-is-an-item-a-grant-can-be-written-on-one" title="Permanent link">&para;</a></h2>
 <p><strong><code>person_group</code> has a row in <code>grant_scope_type</code>, so a group is a thing a grant may be written on</strong> — which
 is how "these two people may work this group's roster" is said without inventing a scope
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).
 The scope types now are <code>unit</code> (not item-scoped, the organization itself), <code>event</code>, <code>person_group</code>, <code>role</code>,
 and <code>document</code> (deferred). <code>role</code> joins as an item for the same reason and by the same move
 (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</p>
@@ -1758,7 +1758,7 @@ table they touch:</p>
   resolver's rules already require. <code>GROUP(nonexistent)</code> is not an error at check time and must never
   become a permissive default.</li>
 <li><strong>The polymorphic id has no foreign key</strong>, exactly as <code>access_grant.scope_id</code> accepted it
-  (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>),
+  (<a href="../../decisions/decision-log/#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key">D-011</a>),
   and the compensating orphan check is specified once in
   <a href="../05-authorization/#11-invariants-to-verify">05-authorization.md §11</a>. This page does not re-state it.</li>
 </ul>
@@ -1866,7 +1866,7 @@ maintain, get wrong, or pretend is a safeguard (the eighteen-ticks-without-a-rec
 No <code>role_in_unit</code> display label, because a label like that always becomes an authorization check the
 moment somebody asks "can she edit the roster?". The <code>note</code> column is where any of that reasoning goes, as
 prose, unread by the resolver
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
 <p><strong>There used to be a second dated set of people beside this one, and the argument for keeping them apart is
 worth keeping even though one of them is gone.</strong> <code>audience_member</code> held the names somebody typed into one
 audience; it was the same shape D-080 teaches a reader to distrust, and this page argued at length that the
@@ -1878,7 +1878,7 @@ would have flagged no longer exists to be flagged.</p>
 <p><strong>What did not go is the hazard, and it is the reason this paragraph survives its subject.</strong> The temptation
 when a grant needs one more person is to add that person to a group, because a group is the thing with a
 roster editor. That is still refused, and for the same reason
-<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 gave: <strong>a group's rows are true when no grant points at them</strong>, so editing one to move one grant's reach
 edits a roster that other grants read, and it invents a group nobody talks about. Since D-105 the refusal has
 a clean alternative next to it instead of a competing table: write <code>PERSON(honza)</code> in the expression that

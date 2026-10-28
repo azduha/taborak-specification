@@ -1992,7 +1992,7 @@ review data (who decided, why) has no meaning on a membership. See
 <a href="../../domain/05-membership-lifecycle/#2-membership-request">../domain/05-membership-lifecycle.md</a>.</p>
 <p><strong>A request asks for membership of the unit, and names nothing else.</strong> <code>requested_unit_id</code> is
 <strong>deleted</strong>
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>),
 along with the index over it. ~~The applicant may express a preference, or the organization may
 assign the unit at approval.~~ <strong>Withdrawn by D-098</strong>, which also removed the thing the column could
 have referenced
@@ -2298,14 +2298,14 @@ was which and whether a fee was owed twice, and participation removed the questi
 distinction is still true one level down</strong> — membership of a group confers nothing and owes nothing,
 no more than belonging anywhere else does, because participation is not authority and the fact that
 it is now stored in a tidier table does not quietly promote it
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>,
 restating
 <a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).
 The same holds for the column this document argued hardest for: <code>person_id</code>, never <code>membership_id</code>,
 because a person may belong somewhere with no membership behind them and a row about 1998 must not
 become unrepresentable because the record of 1998 status is thin or absent. <code>person_group_member</code> is
 keyed on a person for that same reason and inherits the argument whole.</p>
-<p><strong>Where each question goes now</strong> (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>)
+<p><strong>Where each question goes now</strong> (<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>)
 — two shapes, and no longer one shape with a depth in it:</p>
 <table>
 <thead>
@@ -2372,7 +2372,7 @@ answer, while <code>membership</code> remains the authority on payment. With the
 <a href="../../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">../domain/05-membership-lifecycle.md
 §6</a>).</p>
 <h3 id="moving-between-groups-closes-one-row-and-opens-another">Moving between groups closes one row and opens another<a class="headerlink" href="#moving-between-groups-closes-one-row-and-opens-another" title="Permanent link">&para;</a></h3>
-<p><a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+<p><a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 retargets this section's discipline at groups and changes nothing else: <strong>moving a person from one
 group to another is two writes, closing one <code>person_group_member</code> row and opening another</strong>, never
 an edit of the group on the existing row. Close-and-open is what preserves "where was this child in
@@ -2402,7 +2402,7 @@ third loss). The bulk unit-reorganisation transfer — close and open across eve
 over hundreds of rows — goes with it. There is no reorganisation to perform in one statement, and
 the lineage it recorded is now a thing a person would have to write down on purpose.</p>
 <p><strong>The other columns, given up rather than moved</strong>
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
 lists them, and "no special features" was the instruction): no <code>join_reason_code</code> /
 <code>leave_reason_code</code> and so no <code>transfer</code> / <code>promotion</code> / <code>reorganisation</code> / <code>unit_closed</code> vocabulary
 to maintain or to get wrong, no <code>is_primary</code> saying which of a person's groups to show first, no
@@ -2669,7 +2669,7 @@ at all (D-043), and the rest were never required.</p>
   <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
   deleted along with positions, and which nothing in the round-10 model answers for groups either: a
   group carries no eligibility, and
-  <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+  <a href="../../decisions/decision-log/#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority">D-098</a>
   refuses it one. Left as a question for <a href="../../open-questions/">../open-questions.md</a> rather than
   answered here; today the answer is a report over <code>person_group_member</code> and <code>is_minor()</code>.</li>
 </ul>
