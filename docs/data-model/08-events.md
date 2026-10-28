@@ -28,7 +28,7 @@ of **selectors that bind to the event being checked**, specified in §8.
 | `event_answer` | What one person said to one question |
 
 **No recurrence.** A weekly meeting is a **group** — a `person_group` with dated member rows
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)) —
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)) —
 not an event
 ([../domain/07-events.md §1](../domain/07-events.md#1-what-an-event-is-and-what-it-is-not)).
 Adding `event_series` would mean every downstream table — registrations, capacity, presence,
@@ -101,7 +101,7 @@ The column's note used to carry the argument that forced it: a joint camp is one
 event that another unit's children register for via an audience grant, and two owners would
 have created an exception to "the root may not read a sub-unit's events" shaped exactly like
 a joint camp, with no principled place to stop. That argument was sound while
-[D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)
+[D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scopeexposure-is-the-only-crossing)
 was alive. [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
 deleted the sub-units, D-049 with them, and there is nothing left for the column to protect.
 
@@ -230,7 +230,7 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 |---|---|---|
 | `id` | surrogate id | Internal only |
 | `event_id` | reference to event, required | |
-| `person_id` | reference to person, required | `person_id`, NOT `membership_id` — the reasoning `unit_participation` gave and [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) carried over to `person_group_member`, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside `MEMBERS` today — see the note below |
+| `person_id` | reference to person, required | `person_id`, NOT `membership_id` — the reasoning `unit_participation` gave and [D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority) carried over to `person_group_member`, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside `MEMBERS` today — see the note below |
 | `response` | enum: `attending` / `not_attending`, required | TWO values. `unanswered` is written NOWHERE. It is the absence of a row, so "who has not replied yet?" is a subtraction, not a stored state ([../domain/07-events.md §3](../domain/07-events.md#3-registration-one-record-two-stored-answers-and-no-unanswered)). Returning someone to unanswered deletes the row, which `audit_log` records — the honest act, and the one that leaves least behind |
 | `responded_at` | timestamp, required | Default now. When the ANSWER was given, which may differ from when it was recorded. A phone call on Tuesday entered on Thursday has two dates and both matter |
 | `source` | enum: `self` / `staff` / `guardian` / `import`, required | Default `self`. How this person got here, and the audit answer to "how did they get in?". `staff` is written by a person holding `event.register_other`, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. `guardian` is acting-under-guardianship; the acting person is in `access_log` |
@@ -280,7 +280,7 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 
 The argument `unit_participation` made
 ([03-membership.md §5](03-membership.md#5-unit_participation--deleted-by-d-097), before D-097 deleted it) and
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 transferred to `person_group_member`, and it is stronger here. An
 imported 1998 camp roster names children who have no membership row to point at. With the
 corpus being large and number-bearing
@@ -651,8 +651,14 @@ the set §5 counts against `capacity`**, and the same partial index serves both 
 
 `ORGANIZERS` is the fifth, and its definition is the roster in §3 — the labelled, ordered,
 domain answer to "who runs this", evaluated over `event_organizer` rows for the event
-checked. The sixth is `GUARDIANS`, which binds to the person an item is about rather than to
-an event.
+checked. **There is no sixth, and this page printed one until round 13.** The `GUARDIANS` that sat in
+that sentence was never an operand at all, in either spelling: a guardian's authority is a
+`right_level ∈ none | view | write` held **over a child**, read off the `guardianship` row when the check
+is about someone other than the actor, and it is not a set that the expression language resolves
+([D-113](../decisions/decision-log.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector),
+[D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+Counting it alongside these five was the error, not a narrower way of stating the channel — which is why
+the paragraph below already called `PRESENT` the obvious sixth.
 
 **`PRESENT(<event>)` is refused.** An operand over `was_present` is the obvious sixth
 attendance tier and it is not available, and the reason is the failure direction:
@@ -712,9 +718,24 @@ say who writes the row. Integrity check 1 in §10 is the net.
 of a grant row once an operand binds: `PLACED` is different people on different events. The
 editor must therefore compute the expansion **for an item** and name the item it computed
 against, and the cache key for a bound operand must include the item. Stated as a requirement
-in [../domain/07-events.md §7](../domain/07-events.md#7-the-people-connected-to-an-event);
-[F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)
-carries the caching side.
+in [../domain/07-events.md §7](../domain/07-events.md#7-the-people-connected-to-an-event). That expansion
+is not capped or deferred, and the ground is now stated rather than assumed: a few dozen registrants on a
+typical event and a big camp on the order of two hundred is a preview nobody feels — a size
+**stated, not measured**, with a named trigger to reopen it
+([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
+
+**A write to `event_registration` is not a ruleset write, and that is the whole staleness story for this
+module.** There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write
+to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table to get right
+([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+The ruleset is the grant and expression rows, the permission registry, the guardianship rows,
+`role_holder` and `person_group_member`; **`event_registration` is not in it**. So marking a register,
+confirming a place, or promoting somebody off the waitlist changes who is in `ATTENDED`, `PLACED`,
+`CONFIRMED` and `ON_WAITLIST` and rebuilds nothing: a cached answer behind those four tiers **may be up to
+one night stale, by design**. This is the module where an implementer would most confidently assume the
+opposite, so it is stated here rather than only in the authorization page. What stays immediate is
+everything a person actually does to authority — revoke, deny, close a grant period, end an assignment —
+because every one of those is a ruleset write.
 
 ### Guards
 

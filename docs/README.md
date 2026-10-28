@@ -64,7 +64,7 @@ So there are five rules the data model obeys throughout:
 | 5 | Authority is one permission, allowed or denied | A grant names one permission code, one scope (the unit, or exactly one item) and an effect. **Allowed when some live allow applies and no live deny applies.** No levels, no "nearer wins", deny absolute. |
 
 Rule 4 is load-bearing, and it is now carried by two tables instead of one:
-[D-098](decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 for groups, [D-100](decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
 for offices, both standing on
 [D-005](decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity).
@@ -74,8 +74,8 @@ Thursday-evening groups the person turns up to, and regardless of whether they r
 Rule 5 replaced the organization's old constitutional principle rather than inheriting it. What used to
 sit here was *"authority does not flow down the hierarchy: a unit is covered only if it exposes its
 scope"*, and it died with the hierarchy
-([D-031](decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing),
-[D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing),
+([D-031](decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing),
+[D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scopeexposure-is-the-only-crossing),
 both deleted by [D-097](decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
 **The property it bought is gone and this page says so plainly:** access to a body's children used to have
 to be granted *by that body*, by people who recruited the leader and can be asked. With one unit there is

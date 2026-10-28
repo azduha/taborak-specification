@@ -449,7 +449,7 @@ For every membership that is **active**, has an obligation with a **positive bal
 1. Mark it **lapsed**, ending it **at the expiry date** — not at today. The period ended on that
    date whether or not anyone noticed.
 2. **Invalidate the permission cache per person, for every person returned** — not per scope
-   ([domain/06 §8](../domain/06-authorization-model.md#8-caching-and-invalidation)). A lapsed member
+   ([domain/06 §8](../domain/06-authorization-model.md#8-caching-and-the-rebuild-that-replaced-invalidation)). A lapsed member
    whose gated grants still resolve is a member who keeps leading. **The step survives the deletion
    of the gate that motivated it, and the reason changed**: there is no resolver clause to
    invalidate any more, but `MEMBERS` is evaluated live on the checked date

@@ -164,11 +164,11 @@ Their replacements are the two same-shaped tables of round 10:
 |--------------|-----------|---------|----------------|
 | **Guardianship** | guardian → dependent | parent → child | **No** by itself — only the `right_level` (`none` / `view` / `write`) carried on the live `guardianship` row. Since D-074 that value is the whole authority; `guardianship_permission` keeps only its history. |
 | **Membership** | member → the organization | anyone → the unit | No. |
-| **Being in a group** | person → group | child → the Thursday group | **No** — a `person_group_member` row is a dated roster entry ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)). |
+| **Being in a group** | person → group | child → the Thursday group | **No** — a `person_group_member` row is a dated roster entry ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)). |
 | **Holding an office** | person → role | adult → a leader | **No** — a `role_holder` row says who holds it, and an office confers nothing by being held ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)). |
 
 **Being a member and being in a group are two rows, not one** — the distinction D-041 drew between
-membership and participation, which survives its subject ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+membership and participation, which survives its subject ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 A person is a **member of the organization** and **on a group's roster**: different facts, different
 lifetimes, different guards on who may change them, which is why someone who stops attending on Thursdays
 is still a paid-up member, and someone who is paid up may turn up to nothing. The old sentence named a
@@ -191,7 +191,7 @@ You named this case explicitly. It is not special:
 - One `role_holder` row: they hold the office `counselors`, over a dated period. The office itself is a
   `role` row ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 - A `person_group_member` row or two, dated, for the companies they actually turn up to
-  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 - Two `guardianship` rows (to their own children), each carrying its own right.
 - Whatever `access_grant` rows somebody wrote whose grantee names them — as `ROLE(counselors)`, or
   `MEMBERS * ROLE(counselors)` where the membership gate applies

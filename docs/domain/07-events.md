@@ -27,7 +27,7 @@ An event is **a thing with a date that people sign up for**.
 
 > **A weekly meeting is not an event.** It is a **group** — a `person_group` whose dated
 > member rows already say "this child takes part in this Thursday group"
-> ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+> ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 > A Thursday group that meets forty times a year is already recorded, and making each
 > meeting an event would create forty rows saying what one row says, with forty capacities,
 > forty organizer rosters and forty chances to be wrong. Events are the things you
@@ -237,12 +237,20 @@ round retired.
 **A writer still may not type `AGE >= 13`, and the reason this page gave for that was wrong.**
 ~~because an attribute is not a set of people~~ — `OLDER(13)` is exactly a set of people: the
 ones who are thirteen or older on the date being checked, in the same way `MEMBERS` is the set
-of people who pass `is_current_member` and `GUARDIANS(x)` is the set who hold a row. Every
+of people who pass `is_current_member` and `ROLE(x)` is the set who hold that office. Every
 operand in the registry is a test with a set behind it, so the old test would have barred
 `MEMBERS` too, since nothing here stores the member list. What was doing the work, and is the
 clause to quote from now on, is that **an operand must be a named operand — a row of the
 registry** — and this language has no comparison operator for `AGE >= 13` to be assembled out
-of. The registry is organization-read-only, so the next predicate anyone wants arrives the way
+of. **The guardianship channel is deliberately absent from that list, in both spellings**
+(`GUARDIANS` and `GUARDIANS(x)`) — the parenthesised one was in the enumeration immediately above until
+round 13 removed it, and this page has no table of seeded values to have carried the other
+([D-113](../decisions/decision-log.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)):
+*"True, GUARDIANS should not be selectable in the audience, guardians can perform ANY action (their
+read/write perms grant) on behalf of the child."* A check about a child asks whether a live `guardianship`
+row links the two people and reads `right_level ∈ none | view | write` off it — a lookup over a
+relationship, not a set the language resolves — so an aimed-at-guardians operand would hand those people,
+one code at a time, a subset of what the channel already gives them. The registry is organization-read-only, so the next predicate anyone wants arrives the way
 an age band did: as a deployment, with its evaluator arm shipped beside it, and not as a
 setting. Either way every answer to "who may register" keeps living in one table, which is the
 property worth defending.
@@ -439,12 +447,27 @@ requirements on the editor and the cache, not on the schema:
 
 - An expression containing a bound operand is previewed **per item**. Asking for a preview of
   such a grant at the unit is not a large computation, it is a refused one — the same refusal
-  the save applies.
+  the save applies. **The per-item preview carries no cap, no cache and no background job, and now
+  on stated grounds rather than hope:** the system is specified against a few hundred people in the
+  organization, a few dozen registrants on a typical event and a big camp on the order of two hundred,
+  so previewing one item evaluates a couple of hundred predicates and nobody feels it
+  ([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
+  That size is **stated, not measured** — nothing in these documents has measured anything here — and the
+  trigger for reopening it is a few thousand people, or a thousand registrants on one event.
 - Where no item is in hand, the editor says what the expression *means*, not who it reaches.
 - The cache key for a bound operand **includes the item**
-  ([F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)),
+  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)),
   because the same grant on two events has two answers
   ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+- **A registration write is not a ruleset write.** There is one cache policy and three triggers — rebuilt
+  nightly in full, immediately on any write to the ruleset, and on explicit request — and
+  `event_registration` is not part of the ruleset
+  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+  So an answer that runs through `PLACED`, `CONFIRMED`, `ATTENDED` or `ON_WAITLIST` **may be up to one
+  night behind the roster**, and this is the module where an implementer would most confidently assume
+  otherwise. It is the same residual window as a birthday, and it is not the safeguarding window: every
+  withdrawal a person actually *performs* — a revoke, a deny, ending a grant's period, ending an
+  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.
 
 Fail closed as everywhere else in the model, **with the direction stated rather than implied**:
 an operand that resolves to nothing contributes the empty set, which *narrows* what a `+` or a
@@ -453,20 +476,39 @@ everybody, lockout and fail-closed being the same event
 ([D-106](../decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
 A person with no birth date is not that kind of failure: the operand resolves perfectly well and
 they are simply not in `OLDER(18)`, exactly as a person with no membership row is not in
-`MEMBERS`. A broken leaf is no longer silent and still stops nothing — it is listed for the
-audience's owner on the standing report, and no save is refused for it.
+`MEMBERS`. A broken leaf is no longer silent and still stops nothing — it is listed on the **tab on the
+permissions page**, and no save is refused for it
+([D-109](../decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
+**And that tab has become nearly empty by construction, which is the point of the ruling:** nothing a rule
+names is deleted any more. A retired office, group or audience is flagged `deprecated`, `hidden` or
+`disabled` and keeps resolving — only `disabled` changes the answer, and it changes it to the empty set
+because somebody asked for exactly that. The one thing still able to break a leaf is a person, because
+[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+lets a redaction require the row to actually go and erasure wins: **a redacted person is the corpus's only
+remaining way to produce a broken leaf.**
 
 **A preview is a statement about the day it was taken.** `OLDER(n)` and `YOUNGER(n)` make that
 true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
-are the people who qualify *today*, and a birthday moves the list with no write, no edit to the
-grant, and nothing for a cache to be told about
-([F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)).
-**The preview is a workbench, not a record.** The record is the audit row written when the grant
-is saved: it says whom the grant reached on that date, and it is a prediction about the future
-that is honest about being one. Ask the model about a date in the past and it does not read that
-row back — it computes the answer live from a birth date and a date, which is why the row ages
-gracefully instead of becoming a lie. And a preview that cannot be computed still shows that it
-could not be computed, rather than an empty list.
+are the people who qualify *today*, and a birthday moves the list with no write and no edit to the
+grant. Nothing is told about it and nothing needs to be: the cache is rebuilt nightly, on any ruleset
+write, and on request, and an answer that moved without a ruleset write is simply allowed to be one
+night stale ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+**The preview is a workbench, not a record — and the record is the expression**
+([D-110](../decisions/decision-log.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)).
+The audit row written when a grant is saved says *this person wrote these words, about this item, on this
+date*. What the preview printed alongside it is logged as **a rendering on a date**, never as a statement
+of who was in it: a stored list of everyone a rule happened to cover, kept after the rule was withdrawn,
+is the roster table this corpus has deleted twice. So *"whom did this grant reach in May?"* is answered,
+if at all, by evaluating the words against the data of May — and these documents do not promise the
+answer. Words-only is affordable rather than brave only because of
+[D-109](../decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report):
+since nothing a rule names is deleted, the words keep resolving long after their reason is gone.
+**What that concedes, so nobody finds it later:** a shared audience holds a word, not a copy, so **an edit
+to a shared audience is a retrospective edit to every rule that names it**, and a re-evaluation for May
+uses *today's* inner expression. That was always true and was never written; the control is the preview
+this very section is about — the editor prints the resolved set before an edit to a shared expression
+saves, so the person editing sees at least once what they are changing backwards in time. And a preview
+that cannot be computed still shows that it could not be computed, rather than an empty list.
 
 ---
 

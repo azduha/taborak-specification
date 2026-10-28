@@ -398,7 +398,7 @@ already asked for, now with a concrete policy in front of it instead of a blank 
 
 **The neighbouring trail takes the same window, as a proposal rather than a decision.** `access_log` is
 proposed at the same 24 months under
-[F-8](../open-questions.md#f-8--retention-policy-for-access_log), which still needs confirming; it is a
+[F-8](../open-questions.md#f-8--retention-policy-for-accesslog), which still needs confirming; it is a
 weaker question than this one because that table keeps the payloads of *reads* out of itself to begin
 with ([05-authorization.md §9](05-authorization.md#9-access_log)).
 

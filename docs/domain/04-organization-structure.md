@@ -6,7 +6,7 @@ One organization, and the named sets of people inside it.
 deleted it, and not by simplifying it: the module's subject stopped being a structure and became two
 things that were previously buried inside it — the organization, which is one unit and is not stored, and
 the **group**, which is a set of people and is
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 What follows says what the organization is now, what that costs, what a group is and is not, and where the
 workflows that used to end at a position now end.
 
@@ -45,7 +45,7 @@ units. So now:
 
 Two shapes instead of one shape with a depth in it, and neither one borrows the other's table. Renewal
 narrows to exactly what it always claimed to be about — the `membership` row, a new row per renewal
-([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to))
+([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto))
 — because the row it used to extend on a renewal is gone with the units, and
 [D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)
 is reversed rather than narrowed.
@@ -64,7 +64,7 @@ here rather than distributed through the page, and they are not argued away.
 
 1. **The unit is no longer a locus of accountability for a child's records.** This is the one that matters
    and it is the founding rule's.
-   [D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+   [D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing)
    said ~~authority over a unit originates at that unit and cannot be claimed from outside it~~ — it
    existed so that access to a pack's children had to be granted *by that pack*, by the people who
    recruited its leader and can be asked about it. **Reversed by
@@ -86,7 +86,7 @@ here rather than distributed through the page, and they are not argued away.
 3. **Restructuring stops being a recorded event.** Splits, mergers and successions were this module's
    whole history problem, and they are simply gone. A group that splits is an old group that ended and two
    that began, with no edge between them unless somebody writes one — and after
-   [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+   [D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
    there is no table left where that edge could go (§4).
 4. **Unit-scoped reports have nothing to report on.** "A pack's roster", "a pack's events", "which units
    exist" are not hard questions any more, they are questions with no subject. The organizational-year
@@ -117,7 +117,7 @@ work (`scope_exposure`, written by the unit it covered) no longer exists.
 ## 2. What a group is, and everything a group is not
 
 **A group is a `person_group`: a name, a description, its own lifetime, and explicitly dated members**
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 It is a **set of people, not a body**. Somebody names it, somebody puts people in it, somebody ends it, and
 the record of who was in it when is the roster's own (§5). A weekly meeting group, a project crew, a
 trainers' pool, `schuzka2026-1` — all the same kind of thing, and the system has no opinion about which
@@ -176,7 +176,7 @@ the grant.
 **Nobody writes themselves onto a roster.** The gate is `person_group.member.manage`, held at the unit —
 which reaches every group, because after D-097 nothing stands between a unit-scope grant and an item — or
 granted on one group as an item, which is how "these two people may work *this* roster" is said without
-inventing a scope ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+inventing a scope ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority),
 [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 There is no self-scoped variant and none will be added. Moving the roster from `unit_participation` to
 `person_group_member` changed the table and not the rule: D-095's reasoning transfers intact.
@@ -204,7 +204,7 @@ implies it enforces something.
 
 **A membership request is a request for membership of the unit, and carries no group.** It used to carry a
 preferred unit; `requested_unit_id` is deleted, because which group a new member lands in is a write on
-the group and not a preference on the request ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+the group and not a preference on the request ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 The request flow in [05-membership-lifecycle.md](05-membership-lifecycle.md) ends at the unit; a roster is
 somebody else's decision afterwards, which is the same fact as the paragraph above stated from the other
 side.
@@ -231,7 +231,7 @@ name history, so a rename is an edit to one column and the previous name is not 
 
 **The honest half: the method outlived its recording mechanism.** D-096 put the continuity claim in
 `org_unit_relationship` as `successor_of`. That table is deleted, and
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 refuses group-to-group edges outright — no split, no merger, no succession — so the assertion has **no
 field to live in**. What the method still guarantees is therefore the direction of the default, which is
 the half that was ever enforceable: a returning name is a new group, and two groups that are really one
@@ -264,7 +264,7 @@ grant** — the storage follows the method rather than the label. Mechanics:
 **Member rows are dated, and that is what makes the roster answerable.** `person_group_member` carries
 `valid_from` and `valid_to` per person, so joining, leaving and coming back are all periods on the same
 pair, and the roster has a history of its own instead of borrowing the audit trail's
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 "Who was in `schuzka2026-1` on 14 March 2026?" is a point-in-time read over those rows. It survives the
 audit trail's 24-month payload expiry
 ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
@@ -294,7 +294,7 @@ check that watch it are
 
 **A person who left in 2020 and came back in 2024 is two rows.** Never one row edited in place, because
 the edit destroys the answer to "was she in the group in 2019?", which is the same argument
-[D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to)
+[D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto)
 makes about renewals and this system makes about every temporal fact
 ([D-002](../decisions/decision-log.md#d-002--everything-temporal-is-a-period-never-a-boolean)).
 

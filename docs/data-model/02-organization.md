@@ -104,7 +104,7 @@ are all periods on the same pair, which is what lets the roster answer a questio
 asking the audit trail — whose payloads expire after two years
 ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
 and which must not become the history of record for anything
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 
 **Fields**
 
@@ -177,7 +177,7 @@ refuses overlapping rows when nothing yet does.
 
 **`person_group` has a row in `grant_scope_type`, so a group is a thing a grant may be written on** — which
 is how "these two people may work this group's roster" is said without inventing a scope
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 The scope types now are `unit` (not item-scoped, the organization itself), `event`, `person_group`, `role`,
 and `document` (deferred). `role` joins as an item for the same reason and by the same move
 ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
@@ -209,7 +209,7 @@ table they touch:
   resolver's rules already require. `GROUP(nonexistent)` is not an error at check time and must never
   become a permissive default.
 - **The polymorphic id has no foreign key**, exactly as `access_grant.scope_id` accepted it
-  ([D-011](../decisions/decision-log.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)),
+  ([D-011](../decisions/decision-log.md#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key)),
   and the compensating orphan check is specified once in
   [05-authorization.md §11](05-authorization.md#11-invariants-to-verify). This page does not re-state it.
 
@@ -293,7 +293,7 @@ maintain, get wrong, or pretend is a safeguard (the eighteen-ticks-without-a-rec
 No `role_in_unit` display label, because a label like that always becomes an authorization check the
 moment somebody asks "can she edit the roster?". The `note` column is where any of that reasoning goes, as
 prose, unread by the resolver
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 
 **There used to be a second dated set of people beside this one, and the argument for keeping them apart is
 worth keeping even though one of them is gone.** `audience_member` held the names somebody typed into one
@@ -307,7 +307,7 @@ would have flagged no longer exists to be flagged.
 **What did not go is the hazard, and it is the reason this paragraph survives its subject.** The temptation
 when a grant needs one more person is to add that person to a group, because a group is the thing with a
 roster editor. That is still refused, and for the same reason
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 gave: **a group's rows are true when no grant points at them**, so editing one to move one grant's reach
 edits a roster that other grants read, and it invents a group nobody talks about. Since D-105 the refusal has
 a clean alternative next to it instead of a competing table: write `PERSON(honza)` in the expression that

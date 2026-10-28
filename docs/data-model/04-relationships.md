@@ -96,7 +96,7 @@ them*, and both hold it.
 
 **This claim used to borrow its justification from a rule that no longer exists.** It was written as
 *scope authority* — ~~the rule that authority over a nested thing originates at that thing~~
-([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)),
+([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing)),
 "applied to a household instead of a unit" — which was a good analogy right up until
 [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted
 the nesting it was borrowed from, along with the crossing mechanism that made it a rule rather than a

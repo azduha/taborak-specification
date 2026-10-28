@@ -38,7 +38,7 @@ rounds this document wrote as if it were the only one. There are two entry paths
 exactly one gate, with no third control anywhere
 ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
 whose reasoning
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 transfers to groups intact — joining one is still somebody else's act):
 
 | | **Membership of the unit** | **A group** |
@@ -59,7 +59,7 @@ offices: **nobody appoints themselves**, and the catalog holds no code that coul
 group carries no money — *"into the sub-units, there is no fee, it is entirely managed by the
 organization, including adding more members."* That was said about units and it transfers unchanged,
 a group being among the things listed as having **no** fee
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 Putting a fee on a member row would immediately ask who sets the amount, who chases it, and what
 happens to a child whose family cannot pay a group's arrears, and none of those questions exist in
 the corpus or in any answer given. That is a refused model, not an unasked one.
@@ -74,7 +74,7 @@ was, now carried in the grant text rather than the resolver
 — which is what that test was always for. **A group membership is a fact about belonging, not a
 credential**: a member of a group can do nothing by being one, and the tidier table does not quietly
 promote it
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 The other cost is directional and appears in the other direction at import: **the membership door is
 the only place a person's own initiative can produce a record**, which is why the legacy corpus
 could be matched against people and never against groups ([domain/03
@@ -106,7 +106,7 @@ not optional once the approval exists.
 
 **A request asks for membership of the unit, and it names no group.** `requested_unit_id` is
 **deleted**, along with the index over it
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 ~~The unit named on a request is a preference, not a door: a request opens the root and produces a
 root participation row, and the pack the applicant wrote down is a sentence addressed to whoever
 reviews it.~~ **Withdrawn by D-098**, which also deleted the table the column pointed at
@@ -293,7 +293,7 @@ bounded, `data_confidence = 'low'`, batch id set
 The group row is the other half: **the corpus names no groups either**, so a 1990s roster exists
 only because somebody who remembers typed it, and the import owes **no belonging rows of any kind**
 ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
 What the diagram used to draw beside each membership — a **root-unit** participation row mirroring
 the very same period — is gone with the table, and the picture is now about the two periods, which
 is the most the import can actually say. The 1990s belonging the deleted rows might once have held
@@ -370,7 +370,7 @@ The membership-relevant part, in full:
 
 ### Renewal opens a new period, not an extended one
 
-**Shape A, decided** ([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to)).
+**Shape A, decided** ([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto)).
 The previous row closes and a new one opens, linked by
 `membership.renewed_from_membership_id`. Extending `valid_to` in place would be fewer rows
 and would silently lose the most commonly asked question about renewals — did they renew
@@ -460,7 +460,7 @@ What a system built around this must still handle — none of it a membership tr
 | Concern | Where it lives now |
 |---|---|
 | A guardian's authority at majority | Guardianship — and the system does **not** notice the birthday. No auto-expiry and no review queue; a person ends the row (D-069) |
-| Who may be added to a group | Nowhere in the data. `org_unit_type.allows_minors` was removed by [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) and the units it was a column on by [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row); **no column says which group takes children, and none will**. The control is `person_group.member.manage`, held at the unit or on one group, in the hands of the people who run it ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) transfers [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) intact), and [domain/04-organization-structure.md](04-organization-structure.md) owns it |
+| Who may be added to a group | Nowhere in the data. `org_unit_type.allows_minors` was removed by [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) and the units it was a column on by [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row); **no column says which group takes children, and none will**. The control is `person_group.member.manage`, held at the unit or on one group, in the hands of the people who run it ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority) transfers [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) intact), and [domain/04-organization-structure.md](04-organization-structure.md) owns it |
 | Whether a person may hold an office | Nowhere either. `position.min_age` is deleted with positions ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) and `role` carries no age column, so what remains is `is_minor()` in a report over `role_holder`. **That is a deletion rather than a move**: the eligibility check this row pointed at no longer exists, and §9 carries the question |
 | Consent for a minor's own account | `guardianship_permission`, not a membership requirement |
 | Planning around age groups | A query over `person.birth_date`. It is a report, not a state change. |
@@ -500,7 +500,7 @@ exists. A list of ten that quietly became eight is how a specification loses a r
 2. Who was a member on any given date in the past?
 3. Who was in group G on date D? — **a point-in-time read over `person_group_member`**, whose rows are
    dated at both ends for exactly this question
-   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority));
+   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority));
    the group's own lifetime is a second, different fact and both are kept. "Who was in the
    organization on date D?" is now a `membership` read with no belonging row involved: **two
    queries, two shapes**, and no "and everything nested under it" left to ask about
@@ -525,7 +525,7 @@ exists. A list of ten that quietly became eight is how a specification loses a r
    removed that column and
    [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
    removed the units it was a column on, and a group is explicitly listed as carrying no such rule
-   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
    So there is nothing to check a placement against, in either vocabulary, and no plan for there to
    be one. What stands in its place is upstream — nobody is added to a group by somebody who does
    not hold that group's roster write — plus a report of who holds that write, which is a question
@@ -560,7 +560,7 @@ rows says nothing about which group a person was in, because a membership is not
 group answer stays empty until somebody types a roster in by hand — which is the only way a group
 row can be written at all, the corpus naming no groups
 ([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority))
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority))
 — and the honest reading of a pre-go-live roster is that it is somebody's recollection. **What is
 *not* lost is the shape of the answer after go-live**: the member rows are dated precisely so that
 "who was in the Thursday group in 2011?" stays a point-in-time read that survives the audit trail's
@@ -600,7 +600,7 @@ resolver, which is the worst kind of bug to find.
   ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
   a `role`
   carries none, and a `person_group` is refused one
-  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
+  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)),
   so "a scoutmaster must be an adult" survives only as a report over `role_holder` and `is_minor()`
   (§7). If the organization wants that rule enforced rather than reported, it needs a decision this
   round did not make.
@@ -635,7 +635,7 @@ renewal shape A or B (A, §6); age-out timing and the child→adult transition (
   ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
   [C-6](../open-questions.md#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
   §1). Round 10 deleted the units and
-  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
   carried the ruling across intact: a group carries no restrictions, nobody writes themselves onto a
   roster, and the gate is `person_group.member.manage`. What that gives up is stated in §7 rather
   than here twice.

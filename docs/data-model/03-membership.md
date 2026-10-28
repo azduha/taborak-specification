@@ -137,7 +137,7 @@ review data (who decided, why) has no meaning on a membership. See
 
 **A request asks for membership of the unit, and names nothing else.** `requested_unit_id` is
 **deleted**
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)),
 along with the index over it. ~~The applicant may express a preference, or the organization may
 assign the unit at approval.~~ **Withdrawn by D-098**, which also removed the thing the column could
 have referenced
@@ -400,7 +400,7 @@ was which and whether a fee was owed twice, and participation removed the questi
 distinction is still true one level down** — membership of a group confers nothing and owes nothing,
 no more than belonging anywhere else does, because participation is not authority and the fact that
 it is now stored in a tidier table does not quietly promote it
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority),
 restating
 [D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity)).
 The same holds for the column this document argued hardest for: `person_id`, never `membership_id`,
@@ -408,7 +408,7 @@ because a person may belong somewhere with no membership behind them and a row a
 become unrepresentable because the record of 1998 status is thin or absent. `person_group_member` is
 keyed on a person for that same reason and inherits the argument whole.
 
-**Where each question goes now** ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority))
+**Where each question goes now** ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority))
 — two shapes, and no longer one shape with a depth in it:
 
 | Question | Read |
@@ -468,7 +468,7 @@ answer, while `membership` remains the authority on payment. With the row gone b
 
 ### Moving between groups closes one row and opens another
 
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 retargets this section's discipline at groups and changes nothing else: **moving a person from one
 group to another is two writes, closing one `person_group_member` row and opening another**, never
 an edit of the group on the existing row. Close-and-open is what preserves "where was this child in
@@ -501,7 +501,7 @@ over hundreds of rows — goes with it. There is no reorganisation to perform in
 the lineage it recorded is now a thing a person would have to write down on purpose.
 
 **The other columns, given up rather than moved**
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
 lists them, and "no special features" was the instruction): no `join_reason_code` /
 `leave_reason_code` and so no `transfer` / `promotion` / `reorganisation` / `unit_closed` vocabulary
 to maintain or to get wrong, no `is_primary` saying which of a person's groups to show first, no
@@ -758,7 +758,7 @@ at all (D-043), and the rest were never required.
   [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
   deleted along with positions, and which nothing in the round-10 model answers for groups either: a
   group carries no eligibility, and
-  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
   refuses it one. Left as a question for [../open-questions.md](../open-questions.md) rather than
   answered here; today the answer is a report over `person_group_member` and `is_minor()`.
 
