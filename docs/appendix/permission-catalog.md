@@ -270,6 +270,23 @@ These marks should drive UI warnings and the alerting in
 > moving between sub-units is `unit_participation.manage` — close one row, open another —
 > and it does not touch the person's membership at all. There is nothing to transfer.
 
+> **`unit_participation.manage` has no self-scoped variant, and none will be added**
+> ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)).
+> Every grant of it means *"over this unit's roster"*, never *"over my own row"* — so **"nobody writes
+> themselves into a unit"** is not a check the write performs, it is the shape of the thing being
+> granted: there is no smaller grant to make yourself. The same holds for `position.assign` (§5):
+> **nobody appoints themselves**, and D-095's instruction was explicitly not to mint a code that could
+> express either act. This is also where the safeguarding story moved to. `org_unit_type.allows_minors`
+> is removed, so no column says which units are for children and nothing here refuses to place a minor
+> anywhere; what is left is this row held by named adults at one unit, the write audited the way any
+> business-table write is, its recorded values emptied after 24 months
+> ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+> and a report of who holds it
+> ([../domain/04-organization-structure.md §1](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units)).
+> The gate in front of a *membership* is the fee; below the root there is no second gate and no fee, so
+> this permission is the only one
+> ([../domain/05-membership-lifecycle.md §1](../domain/05-membership-lifecycle.md#1-the-flow-you-described)).
+
 > **These permissions are gated by membership when held through a role that requires one**
 > ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
 > The gate is a property of the *role*, not of the permission, so it is not visible in this
@@ -290,6 +307,18 @@ These marks should drive UI warnings and the alerting in
 | `position.view` | — | | See positions |
 | `position.assign` | — | ⚠ | Appoint someone to a position |
 
+> **`position.assign` is not something you can hold over yourself.** Appointments are made *to* people
+> by whoever runs the unit, and there is no self-scoped form of the code and none is planned
+> ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
+> §4 above). The eligibility rules that do exist are about the position and not about the appointment —
+> `position.min_age`, `max_holders`, `requires_membership` — and none of them is a self-service door.
+>
+> **An appointment writes one row, not two.** It does not create a role assignment, and no code in this
+> catalog implies one: the derivation from a leadership position to a set of people lives in a group's
+> filling rule, where it stops covering the person on the day the assignment closes
+> ([D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group),
+> [../domain/04-organization-structure.md §4](../domain/04-organization-structure.md#4-positions)).
+
 > `org_unit.restructure` is separated because a split rewrites the answer to historical
 > questions. It is not routine editing. **Reparenting is no longer among the things it
 > grants** — a unit cannot change parent at all
@@ -306,8 +335,8 @@ consequential permission in the authorization model.
 |------|-----------|-------|--------|
 | `scope.expose` | — | 🔒 | **Expose this unit's scope** to a parent unit's role assignment |
 | `scope.exposure.review` | — | ⚠ | See and revoke the exposures made over this unit |
-| `audience.view` | — | | See built-in audiences and named groups |
-| `audience.manage` | — | ⚠ | Create and populate named groups |
+| `audience.view` | — | | See the sets a grant can be aimed at, and how each is filled |
+| `audience.manage` | — | ⚠ | Create a group; change its filling rule, its listed people, or which groups it includes |
 
 > **`scope.expose` is the only door between unit levels.** Authority never inherits downward
 > ([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)),
@@ -323,10 +352,28 @@ consequential permission in the authorization model.
 > every row is a deliberate, individual, attributable decision about one assignment.
 
 > **`audience.manage` is the permission that creates a grant target.** Whoever holds it can
-> assemble a named list of people which a later `access_grant` may then address
+> assemble a set of people which a later `access_grant` may then address
 > ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)) —
 > so it is authority over *who could be granted*, one step removed from granting. Whether it
 > belongs to a dedicated `audience_admin` or to unit leaders is open (§12).
+>
+> **Since [D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+> this is one code over three powers, and it should not be read as though that were settled.** A group is
+> now filled by an optional rule, an optional hand-kept list and an optional set of included groups, and
+> the catalog has exactly one write code over the table — so the row above is read as covering all three
+> arms, including **composition**: pointing a group at another group widens every grant aimed at any group
+> that includes it, transitively, and `everyone` is a legal thing to include. Nothing here distinguishes
+> *"add these five people"* from *"make this group contain everybody"*, and no separate code was invented
+> to do it. That is recorded as an open question, not an answer (§12), and until it is answered the only
+> control is the one D-091 names: **the editor that shows the people a grant actually reaches, expanded,
+> rather than the group's name**
+> ([../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)).
+>
+> **The display is itself a read over people, and this catalog does not grade that yet.** Showing the
+> resolved set means enumerating which humans a rule currently covers — which is what `audience.view` is
+> for, on a row carrying no sensitivity mark. Listing the members of *"the leaders of every unit"* is not
+> the same kind of act as listing the members of *"the kitchen crew"*, and the grading was written before
+> the two could be the same query (§12).
 
 ---
 
@@ -801,6 +848,17 @@ the system loses the ability to use it on the day it breaks.
    honest answers are a scoped, dated `person.view` on this role, or a review screen that shows more of
    the *signals*. Reaching instead for an organization-wide `person.view` would put the catalog's
    largest ⚠⚠ read in the role with the most write authority over identity.
+6. **No role in this seed set holds `unit_participation.manage`, and since
+   [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+   that is a hole rather than a neutral omission.** As written, `unit_admin` and `unit_leader` may *see* a
+   roster and cannot write one, which was survivable while a placement could be argued about from a unit
+   type; it is not survivable now that this permission is the only thing standing between a person and a
+   unit's roster, and that the answer behind D-095 is *"they will be assigned to the unit by the
+   counselors"*. Whoever seeds this owes the write to whoever runs the unit — per unit, dated, and
+   readable in the report that replaces the deleted flag. **It is recorded here instead of added to the
+   table on purpose**: which volunteer role may place a child in a unit is the organization's decision to
+   make, and an appendix that quietly hands it to `unit_leader` would be making a safeguarding choice on
+   someone else's behalf.
 
 ---
 
@@ -825,9 +883,28 @@ the system loses the ability to use it on the day it breaks.
 - Whether the organization has roles this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief). **This is now answerable by the organization itself** rather
   than by a change to the data model and a migration — which is the point of roles being runtime data.
-- Which built-in audiences the organization needs, and who may create named groups —
+- Which built-in groups the organization needs, and who may create the named ones —
   `audience_admin` is proposed, but it may belong to unit leaders instead
-  ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+  ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals),
+  [F-5](../open-questions.md#f-5--which-built-in-audiences-are-needed-beyond-the-four-now-named)).
+  This bullet used to say *"named groups"* as a kind, opposed to *"built-in audiences"*;
+  [D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+  deleted the kinds, so the open question is now only about who may create a group and which rules ship.
+- **One code covers three powers over a group, and nothing separates the largest of them.**
+  `audience.manage` is the only write code over the table, and since D-091 that table can be filled by a
+  rule, by a hand-kept list, or by including other groups. **The inclusion arm is the one that worries**:
+  it is the difference between adding five people and making a group contain everybody, and the second
+  takes three edits and a save. Either the catalog documents composition as plainly inside
+  `audience.manage` — accepting that whoever can edit a group can widen every grant aimed at any group
+  that includes it — or composition gets a code of its own. **No code was invented here to fill the gap**;
+  the interim control is the editor showing the expanded set, which is a user-interface requirement
+  carried in [../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups),
+  not a permission.
+- **`audience.view` carries no sensitivity mark, and after D-091 the thing it shows is a list of people.**
+  A grant aimed at a group used to name a set whose contents were mostly typed in; now the same row can
+  resolve through positions, participations and memberships, and a group that includes `everyone` resolves
+  to the whole organization. Whether reading a group's resolved membership needs a grade of its own — or
+  whether `person.view` already covers it and the display is the leak to watch — is unsettled (§5a).
 - **`attribute.define` is in the catalog and in no seed role, and that gap is the open half of the
   design.** The permission and its rules are settled (§2); who holds it, and how long a `proposed`
   code may sit before it is an embarrassment rather than a queue, are not — tracked as **AT-2** in
@@ -841,6 +918,10 @@ the system loses the ability to use it on the day it breaks.
   ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
   [../domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline)).
   Who holds the permission afterwards, day to day, is still what is open.
+- **Which role holds the right to place a person in a unit is unanswered in the seed set**, and it is now
+  the only question standing between a child and a unit's roster (§11.6). The catalog's side of it is
+  settled — one code, unit-scoped, never self-scoped — so what is missing is not a code but a decision the
+  organization has to record in `role` rows.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: whether
 `person.admin` should subsume `person.merge` and `person.redact` (moot — there are no
@@ -855,6 +936,13 @@ reparenting (it cannot — D-036); whether reversing a merge deserves a code of 
 undoing an identity correction is the same act as making one, so `person.unmerge` is gone from §2 and
 unmerge is `person.merge`, D-087); and whether a colliding sign-up needs a claim object and a way to
 link it (it needs neither — the hypothesis queue already exists and deciding it is `person.merge`,
-D-089).
+D-089). From round 9: whether a person may hold `unit_participation.manage` or `position.assign` over
+themselves (no — there is no self-scoped form of either and none will be added, D-095); whether anything
+below the root needs a gate of its own (it does not — the fee is at the root and `unit_participation.manage`
+is everywhere else, and the unit type carries no restriction at all, D-095); whether an appointment should
+also write a role assignment (it should not — the derivation belongs on a group's filling rule, D-091,
+which is a different question from whether a *role* may be held by a rule, and that one is still open as
+F-12); and whether group membership needs a rule against nesting now that groups nest (it does not — a
+cycle is refused when the edge is saved, which is a write path with no permission of its own, D-091).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -17,18 +17,34 @@ Nothing about being a child, an adult, a counselor, a parent, or a member is a
 property of a human being. Each of those is either
 
 - an **event or period** — membership, guardianship, holding a position; or
-- a **derived** fact — "child" means "has an open membership of type `child`",
-  "parent" means "is the subject of a guardianship relation".
+- a **derived** fact — "child" means "a person whose recorded birth date makes them a minor *today*",
+  "parent" means "is one side of an active `guardianship` row".
+
+**There is no membership of type `child`, and there never was more than one membership type at all**
+([D-037](decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
+and membership is **ageless** — no floor, no ceiling, no age-out, no child→adult transition
+([D-038](decisions/decision-log.md#d-038--membership-is-ageless)). This list used to define "child" as
+*an open membership of type `child`*, which was wrong twice over: it named a type that does not exist and
+it made an age into an enrollment. Age is a fact about the person, and it matters where the law says it
+matters — guardianship, and the eligibility rules a position declares about itself — never in the
+membership row, and **no longer in anything a unit carries**: `org_unit_type.allows_minors` was removed
+with D-095, so no column anywhere says which units are for children.
 
 This matters because of a case you named explicitly: someone who was a member from
 September 1990 to June 2010, and again from October 2024 to the present. They were a
 *child member*, then nothing, then an *adult counselor*. That is one `person` row and
 **two `membership` rows**. A model that puts `is_member` or `member_type` on the person
 cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
-(The 1990–2010 membership is the *optimistic* half of that sentence: the legacy import creates
-participation only, since the corpus it reads carries no payment evidence at all, so that membership
-exists only where somebody recorded it on evidence — [D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money).
-"Who was in Pack 12 in 1998?" is answered by the participation row either way.)
+(The 1990–2010 membership is now the *reachable* half of that sentence rather than the optimistic one.
+The legacy corpus is **two exports** — people, with the period each was a member of the organization, and
+events, with who attended — and the people export **states membership periods**, so the import writes
+bounded `membership` rows, both ends dated and marked `data_confidence = 'low'`
+([D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+A period the export does not state still exists only where somebody recorded it on evidence, and an
+imported period never runs open-ended and is never inferred from attendance.
+**"Who was in Pack 12 in 1998?" is not answered either way**: neither export names a sub-unit, so a
+pack's roster before go-live is a thing a person types in, not a thing the import produced.)
 
 So there are five rules the data model obeys throughout:
 
@@ -36,7 +52,7 @@ So there are five rules the data model obeys throughout:
 |---|------|-------------|
 | 1 | Personhood is separate from participation | `person` holds identity only. No member flags. |
 | 2 | Participation is a period, not a boolean | `membership`, `unit_participation`, `guardianship`, `position_assignment` all carry `valid_from` / `valid_to`. |
-| 3 | Access is granted, never implied by identity | Being a parent does not by itself grant access to the child's data — a `guardianship_permission` row does. |
+| 3 | Access is granted, never implied by identity | Being a parent does not by itself grant access to the child's data — the `guardianship` row's `right_level` does, and `none` is a value it is allowed to hold ([D-074](decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)). |
 | 4 | Belonging to a sub-unit is not membership | There is **one** membership, at the organization. Sub-units hold participation records. |
 | 5 | Authority does not flow down the hierarchy | A unit is covered only if it exposes its scope — including the root, and including for reading. |
 
@@ -92,7 +108,7 @@ fees belong to the root in the first place.
 | [appendix/erd.md](appendix/erd.md) | Entity-relationship diagrams. |
 | [appendix/permission-catalog.md](appendix/permission-catalog.md) | Every permission code. |
 | [decisions/decision-log.md](decisions/decision-log.md) | Decisions taken, with rationale. |
-| [open-questions.md](open-questions.md) | Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: **section B, identity and history, is closed in full** — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus ([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)–[D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
+| [open-questions.md](open-questions.md) | Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: **section B, identity and history, is closed in full** — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus ([D-087](decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)–[D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)) — and **section C, organization, is closed with it** — the root's read into a sub-unit, a reused unit number, what a permission group is and what appointing writes, what the corpus names, and who may place a person in a unit ([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)–[D-096](decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)). **Closed sections are not empty ones**: what they closed stays readable, and the questions that moved out of them are elsewhere — F-12 for a rule-filled role, A-4 for the organizational year, and the composition power over a group in the catalog's §12. |
 
 ---
 
@@ -103,9 +119,21 @@ membership over time, organizational units, guardianship, events, and the author
 
 **Deliberately deferred** (referenced so the data model does not block them, not designed):
 fees and payment processing beyond the provisional shape in
-[data-model/07-finance.md](data-model/07-finance.md), communication/messaging, documents,
-reporting, and the API/UI layer. Each is listed in
+[data-model/07-finance.md](data-model/07-finance.md), documents,
+reporting, notifications, and the API/UI layer. Each is listed in
 [open-questions.md](open-questions.md) with the hooks already left for it.
+
+**Communication sits between the two lists, and the line is worth drawing rather than guessing.**
+This list used to name it flatly as undesigned, which stopped being true when its **shape** was decided:
+internal first, external channels are delivery rather than a product, everyone may send a direct message,
+`broadcast` is one ordinary scoped permission, and **the recipient chooses the channel**
+([D-077](decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)),
+with a direct message to a minor mirrored to its guardians and no sender-side age check anywhere
+([D-082](decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)).
+Its codes are in [appendix/permission-catalog.md](appendix/permission-catalog.md). **What is still
+undesigned is the module**: templates, opt-out granularity, retention, moderation — the Communication row
+of [open-questions.md](open-questions.md)'s section H. **Notifications stay genuinely undesigned** — the
+renewal window made them dated rather than status-driven, which is a design note, not a design.
 
 **Off this list, because the module it named does not exist:** *health records*. There is no health
 module waiting to be designed. [D-083](decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)

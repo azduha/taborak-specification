@@ -46,7 +46,10 @@ that matter:
   low-volume and long-lived. Mixing them makes both hard to reason about.
 - Channel 3 may target **a person or an audience** ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)) —
   "everyone", "all members", "the leaders of this unit". Channels 1 and 2 never do:
-  a role is held by a named person, and a guardianship is between two named people.
+  a role is held by a named person, and a guardianship is between two named people. **That is a
+  boundary, not an oversight** — whether a role may be held by a rule the way a group is is
+  [F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), and this
+  document treats the line as holding until someone answers it (§6.2).
 
 That said, `role_assignment` and `access_grant` **share a resolver and a scope model**, so
 the check logic is written once. See §6.
@@ -627,11 +630,14 @@ Points worth stressing:
   ([D-078](../decisions/decision-log.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)).
   `unit_ancestors()` must not appear anywhere in this path. See §2.
 - **A grant may name an audience instead of a person.** "Everyone", "all members", "the
-  leaders of this unit" — the grantee is resolved by a rule, the level and scope are resolved
-  exactly as for a personal grant. See §6.2.
+  leaders of this unit" — the grantee is resolved by a rule, a stored list, another group, or all
+  three at once; the level and scope are resolved exactly as for a personal grant. See §6.2.
 - **Effective permissions are never stored.** They are computed per request. A stored
   permission snapshot *will* drift from the grants that produced it — the only question is
-  how long before anyone notices.
+  how long before anyone notices. **What composition added is a second reason to keep the question
+  open**: the snapshot is also the only artefact that could ever answer *who could read this in
+  2023*, since the sets were never stored and the audit payload that recorded the change expires
+  (§6.2, [F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table)).
 - **Time is a parameter.** `at` defaults to now, but the resolver accepts a historical
   time. This enables "could this person have done this on that date?" — needed for auditing
   past actions, and free if built in from the start.
@@ -690,24 +696,98 @@ photographer, a parent helper who was never a member at all.
 - **`role.requires_membership` is now enforced**, not merely reported. Its meaning changed;
   see [data-model/05 §3](../data-model/05-authorization.md#3-role-and-role_permission).
 
-### 6.2 Audience grants
+### 6.2 Audiences — a rule, a list, and other groups
 
 A grant names a **person or an audience, never both**
-([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)):
+([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+An audience is the organization's **permission group**, and since
+[D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+there is **one kind of it, filled three ways**. Fields, rules and the evaluation order are in
+[data-model/05 §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people);
+what belongs here is why the shape changed.
 
-| Kind | How it resolves | Example |
-|---|---|---|
-| Built-in | A rule the resolver evaluates against current state | `everyone`, `all_members`, `unit:<id>:participants`, `unit:<id>:leaders` |
-| Named group | A stored membership list someone administers | "the summer camp kitchen crew" |
+| Arm | Optional? | Holds | Who it brings in |
+|---|---|---|---|
+| **Filling rule** | yes | a `resolver_key` and a `scope_parameter` | `everyone`, `all_members`, a unit's participants, a unit's leaders, a person's guardians |
+| **Manual list** | yes | `audience_member` rows | whoever somebody added — "the summer camp kitchen crew" |
+| **Inclusion** | yes | `audience_include` rows naming other groups | everyone in those groups, and whatever *they* include |
 
-**Built-in audiences are rules, not lists**, and that is the whole point: a new pack member
-automatically receives what the pack was granted, with no rows to maintain and no
-stale-group problem. Named groups are the escape hatch, and they carry that problem
-knowingly — nobody ever removes anyone from a group.
+Membership on a date is the **union of whichever arms the group has**. Any single arm is legal, and
+the ordinary case is two at once: *the kitchen crew, plus whoever leads this pack*.
+
+**The withdrawn rule, kept where it was refused.** A group used to be a rule **xor** a list —
+`audience.kind` was `builtin` or `group`, and a member row on a rule *"would look authoritative"*.
+That prose survived three rounds of review unexamined while doing real work: it is the reason the
+sentence above needed **two grants in two places**, which is how one of them gets forgotten. It is
+withdrawn, and the objection behind it — a row that looks like a fact when it is only an
+input — is answered by the editor showing which arm each person arrived through, not by forbidding
+the arm.
+
+**A group may include another group. This was refused outright, and the refusal is withdrawn with
+its reason answered where the reason belongs.** The old line read: *"They do not nest. An audience
+cannot contain another audience — that is how you get evaluation cycles and answers nobody can
+predict."* Cycles are a real hazard; **what changed is where the cycle gets caught.** Inclusion
+edges are stored rows, so a save can be refused by walking the edges it would create — the cycle is
+**decidable when the edge is saved**, exactly as
+[D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+answered the identical argument about merge chains one round earlier: *when a rule was written to
+prevent a hard case, the first question is whether the hard case can be refused at the write rather
+than defended against at the read.*
+
+**And the guard is deliberately not a hop limit in the read path**, because a hop limit does not
+solve the problem — it *hides* it. A cycle met by a depth cap resolves to the first N hops and
+then stops, so a group's membership quietly depends on where the walk happened to begin, and the
+cycle itself stays in the data, free to resolve differently under the next grant aimed at it.
+Refusing at the write means no cycle is ever stored, and evaluation stays an ordinary lookup with
+no limit and no guess in it. A length bound on inclusion chains does survive, as **a stored
+parameter** in the shape [D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)
+sets the renewal window — a limit on *how tall a configuration may get*, reviewable and changeable,
+not a safety net under a broken graph.
+
+**Evaluation fails closed.** A group that cannot be evaluated — a chain past the bound, a rule that
+errors — **reaches nobody**. This is the direction this model fails in everywhere else: default deny
+(§6 step 4), deny absolute (step 0), an audience whose rule was quietly wrong a grant that reaches
+nobody rather than a grant that reaches everyone.
+
+**The cost, and it lands on the editor rather than on the resolver.** A grant's reach stops being
+visible in the row that grants it. **The editor must show the set a grant actually reaches,
+expanded** — the people, not the group's name — because composition turns a three-deep inclusion
+into a silent widening, and `everyone` is a **legal** member of the graph: nothing in the union rule
+stops a group from including a group that includes a group that includes the whole world. That
+outcome is already grantable directly, with a mark on the row; D-091 makes it grantable by three
+edits and a save, in three places, none of which is a permission grant at all. The mitigation is
+not a rule about which groups may include which — it is that the person writing the grant sees who
+it lands on.
+
+**"Who could read this in 2023?" now has one fewer answer.** Membership of a rule group has never
+been stored, and composition widens how much of the permission answer is *recomputed rather than
+recorded*: a grant that once named three people now names a chain of sets whose membership depends on
+positions, participations and memberships **as they are today**. The audit trail used to hold the
+change that made it true, and [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+empties those payloads after 24 months. So after two years the question is answered by re-running
+rules against state that has itself moved on, and it is answered with today's confidence.
+**[F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table) is the route
+back** — a materialized `effective_permission` snapshot kept *as history* rather than as a cache —
+which until this round looked like a performance question.
+
+**Roles are not filled this way, and that is a decision rather than an omission.** A group can be
+the grantee of a permission; it cannot be the holder of a role, because `role_assignment` is the
+office record that answers "who was treasurer of Pack 12 in 2023" and a derived holder list has
+nothing to date. That extension is
+[F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), deliberately left
+open; see also [04-organization-structure.md §4](04-organization-structure.md#4-positions), where
+the same refusal ends an earlier convenience workflow.
 
 Audiences are evaluated **inside tiers a–c**, through the same `grant_satisfies()` predicate
 personal grants use. They do not add a channel and they do not change the level or the scope
-resolution; they change only how "is this grant addressed to me?" is answered.
+resolution; they change only how "is this grant addressed to me?" is answered — and for a group
+with an inclusion arm, that question is answered by asking it of the groups named there too.
+
+**Built-in rules are still rules, not lists**, and that half of the old argument stands untouched:
+a new pack member automatically receives what the pack was granted, with no rows to maintain and no
+stale-group problem. The manual arm is the escape hatch, and it carries that problem knowingly —
+nobody ever removes anyone from a group. What D-091 changes is that choosing between them stopped
+being a choice about the *kind* of group.
 
 ### Permission → required level mapping
 
@@ -806,7 +886,11 @@ is unsafe — use now() and a short TTL instead.
 **Invalidate on:**
 
 - any write to `role_assignment`, `access_grant`, `guardianship_permission`,
-  `role_permission`, `audience`, `audience_member`
+  `role_permission`, `audience`, `audience_member`, **`audience_include`** — the last one being the
+  case composition adds: **an edit to one group changes the answer for every grant aimed at any
+  group that includes it**, transitively, so invalidation cannot be scoped to the group that was
+  touched. A grant whose reach came to include this person through a newly-saved edge is a permission
+  change that touches no row about them
 - **every membership transition, including the yearly expiry sweep** — the gate in §6.1 means
   a lapse changes the resolver's answer for a whole person, so invalidate **by `person_id`,
   not by scope**. The sweep touches everyone at once, so this must be a bulk operation the
@@ -870,6 +954,8 @@ Stated explicitly, because each is a common and expensive mistake:
 | Checking membership type in code (`if type == 'adult'`) | Rules change; the check is invisible and untestable | A permission, granted to a role. There is one membership type now, so this is doubly wrong |
 | Deriving access from "is a member" without a role | Being a member is not a capability; it is a fact | The membership **gate** (§6.1) conditions roles — it never grants anything |
 | A parent-unit actor writing a `scope_exposure` covering a sub-unit | A sub-unit's records are not the root's records. A sanctioned bulk shortcut did exist for this and was removed (D-045) | The sub-unit exposes its own scope, or an **audience** grant covers the "tell everyone" case (§6.2) |
+| A grant editor that shows a group's **name** instead of the people it reaches | Composition makes a three-deep inclusion a silent widening, and `everyone` is a legal member of the graph — the row says "the crew", the grant reaches the world | Expand the resolved set in the editor, at the moment of granting — §6.2 |
+| A cycle in the group graph, caught at read time by a depth cap | A hop limit does not refuse the cycle, it truncates the answer differently per call and leaves the cycle stored | Refuse the inclusion edge when it is saved — §6.2 |
 | Role → permission mapping hardcoded in the app | Cannot be reviewed by the organization, cannot change without deployment | `role_permission` table |
 | Deriving access from guardianship without a right | Authorization by identity is unauditable and unsafe | The explicit `right_level` on the `guardianship` row |
 | Deleting a grant to revoke it | Loses the audit trail of what was revoked when | `valid_to` + `revoked_at` |
@@ -889,13 +975,19 @@ Stated explicitly, because each is a common and expensive mistake:
   a deliberate answer per role rather than a default (§4, §6.1).
 - Whether role assignments must have end dates (§4). This matters more now — an open-ended
   role held by a lapsed member is a "dormant authority" case (§6.1).
-- May the root **read** what happens in its sub-units, or must each sub-unit expose its scope?
-  The organization-wide-role problem largely dissolved
-  ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)),
-  because the root owns the registry and the fees; what remains is this narrower question
-  (§2.4).
+- **Who may compose a group?** D-091 made an inclusion edge a widening: a group that includes
+  `everyone` hands a grant its whole world. The catalog lists `audience.manage` for creating and
+  populating groups and is **silent on the rule arm and the inclusion arm**, so today the
+  composition power sits with whoever can edit a group at all
+  ([appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues)). No new
+  code was invented for this — the gap is the finding.
+- **May a role be held by a rule, as a group is?** D-091 refused to decide it, because
+  `role_assignment` is the office record and a derived holder list cannot answer "who was treasurer
+  in 2023". Open as
+  [F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), and the same
+  question as F-7 seen from the business side (§6.2).
 - Which built-in audiences are needed, and whether the parameterised ones are seeded or
-  created on demand (§6.2).
+  created on demand (§6.2, [F-5](../open-questions.md#f-5--which-built-in-audiences-are-needed-beyond-the-four-now-named)).
 - The cache TTL under the membership gate (§8) — a policy choice about how long a lapsed
   member keeps access.
 - Whether the membership gate should also apply to **item grants**, or only to roles (§6.1).
@@ -904,7 +996,12 @@ Stated explicitly, because each is a common and expensive mistake:
 
 **Resolved and no longer open**, kept visible so the reasoning survives: whether any
 permission is conditioned on membership being current (yes, with three carve-outs — D-039,
-§6.1); polymorphic `scope_id` (confirmed — §5, F-2); and the bulk exposure tool (removed —
-D-045, §2.5).
+§6.1); polymorphic `scope_id` (confirmed — §5, F-2); the bulk exposure tool (removed —
+D-045, §2.5); whether the root may **read** what happens in its sub-units (no — `scope_exposure` is
+the only crossing, and no reporting channel outside the permission model is built —
+[D-049](../decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing),
+[C-1](../open-questions.md#c-1--closed--the-root-may-not-read-into-its-sub-units), §2.4); and whether
+a group may be a rule *and* a list, or contain another group (both yes — D-091, §6.2, with the
+cycle refused when the edge is saved rather than defended against at the read).
 
 All tracked in [../open-questions.md](../open-questions.md).

@@ -292,9 +292,43 @@ account exists to be found.
 
 **Resolving the claim is not a new permission and not a new queue.** A reviewer confirms or rejects the
 hypothesis, which is `person.merge` and already sits with `identity_reviewer`; confirming it merges the
-two person rows under §9's rules and the pending account goes with the row that was absorbed, rejecting it
-lifts the gate and the account activates. **No new code is involved on either side**, for the same reason
-§9 gives for reversal needing none: undoing and correcting an identity are one act by one named human.
+two person rows under §9's rules, rejecting it lifts the gate and the account activates. **No new code is
+involved on either side**, for the same reason §9 gives for reversal needing none: undoing and correcting
+an identity are one act by one named human.
+
+**Confirming the claim closes the placeholder account; it does not move it.** This is the part of the flow
+that looks obvious and is wrong, so the wrong version is written out first: the sign-up's person row is
+absorbed, the sign-up's account still points at it, so repoint `account.person_id` at the survivor and the
+applicant keeps the login they were building. **That write is refused by §4's own rule** — one live account
+per person, unique over the pending, active and suspended rows — for the common case where the survivor
+already has an account; and in the case where it is *not* refused it quietly makes a login older than the
+person's own, carrying a consent timestamp, a verification and a credential history that belong to an act
+the survivor never performed. **The rule is instead, in this order:**
+
+1. **Close the placeholder account** — `status` becomes `closed`, with the reason naming the hypothesis
+   that closed it. Closed rows are outside the uniqueness rule (§4), which is exactly why closing works
+   where repointing does not, and the row survives as the record that someone applied.
+2. **Move the credential, not the account.** The typed address was verified as far as it ever was, and
+   throwing it away punishes the one person in this flow who did the right thing. It is added to the
+   survivor's live account as an `account_credential` row (§5) — credentials are many-per-account already,
+   which is why this is an addition rather than an exception. **Where that account has no live account to
+   receive it**, the survivor is given one, carrying the moved credential and the placeholder's
+   `verified_at`: the address was verified, and making somebody click a second link to prove a claim a
+   reviewer has already confirmed is bureaucracy with a security costume.
+3. **A credential of the same type already live on the survivor's account is not overwritten.** Two
+   password rows do not both become current; the arriving one is left unverified and a `field_conflict`
+   (§10's queue) is raised for the person to sort out, because this is the one branch where the system
+   cannot tell whether it is looking at the same address typed twice or at two different claims to one
+   mailbox.
+4. **One audit entry names both accounts, both persons and the hypothesis**, and it is written by the same
+   transaction that closes the row. Not two entries, and not the merge's own entry doing double duty: the
+   merge says two people became one, and this says a login changed hands, which is the question whoever
+   reverses the merge (§9) will actually be asking.
+
+**What this costs is the applicant's session, and it is worth naming.** Someone mid-sign-up whose claim is
+confirmed does not continue in the account they were filling in; they log in to the one they already had.
+That is one extra login against the alternative of an account that belongs to two people's history at
+once, and the holding message (§4 above) is where they are told it.
 Two costs come with it and both are stated rather than absorbed. **A genuinely new person who happens to match now
 waits for a human**, so the blocking condition carries an age check shaped like `field_conflict`'s thirty
 days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it

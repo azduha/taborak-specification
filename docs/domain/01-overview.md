@@ -13,6 +13,12 @@ and weekly meetings) with:
 
 - **Child members** — youth participants, typically organized into units.
 - **Adult members** — counselors/leaders who run units and hold positions.
+
+*(These two are how the organization talks about people. They are **not** two kinds of membership: there
+is one membership type and it is ageless, so the sentence "is this person a child?" is a question about
+`person.birth_date` and today's date — see [§2](#2-actors) and
+[D-038](../decisions/decision-log.md#d-038--membership-is-ageless). Nothing downstream keys off the
+difference except guardianship, position eligibility, and the mirroring rule for messages.)*
 - **Caretakers** — parents and legal guardians of child members. They may or may not
   be members themselves.
 - **Non-member supporters** — people who interact with the organization (donors,
@@ -33,20 +39,32 @@ treatment is in [02-actors.md](02-actors.md); the summary:
 |-------|-------------|-----------------|--------|
 | Anonymous visitor | no | no | see public info, submit a registration or a membership request |
 | Registered person | yes | no | maintain own profile, submit/renew a request, view own history |
-| Member (child) | yes | yes | own profile, unit membership, event signups, own history |
-| Member (adult) | yes | yes | as above, plus whatever their role assignments permit |
+| Member | yes | yes | own profile, unit participation, event signups, own history — **the same actor whether or not `birth_date` makes them a minor today** |
 | Caretaker | yes | maybe | view/act on their dependents — **only** as explicitly granted |
 | Staff / registrar | yes | maybe | organization-wide administrative permissions |
-| Historical record | no | **no** — participation rows only | nothing. Data only, never a login. |
+| Historical record | no | **a bounded period, if the export states one** | nothing. Data only, never a login. |
 
-The last row matters twice. Imported 1994 rosters create `person` rows with **no account**, and must
-never be blocked from import by a "users must have email addresses" rule. And they create **no
-`membership` either**: a roster evidences presence in a unit, and the corpus carries no payment
-evidence, so an imported person's history is `unit_participation` and a membership row appears only
-where a human recorded one on evidence
-([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
-The earlier version of this table said "yes (closed)" in that cell, which was the membership-per-roster
-reflex the import rule exists to stop.
+**The two member rows this table used to carry — "Member (child)" and "Member (adult)" — were one row
+wearing two hats.** There is one membership type ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person))
+and it is ageless ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)), so the difference
+between them was always `person.birth_date` against today's date, which changes on its own and is a fact
+about a person rather than a kind of account. What a minor genuinely cannot do on their own is a
+guardianship question, not an actor type
+([02-actors.md](02-actors.md)).
+
+The last row matters twice, and its answer changed in round 9. Imported rows create `person` rows with
+**no account**, and must never be blocked from import by a "users must have email addresses" rule. They
+also create **`membership` rows now** — bounded ones, both ends dated, only for the periods the people
+export states, `data_confidence = 'low'` and marked with the batch that wrote them
+([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+**What the earlier answer got right and still binds**: it refused to make a membership out of an
+attendance row, and that refusal survives as the rule that an imported period is never open-ended and
+never inferred from presence
+([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money));
+and no sub-unit row is ever imported, because neither export names a sub-unit, so "who was in Pack 12 in
+1998?" has no system answer at go-live
+([03-identity-and-legacy.md §7](03-identity-and-legacy.md#7-legacy-import-pipeline)).
 
 ---
 

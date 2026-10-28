@@ -705,18 +705,29 @@ everyone" or "let the whole group see it" is expressed — the case that surface
 question of exposing a scope was answered with *"they set the permissions to that event for
 'everyone' or a group of people."*
 
+**There is one kind of audience, and it is filled three ways**
+([D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+A group has an optional **rule arm** (a `resolver_key` and its `scope_parameter`), an optional
+**manual arm** (`audience_member` rows) and an optional **inclusion arm** (`audience_include` rows naming
+other groups), and **its membership on a date is the union of whichever arms it has**. Any one arm alone
+is legal, and the ordinary case is two at once — *the kitchen crew, plus whoever leads this pack* — which
+is precisely what the withdrawn `kind` rule made impossible at the cost of two grants in two places.
+Why the shape changed, and what it costs, is
+[../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups);
+this section states the fields, the rules, and which layer carries them.
+
 **Fields** (`audience`)
 
 | Field | Kind | Notes |
 |---|---|---|
 | `id` | integer identity | Surrogate key. |
-| `code` | text, optional, unique where set | Set for **built-in** audiences; absent for named groups. |
+| `code` | text, optional, unique where set | Set on the **seeded** audiences (`everyone`, `all_members`, …), because the seed and the resolver need a stable name to point at. A hand-made group may carry one too, as a stable handle for a report; the old rule that a code belonged to built-ins alone went with `kind`. |
 | `name` | text, required | |
 | `description` | text, optional | |
-| `kind` | enum: `builtin`, `group` | Required. `builtin` — evaluated as a **rule** by the resolver; no membership rows exist. `group` — a stored, administered list in `audience_member`. |
-| `resolver_key` | text, optional | For built-ins, which rule the resolver applies. Set exactly when `kind` is `builtin`. The values: `everyone` — any person, including non-members and the public; `all_members` — anyone with a current membership; `unit_participants` — participants of the unit in `scope_parameter`; `unit_leaders` — holders of a live assignment to a leadership **position** in that unit; `guardians_of` — active guardians of the person in `scope_parameter`. |
-| `scope_parameter` | integer, optional | For the parameterised built-ins: which unit, or which person. |
-| `is_system` | boolean | Default false. |
+| `resolver_key` | text, optional | **The rule arm.** Absent means the group simply has no rule arm; it does not make the group a different kind of thing. The values: `everyone` — any person, including non-members and the public; `all_members` — anyone with a current membership; `unit_participants` — participants of the unit in `scope_parameter`; `unit_leaders` — holders of a live assignment to a leadership **position** in that unit; `guardians_of` — active guardians of the person in `scope_parameter`. |
+| `scope_parameter` | integer, optional | For the parameterised rules: which unit, or which person. Meaningless without a `resolver_key`, and integrity check 12 (§11) reads it that way. |
+| `include_depth_limit` | integer, required, defaults to 3 | **How tall this group's inclusion tree may get.** The bound the write-time guard in `audience_include` reads, and it lives on the row for the reason D-048 gives for the renewal window: it is a number the organization may move, moving it must not need a release, and **a screen or a job that contains the literal `3` has quietly turned a parameter back into a constant**. It is a limit on how tall a *configuration* may get — not a safety net under a broken graph, which is why nothing in the read path consults it (§*Inclusion*). |
+| `is_system` | boolean | Default false. Set on the seeded rows so an editor can refuse to delete one. |
 | `valid_from` | date, optional | |
 | `valid_to` | date, optional | Absent = open. |
 | `created_at` | timestamp, audit time | |
@@ -724,9 +735,19 @@ question of exposing a scope was answered with *"they set the permissions to tha
 
 **Rules** (`audience`)
 
-- `kind` is `builtin` exactly when `resolver_key` is set; the two agree in both directions.
-- A `group` has no `code`. Codes belong to built-ins.
+- **Superseded, and the sentence is kept because three rounds of prose rest on it:** `kind` was required,
+  it was `builtin` or `group`, and it was `builtin` exactly when `resolver_key` was set, the two agreeing
+  in both directions. **`kind` no longer exists** and no column replaces it
+  ([D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group));
+  whether a group has a rule is now answered by asking whether `resolver_key` is set, which is the fact
+  the enum was redundantly re-stating.
+- **A group with no arms at all is legal and reaches nobody.** A freshly created group with no rule, no
+  members and no inclusions is an empty set, not a misconfiguration; it is how a group gets built one arm
+  at a time. What is *not* legal is a grant aimed at one being reported as granting something — which is
+  the editor's job (§*The cost*), not a constraint's.
 - `code` is unique among the rows that have one.
+- `scope_parameter` requires a `resolver_key`. The pair is one arm and cannot be split.
+- Where both ends of the period are set, `valid_to` is later than `valid_from`.
 
 **Fields** (`audience_member`)
 
@@ -746,29 +767,93 @@ question of exposing a scope was answered with *"they set the permissions to tha
 - **No overlapping memberships.** A person may not hold two rows for the same audience whose
   periods overlap, counted over **all** rows and not only the open ones. Periods are half-open,
   so a membership ending on a day and another beginning that same day do not collide.
-- Only named groups have members. A built-in audience is a rule, so a row here would be
-  meaningless and, worse, would look authoritative — and nothing about the row itself gives it
-  away. Integrity check 12 (§11) is what finds them.
+- **A member row is legal on any audience, including one with a rule** — and this is a reversal, not a
+  loosening. The rule this bullet replaces read *"only named groups have members. A built-in audience is
+  a rule, so a row here would be meaningless and, worse, would look authoritative"*, and D-091 withdrew it
+  together with `kind`. **The objection it raised was real and is answered rather than overruled:** a row
+  that looks like a fact when it is only an input to a union is exactly the thing this corpus refuses to
+  keep, so the answer is that **the editor must show which arm each person arrived through** — the rule,
+  the list, or an inclusion — and a person present twice over is shown once, attributed. What the old rule
+  produced instead was two grants in two places, which is how one of them gets forgotten.
+- **A member row on a seeded system audience is still refused.** `is_system` rows are the resolver's own
+  vocabulary; adding a person to `everyone` is not a widening, it is a category error, and it is the one
+  shape integrity check 12 (§11) still hunts.
 
-### Built-in audiences are rules, not lists — and that is the whole point
+**Fields** (`audience_include`)
 
-The distinction is the load-bearing one:
-
-| | Built-in audience | Named group |
+| Field | Kind | Notes |
 |---|---|---|
-| **How evaluated** | A rule the resolver applies at check time | A stored list of `audience_member` rows |
-| **When a person joins the unit** | They immediately receive what the unit granted — **automatically** | Nothing happens. Someone must add them. |
-| **Maintenance** | None | The classic stale-group problem: nobody ever removes anyone |
-| **Examples** | `everyone`, `all_members`, the participants of unit X, the guardians of person Y | "the summer camp kitchen crew" |
+| `id` | integer identity | Surrogate key. |
+| `audience_id` | reference to `audience`, required | **The including group** — the one whose membership grows. |
+| `included_audience_id` | reference to `audience`, required | **The group being included**, and with it everything *that* group includes. |
+| `valid_from` | date, required | Default today. |
+| `valid_to` | date, optional | Absent = open. **An inclusion that has ended stops contributing on `valid_to`**; the included group itself is untouched, which is the whole point of the edge being a row rather than a column. |
+| `added_by` | reference to person, required | **Required here where `audience_member.added_by` is optional.** An inclusion is not a name on a list, it is a decision about how far a grant reaches, and the person who saved it is the answer to the question that gets asked afterwards. |
+| `note` | text, optional | Why. Cheap to write, and the only place the *reason* for a widening survives. |
+| `created_at` | timestamp, audit time | |
 
-**Prefer built-ins.** A pack that grants `view` on its events to
-`unit_participants` of itself gets the correct behaviour forever: next year's new members
-inherit it, and people who leave stop being covered, with no rows to maintain. The same grant
-to a *named group* silently rots the moment the roster changes.
+**Rules** (`audience_include`)
 
-Named groups exist because some sets genuinely are ad hoc — a camp kitchen crew is not a unit
-and is not derivable from anything. They are the escape hatch, and they carry their known
-cost.
+- `valid_to` is either absent or strictly after `valid_from`.
+- **No self-edge.** A group may not include itself, directly — `audience_id` and
+  `included_audience_id` must differ. This half is a plain check on the row and a migration can state it
+  directly.
+- **`uq_audience_include_acyclic` is this rule's name, and the cycle is refused when the edge is saved,
+  not in the read path.** Enforced inside the transaction that writes the edge, in this order:
+  1. Refuse if the two ids are equal.
+  2. Walk the **stored, live** inclusion edges *from `included_audience_id` outward*, and refuse if
+     `audience_id` appears anywhere in that walk — that is exactly the case in which saving this edge
+     closes a loop.
+  3. Refuse if the walk would make the chain taller than the **including group's**
+     `include_depth_limit`, counting the edge being saved.
+  4. Otherwise save, and audit the row like any other write to this table (§2's obligation).
+  **Application layer, and the layer has to be said out loud:** the walk spans rows rather than columns of
+  one row, which is shape 3 of
+  [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those), so the
+  migration cannot emit it and the write path must carry it — with integrity check 20 (§11) asserting in CI
+  that the walk exists at all, in the style of checks 14 and 15.
+- **Why the guard is not a hop limit in the read path**, since a hop limit is the obvious answer and it is
+  the wrong one. A cycle met by a depth cap resolves to the first N hops and then stops, so **a group's
+  membership quietly depends on where the walk happened to begin**, and the cycle itself stays in the data,
+  free to resolve differently under the next grant aimed at it. Refusing at the write means no cycle is
+  ever stored, and evaluation stays an ordinary lookup with no limit and no guess in it. This is D-087's
+  answer to the identical argument about merge chains, one round earlier and one table away: *when a rule
+  was written to prevent a hard case, the first question is whether the hard case can be refused at the
+  write rather than defended against at the read.* **What the two chains still disagree about is kept
+  disagreeing on purpose:** merge resolution has **no** length bound at all (D-087 refuses to cap a person's
+  merge history, because a bound there truncates the answer to "who is this person"), while an inclusion
+  chain is a *configuration* somebody built and a bound on it is a reviewable question — which is why the
+  bound is a stored column read from the row (D-048's posture) rather than a constant, and why a chain that
+  exceeds it is refused at save rather than truncated at check time.
+- **No duplicate live edge.** At most one open row per (`audience_id`, `included_audience_id`) pair —
+  conditional uniqueness over the open rows, the shape
+  [00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now) says a migration must emit by
+  hand. A second identical edge would not widen anything; it would only make the graph lie about how many
+  decisions it took.
+
+### The three arms, and what each one costs
+
+The distinction that used to be load-bearing — built-in *versus* named, rule *xor* list — is gone, and
+what remains worth comparing is the cost of each arm:
+
+| | The rule arm | The manual arm | The inclusion arm |
+|---|---|---|---|
+| **How evaluated** | A rule the resolver applies at check time | Stored `audience_member` rows | Stored `audience_include` edges, walked transitively |
+| **When a person joins the unit** | They immediately receive what the unit granted — **automatically** | Nothing happens. Someone must add them. | Nothing happens, unless what they joined is a group someone included |
+| **Maintenance** | None | The classic stale-group problem: nobody ever removes anyone | Nobody ever *removes an inclusion either*, and one edge widens every grant aimed at the group |
+| **Membership stored?** | No | Yes | The edges yes, the resulting people no |
+| **Examples** | `everyone`, `all_members`, the participants of unit X, the guardians of person Y | "the summer camp kitchen crew" | "the troop's leaders group, plus the kitchen crew" |
+
+**Prefer a rule where one exists.** A pack that grants `view` on its events to `unit_participants` of
+itself gets the correct behaviour forever: next year's new members inherit it, and people who leave stop
+being covered, with no rows to maintain. The same grant to a manually-filled group silently rots the moment
+the roster changes. **That half of the old argument survives D-091 untouched** — what changed is that
+choosing between them stopped being a choice about the *kind* of group, so a group may hold the rule and
+the two names that the rule cannot reach, in one row, and be one grant.
+
+The manual arm exists because some sets genuinely are ad hoc — a camp kitchen crew is not a unit and is not
+derivable from anything. The inclusion arm exists because those ad hoc sets get composed. Both carry their
+known cost, and the inclusion arm's cost is the one that arrives silently (§*The cost of composition*).
 
 ### Evaluation
 
@@ -788,48 +873,64 @@ on a single row, tested together — their order carries no meaning:
    grant's level ranks at least as high as the level that row requires.
 7. `person_in_audience()` puts the person in that audience on the checked date.
 
-`person_in_audience()` is where the built-in rules live:
-
-The rule the resolver applies, in this order:
+`person_in_audience()` is where the arms live. **Since D-091 it answers one question — is this person in
+the union of this group's arms on this date — and the order below is an evaluation order, not a precedence:
+every arm is evaluated and none of them can shadow another.**
 
 1. The audience itself must not have ended — no `valid_to`, or a `valid_to` after the checked
-   date. An ended audience covers nobody, of whatever kind.
-2. `everyone` — always true.
-3. `all_members` — the person has a current membership.
-4. `unit_participants` — the person has a unit participation row for the unit named in
-   `scope_parameter`, covering the checked date.
-5. `unit_leaders` — the person holds a **position assignment** at the unit named in
-   `scope_parameter`, live on the checked date, **to a position marked `is_leadership`**.
-   **Corrected in round 6, and the correction is the interesting part.** This rule used to ask
-   for a *role* assignment "of a role marked `is_leadership`" — and no such flag is on `role`.
-   `is_leadership` lives on `position`
-   ([02-organization.md §7](02-organization.md#7-position-and-position_assignment)), where it does
-   something else again:
-   it exists "only so a workflow can offer to create both at once". **The fix cannot be to delete
-   the condition**, because then `unit_leaders` would match anyone holding any assignment at the
-   unit — a member of the `unit_participants` audience by another name, and an audience whose name
-   lies about its membership is worse than a broad one. **Nor can the fix be to add the flag to
-   `role`**, because a role is deliberately position-independent and organization-reusable: a
-   person is a leader *of a unit*, which is exactly what a position assignment records and exactly
-   what a role does not.
-   **This does not contradict "position is not authority"**
-   ([D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity),
-   restated in D-033):
-   audience membership is not authority, it is a test of who one existing grant reaches. Being
-   elected troop leader still confers nothing until someone grants something to `unit_leaders`.
-   **Note what depends on this and was therefore quietly broken.** Audiences of this kind are
-   created per unit that needs one (§12), and every grant aimed at one was **inert**: the rule
-   matched no person, so the authority was configured, visible in the editor as granted, and
-   reached nobody. It failed closed, which is the least noisy way for a permission rule to be
-   wrong — nothing broke, which is exactly why nobody noticed.
-6. `guardians_of` — the person is the guardian of the person named in `scope_parameter`, under a
-   guardianship covering the checked date. A lapsed membership does not remove a guardian, but an
-   **ended** guardianship does.
-7. Anything else — a named group: the person has an `audience_member` row for this audience
-   covering the checked date.
-
-Branch 7 is the fallback: anything whose `resolver_key` is absent, or matches no rule above, is
-read as a stored group membership.
+   date. An ended audience covers nobody, **and this is the one test that gates all three arms**: an
+   ended group contributes nobody through its rule, its list or its inclusions, because it is the group
+   that has ended and not one of its arms.
+2. **The rule arm, if `resolver_key` is set** — whichever of these the key names:
+   1. `everyone` — always true.
+   2. `all_members` — the person has a current membership.
+   3. `unit_participants` — the person has a unit participation row for the unit named in
+      `scope_parameter`, covering the checked date.
+   4. `unit_leaders` — the person holds a **position assignment** at the unit named in
+      `scope_parameter`, live on the checked date, **to a position marked `is_leadership`**.
+      **Corrected in round 6, and the correction is the interesting part.** This rule used to ask
+      for a *role* assignment "of a role marked `is_leadership`" — and no such flag is on `role`.
+      `is_leadership` lives on `position`
+      ([02-organization.md §7](02-organization.md#7-position-and-position_assignment)), where it does
+      something else again:
+      it exists "only so a workflow can offer to create both at once". **The fix cannot be to delete
+      the condition**, because then `unit_leaders` would match anyone holding any assignment at the
+      unit — a member of the `unit_participants` audience by another name, and an audience whose name
+      lies about its membership is worse than a broad one. **Nor can the fix be to add the flag to
+      `role`**, because a role is deliberately position-independent and organization-reusable: a
+      person is a leader *of a unit*, which is exactly what a position assignment records and exactly
+      what a role does not.
+      **This does not contradict "position is not authority"**
+      ([D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity),
+      restated in D-033):
+      audience membership is not authority, it is a test of who one existing grant reaches. Being
+      elected troop leader still confers nothing until someone grants something to `unit_leaders`.
+      **Note what depends on this and was therefore quietly broken.** Audiences of this kind are
+      created per unit that needs one (§12), and every grant aimed at one was **inert**: the rule
+      matched no person, so the authority was configured, visible in the editor as granted, and
+      reached nobody. It failed closed, which is the least noisy way for a permission rule to be
+      wrong — nothing broke, which is exactly why nobody noticed.
+   5. `guardians_of` — the person is the guardian of the person named in `scope_parameter`, under a
+      guardianship covering the checked date. A lapsed membership does not remove a guardian, but an
+      **ended** guardianship does.
+3. **The manual arm** — the person has an `audience_member` row for this audience covering the checked
+   date. Evaluated whether or not the group also has a rule, which is the reversal in one line.
+4. **The inclusion arm** — for every `audience_include` row on this audience that is live on the checked
+   date, ask this same question of the included group and take the union. The recursion is the ordinary
+   kind: no visited set, no hop counter, no depth cap consulted here, because the write-time rule
+   (`uq_audience_include_acyclic`) guarantees the walk terminates. **If that guarantee is ever broken — a
+   hand-fixed row, a restore from before the guard existed — the walk does not get clever, it fails
+   closed** (item 5).
+5. **Failure is denial, in every direction.** A group whose `resolver_key` names no rule, whose
+   `scope_parameter` names nothing, whose chain is taller than its bound, or whose walk does not
+   terminate **reaches nobody**. Nothing here falls back to "so it probably includes everyone", and
+   nothing here guesses the half of a chain it could resolve: **a group that cannot be evaluated is an
+   empty group**, which is the direction this model fails in everywhere else — default deny (§6 step 4),
+   deny absolute (step 0), and an audience whose rule was quietly wrong reaching nobody rather than
+   everybody. **This supersedes the old fallback**, which read *"anything whose `resolver_key` is absent,
+   or matches no rule above, is read as a stored group membership"*: an absent key meant a list, because a
+   group could only be one or the other. Now an absent key means no rule arm and nothing more, and a
+   present key that matches no rule is a **fault**, not a hint — it denies, and check 12 (§11) reports it.
 
 **Note `unit_leaders` reads the position tables without itself being an authority grant.** Membership in an audience confers nothing on its own — it only decides whether *this
 grant*, which someone already created deliberately, reaches this person. A leader does not
@@ -843,10 +944,52 @@ exactly what that grant says, on that item.
 - **They do not replace `guardianship_permission`.** `guardians_of` lets a unit open something
   to a child's guardians; it does not let a guardian edit the child's record. That remains the
   guardianship channel.
-- **They do not nest.** An audience cannot contain another audience — that is how you get
-  evaluation cycles and answers nobody can predict.
+- ~~**They do not nest.**~~ **Withdrawn by D-091, and the withdrawal is the point of the round.** The line
+  read *"an audience cannot contain another audience — that is how you get evaluation cycles and answers
+  nobody can predict"*, and both halves of its reason were real: cycles are a hazard, and unpredictable
+  answers are worse than narrow ones. **What was wrong was the treatment, not the diagnosis.** The cycle is
+  refused when the edge is saved (`uq_audience_include_acyclic`, §*Fields* (`audience_include`)), so no
+  cycle is ever stored for the read path to be surprised by; and the answers stay predictable because the
+  union is a set operation with no order in it and no limit consulted at check time. What the ban bought
+  was two grants in two places for *"the kitchen crew, plus whoever leads this pack"*.
 - **`everyone` is genuinely everyone**, including people with no account and no membership.
-  It is the right target for a public event page and the wrong one for anything else.
+  It is the right target for a public event page and the wrong one for anything else. **And it is now
+  reachable by inclusion**, which is the new part: nothing stops a group from including a group that
+  includes `everyone`. That is not a hole in the union rule — holding `everyone` directly is already legal
+  and already alarmed (check 7, §11) — it is that D-091 makes the same reach available through three
+  ordinary edits in three places, none of which is a permission grant. The mitigation is the editor's
+  expanded set below, not a rule about which groups may include which.
+- **A group cannot hold a role.** `role_assignment` names one person, and D-042's grantee pair was never
+  copied onto it: a derived holder list cannot answer "who was treasurer of Pack 12 in 2023", and an office
+  record that cannot answer that is not an office record. **That extension is
+  [F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), registered and
+  deliberately unanswered** — the change is one grantee pair on `role_assignment`, exactly the shape D-042
+  put on `access_grant`, and it wants a decision about the historical question before it wants an
+  implementation ([../domain/04-organization-structure.md §4](../domain/04-organization-structure.md#4-positions)
+  is where the same refusal ends an appointment workflow).
+
+### The cost of composition
+
+**A grant's reach stops being visible in the row that grants it.** Membership of a rule group has never
+been stored — D-042 accepted that, and these documents recommended it, because a rule does not rot the way a
+list does. D-091 **widens how much of the permission answer is recomputed rather than recorded**: a grant
+that once named three people now names a chain of sets whose membership depends on positions, participations
+and memberships as they are today. Two consequences follow and neither is the resolver's problem.
+
+- **The editor must show the set a grant actually reaches, expanded** — the people, not the group's name —
+  and it is a requirement on the screen rather than a nicety. Composition turns a three-deep inclusion into
+  a silent widening, and the person saving the grant is looking at one row that mentions no person at all.
+  **This is the same posture as the cache question in §10: the answer exists, it is just not stored, so
+  somewhere has to compute it in front of a human** — and here the human is the only control there is.
+- **"Who could read this in 2023?" now has one fewer answer.** The audit trail used to hold the change that
+  made it true, and [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+  empties those payloads after 24 months; the derived membership was never stored at all. After two years
+  the question is answered by re-running rules against state that has itself moved on, and it is answered
+  with today's confidence. **[F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table)
+  is the route back** — a materialized `effective_permission` snapshot kept *as history* rather than as a
+  cache — which until this round read as a performance question and is now the only thing that could make
+  the answerable unanswerable question answerable. Caching is §10's subject; **history is F-7's, and D-091
+  is the round that made the two need separating.**
 
 ---
 
@@ -1216,8 +1359,21 @@ The membership gate makes this harder than it was, and it must be built in from 
   **person**, fast.
 
 Invalidated on any write to `role_assignment`, `access_grant`, `guardianship_permission`,
-`role_permission`, `audience`, `audience_member`, a person merge — **and on every membership
-transition, including the yearly expiry sweep, which touches every member at once.**
+`role_permission`, `audience`, `audience_member`, **`audience_include`**, a person merge —
+**and on every membership transition, including the yearly expiry sweep, which touches every member at
+once.**
+
+**`audience_include` is on that list because D-091 made an inclusion edge a change to everybody above
+it.** Saving one edge widens — or, when it is closed, narrows — the membership of every group that
+includes the group named on the edge, transitively, and none of those groups' grants change a row of
+their own. **The invalidation therefore cannot be keyed on the rows that were written**: a cache entry for
+a grant aimed at group A is stale when an edge is saved three levels below A, and the code that saves the
+edge has no list of what depends on it. Two honest readings of that, and the model takes the second: either
+invalidation walks the inclusion graph upward, or **a write to this table invalidates the audience-derived
+entries wholesale** — which is what these documents assume, because the graph is small, the write is rare,
+and a partially-computed upward walk that misses one branch is precisely the silent staleness a cache is
+not allowed to have. It is listed here rather than left to whoever implements it for the same reason the
+membership sweep is: **the expensive invalidation is the one that is easy to decide is unnecessary.**
 
 ### Properties to verify when reviewing this function
 
@@ -1247,6 +1403,14 @@ transition, including the yearly expiry sweep, which touches every member at onc
 11. **Audience grants are evaluated through the same tiers as personal ones**, via
     `grant_satisfies()`. A grant to `everyone` and a grant to a named person differ only in
     how `grantee` is satisfied, never in how the level or the scope is resolved.
+12. **Audience evaluation is a union, and it fails closed.** All three arms of a group are evaluated and
+    none of them can shadow another; a group that cannot be evaluated — an unknown rule key, a dangling
+    parameter, a chain that does not terminate — **reaches nobody** rather than reaching the half it could
+    resolve (§8, `person_in_audience()` items 3–5). **The failure this property forbids is a helpful
+    implementation**: an audience walk that returns what it managed to reach when something downstream
+    breaks turns a broken group into a widening, and a widening is the only direction in which this
+    channel can do harm. Asserted by check 20 in §11, which is a CI assertion for that reason
+    (§8, `person_in_audience()` items 2–5).
 
 **A caveat on `p_scope_type IS NULL` in tier D.** An unscoped check ("can this person do
 X anywhere?") returns true if *any* assignment grants it. That is correct for UI decisions
@@ -1331,11 +1495,28 @@ worse, and it should not be described as equivalent to what it was.
 - **11. Exposures pointing at a dead assignment.** An open, unwithdrawn exposure naming an
   assignment that has already ended. Harmless — the resolver re-validates — but worth cleaning
   up.
-- **12. Member rows on a built-in audience.** Any `audience_member` row whose audience is
-  `builtin`. Built-ins are rules, not lists (§8); a stored member row is meaningless and would
-  look authoritative.
-- **13. Named groups with no members.** A live `group` audience with no open member row.
-  Probably abandoned; worth confirming.
+- **12. Audience rows that cannot be evaluated.** **Rewritten for D-091, which dissolved the check this
+  replaces.** It used to read *"member rows on a built-in audience: any `audience_member` row whose
+  audience is `builtin` — built-ins are rules, not lists, so a stored member row is meaningless and would
+  look authoritative"*, and every clause of it depended on an enum that no longer exists: there is no
+  `builtin`, member rows are legal on any group, and the row that used to be the finding is now the
+  feature. **What is left of its purpose is the shape that cannot be evaluated at all**, which is what the
+  resolver now fails closed on (§8, item 5 of `person_in_audience()`), and there are three of them: a group
+  whose `resolver_key` is set to a value no rule implements; a group with a `scope_parameter` and no
+  `resolver_key`, where the parameter points nowhere; and **a member row on a row carrying `is_system`**,
+  the seeded vocabulary where adding a person to `everyone` is a category error rather than a widening.
+  Zero expected on all three, and each is a fault rather than a style preference: **every grant aimed at
+  that group currently reaches nobody, invisibly.**
+- **13. Groups that reach nobody.** **This check's premise moved under D-091 and had to move with it.** It
+  read *"a live `group` audience with no open member row — probably abandoned"*, which is now simply the
+  wrong predicate: a group with no member rows may be a pure rule, or an inclusion, or a group being built
+  one arm at a time. **The finding is emptiness across all three arms** — a live group with no
+  `resolver_key`, no open `audience_member` row and no open `audience_include` edge — and even that is a
+  list to read rather than a failure, since it includes a group created five minutes ago. **What makes it
+  worth keeping is the grant join:** report the empty groups that an open `access_grant` names, because
+  that combination is a permission configured, visible in an editor as granted, and reaching nobody — the
+  same inert-authority shape §8 records for `unit_leaders` before its rule was corrected, and the one an
+  administrator cannot see from the grant screen.
 - **14. TIME-BOMB for the resolver: no permission path may inherit.** The requirement is that
   **no part of the permission path — resolver, grant lookup, guardianship lookup, or any view an
   authorization check reads — may walk the unit hierarchy.** A unit's ancestors are not in scope
@@ -1389,6 +1570,28 @@ worse, and it should not be described as equivalent to what it was.
   `admin` as an action is a re-created wildcard. **Zero rows expected.** The whole point of this
   entry is that the first version of the second half accepted five exceptions and the second
   version accepts one: an allow-list is where a wildcard comes back to life.
+- **20. TIME-BOMB for D-091: the inclusion graph must be refused at the write, not survived at the
+  read.** The same shape as 14 and 15, and it asserts a **guarantee rather than a set of rows**. Two
+  halves, and the second is the one that fails silently.
+  1. **A cycle must be unsaveable.** Build the inclusion graph from the live rows and assert it is acyclic,
+     then assert that saving an edge which would close a loop is refused — a test that tries to save
+     `A → B → A` and expects a refusal, not a test that counts cycles, because after the fact there are
+     none to count. **Zero cycles is the expected result of this check every single time it runs, and a
+     non-zero result is not bad data but a missing guard.**
+  2. **The read path must not grow a depth cap.** `person_in_audience()` must contain no hop counter, no
+     visited-set bail-out and no reference to `include_depth_limit`. This is the half that fails quietly:
+     a cycle met at read time is survivable-looking, so whoever meets one adds a cap, and the cap — not
+     the cycle — becomes the thing that decides who a grant reaches, with the answer varying by where the
+     walk started. **A build that passes check 20's first half and fails its second is a build where the
+     write guard has been removed and papered over.**
+
+**Why this is a CI assertion and not a report.** The guard is a walk over rows, which means it lives in
+application code and no migration can emit it
+([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those))
+— the same reason §8's `uq_audience_include_acyclic` needed its layer named out loud. **A guard that lives
+in code is deleted by a refactor and the data looks fine afterwards**, which is exactly the failure mode
+that made checks 14 and 15 CI assertions rather than reports, and the reason D-072's removal of the
+build-time greps is recorded as a weakening rather than a cleanup.
 
 Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
 
@@ -1397,10 +1600,11 @@ Checks 3, 7, 7b, 14 and 15 are the ones to wire to alerts.
   failure mode, and the one the membership gate introduces. Neither should ever grow quietly.
 - **Check 7 should email someone every time its result changes** — a new `system_admin` is
   either a planned change or an incident, and either way someone should know within the hour.
-- **Checks 14 and 15 are CI assertions, not reports.** They are the automated guards on the
-  two rules most likely to be "simplified" away when someone optimizes the resolver: the
-  no-inheritance rule and the membership gate. Both fail the build rather than silently
-  changing who can do what.
+- **Checks 14, 15 and 20 are CI assertions, not reports.** They are the automated guards on the
+  three rules most likely to be "simplified" away when someone optimizes the resolver: the
+  no-inheritance rule, the membership gate, and the refusal of an inclusion cycle at the write. All
+  three fail the build rather than silently changing who can do what, and all three live in code
+  rather than in the schema, which is why none of them can be a migration.
 - **Check 9 catches the direction being broken in the way the resolver cannot see.** A row
   that reaches sideways to a sibling unit, or down to a descendant, would be honoured
   happily by `can()` — nothing else in this list would notice it, and it is precisely the
@@ -1461,7 +1665,7 @@ composes them, edits what they grant, and deletes the ones nobody held. The star
 catalog sketches are proposals to edit, and the permissions themselves are starter material too.
 
 Those permissions span the namespaces this document and its neighbours describe: people —
-viewing, creating, editing, merging, contacts, and the two irreversible codes; the vocabulary of
+viewing, creating, editing, merging, contacts, and the two codes that reach further than an edit; the vocabulary of
 personal attributes, where **recording a value needs no new code and naming a thing needs
 `attribute.define`**; accounts,
 including suspension, closure and credential reset; membership, including requests, activation,
@@ -1481,9 +1685,16 @@ copies disagreed for exactly the reason the note above describes.
 
 A few of those codes carry a decision in their shape, and those are worth naming:
 
-- **`person.merge` and `person.redact` are separate codes**, not flavours of `person.edit`. They are
-  irreversible, and with no `person.admin` to imply them (D-068) a role that reaches them does so by
-  listing them, visibly. `identity_reviewer` holds `person.merge`; no starter role holds
+- **`person.merge` and `person.redact` are separate codes**, not flavours of `person.edit`. **They are
+  separate for reach, not for irreversibility, and the two words were used as one here until this round.**
+  `person.redact` is irreversible — that is what an erasure is. `person.merge` is **not**:
+  [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+  made reversing a merge a supported operation, with the undo written as its own audit entry, so calling
+  merge irreversible contradicted the decision three files over (§8 of
+  [01-identity.md](01-identity.md#8-identity_hypothesis-and-person_merge)).
+  What both codes share is that they act on **every row of a person's life** rather than on one field,
+  which is the reason they were pulled out of `person.edit` — and with no `person.admin` to imply them
+  (D-068) a role that reaches them does so by listing them, visibly. `identity_reviewer` holds `person.merge`; no starter role holds
   `person.redact`. **This bullet named a third code, `person.unmerge`, and
   [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
   removed the premise for it.** Reversing a merge is the same act as performing one — an identity
@@ -1583,13 +1794,23 @@ ordering that can be edited at runtime is a security control with no owner; thei
 as `organization`, which is not item-scoped, then `org_unit`, `membership`, `event` (designed in
 [08-events.md](08-events.md)) and `document` (a document layer still to be designed).
 
-**Built-in audiences come in two shapes.** `everyone` and `all_members` exist once for the whole
-system, marked as system rows. The parameterised ones are created where they are needed rather
-than seeded everywhere: `unit_participants` and `unit_leaders` one row per unit that needs one,
-with `scope_parameter` naming that unit — the case that replaced the bulk exposure tool, and
+**The seeded rule audiences come in two shapes.** **The heading changed with D-091 and so did the last
+sentence of this paragraph; the rest of it is the same answer it always was.** `everyone` and `all_members`
+exist once for the whole system, marked `is_system`. The parameterised ones are created where they are
+needed rather than seeded everywhere: `unit_participants` and `unit_leaders` one row per unit that needs
+one, with `scope_parameter` naming that unit — the case that replaced the bulk exposure tool, and
 named by convention along the lines of `unit:42:participants` and `unit:42:leaders` — and
-`guardians_of` one per dependent whose guardians need a shared target. None of them ever has
-member rows (integrity check 12, §11).
+`guardians_of` one per dependent whose guardians need a shared target.
+
+**What changed is the last sentence.** It read *"none of them ever has member rows"*, which followed from
+`kind`: a rule-shaped row could not also be a list. **D-091 removed the prohibition** — a rule audience may
+carry `audience_member` rows beside its rule, and that is the ordinary shape of *"whoever leads this pack,
+plus these two people"* — so nothing about a seeded row makes a member row illegal. **What remains illegal
+is a member row on the two `is_system` rows** (`everyone`, `all_members`): those are the resolver's own
+vocabulary rather than a set somebody curates, and integrity check 12 (§11) is what finds one. For
+everything else, **the rows a rule audience accumulates are the thing to watch, not the rows that are
+forbidden** — a rule plus three names is a rule that quietly outlives the three people, and the editor's
+expanded set (§8) is what makes that visible at the moment it is written.
 
 > **`system.admin` is deliberately a single top-level permission**, not a
 > per-resource one. Holding it satisfies everything, and check 7 in §11 alerts on its
@@ -1606,11 +1827,26 @@ member rows (integrity check 12, §11).
   answer per role rather than a default.
 - Whether `valid_to` should be mandatory for high-authority assignments (§4).
 - Polymorphic `scope_id` vs a `grantable_item` supertable (§6) — a real fork.
-- Which built-in audiences are needed beyond `everyone` and `all_members`, and whether the
-  parameterised ones are seeded per instance or created on demand (§8).
+- Which **rule** audiences are needed beyond `everyone` and `all_members`, and whether the
+  parameterised ones are seeded per instance or created on demand (§8). **The wording changed with D-091 —
+  it asked about "built-in audiences", a kind that no longer exists — but the question did not**, and it is
+  now cheaper to answer, because a group that needs no rule can be made with a manual arm and no seed at
+  all.
+- What the default `include_depth_limit` should be (§8). **It is written here as 3, which is a placeholder
+  chosen to be small, and it is a parameter rather than a rule precisely so that answering this bullet is
+  an `UPDATE` rather than a release** (D-048's argument for the same shape on the renewal window). What
+  would justify a different number is a real count of how groups get composed in practice, which nobody
+  has yet.
+- Whether an inclusion should be reviewable by the **included** group. `audience_include` records who
+  added the edge and why, and the write is audited — but a group whose membership is quietly widened has
+  no row saying it was widened, and nobody on that side is notified. **D-091 decided the graph; it did not
+  decide who gets consulted about it**, and the expanded-set editor in §8 is a control on the person
+  saving the edge, not on the people it sweeps up.
 - How long a `permission_cache` entry may live given the membership gate (§10) — the
   shorter the TTL, the smaller the window in which a lapse has not yet taken effect.
-- Cache vs materialized effective-permission table (§10).
+- Cache vs materialized effective-permission table (§10) — **[F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table),
+  and D-091 changed what it is worth** (§*The cost of composition*). Whether a **role** may be held by a
+  rule the way an audience is: **no, and deliberately still open** — [F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is).
 - Retention policy for `access_log` — legal input required.
 - Whether `access_log` needs human annotation (recommend a separate table if so).
 

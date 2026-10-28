@@ -89,6 +89,24 @@ stays one row's history, because the record cannot separate who did it
 No permission of its own — undoing an identity correction is the same act as making one, so it is
 `person.merge`.
 
+**Membership export** — **One of the two files the legacy corpus actually is**, and neither of them is a
+roster. A row says: a person, a birth date, and **the period they were a member of the organization**
+([D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)). A people
+batch turns it into `person` rows and **bounded** `membership` rows — both ends dated,
+`data_confidence = 'low'`, batch id set — each bringing its root-unit participation row with it, and
+**no fee obligation of any kind**
+([D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+**It names no sub-unit**, so it answers neither *"who was in Pack 12 in 2011"* nor *"were they a cub or a
+rover"*, and no `org_unit` is created from it.
+
+**Attendance export** — The other file: events, and which people came. It becomes `event` rows **owned by
+the root unit** — the corpus names no unit to own them, and inventing one to hold forty years of
+tent-weeks would put thousands of people inside a unit nobody chose
+([D-094](decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)) — with one
+`event_registration` per attendee at `attending` and `was_present = true`, and **no `not_attending` rows**,
+because an absence row would say the system asked someone who was never asked. **Attendance never becomes
+a membership.**
+
 ---
 
 ## Personal data
@@ -245,9 +263,20 @@ what a pack's roster is. Distinct from membership in every way: a person holds e
 membership and any number of participations, participation is free, and it ends when the
 person stops attending rather than when a fee is unpaid. A participation row for the root
 unit is created alongside each membership, so "everyone in unit X" is one uniform query.
-**It is also what a legacy roster row becomes**: an imported historical row is always a
-participation and never a membership, because the corpus carries no payment evidence to
-make a membership out of ([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+**Nobody writes themselves into a sub-unit**: a counselor does it, under
+`unit_participation.manage` at that unit, which **has no self-scoped variant and none will be added** —
+the same holds for appointment, and no unit type carries a restriction about who may belong to it
+([D-095](decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)).
+**What the legacy corpus writes here changed in round 9.** This entry used to say that an imported
+historical row is *always* a participation and *never* a membership, because the corpus carries no payment
+evidence ([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money))
+— and it turned out the people export states membership periods directly, so no payment evidence was ever
+needed to read one
+([D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+**What still never happens**: a participation row for a sub-unit created by the import — the corpus names
+no units — and a membership inferred from attendance. The rule that replaced the withdrawn one is one
+sentence: **an imported membership is bounded at both ends, always.**
 
 **Membership request** — A person's application to become a member. Separate from the
 membership itself, because a request has its own lifecycle (submitted, under review,
@@ -352,12 +381,41 @@ data — with a level (`revoked` < `view` < `contribute` < `manage` < `admin`). 
 which is how "open this event to everyone" or "to the whole pack" is expressed. A grant
 names either a person or an audience, never both.
 
-**Audience** — A grant target that stands for a set of people rather than one. Two kinds:
-**built-in audiences**, which are *rules the resolver evaluates* rather than stored lists
-(`everyone`, `all_members`, the guardians of a given person, the participants of a given
-unit, the leaders of a given unit), and **named groups**, which are stored membership lists
-someone administers. The built-in kind is the important one: a new pack member automatically
-receives what the pack was granted, with no rows to maintain and no stale-group problem.
+**Audience** — **The organization's word is *permission group*; the table is `audience`, and both names
+mean one thing.** A grant target that stands for a set of people rather than one, filled by **any
+combination of three optional arms**: a **filling rule**, a hand-kept list of people, and the groups it
+**includes**. Membership on a date is the **union** of whichever arms the group has
+([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+The old split into **built-in audiences** (rules the resolver evaluates) and **named groups** (stored
+lists), with a group required to be one or the other, is **deleted** — `audience.kind` went, and with it
+the rule that a member row on a rule-filled group "would look authoritative". The shipped rules are still
+the part that carries the design — `everyone`, `all_members`, the guardians of a given person, the
+participants of a given unit, the leaders of a given unit — because a new pack member automatically
+receives what the pack was granted, with no rows to maintain and no stale-group problem; what D-091 adds
+is that a hand-built group may *borrow* a rule instead of copying what it produced. **The cost is that a
+grant's reach stops being visible in the row**: whoever edits a grant has to be shown the expanded set of
+people it actually reaches, not the group's name
+([domain/06-authorization-model.md §6.2](domain/06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)).
+
+**Filling rule** — The rule arm of a group: a resolver plus a scope parameter, evaluated at check time —
+*"everyone with membership"*, *"the leaders of this unit"*, the derived `unit_leaders` that
+`position.is_leadership` feeds ([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+A rule does not rot the way a list does, and it stops covering a person the day the fact underneath ends
+— which is precisely why **an appointment creates no role assignment**: the derivation belongs on a rule,
+not on a copy that has to be found and revoked later
+([domain/04-organization-structure.md §4](domain/04-organization-structure.md#4-positions)). **A rule
+fills groups, not roles**: whether a *role* may be held by a rule the way a group is is open as
+[F-12](open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), because `role_assignment`
+is the record of who held which office and a derived holder list cannot answer that.
+
+**Inclusion (of a group)** — A stored edge putting one group inside another. This was refused outright
+(*"they do not nest"*) and the refusal is withdrawn: **a cycle is refused when the edge is saved**, because
+inclusion edges are rows and a write can walk them, so nothing in the read path gets a hop limit or a
+guess ([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+Chain length has a bound stored as a configuration parameter, and a group that cannot be evaluated
+**denies** — it reaches nobody. Inclusion is also the arm that makes reach non-obvious: a group may include
+one that includes `everyone`, which was already grantable directly and is now grantable by three edits and
+a save.
 
 **Membership gate** — The rule that authority held through a role is honoured **only while
 the holder has a current membership**. Two carve-outs: **guardianship** (a legal
@@ -560,3 +618,6 @@ The words you and the organization will naturally use, and what they map to:
 | "they're allowed to attend" | `access_grant` on that event at level `view` or above, naming them **or an audience they belong to** |
 | "open to everyone" | an `access_grant` whose audience is the built-in `everyone` |
 | "the treasurer" | `role_assignment` of `treasurer`, scope = org or unit |
+| "put me in Pack 12" | a `unit_participation` row **somebody else writes** — below the root there is no self-service path and no self-scoped permission to build one with (D-095) |
+| "the permission group for the kitchen crew" | an `audience` row — **one thing**, filled by a rule, a hand-kept list, other groups, or all three at once |
+| "the old Pack 12 came back" | a **new** `org_unit` whose `code` happens to equal a dead one; the continuity is an `org_unit_relationship` saying `successor_of`, written by a person — or there is no continuity, only a reused label (D-096) |

@@ -3041,7 +3041,40 @@ from a regression. If one returns, it returns as a bug report, not as a reversal
   from the current register. Recorded because the *reason* for the rule — an inferred open-ended
   membership would make a 2003 roster a current member with authority today
   ([D-039](#d-039--member-permissions-require-a-current-paid-membership)) — is the part worth
-  keeping if a corpus with money in it ever arrives.
+  keeping if a corpus with money in it ever arrives. **Retired outright one round later, which is the
+  more instructive half:** the corpus turned out to state membership periods directly, so the rule was
+  replaced by [D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated) and the frame
+  it rested on by [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units). The reason
+  survives; the rule does not. A decision recorded from a description of the data is only as durable as
+  the description.
+
+- **"An audience does not nest", and `audience.kind`'s rule-*xor*-list split.** Both withdrawn by
+  [D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group):
+  a group is now a rule arm, a manual arm and an inclusion arm whose membership is their union, and a
+  group may include another. Neither was ever a numbered decision — both were prose in
+  `data-model/05 §8`, which is how they survived three rounds of review unexamined while doing real work
+  (they are the reason "the crew, plus everyone who leads this pack" needed two grants and why a
+  composition the organization asked for in round 9 had been silently impossible). The cycle the nesting
+  ban existed to prevent is refused at the write instead, which is the same answer D-087 gave for merge
+  chains one round earlier — **worth reading as the pattern rather than the reversal**: when a rule was
+  written to prevent a hard case, the first question is whether the hard case can be refused at the write
+  rather than defended against at the read.
+- **`org_unit_type.allows_minors`, and the write-path check it drove** (integrity check 2 in
+  `03-membership.md §7`). Removed by
+  [D-095](#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act): units carry no
+  restrictions, and the control is that nobody joins a unit or takes a position in one themself. This is
+  in this list because of what replaced it, not because a column went — a *flag on a type* became *a
+  permission held by named adults*, which is D-081's "say who enforces it now" answered with a change of
+  kind rather than a rename. The consequence is symmetrical: the system can no longer tell anyone which
+  units are for children.
+- **The correction made to `03-membership.md §5.1` in round 8** — that "an ordinary import touches
+  neither arm of this pair", because a roster writes participations and no memberships. Reversed by
+  [D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated) within one round: the
+  membership export writes memberships by the thousand, so the root-participation obligation points at
+  the import again, which is what that section said before round 8 for entirely different reasons.
+  Recorded because a *correction* that gets reversed is the kind a reader will not trust, and the reason
+  to trust it here is that both rounds were wrong about the same unknown thing — the shape of a file
+  nobody had read.
 
 ---
 
@@ -3740,3 +3773,620 @@ as the import's own inputs.
 **See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
 [data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline),
 [data-model/09-attributes.md §7](../data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from).
+
+**Amended one round later, in part.** The corpus this entry describes was the wrong shape in its
+second half: the rows are people with their membership periods, and events with attendance, and they
+name no units at all. Read [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units) and
+[D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated), which retire this entry's
+absolute ban on an imported `membership`. **What survives intact is the other half** — the legacy
+member number, the absence of money, and the reviewed-before-apply field map that decides where the
+whole attribute vocabulary comes from. Three entries describe one import and none is complete alone.
+
+---
+
+## D-091 — A permission group is a rule and a list at once, and a rule may name another group
+
+**Status:** decided (from your answer)
+**Date:** refinement round 9
+**Follows:** [D-042](#d-042--grants-may-target-audiences-not-only-individuals),
+[D-033](#d-033--multiple-people-may-occupy-the-same-position),
+[D-087](#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+
+**Your answer.** Asked whether appointing someone to a position should also create a role assignment,
+the answer described something one level further out: *within the permission groups there should be
+"filling rules" for each, which specify who will be placed in that group on top of manually added
+people — "everyone with membership", "a leader role", "anyone", "members of permission group ABC"*.
+The examples given were from another system, where a group's population is derived from enrolment in
+a course: `studpredmet 1433 kod PV160` puts the students and teachers of one course in a group.
+
+**What was already here, because the answer describes most of an existing mechanism.** The
+organization already has rule-filled groups: an `audience` is a named set that a permission is granted
+to, whose membership a rule decides at check time (D-042). Three of the four rules named exist
+verbatim — `everyone` is "anyone", `all_members` is "everyone with membership", and `unit_leaders` is
+"a leader role", derived live from position assignments marked `is_leadership`. Named groups are the
+manually-added arm. **What the answer added, and what this decision is about, are the two things the
+model refused.**
+
+**Decision, in three parts.**
+
+1. **`audience.kind` is gone.** A group has an **optional rule arm** (`resolver_key` plus
+   `scope_parameter`), an **optional manual arm** (`audience_member` rows) and an **optional inclusion
+   arm** (`audience_include` rows naming other groups). Its membership on a date is the **union of all
+   three**. The old rule — a group is a rule *xor* a list, and a member row on a rule "would look
+   authoritative" — is withdrawn. It forced two grants for the common case of *"the kitchen crew, plus
+   whoever leads this pack"*, and two rows in two places is how one of them gets forgotten.
+2. **A group may include another group.** This was refused outright — *"They do not nest. An audience
+   cannot contain another audience — that is how you get evaluation cycles and answers nobody can
+   predict."* The refusal is withdrawn and its reason answered where D-087 answered the same reason for
+   merge chains: **the cycle is refused when the edge is saved, not in the read path.** Inclusion edges
+   are stored rows, so the cycle is decidable at write time by walking them, and nothing about
+   evaluation gets a hop limit or a guess. Inclusion chains get a length bound, stored as a parameter in
+   the way the renewal window is ([D-048](#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)
+   is the precedent for that shape of parameter), and an unresolvable chain **denies**: a group that
+   cannot be evaluated reaches nobody, which is the direction this model fails in everywhere else.
+3. **An appointment still creates no role assignment.** `position.is_leadership` keeps the one job it
+   has always had — driving the derived `unit_leaders` rule, and marking which roles exist to make a
+   position work. Copying a role assignment at appointment time would duplicate a derivation, and a
+   copy is the thing that outlives its reason: it has to be found and revoked when the position ends,
+   whereas the rule stops covering the person on the day the assignment closes. **That is the answer to
+   the question that was asked, and it is the cheapest part of it** — no schema, no workflow.
+
+**What was *not* taken from the answer, and it needs saying rather than burying.** In the system you
+described, permissions sit on the group. Here, permissions sit on a group at one scope through
+`access_grant` — which is how "all leaders of pack X may take part in its roster" is one row today — but
+a **role** is still held by one named person, because `role_assignment` is the record of who holds which
+office and it is read to answer "who was treasurer in 2023". A derived holder list cannot answer that,
+and an office record that cannot answer it is not an office record. So a rule-filled role is **not**
+decided here: it is registered as
+[F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is) — the change is one
+grantee pair on `role_assignment`, exactly the shape D-042 already put on `access_grant`, and it wants
+an answer about the historical question before it wants an implementation.
+
+**The cost, stated where it will be felt.** Membership of a rule group has never been stored — D-042
+accepted that, and the docs even recommended it, because a rule does not rot the way a list does. This
+decision **widens how much of the permission answer is recomputed rather than recorded**: a grant that
+once named three people now names a chain of sets whose membership depends on positions, participations
+and memberships as they are today. Two consequences follow, and the second is the one to keep in view:
+
+- **A grant's reach stops being visible in the row.** The editor must show the resolved set — who this
+  grant actually reaches, expanded — and not the group's name. Composition makes a three-deep inclusion
+  a silent widening, and `everyone` is a legal member of the graph: nothing in part 2 stops a group from
+  including one that includes the whole world, which is already grantable directly and is now grantable
+  by three edits and a save.
+- **"Who could read this in 2023?" now has one fewer answer.** The audit trail used to hold the change
+  that made it true, and [D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+  empties those payloads after 24 months; the derived membership was never stored at all. So after two
+  years the question is answered by re-running rules against state that has itself moved on. **The route
+  back is [F-7](../open-questions.md#f-7--cache-vs-materialized-effective_permission-table)** — a
+  materialized effective-permission snapshot, kept as history rather than as a cache — which until now
+  looked like a performance question and is now also the only thing that could make this answerable.
+
+**Naming, since your word and this file's word differ.** What you called a *permission group* is the
+`audience` table, and the table keeps the name — not to avoid work, but because `group` is already taken
+inside it for one of the two kinds this decision deletes, and a document that renames a table and keeps
+the word for a fragment of it is worse than one that renames neither. The glossary carries both words.
+What does change is that **`group` no longer names a kind of anything**: there is one thing, and it has
+arms.
+
+**Closes:** [C-4](../open-questions.md#c-4--closed--a-group-is-filled-by-a-rule-and-a-list-and-appointing-creates-nothing).
+
+**See:** [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
+[domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance),
+[domain/04-organization-structure.md §4](../domain/04-organization-structure.md#4-positions).
+
+---
+
+## D-092 — The corpus is people and events, and it names no units
+
+**Status:** decided (from your answer)
+**Date:** refinement round 9
+**Follows:** [D-090](#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+[D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
+[D-058](#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)
+
+**Your answer.** Asked what creates the units the roster rows point at: *the rows are mainly "person
+with names, birthdate and when they were members of the root unit", "events with attendance". Not much
+more — do not solve assignment to org units.*
+
+**So the corpus has two halves and neither is a roster.** D-090 recorded it as *roster rows*: people
+attending units. That word was wrong in its second half, and the whole import design hung off it,
+because a roster is evidence of *presence in a unit* and that is what
+[06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences)
+was written to police. What is actually arriving is a **membership export** and an **attendance
+export**. Each is evidence of a different thing, and neither is evidence of a sub-unit:
+
+| Half | What a row says | What the import writes |
+|---|---|---|
+| **People** | name, birth date, **member of the organization for a period** | a `person`, and a bounded `membership` ([D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated)), which brings its root participation row with it |
+| **Events** | an event, and who attended it | an `event` owned by the root ([D-094](#d-094--the-root-unit-owns-every-imported-event)) and an `event_registration` per attendee |
+
+**Unit assignment is out of scope, by instruction, and that is a decision with a consequence rather
+than an omission.** `parsed_unit_code` and `parsed_unit_name` stay in the parser — an export that
+surprises whoever runs it with a unit column is exactly what those fields and the `unit_not_found`
+warning are for, and they cost nothing to keep. But nothing resolves them, no `org_unit` is created by
+any batch, and no sub-unit `unit_participation` row is ever imported. **The consequence, plainly: the
+system's historical record has no sub-units in it.** "Who was in pack X in 2011?" has no answer on day
+one and will have one only from live data forward, and the first answer anyone reads is a roster
+somebody typed in. That is not a gap in the model — the model has always been able to hold it — it is
+what the source can say, and it is written here so that the first person to ask the question finds the
+sentence rather than the absence.
+
+**What this retires, and what it leaves alone.** Retired: the roster frame, and with it D-090's rule
+that an imported row is a participation and never a membership
+([D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated) replaces it), and the
+import exclusion that rule forced into integrity check 1 in
+[03-membership.md §7](../data-model/03-membership.md#7-integrity-checks) — with no imported
+participations, that exclusion goes and the check starts finding what it was written to find. Left
+alone, because none of it depended on units: the legacy member number going to `person_identifier` and
+the exact-match identity story (D-056), the absence of money, the attribute vocabulary arriving wholesale
+from the free-text columns through a map read before the batch applies, the end-date inference, and the
+revert mechanics.
+
+**The one thing the answer makes harder rather than clearer.** Two halves means two shapes of batch, and
+the pipeline has one `import_batch` with one `field_mapping` on it. An events export has nothing to map
+to an attribute code and a people export has nothing to map to a registration, so **either the batch
+types itself** (a people batch, an events batch, each with the mapping and the checks that fit) **or one
+batch carries two mappers that can never both apply.** The first is the smaller change and it is what
+these documents now assume; it is recorded as a design consequence here rather than as a new question,
+because the answer that decided the shape also decided this about it.
+
+**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned).
+
+**See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
+[data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline).
+
+---
+
+## D-093 — The one-off import may create memberships, both ends dated
+
+**Status:** decided (from your answer)
+**Date:** refinement round 9
+**Follows:** [D-090](#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+[D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-050](#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row),
+[D-039](#d-039--member-permissions-require-a-current-paid-membership)
+
+**Your answer.** *The import will be a one-off — allow creation of memberships.*
+
+**Decision.** A batch may create `membership` rows, with `valid_from` **and** `valid_to` set, from a
+source that states a period of membership. One row per period the source states — not one row per
+calendar year — with `data_confidence = 'low'` and the batch id on it, and the
+`renewed_from_membership_id` chain left to whoever reconstructs it, because an export of consecutive
+years is a period, not a renewal history. **D-090's ban is narrowed to the thing it was actually
+protecting, in one sentence that survives unchanged: never an open-ended membership, and never one
+inferred from an attendance row.** The reason is D-039 and it has not moved — a membership with no
+`valid_to` satisfies `is_current_member()`, so an inferred 1998 membership hands whoever signs up under
+that name authority in the present. That is why the ban was absolute and it is why *this* half of it can
+go: a closed period cannot gate anything.
+
+**"One-off" is doing real work in the answer, and it is worth naming what it buys.** The argument for
+the original ban was about a standing hazard — an import that infers, run by whoever is holding the
+file, repeatedly, for years. What is being decided here is one reviewed batch whose mapping is read
+before it applies, on a corpus that will never arrive twice. A rule written for a recurring process is
+too strict for a one-time one, and the safety that mattered is not the ban but the review.
+
+**Four consequences, in the order they arrive.**
+
+- **The root participation obligation now points at the import again.**
+  [03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit) had
+  just been corrected to say that an ordinary import "touches neither arm of this pair". With
+  memberships arriving by the thousand it does: every imported membership owes its root-unit
+  participation row in the same transaction, which is what keeps *who is in unit X* one query
+  (D-041). Consecutive imported years for one person therefore stretch one root row rather than opening
+  a second, and a gap in the source is a lapse that produces two — the same rule as a renewal, and the
+  same accepted cost: the lapse stops being visible in the participation table.
+- **No obligation, no payment, no balance.** An imported membership creates **no `fee_obligation`**.
+  The corpus has no money in it (D-090), so an obligation per historical year would arrive as `unpaid`
+  and turn a decade of members into a wall of debt on a ledger that has never heard of them, with a
+  `due_date` in 1999 for the lapse sweep to choke on. The sweep is already safe — it acts on active
+  memberships with a positive-balance obligation, and an imported row is neither — but the *absence*
+  becomes a rule, because the alternative failure is silent and enormous.
+- **`outstanding_balance` is NULL on these rows, and that is now load-bearing rather than incidental**
+  ([07-finance.md](../data-model/07-finance.md#2-minimal-provisional-shape)). A zero would be a claim —
+  *settled* — that the export does not support.
+- **These rows are the oldest layer of the skeleton D-088 keeps forever.** That decision held named
+  membership periods indefinitely on legitimate interest, on an unverified legal basis
+  ([assumption 49](../open-questions.md#i-assumption-index)). From this round the indefinite-retention
+  half of D-088 covers thousands of named people with birth dates who were never asked and never used
+  the system. It is the same judgement, applied to a much larger population, and the review commissioning
+  it is unchanged in kind and much changed in scale.
+
+**What this makes true about reports.** Every cross-decade member count is now a mix of an export and a
+register, distinguished only by `data_confidence` and `import_batch_id`. A membership-rate chart that
+spans the import boundary is comparing a source that states membership with a system that records it,
+and nothing in the query knows the difference.
+
+**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned)
+(together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+
+**See:** [data-model/06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences),
+[data-model/03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit),
+[domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline).
+
+---
+
+## D-094 — The root unit owns every imported event
+
+**Status:** decided (from your answer)
+**Date:** refinement round 9
+**Follows:** [D-058](#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit),
+[D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-067](#d-067--presence-is-a-three-valued-fact-on-the-registration)
+
+**Your answer.** Asked what owns an imported event, given that every event belongs to exactly one unit
+(D-058) and that unit assignment is out of scope: **the root unit owns them all.**
+
+**Decision.** `event.org_unit_id` on an imported event is the single root unit, as a rule rather than a
+judgement. D-058's "exactly one owning unit" is satisfied without inventing a unit, without a per-event
+decision, and without the import touching the unit vocabulary at all — which is what makes this
+compatible with the instruction that decided D-092. The root is the only unit the corpus speaks of, so
+it is also the honest answer, not merely the convenient one.
+
+**Attendance becomes registrations, and the three-valued rule decides what is *not* written.** An
+attendance export lists the people who came. Each one becomes an `event_registration` with `attending`
+and `was_present = true` (D-067). **Nobody else gets a row**: a person who might have come and did not is
+not in the export, and inventing `not_attending` rows from silence would put words in a source that said
+nothing ([D-059](#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)). So
+imported events have a population exactly as large as the evidence for them, and the historical
+attendance figures these documents will be asked for are *arrived*, not *registered*.
+
+**Three costs, one of which is the reason this decision was worth recording separately.**
+
+- **The root's event list becomes mostly history.** "What's on" stops being a unit filter and has to be a
+  date filter — and the unit-scoped report that asks "our events this term" shows an imported camp
+  because the root is its owner, which is the same class of misreading D-049 recorded for
+  `unit_participation.view` at organization scope.
+- **Imported events have no organizers**, so nobody holds them at unit scope: `event_organizer` is empty
+  on them by construction, and editing one takes organization-scope authority
+  ([D-062](#d-062--organizers-are-appointed-on-the-event-not-granted)). An imported event is therefore
+  read-only for the people who would ordinarily run an event, which is correct and will still surprise
+  somebody.
+- **Correcting an owner is one column, and it moves the audience.** Unlike participation history, which
+  is never rewritten, `event.org_unit_id` is editable — and because an event is an artifact of its unit
+  ([D-063](#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)), moving an event from the root
+  to a pack silently changes who can read it. So corrections are allowed and expected, and each is an
+  audited write with a reason; and the audit record of *who moved it* is readable for 24 months
+  ([D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) while the event itself
+  is kept indefinitely.
+
+**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned)
+(together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+
+**See:** [data-model/08-events.md §2–§4](../data-model/08-events.md#2-event),
+[data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline).
+
+---
+
+## D-095 — Units carry no restrictions; joining one is somebody else's act
+
+**Status:** decided (from your answer)
+**Date:** refinement round 9
+**Follows:** [D-038](#d-038--membership-is-ageless),
+[D-043](#d-043--no-background-checks-are-recorded-in-this-system),
+[D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+
+**Your answer.** Asked whether a unit that declares it does not supervise minors should refuse a minor's
+*position* as it refuses their participation: *a unit does not have any restrictions — however, persons
+can't assign themselves. They will be assigned to the unit by the counselors.* And on the shape of
+entry: *into the root unit, there is a fee for entry; into the sub-units, there is no fee, it is entirely
+managed by the organization, including adding more members.*
+
+**Decision.** Two entry paths, each with exactly one gate, and no third control:
+
+| | **The root unit** | **A sub-unit** |
+|---|---|---|
+| **How you get in** | You pay. The membership flow is the only self-service entry in the system, and it opens the membership and its root participation row (D-041, D-050) | Somebody else writes the row |
+| **What stops you** | The fee | `unit_participation.manage` at that unit — held by the people who run it, **with no self-scoped variant, and none will be added** |
+| **Money** | The yearly fee | Nothing. There is no fee for taking part in a pack, and no model wants one |
+
+The same holds for `position_assignment`: nobody appoints themselves. There is no code in the catalog
+that could express either, and D-095's instruction is not to add one.
+
+**`org_unit_type.allows_minors` is removed.** It was introduced as a **safeguarding** flag — the thing
+that let the system refuse to place a minor in a unit that does not supervise them without hardcoding
+which type codes those are. After this answer it enforces nothing about positions, and a flag that is
+documented as a safeguard and enforced on one of two write paths is precisely the thing these documents
+elsewhere refuse to keep: *a list of eighteen ticks nobody read is not a safeguard, it is a receipt*
+([domain/08 §4](../domain/08-person-data.md#4-what-was-refused-and-what-it-cost)). What goes with the
+column: its check in [03-membership.md §7](../data-model/03-membership.md#7-integrity-checks) (check 2,
+*participants in units that do not allow minors*), the root type's `allows_minors = false` in the seed,
+and the sentence in [02-organization.md §1](../data-model/02-organization.md#1-org_unit_type) that
+explains why there is no `allows_adults` sibling.
+
+**D-081 requires naming who enforces the rule now, and the honest form of that answer is a shift in
+kind.** The rule the flag existed to express — *do not place a child where nobody is responsible for
+them* — is now enforced by **who is allowed to write the row**: a person able to add a child to a unit is
+a person the unit's leadership trusts with its roster, the write is audited, and the assignment names who
+made it. That is a stronger control than a boolean on a type, because a boolean only ever refused a
+placement nobody had thought about and the permission refuses every placement by the wrong person
+regardless of the child's age.
+
+**What is genuinely lost, and it is the safeguarding story in one paragraph.** **The system no longer
+knows which units are for children.** `allows_minors` was the only machine-readable answer to that
+question; nothing replaces it, because "entirely managed by the organization" is a statement about people
+rather than data. Combined with D-043 — no background checks recorded anywhere — the organization
+module's safeguarding story after D-095 is: a permission held by named adults, an audit trail whose
+values expire after two years, and a report list of who holds the write. If that turns out to be too
+little — after a real incident, or an insurer's question — the route back is **a rule about who may be
+placed where, argued once as a decision, with its enforcement layer named** in D-081's terms, and not a
+resurrected column whose name implies it enforces something.
+
+**Not changed by this, because it was never about units:** membership stays ageless (D-038), `position.min_age`
+stays a real eligibility constraint about the *position* (a scoutmaster must be an adult), and the
+guardianship channel is untouched.
+
+**Closes:** [C-6](../open-questions.md#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act).
+
+**See:** [domain/04-organization-structure.md §1, §4](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units),
+[data-model/02-organization.md §1](../data-model/02-organization.md#1-org_unit_type),
+[domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described).
+
+---
+
+## D-096 — A reused unit number is a new unit unless someone records the continuity
+
+**Status:** decided (from your answer, and one question back)
+**Date:** refinement round 9
+**Follows:** [D-036](#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit),
+[D-054](#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types),
+[D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)
+
+**Question, put back to you, and the answer's shape.** Asked whether a unit number appearing twice —
+one unit closed in the 1990s, another carrying the number now — is the same unit or a new one, the
+answer was *"what is a unit number?"*. That question is the useful part of this entry, so it is answered
+before the decision is. A `code` is **a short human label typed by somebody**: `T12`, `4. oddíl`. It is
+not the unit's identity, which is the row; it is not its name, which is a temporal row of its own
+(`org_unit_name`); and it is not unique, deliberately — uniqueness is per parent and among live rows
+only, which is exactly why a closed unit's number is free again
+([02-organization.md §3](../data-model/02-organization.md#3-org_unit)). Once it is described as a label,
+the question answers itself in the direction the docs already argued.
+
+**Decision.** **A reused number is a new unit.** One `org_unit` row per unit that existed, each with its
+own period; the continuity between two of them is not a property of the label but an assertion somebody
+makes and records as an `org_unit_relationship` with `successor_of`
+([§5](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession)). The opposite
+default — reuse the row and let a thirty-year gap show inside one unit's life — is what a system drifts
+into if nobody says, because it is what "match on code" does. And the two cases the docs separate are
+unchanged and are *not* this case: **a renumber is one unit with two name rows** (same participants,
+continuity asserted by the rename itself), while **a unit that moves parent is a new unit** (D-036).
+
+**The cost is a decision the organization has to make in words, occasionally, and it is cheap.** When a
+number really does come back — a troop refounded after a decade dormant — someone writes down that this
+unit is the successor of that one, and "who was in Pack 12 in 1984?" follows the relationship instead of
+guessing from an overlapping name. Refusing to default either way was considered, and it is what
+`domain/04 §6` used to say (*"record which was chosen and why on the unit"*); what D-096 adds is the
+direction the record goes in when nobody records anything, because a default that is unstated is a
+default that gets implemented by whoever writes the matching screen.
+
+**Closes:** [C-3](../open-questions.md#c-3--closed--a-reused-unit-number-is-a-new-unit).
+
+**See:** [domain/04-organization-structure.md §3, §6](../domain/04-organization-structure.md#3-unit-names-and-renumbering--the-history-problem),
+[data-model/02-organization.md §4–§5](../data-model/02-organization.md#4-org_unit_name--rename-and-renumber-history).
+
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row).** There are no
+sub-units left to number, close, or declare a successor of, and no `org_unit` row for a `code` to sit on.
+The reasoning survives as a method — *a label carries no identity, so continuity is asserted and never
+matched* — and it transfers intact to `person_group`, where a group name that comes back after a decade
+is a new group unless somebody says otherwise.
+
+---
+
+## D-097 — There are no sub-units. The unit is a scope, not a row
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Reverses:** [D-008](#d-008--organizations-units-are-one-self-referencing-table-with-configurable-types),
+[D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it),
+[D-036](#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit),
+[D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
+[D-049](#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing),
+[D-050](#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row),
+[D-054](#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types),
+[D-078](#d-078--an-exposure-extends-an-assignment-never-a-direct-grant),
+[D-096](#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity).
+Amends [D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+and [D-095](#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act), whose subject was
+always the nested unit.
+
+**Your words.** *"I want to remove the sub-organizations completely. They are more of a 'group of
+people'. They are useful in permission groups, however they should not hide any information or have any
+special features. I have over-specified the system and this complicates things."* Asked whether anything
+below the organization should still scope authority, the answer was **no** — and asked whether the root
+unit is still a table, the answer was **"no table — the unit is a scope"**, with the vocabulary settled
+in the same breath: **unit** means the root, the organization itself, of which there is one; **group**
+means a set of people, which is where [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+goes.
+
+**Decision.** **The organization has no internal structure in this system.** There is one unit, it is the
+organization, and it is not a row: it is the non-item scope that `grant_scope_type` already carries
+(`is_item_scoped = false`, a grant at it has no `scope_id`). Its code is `unit`. Everything that existed
+to describe the inside of an organization is deleted:
+
+| Deleted | With it goes |
+|---|---|
+| `org_unit` | the root row, the one-root partial unique index, `path`, `depth`, `status`, `code`, `data_confidence` on units |
+| `org_unit_type`, `org_unit_type_rule` | the runtime unit vocabulary, `is_leaf`, `max_depth`, the seven-step nesting check, and the whole of [D-054](#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)'s argument about not guessing words |
+| `org_unit_name` | rename and renumber history, `change_reason`, and the denormalised `org_unit.name` it fed |
+| `org_unit_relationship` | `split_from`, `merged_into`, `successor_of`, `renamed_to` |
+| `unit_participation` | sub-unit rosters, the root participation row every membership owed, and the transfers between units |
+| `scope_exposure`, `scope.expose` | the only downward crossing, the direction-of-authority check, the `scope.exposure.review` code, and the nightly alert that was its sole detector |
+| `unit_ancestors()`, `unit_descendants()` | the recursive walk, the path-consistency check, and the CI assertion that the resolver never calls it |
+| `role_assignment.scope_type` / `scope_id` | a role is always held at the unit; there is nothing else to hold it at |
+| the resolver's unit tier | the ladder of [D-032](#d-032--deny-is-absolute-locality-orders-allows-only) drops from four tiers to the ones [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) states |
+
+**Why this is affordable now, when it was not affordable in round 1.** Because of
+[D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units), which your own answer supplied:
+**the legacy corpus names no units.** Two exports — people with their membership period at the root, and
+events with attendance — and no unit column anywhere. So the hierarchy has no recorded history to lose;
+"who was in pack X in 2011" already had no answer at go-live, and was already written down as a
+consequence rather than a bug. A structure that describes nothing imported and (per
+[D-095](#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)) restricts nothing is a
+structure that carries no information, which is the definition of the over-specification you were
+pointing at.
+
+**The rule that dies hardest is the founding one.** [D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+—"authority over a unit originates at that unit and cannot be claimed from outside it"— existed to stop
+the center deciding permissions inside a body it does not run. **With one unit there is no "outside it"
+to be stopped from.** The rule is not weakened by this decision, it is *deprived of its subject*: every
+permission is held at the unit or on an item, and the unit's people are the only people there are. What
+D-031's reasoning still supports is carried forward by [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+(deny is absolute) and by the ownership and guardianship channels, neither of which was ever about units.
+
+**What is genuinely lost, said once and not argued away.**
+
+1. **The unit is no longer a locus of accountability for a child's records.** D-031's safeguarding
+   property was that access to a pack's children had to be granted *by that pack*, by people who recruited
+   the leader and can be asked. That property is gone, and nothing in the remaining model reproduces it:
+   a permission held at the unit reaches every member, and `person.view` was already the widest read
+   permission in the system ([D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+   [D-086](#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)). What is left of
+   the safeguarding story is the same three things D-095 was left with — a permission held by a named
+   adult, an audit trail whose payloads expire after two years
+   ([D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)), and a report of who
+   holds the write — **minus the part where the named adult was somebody the unit chose.**
+2. **"Who was in the Thursday group in 2011?"** stays answerable, because
+   [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) dates its
+   member rows. What is lost is the *unit* framing: there is no "and everything nested under it" left to
+   ask about, so the subtree question that justified the materialized path has no subject.
+3. **Restructuring stops being a recorded event.** Splits, mergers and successions were the organization
+   module's whole history problem (`domain/04 §3`) and they are simply gone: a group that splits is an old
+   group that ended and two that began, with no edge between them unless somebody writes one.
+4. **Unit-scoped reports** — a pack's roster, a pack's events, "which units exist" — have no subject to
+   report on. The organizational-year reports that mattered are membership and fee reports, which live at
+   the unit and are unaffected.
+
+**One thing gets easier that nobody counted.** [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+shape 4 — a column that may not change once set, the only shape with **no report at all** because a
+violation leaves every row individually valid — had exactly one instance in the whole design,
+`org_unit.parent_unit_id`. It has none now. The single-root conditional uniqueness (shape 2) goes too,
+along with integrity checks 1–10 of `data-model/02-organization.md §9` and check 10's peculiar job of
+asserting that a migration had emitted a constraint.
+
+**Import, restated.** The one-off import owes `person`, `membership` (D-093) and — since D-102 — events
+and registrations. It owes **no participation rows to anything**, which retires D-093's knock-on about
+the root participation row and `03-membership.md §5.1`'s write obligation with it. Group membership is
+never inferred from anything: the corpus does not name groups either, so every `person_group_member` row
+is typed by a person, which is also the only way it can be true.
+
+**Two-way door?** **No.** This is a deletion of a dimension, not a flag. The route back is a decision
+with a reason attached — most plausibly "the organization has grown past one center's visibility" — and
+that decision would have to re-argue D-031 from its own premises, because the mechanism that made it
+work (`scope_exposure`, written by the covered unit) no longer exists.
+
+**See:** [domain/04-organization-structure.md](../domain/04-organization-structure.md) (rewritten as the
+groups module), [data-model/02-organization.md](../data-model/02-organization.md),
+[data-model/05-authorization.md §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer),
+[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation).
+
+---
+
+## D-098 — A group is a `person_group`: explicit members, a lifetime, and no authority
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Follows:** [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+**Supersedes the subject of:** [D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
+**Closes:** — 
+
+**Your words.** *"A group defined by display name and an audience… A group is just an audience, but it is
+visible to the users of the system (if the permissions say so)."* Then, when the choice was put back as
+*group-is-an-audience* or *audience-is-a-selector*: *"person_group, but let's make it upside down — a
+group will have explicitly stated members and a person_group can be used as an audience selector"*, and
+*"a group will have explicitly stated members (all members live, while the group lives). The group can
+have a lifetime (start and end date)."*
+
+**Decision.** **`person_group`** — a `name`, a `description`, its own `valid_from`/`valid_to`, the
+standard audit columns. **`person_group_member`** — (`person_group_id`, `person_id`, `valid_from`, `valid_to`, who wrote it,
+when). **The member row is dated**: assignment, removal and re-assignment are all periods on the same
+pair, so the roster has a history of its own rather than borrowing the audit trail's. `person_group`
+is registered in `grant_scope_type`, so **a group is an item** and a grant can be written on one —
+which is how "these two people may work this group's roster" is said without inventing a scope
+([D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+
+**What a group is not, in one list, because this is the part the previous design got wrong.** It has no
+parent and no children, no type and no vocabulary of types, no `code`, no path, no nesting rules, no
+rename history, no split or merger edge, no leadership of its own, **no roles** (your words: *"screw
+them, the groups don't have any roles, only the root unit"*), and no fee. It holds no permissions over
+its members by being a group: a member of a group is not able to do anything, which is
+[D-005](#d-005--permissions-are-grants-never-derived-from-identity) and
+[D-019](#d-019--household-membership-grants-no-access) restated one level down — participation is not
+authority, and the fact that the participation is now stored in a tidier table does not quietly promote it.
+
+**Why the word "audience" survives at all, and where the line is.** You named the inversion, and it is
+the load-bearing part of this entry: **a group states its members; a selector picks them.**
+`person_group` is the domain fact — a thing a user sees, names, opens, and ends. `audience` is the
+grantee a grant names, and one of its operands may be a `person_group`
+([D-101](#d-101--a-selector-is-ordered-include-exclude-and-require-over-groups-built-ins-roles-and-selectors)).
+Two tables answer "who is in it", which is precisely the shape
+[D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved) teaches to be
+suspicious of, so the difference is stated rather than implied: a group's members are a **list of people
+that is true whether or not any permission points at it**; `audience_member` rows are an **addition to a
+rule**, meaningful only inside the selector they complete. A group exists to be talked about; a selector
+exists to be aimed at something.
+
+**Membership of the unit is unchanged and is not a group.** One membership per person, at the unit, paid
+for yearly (D-037, D-040, D-047). `unit_participation` is deleted with the units
+([D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), including the root row every
+membership used to be issued with, so **"everyone in the organization" is now one query against
+`membership` and "everyone in the Thursday group" is one query against `person_group_member`** — two
+shapes, and no longer one shape with a depth in it.
+[D-050](#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)'s renewal
+mechanism narrows to exactly what it always claimed to be about: the `membership` row, per
+[D-016](#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to).
+
+**Joining a group is still somebody else's act, and D-095's reasoning transfers intact.** The gate is
+`person_group.member.manage`, held at the unit (which reaches every group, per D-099) or granted on one
+group as an item. There is no self-scoped variant and none will be added: nobody writes themselves onto a
+roster, which was the whole of D-095 and is unchanged by moving the roster. `membership_request`
+**loses `requested_unit_id`** — a request is for membership of the unit, and which group a new member
+lands in is a write on the group, not a preference on the request.
+
+**So the history question has an answer, and it is the same answer every dated row in this system
+gives.** "Who was in `schuzka2026-1` on 14 March 2026?" is a point-in-time read over
+`person_group_member`, exactly as `domain/05`'s query 3 was for a unit, and it survives the audit
+trail's 24-month payload expiry ([D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+because it does not depend on the trail. **The group's own `valid_from`/`valid_to` and the member rows'
+periods are two different facts** and both are kept: the first says the group existed over that span,
+the second says who was in it. An open group with dated members answers the historical question just
+fine, which is the whole reason the rows are dated — the naming in your own example (`schuzka2026-1`)
+becomes a habit the organization may or may not keep, rather than the mechanism history depends on.
+
+**Dating the rows imports the invariant set that dating always imports**, and naming them here is the
+work: where both ends are set, `valid_to` is later than `valid_from`; **no two rows for the same person
+and group may overlap**, counted over **all** rows and not only the open ones, half-open so a row ending
+on a day and one beginning that same day do not collide (the
+[D-002](#d-002--everything-temporal-is-a-period-never-a-boolean) shape, and
+[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those) shape 1,
+so a hand-written migration emits it and the ORM will not); a person who left in 2020 and came back in
+2024 is **two rows**, never one row edited in place, because the edit destroys the answer to "was she in
+the group in 2019?"; and moving from one group to another closes one row and opens another —
+`03-membership.md §5.2`'s transfer discipline, retargeted at groups and otherwise unchanged.
+
+**The duplication is now real, which is why the two tables are said apart by their rules and not only
+by their names.** `person_group_member` and `audience_member` are both dated sets of people, which is
+precisely the pair
+[D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved) teaches a reader
+to distrust — two statements that can drift, one of which will be the one the screens read. They stay
+apart because the *maintenance* differs, and the dated shape makes the difference sharper rather than
+softer: a group's members are the organization's record of who attends, kept by the people who run the
+group, and it is true when no grant exists; `audience_member` rows are a selector's additions, kept by
+whoever composes permissions, and are meaningless outside the selector they complete. **Merging them
+would make the permission table the system's roster**, which is the same mistake D-062 refused when it
+declined to answer "who is running this camp?" by reading the grant table.
+
+**What is actually given up against `unit_participation` is small and worth listing, because "no special
+features" was the instruction.** No `join_reason_code` / `leave_reason_code` (and so no `transfer`,
+`promotion`, `reorganisation`, `unit_closed` vocabulary to maintain or to get wrong), no `is_primary`
+saying which of a person's groups to show first, no `role_in_unit` display label, no `data_confidence`
+and nothing to import into: the corpus names no groups, so every member row is written by a person
+([D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+
+**Two-way door?** The periods are the door and they are open. What to refuse later is the *vocabulary*
+that used to hang off them — a controlled `leave_reason_code` list is exactly the eighteen-ticks-without-a-receipt
+shape D-095 removed, and a `role_in_unit` column is the thing that always turns into an authorization
+check the moment somebody is asked "can she edit the roster?"
+
+**See:** [domain/04-organization-structure.md](../domain/04-organization-structure.md),
+[data-model/02-organization.md §1–§2](../data-model/02-organization.md#1-person_group),
+[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation).

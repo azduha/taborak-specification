@@ -71,6 +71,18 @@ and the payment is the half a later editor is tempted to forget.
 payment data, and free-text columns alongside**
 ([D-090](decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 
+**Re-described one round later, and read this note before the answer above.** The corpus's second half is
+not a roster: the rows are **people with their membership periods at the root**, and **events with
+attendance**, and they name no units at all.
+[D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units) retires
+the roster frame and
+[D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) lifts
+the ban on imported memberships that the reasoning below had made absolute one round earlier. The
+corrected shape is in [C-5](#c-5--closed--the-corpus-names-no-units-and-none-are-assigned). **What
+survived untouched is everything this item was about** — the volume, the legacy number, the absence of
+money, and the attribute vocabulary arriving from the free-text columns. Its heading is left as written so
+the links into it keep working: it is closed, on a different description of the file.
+
 **The corpus answers the question the import was going to default.** This item's own warning was that
 membership-vs-participation gets *harder* with volume, because an inferred open-ended `membership` makes
 every 2003 roster a current member with authority today
@@ -199,11 +211,16 @@ already has. The collision case is a person arriving through a door the system d
 
 ---
 
-## C. Organization
+## C. Organization — closed
 
-### C-1 🟢 May the root *see* what happens in its sub-units?
+Six questions, closed in two rounds. **C-2 was resolved long ago** and never appeared here: a unit may
+not be reparented at all, so a unit that moves is a new unit
+([D-036](decisions/decision-log.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)).
 
-**Answered: no — `scope_exposure` is the only crossing, and no reporting channel is built**
+### C-1 ✅ **Closed** — the root may not read into its sub-units
+
+**Answered in round 3, closed here for tidiness: no — `scope_exposure` is the only crossing, and no
+reporting channel is built**
 ([D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)).
 
 **What was not obvious until it was answered.** The question existed on the assumption that
@@ -218,26 +235,145 @@ organization scope and **cannot** read a pack roster. Scope is an exact match; i
 root participation rows, which mirror membership
 ([D-041](decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
 See [domain/06 §2.4](domain/06-authorization-model.md#24-the-organization-wide-role-problem-and-why-it-mostly-dissolved).
+**D-094 gave this the same shape in the other direction**: imported events belong to the root, so a
+unit-scoped "our events" report sees historical camps it did not run — a date filter, not a unit filter,
+is what makes either list mean what it looks like it means.
 
 ---
 
-### C-3 🟢 Units with the same number across decades
+### C-3 ✅ **Closed** — a reused unit number is a new unit
 
-**Question.** When a troop closes and a new troop with the same number starts ten years
-later, is it the same unit or a new one?
+**Answered: a new unit, unless somebody records the continuity**
+([D-096](decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)).
 
-**Impact.** An organizational judgement, not a technical one — but it must be *recorded*,
-or it will be re-litigated every time someone asks about the 80s troop with that number.
+**The question came back as a question, and that was the answer.** Asked whether a number appearing
+twice across decades is one unit or two, the reply was *"what is a unit number?"* — which is the right
+thing to ask, because a `code` turns out to be a short human label somebody types (`T12`, `4. oddíl`),
+not an identity, not a name (names are temporal rows in `org_unit_name`), and not unique: uniqueness is
+per parent among live rows, which is precisely why a closed unit's number is free again
+([data-model/02 §3](data-model/02-organization.md#3-org_unit)). A label that gets retyped is not a
+continuity.
 
-**See:** [domain/04 §3](domain/04-organization-structure.md#3-unit-names-and-renumbering--the-history-problem)
+**What was decided, and what was refused.** One `org_unit` per unit that existed; continuity is an
+assertion, written as `org_unit_relationship` with `successor_of`, never a match on the label. The
+opposite default is what "match on code" does if nobody says, and it invents a thirty-year lifespan.
+**What this lost is almost nothing, and the reason is C-5:** the corpus names no units at all, so there
+is no import-time collision to get wrong. This question outlived its urgency by exactly one round, which
+is worth knowing when reading it.
+
+**See:** [domain/04 §3, §6](domain/04-organization-structure.md#3-unit-names-and-renumbering--the-history-problem)
 
 ---
 
-### C-4 🟢 Does appointing someone to a position auto-create a role assignment?
+### C-4 ✅ **Closed** — a group is filled by a rule and a list, and appointing creates nothing
 
-**Current design.** Separate. `position.is_leadership` lets a workflow offer both.
+**Answered: filling rules on groups, and the two things the model refused to do**
+([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
 
-**Impact.** Purely a workflow question; the schema is unaffected.
+**The question was about a convenience workflow and the answer was about the group model, which is why
+it is the largest decision of the round.** Asked whether appointing someone to a position should create
+the matching role assignment, the answer described *filling rules*: each permission group states who is
+placed in it **on top of the manually added people** — "everyone with membership", "a leader role",
+"anyone", "members of permission group ABC" — with worked examples from a system where a group's
+population derives from enrolment in a course.
+
+Three of those four rules already existed (`everyone`, `all_members`, `unit_leaders`), which is the
+quiet part of the answer: **an appointment creates no role assignment, because the derivation belongs on
+the group's rule rather than copied per appointment, where it would have to be found again and revoked.**
+Two parts were forbidden and are now decided:
+
+- **A group is a rule *and* a list.** `audience.kind`'s builtin-XOR-group split is gone; membership is
+  the union of a rule arm, a manual arm and an inclusion arm.
+- **A group may include another group.** The one-line ban — *"They do not nest"* — is withdrawn, and its
+  reason (cycles, unpredictable answers) is answered the way D-087 answered the same reason for merge
+  chains: **the cycle is refused when the edge is saved**, not defended against in the read path.
+
+**What was deliberately *not* taken from the answer.** In the system described, permissions sit on the
+group; here a *role* is still held by one named person, because `role_assignment` is the office record
+that answers "who was treasurer in 2023" and a derived holder list cannot. That extension is
+[F-12](#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), not a silent schema change.
+
+**What it costs, and where to look for the bill.** A grant's reach is no longer visible in the row that
+grants it, so the editor must show the expanded set; and "who could read this in 2023" now depends on a
+recomputation of sets that were never stored, on state that has moved, with the audit payload that also
+held the answer expired by
+[D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short).
+**[F-7](#f-7--cache-vs-materialized-effective_permission-table) is the route back** and is no longer only
+a performance question.
+
+**See:** [data-model/05 §8](data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
+[domain/04 §4](domain/04-organization-structure.md#4-positions)
+
+---
+
+### C-5 ✅ **Closed** — the corpus names no units, and none are assigned
+
+**Asked, and answered by correcting the premise: the corpus is people and events, and it says nothing
+about sub-units**
+([D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
+[D-094](decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)).
+
+This question was not in the register. It appeared when [B-1](#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data)
+was read against the unit model: the import matches roster rows to `org_unit` rows, `org_unit.unit_type_id`
+is required, no sub-unit type is seeded (D-054), and the pipeline's only documented behaviour for an
+unknown unit is a warning that does not block. **Something had to create those units, and nothing said
+what.**
+
+**The answer removed the question.** *The rows are mainly "person with names, birthdate and when they
+were members of the root unit", "events with attendance". Not much more — do not solve assignment to org
+units.* So:
+
+- **People** arrive as a `person` plus a **bounded** `membership` — D-090's absolute ban on imported
+  memberships is narrowed to what it was protecting, *never open-ended and never inferred from
+  attendance* — and each membership brings its root participation row with it, as
+  [03-membership §5.1](data-model/03-membership.md#51-a-participation-row-on-the-root-unit) requires.
+  **No `fee_obligation` is created**: the corpus has no money, and an obligation per historical year
+  would arrive as debt.
+- **Events** arrive owned by **the root**, which satisfies D-058's exactly-one-unit with a rule instead
+  of a judgement, and attendance becomes registrations — with `not_attending` written for nobody, because
+  an export lists who came and silence is not a refusal (D-059).
+- **Units are not imported, not created, and not matched.** The parser keeps its `parsed_unit_code` for
+  the day an export surprises someone; nothing reads it.
+
+**The consequence to keep in sight: the historical record contains no sub-units.** "Who was in pack X in
+2011?" has no answer on day one — not a wrong one, none — and the first answer it has will be typed in by
+hand. Nothing in the model is missing; the source cannot say it. This is also the round to note that
+**B-1's closure now rests on a different description of the corpus than the one recorded in it**, which
+is why B-1 carries a pointer rather than an edit to its own wording.
+
+**See:** [domain/03 §7](domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
+[data-model/06 §3.1](data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences)
+
+---
+
+### C-6 ✅ **Closed** — units carry no restrictions; joining one is somebody else's act
+
+**Answered: no restrictions on units, and no self-assignment anywhere**
+([D-095](decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)).
+
+Asked whether a unit type marked `allows_minors = false` should refuse a minor's *position* as it refuses
+their participation, the answer refused the premise from both sides: *a unit does not have any
+restrictions — however, persons can't assign themselves; they will be assigned to the unit by the
+counselors* — and on entry, *into the root unit there is a fee; into the sub-units there is no fee, it is
+entirely managed by the organization, including adding more members*.
+
+**Two entry paths, one gate each.** The root: you pay, and the membership flow is the only self-service
+entry in the system. A sub-unit: somebody else writes the row, through `unit_participation.manage` held
+at that unit, **with no self-scoped variant and none to be added**; the same for position assignment. No
+fee anywhere below the root, and no model wants one.
+
+**What was deleted, and what that leaves.** `org_unit_type.allows_minors` goes, with the check it drove
+and the seed's `allows_minors = false` on the root type — a flag documented as a safeguard and enforced on
+one of two write paths is a receipt, not a safeguard. D-081's requirement is answered with a change of
+kind: the rule *"do not place a child where nobody supervises them"* is now enforced by **who may write
+the row** — an audited write by a named adult — rather than by a boolean on a type. It is a stronger
+control for the wrong-person case and it is **silent on the which-units-are-for-children question, which
+the system can no longer answer at all**; with D-043 recording no background checks either, that is the
+whole of the organization module's safeguarding story, stated where it can be argued with.
+
+**See:** [domain/04 §1, §4](domain/04-organization-structure.md#1-one-root-arbitrary-sub-units),
+[data-model/02 §1](data-model/02-organization.md#1-org_unit_type)
 
 ---
 
@@ -587,19 +723,44 @@ of the catalog, and there is no automated backstop at all.
 
 ---
 
-### F-5 🟢 Which built-in audiences are needed?
+### F-5 🟢 Which built-in audiences are needed, beyond the four now named?
 
-**Question.** `everyone` and `all_members` are seeded, plus parameterised
-`unit:<id>:participants` and `unit:<id>:leaders`
-([D-042](decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
-Which others are real — "the guardians of this child", "the leaders of the parent unit",
-"adults only", "everyone in this section *and everything under it*"?
+**Partly answered in round 9, by the rules named in C-4:** "anyone", "everyone with membership", "a
+leader role" and "members of group ABC"
+([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+The first three already existed as `everyone`, `all_members` and `unit_leaders`; the fourth is the new
+inclusion arm. **Composition retires several of the rules this item used to speculate about** — "the
+guardians of this child, plus the leaders of this unit" is now two groups and one edge rather than a new
+built-in — so the remaining question is smaller than it was and sharper: which *primitive* facts about a
+person does the resolver need to be able to test?
 
-**Impact.** Each is one `audience` row plus one branch in `person_in_audience()`. Cheap to
-add, cheap to remove. But the parameterised ones raise a second question: are
-`unit:42:participants` rows **seeded per instance** on demand, or created when first granted?
-The first is a migration that must be re-run as units are created; the second needs a
-create-on-demand path that bypasses the usual admin permission.
+**Still open.**
+
+- **`event_participants`** — everyone with a registration for event X. This is the closest local shape to
+  the enrolment-derived rules named in C-4 (`studpredmet … kod PV160`: the students and teachers of one
+  course), and after [D-094](decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)
+  there are registrations to derive it from. It is also the rule an organizer wants most: "let everyone
+  who registered see the joining instructions".
+- **"adults only"** — there is no built-in that tests a person's age, and `position.min_age` and
+  `allows_minors` were the only age rules in the model, the latter now removed by
+  [D-095](decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act).
+  Membership is ageless (D-038), so this would be a new kind of rule, not a new name for an old one.
+- **"everyone in this section *and everything under it*"** — and this one is not merely unseeded, it is
+  **barred as currently decided**. An audience rule is evaluated inside the resolver, and the resolver
+  must never walk the hierarchy: no ancestor walk, and `unit_ancestors()` may not appear in a permission
+  path ([data-model/02 §6](data-model/02-organization.md#6-hierarchy-traversal)), with integrity check 13
+  asserting exactly that in CI
+  ([data-model/05 §11](data-model/05-authorization.md#11-invariants-to-verify)). Composition does not
+  help either, because a union of named units' groups is not a subtree. So the question is not "add a
+  rule" but **whether a subtree walk is allowed inside audience evaluation at all** — which is a D-031
+  question wearing an audience's clothes, and should be argued as one.
+- **Are parameterised groups seeded per instance or created on demand?** Unchanged, and unchanged in
+  weight: `unit:42:participants` either arrives from a migration re-run as units are created, or from a
+  create-on-demand path that bypasses the usual admin permission. **D-091 made this cheaper to get wrong
+  and cheaper to fix**, since a group is now something an editor may create incidentally while composing.
+
+**Impact.** Each rule is one branch in `person_in_audience()` plus a row. Cheap either way, which is why
+this stays 🟢 — except the subtree question, which is not cheap and is not about audiences.
 
 ---
 
@@ -779,6 +940,49 @@ signals are not enough — and the honest response is a `person.view` grant disc
 membership, not a new code invented at a desk.
 
 **Needed.** Nothing before implementation. Revisit when the first real import has produced a real queue.
+
+---
+
+### F-12 🟡 May a role be held by a rule, as an audience is?
+
+**Raised by [D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group),
+which refused to decide it.** The answer that produced D-091 described *permission groups* — a set of
+people with filling rules, **carrying permissions**. That is expressible here today for anything an
+`access_grant` can target: one row grants a permission, at a scope, to a group, at a level, and the
+group's rule decides who it reaches. What it is *not* expressible in is a **role**. `role_assignment` names
+one person, one role, one scope, one period — there is no grantee pair on it like the one D-042 put on
+`access_grant` — so "everyone with a current membership holds role X" cannot be written, and neither can
+"the technical-staff group holds these".
+
+**Why it was not simply built.** `role_assignment` is the **office record**. It is what a report reads to
+answer "who was treasurer of Pack 12 in 2023", and a holder list derived from live state cannot answer
+that, because there is nothing to date. The same objection is what makes
+[assumption 51](#i-assumption-index) uncomfortable rather than merely untidy: D-091 already widened how
+much of the permission answer is recomputed, and moving roles onto the same footing would move the last
+human-readable answer along with it.
+
+**The three answers available, in ascending cost.**
+
+- **No, and the split is the design** — roles are offices held by named people, groups are sets that
+  item grants reach. Costs the organization a per-person row for each office, which is what an office is
+  for. **This is what the documents say today.**
+- **Yes, with a stored shadow** — `role_assignment` gains a grantee pair, and every resolution of a rule
+  holder is materialized as a dated row (created when the rule starts covering someone, closed when it
+  stops). Keeps the office record intact and answers the historical question, at the price of a sweep that
+  must run and a `role_assignment` table whose rows now have two very different authors. This is
+  **[F-7](#f-7--cache-vs-materialized-effective_permission-table)'s** materialized option wearing a
+  business object's clothes, which is the argument for deciding the two together.
+- **Yes, derived, no shadow** — cheapest to build and it deletes the office record's guarantee. Not
+  recommended here, and named because it is what a fast implementation reaches for.
+
+**Impact.** One grantee pair plus a check that a rule holder is not also manually assigned the same role
+at the same scope (two rows, one authority, no obvious owner). **If the second arm is taken, the audit and
+history argument arrives first**: the trail that would have recorded the change is short by policy
+([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+so the materialized rows are the only history there is.
+
+**Needed.** Not before implementation. Before any screen offers "assign this role to a group", which is
+the moment the question stops being abstract.
 
 ---
 
@@ -1203,7 +1407,11 @@ rather than finding it silently deleted.
 | A-4 | Background checks | [D-043](decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system) | None are recorded in this system. |
 | A-4 | The expiry date | [D-047](decisions/decision-log.md#d-047--the-fee-expires-on-1-january) | 1 January; the organizational year runs with the calendar. |
 | A-4 | The renewal window length | [D-048](decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter) | 60 days, stored as a parameter rather than compiled in. |
-| C-1 | May the root read into its sub-units? | [D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing) | No. `scope_exposure` is the only crossing; no reporting channel is built. |
+| C-1 | May the root read into its sub-units? | [D-049](decisions/decision-log.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing) | No. `scope_exposure` is the only crossing; no reporting channel is built. **Formally closed in round 9**, and [D-094](decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event) gave it a mirror: imported events belong to the root, so a unit's own event list contains history it did not run. |
+| C-3 | Is a reused unit number the same unit? | [D-096](decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity) | A **new** unit, unless someone records continuity as `successor_of`. A `code` is a typed label, not an identity. |
+| C-4 | Does appointing someone create a role assignment? | [D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group) | No — and the answer went further than the question: a group is now a rule **and** a list **and** other groups, unioned, with cycles refused at the write. Rule-filled *roles* went to [F-12](#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is). |
+| C-5 | What creates the units the import's rows point at? | [D-092](decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units), [D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated), [D-094](decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event) | Nothing, because the rows name no units. People arrive as bounded memberships, events as root-owned events with registrations. **The historical record has no sub-units in it.** |
+| C-6 | Should `allows_minors` refuse a minor's position as it refuses their participation? | [D-095](decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) | Neither: units carry no restrictions and the flag is removed. The control is that nobody joins a unit or takes a position themself — a counselor writes the row. |
 | D-6 | How may the membership gate be waived? | [D-051](decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag) | A person-level `system.gate_exempt` permission, in addition to the role flag. |
 | D-7 | The root participation row at renewal | [D-050](decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row) | Extended across the renewed period; one row, no gap. |
 | B-3 (part) | Erasure: what shape? | your answer, round 5 | Redact the person, keep the financial and membership skeleton. **Retention decided in round 8** — the skeleton is kept indefinitely, audit payloads expire ([D-088](decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)); what is left is the legal review of the indefinite half, not the design. | |
@@ -1288,31 +1496,52 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 48 | Presence is a three-valued fact, not a boolean (D-067) † | [data-model/08](data-model/08-events.md#4-event_registration) |
 | 49 | Keeping named membership and fee rows **indefinitely** after an erasure request has a legal basis (D-088) — **unverified, and commissioning the review is the organization's job** | [data-model/00](data-model/00-conventions.md#8-personal-data-and-erasure) |
 | 50 | `access_log` needs the same window as audit payloads, neither longer nor shorter (proposed, **F-8**) | [data-model/05](data-model/05-authorization.md#9-access_log) |
+| 51 | Group membership is recomputed at check time and never stored, so "who held this in 2023" may be unanswerable once the audit payloads expire (D-091) † | [data-model/05](data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people) |
+| 52 | The historical record contains no sub-unit participation, because the corpus names no units (D-092) † | [data-model/06](data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences) |
+| 53 | An imported membership carries no fee obligation, and its `outstanding_balance` is NULL rather than zero (D-093) † | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
 
 ---
 
 ## How to answer
 
-**The blocking set is now empty.** Four rounds have cleared every question that was holding
-the schema still, so nothing here has to be answered before implementation could start.
+**The blocking set is still empty.** Nine rounds in, nothing here has to be answered before
+implementation could start, and round 9 is the second consecutive one that closed a whole section without
+changing a table.
 
 What remains is genuinely deferrable, and the most useful next ones are:
 
-1. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one
+1. **F-12** — may a role be held by a rule, as an audience can be. This is the half of the round-9 group
+   answer that was refused rather than skipped, and it arrives attached to a history question: an office
+   record derived from live state cannot say who held the office in 2023.
+2. **F-7** — a cache or a materialized effective-permission table. [D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+   moved this: with rule-filled groups, a materialized snapshot is the only thing that could ever answer
+   "who could read this in 2023", because the trail that recorded the change is short by policy (D-088).
+3. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one
    permission is trusted to guard a trail that holds person data. These are one question seen
    from two ends: the data that lands in the trail arrives through the vocabulary.
-2. **EV-2** — how long an event answer is kept once the event it answered is gone, which is a
+4. **EV-2** — how long an event answer is kept once the event it answered is gone, which is a
    sharper question now that the audit payloads which also held those values have a clock on them
    ([B-3](#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
-3. **F-5** — which built-in audiences are needed, and whether parameterised ones are seeded per
-   instance or created on demand.
-4. **The legal review**, which is not a question this register can answer and now has a concrete
+5. **The legal review**, which is not a question this register can answer and now has a concrete
    policy in front of it: named membership and fee rows kept indefinitely, audit payloads kept
-   24 months. Assumption 49 is that review's subject.
+   24 months. Assumption 49 is that review's subject — **and since
+   [D-093](decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) the
+   indefinitely-kept population includes thousands of imported people who never used the system**, which is
+   the same judgement at a scale the review has not yet been shown.
 
 Everything else can be answered as we go. The schema is built so that most answers change
-data rather than structure — which is why the four above are worth a moment and the rest are
+data rather than structure — which is why the five above are worth a moment and the rest are
 not.
+
+**Answered in round 9:** the organization, in whole — groups and their filling rules (C-4, D-091), the
+shape of the corpus (C-5, D-092/093/094), who may join a unit and the deletion of `allows_minors`
+(C-6, D-095), and what a reused unit number means (C-3, D-096). Two things came out of the round that are
+worth more than the questions that were asked. **A rule that lives only as prose in one section is still a
+rule**: "audiences do not nest" sat in `data-model/05 §8` for three rounds and quietly cost two grants for
+one intention, until an answer asked for the forbidden thing. And **a decision recorded from a description
+of the data is only as durable as the description** — D-090's absolute import rule lasted one round because
+nobody had read the file, which is why D-092 exists and why the corpus questions are now asked in the
+present tense about a real export.
 
 **Answered in round 8:** identity and history, in whole — merge chains and unmerge (B-2, D-087),
 the two retention clocks (B-3, D-088), the second account (B-4, D-089), and the shape of the

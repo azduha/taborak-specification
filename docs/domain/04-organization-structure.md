@@ -85,13 +85,43 @@ be gone, and a new one may be needed in 2027. An enum requires a deployment to c
 > "a pack may only sit directly under the root" is an example of a rule, not a type the
 > system ships with.
 
-A type row is a `code` and a name, plus `allows_minors`, `is_leaf` — may it contain sub-units —
-an optional `max_depth` ceiling, and a `sort_order`.
+A type row is a `code` and a name, plus `is_leaf` — may it contain sub-units — an optional
+`max_depth` ceiling, and a `sort_order`. **It carries no restriction about who may belong to a
+unit of that type**, and none will be added.
 
-`allows_minors` is a **safeguarding** flag, not a membership rule: it lets the system
-validate that a unit which does not supervise minors never has any placed in it, without
-hardcoding which type codes those are. Membership itself is ageless — see
-[../decisions/decision-log.md](../decisions/decision-log.md#d-038--membership-is-ageless).
+**`org_unit_type.allows_minors` is removed** ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)).
+It was introduced as a **safeguarding** flag — the thing that let the system refuse to place a
+minor in a unit that does not supervise them without hardcoding which type codes those are. It
+went because a flag documented as a safeguard and enforced on one of two write paths is the thing
+these documents refuse to keep: *a list of eighteen ticks nobody read is not a safeguard, it is a
+receipt* ([08-person-data.md §4](08-person-data.md#4-what-was-refused-and-what-it-cost)).
+Gone with it: the integrity check that read the flag, the root type's `allows_minors = false` in
+the seed, and the explanation of why there is no `allows_adults` sibling
+([../data-model/02-organization.md §1](../data-model/02-organization.md#1-org_unit_type)).
+
+**The rule's name survives the mechanism, so [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
+requires naming who enforces it now.** *Do not place a child where nobody is responsible for them*
+is enforced by **who is allowed to write the row**. Nobody writes themselves onto a roster or into
+a position: the write is `unit_participation.manage` at that unit
+([../appendix/permission-catalog.md §4](../appendix/permission-catalog.md#4-membership)), held by
+named adults the unit's own people chose, audited, and naming who made the assignment. That is a
+stronger control than a boolean on a type, because a boolean only ever refused a placement nobody
+had thought about, while the permission refuses every placement by the wrong person regardless of
+the child's age. The same holds on the position side
+([§4](#4-positions)).
+
+**What is lost, in one paragraph, because it is the safeguarding story.** **The system can no
+longer say which units are for children.** `allows_minors` was the only machine-readable answer to
+that question and nothing replaces it, because "entirely managed by the organization" is a
+statement about people rather than about data. With no background checks recorded either
+([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)),
+the organization module's safeguarding story after this decision is **a permission held by named
+adults, an audit trail whose values expire after two years
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+and a report of who holds the write**. If that turns out to be too little — after an incident, or
+an insurer's question — the route back is a rule about who may be placed where, argued once as a
+decision with its enforcement layer named in D-081's terms, and **not** a resurrected column whose
+name implies it enforces something.
 
 ---
 
@@ -200,6 +230,42 @@ whose meaning moved. So this one needs a positive guard in the write path — re
 not warn about it — and a test that attempts the update. See
 [data-model/02-organization.md](../data-model/02-organization.md#a-unit-never-changes-parent).
 
+### A reused number is a new unit
+
+A number coming back — Pack 12 closed in the 1990s, a Pack 12 on the register now — is
+**a new unit** ([D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)).
+One `org_unit` row per unit that existed, each with its own period, and the continuity between two
+of them is **not a property of the label but an assertion somebody makes**, recorded as an
+`org_unit_relationship` with `successor_of`
+([../data-model/02-organization.md §5](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession)).
+The opposite default — one row, with a thirty-year gap inside one unit's life — is what a system
+drifts into if nobody says, because it is what "match on code" does.
+
+**This needs the question answered first, because the question was the answer.** Asked what a
+number appearing twice means, the reply came back as *"what is a unit number?"* — and that is the
+useful part. **A `code` is a short human label typed by somebody**: `T12`, `4. oddíl`. It is not
+the unit's identity, which is the row. It is not its name, which is a temporal row of its own in
+`org_unit_name`. And **it is not unique, deliberately** — uniqueness is per parent and among live
+rows only, which is exactly why a closed unit's number is free again
+([../data-model/02-organization.md §3](../data-model/02-organization.md#3-org_unit)). A label that
+gets retyped is not a continuity, and a rule about identity may not rest on one.
+
+**Three cases, and the two older ones are not this one:**
+
+| Situation | What happens | Why |
+|---|---|---|
+| "4th Pack" becomes "Pack 12", same people | **One unit, two name rows** — a renumber is a rename | The participants and the continuity are untouched; a new row would orphan the history |
+| A unit moves under a different parent | **A new unit** — the old one closes | `parent_unit_id` is immutable (D-036), §3 above |
+| A number comes back decades later | **A new unit**, unless somebody records the continuity | The label carries no identity; continuity is asserted as `successor_of`, never matched |
+
+**The cost is a sentence somebody writes down, occasionally.** When a number really does return — a
+troop refounded after a decade dormant — someone records that this unit is the successor of that
+one, and "who was in Pack 12 in 1984?" follows the relationship instead of guessing from an
+overlapping name. §6 used to refuse to pick a default and to require only that the choice be
+recorded; what D-096 adds is **the direction the record goes in when nobody records anything**,
+because an unstated default is a default that gets implemented by whoever writes the matching
+screen.
+
 ---
 
 ## 4. Positions
@@ -211,7 +277,10 @@ important, and neither expressible if positions only exist when filled.
 
 A position is defined against a `unit_type_id` and carries a `code` — `scoutmaster`,
 `assistant_leader`, `treasurer`, `quartermaster` are the ordinary ones — a `title`, a
-`max_holders`, and `requires_membership`: must the holder be a current member.
+`max_holders`, `requires_membership`: must the holder be a current member, and `is_leadership`:
+does the holder count as one of this unit's leaders. That last flag has exactly one job — it
+decides who the derived `unit_leaders` group is filled with, below — and it is worth naming here
+because a flag with a stated second purpose gets a second purpose.
 
 An assignment joins three things and dates them: the `position`, the `org_unit` it is filled in,
 the `person` filling it, and the period. It also carries `is_primary`, because some people hold
@@ -259,9 +328,47 @@ them separate means:
 - Changing what a scoutmaster can do in the system is a permission change, not a
   restructuring of the organization's records.
 
-In practice a workflow will offer "appoint as scoutmaster" as one action that creates both
-a `position_assignment` and the corresponding scoped `role_assignment`. That is
-convenience; the schema stays separate.
+### An appointment creates no role assignment
+
+This section used to end with the convenience workflow: *"a screen will offer 'appoint as
+scoutmaster' as one action that creates both a `position_assignment` and the corresponding scoped
+`role_assignment`."* **It creates one row, not two**
+([D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)),
+and the reason is not that the copy was judged tedious but that **the derivation already has a home
+and the copy does not**.
+
+**Where the derivation lives: the group's filling rule.** A permission group (the `audience`
+table) is now filled by **a rule and a manual list and other groups, unioned** — see
+[06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups) and
+[data-model/05 §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people).
+`unit_leaders` is one of those rules: it reads the position assignments live on the date being
+checked and says who leads a unit. So "the leaders of this pack may work its roster" is one grant
+aimed at one rule, and an appointment changes the answer **by existing**.
+
+**Why a copy would have been worse, in the direction that matters.** A copied role assignment
+outlives its reason: it has to be found again and revoked when the position ends, and everything
+about the appointment that made it is a second record of a fact the first one already states. A
+rule stops covering the person on the day the position assignment closes. That is the whole
+difference, and it is a difference in *what has to be remembered* — the revocation is the failure
+mode, and revocation-by-remembering is the kind that leaves a volunteer with treasurer access in
+2026 for a chair they left in 2019.
+
+**What the group model now allows, and what it refuses.** A group may **include another group**;
+the old one-line ban — *"They do not nest"* — is withdrawn, and the cycle it was written to prevent
+is **refused when the inclusion edge is saved**, because inclusion edges are stored rows and so the
+question is decidable at the write rather than at the read. The reasoning, the length bound and the
+fail-closed rule belong to the authorization model
+([06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)); they are not
+duplicated here.
+
+**What was deliberately *not* taken from the answer, and it is the honest limit of this section.**
+In the system the answer came from, permissions sit on the group and a group can *be* a holder of
+office. Here **a role is still held by one named person**, because `role_assignment` is the office
+record that answers "who was treasurer of Pack 12 in 2023" and a derived holder list has nothing to
+date. So a **rule-filled role is not decided** — it is
+[F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), and this document
+will not quietly write it as though it were. What appointing does create, today, is the position
+assignment and nothing else.
 
 ### Eligibility
 
@@ -273,7 +380,7 @@ enforce it with a foreign key.
 Note this is *reported* for positions but **enforced for roles**: the permission resolver
 itself checks membership state for roles that require it — see
 [D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
-and [§6](#7-units-and-permissions).
+and [§7](#7-units-and-permissions).
 
 ---
 
@@ -312,10 +419,13 @@ Two things to get right:
 
 1. **A closed unit is not deleted.** Historical `unit_participation` rows reference it, and
    "who was in the 4th Pack?" must work forever.
-2. **Reopening reuses the row** if it is genuinely the same unit, or creates a new one if
-   the organization considers it a fresh start. This is an organizational judgement, not a
-   technical one — record which was chosen and why on the unit, so the answer is not
-   re-litigated every time someone asks about the 80s unit with the same number.
+2. **A reopened number is a new unit unless somebody says otherwise.** This bullet used to refuse
+   the choice both ways — *reuse the row if it is genuinely the same unit, or create a new one if
+   the organization considers it a fresh start, and record which was chosen* — which left the
+   judgment right but the **default unstated**, and an unstated default is what the matching screen
+   implements. Now: one row per unit that existed, and continuity is an assertion recorded as
+   `org_unit_relationship` with `successor_of` (§3). It stays an organizational judgement rather
+   than a technical one; what changed is which way the judgement falls when nobody makes it.
 
 **A unit that changes parent is a new unit** (§3), so `parent_unit_id` is immutable and the
 historical answer to "where did this unit sit?" never changes retroactively.
@@ -371,7 +481,11 @@ at that unit. A parent unit cannot create it.
 event to everyone" or "to this pack's leaders" is **one row** with an audience — a rule the
 resolver evaluates against current state — rather than one row per person. This is what
 replaced the bulk scope-exposure tool ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)),
-and it is why that tool had no remaining job.
+and it is why that tool had no remaining job. **Since
+[D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+that set may be a rule, a hand-kept list, another group, or all three at once** — which is why the
+grant editor has to show the people a grant actually reaches rather than the group's name
+([06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)).
 
 
 ---

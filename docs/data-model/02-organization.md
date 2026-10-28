@@ -15,7 +15,6 @@ Domain rationale: [../domain/04-organization-structure.md](../domain/04-organiza
 | `code` | text, required | `'organization'`, then whatever the organization defines. |
 | `name` | text, required | |
 | `description` | text, optional | |
-| `allows_minors` | boolean, required, defaults to true | **Safeguarding, not a membership rule.** Membership is ageless (D-038); this flag lets the system refuse to place a minor in a unit that does not supervise them, without hardcoding which type codes those are. There is no `allows_adults` sibling: no unit in this organization excludes adults, and the units that must contain adults (anything with a leadership position) say so through position eligibility instead. See §7. |
 | `is_leaf` | boolean, required, defaults to false | A leaf may contain participants but not sub-units. A weekly meeting group is usually a leaf, but not necessarily — nesting is arbitrary (D-035). |
 | `max_depth` | integer, optional | Maximum nesting depth for this type, relative to the root. Unset = unconstrained. |
 | `sort_order` | integer rank, required, defaults to 0 | |
@@ -31,11 +30,20 @@ Domain rationale: [../domain/04-organization-structure.md](../domain/04-organiza
 **Types are rows, not an enum**, so the vocabulary can change across decades without a
 deployment. See [../domain/04-organization-structure.md](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units).
 
-**`allows_minors` is the replacement for hardcoded type checks.** The validation "a minor may
-not take part in the organization's legal-and-filing unit" reads this flag rather than listing
-type codes in code. Note it constrains *participation* and *position assignment*, not
-membership: a person of any age may be a member of the organization, because membership is
-ageless and lives at the root ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
+**`allows_minors` was a column on this table; [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+removed it, and the rule it named is now enforced by who may write the row.** The flag was introduced as a
+safeguarding replacement for hardcoded type checks — *"a minor may not take part in the legal-and-filing
+unit"* read the flag instead of listing type codes — and the argument that removed it is D-095's, not
+repeated here. **Who enforces it now:** `unit_participation.manage` at that unit, held by the people who run
+it, with no self-scoped variant; a person able to add a child to a unit is a person that unit's leadership
+trusts with its roster, the write is audited, and the row names who made it. That is a stronger control
+than a boolean on a type, because the boolean only ever refused a placement nobody had thought about while
+the permission refuses every placement by the wrong person regardless of the child's age. **What is
+genuinely lost is stated once, in D-095, and it is not small: the system no longer knows which units are
+for children**, and nothing on this table replaces that. The sentence this note replaces also explained why
+there is no `allows_adults` sibling; with no `allows_minors` there is nothing to be a sibling of, and
+`position.min_age` remains a real eligibility constraint about the *position* rather than about the unit
+(§7), which D-095 left untouched.
 
 ---
 
@@ -165,6 +173,18 @@ decades, and with arbitrary nesting two sub-units under different parents will l
 both be "1". A global unique constraint would reject real historical data during import.
 Uniqueness is scoped to the parent and to live rows.
 
+**And because it is scoped to live rows, a number coming back is legal — which raises the question
+D-096 answers: is the new bearer the old unit?** A `code` is **a short human label somebody types**
+(`T12`, `4. oddíl`). It is not the unit's identity, which is the row; it is not its name, which is a
+temporal row of its own (§4). **A reused number is therefore a new `org_unit` row**, with its own period,
+and the continuity between the two bearers is not a property of the label but an assertion somebody makes
+and records as an `org_unit_relationship` with `successor_of` (§5). **The default matters precisely because
+it is easy to leave unstated:** "match on code" reuses the row and lets a thirty-year gap show inside one
+unit's life, which is what a system drifts into when nobody writes the rule down, and it makes "who was in
+Pack 12 in 1984?" answerable by an overlapping name rather than by a record. D-096's cost is that someone
+has to write a sentence down occasionally, when a troop really is refounded after a decade dormant; the
+record then carries the direction the default goes in when nobody does.
+
 ### A unit never changes parent
 
 `parent_unit_id` is **immutable**. This is not a convention — it is enforced inside the
@@ -233,9 +253,24 @@ rather than something a form handler remembers. Invariants 3 and 4 are the net b
 the guard.
 
 **Renumbering is a rename, not a new unit.** "4th Pack" becoming "Pack 12" with the same
-participants is one `org_unit` row and two `org_unit_name` rows. Creating a new unit would
-orphan all historical `unit_participation` rows and make "who was in Pack 12 in 1998?"
-unanswerable.
+participants is one `org_unit` row and two `org_unit_name` rows — which is why `code` is a column
+here as well as on `org_unit`: the number that changed *is* part of what a name period records.
+Creating a new unit would orphan all historical `unit_participation` rows and make
+"who was in Pack 12 in 1998?" unanswerable.
+
+**Three changes look alike and are three different writes; keep them apart.**
+
+| What happened | What it is | What gets written |
+|---|---|---|
+| The same unit is given a different number, while its people carry on | **A rename.** One unit | One new `org_unit_name` row with `change_reason = 'renumber'`, `org_unit.code` updated to match, one row and one identity (§3's uniqueness rule is what makes the old code free) |
+| The unit's number is taken again later, by a body that was not the first one | **A different unit.** Two units | A **new** `org_unit` row with its own period; the continuity, if anyone claims it, is an `org_unit_relationship` with `successor_of` (§5) — never a shared row (D-096, §3) |
+| The unit moves under another parent | **A different unit.** Two units | The move itself is refused outright (§*A unit never changes parent*, D-036); a genuine move closes this row, creates the successor, and records the lineage in `org_unit_relationship` |
+
+**The middle row and the bottom row are the pair worth memorising, because both produce two units and
+only the reason differs.** A renumber and a reuse are told apart by whether the participants and the
+period are continuous, which is a fact about the world that only a human knows — so the schema offers
+`successor_of` and refuses to guess, and a screen that matched on `code` would quietly collapse the middle
+row into the top one, which is exactly the failure D-096 was written to prevent.
 
 **`change_reason` distinguishes a correction from a rename.** A correction means the
 record was wrong (a typo fixed in 2026 about a 1998 name); a rename means the world
@@ -269,6 +304,16 @@ changed. Only the latter is real history. Conflating them corrupts historical re
 - On `source_unit_id` and, separately, on `target_unit_id`. Lineage is asked in both
   directions — "what did this unit become?" and "what did this one come from?" — and neither
   question may have to scan the table.
+
+**`successor_of` is where D-096's continuity assertion goes, and it is the only place it may go.**
+When a unit number comes back after a decade dormant, the new bearer is a new row (§3) and any claim that
+it is the same troop *carrying on* is an assertion about the world, recorded here as
+`source = the new unit`, `target = the old one`, `relationship = successor_of`, with the `effective_date`
+of the refounding and a `note` saying who decided. **A renumber does not produce a row here at all** — it
+is one unit and two name rows (§4), and a `successor_of` edge between a unit and itself is refused by the
+first rule above anyway. The value of putting the assertion here rather than in a `code` collision is that
+"who was in Pack 12 in 1984?" then follows a recorded edge instead of guessing from an overlapping label,
+and that the person who refuses to claim continuity has an equally cheap way to say so: write nothing.
 
 **This table exists so that historical lineage is answerable.** When Troop 12 splits into
 Troop 12 and Troop 31, the question "was this 2003 member in the unit that is now Troop 31?"
@@ -599,14 +644,21 @@ its own (D-054).
 > roster" explains a self-governing sub-unit; it is not a type the system ships with. Read
 > them as "some sub-unit type the organization has defined".
 >
-> **Nesting is therefore entirely permissive** — `org_unit_type_nesting` is seeded with
+> **Nesting is therefore entirely permissive** — `org_unit_type_rule` (§2; it was called
+> `org_unit_type_nesting` here until this round corrected the name) is seeded with
 > nothing, so any type may sit under any other, including directly under the root, until the
 > organization states a rule. A new type is usable the moment it is created.
 >
 > **The root type is the one exception and must stay seeded.** Exactly one unit has
 > `parent_unit_id IS NULL` ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it))
-> and it needs a type; note `allows_minors = false` on it, since no minor belongs to "The
-> Organization" as a *unit* — minors hold memberships and sub-unit participation.
+> and it needs a type, and that is now the *only* thing the seed says about it. It used to add
+> `allows_minors = false` — *"no minor belongs to The Organization as a unit"* — and
+> [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+> removed the column, so the note goes with it. **That removal is a correction and not only a
+> deletion:** the claim was false in the model as built, since every minor who pays the fee gets a
+> membership at the root and D-050 gives that membership a participation row on the root unit — the
+> seed was asserting the opposite of what the membership flow does, about the one unit where it
+> matters most.
 
 **Position definitions, by contrast, are a real starting set** and worth filling in — they
 are what `position_assignment` hangs off, and `min_age` / `requires_membership` on them are
