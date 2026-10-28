@@ -78,7 +78,7 @@ queue is the same information loss arriving slowly instead of all at once
 
 | Who | What they need | What the design gives them |
 |---|---|---|
-| **A unit leader** | The allergies and instructions for the children in their unit, tonight, without asking permission | **Whatever the organization has granted them, and nothing more.** The starting role set gives a leader their unit's roster and events but **not** a read over the child's record — that is a deliberate choice about a role, not a wall in the model, and granting `person.view` on the unit hands over the entire record including the allergy list. See the paragraph below the table |
+| **A leader** | The allergies and instructions for the children they lead, tonight, without asking permission | **Whatever the organization has granted them, and nothing more** — and read that with the cost attached: after [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no scope smaller than *the whole organization* except a single item, so "the children in their unit" has no scope to be granted *as such*. A `person.view` at unit scope hands over **every member's entire record, allergy lists included**; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but **not** a read over the person record. See the paragraph below the table |
 | **A guardian** | Everything about their child, or nothing, depending on what the organization decided | The guardian right level — `none`, `view`, `write` — over the whole record ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) |
 | **The person themselves** | Their own data | Their own record, which is not a special case in the resolver — "about you" is already a channel |
 | **An event organizer** | What matters on the day, for the people who registered | The registration, and the event form that asks. Where the organization already recorded a fact, [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code) asks whether the form should prefill from it rather than re-asking every camper every season |
@@ -88,8 +88,11 @@ queue is the same information loss arriving slowly instead of all at once
 round 7 the corpus asserted that a leader *cannot* reach a child's medical information — which was
 argued from a namespace that no longer exists, then from the absence of an `event.*` code, and is now
 simply not a property of the model: **there is no privileged subset to be kept away from anybody.**
-What remains is the same decision wearing its honest clothes — **the starting roles do not give
-leadership a read over the record, because leadership is not guardianship** — plus the fact that the
+What remains is the same decision wearing its honest clothes — **the starting grants do not give
+leadership a read over the record, because leadership is not guardianship** — and since
+[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+that sentence has no alternative: an office confers nothing at all, so the only thing that could give a
+leader a read is a grant, written somewhere, naming them — plus the fact that the
 organization may hand it over deliberately, in one grant, and see exactly what that exposes. That is
 a better position than a guarantee nobody could have configured away, and a worse one than the
 documents used to claim

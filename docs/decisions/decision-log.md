@@ -7,8 +7,10 @@ original choice is visible.
 **Status values:** `decided` — settled, the data model reflects it *(since D-072: the documents, not a schema file)*. `proposed` — recommended,
 awaiting your confirmation. `assumption` — taken by default, stated in italics in the
 docs, easily reversed. `reversed` — no longer in force; the entry is kept, marked, and the
-replacement is linked. Reversals are also listed together at the
-[bottom](#reversed-decisions).
+replacement is linked. Reversals are also listed together in
+[Reversed decisions](#reversed-decisions), which sits where it was written — **mid-way through this log**,
+between D-080 and D-081, not at the end. It has not been moved, because a section with a stable anchor is
+worth more than a section in a tidier place.
 
 **Five SQL fences survive in this log, and only here.** [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) moved the schema out of the
 documentation, but it did not rewrite the entries that had been written *in* the schema — at
@@ -163,6 +165,10 @@ permission rows so they appear in the role editor.
 **Status:** decided (from your answer)
 **Date:** initial design
 
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row), outright: the table is gone.** Its reasoning that a type is a label and
+not a permission survives into `person_group`; the self-referencing hierarchy it was proud of is the
+exact thing the round deleted.
+
 **Decision.** One `org_unit` table with `parent_unit_id` self-reference and a configurable
 `org_unit_type`. Hierarchy via materialized `path` plus recursive CTE functions.
 
@@ -245,6 +251,11 @@ prefer integrity to flexibility.**
 
 **Status:** decided
 **Date:** initial design
+
+**Superseded by [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality): the levels are gone, so the bug this guarded is unconstructible.** The hazard
+is not forgotten — the one surviving ordered triple, a guardian's `none` / `view` / `write`, still sorts
+wrong alphabetically, and [data-model/00-conventions.md](../data-model/00-conventions.md) says so where
+this entry used to.
 
 **Decision.** `access_level` is a lookup table with an integer `rank`. All level comparisons
 use `rank`.
@@ -366,6 +377,7 @@ caretakers act on behalf, which requires both parties to be recorded.
 ([D-057](#d-057--household-is-removed)), so there is no household membership left to grant
 anything. **The principle remains true and is the reason to keep this entry:** shared address
 never implied access, the access never came from these tables, and it still does not.
+
 **Date:** initial design
 
 **Decision.** `household` exists for billing and address grouping only. Being in a
@@ -424,6 +436,7 @@ Termination in a youth organization is frequently a safeguarding decision.
 
 **Status:** ⚠ **partly superseded** by [D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
 and [D-038](#d-038--membership-is-ageless)
+
 **Date:** initial design
 **Superseded in part by:** D-038 (age-out), D-040 (expiry), D-043 (background checks)
 
@@ -600,8 +613,8 @@ therefore outside this rule. It is scoped to the whole system, not to a unit, so
 a counterexample to "authority originates at the unit" — but it is all-or-nothing and
 should be rare.
 
-**See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance),
-[../data-model/05-authorization.md](../data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+**See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+[../data-model/05-authorization.md](../data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097).
 
 ---
 
@@ -638,6 +651,10 @@ where it is a safety failure.
 **Status:** decided
 **Date:** refinement round 2
 
+**Superseded by [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape), along with the position module.** That more than one person may hold an
+office at once survives as `role_holder` being a dated holder *row* rather than a column — the same
+answer, given to a different table.
+
 **Decision.** Position occupancy is many-to-one by default. `position.max_holders` is
 `NULL` (**unlimited, the default**) or `N ≥ 1` for a genuinely single-holder position (a
 chair). Overlap for the same person in the same position in the same unit is still
@@ -653,8 +670,8 @@ the rule.
 Holding a position grants nothing by itself; `is_leadership` only *suggests* a
 `role_assignment`.
 
-**See:** [../data-model/02-organization.md](../data-model/02-organization.md#7-position-and-position_assignment),
-[../domain/04-organization-structure.md](../domain/04-organization-structure.md#4-positions).
+**See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-what-this-page-held-before-round-10),
+[../domain/04-organization-structure.md](../domain/04-organization-structure.md#6-appointments-which-no-longer-end-at-a-position).
 
 ---
 
@@ -684,6 +701,9 @@ records stay correct without it, because every participation is already a period
 **Status:** decided (from your answer)
 **Date:** refinement round 3
 
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row): there is one unit, and nothing nests, because there is no unit row to nest
+underneath.**
+
 **Decision.** There is **exactly one top-level unit: the organization itself.** Every other
 unit is a sub-unit of it, nested to **arbitrary depth and in arbitrary combination** —
 weekly meeting groups, smaller packs, sections, teams. The nesting is not a fixed ladder of
@@ -710,7 +730,7 @@ CREATE UNIQUE INDEX uq_org_unit_single_root ON org_unit ((true))
 ```
 
 *The requirement now: at most one unit may have no parent, whatever emits the schema cannot emit
-it, and the migration owes it — [02-organization §3](../data-model/02-organization.md#3-org_unit),
+it, and the migration owes it — [02-organization §3](../data-model/02-organization.md#5-what-this-page-held-before-round-10),
 via [data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now).*
 
 **This largely dissolves the organization-wide-role problem (C-1).** That problem existed
@@ -725,7 +745,7 @@ still does real work in the other direction: the root cannot decide permissions 
 pack, and a pack that wants the root's help must expose its scope.
 
 **See:** [../domain/04-organization-structure.md](../domain/04-organization-structure.md),
-[../data-model/02-organization.md](../data-model/02-organization.md#3-org_unit).
+[../data-model/02-organization.md](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
 
 ---
 
@@ -733,6 +753,11 @@ pack, and a pack that wants the root's help must expose its scope.
 
 **Status:** decided (from your answer)
 **Date:** refinement round 3
+
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) — there is no parent column left whose change could be refused.** This was
+the design's only instance of an immutable column, so [F-10 shape 4](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+lost its subject here, which is what that entry now records.
+
 **Resolves:** C-2
 
 **Decision.** `org_unit.parent_unit_id` is **immutable**. A unit never changes parent. If a
@@ -769,7 +794,7 @@ all — a unit that moves is a new unit."*
 > [open question F-10, shape 4](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those):
 > a single named repository operation for hierarchy writes, and a test that attempts the update.
 
-**See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession).
+**See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
 
 ---
 
@@ -909,6 +934,10 @@ it is a change to `membership.renewal_grace_days` and the renewal rule, not a re
 **Status:** decided (from your answer)
 **Date:** refinement round 3
 
+**Reversed as to the sub-unit by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row); kept as to the distinction by [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority).** Being a member and
+being on a group's roster are still two rows, with two lifetimes and two different permissions guarding
+them. Only the right-hand side changed: it is a `person_group` now.
+
 **Decision.** `unit_membership` is renamed **`unit_participation`** and reframed. A person
 holds **exactly one membership** (at the root unit, paid yearly — [D-035](#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it))
 and **zero or more participation rows**, one per sub-unit they take part in.
@@ -946,7 +975,7 @@ reason the type was in the constraint.
 **A root participation row is created with the membership**, so "everyone in unit X" is one
 uniform query whether X is the organization or a Thursday-evening pack.
 
-**See:** [../data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation).
+**See:** [../data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097).
 
 ---
 
@@ -1040,7 +1069,7 @@ case, the question was put again and your answer was: *"Not needed if audiences 
 **Consequence — the rule is now absolute.** There is no sanctioned bypass, no marker prefix,
 no exception to explain. `scope.expose` held **at the covered unit** is the only way a row is
 created, and it is enforced by the same predicate at three layers
-([domain/06 §2.5](../domain/06-authorization-model.md#25-enforcing-the-direction-of-authority)).
+([domain/06 §2.5](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it)).
 
 **This is a genuine simplification**, and it removes the design's most uncomfortable
 paragraph — the one arguing that the rule had to bend for scale.
@@ -1127,6 +1156,12 @@ the value can be tuned between years as the organization learns what actually ge
 
 **Status:** decided (from your answer)
 **Date:** refinement round 4
+
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row). The crossing is gone because both of its sides are gone.** The property this
+bought — that access to a body's members had to be granted *by that body*, by people who recruited the
+leader and can be asked — is recorded as **lost** in `docs/README.md` and in D-097's own costing, rather
+than being dropped quietly.
+
 **Resolves:** C-1
 
 **Decision.** There is **no reporting channel outside the permission model** and none is
@@ -1172,12 +1207,12 @@ holds `unit_participation.view` at organization scope. Under exact-match scoping
 **not** let the registrar read any sub-unit's roster — the role's scope is the root, and a
 sub-unit roster is a different scope. It reads the **root** participation rows, which is what
 the registrar actually needs ([D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
-[03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit)).
+[03-membership.md §5.1](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097)).
 This will be misread as a mistake by someone who assumes a parent can see its children. It is
 not a mistake, and the catalog says so in place.
 
-**See:** [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance),
-[../data-model/05-authorization.md §5](../data-model/05-authorization.md#5-scope_exposure--how-a-unit-delegates-upward).
+**See:** [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+[../data-model/05-authorization.md §5](../data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097).
 
 ---
 
@@ -1185,6 +1220,11 @@ not a mistake, and the catalog says so in place.
 
 **Status:** decided (from your answer)
 **Date:** refinement round 4
+
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) and [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority): there is no participation row, so a renewal extends nothing but
+the `membership`.** The renewal-window semantics [D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
+defined are untouched.
+
 **Resolves:** D-7
 
 **Decision.** When a membership lapses on 1 January and the person pays inside the window, the
@@ -1214,7 +1254,7 @@ is accepted deliberately, because:
    answer, not two.
 
 **Consequence for the participation overlap constraint.** `ex_unit_participation_no_overlap`
-([03-membership.md §5](../data-model/03-membership.md#5-unit_participation)) is what makes the
+([03-membership.md §5](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097)) is what makes the
 close-and-reopen alternative awkward, and extending avoids the constraint entirely. The
 integrity check that verifies the root row mirrors the membership
 ([03-membership.md §7](../data-model/03-membership.md#7-integrity-checks), check 1b) remains
@@ -1222,7 +1262,7 @@ valid and unchanged: after a renewal the two agree, and during a lapse-only peri
 any payment — the membership has ended while the root row has not yet been swept, which is
 why the sweep must run and must run before anything reads the roster for authority.
 
-**See:** [../data-model/03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit).
+**See:** [../data-model/03-membership.md §5.1](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097).
 
 ---
 
@@ -1230,6 +1270,12 @@ why the sweep must run and must run before anything reads the roster for authori
 
 **Status:** decided (from your answer)
 **Date:** refinement round 4
+
+**Reversed entirely by D-100.** [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape) moves the gate into the audience expression, and this
+entry's `system.gate_exempt` is deleted together with the lockout hazard it documented. The diagnosis
+that produced it — a membership check performed *inside* `can()` is a lockout nobody can see — is still
+the reason the round kept every one of these tests out of the resolver.
+
 **Resolves:** D-6
 
 **Decision.** A new **permission**, `system.gate_exempt`, waives the membership gate
@@ -1289,7 +1335,7 @@ itself, and it is deliberate.
 which assignment. It is a small list of people who keep authority without paying, and it
 should be as visible as the `system.admin` holders already are.
 
-**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
 [../data-model/05 §12](../data-model/05-authorization.md#12-what-the-organization-starts-with),
 [../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
 
@@ -1351,7 +1397,7 @@ notified. `role.edit` is a bulk privilege change wearing the clothes of a settin
 it is now marked as such. `role.assign` escalates one person; `role.edit` escalates everyone
 holding the role. Neither implies the other.
 
-**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
 [../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
 
 ---
@@ -1401,10 +1447,10 @@ for every holder at once. The `BEFORE DELETE` trigger stays.
 that ends authority is the assignment ending. That puts the entire weight on
 `role_assignment.valid_to`, which is exactly where the design already wanted it — and it is why
 the open-ended assignment is called the classic access failure
-([data-model/05 §4](../data-model/05-authorization.md#the-open-ended-assignment-is-the-classic-access-failure)).
+([data-model/05 §4](../data-model/05-authorization.md#nothing-forces-a-holder-row-to-end-and-the-report-is-the-control)).
 A role-based permission now has no expiry of its own; it is the assignment or nothing.
 
-**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role-and-role_permission),
+**See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
 [../appendix/permission-catalog.md §7](../appendix/permission-catalog.md#7-permissions-administration).
 
 ---
@@ -1413,6 +1459,11 @@ A role-based permission now has no expiry of its own; it is the assignment or no
 
 **Status:** decided (from your answer)
 **Date:** refinement round 4
+
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row): there is no unit-type vocabulary left to seed or to withhold.** 'The
+organization defines its own labels and the platform ships none' transfers intact to `person_group` and
+`role`, where it remains the rule.
+
 **Amends:** [D-008](#d-008--organizations-units-are-one-self-referencing-table-with-configurable-types)
 in spirit; the self-referencing table is untouched
 
@@ -1435,7 +1486,7 @@ was a guess; so was its replacement.
 **Consequence: nesting is entirely permissive.** `org_unit_type_rule` exists and is
 seeded with nothing, so any type may sit under any other — including under the root — until
 the organization states a rule. This was already true with the placeholder
-([data-model/02 §10](../data-model/02-organization.md#10-seed-data)); it is now true with no
+([data-model/02 §10](../data-model/02-organization.md#7-seed-data)); it is now true with no
 ambiguity about *which* types the permissiveness applies to. A new type is usable the moment
 it is created.
 
@@ -1454,10 +1505,10 @@ sub-unit participation.
 
 **What this removes.** The three placeholder rows (`pack`, `group`, `team`) and the
 "PLACEHOLDER" note that graded them. Nothing else: no columns, no constraints, no checks. The
-change is confined to [data-model/02 §10](../data-model/02-organization.md#10-seed-data).
+change is confined to [data-model/02 §10](../data-model/02-organization.md#7-seed-data).
 
-**See:** [../data-model/02-organization.md §10](../data-model/02-organization.md#10-seed-data),
-[../domain/04-organization-structure.md §1–2](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units).
+**See:** [../data-model/02-organization.md §10](../data-model/02-organization.md#7-seed-data),
+[../domain/04-organization-structure.md §1–2](../domain/04-organization-structure.md#1-the-organization-is-one-unit-and-the-unit-is-a-scope).
 
 ---
 
@@ -1632,6 +1683,10 @@ contact), which has nothing left to check; the `household` bullet in
 **Status:** decided (from your answer)
 **Date:** refinement round 5
 
+**Ownership reversed by [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it); the dated-occasion half stands.** An event is still an occasion with
+dates rather than a recurring template, and still has exactly one set of dates. There is simply no unit
+for it to belong to, and the people connected to it are named by selectors that bind to it.
+
 **Decision.** `event.org_unit_id` is `NOT NULL` — **exactly one owning unit.** A weekly
 meeting group is **not** an event; it is `unit_participation`. Events are the things people
 *register* for: camps, trips, hikes, jamborees.
@@ -1763,7 +1818,7 @@ anyone, and the registration records `source = 'staff'`. That is the permission'
 the leader who knows there is a spare bed is trusted, and the act is attributed.
 
 **See:** [../domain/07-events.md §4](../domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine),
-[data-model/05 §7](../data-model/05-authorization.md#7-permission_level--connecting-permissions-to-grant-levels).
+[data-model/05 §7](../data-model/05-authorization.md#7-permission_level--deleted-by-d-099).
 
 ---
 
@@ -1862,6 +1917,11 @@ the unit's roles reach its events.
 
 **Status:** decided (from your answer, as a consequence you did not have to state)
 **Date:** refinement round 5
+
+**Superseded by [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it).** The argument's shape survives — an item's people are *named*, never
+inherited from a container — but with no unit and no owner the question 'whose event is this?' has no
+column left to answer it from.
+
 **Amends:** nothing. **Extends:** [D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
 
 **The problem.** The resolver matches scope **exactly**. There is therefore no path from a
@@ -1915,7 +1975,7 @@ leaders should *not* automatically run every event their unit creates, **deletin
 — events are precisely the sub-unit records [D-049](#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)
 protects. The fix, if the root wants it, is one `scope_exposure` row naming one assignment.
 
-**See:** [../domain/07-events.md §6](../domain/07-events.md#6-the-hinge-organizers-and-the-scope-mismatch),
+**See:** [../domain/07-events.md §6](../domain/07-events.md#6-how-authority-reaches-an-event),
 [../data-model/08-events.md §8](../data-model/08-events.md#8-projections-and-guards).
 
 ---
@@ -2226,7 +2286,7 @@ Treat it as a fresh decision, not a revert.
 
 **See:** [../appendix/permission-catalog.md §1](../appendix/permission-catalog.md#1-conventions),
 [../data-model/05-authorization.md §2](../data-model/05-authorization.md#2-permission),
-[../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles--bundles-of-permissions).
+[../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles-are-offices-groups-are-company).
 
 ---
 
@@ -2386,7 +2446,7 @@ rail at precisely that point**, so the two together should be read as one load-b
 authority ends only when somebody ends it, and the only defence left is that somebody looks.
 The report is not a nice-to-have here; it is the entire control.
 
-**See:** [../data-model/05-authorization.md §4](../data-model/05-authorization.md#4-role_assignment--system-wide-authority),
+**See:** [../data-model/05-authorization.md §4](../data-model/05-authorization.md#4-role_holder--who-holds-an-office),
 [../open-questions.md F-3](../open-questions.md#f-3--closed--nothing-forces-an-assignment-to-end).
 
 ---
@@ -2556,12 +2616,31 @@ authority is therefore a range of an existing ladder, not a parallel enum**, and
 compares it with the machinery it already uses for grants. A fourth guardian value would have
 been the beginning of a second authorization model.
 
+> **Amended by [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
+> which deleted the ladder this paragraph leans on.** The three values and everything they mean stand — the
+> decision was never the numbers — but there is no rank left to map onto. The comparison now runs against a
+> column on the permission: **`permission.right_kind ∈ read | write`**, where `none` covers nothing, `view`
+> covers the codes marked `read`, and `write` covers both
+> ([data-model/05-authorization.md §1](../data-model/05-authorization.md#right_kind-a-column-with-exactly-one-customer)).
+> That column has exactly one customer, and this entry is who it was added for. **The paragraph's real work
+> was never the shared arithmetic:** a guardian not being staff is carried by the channel's shape test
+> ([D-079](#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)) — a check that is
+> not about this child never reaches the guardianship channel, whatever its right level. And the closing
+> warning survives intact, only cheaper to honour: a fourth value would still be the start of a second
+> authorization model, and three values against two kinds is a lookup rather than a scale to keep in step.
+
 **What this deletes.** Every `dependent.*` permission code, including `dependent.admin` and the
 three sub-resource `.admin` codes that D-068 deliberately exempted. The consequence is worth
 noticing: **after D-068 deleted `admin` as a wildcard and D-074 deletes it as an action, the
 only things in the entire system still spelled `admin` are `access_level.admin` (a rank) and
 `system.admin` (the one wildcard permission).** The word is no longer ambiguous three ways; it
 is ambiguous two ways, and the third is recorded as deleted.
+
+> **And since [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+> deleted the ladder, it is ambiguous one way.** `access_level.admin` was a rank in a table that no longer
+> exists; **`system.admin` is now the only live permission code in the system whose last segment is not an
+> action**, and it is allowed to be one for the two reasons D-104 records: its meaning is defined by the
+> resolver rather than read off the name, and D-068 exempted it explicitly rather than by silence.
 
 **What it gives up, written down rather than discovered later.** It is no longer expressible
 that *this* guardian may register the child for events but may not read the medical record, or
@@ -2691,6 +2770,7 @@ the absence gets stored rather than inferred.
 **Status:** decided (from your answer) — **first decision of the communication module** *(amended by
 [D-082](#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians), which supplied the
 thing this entry declined and left unprovided: a rule for the private message to a child)*
+
 **Date:** refinement round 6
 
 **Your answer.** *"There will be internal messaging through the system. Personnel with
@@ -2750,6 +2830,10 @@ later safeguarding rule has to be written as surveillance over a channel that al
 **Status:** decided — **found by deleting the SQL, not by running it**
 **Date:** refinement round 6
 
+**Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) with the exposure table itself.** Its distinction, that widening an
+inherited reach is a different act from writing a grant, has no subject after [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality): a grant has exactly
+one shape, and there is nothing to extend it.
+
 **What happened.** Translating the resolver out of SQL for
 [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) meant reading each
 branch for what it *decides* rather than what it says. The unit-grant tier had two branches, and
@@ -2787,7 +2871,7 @@ removal cost something real.
 every other sense yes — nothing here constrains a future mechanism that names a grant in an
 exposure row deliberately, which would need a new column and a new argument.
 
-**See:** [../data-model/05-authorization.md §5](../data-model/05-authorization.md#an-exposure-extends-an-assignment-it-never-extends-a-grant).
+**See:** [../data-model/05-authorization.md §5](../data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097).
 
 ---
 
@@ -3076,6 +3160,65 @@ from a regression. If one returns, it returns as a bug report, not as a reversal
   to trust it here is that both rounds were wrong about the same unknown thing — the shape of a file
   nobody had read.
 
+**Round 10 removed a dimension of the model, and the reversals below are the largest single set in this
+log.** They are grouped rather than listed one per line, because they are not twelve independent
+reversals: they are one diagnosis (*"I have over-specified the system and this complicates things"*)
+drawn through the unit hierarchy, the authority ladder, the membership gate and event ownership at once.
+
+- **The unit hierarchy itself** — `org_unit`, its types, names, relationships, participations and the
+  upward `scope_exposure` crossing. Deleted by
+  [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row): there is one unit, it is the
+  organization, and it is a **scope** rather than a row. Reverses D-008, D-035, D-036, D-041, D-049, D-050,
+  D-054, D-078, D-096 and deprives [D-031](#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+  of its subject. The property this bought — access to a body's children had to be granted *by that body* —
+  is recorded in D-097 as lost, not as replaced.
+- **The level ladder** (`access_level`, `permission_level`, the rank integer, and everything that compared
+  levels). Deleted by
+  [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality): a grant is one
+  permission code with an effect of `allow` or `deny`. This reverses
+  [D-012](#d-012--status-strings-compare-by-rank-never-lexicographically) including the reason it was
+  written (a level string compared alphabetically inverts the model — now there is no level to compare),
+  makes [D-013](#d-013--explicit-deny-revoked-is-checked-before-everything)'s deny an effect rather than a
+  level, and **deletes half of [D-032](#d-032--deny-is-absolute-locality-orders-allows-only)**: locality
+  only ever ordered allows against each other, and a boolean answer has nothing to order.
+  [D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) survives on a new
+  `permission.right_kind` column, which D-099 names as a column with exactly one customer.
+- **The membership gate as a resolver clause** (`role.requires_membership`, `system.gate_exempt`,
+  `person_holds_gate_exempt`). Deleted by
+  [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape), which moves the
+  test into the selector: `MEMBERS * ROLE(x)` gates on current membership because `MEMBERS` is evaluated
+  live, and leaving `MEMBERS` out is how a role is exempt. Reverses the enforcement half of
+  [D-039](#d-039--member-permissions-require-a-current-paid-membership) and all of
+  [D-051](#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag), including the
+  lockout hazard D-051 had to document. **The posture reverses from default-on to opt-in**, and the new
+  failure mode — a grant written without `MEMBERS` authorizing a lapsed member, silently — is answered with
+  a report and an import count, not by the resolver.
+- **Positions** (`position`, `position_assignment`, `is_leadership`, `max_holders`) and **`role_assignment`**
+  (becoming `role_holder`, with no scope), by
+  [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape), which also
+  deletes `role_permission`: a role confers nothing by itself, and the codes an office carries are the
+  grants whose audience names `ROLE(x)`. The elected-versus-appointed distinction survives only as a role
+  the organization invents. [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)
+  is closed, and the answer is no.
+- **The audience's three arms, and the inclusion edge.** `audience.resolver_key`, `scope_parameter`,
+  `audience_include` and `include_depth_limit` are deleted by
+  [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), which replaces them with an
+  expression over named sets stored as a tree of binary rows. This **amends
+  [D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group) rather
+  than reversing it**: the outcome D-091 wanted — composing *"the kitchen crew, plus whoever leads this
+  pack"* in one grant — survives, and the intersection and difference it could not express now can be
+  written. What dies with the edge table is the transitive walk, the graph-shaped cycle check and its CI
+  assertion, because a tree cannot cycle. The one thing genuinely lost is one-edit widening
+  (*"add the crew to everywhere this group is used"*), answered by naming the composite.
+- **Event ownership** (`event.org_unit_id`, `can_event()`, the unit-authority rule). Deleted by
+  [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it),
+  which reverses [D-058](#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)'s ownership,
+  [D-063](#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it) and
+  [D-094](#d-094--the-root-unit-owns-every-imported-event), and answers "who is connected to this event?"
+  with selectors that bind to the item being checked (`ORGANIZERS`, `PLACED`, `CONFIRMED`, …) instead.
+  [D-062](#d-062--organizers-are-appointed-on-the-event-not-granted) stands untouched: an operand is a set,
+  not a grant.
+
 ---
 
 ## D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now
@@ -3119,7 +3262,7 @@ writes the migration:
 
 | Rule | Where the guard went | Net added |
 |---|---|---|
-| `position.max_holders` | no constraint can state a count over other rows (F-10 shape 3) | [02-organization §9 check 9](../data-model/02-organization.md#9-integrity-checks) — over-limit means *bypassed*, unlike event capacity, which may be exceeded deliberately |
+| `position.max_holders` | no constraint can state a count over other rows (F-10 shape 3) | [02-organization §9 check 9](../data-model/02-organization.md#6-integrity-checks) — over-limit means *bypassed*, unlike event capacity, which may be exceeded deliberately |
 | Registration outside its window | Guard 1, inside the writing transaction | [08-events §10 check 9](../data-model/08-events.md#10-integrity-checks) — a row here is evidence about the code, not the data |
 | `fee_obligation`, created by the code that places a registration | nothing ever enforced it | [08-events §10 check 10](../data-model/08-events.md#10-integrity-checks) — a confirmed place with no bill leaves every row individually correct |
 
@@ -3457,6 +3600,7 @@ fact is superseded by this entry.
 It follows mechanically from [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
 which is why it was taken rather than asked, but it changes two rows of a table you will read, so it is
 numbered and flagged rather than folded into prose. Reverse it if you read the marks differently.
+
 **Date:** refinement round 7
 **Follows:** [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
 [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
@@ -3566,6 +3710,7 @@ record. Two further things follow and are stated where they belong:
 **Status:** decided (from your answer). The retention *periods* are a policy you have chosen; whether
 they survive a legal review is a different question and stays open, recorded as an assumption with a
 name attached rather than as settled law.
+
 **Date:** refinement round 8
 **Follows:** [D-083](#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
 [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
@@ -3759,7 +3904,7 @@ review is a work queue with a trustworthy set at the top of it, which
 called a strengthening of D-004 rather than a relaxation.
 
 **What this makes sharper rather than smaller.** With attendance and no money,
-[06-audit §3.1](../data-model/06-audit-and-import.md#31-what-a-roster-actually-evidences) is the
+[06-audit §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences) is the
 load-bearing section of the whole import — a roster row evidences *presence in a unit*, and everything
 beyond that is inference. Which leaves **A-4**, the organizational year boundary, as the sharpest
 remaining import question, because it is what an end date gets inferred from.
@@ -3788,6 +3933,13 @@ whole attribute vocabulary comes from. Three entries describe one import and non
 
 **Status:** decided (from your answer)
 **Date:** refinement round 9
+
+**Amended twice, by [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) and [D-103](#d-103--an-audience-may-name-another-audience), and the arm this entry is named for is the one that
+changed.** A rule may still name another set — as `GROUP(x)` or `AUDIENCE(x)` inside an expression — but
+`audience_include` is deleted, the list arm is the `LIST` leaf, and 'other groups' became an operand kind
+rather than a table. The write-time acyclicity requirement survives, widened into reachability across
+audiences.
+
 **Follows:** [D-042](#d-042--grants-may-target-audiences-not-only-individuals),
 [D-033](#d-033--multiple-people-may-occupy-the-same-position),
 [D-087](#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
@@ -3838,7 +3990,7 @@ a **role** is still held by one named person, because `role_assignment` is the r
 office and it is read to answer "who was treasurer in 2023". A derived holder list cannot answer that,
 and an office record that cannot answer it is not an office record. So a rule-filled role is **not**
 decided here: it is registered as
-[F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is) — the change is one
+[F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) — the change is one
 grantee pair on `role_assignment`, exactly the shape D-042 already put on `access_grant`, and it wants
 an answer about the historical question before it wants an implementation.
 
@@ -3871,8 +4023,8 @@ arms.
 **Closes:** [C-4](../open-questions.md#c-4--closed--a-group-is-filled-by-a-rule-and-a-list-and-appointing-creates-nothing).
 
 **See:** [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
-[domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance),
-[domain/04-organization-structure.md §4](../domain/04-organization-structure.md#4-positions).
+[domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+[domain/04-organization-structure.md §4](../domain/04-organization-structure.md#6-appointments-which-no-longer-end-at-a-position).
 
 ---
 
@@ -3968,7 +4120,7 @@ too strict for a one-time one, and the safety that mattered is not the ban but t
 **Four consequences, in the order they arrive.**
 
 - **The root participation obligation now points at the import again.**
-  [03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit) had
+  [03-membership.md §5.1](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097) had
   just been corrected to say that an ordinary import "touches neither arm of this pair". With
   memberships arriving by the thousand it does: every imported membership owes its root-unit
   participation row in the same transaction, which is what keeps *who is in unit X* one query
@@ -4000,7 +4152,7 @@ and nothing in the query knows the difference.
 (together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
 **See:** [data-model/06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences),
-[data-model/03-membership.md §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit),
+[data-model/03-membership.md §5.1](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097),
 [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline).
 
 ---
@@ -4009,6 +4161,11 @@ and nothing in the query knows the difference.
 
 **Status:** decided (from your answer)
 **Date:** refinement round 9
+
+**Deleted rather than reversed by [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it): there is no owner column for an imported event to
+have.** The import still owes one `event` row per event in the corpus, and now owes the per-event grant
+instantiation D-102 added with it.
+
 **Follows:** [D-058](#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit),
 [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
 [D-067](#d-067--presence-is-a-three-valued-fact-on-the-registration)
@@ -4090,7 +4247,7 @@ elsewhere refuse to keep: *a list of eighteen ticks nobody read is not a safegua
 ([domain/08 §4](../domain/08-person-data.md#4-what-was-refused-and-what-it-cost)). What goes with the
 column: its check in [03-membership.md §7](../data-model/03-membership.md#7-integrity-checks) (check 2,
 *participants in units that do not allow minors*), the root type's `allows_minors = false` in the seed,
-and the sentence in [02-organization.md §1](../data-model/02-organization.md#1-org_unit_type) that
+and the sentence in [02-organization.md §1](../data-model/02-organization.md#5-what-this-page-held-before-round-10) that
 explains why there is no `allows_adults` sibling.
 
 **D-081 requires naming who enforces the rule now, and the honest form of that answer is a shift in
@@ -4117,8 +4274,8 @@ guardianship channel is untouched.
 
 **Closes:** [C-6](../open-questions.md#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act).
 
-**See:** [domain/04-organization-structure.md §1, §4](../domain/04-organization-structure.md#1-one-root-arbitrary-sub-units),
-[data-model/02-organization.md §1](../data-model/02-organization.md#1-org_unit_type),
+**See:** [domain/04-organization-structure.md §1, §4](../domain/04-organization-structure.md#1-the-organization-is-one-unit-and-the-unit-is-a-scope),
+[data-model/02-organization.md §1](../data-model/02-organization.md#5-what-this-page-held-before-round-10),
 [domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described).
 
 ---
@@ -4138,13 +4295,13 @@ before the decision is. A `code` is **a short human label typed by somebody**: `
 not the unit's identity, which is the row; it is not its name, which is a temporal row of its own
 (`org_unit_name`); and it is not unique, deliberately — uniqueness is per parent and among live rows
 only, which is exactly why a closed unit's number is free again
-([02-organization.md §3](../data-model/02-organization.md#3-org_unit)). Once it is described as a label,
+([02-organization.md §3](../data-model/02-organization.md#5-what-this-page-held-before-round-10)). Once it is described as a label,
 the question answers itself in the direction the docs already argued.
 
 **Decision.** **A reused number is a new unit.** One `org_unit` row per unit that existed, each with its
 own period; the continuity between two of them is not a property of the label but an assertion somebody
 makes and records as an `org_unit_relationship` with `successor_of`
-([§5](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession)). The opposite
+([§5](../data-model/02-organization.md#5-what-this-page-held-before-round-10)). The opposite
 default — reuse the row and let a thirty-year gap show inside one unit's life — is what a system drifts
 into if nobody says, because it is what "match on code" does. And the two cases the docs separate are
 unchanged and are *not* this case: **a renumber is one unit with two name rows** (same participants,
@@ -4160,8 +4317,8 @@ default that gets implemented by whoever writes the matching screen.
 
 **Closes:** [C-3](../open-questions.md#c-3--closed--a-reused-unit-number-is-a-new-unit).
 
-**See:** [domain/04-organization-structure.md §3, §6](../domain/04-organization-structure.md#3-unit-names-and-renumbering--the-history-problem),
-[data-model/02-organization.md §4–§5](../data-model/02-organization.md#4-org_unit_name--rename-and-renumber-history).
+**See:** [domain/04-organization-structure.md §3, §6](../domain/04-organization-structure.md#4-a-name-carries-no-identity),
+[data-model/02-organization.md §4–§5](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
 
 **Superseded by [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row).** There are no
 sub-units left to number, close, or declare a successor of, and no `org_unit` row for a `code` to sit on.
@@ -4276,7 +4433,7 @@ work (`scope_exposure`, written by the covered unit) no longer exists.
 **See:** [domain/04-organization-structure.md](../domain/04-organization-structure.md) (rewritten as the
 groups module), [data-model/02-organization.md](../data-model/02-organization.md),
 [data-model/05-authorization.md §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer),
-[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation).
+[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097).
 
 ---
 
@@ -4286,6 +4443,7 @@ groups module), [data-model/02-organization.md](../data-model/02-organization.md
 **Date:** refinement round 10
 **Follows:** [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
 **Supersedes the subject of:** [D-041](#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
+
 **Closes:** — 
 
 **Your words.** *"A group defined by display name and an audience… A group is just an audience, but it is
@@ -4316,7 +4474,7 @@ authority, and the fact that the participation is now stored in a tidier table d
 the load-bearing part of this entry: **a group states its members; a selector picks them.**
 `person_group` is the domain fact — a thing a user sees, names, opens, and ends. `audience` is the
 grantee a grant names, and one of its operands may be a `person_group`
-([D-101](#d-101--a-selector-is-ordered-include-exclude-and-require-over-groups-built-ins-roles-and-selectors)).
+([D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 Two tables answer "who is in it", which is precisely the shape
 [D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved) teaches to be
 suspicious of, so the difference is stated rather than implied: a group's members are a **list of people
@@ -4389,4 +4547,854 @@ check the moment somebody is asked "can she edit the roster?"
 
 **See:** [domain/04-organization-structure.md](../domain/04-organization-structure.md),
 [data-model/02-organization.md §1–§2](../data-model/02-organization.md#1-person_group),
-[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation).
+[data-model/03-membership.md §5](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097).
+
+---
+
+## D-099 — A grant allows or denies one permission. There is no level, and no locality
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Reverses:** [D-012](#d-012--status-strings-compare-by-rank-never-lexicographically)
+(including the reason it was written), [D-013](#d-013--explicit-deny-revoked-is-checked-before-everything)
+as a *level*, [D-032](#d-032--deny-is-absolute-locality-orders-allows-only)'s second half,
+[D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)'s level form,
+[D-010](#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver).
+Amends [D-055](#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular),
+[D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) and
+[D-079](#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name).
+
+**Your words.** *"This is more complicated. I said that there are read, write, none permissions. This is
+not correct. What would make the most sense is if items would inherit all unit-scope permissions and would
+have their own item-scope permissions in the same format (e.g. `event.edit`). Both of those permissions are
+essentially the same, however in the item-scope some of them don't make sense (e.g. on an event,
+`membership.manage`, or `event.create`, make no sense). On the item-scope there should also be a
+deny-permission, not just allow-permission."* And on whether anything still needs a ladder: **"only
+allow/deny on the same permissions as on the root unit."**
+
+**Decision.** **One grant is: a grantee, a scope, one permission code, an effect, and a period.** The
+grantee is a person or an audience ([D-042](#d-042--grants-may-target-audiences-not-only-individuals),
+unchanged). The scope is the unit or exactly one item ([D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+The effect is `allow` or `deny`. The answer is:
+
+> **allowed** when some live allow applies and **no** live deny applies.
+
+That is the whole of the precedence rule. What it replaces, item by item:
+
+| Deleted | Was | Why it goes |
+|---|---|---|
+| `access_level` | `revoked` 0, `view` 10, `contribute` 20, `manage` 30, `admin` 40 | A level is a **bundle** of permissions identified by one word. [D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) already refused that idea once, when it deleted `<resource>.admin` and said *roles are the bundle*. This finishes the same thought: roles and audiences are the bundle, and nothing else is |
+| `permission_level` | which level satisfies which permission at which scope type | Its two jobs move to two columns on `permission` itself (§below) |
+| The rank integer | [D-012](#d-012--status-strings-compare-by-rank-never-lexicographically) | There is no ordering left to compare. The famous bug it guarded — `'admin' < 'contribute'` — cannot occur in a system with no levels, which is a better fix than the guard |
+| Locality | [D-032](#d-032--deny-is-absolute-locality-orders-allows-only): a nearer allow beats a further one | **Locality only ever ranked allows against each other.** With a boolean answer, two allows that both apply produce one answer; there is nothing to order. D-032's first half — deny is absolute — survives intact and is now its entire content |
+| `revoked` as a level | resolver channel 0 | Deny survives as an **effect on a grant row**. [D-013](#d-013--explicit-deny-revoked-is-checked-before-everything)'s requirement — a court-ordered restriction must not be beatable by a broader grant — is unchanged and is still checked first |
+
+**`permission` gains two columns, and only one of them is comfortable.**
+
+- **`applies_to` ∈ `unit`, `unit_and_item`** — where a code may be granted at all. This is your
+  observation that `event.create` and `membership.manage` are nonsense *on* an event, written as data
+  instead of as prose. It is checked when the grant is saved, not at check time: a grant of
+  `event.create` written on one event is refused with the reason in the error, because an event cannot
+  be created twice, and a creation permission attached to a thing that already exists answers no
+  question.
+- **`right_kind` ∈ `read`, `write`** — and it exists for exactly one customer.
+  [D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) fixes a guardian's
+  rights at three values, and with the ladder gone the guardianship channel has nothing left to compare
+  a permission against. This column is that thing: `none` covers nothing, `view` covers `read` codes,
+  `write` covers both. **It is a column whose only job is one other mechanism, and saying so is cheaper
+  than discovering it later.** The alternative was to store permission codes on the guardianship row,
+  which D-074 refused on the grounds that a volunteer cannot maintain a 74-code checklist per child.
+
+**Inheritance, stated once.** A grant at the unit reaches **every item of every type**, because after
+[D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no intermediate scope left
+between the unit and an item, and no ownership relation to test. A grant on one item reaches that item
+and nothing else. This is [D-006](#d-006--per-item-permissions-are-capabilities-on-the-item) —
+per-item permissions are capabilities on the item — with the unit tier left standing, and it deletes
+`can_event()` outright ([D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+
+**`-` in a selector is not a deny, and the two are not interchangeable.** An audience expression may
+subtract a set (`MEMBERS - GROUP(x)`), which narrows **one grant's reach**. A deny defeats **every grant**
+that applies to that person, including ones written elsewhere, later, or by somebody else. The first
+cannot express "she must not have this, whatever else she is given", which is
+[D-013](#d-013--explicit-deny-revoked-is-checked-before-everything)'s whole reason for existing, so denies
+stay — and they are legal at the unit as well as on an item, since "exclude her from what the unit grants
+everyone" is exactly the case the selector cannot serve.
+
+**The round silently upgraded deny, and the upgrade needs naming because it changes an operator's job.**
+[D-013](#d-013--explicit-deny-revoked-is-checked-before-everything) did not say a deny beats everything; it
+said `revoked` beats `deny`, which left an escape hatch — a stale denial could be outranked by a newer act,
+and *revoking* it was a decision somebody could take late and still take. Deleting the ranking deleted the
+hatch. **A live deny now beats every live allow with no tie-break of any kind, and the only thing that
+removes one is a person ending its period.** That is why the integrity check below is a requirement rather
+than a nicety, and why a deny is the row on which `access_grant.valid_to` earns its keep: everywhere else an
+open-ended grant that outlived its reason costs a tidy database, and here it costs a child who cannot see
+their own camp photos. A date is the only remedy that works without somebody remembering to act.
+
+**What it costs, in rows.** A role that used to be one grant at `manage` is now one row per code. The
+catalog holds 66 codes; a broad office is a couple of dozen rows. That is the price of the question you
+are now able to ask — *"what exactly does this person have?"* answered by reading rows — and the price of
+the one you can no longer ask, which is *"what does `manage` give me on this event?"*: there is no such
+word, so there is no such lookup. **Integrity check to add:** a live grant whose `effect` is `deny` and
+whose grantee, scope and code match no live allow is dead weight and should be reported, because a deny
+that denies nothing is how a stale restriction survives its reason.
+
+**Two-way door?** Cheap in one direction, expensive in the other. Levels can come back as **names for
+sets of codes** with no comparison defined — which is what a role already is, so no new mechanism is
+needed to approximate one. A real ordering coming back means re-importing `permission_level`, the rank
+rule, and locality's tie-break, all of which were deleted with their only consumers.
+
+**See:** [data-model/05-authorization.md §2, §6–§7](../data-model/05-authorization.md#6-access_grant--the-per-item-layer),
+[domain/06-authorization-model.md](../domain/06-authorization-model.md),
+[appendix/permission-catalog.md](../appendix/permission-catalog.md).
+
+---
+
+## D-100 — A role is an office and a group is company: two tables of the same shape
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Follows:** [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
+[D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+[D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+
+**Reverses:** [D-039](#d-039--member-permissions-require-a-current-paid-membership)'s resolver clause,
+[D-051](#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag) entirely,
+[D-033](#d-033--multiple-people-may-occupy-the-same-position) and the position module,
+[D-009](#d-009--unit-membership-links-to-person-not-to-membership)'s remaining subject.
+
+**Closes:** [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is).
+
+**Your words.** *"A `role_assignment` is no longer necessary, as it can be supplemented by a `ROLE`
+selector in the audience string."* Then, when asked whether roles go too: **"Role and group are technically
+the same, but not semantically. A role was meant to be for a single person / a small couple of individuals
+that are visible as the leaders / financial / IT managers of the organization, while the group is a
+temporary set of members that do e.g. events together."* And on the gate: *"This should be sortable with
+the audiences, right? Some permission (e.g. `event.create`) can be assigned to `MEMBERS * COUNSELORS`."*
+
+**Decision.** Three things, of which the first is the one that looks like nothing.
+
+**1. `role_assignment` becomes `role_holder`.** (`role_id`, `person_id`, `valid_from`, `valid_to`,
+`granted_by`, `note`) — no scope columns, because [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+left one scope. `role` keeps `code`, `name`, `description`, `is_system`, `sort_order`. **`role_permission`
+is deleted**: a role confers nothing by itself, and the codes an office carries are the live grants whose
+audience names `ROLE(x)`. What that buys is the question the old design could not answer cleanly — *"what
+may a treasurer do?"* — which is now a query over visible grant rows rather than a walk through a bundle
+table nobody reads. This is where
+[D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) was already going; it
+just went the rest of the way. `role.create`, `role.edit`, `role.delete`, `role.view`, `role.assign`,
+`role.unassign` survive, retargeted: the last two write `role_holder`.
+`role.scope_required` and `role.requires_membership` are deleted with their mechanisms.
+`role` joins `person_group` in `grant_scope_type`, so *"these two may manage the counselors roster"* is a
+grant on one role, which is D-098's move applied symmetrically.
+
+**2. Positions are deleted.** `position`, `position_assignment`, `is_leadership`, `max_holders` and the
+appointment workflows go: with no units there is no *body* to be a leader **of**, which is the only thing a
+position recorded and a role does not
+([D-033](#d-033--multiple-people-may-occupy-the-same-position)'s own reasoning for why leadership is a
+position-assignment fact and not a role fact). An elected leader is now a holder of a role, and the
+audience rule that used to read `unit_leaders` — which round 6 had to correct because it was silently
+matching nobody — is `ROLE(leaders)` and means what its name says. What is genuinely lost is the
+*elected-versus-appointed* distinction as stored data: it survives only as a role the organization
+invents (`elected_council` next to `appointed_it`) or not at all.
+**F-12 is closed and its answer is no**: `role_holder` names one person. The reason the register refused
+it — a derived holder list cannot answer "who was treasurer in 2023", and an office record that cannot
+answer that is not an office record — is untouched, and the grantee pair that F-12 contemplated is no
+longer even tempting, because grants now aim **at** roles instead of roles being filled **by** grants.
+
+**3. The gate moves from the resolver into the selector, and this is the round's largest deletion.**
+[D-039](#d-039--member-permissions-require-a-current-paid-membership) made the resolver ask, for every
+grant, whether the holder currently holds a membership;
+[D-051](#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag) then needed
+`system.gate_exempt` and `person_holds_gate_exempt` to let appointed people through anyway, with the
+documented hazard that a permission check performed *through* `can()` there means a lockout with no error
+message. Now `MEMBERS` is a selector operand evaluated live on the checked date, and:
+
+| Old mechanism | New expression |
+|---|---|
+| The gate applied to a role with `requires_membership = true` | `MEMBERS * ROLE(x)` |
+| The gate waived for a whole role | `ROLE(x)` — write it without `MEMBERS` |
+| The gate waived for one named person (`system.gate_exempt`) | `MEMBERS * ROLE(x) + PERSON(y)` |
+
+`role.requires_membership`, `system.gate_exempt` and `person_holds_gate_exempt` are all deleted, the
+resolver's membership clause is deleted, and the special-case path that had to be carefully kept *out* of
+`can()` goes with it. **Ownership and guardianship stay channels and are unaffected** — they were never
+gated. [D-071](#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+posture transfers to `role_holder`: nothing forces a holder row to end, and the control is the report.
+
+**The posture reverses, and the new failure mode is named rather than buried.** The gate used to be
+**default-on**, so that forgetting it was impossible. It is now **opt-in per grant**: a grant written as
+`ROLE(TREASURERS)` with no `MEMBERS` authorizes a lapsed member, silently, forever. Three controls, none
+of which is the resolver:
+
+- **A standing report** of live grants naming a `ROLE(...)` operand whose expression does not contain
+  `MEMBERS`. An office held by a non-member is the case worth a human eye, and this report is narrow
+  enough to actually be read.
+- **Seeded grants and any grant template carry `MEMBERS`**, so the path of least repetition is the safe
+  path.
+- **Import completeness.** `MEMBERS * COUNSELORS` is only as correct as the counselor roster: the gate
+  used to fall out of membership alone, so an import that misses 300 counselors silently un-gates them.
+  It fails closed — nothing breaks, which is exactly why nobody notices. The import reconciliation report
+  of [D-090](#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money) must count
+  people marked as counselors in the corpus against `role_holder` rows written.
+
+**`PERSON(y)` is a selector, and this entry is the reason it had to become one.** The grammar D-101 first
+shipped did not include it — `LIST` and `GROUP(x)` cover the enumeration cases, and a language with no
+attribute operands has no obvious place for one person — which left the third row of the table above
+unparseable in the very entry that wrote it down. It is seeded in `selector_type` like every other operand,
+it takes a person, and it passes the materializability test for the plain reason that a set of one is a
+set. The workaround the membership module reached for before this was repaired — *write a second grant
+whose grantee is that person* — stays legal and is arguably clearer for a permanent exception; what was not
+acceptable is a control that does not parse.
+
+**A consequence of moving the gate that no entry in this round had named: the expiry sweep can lock the
+organization out of its own system.** [D-040](#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
+lapses memberships **on a date, to everyone at once**, and whoever runs that sweep is a member too. Under
+D-039 the collision existed but `system.gate_exempt` was the purpose-built hole in it, and that mechanism is
+deleted above. So **an administrative office whose grants read `MEMBERS * ROLE(...)` stops working at the
+instant the sweep lapses its holder** — including the office that would have been asked to fix it. What
+carries the case now is the second control: the seeded grants for offices that must survive a lapse are
+written `ROLE(...)` with no `MEMBERS`, which turns a flag nobody read into a written expression with an
+outage attached to getting it wrong. *Assumption:* the seeded `is_system` role set contains at least one
+such office; nothing in the catalog requires it to, and if it does not, 1 January is a support call.
+
+**Why two tables, when you said they are technically the same.** Because the difference decides **who may
+edit the membership**, and one table would merge those two permissions into one. `role.*` is the most
+sensitive code family in the catalog (🔒🔒); writing a group's roster is `person_group.member.manage` (⚠).
+One `person_group` table with a `kind` column and one membership table gives a single code that both adds
+a child to the Thursday group and puts the holder into `SYSTEM_ADMINS`. That is the merge to refuse, and
+it is the answer to [D-080](#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)'s
+lesson about two same-shaped tables: **these are not two statements of one rule, they are two different
+grants of power.** Same columns, different codes, and `ROLE(x)` / `GROUP(x)` distinct in the grant text so
+the distinction is visible to whoever reads the grant — which is where you asked for it.
+
+**`COUNSELORS` is seeded, as a role.** A permanent, organization-wide population is the opposite of your
+own definition of a group (*"a temporary set of members that do events together"*), and the table decides
+the sensitivity that protects the set every safeguarding convention hangs from. It ships `is_system` so an
+editor refuses to delete it. Consistent with [D-005](#d-005--permissions-are-grants-never-derived-from-identity):
+this is a **set**, and being in it confers nothing until a grant names it — audience membership has never
+been authority
+([D-042](#d-042--grants-may-target-audiences-not-only-individuals), restated in
+[D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)).
+Bare `COUNSELORS` is legal in an expression, which makes the name namespace load-bearing
+([D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
+
+**Two-way door?** The gate is the expensive half. Restoring a default-on membership test means re-adding
+a resolver clause *and* re-deciding which permissions it applies to, because a system where every
+expression is explicit has no record of which grants were meant to be gated. The role/group split is a
+cheap door in both directions: the tables have the same shape, so merging them is a migration, and the
+only thing to re-argue is the permission separation this entry records.
+
+**See:** [data-model/05-authorization.md §3–§4](../data-model/05-authorization.md#3-role--an-office),
+[domain/06-authorization-model.md](../domain/06-authorization-model.md),
+[domain/02-actors.md](../domain/02-actors.md),
+[appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+
+---
+
+## D-101 — An audience is an expression over named sets, stored as a tree
+
+**Status:** decided (from your answers)
+**Date:** refinement round 10
+**Follows:** [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+[D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+
+**Amends:** [D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
+in its third arm.
+**Confirms:** [D-060](#d-060--eligibility-is-capability-there-is-no-separate-rule-engine),
+[D-011](#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key).
+
+**Your words.** *"A group can be used as a selector in the audience rule (e.g.
+`MEMBERS - GROUP(schuzka2026-1) * COUNSELORS` — meaning all counselors that are not part of the group
+`schuzka2026-1`)."* Asked which of two notations to build on: *"Would it be easier for the system if we
+wrote an evaluator for each person (`MEMBER & COUNSELOR | ROLE(TREASURER)`) or as a union/difference of
+groups?"* — and then: *"I dislike the lack of operand precedence. I would like to be able to use
+brackets."* — and then: *"Can we not store it as expressions? Each row has two operands and one operator,
+and the operands can be either another row or a selector."*
+
+**First, the reframe that makes the notation question smaller than it looks.** `p ∈ (A ∩ B) ∪ C` **is by
+definition** `(p ∈ A ∧ p ∈ B) ∨ p ∈ C`. The two notations you were offered are the same function written
+from two ends, so the choice does not decide what the machine computes; it decides **what gets stored and
+what a writer is allowed to say**. The answer is therefore both, split by direction:
+
+> **Author in sets. Evaluate per person.**
+
+A check asks about one person, so the resolver compiles the expression down to a predicate and never
+materializes a set. An implementation that evaluates `MEMBERS` as a list of ids and then tests for
+containment pays three thousand rows per request, which is the one way to get this wrong and the reason
+the requirement is written here rather than left to whoever builds it.
+
+**Why the set form is the source language, in one argument each.**
+
+- **It is no weaker.** `-` is complement against `EVERYONE`, `*` distributes over `+`, so every boolean
+  formula has an equal expression here. The predicate form buys **zero** expressive power.
+- **It is the closed one, and that is the whole case.** D-060 refused a rule engine, and a per-person
+  boolean language is the door to one: once `&`, `|` and `!` exist, the next operand somebody wants is
+  `AGE >= 15` or `FEE_PAID`, and there is a parser standing there to accept it. A set language closes it
+  **by rule instead of by discipline**: *an operand must be a named, materializable set of people*. An
+  attribute is not a set of people. Guardianship is (`GUARDIANS(x)` is a set), age is not, and the line
+  falls exactly where D-060 already drew it — eligibility stays capability.
+- **The three workloads the corpus already promises.** "Who does this grant reach?" must be **shown,
+  expanded, in front of a human** — D-091 made that a requirement on the screen, not a nicety, and a
+  predicate can only report `true`, while a set *is* the answer. "What may a treasurer do?" (D-100) needs
+  the person→set index, and `role_holder` and `person_group_member` **are** it; an expression is
+  unindexable. Caching ([F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)) can
+  key on an operand and be reused across every grant, and `role_holder` changes are the invalidation.
+- **It is the schema that exists.** An audience's manual arm, its included groups, and `everyone` /
+  `all_members` / `guardians_of` are already named sets; the only genuinely new symbols are `*` and `-`.
+  Today's audience has **no intersection and no difference at all**, which is why your example was not
+  writable in any notation.
+
+**Grammar.**
+
+```
+expr    := term ( '+' term )*
+term    := operand ( ( '*' | '-' ) operand )*
+operand := EVERYONE | MEMBERS | LIST | PERSON '(' person ')'
+         | GUARDIANS [ '(' person ')' ]
+         | ATTENDED [ '(' event ')' ]     | PLACED [ '(' event ')' ]
+         | CONFIRMED [ '(' event ')' ]    | ON_WAITLIST [ '(' event ')' ]
+         | ORGANIZERS [ '(' event ')' ]              argumentless = bound, [D-102]
+         | ROLE '(' name ')' | GROUP '(' name ')' | AUDIENCE '(' code ')'
+         | name                                      bare; the shared namespace below
+         | '(' expr ')'
+```
+
+**`MEMBERS` names a set the membership module already defines, and does not define it here.** It evaluates
+`is_current_member(person)` — status `active` with a period covering the checked date, **no grace
+coalescing**, because the renewal window is a date range for rejoining and not a state in which somebody
+is a member ([data-model/03-membership.md §3](../data-model/03-membership.md#current-membership-queries),
+[domain/06-authorization-model.md §6.1](../domain/06-authorization-model.md#61-members--the-membership-test-moved-into-the-expression)).
+That is the whole reason the language works: an operand is the *name* of a set somebody else already
+provably owns, which is what "materializable" has to mean for this to stay out of rule-engine territory.
+
+*(The `AUDIENCE` arm is [D-103](#d-103--an-audience-may-name-another-audience)'s, added the same round
+this entry was written, and it is the reason this grammar is marked as amended rather than final: an entry
+that ships a grammar and then grows an arm is worth seeing to have grown one.)*
+
+**Two arms the first draft of this grammar omitted, and both were load-bearing elsewhere in the round.**
+`PERSON(x)` names one person — a set of one, so it passes the materializability test, and it is how
+`system.gate_exempt`'s "except Honza" is written inside the expression that granted the rule in the first
+place, which keeps the exception visible next to the thing it exempts. And **bare `name`**, because the
+round's own control is written `MEMBERS * COUNSELORS`: an expression that does not parse is not a control.
+`ROLE()` and `GROUP()` remain as explicit qualification, required in the canonical rendering.
+
+**Both arms were still missing from the seeded registry when the registry was written, and that is worth
+recording rather than fixing quietly.** [data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry)
+was written from the evaluator's arm list, not from this grammar, and an arm list copied from an
+implementation is exactly the kind of source that loses an arm nobody had implemented yet. The registry
+carries **thirteen** rows and `PERSON` is one of them: `takes_argument` true, `argument_type` `person`,
+`binds_to_item` false. Its distinction from `LIST` is real and is why both survive — `PERSON(x)` is an
+argument, so it composes and can be subtracted on its own, while `LIST` is one set of several people
+belonging to one audience and subtracting it removes everybody on it. D-103's kitchen example needs both,
+which is the proof that they are not the same operand wearing two names. The class of defect is
+[F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
+it arrived here in a second registry inside the same round, and
+[D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+is the answer to it.
+
+`*` and `-` bind tighter than `+`; **`*` and `-` bind equally, left to right**; brackets override. The rule
+is arithmetic-shaped so nobody has to learn a table, with one deliberate departure from arithmetic: `-`
+does **not** sit beneath `*`. The reason is the first expression anybody writes in this language —
+`MEMBERS - GROUP(schuzka2026-1) * COUNSELORS`, meant as *"all counselors not in that group"* — which is
+what left-to-right gives and is **not** what `*`-tighter-than-`-` gives. Precedence was chosen to match
+the reading the writer already had, not to be defensible on other grounds.
+
+**The canonical form prints every bracket, always.** Not for legibility, so that the paragraph above is
+never load-bearing when somebody reads a grant two years from now: the stored form of the example is
+`(MEMBERS - GROUP(schuzka2026-1)) * COUNSELORS`, the editor rewrites what is typed into that before
+saving, and an implementer who reaches for arithmetic precedence in their parser builds a **different
+expression** than the one the writer meant. **This entry's first draft got its own rule wrong** — it
+asserted that the bare form had changed meaning, which is the `*`-tighter reading this entry then refused
+— and the correction is worth keeping in place of the claim, because the mistake is exactly the one the
+always-bracketed canonical form exists to make impossible: two precedence rules can sit in one document,
+agree with each other in the abstract, and disagree the moment an expression is written without brackets.
+
+**Storage: the tree you described, not a normal form.** Each row is a node: `operator` + `left_id` +
+`right_id`, or a leaf's `selector_kind` + `selector_arg_id`. My alternative was to normalize to a union of
+terms on save; **yours is better and the reason is the round's thesis** — the normalizer is the code
+(distribute, dedupe, sort, survive blow-up), and a binary tree needs one evaluator of about fifteen lines
+and keeps the writer's brackets instead of silently rewriting them. It also makes the depth limit the only
+complexity bound, since `(A + B) * C` costs nothing. The rules that come with it:
+
+| Rule | Where it is enforced |
+|---|---|
+| **Exactly one shape.** A node has `operator`, `left_id`, `right_id` and no selector; a leaf has `selector_kind` and no operator or children. | A check on the row — expressible, so it stays a constraint |
+| **One parent, never a DAG.** `parent_id` lives on the child, so a node belongs to exactly one expression. A side table letting two expressions share a node is refused: editing the shared node would silently widen every grant using it, which is D-091's inclusion hazard re-imported | Structure, plus a CI check that no such table exists |
+| **Cycles and depth refused when the row is saved** — walk the parent chain, refuse a revisit, refuse past `selector_depth_limit`. Structurally hard to build; refused rather than trusted, for D-091's own reason: *a hand-fixed row, a restore from before the guard existed*. **Amended by [D-103](#d-103--an-audience-may-name-another-audience):** the parent-chain walk sees one tree, and `AUDIENCE()` makes cycles possible *between* trees, so the guard is a reachability walk over the reference closure and the depth bound is counted there too | The write path, exactly as `uq_audience_include_acyclic` was |
+| **`selector_arg_id` has no foreign key** — it points at `role`, `person_group`, `audience`, `person` or `event` depending on kind | [D-011](#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s already-accepted trade-off, with its compensating orphan check |
+| **An operand that does not resolve is the empty set.** Fail closed, in every direction, as §Evaluation of `data-model/05` already rules for audiences | The resolver |
+| **The whole tree is fetched in one indexed read** by denormalizing `audience_id` onto every row, then assembled in memory. The read path never walks a parent chain. **Amended by [D-103](#d-103--an-audience-may-name-another-audience):** still one read per *audience*, but an expression that names another audience needs one per audience in its closure, so the honest claim is "no parent-chain walking", not "one query" | A stated implementation requirement |
+
+**A naming ruling, written down because the table sits outside the naming conventions and somebody will
+notice.** [`data-model/00-conventions.md §2`](../data-model/00-conventions.md#2-naming) admits two shapes —
+a junction table named `<a>_<b>` alphabetically, and a lookup table named for the vocabulary it *is* —
+and `audience_operand` is **neither**: it is a recursive structure, which the conventions have no rule for
+because until now the model had none. It is kept for the reason the two existing rules exist: the name
+should tell a reader what a row means. *Operand* is the word the grammar itself uses, so the table teaches
+the language; `audience_node` was weighed and refused, because it names a graph shape and would leave a
+reader who has not met the grammar no better off than `audience_thing`. Worth marking anyway, because it is
+the reading that gets a migration wrong — singular-for-an-aggregate invites someone to build one row per
+audience, when **the aggregate is the tree and a row is one node of it**. The diagram caption and the data
+model's first line both say *rows of one audience's expression tree* for that reason. *This entry's first
+draft justified the name by citing a naming decision that turned out not to exist* — the rule is a
+conventions table, not a numbered decision, and a citation invented to settle an argument is the kind of
+thing this log keeps a record of.
+
+**`selector_type` is a seeded registry, not an enum.** Which operands take an argument, which may bind to
+the item, and what type their argument is — that was three hard-coded lists (the `resolver_key` enum
+written out in prose, the reserved-word list, the "meaningless without a `resolver_key`" rule). It becomes
+one seeded table in the shape `grant_scope_type` already is: `code`, `takes_argument`, `binds_to_item`,
+`argument_type`. The parser reads its reserved words from it, the editor builds its dropdown from it, and
+the write path checks arity against it. **The language becomes data.** `audience.resolver_key` and
+`scope_parameter` are deleted into it.
+
+**Two sentences this paragraph needed, and did not have.** The registry is data, so say what is *not*
+thereby open: **every `selector_type` row is seeded and `is_system`, and the organization may not add one at
+runtime.** "Closed language" and "the language is a table" are contradictory unless the table is read-only
+to tenants, and the read-only version is the one that keeps D-060's line — an operand is a shipped
+predicate, not a thing a well-meaning registrar invents at 23:00. One consequence of that rule is a refusal
+worth naming because it was nearly built: **a set of *grants* is not an operand.** `GRANTS(<ids>)` — "all
+the people these grants reach", wanted as a way to move a bundle of grants at once — cannot be one, because
+an operand must resolve to a set of **people**, and that is what a grantee is; the bulk operation it was
+wanted for is a screen over the grant list, not a meaning a stored grantee can carry. Refusing it on the
+type rather than on permissions is also what removes the awkward status such a row would have had: with
+this rule, every seeded selector is a shipped selector, and there is no third kind. What the deletion of `resolver_key` does
+leave unsaid is where a code meets its implementation: the resolver dispatches on `code`, and a seeded row
+with no shipped resolver is a **deployment bug that shows up as an empty set**, fail closed like
+everything else in the round. Second: this is what makes the age question answerable at all. Attribute
+operands are refused above, so *"13 and over"* cannot be typed by a writer; under
+[D-070](#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule) the answer stays *"open the event to the
+set whose members are that age"* — a group somebody maintains — and an `AGED_13_PLUS`-style operand becomes
+legal **only** as a shipped selector, which is the one route this paragraph allows and the events document
+was right to guess. **Nothing of the kind is seeded at go-live**, because one shipped age band is the
+first step onto a ladder nobody asked for.
+
+**The inclusion arm dies, and composition survives by changing hands.**
+[D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group) let a
+group pull in other groups through `audience_include`, because a group could otherwise not be composed.
+Under [D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) a group's
+membership **is** its dated rows, and composition now lives in the expression: `GROUP(kitchen) +
+ROLE(troop_staff)` composes as much as an edge ever did. What goes with the edge table is a great deal of
+machinery — the transitive walk, `include_depth_limit`, the write-time cycle walk over a *graph*, and
+integrity check 20's job of asserting that the walk exists — because a **tree cannot cycle**, so the only
+acyclicity guard left is the cheap parent-chain one. ~~That sentence is the second-most-durable claim in
+this entry.~~ [D-103](#d-103--an-audience-may-name-another-audience), written the same round, lets an
+operand name another audience, and a **forest of trees pointing at each other does cycle**: the save-time
+reachability walk comes back, as does a depth bound counted over the closure. What stays deleted is the
+edge table and the materialized closure check 20 asserted — the edges are `AUDIENCE` leaves in the table
+that already exists. What is genuinely lost: *"add the kitchen crew to
+everything the troop-staff group is used for"* is no longer one edit. The answer is that named sets are
+the composition mechanism now — name the composite once, aim grants at it — which is D-091's outcome
+reached without a graph nobody could see the shape of.
+
+**`audience_member` stays, re-roled as the `LIST` leaf.** It is the audience's own dated list of people,
+reachable in an expression as one operand. Merging it into `GROUP(x)` was weighed and refused twice over:
+naming three people in one grant would create a row in the group browser that is not a group anybody
+talks about, and D-098 already wrote the rule that keeps the two dated-member tables apart (a group's
+members are true with no grant pointing at them; a selector's additions are meaningless outside the
+selector). The duplication D-080 would flag is therefore **kept on purpose**, and the mitigation is the
+one D-091 already required: the editor shows which mechanism each person arrived through.
+
+**Names are one namespace, and that is a new dependency.** Bare `COUNSELORS` resolves against roles and
+groups together, since `ROLE()` and `GROUP()` no longer have to disambiguate. So: names unique across
+`role` and `person_group` — and `audience.code` joins them in [D-103](#d-103--an-audience-may-name-another-audience),
+so it is three tables and **no single constraint spans three of them** — which means the write path carries it and an
+integrity check asserts it exists, per [D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now);
+case, whitespace and separators folded on write; and **every `selector_type.code` is a reserved name**, so a
+group called `MEMBERS` is refused at the save rather than silently rewriting every gate expression in the
+system. What is stored is always kind + id, so a rename never rewrites a grant.
+
+**Given up, once.** Storing a tree means two expressions with the same meaning are two different row sets,
+so *"you already granted exactly this set on that row"* no longer falls out of storage. The route back is a
+normalized **fingerprint** computed on save as a derived value used only for a warning — and if the
+expansion overflows, skip the warning rather than refuse the write: normalization informing a human, not
+gating one. Registered as an open question rather than promised. Similarly, DNF could have flagged
+term-matches-nobody syntactically; the tree catches only `X - X` on a single node, so "this selector
+reaches nobody" belongs to the editor preview that already has to exist.
+
+**Two-way door?** The language is a wide-open door — it is one seeded table plus an evaluator, and an
+operand can be added by any later decision. Precedence is the closed half: once expressions are stored in
+canonical fully-bracketed form, changing what binds tighter changes nothing already stored, which is a
+nice property and the reason the canonical rendering is a requirement rather than a convenience.
+
+**See:** [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
+[domain/06-authorization-model.md §6](../domain/06-authorization-model.md),
+[glossary.md](../glossary.md) (Audience, Selector, Filling rule, Locality).
+
+---
+
+## D-102 — Nothing owns an event. The people connected to it are named by selectors that bind to it
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Follows:** [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
+[D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
+[D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
+
+**Reverses:** [D-058](#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)'s ownership,
+[D-063](#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it),
+[D-094](#d-094--the-root-unit-owns-every-imported-event).
+
+**Amends:** [D-061](#d-061--event-answers-are-read-by-that-events-organizers),
+[D-062](#d-062--organizers-are-appointed-on-the-event-not-granted),
+[D-065](#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it),
+[D-067](#d-067--presence-is-a-three-valued-fact-on-the-registration).
+
+**Your words.** *"The events are owned by the root unit, so anyone with a permission to create an event can
+create an event."* Then: *"I also want to include `ATTENDING(<event>)` (meaning is registered to an
+event)"*, and on the tiers: *"let the user pick which they mean — mainly 'registered and confirmed', or
+'registered and is confirmed or whitelisted or waiting for confirmation'"*, and on the argument-less form:
+*"unparameterized form is great, I like that."*
+
+**Decision.** **`event.org_unit_id` is deleted and there is no owner of an event.** An event is an item in
+`grant_scope_type` like any other: `event.create` is held at the unit and creates an event; a unit-scope
+grant reaches every event, because after D-097 there is no tier between the unit and the item and nothing
+left to test. That deletes `can_event()`, the unit-authority rule that every event permission in this
+module was reached through, and the integrity checks that guarded the owner column. D-063's famous
+*artifact, not child* distinction has no artifact-and-unit pair left to distinguish, so it goes too.
+
+**1. Bound operands.** Some selectors name a set **relative to the item being checked**, and write it
+without an argument:
+
+| Operand | On the item checked means | Explicit form |
+|---|---|---|
+| `ATTENDED` | said yes to this event | `ATTENDED(<event>)` |
+| `PLACED` | said yes and is not waitlisted — **the capacity set**, the one §5 counts and the index already serves | `PLACED(<event>)` |
+| `CONFIRMED` | holds a paid place on this event | `CONFIRMED(<event>)` |
+| `ON_WAITLIST` | is waiting for a place on this event | `ON_WAITLIST(<event>)` |
+| `ORGANIZERS` | runs this event | `ORGANIZERS(<event>)` |
+| `GUARDIANS` | are the guardians of the person this item is about | `GUARDIANS(<person>)` |
+
+**Every one of these is a seeded `is_system` row of `selector_type`, and `is_system` is not decoration
+here.** [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) made the registry
+read-only to an organization, so no tenant action can add an operand; what `is_system` guards is the
+*platform's own* delete path, and it is also the flag that tells a reader this code is vocabulary rather
+than content. The alternative — seeded but deletable — is a grant breaker with no crime attached: remove
+`ORGANIZERS` and every `event.answer.view` grant in the system silently resolves to nobody while the audit
+trail goes on reporting them live. `ROLE` and `GROUP` are the only kinds an organization populates, and it
+does so by writing `role` and `person_group` rows, not registry rows.
+
+The argument-less form is the important half, and it exists to kill a specific flaw: `ATTENDING(<event
+1204>)` — *attending* being this round's starting word for the idea, refused above in favour of four tiers
+that each name a stored column — written on event 1204 is one grant per event with the event's own id typed
+into it, so "every
+participant may see the other participants" is a thing you do 400 times and forget on the 401st. Bound,
+it is one expression written the same way every time. Two rules make it safe:
+
+- **A bound operand is legal only on an item-scope grant.** At the unit there is nothing to bind it to, so
+  it is refused when the grant is saved, with the operand named in the message.
+- **A bound operand is legal only on a matching item type.** `PLACED` on a `person_group` grant is refused
+  because that item is not an event. This is `selector_type.argument_type` checked against
+  `grant_scope_type` — which is a reason the registry of D-101 is doing real work and not merely tidying.
+
+**2. `ORGANIZERS` is what replaces unit authority over an event, and it is not a contradiction of
+D-062.** With the owning unit gone, "the people running this event" has no other expression, and
+[D-061](#d-061--event-answers-are-read-by-that-events-organizers)'s rule (answers are read by that event's
+organizers) has to be *said* somewhere now rather than hard-coded in prose. It is said as a seeded grant:
+`event.answer.view` on an event to `ORGANIZERS`. [D-062](#d-062--organizers-are-appointed-on-the-event-not-granted)
+and its *"an `event_organizer` row grants nothing"* both stand untouched, because **an operand is a set,
+not a grant** — the same sentence §8 of the authorization model already repeats twice for `unit_leaders`
+and audiences generally. What changed is only that the appointment is now *aimed at* by grants instead of
+being special-cased inside the resolver.
+
+**And a seeded grant carrying a bound operand is not one row — a sentence this entry omitted and the
+events module then had to assume.** A grant's scope is the unit or exactly one item, and a bound operand
+is legal only on an item-scope grant, so there is **no row** that says *"every event's answers go to its
+organizers"*: the one row that would say it needs the unit as its scope, which is precisely where the
+operand is refused. What is seeded is therefore a **template**, and the event-creation path instantiates it
+beside the event row. Two consequences, both kept:
+
+- **The import owes one instantiation per event row it writes** — this module's share of
+  [D-093](#d-093--the-one-off-import-may-create-memberships-both-ends-dated)'s shape, and cheap, because it
+  is the same insert the event row already needs.
+- **An event whose creation failed between the event row and the grant has nobody who can read its
+  answers.** So the two writes are one transaction, and the check is a report — *events with no
+  answer-view grant* — because "these two rows exist together" is
+  [F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+  and no layer this project owns can express it.
+
+What the per-event row buys, and it is not accidental: answers-view is **revocable on one event** without
+touching anyone's appointment, which is the kind of thing an organizer asks for the week before a camp.
+
+**3. Four attendance tiers, and the refusal of a fifth.** You asked the writer to pick; picking requires
+that the choices be the stored facts and not four new ideas, so each tier names columns of
+`event_registration` and nothing else. `PRESENT(<event>)` over `was_present` is **refused**, and the
+reason is the failure direction: `was_present` is `NULL` until someone takes a register, so an operand
+built on it would revoke a child's access to their own camp photos because a volunteer forgot to tick a
+box. That column is a safeguarding signal — *three-valued on purpose*, per
+[D-067](#d-067--presence-is-a-three-valued-fact-on-the-registration) — and keeping it out of the selector
+language is what keeps it meaning "a person recorded this" rather than "this is who may see things".
+`WHITELISTED` has **no stored state to name**: the nearest facts are `source = staff` (an organizer
+entered them) and promotion off the waitlist. Either it means one of those or it is a new column on
+`event_registration`, which is an events decision and not a selector decision, so it stays an open
+question rather than being implied by a word in a grammar.
+
+**4. The set a grant reaches is now per-item.** D-091's requirement that the editor show the expanded
+people — *"the person saving the grant is looking at one row that mentions no person at all"* — can no
+longer be answered from the grant alone: `PLACED` means different people on different events. So the
+preview is computed **for an item** and says so on screen, and the cache key for a bound operand must
+include the item ([F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it) amended).
+**Import consequence:** the one-off import owes `event` rows and `event_registration` rows
+([D-090](#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+D-093's shape), and it owes **no owner column**, which is the import-side saving D-097 already counted.
+[D-094](#d-094--the-root-unit-owns-every-imported-event) is deleted rather than reversed: there is no
+column for an imported event to have.
+
+**Two-way door?** Narrow and expensive. Re-introducing ownership means the owner column, the resolver
+tier that reads it, and every check that the module deleted — but the selectors added here are not in the
+way, because an ownership grant and a bound operand answer different questions and can coexist. That is
+the difference between this and [D-097](#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
+that entry deletes a dimension, this one removes a *test* and leaves the vocabulary intact.
+
+**See:** [data-model/08-events.md §2, §8](../data-model/08-events.md#8-projections-and-guards),
+[domain/07-events.md](../domain/07-events.md),
+[data-model/05-authorization.md §10](../data-model/05-authorization.md#10-the-resolver).
+
+---
+
+## D-103 — An audience may name another audience
+
+**Status:** decided (from your answer)
+**Date:** refinement round 10
+**Follows:** [D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group),
+[D-098](#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+[D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
+
+**Amends:** D-101's grammar, its "a tree cannot cycle" claim, and its one-indexed-read fetch.
+
+**Your words.** *"What is a `LIST`? Also it should allow nesting AUDIENCEs."* The second sentence is the
+decision; the first is the reason this entry has to be written at all, and §1 below is its answer.
+
+### 1. What `LIST` is, said plainly
+
+**`LIST` is this audience's own hand-typed list of people** — the rows of `audience_member`, which is the
+one table in the module that holds persons rather than rules. It is the only operand that is not a rule
+about people: `MEMBERS` is a test, `ROLE(vedoucí)` is an office with dated holders, `PLACED` is a join
+against an event, and `LIST` is *the names somebody typed into this one grant*.
+
+It exists so that **a grant can carry its own exceptions without creating a thing everybody can see.**
+*"Everyone in the kitchen crew, plus Honza, minus the two people who left"* is
+`(GROUP(kitchen) + LIST) - PERSON(a) - PERSON(b)`. The alternative — making Honza a member of
+`GROUP(kitchen)` to reach one grant — edits a roster that other grants read, which is D-091's hazard, and
+it also invents a group nobody talks about, which is the rule D-098 wrote. So `LIST` is scoped to the one
+expression that contains it, is invisible in the group browser, and dies with the audience.
+
+The name is the weak part of this design and the question you asked is the evidence: nothing in `LIST`
+says *whose* list. The registry entry carries the gloss *"the people written into this audience"*, and the
+editor renders the operand as `LIST (this audience)`. Renaming the code was refused only because the round
+has already propagated it through four files and the gloss costs nothing; if it keeps causing this
+question, the replacement is `ADDED`, which says where the rows came from.
+
+### 2. The decision, and the hole it closes in D-101
+
+**An operand may name another saved audience: `AUDIENCE(<code>)`.** It is an ordinary selector — one row
+in `selector_type`, `takes_argument = true`, `argument_type = audience`, and it therefore costs one seeded
+row plus a resolver arm of about the same length as `GROUP`'s.
+
+The stronger reason is that **D-101 did not deliver the answer it claimed to.** Having deleted
+`audience_include`, it answered *"add the kitchen crew to everything the troop-staff rule is used for"*
+with *"named sets are the composition mechanism now — name the composite once, aim grants at it."* But
+under D-101's own grammar the only names available were `GROUP()` and `ROLE()`, and **both name a roster,
+not a rule**: a group's members are its dated rows. The rule you wanted to reuse had no name to point at,
+so the composite could be named only by copying its rows into a second audience — which is `audience_include`
+with the copy step done by hand. Nesting is the half of that answer that was missing: **`AUDIENCE()` is
+what makes a rule namable.**
+
+It is also the arm that composes the two things the round kept apart. `ROLE()` names an office, `GROUP()`
+names company, `ATTENDED()` names attendance; only `AUDIENCE()` names a **decision about access**, so it
+is the only arm that can say *"the same people that grant may see the fee ledger, plus the accountant"*.
+
+### 3. The three named sets, which are not the same thing
+
+| | `GROUP(x)` | `AUDIENCE(x)` | `LIST` |
+|---|---|---|---|
+| What it is | A dated roster somebody maintains | A saved expression, evaluated live | Rows on this one audience |
+| Who may change who is in it | `person_group.member.manage` | `audience.update` on that audience | whoever may edit this audience |
+| Does it exist outside a grant? | **Yes** — D-098: a group's members are true with nothing pointing at them | No — it exists to aim a grant | No |
+| *"Was she in it on 1 June 2024?"* | **Answerable**, from the dated rows | **Not answerable** past the audit window | Not answerable |
+| Sensitive as | ⚠ company | 🔒🔒 authority | 🔒 |
+
+That fourth row is the honest cost and it is the D-100 distinction replayed one level down. `GROUP(x)` is
+materialized, so it keeps a history you can be asked about; `AUDIENCE(x)` is a live rule whose past shape
+survives only in the audit trail, and [D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+expires those payloads after 24 months. So *"who could see this child's data in 2024?"* is answerable when
+the grant pointed at a group and **is not** answerable when it pointed at a nested audience. A rule whose
+reach cannot be reconstructed is still the right tool for a rule — the roster is the wrong tool for
+*everyone over 13* — but the gap should be closed by the report in §5, not by pretending the question has
+an answer.
+
+### 4. Rules that come with it
+
+| Rule | Why, and where it is enforced |
+|---|---|
+| **A reference names a `code`, not a name, and only audiences that have one may be referenced.** `audience.code` is optional and unique-where-set; naming stays opt-in, and an unnamed audience is simply not composable. The leaf may not point at a null code — a check reading another table, [F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those). | Audiences were allowed to be anonymous before this round and there is no reason to force a name onto a grant's private addressee list. |
+| **The code joins the shared namespace** of D-101 — `role`, `person_group`, `audience`, and every reserved `selector_type.code`. Still no single constraint spans three tables: the write path carries it and an integrity check asserts the write path exists, per D-081. | A name that resolves two ways is a silent grant. |
+| **Bare names do *not* resolve to audiences.** `MEMBERS * COUNSELORS` stays a role or a group; the audience arm must be written `AUDIENCE(veterans)`. | Adding a third table to bare resolution would change what existing stored expressions mean, and the explicit form costs four characters at the one place where being careful is the point. |
+| **Cycles are refused across audiences, at save.** | See below. |
+| **Depth is bounded over the expanded tree, not the local one** — the bound is the same `selector_depth_limit`, counted after references are followed. | A bound measured per-audience is a bound on nothing. |
+| **An audience may not be ended or deleted while a live grant, or a live audience reachable from a live grant, names it.** Refused at save; the reverse lookup is a query over `audience_operand` rows whose `selector_kind = 'AUDIENCE'`. | Without this, "ended" would be a way to silently empty an expression, and under `-` an empty operand makes the result **wider**. |
+| **The same refusal extends to `person_group` — ruled here, in the round after the row above — and it has to be ruled in both directions, which the audience row above does not say loudly enough.** Ending a group that something live names is refused; **so is writing a grant whose expression contains `GROUP(x)` onto a group that is already ended**, or naming an ended group from an audience. Two causes put a row on the report and only one of them is a broken write path: a rule that constrains *ending* leaves the second cause untouched, and the hazard is identical either way. | The group module found it by writing the opposite as the safe direction: a live grant on an ended group *is* safe on the allow side and **widens a deny** on the `-` side, which is the same asymmetry wearing a different table's clothes. The argument is identical, so the check is: refused at save in both directions, over `audience_operand` rows whose `selector_kind = 'GROUP'`. |
+| **`ROLE(x)` needs no such rule, and the difference is worth naming.** An office has no way to be emptied quietly: there is no `role.retire`, no status, and deletion is already refused while holder rows exist. | A group has a lifetime, so ending it is one click that empties a set. A role's members are ended one row at a time, on a screen that shows each person. **The hazard is a property of the shape, not of the idea**, which is why this row is an exception list rather than a third copy of the check. |
+| **An unresolvable leaf is still the empty set.** On the allow side that is quiet and safe; on the deny side `EVERYONE - <nothing>` denies everybody, which is loud. | The loud failure is the one you want. The quiet alternative is discovered in an audit, two years late. |
+| **Naming an audience requires reading it,** and grants no read of it to the people it contains. | Fail closed, and *see what you name* is already D-091's requirement. |
+
+**One of D-101's sentences is now false and stays struck.** *"a tree cannot cycle, so the only acyclicity
+guard left is the cheap parent-chain one"* — true of one tree, false of a **forest of trees pointing at
+each other**, which is what this decision makes possible. `audience_include` is not coming back: the edges
+are the `AUDIENCE` leaves, so there is no edge table, no transitive walk over rows, and no
+`include_depth_limit`; what returns is the write-time reachability walk D-091 already required, over a
+graph built at save time from rows that already exist. The machinery D-101 counted as deleted stays
+deleted; only its confidence was wrong.
+
+### 5. What this costs, stated as the hazard it is
+
+**Editing an audience changes grants you did not make.** Add a person to `AUDIENCE(veterans)` and every
+grant that names it now reaches them — including grants their owner wrote for a different purpose, and
+including grants this editor cannot see because they are not theirs. This is not a new failure mode:
+`GROUP(x)` has had this property since D-091, and the round accepted it there for the reason it is
+accepted here, which is that **a named set is worth being reusable and a reusable thing has more than one
+user**. The mitigation is D-091's, extended to the second user: saving an edit to a referenced audience
+shows *which grants name it, and at what depth*, before it commits, and the same listing is what closes
+the history gap in §3 as a report rather than as a reconstruction.
+
+*Assumption:* the listing is cheap at the sizes this organization runs at, because the edges are indexed
+rows in the table that already holds every expression. Unverified at any size, and a slow save screen is
+a real risk if the audit-and-import corpus's row-count estimates are wrong.
+
+**Two-way door?** Narrower than D-101's and wider than D-102's. Removing nesting later means finding every
+stored `AUDIENCE` leaf — they are one indexed query — and inlining the subtree it pointed at, which
+changes no grant's meaning on the day it runs and makes every one of them unmaintainable afterwards. So:
+the door closes quietly rather than loudly, which is the reason the depth bound and the reference listing
+are requirements rather than suggestions.
+
+**See:** [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) for the language
+this adds one arm to, [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people)
+for the table, and [D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group),
+whose inclusion edge this replaces for the second time.
+
+---
+
+## D-104 — A permission code's last segment is an action, and a registry that prose contradicts is a fiction
+
+**Status:** decided — **by the assistant at the close of round 10, not from an answer of yours.**
+Reversible, and cheap to reverse today; the day the first grant row exists it becomes a migration, which is
+the only reason it is written as a decision rather than fixed as a typo.
+**Date:** refinement round 10
+
+**Resolves:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two).
+
+**Follows:** [D-055](#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular),
+[D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
+[D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job),
+[D-075](#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code),
+[D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now),
+[D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree).
+
+### 1. What happened to the QR capability, which is the part worth reading
+
+F-19's third instance was a permission code named two ways in one round: the event door code, written
+`event.qr` in one place and `event.qr.rotate` in another, against a catalog that states its naming patterns
+as descriptions of the codes it already had.
+
+**It was not resolved by choosing a spelling. The capability is gone.** Grepping the closed round finds
+neither string anywhere in the corpus — not in the catalog, not in the events module, not in the ERD, not in
+this log. What survives of it is F-19's own description of the dispute.
+
+What happened, stated plainly: **a capability entered this round as prose, was half-designed in the course of
+arguing about its name, and left as prose** — swept away by the same parallel rewriting that introduced it,
+with no entry in this log involved at either end. Presence is what
+[D-067](#d-067--presence-is-a-three-valued-fact-on-the-registration) and
+[EV-5](../open-questions.md#ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower) left it: somebody
+holding `event.presence.mark` records who came, with a clipboard if necessary. The only QR code in this system
+belongs to a payment, and [D-075](#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)
+already rules that **a QR code is a rendering, not data** — it encodes three stored facts and is worth keeping
+no row of.
+
+**So the answer to "did we decide not to have check-in codes?" is no, and that is the finding.** Not a typo,
+not a disagreement about morphology: a thing was possible in prose, argued over as though it were in the
+model, and removed without ever having been in the model. The registry — the one place a permission legally
+exists, since D-072 made these documents the specification rather than a description of a schema — never had
+a row, so nothing refused anything. A reviewer who had asked "which seeded row carries this?" would have
+ended the argument in one sentence, and nobody asked, because the argument was written in two files that
+both looked like they were describing something real.
+
+**Closed as follows: there is no QR capability, seeded or deferred, in the events module or anywhere
+else.** If door scanning is ever wanted it arrives as an open question, then as a decision entry naming the
+permission, the artifact that gets rotated, and who may reprint it — not as a code appearing beside a
+paragraph about a door.
+
+### 2. The naming grammar, promoted from a description to a rule
+
+The catalog described two shapes — `<resource>.<action>` and `<resource>.<subresource>.<action>` — and the
+dispute could not be settled by them because **both readings of `event.qr` fit the description.** A
+description of how existing names happen to look cannot arbitrate a new name; that is why the `answer` /
+`answers` case was easy (the catalog was self-consistent, so naming it the arbiter worked) and the QR case
+was not. Three rules for a code being **added**, which is the only moment they cost nothing:
+
+| Rule | The test, and what it refuses |
+|---|---|
+| **The last segment names the action.** | Read the code alone and ask *what does this let me do?* `event.grant_access` answers it; `event.qr` does not. A noun-final code states an object, and since [D-099](#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) a grant states exactly one thing — a grant of an object would need a second sentence to say what it permits, and a second sentence is where a permission's real scope always hides. |
+| **A middle segment names something the schema stores.** | `answer` is `event_answer`, `presence` is a column of `event_registration`, `contact`, `credential`, `member`, `participant`, `request` are all rows. **`qr` is nothing** — D-075 is explicit that it is a rendering of a symbol, an amount and a recipient. **A permission may not be built out of an artifact the database does not keep**, because a grant has to be checkable against stored state and there is none. This is the substantive test the QR case needed, and it decides the case without appealing to morphology at all. |
+| **No grade words, and no prefix.** | `admin`, `all`, `everything`, and any code whose meaning is "every sibling under this prefix" — [D-068](#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) deleted sixteen of them and computed the wrong answer for `dependent.admin`. **Restated here as a rule about codes that have not been written yet**, which is the only form of that decision that can still prevent anything. |
+
+**One exception, named, because a rule with an unnamed exception is a rumour:** `system.admin`. Its last
+segment is not an action and it stays. It survives because its meaning is *defined by the resolver* — checked
+outright, `applies_to = unit`, never reachable through an item grant — rather than read off its name, and
+because D-068 exempted it in so many words rather than by omission. **It is the only code in this system
+allowed to be a noun, and the exemption is not a precedent**; `<resource>.admin` is exactly what rule 3
+refuses and exactly what was deleted.
+
+**The rules were applied to the registry as it now stands, and found nothing to correct**: of the
+**sixty-six live codes in the catalog's tables**, sixty-five satisfy both the action test and the stored-state
+test, and the sixty-sixth is `system.admin`. That is worth recording precisely because it is a null result —
+the corpus was already following the rule, the rule was nowhere written, and the QR capability arrived anyway.
+**A convention that is followed and not stated fails exactly once, on the first thing nobody thought to
+compare.**
+
+### 3. The report, adopted
+
+F-19's recommended option is adopted: **before a round closes, every dotted token in prose is diffed against
+the seeded registries** — `permission.code`, `selector_type.code`, `grant_scope_type.code`, `reason_code.code`,
+and the seeded audiences — in both directions, so the report says which tokens name no row *and* which rows
+no prose names.
+
+- **It is a report run by hand.** This repository has no build step and no CI to hang a check on, so
+  [D-081](#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)'s
+  wording applies exactly: **a convention, not a guard.** Saying that is part of adopting it, not a caveat
+  appended afterwards.
+- **It would have caught all four instances, including the one this round has not yet noticed.** The fourth:
+  `PERSON(` is written into [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+  and [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) and used in four module
+  pages, while the seeded `selector_type` registry — copied from the evaluator's arm list instead of from
+  D-101's grammar — carried twelve rows with no `PERSON` in them. **So a control the round wrote for itself,
+  `system.gate_exempt` as `MEMBERS * ROLE(x) + PERSON(y)`, did not parse,** and the pages that noticed
+  resolved it by reading `PERSON(y)` as `LIST`, which is the wrong reading: `LIST` is one set belonging to one
+  audience, so subtracting it removes everybody on it. D-101's registry amendment adds the thirteenth row.
+  **Two registries, one round, same defect** — which is the strongest argument this entry contains for the
+  report, and it was found by reading, in a file nobody had been asked to check.
+- **Allow-listing is the cost and it is not small:** illustrative codes, and deleted codes shown struck on
+  purpose, both match no live row. The report is worth running only if its allow-list is re-read rather than
+  frozen, which is the same discipline the struck-text rule already imposes on this log.
+- It runs **on the documents**, because there is no schema to check against
+  ([D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)). That is the condition that
+  makes the whole class possible: **the prose *is* the specification, so prose is free to contradict the
+  registry, and there is no compiler to notice.**
+
+### 4. What this is worth, and how it fails
+
+**Two-way door.** Wide for the grammar, which renames nothing today. Already closed for `system.admin`'s
+exemption, which every round since D-068 has leaned on. And irrelevant for the report, **which cannot be
+violated — only forgotten.** That is this decision's failure mode and it is the only one: nothing in the
+system will ever notice a code drifting from its row, including after this entry, because the enforcement
+adopted here is a person remembering to run a script.
+
+**What would make it obsolete.** An actual implementation, with a seed directory and a test that loads it.
+Until then the registry and the prose are two copies of one thing
+([F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s general
+shape, in its cheapest instance), and the report is the check that they still agree.
+
+**See:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
+which this closes, [data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry)
+for the registry with thirteen rows, and
+[permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the naming patterns, which are
+now rules and are written there as such.

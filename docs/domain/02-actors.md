@@ -135,8 +135,8 @@ Why not just `person.email`:
 **Purpose** is the field that makes this useful operationally:
 `login`, `membership`, `emergency`, `billing`, `guardian_contact`. A person can have one
 address for billing and another for emergency contact, and the permission system can treat
-them differently — emergency contacts are visible to a unit leader on a camp roster;
-billing details are not.
+them differently — emergency contacts are visible to whoever holds the roster read on that
+camp; billing details are not.
 
 ### External identifiers
 
@@ -184,15 +184,20 @@ value on the `guardianship` row is always the open one's.
 row for the `(guardian, dependent)` pair and the right level it holds, not against roles. This
 keeps the two authority channels distinct:
 
-- **Roles** answer "what may this person do in the organization?"
+- **Grants** answer "what may this person do in the organization?" — and since
+  [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+  an office is only something a grant can be *aimed at*, never a source of authority in its own right.
 - **Guardianship** answers "what may this person do regarding this child?"
 
-A unit leader does not hold a guardian's right over unit members by virtue of leading
-the unit. If the organization genuinely needs leaders to see a camper's emergency contacts,
-that is granted through a *role* permission with a unit scope, resolved at the event, and
-audited — not through a fictional guardianship. That role-side code is `person.view`, and it has
-no narrower cousin to reach for if the grant turns out to feel too wide
-([08-person-data.md](08-person-data.md)).
+Holding an office does not give anybody a guardian's right over a child. After D-100 that is not even a
+judgement about how wide offices are drawn: **an office confers nothing by being held**, so leadership has
+no channel of its own and reaches data the same way every other non-guardian does — through grants. If the
+organization needs its leaders to see a camper's emergency contacts, that is *said*, as a grant of
+`person.view`, and the scope chosen is the entire decision: after
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) the
+choices are **every member of the organization** or **the people on one event**, with nothing between them,
+and `person.view` has no narrower cousin to reach for if the first one turns out to feel like what it is
+([08-person-data.md](08-person-data.md)). Audited either way; never through a fictional guardianship.
 
 ### Recording acts on behalf
 

@@ -1,510 +1,442 @@
-# Organization Structure
+# Groups
 
-Units, their types, their nesting, and — the part that is usually skipped — how to keep
-all of that true across four decades of reorganization.
+One organization, and the named sets of people inside it.
 
----
+**This page used to describe a hierarchy.** [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+deleted it, and not by simplifying it: the module's subject stopped being a structure and became two
+things that were previously buried inside it — the organization, which is one unit and is not stored, and
+the **group**, which is a set of people and is
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+What follows says what the organization is now, what that costs, what a group is and is not, and where the
+workflows that used to end at a position now end.
 
-## 1. One root, arbitrary sub-units
+**The vocabulary, first, because everything here leans on it.**
 
-There is **exactly one top-level unit: the organization itself.** Everything else is a
-sub-unit nested beneath it, **to arbitrary depth and in arbitrary combination** — weekly
-meeting groups, smaller packs, sections, teams.
-
-```
-                    THE ORGANIZATION              ← the single root. depth 0.
-                    ┌──────┴──────┬────────┐
-                 Pack A        Pack B    Pack C      ← created by the organization
-                ┌───┴───┐
-          Thursday grp  Saturday grp                 ← created by the pack
-              ┌───┴───┐
-           Older  Younger                             ← arbitrary depth
-```
-
-**This is not a ladder of levels.** There is no fixed national → region → district → group
-→ troop sequence, no required intermediate level, and no type that must appear at a
-particular depth. A sub-unit may contain sub-units to any depth, and the arrangement is the
-organization's business rather than the schema's.
-
-### Membership lives at the root; participation lives in the sub-units
-
-The distinction that makes this work:
-
-| | Where it lives | What it means |
+| Word | Means | Stored as |
 |---|---|---|
-| **Membership** | **The root unit** | "This person is a member of the organization." Paid yearly. |
-| **Participation** | Any sub-unit | "This person takes part in this weekly group." |
+| **unit** | the organization itself. There is exactly one. It is a **scope**, never a row | nothing — a code in `grant_scope_type` |
+| **group** | a named set of people with explicitly dated members and a lifetime. A set, not a body | `person_group` + `person_group_member` |
+| **role** | an office: a small, visible set of holders — leaders, finance, IT | `role` + `role_holder` ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) |
+| **audience** | an expression over named sets, which a grant is aimed at | `audience` ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)) |
+| **selector** | one operand of that expression: `MEMBERS`, `GROUP(x)`, `ROLE(x)`, … | `selector_type`, `audience_operand` |
 
-People **register and pay at the organization**, and their membership is theirs as a member
-of the organization — not a membership of a pack. The packs they attend are recorded
-separately, as participation ([§5](#5-participation-unit_participation)), because belonging
-to a Thursday-evening group and being a paid-up member of the organization are different
-facts with different lifetimes. See
-[data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation).
-
-### Sub-units are self-governing
-
-A pack has **its own events, its own local leadership, and its own roster**. It is not an
-administrative subdivision of the root; it is a thing that runs itself and answers to the
-root. That is why [authority originates at the unit](06-authorization-model.md#2-scope-authority--no-downward-inheritance)
-and why the root cannot decide permissions inside a pack.
-
-### Why one table, not `pack`/`group`/`troop` tables
-
-- **Depth is a data question, not a schema question.** The organization invents and retires
-  grouping arrangements; each one must be a row, not a migration.
-- **"Who is in this pack and everything under it?"** becomes one recursive query rather than
-  a hand-written union across tables.
-- **Units get renamed and renumbered constantly.** A `pack` table would need rename history
-  alongside; here a rename is one row in `org_unit_name`.
-
-A unit row carries its `unit_type_id` — the organization type for the root, and otherwise
-whatever type the organization has defined; a `parent_unit_id`, absent **only** for the single
-root and immutable thereafter (§3); a short human `code` such as `T12`; the current display
-`name`; the period the unit existed, as `valid_from` and `valid_to`; and a `status` of
-`proposed`, `active`, `merged` or `closed`.
-
-**The single root is enforced structurally**, not by convention: among all unit rows, at most
-one may have no parent. The rule counts every row rather than only the open ones, so a root
-that has closed does not make room for a second one.
-
-### Why types are rows, not an enum
-
-The unit vocabulary in a long-lived organization changes — a type that existed in 1995 may
-be gone, and a new one may be needed in 2027. An enum requires a deployment to change; an
-`org_unit_type` row does not.
-
-> **This goes further than it used to: no sub-unit types are seeded at all**
-> ([D-054](../decisions/decision-log.md#d-054--the-sub-unit-vocabulary-is-not-seeded-the-organization-defines-its-own-types)).
-> `org_unit_type` is *runtime data*, like `role`
-> ([D-052](../decisions/decision-log.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)) —
-> the seed carries the root type and nothing else, and the organization creates the types it
-> uses. Earlier revisions seeded `pack`/`group`/`team`, and before that a
-> `national`/`region`/`district` ladder; both were invented words that read as a
-> specification. **The words below are still used throughout these docs as illustration** —
-> "a pack may only sit directly under the root" is an example of a rule, not a type the
-> system ships with.
-
-A type row is a `code` and a name, plus `is_leaf` — may it contain sub-units — an optional
-`max_depth` ceiling, and a `sort_order`. **It carries no restriction about who may belong to a
-unit of that type**, and none will be added.
-
-**`org_unit_type.allows_minors` is removed** ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)).
-It was introduced as a **safeguarding** flag — the thing that let the system refuse to place a
-minor in a unit that does not supervise them without hardcoding which type codes those are. It
-went because a flag documented as a safeguard and enforced on one of two write paths is the thing
-these documents refuse to keep: *a list of eighteen ticks nobody read is not a safeguard, it is a
-receipt* ([08-person-data.md §4](08-person-data.md#4-what-was-refused-and-what-it-cost)).
-Gone with it: the integrity check that read the flag, the root type's `allows_minors = false` in
-the seed, and the explanation of why there is no `allows_adults` sibling
-([../data-model/02-organization.md §1](../data-model/02-organization.md#1-org_unit_type)).
-
-**The rule's name survives the mechanism, so [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
-requires naming who enforces it now.** *Do not place a child where nobody is responsible for them*
-is enforced by **who is allowed to write the row**. Nobody writes themselves onto a roster or into
-a position: the write is `unit_participation.manage` at that unit
-([../appendix/permission-catalog.md §4](../appendix/permission-catalog.md#4-membership)), held by
-named adults the unit's own people chose, audited, and naming who made the assignment. That is a
-stronger control than a boolean on a type, because a boolean only ever refused a placement nobody
-had thought about, while the permission refuses every placement by the wrong person regardless of
-the child's age. The same holds on the position side
-([§4](#4-positions)).
-
-**What is lost, in one paragraph, because it is the safeguarding story.** **The system can no
-longer say which units are for children.** `allows_minors` was the only machine-readable answer to
-that question and nothing replaces it, because "entirely managed by the organization" is a
-statement about people rather than about data. With no background checks recorded either
-([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)),
-the organization module's safeguarding story after this decision is **a permission held by named
-adults, an audit trail whose values expire after two years
-([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
-and a report of who holds the write**. If that turns out to be too little — after an incident, or
-an insurer's question — the route back is a rule about who may be placed where, argued once as a
-decision with its enforcement layer named in D-081's terms, and **not** a resurrected column whose
-name implies it enforces something.
+Roles and audiences belong to the authorization model
+([06-authorization-model.md](06-authorization-model.md), [../data-model/05-authorization.md](../data-model/05-authorization.md))
+and are not re-specified here. This page owns the unit and the group.
 
 ---
 
-## 2. Nesting rules
+## 1. The organization is one unit, and the unit is a scope
 
-Because sub-units nest arbitrarily, the rules are **permissive by default** and express only
-the genuine constraints the organization wants to state. Most organizations need very few.
+**There is one unit and it is the organization.** It has no parent, no children, no type, no code, no
+path, no depth, and no row. It is the non-item scope that `grant_scope_type` already carries — code
+`unit`, `is_item_scoped = false`, and a grant written at it has no `scope_id`. Nothing in the schema
+represents it, because there is nothing to represent: a second unit cannot appear, for the same reason a
+second answer to a question cannot appear in a field that does not exist
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
 
-A rule pairs two types and answers one question about them: may a unit of `parent_type_id`
-contain a unit of `child_type_id`. `max_children` is an optional cap on how many it may contain.
-`is_required` asks the separate question — must a unit of the child type have a parent of the
-parent type at all.
+**Membership is unchanged and is not a group.** One membership per person, at the unit, paid for yearly.
+It used to be issued with a participation row on the root unit so that "everyone in unit X" was one
+uniform query whether X was the organization or a Thursday-evening pack; that row is deleted with the
+units. So now:
 
-**A type with no rules at all is unconstrained.** That is the default and it is deliberate:
-the organization is free to invent a new kind of group and nest it wherever it likes without
-asking the schema's permission first. Rules exist to constrain where the organization has
-decided it wants constraint — a `pack` may only sit directly under the root, say.
+- **"everyone in the organization"** is one query against `membership`;
+- **"everyone in the Thursday group"** is one query against `person_group_member`.
 
-This is a table rather than a check constraint because nesting rules change over decades and
-because a constraint buried in code is invisible to the people configuring the organization.
+Two shapes instead of one shape with a depth in it, and neither one borrows the other's table. Renewal
+narrows to exactly what it always claimed to be about — the `membership` row, a new row per renewal
+([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to))
+— because the row it used to extend on a renewal is gone with the units, and
+[D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)
+is reversed rather than narrowed.
 
-**Do not enforce nesting in the application layer only.** A check clause cannot express it — the
-rule reads two tables and a history — and since
-[D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
-the trigger that used to carry it is gone from these documents too, so the obligation has to be
-placed deliberately rather than assumed from a schema. **Put it in a constraint or a check inside
-the writing transaction, at the migration layer, and expose the rules in an admin UI.** If it is
-only validated by the form, a data import will violate it — which is not a hypothetical here: the
-legacy corpus is precisely a data import, arriving before the admin UI exists. See
-[../data-model/00-conventions.md §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now)
-for which layer survives which kind of writer.
+**A grant at the unit reaches everything**, every item of every type, because nothing stands between the
+unit and an item any more and there is no ownership relation left to test
+([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
+[D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+That is a sentence about the permission system; it is stated here only because it is what "scope" means
+now that "row" does not.
 
-**"Before the admin UI exists" now costs more than it used to.** The same batch carries free-text
-columns, and under [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
-the map from those columns to attribute codes has to be **authored and read before the batch applies**,
-with the codes it names arriving `live` because a curator read them
-([03-identity-and-legacy.md §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). If the import
-genuinely precedes the UI, that reading cannot happen in the UI — and `attribute.define` is held by no
-seed role ([../appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues),
-**AT-2**). So the organization's first act of vocabulary curation is currently scheduled and unstaffed.
-That is a gap in the rollout plan rather than in the model, but it is the kind that gets discovered at
-the import, not before it.
+### What that costs, said once
+
+The hierarchy was not free-standing decoration, and deleting it spent real properties. They are listed
+here rather than distributed through the page, and they are not argued away.
+
+1. **The unit is no longer a locus of accountability for a child's records.** This is the one that matters
+   and it is the founding rule's.
+   [D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
+   said ~~authority over a unit originates at that unit and cannot be claimed from outside it~~ — it
+   existed so that access to a pack's children had to be granted *by that pack*, by the people who
+   recruited its leader and can be asked about it. **Reversed by
+   [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)**, which
+   does not weaken the rule but deprives it of its subject: with one unit there is no "outside it" to be
+   stopped from. Nothing in the remaining model reproduces the property. A permission held at the unit
+   reaches every member, and `person.view` was already the widest read permission in the system
+   ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+   [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)).
+   What survives of the safeguarding story is the same three things D-095 left behind — a permission held
+   by a named adult, an audit trail whose payloads expire after two years
+   ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+   and a report of who holds the write — **minus the part where the named adult was somebody the unit
+   chose.**
+2. **The subtree question has no subject.** "Who was in the Thursday group in 2011?" stays answerable,
+   because group member rows are dated (§5). What is gone is "and everything nested under it", which was
+   the only question the materialized path existed to answer. A set of people has no sub-sets stored
+   inside it.
+3. **Restructuring stops being a recorded event.** Splits, mergers and successions were this module's
+   whole history problem, and they are simply gone. A group that splits is an old group that ended and two
+   that began, with no edge between them unless somebody writes one — and after
+   [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+   there is no table left where that edge could go (§4).
+4. **Unit-scoped reports have nothing to report on.** "A pack's roster", "a pack's events", "which units
+   exist" are not hard questions any more, they are questions with no subject. The organizational-year
+   reports that actually mattered — membership and fees — live at the unit and are untouched.
+
+**One thing gets easier, and nobody counted it.** The invariant class with no report at all —
+[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those) shape 4, a
+column that may not change once set, whose violation leaves every row individually valid — had exactly one
+instance in the entire design, `org_unit.parent_unit_id`. It has none now. The details, including the ten
+integrity checks this retired, are in
+[../data-model/02-organization.md §5](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
+
+**Why this was affordable now and was not affordable in round 1**:
+[D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units). The
+legacy corpus names no units — two exports, people with their membership period and events with
+attendance, no unit column anywhere. A structure that describes nothing imported and, per
+[D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
+restricts nothing carries no information. That is the definition of the over-specification the round was
+called to remove.
+
+**It is not a two-way door.** This is the deletion of a dimension, not a flag. The route back is a
+decision with a reason attached — most plausibly "the organization has outgrown one center's visibility" —
+and it would have to re-argue D-031 from its own premises, because the mechanism that made that decision
+work (`scope_exposure`, written by the unit it covered) no longer exists.
 
 ---
 
-## 3. Unit names and renumbering — the history problem
+## 2. What a group is, and everything a group is not
 
-A unit called "4th Pack" in 1998 may be "Pack 12" today, or may have been split into
-two, or merged into another. The system must answer both:
+**A group is a `person_group`: a name, a description, its own lifetime, and explicitly dated members**
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+It is a **set of people, not a body**. Somebody names it, somebody puts people in it, somebody ends it, and
+the record of who was in it when is the roster's own (§5). A weekly meeting group, a project crew, a
+trainers' pool, `schuzka2026-1` — all the same kind of thing, and the system has no opinion about which
+ones deserve to exist.
 
-- "What was this unit called in 2001?"
-- "Is this the same unit as the one in the 1998 roster?"
+**Everything a body would have had, a group does not have.** This is the list the previous design got
+wrong, so it is stated flatly:
 
-### Names are temporal rows
+| A group has | Because |
+|---|---|
+| no parent and no children | there are no sub-units, and groups do not nest (D-097, D-098) |
+| no type, and no vocabulary of types | the runtime unit vocabulary is deleted with `org_unit_type` (D-097); a group needs no word for what kind of set it is |
+| no `code`, no path, no depth | a label carries no identity (§4); a set has no position to sit at |
+| no nesting rules | there is nothing to nest |
+| no rename history | the name is a column, and the old name is not kept (§4) |
+| no split, merger or succession edge | restructuring is no longer an event (§1, cost 3) |
+| no leadership of its own | positions are deleted (D-100); see §6 |
+| **no roles** | an office is a role and a role is held at the unit; a group has none of its own, and no leadership column will be added to make one look derivable (D-098, D-100) |
+| no fee | membership is at the unit and is the only thing that costs money |
+| **no permissions over its members** | see immediately below |
 
-One row per name a unit has gone by: the `name` and `code` it carried, the period it carried
-them for, and a `change_reason` of `rename`, `renumber`, `reorganisation` or `correction`.
+**Membership of a group confers nothing, and tidier storage does not quietly change that.** A member of a
+group cannot do anything. That is
+[D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity) and
+[D-019](../decisions/decision-log.md#d-019--household-membership-grants-no-access) restated one level down:
+participation is not authority, and it stays not-authority when it moves into a table with better
+columns. Authority arrives only through a grant that names the group, which is §4 of
+[../data-model/02-organization.md](../data-model/02-organization.md#3-a-group-is-an-item-a-grant-can-be-written-on-one).
 
-`org_unit.name` is a denormalised convenience holding the current name. The history lives
-here. Queries about the past read this table; they must never read `org_unit.name`.
+**Where the line against an audience is drawn, because the two are one row apart in shape and a mile apart
+in meaning.** The round's inversion is the load-bearing part: **a group states its members; a selector
+picks them.** A group's members are a list of people that is true whether or not any permission points at
+it; an audience's `LIST` rows are an addition to an expression, meaningful only inside the expression they
+complete. A group exists to be talked about; a selector exists to be aimed at something. Two tables that
+both answer "who is in it" is exactly the shape
+[D-080](../decisions/decision-log.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
+teaches a reader to distrust, so the difference is stated, not implied — and merging them would make the
+permission table the system's roster, which is the mistake
+[D-062](../decisions/decision-log.md#d-062--organizers-are-appointed-on-the-event-not-granted) already
+refused for events.
 
-### Renumbering is a rename, not a new unit
+**Where the line against a role is drawn, in one sentence, because it decides who may edit the list.** A
+role is an office with a small, visible set of holders and is written by the most sensitive code family in
+the catalog (`role.*`, 🔒🔒); a group is company, and its roster is written by `person_group.member.manage`
+(⚠). One table with a `kind` column would give a single permission that both adds a child to the Thursday
+group and puts the holder into the administrators — that is the merge to refuse, and D-100 refuses it.
+`GROUP(x)` and `ROLE(x)` stay distinct in the grant text so the distinction is visible to whoever reads
+the grant.
 
-When "4th Pack" becomes "Pack 12" and the participants stay, that is **one unit with two
-name rows**. Creating a new unit would orphan all the history and make "who was in Pack 12
-in 1998?" answerable only by luck.
+---
 
-### Splits and mergers
+## 3. Joining a group is somebody else's act
 
-These *do* create or close units:
+**Nobody writes themselves onto a roster.** The gate is `person_group.member.manage`, held at the unit —
+which reaches every group, because after D-097 nothing stands between a unit-scope grant and an item — or
+granted on one group as an item, which is how "these two people may work *this* roster" is said without
+inventing a scope ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+[D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+There is no self-scoped variant and none will be added. Moving the roster from `unit_participation` to
+`person_group_member` changed the table and not the rule: D-095's reasoning transfers intact.
 
-The record of one names the `source_unit_id` and the `target_unit_id`, the `relationship` from one to the
-other — `split_from`, `merged_into`, `successor_of` or `renamed_to` — the `effective_date`, and
-a `note`.
+**What the gate replaced is worth keeping in mind, because it is the reason the gate is trusted.**
+`org_unit_type.allows_minors` used to refuse a child's placement by consulting a flag on the unit's type.
+[D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+removed it — *a list of eighteen ticks nobody read is not a safeguard, it is a receipt* — and replaced it
+with a permission held by named adults. Per
+[D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now),
+the rule's name outlived its mechanism, so: *do not place a child where nobody is responsible for them* is
+enforced by **who may write the member row**, now in `person_group_member`, audited and naming who wrote
+it. A permission refuses every write by the wrong person regardless of the child's age; a boolean only ever
+refused a placement nobody had thought about.
 
-A participation history must survive a split: when Pack 12 splits into Pack 12 and
-Pack 31, people who moved to 31 get a *new* `unit_participation` row starting at the split
-date, and their old row closes at the same date. No rows are rewritten. The
-`org_unit_relationship` row records that 31 came from 12, so a historical query can follow
-the lineage if asked.
+**And what it still costs, once.** The system cannot say which groups are for children. Nothing on a
+`person_group` answers that question and, consistent with "no special features", nothing will: no
+`allows_minors`, no `is_children`, no type to hang it on. Combined with no recorded background checks
+([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)) and with
+cost 1 above, the safeguarding story of this module is a permission held by named adults, an audit trail
+that forgets values after two years, and a report. If that turns out to be too little — after an incident,
+or an insurer's question — the route back is a rule about who may be placed where, argued once as a
+decision with its enforcement layer named in D-081's terms, and **not** a resurrected column whose name
+implies it enforces something.
 
-> Design rule: **never rewrite a `unit_participation` to point at a different unit.** Close
-> it and open a new one. Rewriting destroys the answer to "where was this child in 2003?"
+**A membership request is a request for membership of the unit, and carries no group.** It used to carry a
+preferred unit; `requested_unit_id` is deleted, because which group a new member lands in is a write on
+the group and not a preference on the request ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+The request flow in [05-membership-lifecycle.md](05-membership-lifecycle.md) ends at the unit; a roster is
+somebody else's decision afterwards, which is the same fact as the paragraph above stated from the other
+side.
 
-### A unit never changes parent
+---
 
-`parent_unit_id` is **immutable**. If a group genuinely transfers from one pack to another,
-the **old unit closes and a new unit is created** under the new parent, the people are moved
-across, and the lineage is recorded as an `org_unit_relationship`.
+## 4. A name carries no identity
 
-This is a significant simplification rather than a limitation:
+**A group name is a label, and a label is not the group.** This is the method
+[D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)
+reached for units — *"what is a unit number?"* was the answer to the question rather than the question —
+and D-097 deleted the units while leaving the reasoning intact, so it transfers to groups: **a group name
+that comes back after a decade is a new group, unless somebody records that it is not**
+([D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity),
+superseded as to units and standing as to method).
 
-- **The materialized `path` never needs a subtree cascade rewrite**, so the dangerous
-  operation disappears along with its danger.
-- **Historical reports cannot silently change.** "Who was in the 4th Pack in 2001?" keeps
-  answering the same thing forever, because no unit's ancestry is ever edited.
-- Retroactive reparenting — the hard case — becomes unrepresentable rather than difficult.
-- **`scope_exposure` rows cannot shift meaning under their authors.** A reparent would move
-  a unit in or out of a parent's reach, silently re-scoping rows nobody edited. It cannot
-  happen, so it cannot be forgotten.
+**Why the default matters is the part that was worth deciding.** Continuity is not a property of a label;
+it is a claim about the world, and only a human knows whether the crew refounded in 2026 *is* the crew of
+2016 or a second crew with the same tasteful name. Left unstated, the question is answered anyway — by
+whoever writes the matching screen, who will match on name, and will let a thirty-year gap sit inside one
+group's life. So the default is stated and it points at **a new `person_group` row**. The old case the
+corpus separates and keeps — *a renumber is one unit with two name rows* — has no survivor: a group has no
+name history, so a rename is an edit to one column and the previous name is not kept (§2).
 
-**No write may change `parent_unit_id` on a row that already has one.** Until D-072 this was a
-trigger; nothing in the docs carries it now, and unlike most such rules **no report catches the
-violation either**, because the damage is not a bad row, it is a set of previously-correct rows
-whose meaning moved. So this one needs a positive guard in the write path — reject the update, do
-not warn about it — and a test that attempts the update. See
-[data-model/02-organization.md](../data-model/02-organization.md#a-unit-never-changes-parent).
+**The honest half: the method outlived its recording mechanism.** D-096 put the continuity claim in
+`org_unit_relationship` as `successor_of`. That table is deleted, and
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+refuses group-to-group edges outright — no split, no merger, no succession — so the assertion has **no
+field to live in**. What the method still guarantees is therefore the direction of the default, which is
+the half that was ever enforceable: a returning name is a new group, and two groups that are really one
+look like two unless a person writes that down somewhere. *Where that sentence goes is not decided.* The
+cheapest true answer available today is a `note` on the second group's member rows and on the group's
+`description`, which nothing reads and nothing links; the honest alternative is to accept that the
+organization's memory of its own continuity is prose.
+**Status:** assumption — this page does not choose, and the question is recorded in
+[../open-questions.md](../open-questions.md).
 
-### A reused number is a new unit
+**Names are one namespace with roles and audiences, and that is a new dependency of the naming method.**
+Because `ROLE(x)` and `GROUP(x)` no longer have to disambiguate, a bare `COUNSELORS` resolves against roles
+and groups together, so names are unique across the tables, case/whitespace/separators are folded on write,
+and **every `selector_type.code` is a reserved name** — a group called `MEMBERS` is refused at the save
+rather than silently rewriting every expression in the system
+([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
+`audience.code` joined the namespace when an audience became an operand that could be named
+([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)), and the pair of rules
+is worth holding apart: **a bare name never resolves to an audience** — the arm must be written
+`AUDIENCE(veterans)` — yet a group still may not *borrow* an audience's code, because a name that resolves
+two ways is a silent grant whatever the resolution rules say. No single constraint spans the three tables,
+so the write path carries the rule and an integrity check asserts that it does. What a grant stores is kind + id, never a name, so **renaming a group never rewrites a
+grant** — the storage follows the method rather than the label. Mechanics:
+[../data-model/02-organization.md §1](../data-model/02-organization.md#1-person_group).
 
-A number coming back — Pack 12 closed in the 1990s, a Pack 12 on the register now — is
-**a new unit** ([D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)).
-One `org_unit` row per unit that existed, each with its own period, and the continuity between two
-of them is **not a property of the label but an assertion somebody makes**, recorded as an
-`org_unit_relationship` with `successor_of`
-([../data-model/02-organization.md §5](../data-model/02-organization.md#5-org_unit_relationship--splits-mergers-succession)).
-The opposite default — one row, with a thirty-year gap inside one unit's life — is what a system
-drifts into if nobody says, because it is what "match on code" does.
+---
 
-**This needs the question answered first, because the question was the answer.** Asked what a
-number appearing twice means, the reply came back as *"what is a unit number?"* — and that is the
-useful part. **A `code` is a short human label typed by somebody**: `T12`, `4. oddíl`. It is not
-the unit's identity, which is the row. It is not its name, which is a temporal row of its own in
-`org_unit_name`. And **it is not unique, deliberately** — uniqueness is per parent and among live
-rows only, which is exactly why a closed unit's number is free again
-([../data-model/02-organization.md §3](../data-model/02-organization.md#3-org_unit)). A label that
-gets retyped is not a continuity, and a rule about identity may not rest on one.
+## 5. A roster is history
 
-**Three cases, and the two older ones are not this one:**
+**Member rows are dated, and that is what makes the roster answerable.** `person_group_member` carries
+`valid_from` and `valid_to` per person, so joining, leaving and coming back are all periods on the same
+pair, and the roster has a history of its own instead of borrowing the audit trail's
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+"Who was in `schuzka2026-1` on 14 March 2026?" is a point-in-time read over those rows. It survives the
+audit trail's 24-month payload expiry
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+because it does not depend on the trail — which is the entire reason the rows are dated rather than a live
+flag, and the reason a naming habit like `schuzka2026-1` is a habit an organization may or may not keep
+rather than the mechanism history rests on.
 
-| Situation | What happens | Why |
+**This is the one place the module is ahead of the operand that looks most like it, and it is worth naming
+because the two are otherwise easy to confuse.** An audience named as an operand evaluates live, so its
+past shape survives only in the audit trail and stops surviving when the payloads expire; a group's set is
+its dated rows, so it keeps a past the audit trail cannot take away
+([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience) states this as the cost
+of the audience arm, and it belongs to this page as the credit side of the group's). "Who could see this
+child's data in 2024?" is answerable when the grant pointed at a group and is not answerable when it
+pointed at a nested audience. That asymmetry is a fact about which of the two is a roster, and it is the
+strongest reason the pair stays two tables.
+
+**Two facts, both kept, and not to be conflated.** The group's `valid_from`/`valid_to` says the group
+existed over that span; the member rows' periods say who was in it. An open group with dated members
+answers the historical question perfectly well, and an ended group's rows are not tidied up. **Ending the
+group is no longer an edit anyone makes on their own, though:** setting that end date is refused while a live
+grant, or a live audience reachable from one, names the group, because an empty set inside a subtraction
+widens a deny that the person ending the group did not write and would not look at again
+([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience); the write path and the
+check that watch it are
+[../data-model/02-organization.md §3](../data-model/02-organization.md#3-a-group-is-an-item-a-grant-can-be-written-on-one)).
+
+**A person who left in 2020 and came back in 2024 is two rows.** Never one row edited in place, because
+the edit destroys the answer to "was she in the group in 2019?", which is the same argument
+[D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to)
+makes about renewals and this system makes about every temporal fact
+([D-002](../decisions/decision-log.md#d-002--everything-temporal-is-a-period-never-a-boolean)).
+
+**Moving from one group to another closes one row and opens another.** The transfer discipline of
+`03-membership.md` §5.2 transfers to groups unchanged, and so does the design rule that used to sit under
+participation: **never rewrite a member row to point at a different group.** Close it and open a new one.
+Rewriting destroys "where was this child in 2003?", and unlike most tempting edits this one leaves no
+evidence that anything happened. A group moving *into* a different parent has no meaning now, because
+there is no parent (§2); the old page's answer — the unit closes and a new one is created — was about a
+dimension the module no longer has. Mechanics:
+[../data-model/02-organization.md §4](../data-model/02-organization.md#4-joins-leaves-and-transfers-close-one-row-open-another).
+
+**No member row is ever inferred.** The corpus names no groups any more than it names units
+([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)), so
+the one-off import owes no group rows and no member rows at all: **every `person_group_member` row in this
+system is typed by a person**, which is also the only way one could be true
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+
+---
+
+## 6. Appointments, which no longer end at a position
+
+**This section used to describe an appointment.** A position was a slot in a unit, a position assignment
+filled it, `is_leadership` marked the slots that counted as leading, `max_holders` said how many people
+could fill one at once, and the screen offered "appoint as scoutmaster" as one action that could create a
+slot-filling and a role assignment together. **All of it is deleted by
+[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)**,
+and the reason is not austerity but that the one thing a position recorded and a role does not — the *body*
+someone is a leader **of** — stopped existing when the bodies did.
+
+**What an appointment is now.** A `role_holder` row: a role, a person, a period, who granted it, a note.
+Written by `role.assign` and removed by `role.unassign`, always held at the unit, because D-097 left one
+scope and there is nowhere else to hold an office. It confers nothing by itself: the codes an office
+carries are the live grants whose expression names `ROLE(x)`
+([../data-model/05-authorization.md §3–§4](../data-model/05-authorization.md#3-role--an-office)).
+"That these two may manage the counselors roster" is a grant on the *role*, the same move a group gets.
+
+**The gate moved from the resolver into the expression, and the posture reversed.** This module no longer
+holds an eligibility rule of any kind: `requires_membership` and `min_age` were columns on positions and
+they are gone with them. Where the membership test went:
+
+The expression that replaces each, in the form D-101's canonical rendering stores it — every **compound**
+operand bracketed, a leaf left bare:
+
+| The old mechanism | The expression that replaces it |
+|---|---|
+| a role gated on current membership (`requires_membership`) | `(MEMBERS * ROLE(x))` |
+| a role exempt from the gate | `ROLE(x)`, written without `MEMBERS` |
+| one named person exempt (`system.gate_exempt`) | `(MEMBERS * ROLE(x)) + PERSON(y)` |
+
+**`PERSON` is a seeded selector, so that third row parses.** It did not when this page first printed the
+expression: the registry of seeded operands had been written from the evaluator's arm list rather than from
+D-101's grammar, and the arm nobody had implemented yet is exactly the kind of thing such a copy loses. The
+registry carries **thirteen** rows and `PERSON` is one of them — takes an argument, that argument is a
+person, binds to no item. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
+the class of defect it belongs to, a registry prose contradicts, is what
+[D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+answers.
+
+**`PERSON` is an argument; `LIST` is one set belonging to one audience, and both survive because they do
+different jobs.** `LIST` is the audience's own dated list of people: `+ LIST` adds everyone on it and
+`- LIST` takes all of them back with it, because it is one operand moving as one unit. `PERSON(y)` names one
+person, so it composes and can be excepted on its own — which is why the exemption is written
+`+ PERSON(y)` inside the very grant that carries the rule, keeping the exception visible next to the thing it
+exempts (D-100's placement), and why a person who must be excepted is subtracted as themselves rather than by
+subtracting a list they happen to sit on. The kitchen example D-103 works through needs both operands, which
+is the proof they are not one operand wearing two names.
+
+The posture flips from **default-on** to **opt-in per grant**, so a grant written as `ROLE(TREASURERS)`
+with no `MEMBERS` authorizes a lapsed member silently and forever. The controls are a standing report of
+live grants that name a `ROLE(...)` operand without `MEMBERS`, seeded grants that carry `MEMBERS`, and an
+import count — not the resolver. Nothing forces a holder row to end either, which is
+[D-071](../decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+posture transferred intact: the report is the control. All of that belongs to the authorization model and
+is named here only because these were this module's workflows:
+[06-authorization-model.md](06-authorization-model.md),
+[../data-model/05-authorization.md §3–§4](../data-model/05-authorization.md#3-role--an-office).
+
+**Three consequences, stated plainly.**
+
+- **"The leader of the Thursday group" has no referent.** A group has no leadership and no roles (§2), so
+  the sentence means *a person on that roster who also holds some office*, and nothing links the two. The
+  old derived group `unit_leaders`, which round 6 had to be corrected for silently matching nobody, is now
+  `ROLE(leaders)` and means what its name says.
+- **Elected versus appointed is no longer stored data.** It survives only as roles the organization
+  invents (`elected_council` beside `appointed_it`) — or not at all.
+- **A vacancy is no longer a reportable state.** "This seat has been empty since March" needed a slot that
+  exists unfilled, which is what `max_holders` and a position were for. An empty office is now the absence
+  of rows in `role_holder`, and absence has no start date on the office. A rule-filled role stays refused:
+  **F-12 is closed and its answer is no**, `role_holder` names one person, because an office record that
+  cannot answer "who was treasurer in 2023" is not an office record
+  ([F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)).
+
+---
+
+## 7. The module and the permission system, in one table
+
+Stated once here so that nothing below the line is re-specified in this page's voice. Full detail:
+[06-authorization-model.md](06-authorization-model.md) and
+[../data-model/05-authorization.md](../data-model/05-authorization.md).
+
+| Question | Answer | Owner |
 |---|---|---|
-| "4th Pack" becomes "Pack 12", same people | **One unit, two name rows** — a renumber is a rename | The participants and the continuity are untouched; a new row would orphan the history |
-| A unit moves under a different parent | **A new unit** — the old one closes | `parent_unit_id` is immutable (D-036), §3 above |
-| A number comes back decades later | **A new unit**, unless somebody records the continuity | The label carries no identity; continuity is asserted as `successor_of`, never matched |
+| Where is authority held? | at the unit, or on exactly one item — nothing in between | D-097, D-099 |
+| What is a group to the resolver? | an **item** in `grant_scope_type`, and a `GROUP(x)` leaf in an expression | D-098, D-101 |
+| Does being in a group grant anything? | no. A set is not a grant | D-005, D-098, D-102 for `ORGANIZERS` |
+| What may a role do? | read the live grants whose expression names `ROLE(x)` — a role confers nothing | D-100 |
+| How is precedence decided? | allowed iff some live allow applies and no live deny applies. There is no level and no locality | D-099 |
+| Does a unit-scope grant reach an item? | yes, every item of every type. A grant on one item reaches that item only | D-099, D-102 |
+| Is there a membership gate in the resolver? | no. `MEMBERS` is an operand, evaluated live on the checked date | D-100 |
+| Can the center be locked out of a body's data? | the question has no subject: there is one body and its people are the only people there are | D-097 |
 
-**The cost is a sentence somebody writes down, occasionally.** When a number really does return — a
-troop refounded after a decade dormant — someone records that this unit is the successor of that
-one, and "who was in Pack 12 in 1984?" follows the relationship instead of guessing from an
-overlapping name. §6 used to refuse to pick a default and to require only that the choice be
-recorded; what D-096 adds is **the direction the record goes in when nobody records anything**,
-because an unstated default is a default that gets implemented by whoever writes the matching
-screen.
-
----
-
-## 4. Positions
-
-A **position** is a defined slot in a unit. A **position assignment** is a person
-filling it for a period. This split is what lets the system say "Pack 12 has no
-scoutmaster right now" and "this position has been vacant since March" — both operationally
-important, and neither expressible if positions only exist when filled.
-
-A position is defined against a `unit_type_id` and carries a `code` — `scoutmaster`,
-`assistant_leader`, `treasurer`, `quartermaster` are the ordinary ones — a `title`, a
-`max_holders`, `requires_membership`: must the holder be a current member, and `is_leadership`:
-does the holder count as one of this unit's leaders. That last flag has exactly one job — it
-decides who the derived `unit_leaders` group is filled with, below — and it is worth naming here
-because a flag with a stated second purpose gets a second purpose.
-
-An assignment joins three things and dates them: the `position`, the `org_unit` it is filled in,
-the `person` filling it, and the period. It also carries `is_primary`, because some people hold
-several positions; an `appointment_reference` to the appointment letter or record; and an
-`ended_reason`.
-
-### Multiple people share one position
-
-**Several people may occupy the same position at the same time, and that is the default.**
-A pack with three assistant leaders, two quartermasters, or a rotating team of instructors
-is ordinary, not exceptional.
-
-`position.max_holders` is how a single-holder position is expressed — `1` for a
-scoutmaster, `NULL` (unlimited) for everything else. Two consequences worth being explicit
-about:
-
-- **Multiple occupancy is the default, not an exception.** `max_holders` is nullable, so a
-  newly invented position accepts several holders without anyone declaring it. Single
-  occupancy is the case that has to be stated.
-- **The limit belongs to the position, not the hierarchy.** A parent unit cannot declare
-  that a nested unit has one scoutmaster. What positions a unit defines, and how many
-  holders each admits, is that unit's own business — the same principle as
-  [authority over a unit originating at the unit](06-authorization-model.md#2-scope-authority--no-downward-inheritance).
-
-**The limit is enforced below the application** — a constraint or a check inside the writing
-transaction — rather than in the form, because the limit lives on a different table and because
-`max_holders > 1` cannot be expressed as a unique index. **The reason this cannot wait for the ORM
-to work it out is the second clause:** there is no declarative shape for "at most N open rows", so
-a generated schema silently has no limit at all, and the failure is invisible until two people hold
-the one chair. See [../data-model/02-organization.md](../data-model/02-organization.md#7-position-and-position_assignment).
-
-**A person may hold the same position in the same unit across separate periods** — left in
-2020, returned in 2024 — and both periods remain as distinct rows. Overlapping assignments
-of the same person to the same position are prevented; sequential ones are the point.
-
-### Positions are not permissions
-
-Holding the `scoutmaster` position does **not** by itself grant any system capability.
-The position is an organizational fact; authority comes from `role_assignment`. Keeping
-them separate means:
-
-- The organization's structure can be recorded completely, including for historical
-  periods, without implying that a 1998 scoutmaster has system access today.
-- A vacant position and an unfilled role are different reports.
-- Changing what a scoutmaster can do in the system is a permission change, not a
-  restructuring of the organization's records.
-
-### An appointment creates no role assignment
-
-This section used to end with the convenience workflow: *"a screen will offer 'appoint as
-scoutmaster' as one action that creates both a `position_assignment` and the corresponding scoped
-`role_assignment`."* **It creates one row, not two**
-([D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)),
-and the reason is not that the copy was judged tedious but that **the derivation already has a home
-and the copy does not**.
-
-**Where the derivation lives: the group's filling rule.** A permission group (the `audience`
-table) is now filled by **a rule and a manual list and other groups, unioned** — see
-[06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups) and
-[data-model/05 §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people).
-`unit_leaders` is one of those rules: it reads the position assignments live on the date being
-checked and says who leads a unit. So "the leaders of this pack may work its roster" is one grant
-aimed at one rule, and an appointment changes the answer **by existing**.
-
-**Why a copy would have been worse, in the direction that matters.** A copied role assignment
-outlives its reason: it has to be found again and revoked when the position ends, and everything
-about the appointment that made it is a second record of a fact the first one already states. A
-rule stops covering the person on the day the position assignment closes. That is the whole
-difference, and it is a difference in *what has to be remembered* — the revocation is the failure
-mode, and revocation-by-remembering is the kind that leaves a volunteer with treasurer access in
-2026 for a chair they left in 2019.
-
-**What the group model now allows, and what it refuses.** A group may **include another group**;
-the old one-line ban — *"They do not nest"* — is withdrawn, and the cycle it was written to prevent
-is **refused when the inclusion edge is saved**, because inclusion edges are stored rows and so the
-question is decidable at the write rather than at the read. The reasoning, the length bound and the
-fail-closed rule belong to the authorization model
-([06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)); they are not
-duplicated here.
-
-**What was deliberately *not* taken from the answer, and it is the honest limit of this section.**
-In the system the answer came from, permissions sit on the group and a group can *be* a holder of
-office. Here **a role is still held by one named person**, because `role_assignment` is the office
-record that answers "who was treasurer of Pack 12 in 2023" and a derived holder list has nothing to
-date. So a **rule-filled role is not decided** — it is
-[F-12](../open-questions.md#f-12--may-a-role-be-held-by-a-rule-as-an-audience-is), and this document
-will not quietly write it as though it were. What appointing does create, today, is the position
-assignment and nothing else.
-
-### Eligibility
-
-`requires_membership` handles the common rule that a leader must be a current member.
-Enforcing it as a **database constraint is not possible** (it depends on temporal membership
-state), so it is an application rule plus a periodic consistency report. Do not attempt to
-enforce it with a foreign key.
-
-Note this is *reported* for positions but **enforced for roles**: the permission resolver
-itself checks membership state for roles that require it — see
-[D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
-and [§7](#7-units-and-permissions).
-
----
-
-## 5. Participation (`unit_participation`)
-
-A **sub-unit's roster is participation, not membership.** These are different facts:
-
-| | Membership | Participation |
-|---|---|---|
-| **Of what** | The organization (the root unit) | One sub-unit |
-| **How many** | Exactly one at a time | Zero or more, simultaneously |
-| **Costs money** | Yes — the yearly fee | No |
-| **Ends when** | The fee is unpaid | The person stops attending |
-
-A person may take part in a Thursday group, a weekend pack and a summer team at once, while
-holding a single membership. Moving between groups is one row edit and costs no membership.
-
-A participation row is a `person`, an `org_unit`, and a period, with a `join_reason_code` and a
-`leave_reason_code`, an `is_primary` marking which group to show first, and a `role_in_unit`
-that is a display convenience and **not an authorization fact** — nothing in the permission
-model reads it.
-
-**A participation row is created for the root unit when the membership is created**, so
-"everyone in unit X" is one uniform query whether X is the organization or a Thursday-evening
-pack. The schema detail is in
-[data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation).
-
----
-
-## 6. Historical units
-
-Units that closed must remain queryable. `org_unit.status = 'closed'` with `valid_to` set.
-They are excluded from pickers by default and included in historical reports always.
-
-Two things to get right:
-
-1. **A closed unit is not deleted.** Historical `unit_participation` rows reference it, and
-   "who was in the 4th Pack?" must work forever.
-2. **A reopened number is a new unit unless somebody says otherwise.** This bullet used to refuse
-   the choice both ways — *reuse the row if it is genuinely the same unit, or create a new one if
-   the organization considers it a fresh start, and record which was chosen* — which left the
-   judgment right but the **default unstated**, and an unstated default is what the matching screen
-   implements. Now: one row per unit that existed, and continuity is an assertion recorded as
-   `org_unit_relationship` with `successor_of` (§3). It stays an organizational judgement rather
-   than a technical one; what changed is which way the judgement falls when nobody makes it.
-
-**A unit that changes parent is a new unit** (§3), so `parent_unit_id` is immutable and the
-historical answer to "where did this unit sit?" never changes retroactively.
-
----
-
-## 7. Units and permissions
-
-Units are a **scope** for authority. The same role assignment mechanism handles both
-organization-wide and unit-scoped authority:
-
-An assignment names a `person` and a `role`, the scope it applies in, and the period. The scope
-is a `scope_type` of `organization` or `org_unit`, with `scope_id` absent for the former and a
-unit for the latter — the two always agree, and there is no third shape.
-
-So "treasurer of the organization" and "treasurer of Pack 12" are the same table and the
-same role — differing only in `scope_type`/`scope_id`.
-
-**Authority does not flow down the hierarchy.** This is the rule that most shapes the
-permission system, and it is stated in full in
-[06-authorization-model.md](06-authorization-model.md#2-scope-authority--no-downward-inheritance).
-In brief:
-
-- A role assignment at a unit covers **that unit only**.
-- A parent unit — including the organization itself — **cannot** decide permissions inside a
-  nested unit.
-- **But not everything is a nested unit's business.** The person registry, the memberships
-  and the fees belong to the **root** ([D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)),
-  so an organization-scoped role acting on them is working at its own scope. What a sub-unit
-  owns is its own events, its own rosters, its own local leadership.
-- Authority crosses a unit boundary downward **only** where the unit itself has written an
-  explicit `scope_exposure` row granting a specific role assignment coverage over it.
-- `system_admin` is the sole exception.
-
-A permission check therefore matches the scope **exactly**, plus any explicit exposures.
-**There is no ancestor walk in permission resolution.** `unit_ancestors()` exists in the
-schema for reporting and for the exposure-direction check, but it must never appear in a
-permission path — see
-[data-model/02-organization.md](../data-model/02-organization.md#6-hierarchy-traversal).
-
-### Unit-scoped access grants
-
-Beyond roles, a unit can be the target of an item-scoped grant: an `access_grant` whose scope
-type is `org_unit`, whose scope id is that unit, and whose level says how much.
-
-This is how you grant someone authority over a unit's data without giving them an
-organization-wide role — a temporary administrator for one pack, for instance. Note the
-grant is written **against the unit**, and creating it requires `access_grant.create` held
-at that unit. A parent unit cannot create it.
-
-**The grantee may also be a set of people, rather than one person** ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)):
-`access_grant.person_id` and `access_grant.audience_id` are mutually exclusive. "Expose this
-event to everyone" or "to this pack's leaders" is **one row** with an audience — a rule the
-resolver evaluates against current state — rather than one row per person. This is what
-replaced the bulk scope-exposure tool ([D-045](../decisions/decision-log.md#d-045--the-bulk-scope-exposure-tool-is-removed)),
-and it is why that tool had no remaining job. **Since
-[D-091](../decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
-that set may be a rule, a hand-kept list, another group, or all three at once** — which is why the
-grant editor has to show the people a grant actually reaches rather than the group's name
-([06-authorization-model.md §6.2](06-authorization-model.md#62-audiences--a-rule-a-list-and-other-groups)).
-
+**There is no ancestor walk, because there is no tree.** `unit_ancestors()` and `unit_descendants()` are
+deleted, along with the path-consistency check and the CI assertion that the resolver never calls them —
+an assertion about a function that does not exist is not a guard. The permission check matches scope
+exactly: the unit, or the item.
 
 ---
 
 ## 8. Open issues
 
-- The actual unit type vocabulary and nesting rules. Because nesting is permissive by
-  default and one root is mandatory, this is now a much smaller question: which types exist,
-  and which of the few genuine constraints does the organization want stated as rules.
-- Whether the root unit may *see* what happens in its sub-units without those sub-units
-  exposing their scope — a reporting/audit question, not a permission-inheritance one.
-  [D-035](../decisions/decision-log.md#d-035--one-root-unit-all-sub-units-nest-arbitrarily-beneath-it)
-  argues the root already owns the registry and the fees, so this is narrower than it first
-  appears.
-- Whether `is_leadership` should automatically create a `role_assignment`, or only suggest it.
+Open, and tracked in [../open-questions.md](../open-questions.md):
 
-Resolved and no longer open, kept here so the reasoning is visible: the organizational
-structure itself (§1), retroactive reparenting (now prohibited — §3), unit types containing
-children (§1), and whether a person may belong to several units at once (yes, by
-participation — §5).
+- **Where a claimed group continuity is recorded.** The method says continuity is asserted, never
+  matched (§4); no table accepts the assertion any more. Until somebody rules, the default is the whole
+  rule: a returning name is a new group.
+- **Whether a group's previous name should be kept at all.** It is not, and D-098 chose that deliberately
+  as part of "no special features". If the organization turns out to rename groups the way units used to
+  be renamed, the answer is a decision and not a column someone adds quietly.
+- **Whether an ended group should be hidden from pickers.** Closed units were excluded from pickers by
+  default and included in historical reports always; a `person_group` with `valid_to` set has no stated
+  behaviour either way yet.
+- **F-10**, which layer writes the no-overlap invariant on member rows. It is named in
+  [../data-model/02-organization.md §2](../data-model/02-organization.md#2-person_group_member) and
+  remains unanswered.
+
+**Resolved, and no longer open — kept visible so the reasoning survives.** The organizational structure
+itself, the sub-unit vocabulary and the nesting rules (there is no structure to name or nest — D-097);
+reparenting (the dimension is gone, so the question is not prohibited, it is unaskable); participation
+versus membership (participation is deleted; membership at the unit and group rosters are the two shapes —
+§1); whether a person may belong to several groups at once (yes, and there is no `is_primary` saying which
+to show first); whether the unit may read into what these docs used to call its sub-units (moot after
+D-097 — there is one scope and its people are the only people there are); whether a role may be
+filled by a rule (**F-12**, closed: no); whether appointing a leader should create a role assignment
+(positions are deleted — §6).
 
 All tracked in [../open-questions.md](../open-questions.md).

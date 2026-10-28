@@ -33,62 +33,91 @@ member.
 
 ### Two doors, one gate each
 
-The flow above is one of two ways a person ends up attached to a unit, and for eight rounds this
-document wrote as if it were the only one. There are two entry paths and each has exactly one gate,
-with no third control anywhere
-([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)):
+The flow above is one of two ways a person ends up in the organization's records, and for eight
+rounds this document wrote as if it were the only one. There are two entry paths and each has
+exactly one gate, with no third control anywhere
+([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
+whose reasoning
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+transfers to groups intact — joining one is still somebody else's act):
 
-| | **The root unit** | **A sub-unit** |
+| | **Membership of the unit** | **A group** |
 |---|---|---|
-| **How you get in** | You pay. Stages 1–5 above are this door, and it is **the only self-service entry in the system** — it opens the membership and its root participation row ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership), [D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)) | Somebody else writes the row |
-| **What stops you** | The fee | `unit_participation.manage` at that unit |
+| **How you get in** | You pay. Stages 1–5 above are this door, and it is **the only self-service entry in the system** — it opens a `membership` and nothing beside it | Somebody else writes a `person_group_member` row |
+| **What stops you** | The fee | `person_group.member.manage`, held at the unit — which reaches every group — or granted on one group as an item |
 | **Money** | The yearly fee | Nothing |
 
-**Nobody writes themselves into a pack.** The people who run a unit add people to it; that is the
+**Nobody writes themselves into a group.** The people who run a group add people to it; that is the
 whole of the rule, and it is carried by a permission rather than by a workflow.
-**`unit_participation.manage` has no self-scoped variant and none will be added** — a grant is always
-"over this unit's roster", never "over my own", so the shape of request that would let a person place
-themselves is not refused by a check, it is not expressible. The same holds for appointment: **nobody
-appoints themselves**, and the catalog holds no code that could say otherwise
-([../appendix/permission-catalog.md §5](../appendix/permission-catalog.md#5-organization-and-positions)).
+**`person_group.member.manage` has no self-scoped variant and none will be added** — a grant is
+always "over this group's roster", never "over my own", so the shape of request that would let a
+person place themselves is not refused by a check, it is not expressible. The same holds for
+offices: **nobody appoints themselves**, and the catalog holds no code that could say otherwise
+([../appendix/permission-catalog.md §5](../appendix/permission-catalog.md)).
 
-**No fee below the root, and no model wants one.** The fee is the organization's; entry to a pack
-carries no money — *"into the sub-units, there is no fee, it is entirely managed by the organization,
-including adding more members."* Putting a fee on a participation row would immediately ask who sets the
-amount, who chases it, and what happens to a child whose family cannot pay a pack's arrears, and none of
-those questions exist in the corpus or in any answer given. That is a refused model, not an unasked one.
+**No fee below the membership, and no model wants one.** The fee is the organization's; joining a
+group carries no money — *"into the sub-units, there is no fee, it is entirely managed by the
+organization, including adding more members."* That was said about units and it transfers unchanged,
+a group being among the things listed as having **no** fee
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+Putting a fee on a member row would immediately ask who sets the amount, who chases it, and what
+happens to a child whose family cannot pay a group's arrears, and none of those questions exist in
+the corpus or in any answer given. That is a refused model, not an unasked one.
 
-**What the asymmetry costs.** The sub-unit door has no membership check behind it — a counselor may add
-somebody who is not a member, and nothing in the write stops them, because D-095 refuses a third gate as
-firmly as it refuses the first two. What keeps that person from reading anything is the membership gate
-itself ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)),
-which is what that gate was always for; a participation row is a fact about belonging, not a credential.
-The other cost is directional and appears in the other direction at import: **the root door is the only
-place a person's own initiative can produce a record**, which is why the legacy corpus could be matched
-against people and never against units
-([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)).
+**What the asymmetry costs.** The group door has no membership check behind it — a counselor may add
+somebody who is not a member, and nothing in the write stops them, because D-095 refuses a third
+gate as firmly as it refuses the first two. What keeps that person from reading anything is
+`MEMBERS` in the grants that matter — the test
+[D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)
+was, now carried in the grant text rather than the resolver
+([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+— which is what that test was always for. **A group membership is a fact about belonging, not a
+credential**: a member of a group can do nothing by being one, and the tidier table does not quietly
+promote it
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+The other cost is directional and appears in the other direction at import: **the membership door is
+the only place a person's own initiative can produce a record**, which is why the legacy corpus
+could be matched against people and never against groups ([domain/03
+§7](03-identity-and-legacy.md#7-legacy-import-pipeline)).
+
+**And one cost is new, named where
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+names it.** Under the deleted hierarchy, access to a body's children had to be granted *by that
+body*, by people who recruited its leader and can be asked. A group's roster write is the same shape
+of permission and may be held at the unit, where it reaches every group in the organization, so what
+is left of the safeguarding story is a permission held by a named adult, an audit trail whose
+recorded values expire after two years
+([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+and a report of who holds the write — **minus the part where the named adult was somebody the body
+chose**. Nothing in the remaining model reproduces that property, and this document says so rather
+than letting the reader infer it.
+
 
 ---
 
 ## 2. Membership request
 
-A request records the person it is **for**, the membership type asked for, and the unit the
-applicant would like — optional, because the organization may assign the unit at approval
-instead. `status` is one of `draft`, `submitted`, `under_review`, `approved`, `rejected`,
-`withdrawn`, `expired`, and `submitted_at` says when it went in. The review is carried on the
-same row: who took it up, when they decided, and on a rejection a
-`rejection_reason_code` with a free-text `rejection_note` beside it. When an approval produces
-a membership, `membership_id` is set to it.
+A request records the person it is **for** and the membership type asked for, and nothing else.
+`status` is one of `draft`, `submitted`, `under_review`, `approved`, `rejected`, `withdrawn`,
+`expired`, and `submitted_at` says when it went in. The review is carried on the same row: who took
+it up, when they decided, and on a rejection a `rejection_reason_code` with a free-text
+`rejection_note` beside it. An approved request points at the membership it produced; the link is
+not optional once the approval exists.
 
-An approved request points at the membership it produced; the link is not optional once the
-approval exists.
+**A request asks for membership of the unit, and it names no group.** `requested_unit_id` is
+**deleted**, along with the index over it
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+~~The unit named on a request is a preference, not a door: a request opens the root and produces a
+root participation row, and the pack the applicant wrote down is a sentence addressed to whoever
+reviews it.~~ **Withdrawn by D-098**, which also deleted the table the column pointed at
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+The want behind the field is genuine — a reviewer would like to know where the applicant hopes to
+turn up — and it is served by the `notes` the row already carries, which is what the field always
+was in effect: a sentence, carrying no authority. **Which group a new member lands in is a write on
+the group, not a preference on the request**: one `person_group_member` row, written by somebody
+holding `person_group.member.manage` (§1), in a separate act with its own permission and its own
+audit entry. An approved request that produced no group row is a complete, ordinary outcome.
 
-**The unit named on a request is a preference, not a door.** A request opens the root: it produces a
-membership and a root participation row. The pack or group the applicant wrote down is a sentence
-addressed to whoever reviews it, and the sub-unit row still has to be written by somebody holding
-`unit_participation.manage` there (§1). The field stays on the request because it is useful to whoever
-reviews it, and it carries no authority of its own — an approved request with no unit written is a
-complete, ordinary outcome.
 
 ### Why a request is not a membership with a status
 
@@ -122,16 +151,21 @@ because neither was a membership requirement to begin with:
 - **Guardian consent for a minor's account** is a fact about the guardianship relation, held
   in `guardianship_permission`, not a box ticked during an application
   ([data-model/04](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write)).
-- **Position eligibility** — a scoutmaster must be an adult — is a property of the position
-  ([data-model/02 §7.1](../data-model/02-organization.md#7-position-and-position_assignment)),
-  not of membership. Membership is ageless
-  ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
+- **Who may hold an office** — a scoutmaster must be an adult — was never a property of membership, and
+  after
+  [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+  it is not a stored property of the office either: `position.min_age` is deleted with positions and
+  `role` carries no age column, so what remains is `is_minor()` in a report (§7). Membership is
+  ageless ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
 
 **And background checks do not exist in this system at all**
-([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)).
-If the organization introduces them, the home is a dated record with an expiry, and it
-belongs at the position-eligibility layer rather than the membership gate — a lapsed check is
-a reason someone may not hold a role, not a reason they stop being a member.
+([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)). If
+the organization introduces them, the home is a dated record with an expiry, and it belongs with the
+office rather than the membership gate — a lapsed check is a reason someone may not hold a role, not
+a reason they stop being a member. Which layer would hold it is unresolved, since the layer that
+used to hold eligibility went out with positions
+([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape);
+§7 and §9).
 
 ---
 
@@ -139,25 +173,23 @@ a reason someone may not hold a role, not a reason they stop being a member.
 
 A membership row belongs to one person and one membership type, and carries a `status` of
 `pending_payment`, `active`, `lapsed`, `terminated`, `completed` or `suspended` — always chosen
-deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an absent
-`valid_to` means the period is still open: it is the current membership, not a row someone
-forgot to close. `joined_via_request_id` records the request it came out of,
-`termination_reason_code` the reason it was ended, `data_confidence` is `high`, `medium` or
-`low`, and `import_batch_id` is set on imported rows and on nothing else. **For one round these two
-columns were dead on this table** — the corpus carried no payment evidence, so the batch wrote `person`
-and `unit_participation` and left membership to the live register, and this paragraph said a `membership`
-row is never imported
-([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an absent `valid_to`
+means the period is still open: it is the current membership, not a row someone forgot to close.
+`joined_via_request_id` records the request it came out of, `termination_reason_code` the reason it
+was ended, `data_confidence` is `high`, `medium` or `low`, and `import_batch_id` is set on imported
+rows and on nothing else. **For one round these two **For one round these two columns were dead on
+this table** — the corpus carried no payment evidence, so the batch wrote `person` rows and left
+membership to the live register, and this paragraph said a `membership` row is never imported
 [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
 reversed that, because it turned out the source states a membership period directly rather than only
-attendance: the import now writes `membership` rows for the periods the export states, `data_confidence =
-'low'` and `import_batch_id` set on every one of them, both ends of the period dated
-([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). **What did not come back is the
-open-ended row**: an imported membership never runs to today and none is inferred from an attendance row,
-which is the half of the old rule that was doing the protecting. So `data_confidence` on this table has
-two live sources again and they mean different things: on a backdated row it is a human's judgement
-(`membership.backdate`, attributed to whoever typed it), on an imported row it is the batch speaking for
-itself.
+attendance: the import now writes `membership` rows for the periods the export states,
+`data_confidence = 'low'` and `import_batch_id` set on every one of them, both ends of the period
+dated ([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). **What did not come back
+is the open-ended row**: an imported membership never runs to today and none is inferred from an
+attendance row, which is the half of the old rule that was doing the protecting. So
+`data_confidence` on this table has two live sources again and they mean different things: on a
+backdated row it is a human's judgement (`membership.backdate`, attributed to whoever typed it), on
+an imported row it is the batch speaking for itself.
 
 ### Overlap rules — the invariant that matters
 
@@ -172,13 +204,16 @@ the database rather than by application code. Its precise statement is in
 - Periods are half-open, so a membership ending on 30 June and another opening on 30 June do
   not collide.
 
-The constraint used to be scoped to `membership_type_id`, because a person might
-legitimately be an `honorary` and an `adult` member at once. With **one membership type**
+The constraint used to be scoped to `membership_type_id`, because a person might legitimately be an
+`honorary` and an `adult` member at once. With **one membership type**
 ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person))
-that escape hatch is gone, and the constraint becomes the clean person-level invariant:
-**one person, one open membership, ever.** The type column was what made "am I a paid-up
-member?" a hard question; now it is one row, one status, one date
-([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+that escape hatch is gone, and the constraint becomes the clean person-level invariant: **one
+person, one open membership, ever.** The type column was what made "am I a paid-up member?" a hard
+question; now it is one row, one status, one date. (This sentence cited
+[D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
+until round 10; that decision was about belonging to a sub-unit, its table is deleted
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
+and nothing about this invariant ever depended on it.)
 
 **This is the invariant the import now writes against.** For one round the sentence could be written
 the other way — with no imported membership, there is nothing for it to violate — and D-093 removed the
@@ -223,9 +258,9 @@ obligation, so "what did we charge in 1998?" is answered from the obligation, no
 **Membership is ageless** ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)).
 No age floor, no age ceiling, no age-out, no child→adult transition. Age survives as a fact
 about a **person** (`person.birth_date`) and matters where the law makes it matter:
-guardianship, safeguarding, and position eligibility
+guardianship and safeguarding
 ([§7 was the age-transition section — there is no longer a §7](#7-there-are-no-age-transitions)).
-Being a counselor or a leader is a **position**, never a membership type.
+Being a counselor or a leader is a **role**, never a membership type ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 
 ---
 
@@ -237,12 +272,11 @@ shape of a long-lived organization's data.
 ```
 person 100 — Jan Novák
   ├── membership #1   member   1990-09-01 → 2010-06-30   terminated  (left)
-  │     └── unit_participation   Pack 12  1990-09-01 → 1998-06-30
-  │     └── unit_participation   Pack 31  1998-09-01 → 2010-06-30
+  │     └── (nothing here: the corpus names no groups, so nobody's data says where he was)
   ├── (gap 2010 → 2024 — 14 years, no membership rows)
   └── membership #2   member   2024-10-01 → NULL          active
-        └── unit_participation   Group 5  2024-10-01 → NULL
-        └── position_assignment  scoutmaster, Group 5  2025-01-01 → NULL
+        └── person_group_member  Thursday group  2024-10-01 → NULL
+        └── role_holder          counselors      2025-01-01 → NULL
 ```
 
 Note what the two membership rows now *share*: the same type. They differ only in their
@@ -252,17 +286,31 @@ then an adult the whole time. The second framing is the true one, and it is why 
 memorable case still works: the person never changed, and neither did the type — only the
 period did.
 
-**Half of this picture is now reachable without a human, and the other half is not.** Membership #1 and
-its dates are exactly what the membership export states, so the one-off import writes them — bounded,
-`data_confidence = 'low'`, batch id set
+**Half of this picture is reachable without a human, and the other half is not.** Membership #1 and
+its dates are exactly what the membership export states, so the one-off import writes them —
+bounded, `data_confidence = 'low'`, batch id set
 ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
-The two pack rows are the other half: the corpus names no units, so a 1990s participation exists only
-because somebody who remembers typed it
-([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). What the diagram leaves out is not
-a round-9 change: each membership owes a **root-unit** participation row beside its pack rows
-([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)),
-and this picture is about the two periods rather than about the four participations a life actually
-produces.
+The group row is the other half: **the corpus names no groups either**, so a 1990s roster exists
+only because somebody who remembers typed it, and the import owes **no belonging rows of any kind**
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+What the diagram used to draw beside each membership — a **root-unit** participation row mirroring
+the very same period — is gone with the table, and the picture is now about the two periods, which
+is the most the import can actually say. The 1990s belonging the deleted rows might once have held
+was never in the corpus either
+([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)),
+so what is lost is a place it could have been written down, not a fact that was stored and then
+thrown away.
+
+**One row of the new diagram is thinner than the row it replaced, and the difference is a fact about
+roles.** `position_assignment` could name the body a person led; `role_holder` cannot, because
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+left exactly one scope and there is no body to hold an office *of* — a role is always held at the
+unit. So "he was scoutmaster **of that group**" is no longer a stored pair: the office and the group
+are two rows about the same person, and the link between them is somebody's reading of them.
+[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+records the neighbouring loss in the same register — the elected-versus-appointed distinction
+survives only as a role the organization invents — and neither is a hole this module can fill.
 
 Everything the system needs follows from this:
 
@@ -340,23 +388,37 @@ What replaces it is a **window tracked as dates, not as a status**
 | Inside the window (60 days after expiry) | Still not a member — but they may **renew without re-applying**, and a payment now **opens the new period at the expiry date**, so the record shows no gap. |
 | After 2 March | A payment opens a new membership at the **payment date**. The gap is real. Still no new application required. |
 
-**The 1 January date has a consequence that reaches past the membership table.** The yearly
-sweep is the only *bulk* event in a system carefully built to have none: on a single day,
-every membership in the organization lapses at once. That makes it the day the permission
-cache is invalidated for everyone, the day renewal traffic peaks, and — if
-`system.gate_exempt` were not in place — the day the system administrator would lose access to
-the system they administer ([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)).
+**The 1 January date has a consequence that reaches past the membership table.** The yearly sweep is
+the only *bulk* event in a system carefully built to have none: on a single day, every membership in
+the organization lapses at once. That makes it the day the permission cache is invalidated for
+everyone and the day renewal traffic peaks — and it used to be, on the same day, the day the system
+administrator lost access to the system they administer, which is the hazard
+[D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
+existed to close.
+
+**That mechanism is deleted**
+([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)):
+there is no `system.gate_exempt`, no `person_holds_gate_exempt`, and no resolver clause left to hold
+a door open. The answer now sits in grant text. A grant written `MEMBERS * ROLE(it)` stops applying
+to its holder at the sweep; a grant written `ROLE(it)` does not, because `MEMBERS` is simply not in
+it — which is exactly how D-100 says a whole office is made exempt, and the same sentence that makes
+the administrator survivable is the one that makes a lapsed treasurer dangerous. *Assumption:*
+**which offices are written without `MEMBERS`, and who decides, is not settled by D-100** — the
+standing report of live grants naming a `ROLE(...)` operand without `MEMBERS` is what makes each
+choice visible to a human ([data-model/03
+§6](../data-model/03-membership.md#6-membership-and-the-authorization-system)), and §9 lists the
+undecided half as a question.
 
 
-**All four calendar values are columns —
-`duration_months`, `expiry_month`, `expiry_day`, `renewal_grace_days` — and that is a requirement rather than a convenience.**
-The organizational year runs with the calendar, and 60 days was chosen for the window on the
-explicit condition that it stays easy to change
+**All four calendar values are columns — `duration_months`, `expiry_month`, `expiry_day`,
+`renewal_grace_days` — and that is a requirement rather than a convenience.** The organizational
+year runs with the calendar, and 60 days was chosen for the window on the explicit condition that it
+stays easy to change
 ([D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)):
-*"Make it 60 days, but it should not be hard to modify."* Because the window and the date live
-in a row rather than in a scheduled job, moving them is an `UPDATE`. The failure this prevents
-is a job that contains the literal `60` — invisible, and wrong the first time the organization
-changes its mind.
+*"Make it 60 days, but it should not be hard to modify."* Because the window and the date live in a
+row rather than in a scheduled job, moving them is an `UPDATE`. The failure this prevents is a job
+that contains the literal `60` — invisible, and wrong the first time the organization changes its
+mind.
 
 **Why dates rather than a status.** Your own answers pointed two ways on this, and it is
 worth being honest about that: you described the window as existing *"for them to pay to stay
@@ -398,21 +460,25 @@ What a system built around this must still handle — none of it a membership tr
 | Concern | Where it lives now |
 |---|---|
 | A guardian's authority at majority | Guardianship — and the system does **not** notice the birthday. No auto-expiry and no review queue; a person ends the row (D-069) |
-| Who may be placed in a unit | Nowhere in the data. `org_unit_type.allows_minors` is **removed**, and no column replaces it: the control is `unit_participation.manage` at that unit, held by the people who run it ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act), [domain/04 §1](04-organization-structure.md#1-one-root-arbitrary-sub-units)) |
-| Whether a person may hold a leadership position | `position.min_age`, and `is_minor()` in the eligibility report |
+| Who may be added to a group | Nowhere in the data. `org_unit_type.allows_minors` was removed by [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) and the units it was a column on by [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row); **no column says which group takes children, and none will**. The control is `person_group.member.manage`, held at the unit or on one group, in the hands of the people who run it ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) transfers [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) intact), and [domain/04-organization-structure.md](04-organization-structure.md) owns it |
+| Whether a person may hold an office | Nowhere either. `position.min_age` is deleted with positions ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) and `role` carries no age column, so what remains is `is_minor()` in a report over `role_holder`. **That is a deletion rather than a move**: the eligibility check this row pointed at no longer exists, and §9 carries the question |
 | Consent for a minor's own account | `guardianship_permission`, not a membership requirement |
 | Planning around age groups | A query over `person.birth_date`. It is a report, not a state change. |
 
-**One row of that table is emptier than it looks, and a membership document should say so out loud.**
-This section could once answer *"which units take minors?"* from a flag on the type. That flag is gone and
-nothing replaces it, so what this module has to offer on safeguarding is a permission held by named
-adults, an audit trail whose recorded values expire after two years
+**One row of that table is emptier than it looks, and a membership document should say so out
+loud.** This section could once answer *"which units take minors?"* from a flag on a type. That flag
+is gone, the units went with it a round later, and no column on `person_group` replaces it, so what
+this module has to offer on safeguarding is a permission held by named adults, an audit trail whose
+recorded values expire after two years
 ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
-and a report of who holds the write. The argument that this is a stronger control than a boolean, and the
-statement of what it cannot answer, are both in
-[domain/04 §1](04-organization-structure.md#1-one-root-arbitrary-sub-units); what belongs here is the
+and a report of who holds the write. The argument that this is a stronger control than a boolean,
+and the plain statement of what it cannot answer, belong to the groups module
+([domain/04-organization-structure.md](04-organization-structure.md)); what belongs here is the
 observation that **the fee gate never protected a child either** — it protects the organization's
-membership roll, and it was never load bearing for placement.
+membership roll, and it was never load bearing for placement. **What
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+additionally takes is the part where the adult holding that write was somebody the body itself
+chose**; it is recorded as a loss there and not argued away here.
 
 **The edge case this removes.** The old design had to reason about a person who was
 simultaneously finishing a child membership and starting an adult one, and about whether the
@@ -426,17 +492,24 @@ not notice.
 
 Stated explicitly so they can be tested. All are point-in-time queries and all must remain
 answerable indefinitely — with two exceptions this document now carries openly rather than editing
-away: query 3 has no answer below the root before go-live, and query 8 has no answer at all any more.
-A list of ten that quietly became eight is how a specification loses a requirement:
+away: **query 3 has no answer for any group before go-live**, because the corpus names no groups,
+and **query 8 has no answer at all any more**, because the thing it checked against no longer
+exists. A list of ten that quietly became eight is how a specification loses a requirement:
 
 1. Who is an active member today?
 2. Who was a member on any given date in the past?
-3. Who was in unit U on date D? (requires `unit_participation`, and for the organization
-   itself the root participation row makes it the same query — see
-   [D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-   **For a sub-unit this stops at go-live, and the stop is the corpus's, not the query's**: the import
-   names no units, so "who was in Pack 12 in 2011?" has no answer at all rather than a wrong one
-   ([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline))
+3. Who was in group G on date D? — **a point-in-time read over `person_group_member`**, whose rows are
+   dated at both ends for exactly this question
+   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority));
+   the group's own lifetime is a second, different fact and both are kept. "Who was in the
+   organization on date D?" is now a `membership` read with no belonging row involved: **two
+   queries, two shapes**, and no "and everything nested under it" left to ask about
+   ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+   **For a group this stops at go-live, and the stop is the corpus's, not the query's**: the import
+   names no groups either, so "who was in the Thursday group in 2011?" has no answer at all rather
+   than a wrong one, and every group row from before launch is somebody's typed recollection
+   ([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline),
+   [D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units))
 4. What is the full membership history of person P, including gaps?
 5. Who is **inside the renewal window** right now? (a case needing follow-up — the worklist
    that replaced "who is in grace")
@@ -444,27 +517,34 @@ A list of ten that quietly became eight is how a specification loses a requireme
 7. Which members are **under 18 and have no guardian recorded**? (a safeguarding gap, not a
    membership one — the old background-check query was retired by
    [D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system))
-8. **Which minors are in units that do not accept them?** — no longer answerable, and left numbered
-   rather than renumbered away, so that the gap sits on the list instead of off it. It was a data-quality
-   check against `org_unit_type.allows_minors`, and D-095 removed that column: no unit declares who may
-   belong to it, so there is nothing to check a placement against. What stands in its place is upstream —
-   a person cannot be placed by anybody who does not run the unit — plus a report of who holds that
-   write, which is a question about grants, not about people (§7)
+8. **Which minors are in groups that do not accept them?** — no longer answerable, and left numbered
+   rather
+   than renumbered away, so that the gap sits on the list instead of off it. It was a data-quality
+   check against `org_unit_type.allows_minors`;
+   [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+   removed that column and
+   [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+   removed the units it was a column on, and a group is explicitly listed as carrying no such rule
+   ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+   So there is nothing to check a placement against, in either vocabulary, and no plan for there to
+   be one. What stands in its place is upstream — nobody is added to a group by somebody who does
+   not hold that group's roster write — plus a report of who holds that write, which is a question
+   about grants, not about people (§7)
 9. Who are the returning members — more than one membership with a gap between?
 10. How many members did the organization have in each year since 1985? (historical
     reporting — must include closed memberships and must not double-count)
 
-**Round 8 said four of these reach only as far back as `membership` rows reach, because the legacy import
-created none, and that for the decades arriving from paper queries 2, 4, 9 and 10 return
+**Round 8 said four of these reach only as far back as `membership` rows reach, because the legacy
+import created none, and that for the decades arriving from paper queries 2, 4, 9 and 10 return
 *participation*. Half of that is now false**
 ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
 [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
-The source states membership periods, so the import writes bounded memberships and those four queries do
-reach into the corpus — **over an export, though, not over a register**, and the only thing telling the
-two kinds of row apart is `data_confidence = 'low'` and a batch id, which no report is obliged to notice
-([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). So query 10 is answerable in a form
-that should be labelled on the way out of the chart: a member count where the source states a period, and
-nothing where it does not.
+The source states membership periods, so the import writes bounded memberships and those four
+queries do reach into the corpus — **over an export, though, not over a register**, and the only
+thing telling the two kinds of row apart is `data_confidence = 'low'` and a batch id, which no
+report is obliged to notice ([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). So
+query 10 is answerable in a form that should be labelled on the way out of the chart: a member count
+where the source states a period, and nothing where it does not.
 
 **The wrong answer is still exactly one decision away, and the ban that stops it is one sentence.**
 Generate a `membership` per attendance row and every historical query instantly returns a confident
@@ -475,11 +555,18 @@ inferred from attendance.** What round 8 got right and kept is the reasoning und
 inference are different rows, and a file that says *member 1990–1995* is the first kind while a line-up
 of names at an event is the second.
 
-**The query that did not come back is query 3 below the root.** Importing membership rows says nothing
-about where a person was, because a membership is not a placement; the sub-unit answer stays empty until
-somebody types a roster in by hand, and the honest reading of a pre-go-live unit chart is that it is
-somebody's recollection
-([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+**The question that did not come back is query 3 for anything before go-live.** Importing membership
+rows says nothing about which group a person was in, because a membership is not a placement; the
+group answer stays empty until somebody types a roster in by hand — which is the only way a group
+row can be written at all, the corpus naming no groups
+([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority))
+— and the honest reading of a pre-go-live roster is that it is somebody's recollection. **What is
+*not* lost is the shape of the answer after go-live**: the member rows are dated precisely so that
+"who was in the Thursday group in 2011?" stays a point-in-time read that survives the audit trail's
+payload expiry
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
+second loss, which is the *unit* framing — the subtree question — rather than the roster).
 
 These stay on the list because they are answerable, indefinitely, for everything this system registers
 itself — and that indefinite half is itself a decision now, the accounting skeleton being kept as the
@@ -502,25 +589,35 @@ resolver, which is the worst kind of bug to find.
 
 - The organizational calendar: which date the fee expires on, and how long the renewal window
   is (§6). The mechanism is settled; the two numbers are a guess.
-- What the root-unit participation row does when someone renews inside the window, given the
-  backdated period (§6, and
-  [data-model/03 §5.1](../data-model/03-membership.md#51-a-participation-row-on-the-root-unit)).
-- Whether `unit_participation` should reference the membership, for referential integrity at
-  the cost of the import case (§3). **The cost moved in round 9 and moved asymmetrically**: an imported
-  root participation row now *does* have a membership to point at, since D-093 writes both in one
-  transaction, while an imported sub-unit row never will — the corpus names no units. So the argument
-  that settled this on person-based linkage is now about half the rows it used to be about, and
-  [D-8](../open-questions.md#d-8--should-unit_participation-reference-the-membership) should be re-read
-  with that split in mind rather than reopened on it.
+- **Which offices are written without `MEMBERS`, and who decides that an office survives its
+  holder's lapse.**
+  The gate left the resolver for the grant text (§6,
+  [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
+  so the decision is made one grant at a time and nothing records the *why* — only whether the word
+  is in the expression. The standing report makes the outcome visible; it does not make the choice.
+  Carried also at [data-model/03 §9](../data-model/03-membership.md#9-open-issues).
+- **Whether an age rule has any home now.** `position.min_age` is deleted with positions
+  ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
+  a `role`
+  carries none, and a `person_group` is refused one
+  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
+  so "a scoutmaster must be an adult" survives only as a report over `role_holder` and `is_minor()`
+  (§7). If the organization wants that rule enforced rather than reported, it needs a decision this
+  round did not make.
 - What `status` an imported closed membership carries (§3). The enum offers `pending_payment`, `active`,
-  `suspended`, `lapsed`, `terminated`, `completed`, and none of them says *a source stated this period and
-  nobody in the system decided anything*: `terminated` claims an end reason the export does not give,
-  `completed` claims a lifecycle the model no longer has (§5 says no `completed` row is produced any more,
-  while the enum and [data-model/03 §3](../data-model/03-membership.md#3-membership) both still carry the
-  value and use it in an example). This is a naming question with a reporting consequence — a `status`
-  that reads as a decision will be reported as one.
-- Which roles are exempt from the membership gate — a decision per role, not a default
-  ([data-model/05 §3](../data-model/05-authorization.md#3-role-and-role_permission)).
+  `suspended`, `lapsed`, `terminated`, `completed`, and none of them says *a source stated this
+  period and nobody in the system decided anything*: `terminated` claims an end reason the export
+  does not give, `completed` claims a lifecycle the model no longer has (§5 says no `completed` row
+  is produced any more, while the enum and [data-model/03
+  §3](../data-model/03-membership.md#3-membership) both still carry the value and use it in an
+  example). This is a naming question with a reporting consequence — a `status` that reads as a
+  decision will be reported as one.
+- ~~Which roles are exempt from the membership gate~~ — the question became "which grants name
+  `ROLE(...)`
+  without `MEMBERS`", which is per grant rather than per role and is a report rather than a setting
+  ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+  and the bullet above). **It stays on this list because the decision is still owed**, only the
+  shape of it has changed.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: activation on
 payment or approval (on payment, §1); per person or per household (per person and flat, §6 —
@@ -530,16 +627,23 @@ renewal shape A or B (A, §6); age-out timing and the child→adult transition (
 §7); background checks as a requirement (§2); and simultaneous memberships of different types
 (impossible — one type, one open membership, §3). Two from round 9:
 
-- **Whether a unit may refuse a minor, and who may add a person to one** — a unit carries no
-  restrictions of any kind, and entry is somebody else's act: the fee at the root,
-  `unit_participation.manage` everywhere below it, no self-scoped variant of either
+- **Whether a body may refuse a minor, and who may add a person to one** — answered twice over, and
+  the same
+  way both times. No unit carried restrictions of any kind and entry was somebody else's act: the
+  fee at the membership, `unit_participation.manage` everywhere below it, no self-scoped variant of
+  either
   ([D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
   [C-6](../open-questions.md#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
-  §1). What that gives up is stated in §7 rather than here twice.
-- **Whether the one-off import may create memberships** — it may, for the periods the source states, both
-  ends dated, never open-ended and never inferred from attendance (§3). This was answered *no* one round
-  earlier and the answer reversed with the description of the corpus, not with the reasoning about what a
-  membership means
+  §1). Round 10 deleted the units and
+  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+  carried the ruling across intact: a group carries no restrictions, nobody writes themselves onto a
+  roster, and the gate is `person_group.member.manage`. What that gives up is stated in §7 rather
+  than here twice.
+- **Whether the one-off import may create memberships** — it may, for the periods the source states,
+  both
+  ends dated, never open-ended and never inferred from attendance (§3). This was answered *no* one
+  round earlier and the answer reversed with the description of the corpus, not with the reasoning
+  about what a membership means
   ([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
   [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
 

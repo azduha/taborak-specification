@@ -797,15 +797,26 @@ above can express.
 - **Redacted people still referenced by a live account.** Count `account` rows that are not
   closed and belong to a person with `redacted_at` set; non-zero means an erasure left a
   working login behind.
-- **Imported people with no participation.** Count people whose `record_origin` is
-  `legacy_import` and who have no `unit_participation` row at all; non-zero probably means a
-  partially applied batch. **This check is the reverse of the one it replaced, and the reversal is
-  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
-  and not a change of mind about imports.** It counted imported people with no `membership`, which after
-  "a roster makes a participation and nothing else" is the ordinary condition of every imported row — so
-  the old version would have reported the entire legacy corpus as a failed batch, which is precisely how a
-  check stops being read. A roster that *did* create memberships is a different finding and lives in
+- **Imported people with no membership period.** Count people whose `record_origin` is
+  `legacy_import` and who have no `membership` row at all. **What makes this a check rather than a census
+  is the ratio:** a batch in which nobody has a period is a batch whose rows simply said nothing, and a
+  batch whose stated-coverage figure disagrees with the periods written is a partially applied one. A row
+  that created a membership its export did not state is a different finding, and lives in
   [06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks).
+  **It has been reversed twice, and both reversals are on the record, because this row is really a claim
+  about what an import is allowed to conclude.** It began as exactly this check — imported people with no
+  `membership`. ~~That was the ordinary condition of every imported row once a roster was held to make a
+  participation and nothing else, so the check reported the entire legacy corpus as a failed batch, which
+  is precisely how a check stops being read~~;
+  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+  therefore reversed it to *no participation row*. That reversal is now void twice over: the participation
+  table is deleted
+  ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), and
+  the people export turned out to **state membership periods**, so the import writes bounded `membership`
+  rows for precisely those people and nobody else
+  ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+  What the round-9 rewrite got right and is kept: a check whose trigger condition is normal for the whole
+  corpus is not a check.
 - **A redacted person with descriptive values still attached.** Stated where the rows are, as check 6
   of [09-attributes.md §8](09-attributes.md#8-integrity-checks) — attribute rows belonging to a
   redacted person, and attribute values still present in `audit_log`. It is named here because the

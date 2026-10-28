@@ -75,7 +75,7 @@ nav:
       - Actors and Accounts: domain/02-actors.md
       - Identity and Legacy: domain/03-identity-and-legacy.md
       - Person Data: domain/08-person-data.md
-      - Organization Structure: domain/04-organization-structure.md
+      - Groups and the Unit: domain/04-organization-structure.md
       - Membership Lifecycle: domain/05-membership-lifecycle.md
       - Authorization Model: domain/06-authorization-model.md
       - Events: domain/07-events.md
@@ -83,7 +83,7 @@ nav:
       - Conventions: data-model/00-conventions.md
       - Identity: data-model/01-identity.md
       - Attributes: data-model/09-attributes.md
-      - Organization: data-model/02-organization.md
+      - Groups: data-model/02-organization.md
       - Membership: data-model/03-membership.md
       - Relationships: data-model/04-relationships.md
       - Authorization: data-model/05-authorization.md

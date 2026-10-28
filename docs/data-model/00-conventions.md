@@ -28,7 +28,7 @@ four, because an ORM hides the list:
   other semi-structured payloads whose shape is per-row by design.
 - **Recursive queries** — for the unit hierarchy. Note that this one is *only* for structure:
   no authorization path may walk the hierarchy
-  ([../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scope-authority--no-downward-inheritance)).
+  ([../domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it)).
 
 Native enum types are avoided — see §5.
 
@@ -53,11 +53,11 @@ an accepted decision, not discovered as an outage.** Tracked in
 | Column | `snake_case` | `valid_from`, `person_id` |
 | Primary key | `id` | always the same name, so joins read uniformly |
 | Foreign key | `<referenced_table_singular>_id` | `person_id` → `person.id` |
-| Boolean | `is_` / `has_` / `requires_` prefix | `is_primary`, `requires_membership` |
+| Boolean | `is_` / `has_` / `requires_` prefix | `is_system`, `binds_to_item` |
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
-| Junction table | `<a>_<b>` in alphabetical order | `role_permission`, not `permission_role` |
-| Lookup table | singular of the vocabulary it *is* | `access_level`, `reason_code` |
+| Junction table | `<a>_<b>` in alphabetical order | `audience_member`, not `member_audience` |
+| Lookup table | singular of the vocabulary it *is* | `selector_type`, `reason_code` |
 | Index | names the table and what it answers | "the open rows for one person", not `idx_3` |
 
 Singular table names are not aesthetic. `membership` reads correctly in a sentence about one
@@ -109,7 +109,7 @@ are narrow enough to prove the rule rather than erode it.
 | A person left the organization | Close their membership; the person row remains |
 | A grant revoked | Set `access_grant.valid_to`; keep the row |
 | Two people merged | Tombstone: set `merged_into_person_id`; row remains |
-| A unit closed | Set `org_unit.valid_to` and `status = 'closed'` |
+| A group ended | Set `person_group.valid_to`; its member rows remain |
 | GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8. **One table is deleted rather than redacted; the exception below names it and why** |
 
 This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
@@ -166,32 +166,37 @@ values are closed, and the vocabulary is reviewable without reading application 
 ### Critical rule: status strings are ordered, and the order is not alphabetical
 
 Several status columns have a **meaningful progression**, and code must compare by **rank**,
-never by string. Wherever rank matters there is a lookup table carrying an integer rank, and the
-one that matters most is this one:
+never by string. The rule outlived the vocabulary it was written for, so read it as a rule about the
+next ordered column you add, not about the one that used to sit here.
 
-| Level | Rank | Meaning |
-|---|---|---|
-| `revoked` | 0 | Explicitly denied; overrides all grants |
-| `view` | 10 | Read only |
-| `contribute` | 20 | Read and add |
-| `manage` | 30 | Full control of the item |
-| `admin` | 40 | Full control including granting access |
+**The ladder that used to be the example is gone.** `revoked`(0) / `view`(10) / `contribute`(20) /
+`manage`(30) / `admin`(40) was deleted by
+[D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality):
+a grant names one permission code and its effect is `allow` or `deny`, so there is no ladder to rank and
+the mistake this section existed to prevent — `'admin' < 'contribute'` alphabetically, which ranked *full
+control including granting access* **below** *read and add* with no error, no failed test and no log line
+([D-012](../decisions/decision-log.md#d-012--status-strings-compare-by-rank-never-lexicographically)) — is
+**no longer constructible**. That is a better fix than the guard was, and the guard stays in this file
+because the next ordered vocabulary will need it.
 
-Gaps of ten are deliberate: insertions between levels (an `approve` tier between `view` and
-`contribute`) must not require renumbering a stored vocabulary.
-
-**Never compare level strings lexicographically.** `'admin' < 'contribute'` alphabetically. A
-system that sorts grants by string therefore ranks *full control including granting access*
-**below** *read and add* — a security bug that produces no error, no failed test, and no log
-line. This is the single most dangerous sentence in this file, and it is the reason the ladder is
-data rather than a language feature.
-
-**One ladder, every ladder.** A guardian's right over a child is `none`, `view`, or `write`, and
-those map onto this same ladder at 0, 10 and 20 rather than getting a second scale
+**And the survivor is the dangerous shape, not the safe one.** One ordered vocabulary is left: a
+guardian's right over a child is `none`, `view`, or `write`
 ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
-Two scales would have to be kept in step and would eventually not be, which is how a guardian
-ends up able to do *more* than a manager. When adding any new ordered vocabulary, ask whether it
-is this ladder wearing a name.
+Those three words happen to sort alphabetically in exactly the intended order — `none` < `view` < `write` —
+so a string comparison here **passes every test you can write today**, and breaks silently the first time
+somebody adds a fourth value in the middle of the scale. The old bug at least announced itself on the
+first comparison; this one is a trap set for whoever extends the list. So:
+
+- **Never compare the right to itself as a string.** Ask whether the permission being checked is a `read`
+  or a `write` (`permission.right_kind`, D-099) and whether the guardian's right covers that kind.
+  The comparison is against a column on the permission, not between two words.
+- **"One ladder, every ladder" is withdrawn** — there is no longer a master scale for a guardian's right
+  to be a slice of. The replacement is the smaller claim: **one comparison, one column.** Adding a second
+  way to rank rights is how a guardian ends up able to do *more* than the adult who holds the grant.
+
+When adding any new ordered vocabulary, ask the same two questions this section has always asked: is it
+data with a stored rank, or is it this rule wearing a name — and if it is data, does a string comparison
+of it happen to look correct?
 
 ---
 
@@ -475,16 +480,19 @@ review is the kind of thing an organization discovers from a regulator.
 
 | Rule | Rationale |
 |------|-----------|
-| References **restrict**; none cascade a delete | Nothing cascades. A person cannot be removed while memberships reference them. |
-| No cascading deletes anywhere | Cascade delete is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one.** |
+| References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). *(This row used to read "nothing cascades" and then "no cascading deletes anywhere", both of which were false while the design shipped that cascade; the correction is the point, not the wording.)* |
+| Cascade delete is refused everywhere else | It is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one**, and read the exception above before you "fix" the one row that is allowed to cascade. |
 | Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
-| `access_grant.scope_id` is the **one** reference-less key | It is polymorphic by design; see [../domain/06-authorization-model.md](../domain/06-authorization-model.md#5-access-grants--the-per-item-layer). Nothing else may be. |
+| There are exactly **two** reference-less keys, and both are polymorphic on purpose | `access_grant.scope_id` and `audience_operand.selector_arg_id`, the second documented in [05-authorization.md §8](05-authorization.md#8-audience--grants-that-target-a-set-of-people). Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, [Invariants to verify](05-authorization.md#11-invariants-to-verify), carries both scans and the nightly report that replaces the missing foreign key. *(This row used to read "`access_grant.scope_id` is the **one** reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened `selector_arg_id` from three tables to five got written down. It is the same defect [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) was entered for, in a conventions page rather than a registry.)* |
 | Circular references are broken with an optional column, not a deferred constraint | `membership_request` ↔ `membership` is the one instance; the two-step insert is documented where it lives. |
 
 The polymorphic `access_grant.scope_id` deserves its warning again now that the schema is
 generated: **an ORM will want to make this a real relation, and making it one is a design
-change.** It points at a person, a unit, an event or an organization depending on a sibling
-column. No foreign key can express that, and every query that joins it must filter on
+change.** It points at **the unit**, or at exactly one item — an `event`, a `person_group`, a `role`, or
+the deferred `document` — depending on the sibling `scope_type` column
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
+unit family from that list, so "a unit" and "an organization" are now the same answer rather than two of
+them). No foreign key can express that, and every query that joins it must filter on
 `scope_type` first. If the ORM maps it as a relation to one table, the others become silent
 wrong answers rather than errors.
 
@@ -499,10 +507,14 @@ wrong answers rather than errors.
   makes old audit entries lie.
 - **Backfills are separate from schema changes**, in their own migration, so a failed backfill
   does not roll back a schema change and vice versa.
-- **Seed data for vocabularies** (`access_level`, `permission`, `org_unit_type`, `reason_code`)
+- **Seed data for vocabularies** (`permission`, `reason_code`, `grant_scope_type`, and
+  `selector_type` — the last of these being the language an audience expression is written in,
+  [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree))
   lives in migrations, not in application startup code, so the vocabulary is versioned with the
   data it describes. Application-startup seeding produces environments that disagree about what
-  `contribute` means.
+  `event.answer.view` reaches. It is also the reason `selector_type` is read-only to an
+  organization: an operand added at runtime is a word no resolver knows, and the empty set is a
+  quiet way to say so.
 - **Two documents are the source of truth for what a migration must achieve:** each data-model
   file's **Rules** block for the constraints, and its **Invariants to verify** block for the
   reports. A migration that implements neither set completely has generated a schema, not a
@@ -518,10 +530,10 @@ states the fields, rules, invariants and open issues for its part of the model.
 | Document | Entities |
 |----------|----------|
 | [01-identity.md](01-identity.md) | `person`, `person_name`, `account`, `account_credential`, `person_contact`, `person_identifier`, `identity_hypothesis`, `person_merge` |
-| [02-organization.md](02-organization.md) | `org_unit`, `org_unit_type`, `org_unit_type_rule`, `org_unit_name`, `org_unit_relationship`, `position`, `position_assignment` |
-| [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request`, `unit_participation` |
+| [02-organization.md](02-organization.md) | `person_group`, `person_group_member` — and nothing else, because there is no unit table: the unit is a scope ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)) |
+| [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request` |
 | [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
-| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_permission`, `role_assignment`, `scope_exposure`, `access_grant`, `permission_level`, `audience`, `audience_member`, `access_log` |
+| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `audience_member` (the `LIST` leaf), `selector_type`, `grant_scope_type`, `access_log` |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |

@@ -254,10 +254,11 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 | `person_name` | Reassigned, keeping validity periods — this is how a maiden name survives. |
 | `account` | Reassigned to survivor. **If the survivor already has an account, the absorbed account is closed, not deleted.** |
 | `membership` | Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level no-overlap rule, an overlap here means a bad merge. **That used to be the only way to make one; since D-093 an imported period can produce it too**, because the source states its own periods and nothing in the file knows that one human appears on two rows. Two imported periods covering the same date are outside the exclusion constraint — it watches the live statuses only — so the merge review is where they surface, and the honest reading of a pair is "the source said this", not "somebody decided this". |
-| `unit_participation` | Reassigned, with the same overlap check. |
+| `person_group_member` | Reassigned, with the same overlap check. **Two rows for one person in one group over overlapping dates is a review item and not a dedupe**: two people who turn out to be one may genuinely have been put in the group twice, on different evidence, and the honest repair is one row whose dates a person chose. |
+| `role_holder` | Reassigned. An office held twice by one person over overlapping periods is the same review case, with the same refusal to guess silently — and it is read out loud rather than filed quietly, because this table's rows are exactly what `ROLE(x)` reaches, so a duplicate holder row is a duplicate audience member. |
 | `guardianship` (as dependent) | Reassigned. |
 | `guardianship` (as guardian) | Reassigned. |
-| `role_assignment`, `access_grant` | Reassigned. **Union of permissions results — this is the security-critical step.** |
+| `access_grant` | Reassigned. **Union of permissions results — this is the security-critical step.** Merging two people silently merges two sets of authority, and since [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) that union is literally the rows both people leave behind: no rank resolves a collision, so a `deny` on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review. `role_assignment` is gone from this table — the office rows moved to `role_holder` above, where an overlap is already a review case |
 | `person_merge` | Row inserted here. |
 | `field_conflict` | Populated for anything that could not be resolved automatically. |
 
@@ -490,10 +491,10 @@ read. What the source states, and what arrives:
 | What the source says | It becomes | Why |
 |---|---|---|
 | "Jan Novák, born 1962, member 1990–1995" | a `person` with `record_origin = 'legacy_import'`, and **one `membership` per period the source states** — `valid_from` *and* `valid_to` set, `data_confidence = 'low'`, `import_batch_id` set, the renewal chain left to whoever reconstructs it | A stated period is evidence of membership and infers nothing; a closed period cannot gate anything ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
-| the same, at the root | the **root-unit `unit_participation` row** the membership obligation requires — consecutive years stretch one row, a gap in the source opens a second | The same rule as a renewal, and the same accepted cost: **the lapse stops being visible in the participation table** ([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)) |
-| an event, and who came to it | an `event` owned by **the root**, and one `event_registration` per attendee at `attending` with `was_present = true` | D-058's exactly-one-unit satisfied by a rule rather than by inventing a unit ([D-094](../decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)) |
+| the same, with the year repeated in the file | a **second `membership` only if the source states a second period**; consecutive stated years stretch to one row, a gap in the source opens another | This row used to be the *root participation row* the membership obligation required, stretched by exactly this rule and carrying exactly one cost: the lapse stopped being visible in the participation table. [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the row, and the cost with it — **a lapse is now visible in one table, which is the table that means it** ([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row), superseded) |
+| an event, and who came to it | an `event` **with no owner column at all**, one `event_registration` per attendee at `attending` with `was_present = true`, and — since [D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it) — the per-event instantiation of the seeded answers-view grant | There is no unit to own it and no rule asking for a root: an event's people are named by selectors that bind to it, which is also the import-side saving [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) counted ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)) |
 | a person who might have come and did not | **nothing** | An export lists who came. Writing `not_attending` from silence puts words in a source that said nothing ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)) |
-| a sub-unit | **nothing, ever** | No `org_unit` is created by any batch and no sub-unit participation row is imported (§7 above) |
+| a sub-unit | **nothing, ever** — and there is now nothing that could be one | The corpus names none (§7), and [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the thing a name could have attached to. The row stays because it is the one a reader holding a 1998 spreadsheet will ask, and the answer has to be written down rather than inferred from absence |
 | money | **nothing** — and no `fee_obligation` | The corpus has no money in it (D-090) |
 
 **The ban that survives is one sentence, and it is the one that was always the point: never an
@@ -587,7 +588,10 @@ that what the import holds for 1990–2010 is `unit_participation`, so the profi
 of participation plus a membership from 2024 — "the truth of what the organization can evidence", with
 a historical membership appearing only if somebody typed one. That was true of a corpus of roster
 rows. The corpus is a **membership export**, which states the period, so the twelve years arrive as a
-bounded membership row and its root participation row
+bounded membership row, and one row only:
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
+root-unit participation row it used to be written beside in one transaction, so the pair this sentence
+described is now a single row
 ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated));
 what the sentence is still refusing is the *inference*, and the assertion that survives unchanged is
 the one that matters for this case: **a 1990–2010 `membership` appears only where the source states the

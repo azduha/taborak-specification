@@ -11,8 +11,9 @@ strictly.
 A youth organization (Scout-like: uniformed groups, trained adult leadership, camps
 and weekly meetings) with:
 
-- **Child members** — youth participants, typically organized into units.
-- **Adult members** — counselors/leaders who run units and hold positions.
+- **Child members** — youth participants, who join one another in **groups**.
+- **Adult members** — counselors/leaders who run the programs, hold **offices**, and put people into
+  groups.
 
 *(These two are how the organization talks about people. They are **not** two kinds of membership: there
 is one membership type and it is ageless, so the sentence "is this person a child?" is a question about
@@ -24,9 +25,14 @@ difference except guardianship, position eligibility, and the mirroring rule for
 - **Non-member supporters** — people who interact with the organization (donors,
   volunteers, alumni) without holding a membership.
 
-The organization has **sub-units that nest** and that have been **reorganized repeatedly
-over four decades**. Both facts are load-bearing and are handled in
-[04-organization-structure.md](04-organization-structure.md).
+The organization has **been reorganized repeatedly over four decades**, and **this system models none of
+it**: there is one unit, it is a scope rather than a row, and the internal structure that got reorganized
+was deleted in round 10 ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+What remains of "the inside of the organization" is **groups** — named sets of people with a lifetime —
+in [04-organization-structure.md](04-organization-structure.md). The reorganizations are a fact the system
+knows nothing about, and saying that here, on the first page, is the point: a reader who arrives expecting
+a hierarchy should learn at once that the absence is a decision, not an omission, and what it cost is
+written down in the entry that made it.
 
 ---
 
@@ -148,19 +154,26 @@ default and nothing is revoked by deletion. Detailed in
 
 ## 4. The relationships between people
 
-Three distinct relationships, deliberately not merged:
+Four relationships, deliberately not merged — and **the two that used to be here are gone**, because
+between them they described the hierarchy this system no longer has: *participation in a sub-unit* and
+*position held in a sub-unit* ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+Their replacements are the two same-shaped tables of round 10:
 
 | Relationship | Direction | Example | Grants access? |
 |--------------|-----------|---------|----------------|
 | **Guardianship** | guardian → dependent | parent → child | **No** by itself — only the `right_level` (`none` / `view` / `write`) carried on the live `guardianship` row. Since D-074 that value is the whole authority; `guardianship_permission` keeps only its history. |
-| **Membership** | member → the organization | anyone → the root unit | No. |
-| **Participation** | participant → sub-unit | child → Pack 12 | No. |
-| **Position held** | person → position in a sub-unit | adult → scoutmaster of Pack 12 | No. Only via `role_assignment`. |
+| **Membership** | member → the organization | anyone → the unit | No. |
+| **Being in a group** | person → group | child → the Thursday group | **No** — a `person_group_member` row is a dated roster entry ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)). |
+| **Holding an office** | person → role | adult → a leader | **No** — a `role_holder` row says who holds it, and an office confers nothing by being held ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)). |
 
-**Membership and participation are two rows, not one** ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-A person is a **member of the organization** and a **participant in a pack** — different
-facts with different lifetimes, which is why someone who stops attending on Thursdays is
-still a paid-up member, and someone who is paid up may take part in nothing.
+**Being a member and being in a group are two rows, not one** — the distinction D-041 drew between
+membership and participation, which survives its subject ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+A person is a **member of the organization** and **on a group's roster**: different facts, different
+lifetimes, different guards on who may change them, which is why someone who stops attending on Thursdays
+is still a paid-up member, and someone who is paid up may turn up to nothing. The old sentence named a
+pack on the right-hand side; the new one names a group, and the reason the distinction was worth two
+tables all along is that the two rows are edited by different people for different reasons.
 
 The recurring theme: **participation is not authority.** A person can be deeply involved
 — a parent of three members, a 20-year veteran, a pack's founder — and still have no
@@ -173,27 +186,47 @@ relationship ends (custody changes, a leader steps down) but access silently per
 You named this case explicitly. It is not special:
 
 - One `person` row.
-- One open `membership` — `member`, like everyone else's.
-- A `position_assignment` making them a leader of their pack.
-- One `unit_participation` row for the pack they lead.
-- Two `guardianship` rows (to their own children).
-- Separate `guardianship_permission` rows for their parental capabilities.
-- `role_assignment` rows for their leadership authority.
+- One open `membership`, of the one membership type, `member` — the same shape as the child they lead
+  ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+- One `role_holder` row: they hold the office `counselors`, over a dated period. The office itself is a
+  `role` row ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+- A `person_group_member` row or two, dated, for the companies they actually turn up to
+  ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+- Two `guardianship` rows (to their own children), each carrying its own right.
+- Whatever `access_grant` rows somebody wrote whose grantee names them — as `ROLE(counselors)`, or
+  `MEMBERS * ROLE(counselors)` where the membership gate applies
+  ([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
+  [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
+- No row of its own for "is a counselor". That is the `role_holder` row above, and nothing more.
 
-Note there is no `counselor` membership type. Being a counselor is the **position**, not a
-kind of membership ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)) —
-and this person's membership is identical to that of the child they lead, which is exactly
-the point.
+Note there is no `counselor` membership type. Being a counselor is an **office held for a period**, not a
+kind of membership ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
+and since [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+not even a *position* — the word went, along with the table that stored it, because a position implied
+authority and an office confers nothing until a grant names it. This person's membership is identical to
+that of the child they lead, which is exactly the point.
 
-Their leadership role grants authority over **the unit's members**. Their guardianship
-grants authority over **their own children**. These are different scopes and the system
-keeps them separate — critically, being a leader does *not* give them access to other
-people's children's records beyond what their leadership role explicitly permits.
+Their grants reach **the unit's members**, which after
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) is the whole
+organization rather than one pack: there is no smaller body to scope inside, so a unit-scope grant is the
+broadest thing a person can hold, and the round says that plainly instead of pretending the pack is still
+a fence. Their guardianship reaches **their own children**, through a different channel entirely — entered
+by the shape of the request rather than by any permission they were given
+([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)),
+and capped by the right that row records. Being a leader does *not* give them access to other people's
+children's records, and now the reason is mechanical: there is no rule that could have implied it, so the
+access exists only as rows, or not at all.
 
-> This last point is a safety property, not a convenience. Child-protection rules
-> generally require that a leader's access to minors' personal data be bounded by their
-> function. Keeping `role_assignment` and `guardianship_permission` as separate tables
-> makes that boundary enforceable and reportable.
+> This last point is a safety property, not a convenience. Child-protection rules generally require that a
+> leader's access to minors' personal data be bounded by their function. Two things carry that boundary
+> now, and it is worth naming which: **[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+> deletes the implication** — an office, a roster, a membership and a guardianship each confer nothing by
+> being what they are — **and [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+> makes what remains readable** — one code, one scope, one effect per row, so *"what exactly does this
+> person have over minors?"* is answered by reading rows rather than by evaluating a rank. What the round
+> lost is stated in [the overview's own rule 5](../README.md#the-one-idea-this-whole-design-rests-on): it is
+> no longer true that a leader's reach had to be written by the body that chose the leader. The boundary is
+> enforceable and reportable; who is obliged to look at the report is a convention, not a guard.
 
 ---
 

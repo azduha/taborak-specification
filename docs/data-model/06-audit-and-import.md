@@ -47,7 +47,7 @@ months later; both halves are in the entry, and neither is a detail.
 |---|---|---|
 | `id` | surrogate id | |
 | `occurred_at` | timestamp, audit time | Default: now |
-| `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership → open a unit participation) reads as one event rather than three unrelated ones |
+| `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. *(The example used to be three steps, ending "open a unit participation"; [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted that row, and the two-step version is still the case this column exists for — §3.1's import transaction, which used to write a pair and now writes one row, is the other.)* |
 | `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs |
 | `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — for changes with no person actor. Otherwise a forensic gap |
 | `operation` | text, required | One of: `insert`, `update`, `delete` |
@@ -183,8 +183,10 @@ the obligation above. **It is, however, true of ordinary operation and false of 
 moments**, and saying so is the honest version of the paragraph.
 
 **The first is §3's import revert,** which *does* hard-delete business rows — the `person`,
-`membership`, `unit_participation`, `event_registration` and `event` rows a batch created (which of the
-five depends on which kind of batch it was — §3's Reversibility is the list) — and those rows were live, referenced and
+`membership`, `event_registration` and `event` rows a batch created (which of the three depends on which
+kind of batch it was — §3's Reversibility is the list; **there were four arms here until
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
+`unit_participation` one, and a revert of an old batch finds nothing of that kind to remove**) — and those rows were live, referenced and
 visible to real users before they went. So **a revert writes audit entries for its deletes, naming the
 batch and the row it removed.**
 
@@ -567,7 +569,7 @@ event's own columns repeat down those rows, which is what the matching rule belo
 | `applied` | boolean, required | Default false |
 | `applied_person_id` | reference to person, optional | What this row created |
 | `applied_membership_id` | reference to membership, optional | What this row created — **set on every row of a people batch whose source states a membership period** (§3.1). **This note said the opposite until this round:** it read "empty for every row of a roster batch, which creates participations only", and [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) reversed it, because the export states membership periods and the ban it rested on was about *inferring* them. Empty on every row of an events batch, and a set value on an events row is still the rule in §3.1 having been broken — membership may be imported from a period the source states, never from an attendance list |
-| `applied_participation_id` | reference to unit participation, optional | The root-unit participation row this row's membership brought with it (§3.1) — a people batch row that created a membership and left this empty wrote half a pair |
+| ~~`applied_participation_id`~~ | — | **Deleted by [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row).** It held the id of the root-unit participation row a membership brought with it, and its whole purpose was to say *"a membership row with this column empty wrote half a pair"* — a check on a pair that no longer exists. Nothing replaces it: §3.1's transaction writes one row, so there is no second id to record and no half to be missing |
 | `applied_event_id` | reference to event, optional | **An events batch.** The event this attendee row was matched to, or created by it. **Shared across rows**, which is the difference from the four ids above: a hundred attendees of one camp name one event, and revert has to know that (§Reversibility) |
 | `applied_registration_id` | reference to event registration, optional | **An events batch.** What this row created — one per attendee, and the only row an attendee who was *not* listed gets, which is none (§3.1, [D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)) |
 | `created_at` | timestamp, audit time | |
@@ -584,10 +586,13 @@ event's own columns repeat down those rows, which is what the matching rule belo
   register for that kind of answer). The failure it prevents is the loud kind run quietly: ten thousand
   attendee rows becoming ten thousand events, all owned by the root, all undeletable except by revert.
 - **Which created ids a row may carry is decided by `import_batch.batch_kind`, not by the row.** A people
-  batch fills `applied_person_id`, `applied_membership_id`, `applied_participation_id`; an events batch
+  batch fills `applied_person_id` and `applied_membership_id`; an events batch
   fills `applied_person_id` — an attendee who had to be created is still a person created — plus
-  `applied_event_id` and `applied_registration_id`. A row carrying one from each pair is a batch that was
-  typed wrongly, and revert reads this rule to know what it is about to delete.
+  `applied_event_id` and `applied_registration_id`. A row carrying one from each group is a batch that was
+  typed wrongly, and revert reads this rule to know what it is about to delete. **The people arm used to
+  name a third column,** `applied_participation_id`, and it went with the row it pointed at
+  ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)); a batch
+  applied before go-live that filled it has nothing extra waiting to be reverted.
 
 **Indexes**
 
@@ -633,11 +638,15 @@ Revert removes only what this batch created, and it runs in this order:
 
 1. Take every staged row of the batch being reverted.
 2. Undo what they created, **dependents first**, in this dependency order: the `event_registration` rows,
-   then the `event` rows those registrations pointed at, then the `unit_participation` rows, then the
+   then the `event` rows those registrations pointed at, then the
    `membership` rows, then the `person` rows — and a row the batch created outright is removed rather than
-   merely amended. A people batch leaves the first two arms empty and an events batch leaves the middle two
-   empty (§3.1); both arms exist, and neither may be skipped in the general implementation just because the
-   batch in hand does not use it.
+   merely amended. A people batch leaves the first two arms empty and an events batch leaves the `membership`
+   arm empty (§3.1); both arms exist, and neither may be skipped in the general implementation just because the
+   batch in hand does not use it. **This list had a fifth arm until
+   [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)** — the
+   `unit_participation` rows sat between the events and the memberships, because a people batch used to write
+   a pair — and it is gone rather than dormant: there is no such row for a revert to find, in an old batch or
+   a new one.
 3. Finally mark the staged rows themselves unapplied.
 
 **An event is deleted at most once, which is the one place revert is not row-local.** `applied_event_id`
@@ -751,9 +760,12 @@ birth date and *the period during which this person was a member of the organiza
 membership claim made by the source rather than inferred by the reader, and that distinction is the whole
 of what [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
 changed. So a people batch writes a `membership` with **both** `valid_from` and `valid_to` set,
-`data_confidence = 'low'`, the batch id on it, and its root-unit `unit_participation` row in the same
-transaction — the pair and its uniformity are [03-membership.md §5.1](03-membership.md#51-a-participation-row-on-the-root-unit),
-not this document's argument. **One row per period the source states, not one per calendar year**: an
+`data_confidence = 'low'`, the batch id on it — **and nothing else in the temporal layer.** It used to write
+that row *together with* a root `unit_participation` row, in one transaction, under a check whose whole job
+was that the pair existed together and agreed; [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+deleted the second row, so the transaction has one row in it and the check has nothing left to compare,
+which is what [03-membership.md §5](03-membership.md#5-unit_participation--deleted-by-d-097) now records rather than what it
+argues. **One row per period the source states, not one per calendar year**: an
 export of consecutive years is a period, and the `renewed_from_membership_id` chain is left to whoever
 reconstructs it by hand, because a renewal chain asserted by a parser is a lineage nobody chose and it is
 the kind of derived history
@@ -761,13 +773,19 @@ the kind of derived history
 refuses to infer about units for the same reason.
 
 **An events row evidences presence at one occasion, and nothing beyond it.** It writes an
-`event_registration` for the listed attendee with `was_present = true`, against an event owned by the root
-([D-094](../decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)), and **no row at all
-for anybody who is not listed** — inventing `not_attending` from silence would put words in a source that
-said nothing ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
-Under [D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)
-sub-unit belonging is a `unit_participation` rather than a membership anyway; with unit assignment out of
-scope by instruction, the imported halves produce no sub-unit rows of either kind.
+`event_registration` for the listed attendee with `was_present = true`, against an event that **belongs to
+nobody** — [D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
+deleted `event.org_unit_id` and [D-094](../decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event) with it, so the
+import owes no owner choice at all, which is one of the savings
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) counted in
+passing — and **no row at all for anybody who is not listed**: inventing `not_attending` from silence would
+put words in a source that said nothing ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
+Sub-unit belonging used to be a `unit_participation` rather than a membership
+([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership));
+there is no such row left to decline to write, and the imported halves still produce nothing of either kind.
+**What an imported event does owe, since D-102, is the per-event instantiation of the seeded
+answers-view grant** — one insert beside the event row, in the same transaction, or the imported event has
+nobody who can read its answers.
 
 **The half of the old ban that survives, in the sentence that survives it unchanged: never an open-ended
 membership, and never one inferred from an attendance row.** The reason is D-039 and it has not moved — an
@@ -826,7 +844,7 @@ is the source's claim about a status rather than a record of the act: nobody pai
 | `performed_at` | timestamp, audit time, optional | |
 | `performed_by` | reference to person, optional | |
 | `redacted_tables` | list of text | Which tables had values overwritten — **and which had rows deleted.** `person_attribute` is erased by deletion rather than by overwriting ([00-conventions §4](00-conventions.md#4-deletion-policy)), so naming it here is what records that the erasure reached the person's descriptive data, and omitting it is indistinguishable from not having reached it |
-| `retained_reason` | text, optional | Why some data was kept. **It has a standing answer to hold now.** Membership periods, unit participation periods, fee obligations, payments and this anonymised `person` row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), nothing in these documents had actually made. What the field adds per case is that *this* erasure made it knowingly, and the reason for anything retained beyond the skeleton. The basis underneath the standing answer is an assumption pending legal review (§6), not settled law |
+| `retained_reason` | text, optional | Why some data was kept. **It has a standing answer to hold now.** Membership periods, fee obligations, payments and this anonymised `person` row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), nothing in these documents had actually made. What the field adds per case is that *this* erasure made it knowingly, and the reason for anything retained beyond the skeleton. The basis underneath the standing answer is an assumption pending legal review (§6), not settled law |
 | `note` | text, optional | |
 
 **Rules**
@@ -991,9 +1009,12 @@ be discovered only when someone needs the history that was never recorded.
   ([§3.1](#31-what-a-source-row-actually-evidences)) — needs your input on the organizational
   year boundary (tracked as [../open-questions.md](../open-questions.md) A-4). **Sharper, not smaller,
   since [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
-  put memberships back on the receiving end of it:** the inferred end date is no longer only the end of a
-  participation row, it is the `valid_to` of a row that gates authority, so the year boundary is the value
-  standing between the import and the permission gate.
+  put memberships back on the receiving end of it:** the inferred end date is not the end of a record nobody
+  reads, it is the `valid_to` of a row that gates authority, so the year boundary is the value
+  standing between the import and the permission gate. (When this bullet was written the row in question was a
+  `unit_participation`; [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+  removed that table, which sharpens the point rather than softening it — there is now exactly one period an
+  inferred date can be ending, and it is the consequential one.)
 - **✅ Resolved — whether the import should create a `membership` at all** for a historical period, or
   only a `unit_participation` ([§3.1](#31-what-a-source-row-actually-evidences)). Settled by
   [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)

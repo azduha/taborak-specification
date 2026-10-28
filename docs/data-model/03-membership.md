@@ -1,6 +1,13 @@
 # Data Model — Membership
 
-`membership_type`, `membership`, `membership_request`, and `unit_participation`.
+`membership_type`, `membership`, and `membership_request`.
+
+**`unit_participation` used to be documented here and no longer is** — the table is deleted,
+together with every sub-unit it pointed at
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+§5 is where that is recorded and where the discipline it carried is retargeted at groups. Belonging
+to the organization is a `membership`; belonging to a **group** is
+[`person_group_member`](02-organization.md#1-person_group), specified in the groups module.
 
 Domain rationale: [../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md).
 
@@ -34,14 +41,18 @@ Domain rationale: [../domain/05-membership-lifecycle.md](../domain/05-membership
 ### Why this table still exists with one row
 
 **There is exactly one membership** (D-037). Everyone who is a member holds
-`membership_type = 'member'`, the fee is flat and per person, and being a counselor or a
-leader is a **position**, never a type.
+`membership_type = 'member'`, the fee is flat and per person, and being a counselor or a leader
+is a **role**, never a type ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 
 The table survives rather than collapsing into a constant for two reasons:
 
 1. **Consistency with the design's own principle.** Vocabularies are rows, not enums —
-   the same argument that keeps `org_unit_type` and `position` as tables. A second kind of
-   membership (a supporting or honorary one) would then be a data change.
+   the same argument that keeps the seeded registries as tables (`grant_scope_type`,
+   `selector_type`; the two examples this bullet used to give, `org_unit_type` and `position`,
+   were both deleted in round 10 by
+   [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) and
+   [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+   A second kind of membership (a supporting or honorary one) would then be a data change.
 2. **A place for the organizational calendar to live.** The term, the expiry date and the
    renewal window are genuinely type-dependent parameters even when there is one type — and
    they are the parameters most likely to be tuned. Putting them in a row rather than in code
@@ -80,7 +91,6 @@ for a report to verify, so the removal is complete rather than a rule left hangi
 | `person_id` | reference to `person`, required | The **subject**: the person who would become a member. For a minor's application this is the **child**, not the parent. |
 | `submitted_by_person_id` | reference to `person`, optional | Who actually submitted it. Equals `person_id` for self-application; differs when a guardian (or staff) applies on behalf. This is the act-on-behalf record. |
 | `requested_membership_type_id` | reference to `membership_type`, required | |
-| `requested_unit_id` | reference to `org_unit`, optional | The applicant may express a preference, or the organization may assign the unit at approval. |
 | `status` | text, required, defaults to `draft` | One of `draft`, `submitted`, `under_review`, `approved`, `rejected`, `withdrawn`, `expired`. |
 | `submitted_at` | timestamp, optional | |
 | `decided_at` | timestamp, optional | |
@@ -111,8 +121,8 @@ for a report to verify, so the removal is complete rather than a rule left hangi
 - On `person_id` with `submitted_at` descending: one person's applications, newest first.
 - A partial index over the review queue only — rows in `submitted` or `under_review`, which is
   the whole queue and nothing else.
-- On `submitted_by_person_id` and on `requested_unit_id`, each covering only the rows where
-  those optional columns are actually set.
+- On `submitted_by_person_id`, covering only the rows where that optional column is actually
+  set.
 
 **`person_id` vs `submitted_by_person_id` is the most important pair in this table.** The
 subject is the child; the submitter is the parent. Collapsing them into one column — which
@@ -124,6 +134,21 @@ falsely attributes the parent's action to the child. See
 membership and must not pollute member listings; a person may submit several over time; and
 review data (who decided, why) has no meaning on a membership. See
 [../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#2-membership-request).
+
+**A request asks for membership of the unit, and names nothing else.** `requested_unit_id` is
+**deleted**
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
+along with the index over it. ~~The applicant may express a preference, or the organization may
+assign the unit at approval.~~ **Withdrawn by D-098**, which also removed the thing the column could
+have referenced
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+The want behind it is real — a reviewer would like to know where the applicant expects to turn up —
+and it is served by the free-text `notes` the row already has, which is what the field always
+actually was: a sentence addressed to whoever reads the request, carrying no authority. Placing the
+person is a separate act and a separate row — one `person_group_member` row, written by a person
+holding `person_group.member.manage` — and an approved request with no group beside it is a
+complete, ordinary outcome. **Which group a new member lands in is a write on the group, not a
+preference on the request.**
 
 **A rejection requires a reason code** (`ck_request_rejection_reason` is the rule's name): no
 rejected request may be written without one. Two columns of the same row, so a migration can state
@@ -199,9 +224,13 @@ says a migration must emit by hand: a unique constraint over *all* rows is a dif
 the wrong one, because it forbids the second closed membership that the person's history
 requires.
 
-This is what makes the membership gate (D-039) implementable: `is_current_member()` is a
-question about **one row, one status, one date**, not a question that has to reconcile three
-concurrent memberships.
+This is what makes `is_current_member()` a question about **one row, one status, one date**, rather
+than one that has to reconcile three concurrent memberships. That is worth keeping in mind now that
+the predicate's consumer has changed: the resolver no longer calls it per grant, because the
+membership gate left the resolver for the `MEMBERS` selector (§6,
+[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
+but `MEMBERS` is evaluated live on the checked date and evaluates to exactly this predicate. The
+constraint is what makes that evaluation cheap and unambiguous either way.
 
 ### `renewed_from_membership_id` and the renewal window
 
@@ -246,10 +275,11 @@ guarantees nothing: a batch that imports the legacy people export writes members
 again. [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
 took that sentence away last round, on the reading that the corpus produces participations only, and
 [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
-gives it back; §5.1 keeps both readings in order. Either way the argument here is unchanged and does not
-depend on which round's import rule is in force —
-and a hand-corrected row never passes through the model layer either. Both still meet the constraint;
-neither would ever meet a model-layer check.
+gives it back; §5 keeps the record of both readings. **Round 10 removes the participations altogether**
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), and the
+argument here never depended on them: it rests on the memberships the people export produces, and on the
+hand-corrected row that never passes through the model layer either. Both meet the constraint in the
+database; neither would ever meet a model-layer check.
 
 ### Why `valid_to IS NULL` and not a sentinel
 
@@ -284,8 +314,11 @@ The wording of each is load-bearing; the differences between them are the design
 * **Is this person a member right now?** `is_current_member(person)` — true when they have a
   membership whose status is `active` and whose period covers today: `valid_from` on or before
   today, `valid_to` absent or after today. **No grace coalescing:** a lapsed membership is
-  lapsed, and the renewal window (§6) is a date range for rejoining, not a state in which the
-  person is a member.
+  lapsed, and the renewal window
+  ([domain/05 §6](../domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee)) is a date
+  range for rejoining, not a state in which the person is a member. **This predicate is what the
+  `MEMBERS` selector evaluates** on the checked date (§6) — it is no longer called by the resolver
+  on someone else's behalf, which changes its callers and not its meaning.
 * **Was this person a member on a given past date?** `was_member_on(person, date)` — true when
   a membership of theirs covers that date, on the same half-open terms, and its status is
   anything **except** `pending_payment`. Note the asymmetry with the question above: *now*
@@ -348,282 +381,312 @@ in the decision log rather than deleted from history.
 
 ---
 
-## 5. `unit_participation`
+## 5. `unit_participation` — deleted by D-097
 
-**Renamed from `unit_membership`.** Belonging to a sub-unit is **participation**, not a
-species of membership (D-041). The old name asserted something untrue, and the rename is the
-fix.
+**Deleted by
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row).**
+There is one unit, it is the organization, and it is a **scope** rather than a row — so there is no
+body below it to belong to, and no table to record belonging in. Everything the table carried goes
+with it: the sub-unit rosters, **the root participation row every membership owed**, the transfers
+between units, `role_in_unit`, the `join_reason_code` / `leave_reason_code` vocabulary,
+`is_primary`, and the `data_confidence` value those rows carried into an import.
 
-**Fields**
+**Why it existed, kept because the reasoning outlives the table.** ~~Belonging to a sub-unit is
+**participation**, not a species of membership~~
+([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+The name `unit_membership` had been asserting otherwise, and the rename was the fix: a "unit
+membership" read as a second species of membership, which raised questions about which membership
+was which and whether a fee was owed twice, and participation removed the questions. **That
+distinction is still true one level down** — membership of a group confers nothing and owes nothing,
+no more than belonging anywhere else does, because participation is not authority and the fact that
+it is now stored in a tidier table does not quietly promote it
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+restating
+[D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity)).
+The same holds for the column this document argued hardest for: `person_id`, never `membership_id`,
+because a person may belong somewhere with no membership behind them and a row about 1998 must not
+become unrepresentable because the record of 1998 status is thin or absent. `person_group_member` is
+keyed on a person for that same reason and inherits the argument whole.
 
-| Field | Kind | Notes |
-|---|---|---|
-| `person_id` | reference to `person`, required | **Deliberately `person_id`, not `membership_id`.** Participation history must survive independently of how organization membership is recorded. **The reason this column carries is not the reason it carries today, and both are worth having on the record.** Last round the case was structural: imported 1998 rosters had a unit and a year and no membership row to point at, *by rule* — a roster produced a participation and nothing else ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money), [06-audit-and-import.md §3.1](06-audit-and-import.md#31-what-a-source-row-actually-evidences)). [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) reversed that rule, so an imported membership now exists in the common case and the structural argument has lost its example. **The column stays, for two reasons that do not depend on the import at all:** a person may take part in a sub-unit with no membership whatever — that is D-041's ordinary case for anybody a unit adds without a fee — and a row about 1998 must not become unrepresentable because the record of 1998 status is thin or absent. Pointing at `membership` would make both claims conditional on a row that need not exist. The trade-off is unchanged either: nothing here can enforce "participation implies membership", it is application-level validation plus invariant 1 in §7, named as such rather than pretended away, in the register of [00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now). |
-| `org_unit_id` | reference to `org_unit`, required | May be the **root** unit. A participation row on the root is created alongside each membership, so that "everyone in unit X" is one uniform question whether X is the organization or a Thursday-evening pack. See §5.1. |
-| `role_in_unit` | text, optional | One of `member`, `leader`, `assistant`, `guest`. A denormalised convenience for display and historical import. **Not** an authorization fact — authority is in `role_assignment`. |
-| `valid_from` | date, required | |
-| `valid_to` | date, optional | NULL = current. |
-| `join_reason_code` | text, optional | `initial`, `transfer`, `promotion` or `reorganisation`. |
-| `leave_reason_code` | text, optional | `transfer_out`, `unit_closed` or `stopped_attending`. |
-| `is_primary` | boolean, required, defaults to true | Which group to show first, for a person in several. |
-| `data_confidence` | text, required, defaults to `high` | One of `high`, `medium`, `low`. |
-| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
-| `source` | text, optional | `self`, `staff` or `legacy_import`. |
-| `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. |
+**Where each question goes now** ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority))
+— two shapes, and no longer one shape with a depth in it:
 
-**Rules**
+| Question | Read |
+|---|---|
+| Who is in the organization on date D? | `membership` — one query over the period and status of §3 |
+| Who is in group G on date D? | `person_group_member` — a point-in-time read over the dated rows, [02-organization.md §1](02-organization.md#1-person_group) |
 
-- Where both ends of the period are set, `valid_to` is later than `valid_from`.
-- **A person takes part in a given unit only once at a time.** No two participation rows for the
-  same person and the same unit may cover the same date. The rule covers **every row, open and
-  closed alike**; taking part again later is a separate, later period and is fine.
+The one thing the deleted §5.1 bought was a **single query shape for both rows of that table**, and
+that is what is given up. What is given back is the redundancy: two tables kept in step only by an
+obligation on every writer, and a report watching for the writers who forgot.
 
-**Indexes**
+### The write obligation is retired, and so is the check that watched it
 
-- On `person_id`, and on `org_unit_id`, both with `valid_from` descending: a person's roster
-  history, and a unit's, newest first.
-- On (`org_unit_id`, `person_id`) restricted to **open** rows — the current roster of a unit,
-  which stays small while the history does not.
-- A period index per unit, which is what the no-overlap rule and "was this row open on that
-  date" both scan.
+**The import owes no participation rows to anything**
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+The old §5.1 required that **no write may change a membership's period, or open or close one,
+without making the matching change to that person's root-unit participation row in the same
+transaction** — two rows holding one fact — and integrity check 1b was the report that found whoever
+skipped it.
 
-### 5.1 A participation row on the root unit
+**Who enforces that rule now: nobody, because there is nothing left to enforce.** The second row is
+deleted, so the pairing is not a rule running without a guard, it is a redundancy that has been
+removed; `membership` is the single record and cannot disagree with a copy of itself. Both the
+obligation and check 1b retire rather than being restated somewhere else, which is the outcome D-081
+asks for stated plainly rather than left as a silence.
 
-When a membership is created, a matching **`unit_participation` row for the root unit** is
-created over the same period, and similarly closed when the membership ends.
+> **Marked withdrawn rather than deleted, because this obligation was reversed twice inside three
+> rounds and a reader is entitled to the whole record.** ~~When a membership is created, a matching
+> `unit_participation` row for the root unit is created over the same period, and similarly closed
+> when the membership ends.~~ Round 8 corrected the section to say an ordinary import "touches
+> neither arm of this pair", because a roster produced participations and no memberships; round 9
+> reversed the correction
+> ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)),
+> because the corpus turned out to state membership periods after all; round 10 deleted the arm both
+> readings were arguing about. Every step of round 8 was true of the input it was describing, and
+> the input was described wrong
+> ([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+> What each round got right and keeps is the framing rather than the conclusion: **the obligation
+> was never about one batch** — import, renewal, extension and hand-corrected row each owed the
+> paired write exactly as much — and the reason the answer moved twice is that nobody had read the
+> file. That is worth remembering about imports in general, and the reversals are recorded against
+> D-093 and the round-10 block rather than being quietly unwritten here.
 
-This buys one thing: **"everyone in unit X" is one query, with one shape, at every level.**
+~~The root row was the only participation row that is *extended* rather than closed and reopened~~
+([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)):
+the yearly sweep moved its open end to the expiry date and a renewal inside the window stretched the
+same row to the new period's end, so a person who lapsed and renewed looked exactly like one who
+never had. **Withdrawn with the table**, and the condition that made the match exact — the renewal
+beginning exactly where the row was swept to, matched by person and date because the row carried no
+membership reference — goes with it, as does the accepted cost that the lapse stopped being visible
+in the roster. What is worth keeping is why the trade was acceptable: the roster answers *who was in
+this body when*, and for that question a child who was there across the lapse has exactly one
+answer, while `membership` remains the authority on payment. With the row gone both facts live in
+`membership` alone; **the renewal rule that backdates the new period is untouched** (§3, and
+[../domain/05-membership-lifecycle.md
+§6](../domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee)).
 
-The question is *who is in unit X on date D*, and `unit_participation` answers it on its own:
-the rows of that unit whose `valid_from` is on or before D and whose `valid_to` is absent or
-after D, read with the person, ordered by family name and then given name. It works whether X is
-the organization (depth 0) or a Thursday group (depth 4). The date has to be applied to the
-participation rows themselves; filtering the unit, or a membership above it, by that date and
-leaving these rows unfiltered answers a different question.
+### Moving between groups closes one row and opens another
 
-Without it, "who is in the organization?" would be a query against `membership` and "who is
-in a pack?" a query against `unit_participation` — two shapes for one question, and every
-report would have to know which case it was in.
+[D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+retargets this section's discipline at groups and changes nothing else: **moving a person from one
+group to another is two writes, closing one `person_group_member` row and opening another**, never
+an edit of the group on the existing row. Close-and-open is what preserves "where was this child in
+2003?"; an in-place update destroys it, and the whole temporal design exists to answer that
+question. Nothing about the person's membership, their fee, or their standing as a member changes,
+because moving was never a membership event — which is exactly the expense D-041 removed when it
+made belonging below the organization a different fact from being a member, and which is why the
+same discipline survives the move to a different table.
 
-**The redundancy is deliberate and bounded.** The root row and the membership always have
-the same period, so the root row is derivable — and it is derived by nothing. **No write may
-change a membership's period, or open or close one, without making the matching change to that
-person's root-unit participation row in the same transaction.** The two rows are one fact written
-twice, so the obligation falls on every path that writes a membership. **The path this section names
-above all others is the legacy import again, and it is the legacy import because that is the path that
-creates memberships by the thousand.** [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
-restored it: the people export states a membership period, so a people batch writes a `membership` per
-period, and **every one of them owes its root-unit participation row in the same transaction** — which is
-what keeps *who is in unit X* one query across the entire imported layer (D-041).
+**Who enforces it now.** The close-and-open pair is the write path's, behind
+`person_group.member.manage`, audited and naming who wrote the row; the invariant underneath it —
+**no two rows for one person and one group overlap, counted over all rows and not only the open
+ones**, half-open so a row ending on a day and one beginning that day do not collide — is [open
+question
+F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those) shape
+1, which a hand-written migration emits and the ORM will not. A person who left in 2020 and came
+back in 2024 is therefore **two rows, never one row edited in place**: the edit destroys the answer
+to "was she in the group in 2019?". The groups module owns both, and this document does not
+re-specify them — [02-organization.md §1–§2](02-organization.md#1-person_group) and
+[../domain/04-organization-structure.md](../domain/04-organization-structure.md).
 
-> **Superseded in place, because the sentence was load-bearing and reversing it silently is how a rule
-> like this gets broken twice.** One round ago this paragraph said the opposite: that since
-> [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
-> the import "creates memberships by the thousand" was **false of a roster** — a roster writes
-> participations and no membership, its participations are sub-unit rows rather than root rows, and so
-> *"an ordinary import touches neither arm of this pair."* Every step of that was true of the input D-090
-> was describing, and the input was described wrong: the corpus is a membership export and an attendance
-> export, not a roster
-> ([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
-> [06-audit-and-import.md §3.1](06-audit-and-import.md#31-what-a-source-row-actually-evidences)). What the
-> correction got right and keeps is the framing two sentences later — the obligation was never about one
-> batch, and a register import, a renewal, an extension and a hand-corrected row each owe the root row
-> exactly as an imported period does.
+**What died with the unit version of this, named as a loss.** A group that splits is an old group
+that ended and two that began, **with no edge between them unless somebody writes one**:
+`org_unit_relationship`'s `split_from` / `merged_into` / `successor_of` are deleted, so
+restructuring has stopped being a recorded event
+([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
+third loss). The bulk unit-reorganisation transfer — close and open across every member, with
+`join_reason_code = 'reorganisation'`, as one named procedure with a dry run because it will be run
+over hundreds of rows — goes with it. There is no reorganisation to perform in one statement, and
+the lineage it recorded is now a thing a person would have to write down on purpose.
 
-**What an imported membership is, precisely, since it is now the common case rather than the exception.**
-Bounded at both ends — `valid_from` and `valid_to`, no open row, ever (§3, and check 1 of
-[06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks)); `data_confidence = 'low'` and
-`import_batch_id` set, since the source is an export rather than a record of the act;
-**one row per period the source states, not one per calendar year**, because an export of consecutive
-years is one period expressed twelve times; and the `renewed_from_membership_id` chain **left to whoever
-reconstructs it**, because a renewal lineage asserted by a parser is a lineage nobody chose. The root row
-then follows the same rule a renewal follows: **consecutive imported periods stretch one root row rather
-than opening a second, and a gap in the source is a lapse that produces two** — the same rule as a
-renewal, and the same accepted cost, that the lapse stops being visible in the participation table.
-Integrity check 1b in [§7](#7-integrity-checks) is the net under that, not the guard — it finds
-the drift afterwards, on a report somebody has to run. The alternative, a `UNION` in every
-roster query, is worse.
-
-**The root row is the only participation row that is *extended* rather than closed and
-reopened** ([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)).
-A transfer between sub-units is still close-and-open ([§5.2](#52-transfers-between-sub-units-are-cheap));
-the root row is different because it mirrors a period that is itself backdated:
-
-1. The yearly expiry sweep gives the **membership** a `valid_to` of the expiry date and moves
-   its status to `lapsed`.
-2. The root participation row is **not** closed with it — it is moved forward to the same date,
-   so it is neither open-ended nor a second row (D-050). Only that person's still-open row on
-   the root unit is touched; a participation row carries no membership reference, so person and
-   unit are how it is found.
-3. A renewal inside the window opens a **new** membership row starting at the expiry date
-   ([D-016], D-040).
-4. The root row is then stretched to the new period's end, which is exactly "extend the existing
-   row": one row spanning both periods, no gap, no overlap.
-
-Steps 2 and 4 are the same edit — moving the open end of the root row — performed at two
-different moments.
-
-> **The match in step 4 is the whole of D-050, and it is easy to get wrong.**
-> The root row is matched to the *new* membership by **person and date**, not through
-> `renewed_from_membership_id` — the participation row carries no membership FK, deliberately
-> ([D-008](../open-questions.md#d-8--should-unit_participation-reference-the-membership), §5).
-> So the condition is `new_m.valid_from = up.valid_to`: the renewal begins exactly where the
-> root row was swept to. Anything looser would stretch a single row across a genuine
-> post-window rejoin, where the gap is real and must stay.
-
-> **This erases the visual evidence of the lapse, and that is the accepted trade (D-050).**
-> A person who lapsed and renewed looks, in `unit_participation`, exactly like a person who
-> never lapsed. The lapse is still fully visible in `membership`, which is the authority on
-> payment. The participation table answers "who was in this unit when" — a roster question —
-> and for that question a child who was in the pack across the period has exactly one answer.
-
-**"Who was in the 4th Pack on 1 June 1998?"** is then exactly the query above.
-
-### 5.2 Transfers between sub-units are cheap
-
-Because participation is not membership (D-041), moving a person between groups is **one row
-edit** — close one, open another. Nothing about their membership, their fee, or their status
-as a member changes.
-
-Moving person 100 from pack 12 to pack 31 effective 1998-09-01 is two writes, in this order:
-
-1. Close the row that is open for person 100 in pack 12: `valid_to` becomes 1998-09-01,
-   `leave_reason_code` becomes `transfer_out`, and `updated_at`/`updated_by` record who did it.
-2. Open a row for pack 31 with `valid_from` 1998-09-01, `join_reason_code` `transfer`, a
-   `source` of `staff`, and the actor recorded as `created_by`.
-
-Rewriting the old row would destroy the answer to "where was this child in 2003?" — the
-question the whole temporal design exists to answer. Close and open; never update
-`org_unit_id` in place.
-
-**Under the old model this was much more expensive**: a "unit membership" was a membership,
-so moving a child between groups raised questions about which membership was which and
-whether a fee was owed twice. Participation removes the question.
-
-### Unit reorganizations
-
-When a unit is split or merged, members are transferred by the same close-and-open
-pattern, with `join_reason_code = 'reorganisation'` and the
-`org_unit_relationship` row recording the lineage. A bulk operation should be a single
-named procedure with a dry-run mode — it will be run on hundreds of rows during an import
-and must be testable before it commits.
+**The other columns, given up rather than moved**
+([D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+lists them, and "no special features" was the instruction): no `join_reason_code` /
+`leave_reason_code` and so no `transfer` / `promotion` / `reorganisation` / `unit_closed` vocabulary
+to maintain or to get wrong, no `is_primary` saying which of a person's groups to show first, no
+`role_in_unit` display label, and no `data_confidence` with nothing left to import into — the corpus
+names no groups either, so every group member row is typed by a person, which is also the only way
+one can be true
+([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
 ---
 
 ## 6. Membership and the authorization system
 
-**The resolver evaluates membership state.** This is settled (D-039) and it is the single
-largest coupling in the design, so it is worth stating in full rather than in a footnote.
+**The resolver no longer asks whether you are a member. The grant does.** This is the round's
+largest deletion
+([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
+and it is still the single largest coupling between these two modules, so it is stated in full
+rather than in a footnote. What was withdrawn:
 
 ```
-A role grants access ONLY IF the holder has a current membership,
-    unless  role.requires_membership = false    (appointed counselors, local leaders)
-    or      the channel is guardianship         (a legal relationship, not a membership)
-    or      the channel is ownership            (your own record — see below)
+~~A role grants access ONLY IF the holder has a current membership,~~
+    ~~unless  role.requires_membership = false    (appointed counselors, local leaders)~~
+    ~~or      the channel is guardianship         (a legal relationship, not a membership)~~
+    ~~or      the channel is ownership            (your own record — see below)~~
 ```
 
-**The carve-outs, and why each exists:**
+**Withdrawn by D-100.** The clause above ran on every grant the resolver examined, and it needed two
+escape mechanisms to be livable. `MEMBERS` is now a selector operand, evaluated live on the checked
+date, and the question "must this person be a current member to hold this?" is answered by whether
+the expression says so:
 
-| Carve-out | Why |
+| Old mechanism | New expression |
 |---|---|
-| **Guardianship** | A parent's authority over their child comes from a legal relationship. An unpaid fee must not make a parent unable to act for their child. |
-| **Appointed counselors and local leaders** | The organization needs them present regardless of their own fee status. Marked per-role with `requires_membership = false`. |
-| **Ownership** | Otherwise a lapse locks a person out of the very screen they renew on. |
+| The gate applied to a role with `requires_membership = true` | `MEMBERS * ROLE(x)` |
+| The gate waived for a whole role | `ROLE(x)` — write it without `MEMBERS` |
+| The gate waived for one named person (`system.gate_exempt`) | `MEMBERS * ROLE(x)`, plus a second grant for that one person |
 
-**The cost, named plainly:**
+`role.requires_membership`, `system.gate_exempt` and `person_holds_gate_exempt` are all deleted,
+together with the resolver's membership clause and the special-case path that had to be carefully
+kept *out* of `can()`. **Who enforces the rule now: whoever writes the grant**, by putting `MEMBERS`
+in the expression or leaving it out, and the expression is a row that can be read.
 
-- **The permission cache must be invalidated on every membership transition** — including
-  the yearly expiry sweep, which is a bulk event touching every member at once. The cache
-  design has to be built for this from the start; retrofitting it is where the bugs will be.
-- **A lapse silently removes access.** That is the intent, but "why can't I see this?" now
-  has an answer that is a date rather than a decision.
-- **`role.requires_membership` changed meaning** — from a flag that drove a report to a value
-  the resolver enforces.
+*Corrected in this round:* an earlier draft of this page read D-100's `PERSON(y)` as shorthand for the
+audience's own `LIST`, on the grounds that the seeded `selector_type` registry did not carry the code. **The
+registry was the side that was wrong** — `PERSON` is the thirteenth seeded selector
+([data-model/05 §8](05-authorization.md#the-selector-registry), [D-101's amendment](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
+so `MEMBERS * ROLE(x) + PERSON(y)` parses as written. **`LIST` was never a substitute**, which is the part
+worth remembering: it is one set belonging to one audience, so `+ LIST` brings everybody on it and nothing on
+that list can except one person from itself. Writing the waiver as **a second grant aimed at the person** is
+still legal, still clearer for something permanent, and is no longer the only writable option.
 
-**The "leaver with access" report remains valuable**, but its purpose changes. It no longer
-*prevents* access — the resolver already does that — so what it now detects is a role that
-should have been **closed** and was not. That is still worth a worklist, because a stale
-assignment silently springs back to life the moment the person renews:
+**Two of the three carve-outs were never carve-outs.** **Guardianship** (a parent's authority comes
+from a legal relationship, and an unpaid fee must not stop a parent acting for their child) and
+**ownership** (otherwise a lapse locks a person out of the very screen they renew on) stay channels
+and are unaffected — they were never gated, whatever the shape of that block suggested. Only the
+third, the appointed counselors and local leaders the organization needs present regardless of their
+own fee status, was a real waiver of a real gate, and it is now the second row of the table: write
+the office without `MEMBERS`.
 
-Concretely: every `role_assignment` still open whose holder `is_current_member()` says is not a
-member, shown with the role's own `requires_membership` and with the enforced ones first — those
-are the assignments the resolver is holding back today, and the ones that will matter on renewal.
+**The posture reverses, and the new failure mode is named rather than buried.** The gate was
+**default-on**, so forgetting it was impossible. It is now **opt-in per grant**: a grant written
+`ROLE(TREASURERS)` with no `MEMBERS` authorizes a lapsed member, silently, forever. Three controls,
+none of which is the resolver:
 
-**Dormant authority is a real hazard.** A membership that lapses and is renewed a year later
-would otherwise resurrect every role the person held in the interim, including ones a human
-had quietly decided not to reinstate. Closing the assignment at the same time as the
-membership is the honest fix; this report finds the ones that were missed.
+- **A standing report** of live grants naming a `ROLE(...)` operand whose expression does not contain
+  `MEMBERS` — check 1 of §7. An office held by a non-member is the case worth a human eye, and the
+  report is narrow enough to actually be read.
+- **Seeded grants and any grant template carry `MEMBERS`**, so the path of least repetition is the
+  safe path.
+- **Import completeness.** `MEMBERS * COUNSELORS` is only as correct as the counselor roster: the
+  gate used to
+  fall out of membership alone, so an import that misses 300 counselors silently un-gates them. It fails
+  closed — nothing breaks, which is exactly why nobody notices — and the import reconciliation report of
+  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+  must count people marked as counselors in the corpus against `role_holder` rows written.
 
-**A role assignment should not outlive the membership that justified it.**
+**What still costs, unchanged by the move:**
+
+- **The permission cache must be invalidated on every membership transition** — including the yearly
+  expiry
+  sweep, which is a bulk event touching every member at once. The coupling did not leave with the
+  resolver clause: `MEMBERS` is evaluated live, so a transition still changes who an expression
+  reaches. The cache design has to be built for this from the start; retrofitting it is where the
+  bugs will be.
+  [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
+  helps rather than excuses it — a cache may key on an operand and reuse it across every grant, and
+  a membership transition invalidates the `MEMBERS` operand for everyone at once, which is the same
+  bulk event seen from the other side.
+- **A lapse silently removes access** — from exactly those grants whose expression names `MEMBERS`,
+  and from
+  none of the others. "Why can't I see this?" now has an answer that is a date *and* a line of grant
+  text.
+
+**The "leaver with access" report remains valuable, and it is now two reports.**
+[D-071](../decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+posture transfers intact to `role_holder`: nothing forces a holder row to end, and the control is
+the report. Checks 1 and 2 of §7 are that control — one for grants that gate nothing, one for
+offices held by people who are not members.
+
+**Dormant authority is a real hazard, and slightly larger than it was.** A membership that lapses
+and is renewed a year later resurrects every still-open `role_holder` row the person accumulated in
+the interim, including ones a human had quietly decided not to reinstate — and where the grant
+behind that role was written without `MEMBERS`, it was not dormant at all in the meantime, it was
+live. Closing the holder row at the same time as the membership is the honest fix; the reports find
+the ones that were missed. **A role holder row should not outlive the membership that justified
+it.**
+
+**A role is held at the unit and nowhere else.** `role_holder` carries no scope columns, because
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+left one scope; there is no body to hold an office *of*. The table, the `ROLE(x)` selector and the codes
+an office carries belong to [05-authorization.md §3 `role` and §4 `role_holder`](05-authorization.md#3-role--an-office).
 
 ---
 
 ## 7. Integrity checks
 
-**Invariants to verify**
+**Invariants to verify.** **The numbering restarted at 1 this round.** Every check below old 3
+either lived or died with `unit_participation`, and leaving holes in a renumbered list is only
+honest while the surviving numbers still mean what their citations claim — which they no longer
+would. The retired numbers, and what happened to each, are listed after the live ones, because the
+decision log cites "integrity check 2 of `03-membership.md §7`" by name and that citation should
+land on an explanation rather than on a gap.
 
-* **1. Participation rows without a corresponding organization membership at that time.**
-  Counts participation rows for which the same person has no membership that is not
-  `pending_payment` and whose period overlaps the participation's — one beginning on or before
-  the participation ends (or begins, if it is still open) and ending after the participation
-  begins. Non-zero is the case no constraint here can express, deliberately: someone taking part
-  who was never a member. **The import exclusion this check carried is gone, so the check finds real
-  findings again.** Last round it needed one or it was useless: a roster row created a participation and
-  *no* membership, always, so every imported row in the corpus satisfied the predicate by design and the
-  report's floor was thousands of true-but-meaningless rows
-  ([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
-  [D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)
-  removed the premise twice over — the corpus imports **no sub-unit participations at all**, and the
-  people rows that do arrive bring a membership with them
-  ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
-  §5.1) — so there is nothing left to exclude. **Read the count with no filter.** A non-zero result now
-  means exactly what the check was written to mean: someone taking part who was never a member, imported
-  or not, and if the legacy batch ever produces that, the finding is that a participation was written
-  without the membership that should have come with it.
-* **1b. The root participation row disagreeing with the membership it mirrors** (§5.1). Counts
-  memberships whose root-unit participation row has either end of its period different from the
-  membership's own. Nothing maintains the root row on its own behalf — §5.1 makes the pairing an
-  obligation on whoever writes the membership — so a non-zero count names the path that wrote one
-  row and forgot the other.
-* **2. ⚠️ Withdrawn — participants in units that do not allow minors.** **This check cannot run and no
-  number replaces it.** It counted open participation rows in a unit whose type said
-  `allows_minors = false` where the person's recorded birth date made them under 18 today, and it reported
-  on a safeguarding rule the column was trusted to express.
-  [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
-  removed the column — units carry no restrictions, and joining one is somebody else's act — which leaves
-  the predicate nothing to read. **The number stays in the list rather than being closed up, because
-  [02-organization.md §9](02-organization.md#9-integrity-checks) silently dropped a removed check once
-  already and every later citation of "check 2" then pointed at a gap**: the decision log names this check
-  twice, and a reader who arrives at a renumbered §7 looking for check 2 would find check 3's stale-role
-  report instead. **What enforces the rule now** is `unit_participation.manage` at that unit, held by the
-  people who run it, audited and naming who wrote the row ([02-organization.md §1](02-organization.md#1-org_unit_type)
-  states the same substitution for the column); **what is genuinely lost** is that the system no longer
-  knows which units are for children, which is D-095's stated cost and not this check's to recover.
-  Membership itself was never in scope here and stays ageless (D-038).
-* **3. Non-members holding a role that requires membership.** Counts open role assignments on a
-  role with `requires_membership` true whose holder is not a current member. The resolver blocks
-  these (D-039), so this is not an access breach — it is a stale assignment that will spring back
-  to life when the person renews (§6).
-* **4. Approved requests that never produced a membership.** Counts requests that are `approved`,
-  carry no `membership_id`, and were decided more than seven days ago. Non-zero is an approval
-  that went nowhere.
-* **5. Memberships expiring soon.** Counts `active` memberships ending within the next 90 days —
-  the renewal campaign worklist (§6 of domain/05), not a fault.
-* **6. Renewal chains with a broken link.** Counts memberships whose `renewed_from_membership_id`
-  names a row that does not exist. Non-zero means the chain is followed into nothing.
-* **7. Renewals inside the window whose new period does not start at the previous expiry date.**
-  Counts renewals whose `valid_from` differs from the previous membership's `valid_to` and begins
-  less than 91 days after it. The renewal rule (D-040) backdates the new period, so a mismatch
-  means either a genuine post-window rejoin or a bug.
+* **1. Live grants that gate nothing.** Counts live grants whose audience expression names a `ROLE(...)`
+  operand and does not contain `MEMBERS` — D-100's standing report, restated here because this is
+  the module whose data it reads. **Enforced by no layer, and no layer can**: whether an office is
+  written with `MEMBERS` is a choice made in the grant text, so the controls are this report, plus
+  seeded grants and any template carrying `MEMBERS` so the common path is the gated one (§6). **A
+  non-zero count is not a fault** — it is the list of offices worth a human eye, and it is narrow
+  enough to actually be read.
+* **2. Non-members holding an office.** Counts open `role_holder` rows whose holder
+  `is_current_member()`
+  says is not a member (§3). **Enforced by nothing, deliberately**:
+  [D-071](../decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+  posture transfers to `role_holder`, so no constraint and no sweep ends a holder row and this
+  report *is* the control. Read it with check 1, which says whether that role's grants are gated: on
+  a gated role this is **dormant authority** that springs back to life at the next renewal, and on
+  an ungated one it is access that is live today (§6). The old wording of this check — "the resolver
+  blocks these, so it is not an access breach" — is the sentence the round retired, and it must not
+  be copied forward.
+* **3. Approved requests that never produced a membership.** Counts requests that are `approved`,
+  carry no
+  `membership_id`, and were decided more than seven days ago. Non-zero is an approval that went
+  nowhere. **Enforced by** the §2 requirement that an approved request points at a `membership` once
+  the deciding transaction is over — a deferred reference rather than a suggestion, and one a
+  migration can state on the row.
+* **4. Memberships expiring soon.** Counts `active` memberships ending within the next 90 days — the
+  renewal
+  campaign worklist ([domain/05
+  §6](../domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee)), not a fault. **Run by
+  whoever runs the campaign**; nothing here guards it, because there is nothing to guard.
+* **5. Renewal chains with a broken link.** Counts memberships whose `renewed_from_membership_id`
+  names a row
+  that does not exist. Non-zero means the chain is followed into nothing. **Enforced by** the
+  ordinary foreign key on that column, which any migration emits; the check survives as the
+  assertion that the key is there, which is the form [00-conventions.md
+  §6a](00-conventions.md#6a-who-enforces-an-invariant-now) prescribes for a constraint this
+  project's ORM does not generate on its own.
+* **6. Renewals inside the window whose new period does not start at the previous expiry date.** Counts
+  renewals whose `valid_from` differs from the previous membership's `valid_to` and begins less than
+  91 days after it. The renewal rule (D-040) backdates the new period, so a mismatch means either a
+  genuine post-window rejoin or a bug. **Enforced by nothing**: both answers are legal data, so only
+  a report separates them, and only a reader decides which one it is looking at.
 
-**Check 3 is the one that matters most now.** Under D-039 the resolver already blocks a
-non-member's roles, so this is no longer an access breach — but it detects *dormant*
-authority, which is the failure mode the membership gate introduces: a role nobody closed
-that silently reactivates on renewal.
+**Checks 1 and 2 are the ones that matter now**, and they are what the old check 3 became. The old
+check could assume the resolver had already handled access and confine itself to the stale row
+behind it; that assumption was the gate, and with the gate in the grant text the same predicate
+splits into a report about grants and a report about people. Neither one alone is the control.
 
-**Check 5 is operational** (a worklist for the renewal campaign), and **check 1b** guards the
-one deliberate redundancy in the model (§5.1). The rest are data-quality checks for cases no
-constraint rejects at the write.
+**Check 4 is operational** (a worklist for the renewal campaign). The rest are data-quality checks
+for cases no constraint rejects at the write.
+
+**Two checks this module deliberately does not hold.** The one [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+asks for — a live `deny` whose grantee, scope and code match no live allow, and so denies nothing — is a
+report over grants, not over memberships, and belongs to
+[05-authorization.md §11](05-authorization.md#11-invariants-to-verify). The no-overlap invariant over
+`person_group_member` belongs to the groups module, [02-organization.md §6](02-organization.md#6-integrity-checks).
+Naming both here is to stop either being written twice and drifting.
+
+**Retired with `unit_participation`** (§5), listed so that a citation of an old number lands somewhere:
+
+| Old | Was | Where it went |
+|---|---|---|
+| 1 | participation rows with no membership at that time | Deleted with the table (D-097). Its reasoning survives as a caution rather than a query: the check spent two rounds carrying an import exclusion because every imported row satisfied the predicate by design, which is the shape of a report whose floor is thousands of meaningless findings — worth remembering before writing any "row without its obvious partner row" report here |
+| 1b | the root participation row disagreeing with the membership it mirrored | Deleted with the redundancy it watched (§5). There is no second row, so there is nothing to disagree and no writer left to name |
+| 2 | ⚠ participants in units that do not allow minors | Withdrawn by [D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) one round before the table itself went. **Who enforces the rule now**: `person_group.member.manage`, held at the unit — which reaches every group — or granted on one group as an item, audited and naming who wrote the row (D-098). **What is lost** is unchanged and unrecoverable: no column says which groups take children, so the system can neither answer the question nor report on it |
 
 ---
 
@@ -635,19 +698,27 @@ default of true. The term and the calendar parameters on that row are §1's, not
 anywhere else.
 
 **One row, and that is the whole vocabulary** (D-037). The fee is flat and per person, so
-there is nothing to vary by type; being a counselor or leader is a position, not a type; and
-membership is ageless, so there are no age limits to seed (D-038).
+there is nothing to vary by type; being a counselor or a leader is a **role**, not a type
+([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape));
+and membership is ageless, so there are no age limits to seed (D-038).
+
+**Nothing else is seeded here.** The `counselors` role that D-100 seeds — shipped `is_system`, so an
+editor refuses to delete it — is a row of the authorization module
+([05-authorization.md §12](05-authorization.md#12-what-the-organization-starts-with)) and not of this one,
+and it is a **set** that confers nothing until a grant names it: no more than a membership type has ever
+conferred.
 
 **All three are settled, and all three are §1's columns** — 12 months, 1 January, 60 days
 ([D-047](../decisions/decision-log.md#d-047--the-fee-expires-on-1-january),
 [D-048](../decisions/decision-log.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)).
-**The sentence this one replaces called the 12-month term "a placeholder that nothing currently depends
-on", and that was stale in two directions at once.** It is §1's `duration_months` default, stated there as
-a value with a reason attached (the fee is yearly), and things do depend on it: §6's lapse sweep and the
-period a renewal opens both read a term, and a term of the wrong length produces a membership that ends on
-a date nobody chose. What survives the correction is the part that was always the point — **none of the
-three is a constant**, so tuning any of them is an `UPDATE`, not a release, and the difference between a
-settled value and a hard-coded one is exactly that difference.
+**The sentence this one replaces called the 12-month term "a placeholder that nothing currently
+depends on", and that was stale in two directions at once.** It is §1's `duration_months` default,
+stated there as a value with a reason attached (the fee is yearly), and things do depend on it: the
+yearly lapse sweep ([07-finance.md §4](07-finance.md#4-how-this-connects-to-membership)) and the
+period a renewal opens both read a term, and a term of the wrong length produces a membership that
+ends on a date nobody chose. What survives the correction is the part that was always the point —
+**none of the three is a constant**, so tuning any of them is an `UPDATE`, not a release, and the
+difference between a settled value and a hard-coded one is exactly that difference.
 
 > **The one rule about these four values: read them from the row.** A scheduled job, a front
 > end or a report that contains the literal `60` or `1` has quietly reverted a parameter to a
@@ -664,33 +735,46 @@ at all (D-043), and the rest were never required.
 ## 9. Open issues
 
 - Nothing about the type-level parameters is open any more (§1, §8): 12 months, 1 January and 60
-  days are all settled and all three are columns read from the row. **What is left of this bullet is a
-  question about the values rather than about the mechanism** — whether 60 days is the right window for an
-  organization whose renewal campaign is a handful of people, which only a year of real lapses can answer.
+  days are all settled and all three are columns read from the row. **What is left of this bullet is
+  a question about the values rather than about the mechanism** — whether 60 days is the right
+  window for an organization whose renewal campaign is a handful of people, which only a year of
+  real lapses can answer.
 - Whether `outstanding_balance` should exist as a denormalised column or be computed
   (§3) — depends on the finance design in [07-finance.md](07-finance.md).
-- Whether `unit_participation` should reference `membership_id` in addition to `person_id`,
-  to get referential integrity without losing the cases that have no membership. Possible as a nullable
-  column, and **note which half of the old argument no longer holds:** it used to be justified as
-  "unenforced for imports", and since [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
-  an imported person's root participation does have a membership beside it (§5). **What still makes it
-  unenforceable is the ordinary sub-unit case** — D-041's participation without membership, which is what
-  a unit writes when it adds somebody itself, and which no import has to do with. The question is
-  therefore narrower than it reads: a nullable pointer would buy integrity for the root rows and nothing
-  for the sub-unit rows, which is most of the table.
+- **Which offices are written without `MEMBERS`.** The membership gate left the resolver for the grant
+  text (§6, D-100), so somebody has to decide, per office, that a lapsed member may still hold it —
+  and nothing in the model records who decided it or why, only whether the expression contains the
+  word. The standing report of §7 check 1 is the control over the outcome, not over the choice.
+  *Assumption:* this is left to whoever writes the grant, which is the honest reading of D-100
+  rather than a ruling in it.
+- Whether a group is ever allowed to state an age rule of its own — the question `position.min_age`
+  used to
+  answer for offices, which
+  [D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+  deleted along with positions, and which nothing in the round-10 model answers for groups either: a
+  group carries no eligibility, and
+  [D-098](../decisions/decision-log.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+  refuses it one. Left as a question for [../open-questions.md](../open-questions.md) rather than
+  answered here; today the answer is a report over `person_group_member` and `is_minor()`.
 
-**Resolved and no longer open**, kept visible so the reasoning survives: whether a person
-may hold several open memberships (no — one type, person-scoped constraint, §3); whether
-membership activates on payment (yes, §3); whether permissions depend on membership state
-(yes, with carve-outs — D-039, §6); the age limits and age-out (§8); the grace period as a
-status (§6); the whole requirement mechanism (§4); what the root-unit participation row does when a
-membership is renewed inside the window (**extended across the retrospectively filled period, never
-closed and reopened — D-050, §5.1. This bullet sat in the open list for three rounds after it was
-answered, and it is now moved rather than deleted because the answer is the part someone needs**; the
-same rule reaches the imported consecutive periods D-093 introduced, §5.1); and whether the legacy import
-may create a `membership` at all (**yes, bounded at both ends, `data_confidence = 'low'`, one row per
-period the source states — [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
-after a round in which the answer was no; the reasoning either way is
-[06-audit-and-import.md §3.1](06-audit-and-import.md#31-what-a-source-row-actually-evidences)**).
+**Resolved and no longer open**, kept visible so the reasoning survives: whether a person may hold
+several open memberships (no — one type, person-scoped constraint, §3); whether membership activates
+on payment (yes, §3); whether permissions depend on membership state (it did, through a resolver
+clause — D-039; since D-100 the grant says so itself with `MEMBERS`, §6, and the carve-outs turned
+out to be channels that were never gated); the age limits and age-out (§8); the grace period as a
+status (§6 of domain/05); the whole requirement mechanism (§4); **whether `unit_participation`
+should reference the membership** for referential integrity (moot — the table is deleted, D-097, and
+open question D-8 retires with it. The argument is kept because it recurs: the pointer was refused
+because participation had to survive without a membership, which is precisely why
+`person_group_member` is still keyed on a person and not on a membership, §5); what the root-unit
+participation row did when a membership was renewed inside the window (**extended across the
+retrospectively filled period, never closed and reopened — D-050. The row is gone, D-097, and the
+answer is kept because the reasoning about backdated periods is what the renewal rule in §3 still
+rests on**; the same rule had reached the imported consecutive periods D-093 introduced); and
+whether the legacy import may create a `membership` at all (**yes, bounded at both ends,
+`data_confidence = 'low'`, one row per period the source states —
+[D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
+after a round in which the answer was no; the reasoning either way is [06-audit-and-import.md
+§3.1](06-audit-and-import.md#31-what-a-source-row-actually-evidences)**).
 
 All tracked in [../open-questions.md](../open-questions.md).

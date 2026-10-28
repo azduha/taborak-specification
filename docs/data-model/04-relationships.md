@@ -92,9 +92,19 @@ Staff may always do it when asked. **Staff may never be the only way it happens.
 
 **The parties are principals, not third parties with a grant.** A guardianship row is not the
 guardian's record, and it is not the subject's record. It is a record *of a relationship between
-them*, and both hold it. This is scope authority — the rule that authority over a nested thing
-originates at that thing ([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing))
-— applied to a household instead of a unit.
+them*, and both hold it.
+
+**This claim used to borrow its justification from a rule that no longer exists.** It was written as
+*scope authority* — ~~the rule that authority over a nested thing originates at that thing~~
+([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)),
+"applied to a household instead of a unit" — which was a good analogy right up until
+[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted
+the nesting it was borrowed from, along with the crossing mechanism that made it a rule rather than a
+sentiment. The claim does not need the borrowing. **A relationship row belongs to the people in it** is a
+statement about this channel and stands on its own, and it is the reason neither party needs a grant to act
+on the row. What the deleted rule was really doing on this page was answering *who may end it*, and that
+answer is already given locally, a paragraph above: a party to the row, or staff acting on a request — with
+staff never the only way it can happen.
 
 **It is not the ownership channel, and the distinction is worth keeping.** Ownership is *your own
 record*. Ending a guardianship over yourself is not editing your own record; it is dissolving a
@@ -199,17 +209,27 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
   re-establishment — the rights must not silently carry over. A new relationship is a new row and
   a new, deliberate level.
 
-### It is the same ladder, not a new one
+### Three values, two kinds, and no scale
 
-The system already ranks authority as `revoked`(0) < `view`(10) < `contribute`(20) < `manage`(30)
-< `admin`(40) and compares by integer rank, never by string. The three guardian rights map onto
-it: **`none` → 0, `view` → 10, `write` → 20.**
+**This section used to argue that the guardian rights were not a second authorization model by mapping
+them onto the shared level ladder** — `none` → 0, `view` → 10, `write` → 20, so the resolver would never
+need to know which ladder it was standing on. **The ladder is deleted**
+([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
+so that argument is gone and the requirement underneath it is still met, by a different mechanism: the
+level is compared against a column on the permission, **`permission.right_kind ∈ read | write`** —
+**`none` covers nothing, `view` covers the codes marked `read`, `write` covers both.** There is nothing to
+order and no rank to keep in step, because three values against two kinds is a lookup, not a scale. The
+column exists for exactly this comparison and for no other customer in the system
+([05-authorization.md §1](05-authorization.md#right_kind-a-column-with-exactly-one-customer)).
 
-This is not a convenience. A parallel enum would have meant a second authorization model with its
-own comparison rules, and the resolver would have needed a special case to know which ladder it
-was on. Guardian authority is a **range of the existing ladder**, and `write` landing on
-`contribute` rather than on `manage` or `admin` is what keeps a guardian from being able to do
-organization-wide things.
+**What the ladder was really buying survives, and it never was the numbers.** A guardian was never a staff
+member, and that was expressed by `write` landing on `contribute` rather than `manage`. It is now expressed
+by the shape of the request: **the guardianship channel is entered only when the check is about somebody
+other than the actor** ([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)),
+so the widest guardian right in the system reaches the child's record and cannot reach a roster, a fee
+schedule or another family — not because its rank was too low, but **because those checks are not about the
+child and the channel is never asked**. Losing the ladder costs the comparison; the boundary moved into the
+one place that was always enforcing it.
 
 ### What the collapse gives up, written down rather than discovered later
 
@@ -226,7 +246,7 @@ the medical file too.
 
 What still holds:
 
-- `write` is `contribute`, not `manage`. A guardian cannot do organization-wide things.
+- `write` is not `manage`, and since [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) there is no `manage` to be short of: the ceiling on a guardian is the **channel**, which answers only for checks about this child. A guardian cannot do organization-wide things because those checks are not about the child, not because a rank was too low.
 - Authority is per row, so a guardian of one child sees nothing of another's.
 - The **organization-wide deny channel is untouched**: a `guardianship` row granting `write` can
   still be refused by a deny, because deny is absolute and scope-independent
