@@ -540,7 +540,8 @@ expression down to a predicate and never materializes a set. The named sets are 
 **the only way to write a set somebody typed by hand**: `PERSON(a) + PERSON(b)`) — plus `EVERYONE`,
 `MEMBERS`, `GUARDIANS`, the two age operands `OLDER(n)` and `YOUNGER(n)`, and the five event operands.
 **The operators are `+ - *` and round 12 added none of its own**: the age operands are ordinary named
-operands composed by those three, so `MEMBERS * OLDER(18) - YOUNGER(6)` is an ordinary term and the
+operands composed by those three, so `MEMBERS * OLDER(13) * YOUNGER(19)` — thirteen to eighteen, a band that needs both — is an ordinary
+term and the
 language's *vocabulary* grew by decision while its *grammar* did not grow at all.
 **The count is left unsaid here on purpose:** the
 registry grew a row while round 10 was closing, when `PERSON` turned out to have been written by two

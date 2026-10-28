@@ -1020,7 +1020,7 @@ operand := EVERYONE | MEMBERS
          | '(' expr ')'
 
   OLDER(n) and YOUNGER(n) read person.birth_date AS OF THE DATE THE CHECK IS MADE,
-  so `MEMBERS * OLDER(18) - YOUNGER(6)` reaches different people on different
+  so `MEMBERS * OLDER(13) * YOUNGER(19)` reaches different people on different
   dates with no write, and can(..., on date) for a past date answers for that
   past date. Their argument is an INTEGER — the first operand argument in the
   registry that is not an entity reference (§*The selector registry*). There is
@@ -1048,7 +1048,7 @@ operand := EVERYONE | MEMBERS
 
 - `+` union, `*` intersection, `-` difference — **three operators, and round 12 added none of its own.**
   What it added was two operands the same three operators compose:
-  `MEMBERS * OLDER(18) - YOUNGER(6)` is an ordinary term
+  `MEMBERS * OLDER(13) * YOUNGER(19)` is an ordinary term
   ([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 - **There is no comparison operator in the language.** No `>=`, no `<`, no bare `AGE`: an operand is a
   registry row and `AGE >= 15` has no row to be, which is the whole of D-060's protection now

@@ -695,8 +695,8 @@ operand  := EVERYONE | MEMBERS
 `OLDER(n)` and `YOUNGER(n)` are **ordinary named operands** — `n` a whole number of years, read against the
 birth date **on the date being checked**, which is why they landed in the column of the table below headed
 "the set, on the checked date" rather than anywhere in a section about conditions.
-`MEMBERS * OLDER(18) - YOUNGER(6)` is a set expression in exactly the sense `MEMBERS * GROUP(cubs) - PERSON(a)`
-is, and it parses under the two rules above with nothing added to them.
+`MEMBERS * OLDER(13) * YOUNGER(19)` — thirteen to eighteen, a band from two operands — is a set expression in exactly the sense
+`MEMBERS * GROUP(cubs) * PERSON(a)` is, and it parses under the two rules above with nothing added to them.
 
 **Boolean spellings were offered for this language and declined, and the reason is the first paragraph of
 this section.** `p ∈ (A ∩ B) ∪ C` **is** `(p ∈ A ∧ p ∈ B) ∨ p ∈ C`, so `&`, `|` and `!` would name three

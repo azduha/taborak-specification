@@ -893,9 +893,31 @@ one fact stored three times, and nothing in §11 can see any of the three.**
   option that gets worse quietly"* was the correct call, because this bullet was three rounds from being
   quoted as a design principle.
 
-- **A prose expression names an operand that does not exist: `all_in_school`.** [domain/07-events.md §1](domain/07-events.md) opens the age-gating story with "open the event to an audience — `all_in_school`", and round 12 found on checking that there is no `SCHOOL` selector, no `school` column on `person`, and no table a `SCHOOL(x)` could take as an argument. **So the sentence advertises a row nobody minted**, and the school-bounded case it offers as the cheap answer is one an organizer cannot actually build. This is this entry's own defect, one round later, **pointing the other way**: last time the prose used an operand the registry lacked and the registry turned out to be the wrong side; here the registry is right and the prose is the fiction — which is the same failure to check a written expression against the table, and **another page in the family [D-104](decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
-named** — prose contradicting a registry — rather than a new class, and the third distinct page of it after
-the registry itself and [domain/06 §6](domain/06-authorization-model.md)'s selector table. Two exits, both cheap and one of them obligatory: either `SCHOOL(x)` becomes a row (which means the person model grows a school affiliation it does not have today, so it is a decision entry and not a seed row alone), or the sentence stops naming an audience and says what is really meant — *a `person_group` per school, filled by import*, which is expressible today and is probably what the author had in mind. **What is not an option is leaving the name in place**, because that is how `PERSON(x)` spent a whole round unwritten.
+- **~~A prose expression names an operand that does not exist: `all_in_school`.~~ — retracted; that defect is
+  not in this corpus, and writing it here is the real finding.** The paragraph this bullet replaced cited
+  [domain/07-events.md §1](domain/07-events.md) as opening its age-gating story with an audience named
+  `all_in_school`, and argued from there that the prose was advertising a registry row nobody had minted.
+  **The token appears nowhere in this repository** — not on the line cited, not in that file, not in any file:
+  a grep for `SCHOOL` and `in_school` across `docs/` returns this bullet and nothing else. It arrived from a
+  subagent's report of a defect it said it had found and deliberately not touched, it was plausible — the
+  registry genuinely has no `SCHOOL`, and the sentence it described is the kind of sentence that page does
+  write — and it entered the register **without the one grep that would have killed it**, which is the same
+  operation this entry's entire finding consists of. [D-104](decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+  named the class: prose contradicting a registry is a fiction. **This is the fourth page of that class and the
+  only one that was *about* the registry**, filed in the file whose job is to hold verified open questions —
+  which is what makes it the expensive kind. **A wrong entry in a domain page describes something wrong; a wrong
+  entry here directs work**, and nothing checks this file: no CI, no schema, no resolver, and no reader who
+  would notice, because every sentence in it is written as a question and a question cannot be falsified by
+  reading it. **The control this suggests is not "trust reports less", it is the same control as everywhere
+  else in this module: grep before you write**, including — especially — when the sentence being written is an
+  accusation against somebody else's page.
+- **`SCHOOL` — asked directly, and refused: it is not an important selector, at least not for now.** The
+  question above was worth answering even though its premise was invented, because the underlying question is
+  real: could a `SCHOOL(x)` operand be added, and should it? It could be, and it is not, and
+  [D-108](decisions/decision-log.md#d-108--there-is-no-school-operand-a-selector-may-only-name-a-fact-the-model-stores)
+  is where that is decided — with the reason, the shape to use instead (**a `person_group` per school, which is
+  expressible today**), and the one thing that would reopen it. **"For now" is honoured by naming the trigger
+  rather than a date.**
 
 **What rounds 11 and 12 changed here, and what this entry still does not own.** **One bullet is open** — the
 `GUARDIANS` one; round 12 closed the age one. `PERSON(x)` did not close either of them, and deleting `LIST`

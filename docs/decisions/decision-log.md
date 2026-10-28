@@ -5783,8 +5783,8 @@ grammar; [D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-
 1. **The tree grows attribute leaves.** Two seeded operands arrive — `OLDER(n)` and `YOUNGER(n)` — read
    against the person's birth date **as of the date the check is made**. The registry has fourteen rows.
 2. **The operators do not change at all.** `+ - *` are the only operators this language has, and
-   `OLDER`/`YOUNGER` are just two more operands composed by them — `MEMBERS * OLDER(18) - YOUNGER(6)` is
-   the same shape as `MEMBERS * GROUP(cubs) - PERSON(a)`. **There is no comparison operator**: no `>=`, no
+   `OLDER`/`YOUNGER` are just two more operands composed by them — `MEMBERS * OLDER(13) * YOUNGER(19)`, a band,
+   is the same shape as `MEMBERS * GROUP(cubs) * PERSON(a)`. **There is no comparison operator**: no `>=`, no
    `<`, no bare `AGE`. The boolean spellings `&`, `|` and `!` were put to this language and **declined**;
    §Why the operators stayed three is the record of that, since this entry was first written granting them.
 3. **D-060 survives; its sentence does not.** See below — this is the load-bearing clause.
@@ -5900,6 +5900,27 @@ three consequences and two limits.
   courtesy — see [D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short) for what it
   keeps and for how long it keeps it.
 
+**The boundary of each operand, fixed here because nothing else fixed it.** `OLDER(n)` is **`n` years or
+older** on the checked date; `YOUNGER(n)` is **strictly under `n`**. The pair therefore partitions everyone
+who *has* a birth date, with no overlap and no gap, and `YOUNGER(15)` means what "under 15" means in ordinary
+speech — **a fifteen-year-old is outside it**, which is load-bearing for EV-1's ceiling example
+`MEMBERS * YOUNGER(15)` and for every camp form that will ever print this as an age limit. Both readings were
+already implied in [domain/06 §6.1](../domain/06-authorization-model.md) and in the registry rows; they are
+written here because an inclusive-or-exclusive off-by-one in a ceiling is a safeguarding bug with a plausible
+implementation behind it, and because a corpus that leaves a boundary to inference will implement it twice.
+
+**A worked example this entry shipped was vacuous, and it is worth keeping as an example of its own.** The
+first draft illustrated the two operands with `MEMBERS * OLDER(18) - YOUNGER(6)`. **Nobody is both eighteen
+and under six**, so the subtraction excluded nobody and the expression meant `MEMBERS * OLDER(18)`; a
+subagent reading the registry rows noticed it while doing unrelated propagation, which is the only reason it
+was caught. It matters beyond tidiness because the example was being cited as the *reason both operands
+exist* — and an example that needs neither operand argues for neither. The band that genuinely requires both
+is **`MEMBERS * OLDER(13) * YOUNGER(19)`**, which is thirteen-to-eighteen and which excludes people at both
+ends. **The lesson is the corpus's own, turned on me: an example is an assertion, and it gets checked against
+the registry like anything else** ([D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction));
+the person writing the prose is the worst place to check it, including when that person is the one who asked
+for the feature.
+
 **Refusals become decisions, and both of them keep their answers.** `PRESENT(event)` and `WHITELISTED` were
 refused as *kind* — "not materializable", "no stored state" — and with attribute operands admitted, that
 class of argument is gone: a predicate over a column is now an ordinary operand, so nothing can be excluded
@@ -5929,3 +5950,53 @@ registry, [permission-catalog §1](../appendix/permission-catalog.md#1-conventio
 [F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry), which closes on its
 age half, and [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule),
 which stays closed for a different reason than it was.
+
+---
+
+## D-108 — There is no `SCHOOL` operand: a selector may only name a fact the model stores
+
+**Status:** decided (from your answer)
+**Date:** refinement round 12
+
+**Decision.** No `SCHOOL(x)` operand, no `school` column on `person`, no school-shaped selector of any kind.
+Asked whether school should enter the selector language, the answer was that **it is not an important selector —
+at least not for now** — and this entry records that as a refusal with a reason, rather than as an oversight.
+
+**The rule it instantiates, which is the useful part.** A selector names a set of people the model **can compute
+from data it holds**. `OLDER(n)` passes that test because a birth date is stored; `MEMBERS` because a membership
+period is stored; `GROUP(x)` because the roster is stored. A school affiliation is not stored anywhere in this
+system, and [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)
+put it out of scope on purpose: the corpus is a people export and an event export, and it carries no school.
+**So the refusal is not about schools — it is that an operand over an absent column would be a selector whose
+answer is always the empty set**, which is the one failure mode this module has decided, repeatedly, to make
+impossible rather than handle gracefully.
+
+**What to use instead, which works today.** A `person_group` per school, filled by whoever knows — by hand, or
+by the import if it ever carries the fact. `GROUP(zszos_2)` is a selector now, it takes an argument, and
+`MEMBERS * GROUP(zszos_2)` is the school-bounded audience. **The difference is not a limitation: a group is a
+set somebody is responsible for**, and a school cohort in a Scout organization is exactly that kind of thing —
+known by a leader, not derivable from an attribute. A derived operand would have quietly asserted that school
+membership is a fact the system owns.
+
+**What would reopen it, and this is the "for now" written as a trigger rather than a date.** Either of these:
+
+- **the import starts carrying a school column** for a meaningful part of the people — at which point school is
+  stored, `SCHOOL(x)` becomes computable, and the operand is one decision entry and one seed row
+  ([F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry)'s cost model for a new
+  operand, which has now been paid once and came to two rows and a reserved word);
+- **a fee, a subsidy or an eligibility rule turns out to depend on school** — at which point the question is no
+  longer about a selector at all, because the dependency is a fact with consequences outside authorization, and
+  it belongs in the person model first.
+
+**Worth saying about how this entry came to exist.** It was prompted by a finding this round filed against
+another page and then retracted: the "`all_in_school` audience the prose names but the registry cannot express"
+was never in the corpus
+([F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry) carries that retraction,
+with the grep that kills it). **The invented defect asked one true question**, and this entry is the answer to
+it, which is the best outcome available from a fabricated citation and the reason the retraction is kept in
+print rather than edited out.
+
+**See:** [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) for
+what an operand is allowed to be, [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)
+for what the corpus actually contains, and
+[data-model/02 §3](../data-model/02-organization.md) for `person_group` as a set somebody is answerable for.
