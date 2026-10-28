@@ -584,16 +584,26 @@ none of which is the resolver:
 
 **What still costs, unchanged by the move:**
 
-- **The permission cache must be invalidated on every membership transition** — including the yearly
-  expiry
-  sweep, which is a bulk event touching every member at once. The coupling did not leave with the
-  resolver clause: `MEMBERS` is evaluated live, so a transition still changes who an expression
-  reaches. The cache design has to be built for this from the start; retrofitting it is where the
-  bugs will be.
-  [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
-  helps rather than excuses it — a cache may key on an operand and reuse it across every grant, and
-  a membership transition invalidates the `MEMBERS` operand for everyone at once, which is the same
-  bulk event seen from the other side.
+- ~~**The permission cache must be invalidated on every membership transition** — including the yearly
+  expiry sweep, which is a bulk event touching every member at once.~~ ~~The coupling did not leave with the
+  resolver clause: `MEMBERS` is evaluated live, so a transition still changes who an expression reaches.
+  **The cache design has to be built for this from the start; retrofitting it is where the bugs will be.**~~
+  **This requirement is discharged by deletion, and it has to be struck rather than left as history, because it
+  was a live instruction aimed at a table that no longer exists**
+  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+  **Read it against the page it was aimed at.** This sentence was written in the round that moved the membership
+  gate out of the resolver, three rounds *before* [D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)
+  wrote the cache policy — and when that policy was finally written, **`membership` was not on its invalidation
+  list**, while `membership.terminate` is precisely the ⛔ action a concerned guardian waits for. The sentence
+  here was right, the page it was asking for did not hear it, and the way to close a coupling like this one is not
+  a louder requirement but an invariant that has nowhere to be violated: `MEMBERS` is evaluated live at the
+  checked date, there is no answer stored to go stale, and
+  [D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)'s
+  claim that *"the safeguarding case is immediate"* is true here by construction instead of by trigger.
+  ~~D-101 helps rather than excuses it — a cache may key on an operand and reuse it across every grant~~ — and
+  the yearly expiry sweep keeps every other thing it had to do; what it no longer has to do is invalidate
+  anything, because
+  [§11's invariant 19](05-authorization.md#11-invariants-to-verify) forbids the row that would need it.
 - **A lapse silently removes access** — from exactly those grants whose expression names `MEMBERS`,
   and from
   none of the others. "Why can't I see this?" now has an answer that is a date *and* a line of grant

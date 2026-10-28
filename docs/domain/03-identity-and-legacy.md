@@ -309,8 +309,14 @@ gains the absorbed person's access. Therefore:
 3. A merge can be undone (§6). The merged period cannot: `access_grant` rows created during it
    cannot be attributed to either human. Hence rule 2 — an unmerge repairs the record afterwards
    and does not repair this.
-4. Merges invalidate cached permissions. See
-   [06-authorization-model.md](06-authorization-model.md#8-caching-and-the-rebuild-that-replaced-invalidation).
+4. ~~Merges invalidate cached permissions.~~ **There are no cached permissions to invalidate** —
+   [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   deleted the answer cache, and a person merge is one of the writes that dropped out of the surviving bump
+   set with it: a merge changes which grant rows and operand leaves name the person, and both are read live now. What the merge does to
+   an answer is therefore just what the next check computes, from the survivor's grant rows and the `PERSON(x)`
+   leaves the merge repointed. **That is the same fact that makes rule 2 load-bearing rather than courteous**: with nothing stored,
+   the re-displayed effective permissions are the only place the merged answer is computed *before* the merge
+   commits. See [06-authorization-model.md](06-authorization-model.md#8-there-is-no-permission-cache-and-what-replaces-it).
 
 ---
 
@@ -359,7 +365,10 @@ not made redundant by the existence of a reversal.
 making one, performed by a named human, so it is `person.merge`
 ([../appendix/permission-catalog.md §2](../appendix/permission-catalog.md#2-people-and-identity)). A
 `person.unmerge` code would grade undoing a mistake as safer than making one. Like the merge, the
-reversal splits a person's permissions back in two and so invalidates cached permissions (§5).
+reversal splits a person's permissions back in two — and since nothing maps a person to an answer any more
+([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
+there is nothing to invalidate: the split is simply visible on the next check, which is the same §5 rule
+stated on the way back.
 
 ---
 

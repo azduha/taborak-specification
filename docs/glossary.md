@@ -774,8 +774,14 @@ operand is legal **only on an item-scope grant** (at the unit there is nothing t
 matching item type** (`PLACED` on a group grant is refused, because that item is not an event —
 `selector_type.argument_type` checked against `grant_scope_type`). The consequence nobody should be surprised
 by: **the set a grant reaches is now per-item**, so the editor's preview is computed for an item and says so
-on screen, and a cache key must carry the item
+on screen, and ~~a cache key must carry the item~~
 ([D-102](decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+**The key went with the answer cache it keyed, and the rule outlived it**
+([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)):
+a *Compiled expression* holds no item precisely because the item arrives as a parameter, so the item is now bound
+at **resolution**, not at compilation — and nothing resolved while checking one item (a bound operand's set, a
+preview's expansion) may ever be served for another. Anything that does cache a resolution, including a roster
+cache or an expansion keyed per `(audience, item)`, is keyed by the item or is wrong on the 401st event.
 **The column behind this — `selector_type.binds_to_item` — is undamaged and now has one fewer meaning:** it was
 invented to classify `GUARDIANS`, and after [D-113](decisions/decision-log.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)
 **the only things that bind are the five event operands — `ATTENDED`, `PLACED`, `CONFIRMED`, `ON_WAITLIST`,
@@ -816,7 +822,7 @@ which is what a count is a good alarm and a bad oracle looks like.
 ~~**Filling rule** — The rule arm of a group: a resolver key plus a scope parameter, evaluated at check time
 — *"everyone with membership"*, *"the leaders of this unit"*, the derived `unit_leaders` that
 `position.is_leadership` fed. A rule does not rot the way a list does, and it stops covering a person the day
-the fact underneath ends, which is why an appointment created no role assignment.*__ **Deleted by D-101**,
+the fact underneath ends, which is why an appointment created no role assignment.*~~ **Deleted by D-101**,
 which decomposed it into selectors and an operator: there is no `resolver_key` and no `scope_parameter` left,
 `unit_leaders` is `ROLE(leaders)`, and the reasoning that made a rule better than a copy — do not derive
 authority into a second table that has to be found and revoked later — is now carried by the expression
@@ -940,45 +946,102 @@ Roles, groups and their rosters are **runtime data** in every other case
 
 **Effective permission** — The union of everything a person may do right now, computed from live grants whose
 expressions contain them on the checked date, plus ownership and guardianship. **Never a table, always derived**,
-so it cannot drift out of sync with the grants that produce it. **Two rounds narrowed that sentence, and both
-mattered:** answers are now *cached* — see *The nightly rebuild* below — and the cache is a rebuild product rather
-than a store that can go stale on its own; while the *historical* question no longer points at a table either,
-because [D-110](decisions/decision-log.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached) ruled that
+so it cannot drift out of sync with the grants that produce it. **Two rounds narrowed that sentence, and round 14
+has undone the first narrowing and left the second standing:** ~~answers are now *cached* — see *The nightly
+rebuild* below — and the cache is a rebuild product rather than a store that can go stale on its own~~ — **no
+answer is stored at all now** ([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
+so *derived* means exactly what it meant before the cache existed: a check resolves against live rows every time,
+and the three things that may be kept are *Compiled expression*, *The request memo* and *The batch reads* below.
+The *historical* question still points at no table, because
+[D-110](decisions/decision-log.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached) ruled that
 **the record of whom a grant reached is the expression**, not a snapshot of people. ~~which is why the historical
 questions point at F-7 instead of at a table~~ — [F-7](open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)
-is **dissolved**, not answered: a nightly rebuild of cached answers and a nightly materialized effective-permission
-table turned out to be one job with two names.
+is **dissolved**, not answered: ~~a nightly rebuild of cached answers and a nightly materialized
+effective-permission table turned out to be one job with two names~~ — **and D-114 deleted one of the two things
+that were "one job"**, so what remains dissolved is the materialization alone: a `effective_permission` table now
+has to arrive on its own merits, at D-112's trigger, and be named for what it is.
 
-**The nightly rebuild** — **How every cached authorization answer stays true: one policy, three triggers** —
+**The nightly rebuild** — ~~**How every cached authorization answer stays true: one policy, three triggers** —
 rebuilt **(a) nightly in full, (b) immediately on any write to the ruleset, (c) on explicit request** from the
-permissions page ([D-111](decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
-**What is absent is the point:** no per-entry TTL, no shorter TTL for denies than for allows, and **no invalidation
-table** — the module spent four rounds building one and D-111 replaced it with a rebuild plus one rule about what
-counts as a ruleset change, which is a smaller thing to be right about. **What "immediately" means, since the
-writes that matter most name nobody:** the cache key is `(person_id, permission_code, scope_type, scope_id,
-at_bucket)` and **an audience appears in it nowhere**, so ending one `role_holder` row names its person while
-**an edit to a shared `audience_operand` tree names nobody at all** — finding whom it stopped reaching means
-evaluating the expression for everyone, which is the rebuild, not a shortcut around it. **So the mechanism is one
-integer:** a **ruleset version**, bumped by any write in the set below, carried in every cache entry, and an entry
-is valid only while its version matches. *"Rebuild immediately on a ruleset change"* is then **one write to one
-row that never needs to know whom a rule reaches**; the nightly full rebuild stays as the backstop for what the
-version cannot cover (the calendar cases), and the manual request becomes *bump it and warm it*. **It is one
-version, not one per audience and not one per grant** — a system wanting finer grain is the system D-112 says
-this one is not. **What counts, since the boundary is the
-whole design:** writes to `access_grant`, `audience_operand`, `guardianship_permission` and `permission`; to
-`role_holder` and `person_group_member`; **to the `deprecated`/`hidden`/`disabled` flag of anything** — that flag
-must be a ruleset write, or "turn off this naming" waits until midnight, which is the exact failure the flag
-exists to prevent — and a person merge or unmerge. **What may therefore be a night stale is only what moves
-without anybody writing:** a birthday crossing `OLDER(n)`/`YOUNGER(n)`, the 1 January membership sweep, a period
-ending on its own date, attendance behind the event tiers. **Every withdrawal a person performs is a write**, so
-the safeguarding case is immediate and the calendar case waits at most one refresh — which is
-[D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)'s
-*"I know, that the time will change, how the rules resolve and IT IS FINE"* with a mechanism attached. **Two
-limits:** a full rebuild is affordable at the size
+permissions page~~ ([D-111](decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+**Deleted by [D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation),
+and what it deleted was the thing underneath the policy: there is no stored answer to rebuild.** Out went
+~~`permission_cache`, its key `(person_id, permission_code, scope_type, scope_id, at_bucket)`, the `at_bucket` date
+truncation~~ — **no such table is in this schema, and the names in that struck list are the vocabulary of a
+deleted object, not columns anyone may add** — along with the operand cache that sat beside it, keyed
+~~`(person, selector_kind, selector_arg_id[, item])`~~, the nightly full job, the manual *bump it and warm it*, and
+**both lists** that decided which write bumped a version. **That second key is the one worth staring at:** the
+operand cache was keyed *per person* too, which is why no narrowing of a bump set could have rescued it and why
+the only cross-request caching D-114 leaves standing is a **roster** — keyed by a name, holding dated rows, with
+no person anywhere in the key. **Why the entry stays printed:** D-111's design hung on one sentence — *"the line between those
+two lists is the entire safety property"* — and the lists named **eight kinds of write: six tables, the D-109 flag
+and a merge** (`access_grant`, `audience_operand`, `guardianship_permission`, `permission`,
+`role_holder`, `person_group_member`), **with `membership` on neither** — while `membership.terminate` ⛔, held by
+`safeguarding_officer`, is the most safeguarding-shaped write the catalog has. An officer ends a member, `MEMBERS` shrinks, nothing rebuilds,
+and a cached `true` behind `MEMBERS * …` stands until morning; one tier lower the same shape, with
+`event_registration` declared not a ruleset write. **The list could not be repaired by adding the missing row**,
+because the correct invalidation set is every table any operand can read transitively — not a policy boundary but
+**the read path itself**, and a hand-maintained copy of the read path is a second source of truth about what an
+expression means ([D-081](decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now),
+[D-104](decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
+~~What may therefore be a night stale is only what moves without anybody writing: a birthday crossing
+`OLDER(n)`/`YOUNGER(n)`, the 1 January membership sweep, a period ending on its own date, attendance behind the
+event tiers. **Every withdrawal a person performs is a write**, so the safeguarding case is immediate and the
+calendar case waits at most one refresh~~ — **"up to one night stale" is deleted from this corpus.** A birthday,
+an expiring period, a registration write and a membership termination all move the answer **at the instant they
+happen**, so [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)'s
+*"I know, that the time will change, how the rules resolve and IT IS FINE"* still stands with nothing left for it
+to be fine about. **What survived:** the version integer, its bump set cut from **the eight kinds of write D-111
+named — six tables, the D-109 flag and a merge** — down to **`audience_operand` and `selector_type`**, and its
+meaning redefined in place so that *"ruleset"* now means the
+text of the rules and not anything an expression can read; and the rule that inside a check an expression compiles
+to a predicate on the person being asked and never materializes as a set — ~~the rebuild may be a set, the check
+may not~~ **there is no job beside the check any more, and the check still may not**. What the deleted cache was
+for is done by three things, each printed below.
+
+**Compiled expression** — **The only thing in this system that may be cached across requests, and it is not an
+answer.** Parse the stored tree once, resolve operand kinds once, emit the parameterized predicate once — keyed by
+**the expression's root plus `ruleset_version`**, and holding **no person and no item**, because both of those
+arrive as parameters. **That is exactly why a compilation survives across people and an answer cannot:** nothing
+in it depends on whom or where it is being asked about, so the only writes that can stale one are a change to the
+words and a change to the seeded vocabulary they are written in — which is the whole of `ruleset_version`'s
+remaining bump set. **A named roster may still be cached across requests too** — `ROLE(x)` over `role_holder`,
+`GROUP(x)` over `person_group_member`, keyed by the name — on two conditions that are the entire difference from
+what was deleted: **the key is the thing the write touches**, so invalidation is local to the row that changed and
+never global, and the cache holds **the dated rows, or the set with its validity ranges**, never *the set as of
+today*, so the checked date is still applied at check time and a period ending at midnight needs no job to be
+seen. A roster is also a row somebody maintains and can point at, which an answer never was. **And an answer may
+never be stored again:** invariant 19, TIME-BOMB — **no row, table or field may map a person, or a
+person-and-code, or a person-and-item, to a permission answer**
+([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+Half of that guard is structural, which is the best kind this corpus has — **the schema now has nowhere to put
+one** — and the residue is honest: anyone who wants a cache back must arrive with a decision entry carrying a
+per-person invalidation handle, a stated list of watched tables, and that list derived from the operand registry
+rather than from a list of ideas; until then it is **a convention, not a guard**
+([D-081](decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)).
+
+**The request memo** — **The part of the cache that was doing real work, kept, and confined to one request.** One
+indexed read fetches the checked person's live grant rows; every code, item and date that request asks about is
+evaluated against them in memory, and a named operand that recurs — `ROLE(leader)`, `GROUP(cubs)` — is resolved
+once per request instead of once per check. The `deprecated | hidden | disabled` flag is read the same way: once
+per request, memoized for that request, **consulted live rather than compiled in**. **Lifetime is the request, so
+it has no invalidation policy and no staleness window at all** — there is nothing left to invalidate, because
+nothing outlives the answer it produced
+([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+
+**The batch reads** — **`can_many(person, codes[], item?)` and `which_of(people[], code, item)`** — the entry
+points that replace what the cache was actually saving. A screen's worth of affordances is answered from one
+resolution; a list's worth of people from one pass. The cost that made a cache look necessary was never one check,
+it was the N+1 across a screen, and these remove it directly instead of deferring it to a job — **which is the
+difference between the deleted cache and its replacement: mostly *when* the work happens.** The per-item preview
+and the permissions tab are written against these, not against a loop of single checks
+([F-15](open-questions.md#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it),
+[D-109](decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
+**What is genuinely lost with the cache:** a nightly job used to pre-pay exactly these screens, so the preview, the
+tab and the "who holds this" listing now do their work **on open**. At the size
 [D-112](decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)
-states and nowhere else, and **inside a check an expression is still compiled to a predicate on the person being
-asked and never materialized as a set** — the rebuild may be a set, **the check may not**, or the nightly job is
-right and every request still expands the whole set to answer one person.
+states that is affordable, and it is recorded as **a dependency, not a measurement**
+([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 
 **Deprecated / hidden / disabled** — **The three states a named thing gets instead of being deleted**, and the
 rule that keeps them three different things: **only `disabled` changes an answer.** Nothing a stored expression can
@@ -995,11 +1058,17 @@ it** ([D-109](decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-d
 must not change the set the expression resolves to.** Disabling is the loudest switch in the module — it stops
 every rule naming that thing, in every scope, at once, and re-enabling restores all of them without anybody
 editing a grant — so **disabling and re-enabling are audited writes that print the rules they touch**, resolved
-before and after. **And the flag is a ruleset write, which is the half that makes it true today:** flipping
-`disabled` bumps the **ruleset version** — one integer carried by every cache entry, see *The nightly rebuild* — so **no
-cached `true` survives it**; if the flag ever stops bumping, *"deprecating and hiding must not change the answer"*
-still holds while *"disabling takes effect now"* silently stops being true, which is the failure worth writing a
-check for ([D-111](decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+before and after. **And the flag takes effect *now*, which is the half that makes it true today — but not by the
+means this entry first gave:** ~~flipping `disabled` bumps the **ruleset version** — one integer carried by every
+cache entry, see *The nightly rebuild* — so **no cached `true` survives it**~~. There is no cache entry to carry a
+version and none to survive
+([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)):
+resolution **consults the flag live**, once per request and memoized for that request — a state is **not compiled
+in** to the compiled form, which is exactly why the flag left `ruleset_version`'s bump set while still
+meaning *now*. **The check worth writing survived the mechanism it was written against:** if a flag ever *is*
+compiled into a cached form, *"deprecating and hiding must not change the answer"* keeps holding while
+*"disabling takes effect now"* silently stops being true
+([D-111](decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
 Its upside
 is the answer to a question this corpus kept meeting: *"how do I turn off that whole naming without editing forty
 grants?"* **One exception, and it is the only way left to make a broken leaf: `PERSON(x)` names a person, and
@@ -1019,8 +1088,10 @@ back, *Unusual* says your rule means what you wrote. **The two sections make dif
 must not be merged.** **It is a convention, not a guard**
 ([D-081](decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now))
 in a stronger sense than the reports it replaced: **nothing it lists is blocked, and nothing is refused because it
-is listed** — what it buys is that a report has to be remembered and **a tab is where the person already is**. The
-manual cache rebuild (*The nightly rebuild*, trigger (c)) lives on the same page.
+is listed** — what it buys is that a report has to be remembered and **a tab is where the person already is**.
+~~The manual cache rebuild (*The nightly rebuild*, trigger (c)) lives on the same page.~~ — trigger (c) left with
+the cache: there is no answer to rebuild and nothing to warm, so what is left on that page is the tab and nothing
+else ([D-114](decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 
 **Delegation** — Temporarily granting someone your authority (a leader going on leave). Modeled as an
 ordinary grant with its provenance set: `is_delegated`, `delegated_from` naming who it came from,

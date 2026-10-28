@@ -218,10 +218,18 @@ with no write of any kind, one person at a time, at midnight — and a check ask
 answers for that past date, which is a question no snapshot design could answer. **Exactly these two, and
 no others:** the other dated operands — `ROLE`, `GROUP`, `AUDIENCE` — move when somebody makes a write with
 a date on it, which is a different claim and is not the one this sentence makes. Nothing is stored, so there
-is nothing to invalidate: the cache is rebuilt nightly in full, immediately on any write to the ruleset, and
-on explicit request, and an answer that moved without one of those is simply allowed to be a night stale
-([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
-No table changes when a person turns eighteen, so there is no row to expire and no cache of *membership* to
+is nothing to invalidate — and since round 14 there is no stored answer left to invalidate either:
+~~the cache is rebuilt nightly in full, immediately on any write to the ruleset, and on explicit request, and
+an answer that moved without one of those is simply allowed to be a night stale~~
+([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request))
+is retired by [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation),
+which deletes the answer cache and with it the claim that anything could be a night stale. A check resolves
+against live rows, so **a birthday moves an age set at the instant it happens**, with no job standing between
+the birthday and the answer. **What this costs the catalog is a sentence it used to be able to write:** *this
+is cheap because it is cached.* It cannot write that any more, and the cheapness argument is now one indexed
+read of the checked person's grant rows per request, plus the two batch reads — `can_many(person, codes[],
+item?)` for a screen's affordances and `which_of(people[], code, item)` for a list's people. No table changes
+when a person turns eighteen, so there is no row to expire and no cache of *membership* to
 keep — which is exactly the property age **bands** would not have had, and why bands are not in this design.
 The editor's preview is a workbench and never was a record, and **the record is the expression**: the audit
 row logs the words, and the preview is logged as *a rendering on a date* rather than as a statement of who
@@ -1662,13 +1670,22 @@ round 10 created them:**
   ([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)):
   a person turns eighteen, joins the set, and no row was touched — which is exactly why age *bands*, with
   the per-person expiry dates they would need, are not in this design. **There is no longer an invalidation
-  model for this to be an exception to:** the cache is rebuilt nightly in full, immediately on any write to
-  the ruleset, and on explicit request, with no per-entry TTL and no table of which write invalidates how
-  wide a fan-out
-  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
-  A birthday is not a ruleset write, so a cached answer about an age set **may be up to one night stale,
-  and the nightly rebuild is what fixes it** — the same ruling this corpus already accepted about how the
-  rules resolve as time passes, now with its mechanism attached. **One thing follows that is open, and one that is closed, and keeping them apart is the whole
+  model for this to be an exception to** — because there is no cache left for one to be about.
+  ~~The cache is rebuilt nightly in full, immediately on any write to the ruleset, and on explicit request,
+  with no per-entry TTL and no table of which write invalidates how wide a fan-out~~
+  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request))
+  and ~~a birthday is not a ruleset write, so a cached answer about an age set may be up to one night stale,
+  and the nightly rebuild is what fixes it~~ are both retired by
+  [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation),
+  which deletes the stored answer outright; what survives of D-111 is the version integer, its bump set cut
+  to the two tables whose rows change what an expression *means* — `audience_operand` and `selector_type` —
+  and what a bump drops is now a compilation, never an answer. **A birthday moves the set at the instant it
+  happens.** What [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+  waived was the calendar arriving between two rebuilds, and there are no rebuilds any more: its ruling
+  stands, *"...how the rules resolve and IT IS FINE"*, with nothing left for it to be fine about, and
+  **"up to one night stale" is deleted from this corpus** — under live resolution a birthday, a period reaching its own
+  `valid_to` and a registration write each move the answer at the instant they happen, and so does a
+  membership termination, which is the one this design used to get wrong. **One thing follows that is open, and one that is closed, and keeping them apart is the whole
   point.** **Open: nothing bounds what such a check costs** — the bound this system had was a depth bound
   and
   [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)

@@ -390,8 +390,11 @@ What replaces it is a **window tracked as dates, not as a status**
 
 **The 1 January date has a consequence that reaches past the membership table.** The yearly sweep is
 the only *bulk* event in a system carefully built to have none: on a single day, every membership in
-the organization lapses at once. That makes it the day the permission cache is invalidated for
-everyone and the day renewal traffic peaks — and it used to be, on the same day, the day the system
+the organization lapses at once. That makes it the day every `MEMBERS`-gated answer in the organization moves
+at once, and the day renewal traffic peaks. **It is no longer also the day the permission cache is invalidated
+for everyone:** [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+deleted the stored answer, so the period ending and the `lapsed` status are the whole of the change, and each
+member's next check sees it. And it used to be, on the same day, the day the system
 administrator lost access to the system they administer, which is the hazard
 [D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
 existed to close.
@@ -439,10 +442,20 @@ starts at the old expiry, not at the payment date**, whenever the payment lands 
 window. Landing inside the window is what selects the expiry date, and it is what produces no
 gap; landing after it selects the payment date, and the gap stands.
 
-**Note the consequence for the permission cache.** The lapse happens to everyone at once, on
+**Note what the bulk lapse used to cost, and what it costs now.** The lapse happens to everyone at once, on
 the same date, in a bulk sweep
 ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)).
-That is one cache-invalidation event touching every member rather than a steady trickle.
+~~That is one cache-invalidation event touching every member rather than a steady trickle.~~ **There is no
+cache-invalidation event at all**: [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+deleted the answers that event used to clear, and a bulk write that shrinks an audience shrinks it live — every
+grant written `MEMBERS * …` stops reaching a lapsed member on their next check, with the sweep as the only job
+in the sequence rather than the sweep and a rebuild. **What the bulk shape still costs is computation, and it
+is now paid on open:** a nightly rebuild used to pre-pay the expensive screens, so the tab on the permissions
+page, the per-item preview and the *who holds this* listing each evaluate a changed answer for every one of
+those people when somebody opens them — affordable at the size
+[D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)
+states, and precisely what that entry's trigger reopens, with D-114 naming the reopen answer: materialize
+`effective_permission` per person **and call it that**.
 See [data-model/05 §10](../data-model/05-authorization.md#10-the-resolver).
 
 ---

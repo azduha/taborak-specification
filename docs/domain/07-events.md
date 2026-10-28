@@ -443,7 +443,7 @@ people on different events, so "who does this grant reach?" is no longer answera
 grant row alone — for a grant whose expression contains a bound operand, it is answerable
 only as *"on event 1204, these 84 people"*, and the screen must name the event it computed
 against rather than presenting the list as a property of the grant. The consequences are
-requirements on the editor and the cache, not on the schema:
+requirements on the editor and ~~the cache~~ **the read path**, not on the schema:
 
 - An expression containing a bound operand is previewed **per item**. Asking for a preview of
   such a grant at the unit is not a large computation, it is a refused one — the same refusal
@@ -453,21 +453,42 @@ requirements on the editor and the cache, not on the schema:
   so previewing one item evaluates a couple of hundred predicates and nobody feels it
   ([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
   That size is **stated, not measured** — nothing in these documents has measured anything here — and the
-  trigger for reopening it is a few thousand people, or a thousand registrants on one event.
+  trigger for reopening it is a few thousand people, or a thousand registrants on one event. **One dependency
+  arrived since:** the nightly rebuild used to pre-pay this work off the interaction, and with the cache deleted
+  the preview computes it **on open** — still affordable, now with no fallback behind it
+  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 - Where no item is in hand, the editor says what the expression *means*, not who it reaches.
-- The cache key for a bound operand **includes the item**
-  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)),
-  because the same grant on two events has two answers
+- ~~The cache key for a bound operand **includes the item**~~ — the answer cache that had that key is deleted
+  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
+  and the reason it was there is untouched: the same grant on two events has two answers
   ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
-- **A registration write is not a ruleset write.** There is one cache policy and three triggers — rebuilt
-  nightly in full, immediately on any write to the ruleset, and on explicit request — and
-  `event_registration` is not part of the ruleset
+  A compiled expression holds no item precisely because the item arrives as a parameter, so the item is now bound
+  at **resolution** — nothing expanded or resolved while checking one event may be served for another, and any
+  cache of a *resolution* rather than of a compilation is keyed by the item or it is wrong.
+- **A registration write is not a ruleset write, and that no longer means what this bullet said it meant.**
+  ~~There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write to the
+  ruleset, and on explicit request — and `event_registration` is not part of the ruleset
   ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
   So an answer that runs through `PLACED`, `CONFIRMED`, `ATTENDED` or `ON_WAITLIST` **may be up to one
   night behind the roster**, and this is the module where an implementer would most confidently assume
   otherwise. It is the same residual window as a birthday, and it is not the safeguarding window: every
   withdrawal a person actually *performs* — a revoke, a deny, ending a grant's period, ending an
-  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.
+  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.~~
+  **What is true now:** marking a register, confirming a place, flipping `is_confirmed` or promoting somebody off
+  the waitlist moves `ATTENDED`, `PLACED`, `CONFIRMED` and `ON_WAITLIST`, and the new state is visible **on the
+  next check**, because resolution is live and there is no answer stored anywhere to be behind the roster — and
+  `ORGANIZERS`, the fifth bound operand, moves on its own rows with the same immediacy
+  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+  **This page was right to be uneasy.** A window opened by a boundary drawn in another file, over four tiers this
+  module computes and that file never listed, is the exact shape that got the cache deleted — the omission that
+  did it was `membership`, and the write that made it fatal was `membership.terminate` ⛔. **What is still true of
+  the old wording, precisely:** a registration write changes no rule's text, so it is not a ruleset write in the
+  only sense the phrase now carries, and `ruleset_version` is bumped by `audience_operand` and `selector_type`
+  alone. Being outside that set buys a compilation nothing; it buys a check nothing either. **And since this
+  bullet just deleted the mechanism behind a rule, it owes the D-081 answer**
+  ([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)):
+  **nobody enforces "a registration change must reach an answer" any more, because there is nothing left to
+  invalidate** — the read path does it, and unlike a bullet in a list, a read path cannot be forgotten.
 
 Fail closed as everywhere else in the model, **with the direction stated rather than implied**:
 an operand that resolves to nothing contributes the empty set, which *narrows* what a `+` or a
@@ -490,9 +511,13 @@ remaining way to produce a broken leaf.**
 **A preview is a statement about the day it was taken.** `OLDER(n)` and `YOUNGER(n)` make that
 true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
 are the people who qualify *today*, and a birthday moves the list with no write and no edit to the
-grant. Nothing is told about it and nothing needs to be: the cache is rebuilt nightly, on any ruleset
+grant. Nothing is told about it and nothing needs to be: ~~the cache is rebuilt nightly, on any ruleset
 write, and on request, and an answer that moved without a ruleset write is simply allowed to be one
-night stale ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+night stale ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request))~~
+— **there is nothing to be stale** ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)):
+a birthday moves the answer at the instant it happens, because every check resolves against live rows. What the
+preview is a statement about is **the date it was taken**, and that is a fact about the calendar, not a lag to be
+closed.
 **The preview is a workbench, not a record — and the record is the expression**
 ([D-110](../decisions/decision-log.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)).
 The audit row written when a grant is saved says *this person wrote these words, about this item, on this

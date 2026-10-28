@@ -448,16 +448,29 @@ For every membership that is **active**, has an obligation with a **positive bal
 
 1. Mark it **lapsed**, ending it **at the expiry date** — not at today. The period ended on that
    date whether or not anyone noticed.
-2. **Invalidate the permission cache per person, for every person returned** — not per scope
-   ([domain/06 §8](../domain/06-authorization-model.md#8-caching-and-the-rebuild-that-replaced-invalidation)). A lapsed member
-   whose gated grants still resolve is a member who keeps leading. **The step survives the deletion
-   of the gate that motivated it, and the reason changed**: there is no resolver clause to
-   invalidate any more, but `MEMBERS` is evaluated live on the checked date
+2. ~~**Invalidate the permission cache per person, for every person returned**~~ — not per scope
+   ([domain/06 §8](../domain/06-authorization-model.md#8-there-is-no-permission-cache-and-what-replaces-it)).
+   **This step has nothing left to do**: [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   deleted `permission_cache`, and with it the per-person invalidation call this step existed to make —
+   the one event that had wanted it for **every member at once**. A lapsed member whose gated grants still
+   resolve is a member who keeps leading, and what stops that now is the read path rather than a step in
+   this job: `MEMBERS` is evaluated live on the checked date
    ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
-   so a membership transition still changes who every gated grant reaches.
+   so the two facts the predicate reads — the period ending and the `lapsed` status step 1 writes — are both
+   visible to the next check, with no job in between and nothing left to invalidate.
+   **The step survives the deletion of the gate that motivated it and has now lost its mechanism twice** —
+   first the resolver clause went, then the stored answer went, and the operand cache that sat beside it went
+   with the answer it served (it was keyed per person, selector kind, argument and item, which is why no
+   narrowing of a bump set could have saved it). The operand-keyed caching
    [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
-   lets a cache key on an operand rather than a person, which makes this event *one* invalidation of
-   the `MEMBERS` operand — cheaper, and no less mandatory.
+   opened the door to is therefore gone as an *answer* cache and survives only as a **roster** cache:
+   [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   leaves `ROLE(x)` over `role_holder` and `GROUP(x)` over `person_group_member` cacheable across requests,
+   keyed by the very name a write touches, and `MEMBERS` is not one of those — it is a predicate over
+   `membership` evaluated on the checked date, owned by no single row's write, so a sweep needs no
+   invalidation to be seen. What the sweep still costs is stated where cost belongs: on 1 January the answer
+   moves for every member at once, and a screen opened that day computes it rather than reading it
+   ([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
 3. Open the **renewal window** as a date, never as a status. The resolver does not know windows exist.
 
 **The old step 2 was the root `unit_participation` row** — *do not close it, move its `valid_to`
