@@ -2014,20 +2014,25 @@ is no tier between them and no relation on the item to test: no owner, no parent
 <h3 id="a-grantee-is-an-expression">A grantee is an expression<a class="headerlink" href="#a-grantee-is-an-expression" title="Permanent link">&para;</a></h3>
 <p>Wherever this catalog writes a grantee, it is a legal expression in the selector language of
 <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>:
-the leaves <code>EVERYONE</code>, <code>MEMBERS</code>, <code>GUARDIANS[(person)]</code>, <code>LIST</code> — <em>this audience's own hand-typed
-people</em>, and nothing else — <code>PERSON(person)</code>, <code>ROLE(name)</code>, <code>GROUP(name)</code>, <code>AUDIENCE(name)</code>, and the
-five event-bound sets <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> — each writable
-with its argument spelled, or bound to the item being checked
+the leaves <code>EVERYONE</code>, <code>MEMBERS</code>, <code>GUARDIANS[(person)]</code>, <code>PERSON(person)</code>, <code>ROLE(name)</code>, <code>GROUP(name)</code>,
+<code>AUDIENCE(name)</code>, and the five event-bound sets <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>,
+<code>ORGANIZERS</code> — each writable with its argument spelled, or bound to the item being checked
 (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
-— combined with <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection</strong>, and brackets.</p>
-<p><strong>Those thirteen leaves are the registry, not a sample of it.</strong> They are the seeded <code>selector_type</code>
-rows: the twelve <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-copied from the evaluator's arm list, plus <code>PERSON</code> as the thirteenth, which that entry's registry
-amendment adds and
+— combined with <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection</strong>, and brackets. <strong>A hand-written set of
+people is not a leaf and has no table: it is a sum</strong>, <code>PERSON(a) + PERSON(b)</code>, because the leaf that used
+to hold one and the table behind it are both deleted
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).</p>
+<p><strong>Those twelve leaves are the registry, not a sample of it.</strong> They are the seeded <code>selector_type</code> rows:
+the eleven that <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+copied from the evaluator's arm list and that survived it, plus <code>PERSON</code>, which arrived as the thirteenth
+to repair a waiver expression that did not parse — the episode
 <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-settles after two module pages had written a waiver expression that did not parse against a registry
-with twelve rows. <strong>A leaf outside that registry does not parse</strong>, and the refusals below are operands
-people ask for that the registry does not carry.</p>
+settles — and minus <code>LIST</code>, which left in the round after
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
+<strong>So the table is twelve rows again, and "twelve, then thirteen, then twelve" is not a contradiction: the
+middle number counted an arrival and the last one counts a departure, and only the last is a fact about
+today.</strong> <strong>A leaf outside that registry does not parse</strong>, and the refusals below are operands people ask
+for that the registry does not carry.</p>
 <p><strong>Every expression below is printed in the canonical stored form, which brackets every bracket,
 always.</strong> <code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; and the stored
 string never relies on a reader who memorized that
@@ -2671,7 +2676,7 @@ difference is the whole reason there are two tables — and the office codes are
 <td><code>audience.manage</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>Create an audience; change its expression, or the <code>LIST</code> a <code>LIST</code> leaf resolves to</td>
+<td>Create an audience; change its expression — <strong>which is now the whole of it</strong>: the <code>LIST</code> this gloss used to add, and the table behind it, are deleted, so a hand-named person is a <code>PERSON(x)</code> leaf the same permission already reaches (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -3921,7 +3926,12 @@ round 10 created them:</strong></p>
   unmarked.</strong> ~~D-091's inclusion arm~~ is gone, and composition <em>is</em> the expression now
   (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>):
   the arm that used to need its own code is an ordinary <code>+</code> beside a leaf, and the leaf that should
-  worry everyone is <code>EVERYONE</code>.
+  worry everyone is <code>EVERYONE</code>. What the round took away is an option, not a safeguard: the code's
+  former second half — editing a <code>LIST</code>'s names apart from the rule — lost its operand when
+  <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  deleted the list, so <em>may tick names on this audience</em> without <em>may rewrite the rule</em> is no longer a
+  shape any code could cover even if one were written; if the need is ever real it is a new question
+  about the editor, not an argument that the deletion was wrong.
   The shape of the concern is unchanged and one edit shorter: <strong>whoever can edit one expression can
   widen every live grant aimed at it</strong>, including by writing <code>EVERYONE</code>, which is legal, reachable, and
   resolves to non-members and the public — <strong>and the reach is now transitive</strong>, because
@@ -3933,21 +3943,43 @@ round 10 created them:</strong></p>
   affected grants <em>before</em> the save, which is a user-interface requirement carried in
   <a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
   not a permission.</li>
+<li><strong>Nothing bounds what a permission check costs, and that was a property of this system until this
+  round.</strong> The bound lived in <code>audience.selector_depth_limit</code> and was refused at the save, which is
+  where the sentence <em>"a check costs a bounded amount"</em> came from;
+  <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  deleted the column, the bound and the save-time depth refusal together, and kept the two cycle walks
+  — inside the tree, and across audiences through every <code>AUDIENCE(x)</code> leaf — as the only structural
+  guard there is. An expansion that never terminates is still refused, because acyclicity is the one
+  thing the deletion did not relax; what a <em>terminating</em> expansion costs is bounded by nothing. What
+  replaced the property is <strong>a standing report of the widest and deepest audiences and their per-check
+  cost</strong>, which is a convention, not a guard (D-081) — D-105 counts it as the third control of that
+  shape this module stands on, beside §11's no-<code>MEMBERS</code> report and D-104's by-hand registry report.
+  <strong>Nobody is named to read it, no number makes an audience too wide, and nobody has ruled who may
+  ever add a cap back</strong> — that is
+  <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a>,
+  and until it is ruled, bounded cost is an open finding here, not a property. The catalog mints
+  nothing against it: no code governs expansion, and none could — whoever can write <code>EVERYONE</code> into
+  an expression already holds <code>audience.manage</code> (§5a).</li>
 <li><strong><code>audience.view</code> carries no sensitivity mark, and the thing it shows is a list of people.</strong> A grant
   aimed at a name used to point at a set whose contents were mostly typed in; now the same row resolves
   through dated holder rows, group rosters and <code>MEMBERS</code>, and an expression containing <code>EVERYONE</code>
   resolves to the whole organization and beyond it. Whether reading a resolved expression needs a grade
   of its own — or whether <code>person.view</code> already covers it and the <em>display</em> is the leak to watch — is
   unsettled (§5a).</li>
-<li><strong>~~Whether <code>PERSON(x)</code> exists~~ — closed: it is the thirteenth seeded <code>selector_type</code> row.</strong> This
+<li><strong>~~Whether <code>PERSON(x)</code> exists~~ — closed: it is a seeded <code>selector_type</code> row</strong> (the thirteenth to arrive,
+  and since round 11 one of the twelve that remain — <code>LIST</code> left afterwards, D-105).** This
   bullet recorded the round's sharpest disagreement, and
   <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
   settles it the way <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
   and D-101's registry amendment already had: <em>"<code>PERSON(y)</code> is a selector, and this entry is the reason
   it had to become one."</em> So <code>(MEMBERS * ROLE(x)) + PERSON(y)</code> parses (§1, §11), and the waiver D-100
   wrote for itself is legal against the registry at last. <strong><code>LIST</code> was never a stand-in, and the reason
-  is arithmetic</strong>: <code>+ LIST</code> adds everyone on that list and <code>- LIST</code> removes everyone on it, so an
-  audience cannot use it to except one person from itself. <strong>What is left is a repair, not a question</strong>
+  was arithmetic</strong>: <code>+ LIST</code> added everyone on that list and <code>- LIST</code> removed everyone on it, so an
+  audience could not use it to except one person from itself. <strong>That argument is what
+  <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  overturned — not by finding the arithmetic wrong but by deleting the operand it was about</strong>, which is
+  worth saying because the arithmetic was the reason both survived one round and the arithmetic was never
+  the thing a reader needed. <strong>What is left is a repair, not a question</strong>
   — the two module pages that call <code>PERSON(…)</code> <em>"not in the language at all"</em>, one of them refusing the
   leaf while its own gate table writes it, and the domain grammar that omits it for the same reason,
   need this round's correction; the registry row and the printed grammar belong to
@@ -3978,8 +4010,10 @@ round 10 created them:</strong></p>
   This bullet used to say <em>"named groups"</em> as a kind, opposed to <em>"built-in audiences"</em>;
   <a href="../../decisions/decision-log/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>
   deleted the kinds and D-101 deleted the filling rules, so what is left is genuinely two questions:
-  which <code>selector_type</code> operands ship — <strong>the count is settled at thirteen (§1), so the open half is
-  whether <code>WHITELISTED</code> ever becomes a fourteenth, which would need stored state it does not have</strong>
+  which <code>selector_type</code> operands ship — <strong>the count is settled at twelve (§1), thirteen for exactly one
+  round until <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  deleted <code>LIST</code>, so the open half is whether <code>WHITELISTED</code> ever becomes a thirteenth, which would need
+  stored state it does not have</strong>
   (§1) — and who may create a group, which is <code>person_group.create</code> (§5a).</li>
 <li><strong>Which office may put a person on a group's roster is unanswered, and on the shipped seed nobody
   may.</strong> ~~Which role holds the right to place a person in a unit~~ — the code and the unit are both
@@ -4087,9 +4121,12 @@ in 2023</em>, D-100); and whether group membership needs a rule against nesting 
 moved into the expression tree, where a tree could not cycle on its own; when
 <a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a> reopened <em>an audience
 naming another audience</em>, cycles became possible <strong>between</strong> audiences and the guard came back as a
-reachability walk over the reference closure with a depth bound, refused when the row is saved —
+reachability walk over the reference closure, refused when the row is saved — a depth bound came with
+it and <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+deleted that bound while the walks, inside the tree and across audiences, stayed as the only
+structural guard there is —
 <strong>still a write path with no permission of its own</strong>,
-which is the part this catalog cares about, D-101, D-103). From round 10, additionally: whether a grant
+which is the part this catalog cares about, D-101, D-103, D-105). From round 10, additionally: whether a grant
 should carry a strength, a locality, or more than one code (no, no, and no — D-099); whether the unit is
 a row or a scope (a scope — D-097); whether
 anything may be exposed across a unit boundary (there is no boundary to cross — D-031, D-049 and
@@ -4101,7 +4138,8 @@ documents so that nobody re-adds it as a convenience); whether a code's last seg
 action, or merely usually was (<strong>it is a rule now — D-104 promotes §1's two shapes from description to
 requirement, names <code>system.admin</code> as the single noun allowed, and finds sixty-five of the sixty-six
 live codes already obeying it</strong>); and whether <code>PERSON(x)</code> is in the selector language at all (it is —
-the thirteenth seeded <code>selector_type</code> row, D-101's amendment, D-104). <strong>What closed those two is worth
+it arrived as the thirteenth seeded <code>selector_type</code> row, D-101's amendment, D-104, and with <code>LIST</code>
+deleted it is one of the twelve that remain, D-105). <strong>What closed those two is worth
 keeping beside them:</strong> the report D-104 adopts diffs every dotted token in prose against every seeded
 registry in both directions, would have caught all four of the round's instances, and <strong>can only ever
 be run by hand here, because this repository has no build step</strong> — a convention, not a guard, and the

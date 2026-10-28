@@ -1851,22 +1851,22 @@ records and only read another's. See
 <a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>   ┌──────────────────────┐                 ┌───────────────────────┐
 <a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>   │         role         │  an office, and │       audience        │  an EXPRESSION over
 <a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>   │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   │ description ·        │  NOTHING        │ selector_depth_limit  │  tree (D-101) — not a rule
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   │ is_system ·          │  by itself:     │ · valid_from/[to] [T] │  XOR a list XOR an
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ sort_order           │  the codes an   │ (no kind · no         │  inclusion (D-091, as
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ NO period (D-053)    │  office carries │  resolver_key · no    │  amended by D-103)
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ NO scope, no         │  are the live   │  include_depth_limit) │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101) — not a rule
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   │ is_system ·          │  by itself:     │ (no kind · no         │  XOR a list XOR an
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ sort_order           │  the codes an   │  resolver_key · no    │  inclusion (D-091, as
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ NO period (D-053)    │  office carries │  include_depth_limit  │  amended by D-103; its
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ NO scope, no         │  are the live   │  · no depth limit)    │  list arm closed by D-105)
 <a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>   │ requires_member-     │  grants whose   └───────────┬───────────┘
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   │ ship (D-100)         │  audience names ├───────────┴────────────┬─────────────┐
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   └──────────┬───────────┘  ROLE(x)        ▼                        ▼             │
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>              │ dated holders     ┌─────────────────────┐  ┌────────────────────┐  │
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>              ▼                   │  audience_operand   │  │  audience_member   │  │ the audience's
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>   ┌────────────────────────────┐ │ one row = ONE NODE: │  │ the audience's OWN │  │ dated list,
-<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>   │ person · role ·            │ │ operator + left_id  │  │ dated list of      │◄─┘ reached in an
-<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  │ persons = `LIST`   │  │ expression
-<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>   │ granted_by · note          │ │ selector_kind +     │  └────────────────────┘  │ as `LIST`
-<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │                          │
-<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>   │ a role is held at the unit │ │ (NO FK — see below) │                          │
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   │ ship (D-100)         │  audience names ├───────────┴──────────────────────────┐
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   └──────────┬───────────┘  ROLE(x)        ▼                                      │
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>              │ dated holders     ┌─────────────────────┐                          │
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>              ▼                   │  audience_operand   │  hand-written people     │  the audience's
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>   ┌────────────────────────────┐ │ one row = ONE NODE: │  are PERSON(a) +         │  expression is
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>   │ person · role ·            │ │ operator + left_id  │  PERSON(b) leaves in     │  evaluated live
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  the tree — LIST and     │  at the resolver
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>   │ granted_by · note          │ │ selector_kind +     │  its table are deleted   │  (D-101)
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │  (D-105), and so are     │
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>   │ a role is held at the unit │ │ (NO FK — see below) │  their per-person dates  │
 <a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>   └────────────────────────────┘ └──────────┬──────────┘                          │
 <a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>                                             │ every leaf is typed by              │
 <a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>                                             ▼                                     │
@@ -1971,8 +1971,9 @@ records and only read another's. See
   (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>),
   so the old sentence "built-in audiences are rules evaluated at check time; named groups are stored
   lists carrying the stale-group problem knowingly" no longer describes three arms: every operand is
-  evaluated live, only <code>LIST</code> is kept, and the composition D-091 wanted is an operand instead of an
-  edge. <strong>Author in sets, evaluate per person</strong> — a check compiles to a predicate and never materializes
+  evaluated live and nothing is stored as a roster — <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  deleted <code>LIST</code> and its table, so a hand-written set is <code>PERSON(a) + PERSON(b)</code> in the expression —
+  and the composition D-091 wanted is an operand instead of an edge. <strong>Author in sets, evaluate per person</strong> — a check compiles to a predicate and never materializes
   a set, and an operand that does not resolve is the <strong>empty set</strong>: fail closed in every direction.</li>
 <li><strong>Nothing owns an event</strong> (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
   <code>event.org_unit_id</code> is deleted, so the people connected to an event are named by operands that bind
@@ -2043,17 +2044,9 @@ records and only read another's. See
         integer id PK
         string code
         string name
-        integer selector_depth_limit
         boolean is_system
         date valid_from
         date valid_to
-    }
-    AUDIENCE_MEMBER {
-        integer audience_id FK
-        uuid person_id FK
-        date valid_from
-        date valid_to
-        uuid added_by FK
     }
     PERSON_GROUP {
         uuid id PK
@@ -2074,9 +2067,7 @@ records and only read another's. See
     PERSON ||--o{ ACCESS_GRANT : "delegated by"
     AUDIENCE ||--o{ ACCESS_GRANT : "is granted to"
     PERMISSION ||--o{ ACCESS_GRANT : "is its one code"
-    GRANT_SCOPE_TYPE ||--o{ ACCESS_GRANT : "types the scope"
-    PERSON ||--o{ AUDIENCE_MEMBER : "is typed into the list"
-    AUDIENCE ||--o{ AUDIENCE_MEMBER : "keeps its LIST"</code></pre>
+    GRANT_SCOPE_TYPE ||--o{ ACCESS_GRANT : "types the scope"</code></pre>
 <p><strong>Key point:</strong> <code>access_grant</code> is a pentagon of references and grants exactly one thing — a grantee
 (person <strong>or</strong> audience), a scope, <strong>one</strong> permission, an <strong>effect</strong>, a period
 (<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
@@ -2103,7 +2094,10 @@ The second arrow into <code>person</code> is <code>granted_by</code>, and it is 
 The <strong>act</strong> of appointing is what <code>audit_log</code> holds, with its actor taken from the request context rather
 than from the row (<a href="../../data-model/06-audit-and-import/#2-audit_log">../data-model/06-audit-and-import.md §2</a>);
 the two are not one column's job, and every other actor column here (<code>access_grant.granted_by</code>,
-<code>audience_member.added_by</code>, <code>person_group_member.added_by</code>) points the same way for the same reason.</p>
+<code>person_group_member.added_by</code>) points the same way for the same reason — the third of the three,
+<code>audience_member.added_by</code>, is gone with its table, and what it used to answer per name is answered
+now only by <em>who last saved the expression</em> and by <code>audit_log</code>
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).</p>
 <p><strong>Names are one namespace.</strong> <code>role.code</code>, <code>person_group.name</code> and a set <code>audience.code</code> are unique
 <strong>together</strong>, case- and separator-folded, and every <code>selector_type.code</code> is reserved — so a group called
 <code>MEMBERS</code> is refused at the save rather than discovered later as an expression whose meaning moved. No
@@ -2122,7 +2116,6 @@ nodes and leaves, one row each.</p>
         integer id PK
         string code
         string name
-        integer selector_depth_limit
         boolean is_system
         date valid_from
         date valid_to
@@ -2145,13 +2138,6 @@ nodes and leaves, one row each.</p>
         string argument_type
         boolean is_system
     }
-    AUDIENCE_MEMBER {
-        integer audience_id FK
-        uuid person_id FK
-        date valid_from
-        date valid_to
-        uuid added_by FK
-    }
     ROLE {
         integer id PK
         string code
@@ -2170,8 +2156,6 @@ nodes and leaves, one row each.</p>
     AUDIENCE ||--o{ AUDIENCE_OPERAND : "has its tree"
     AUDIENCE_OPERAND ||--o{ AUDIENCE_OPERAND : "has a child"
     SELECTOR_TYPE ||--o{ AUDIENCE_OPERAND : "types the leaf"
-    AUDIENCE ||--o{ AUDIENCE_MEMBER : "is the LIST"
-    PERSON ||--o{ AUDIENCE_MEMBER : "is written in"
     AUDIENCE_OPERAND }o--o| ROLE : "ROLE(x) - no FK"
     AUDIENCE_OPERAND }o--o| PERSON_GROUP : "GROUP(x) - no FK"
     AUDIENCE_OPERAND }o--o| AUDIENCE : "AUDIENCE(code) - no FK"
@@ -2217,20 +2201,33 @@ is simply not composable. The <code>AUDIENCE</code> leaves <em>are</em> the refe
 table, so "does this cycle", "how deep", "which grants name this audience" and "may I end it" are all one
 indexed query over <code>selector_kind = 'AUDIENCE'</code> rows. One sentence of D-101 is false and stays struck:
 ~~a tree cannot cycle, so the only acyclicity guard left is the cheap parent-chain one~~ — true of one
-tree, false of a <strong>forest of trees pointing at each other</strong>, so the save-time reachability walk is back,
-and <code>selector_depth_limit</code> is counted on the <strong>expanded</strong> tree. The protection that keeps the dangerous
+tree, false of a <strong>forest of trees pointing at each other</strong>, so the save-time reachability walk is back
+— inside the tree, and across audiences through every <code>AUDIENCE(x)</code> leaf — and
+<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+deleted <code>selector_depth_limit</code> and left those two cycle walks as the only structural guard there is.
+It walks for cycles and nothing else: the tree is stored exactly as the writer wrote it, with no
+depth bound and no rebalancing, and the standing report of the widest and deepest audiences is a
+convention, not a guard (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
+The protection that keeps the dangerous
 case out is that an audience named by a live grant may not be ended or deleted while that grant lives:
 under <code>-</code>, an emptied operand makes the answer <strong>wider</strong>.</p>
-<p><strong><code>audience_member</code> stays, re-roled as the <code>LIST</code> leaf</strong>
-(<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
-It is the audience's own dated list — the only operand with no argument behind it — and it is
-deliberately <strong>not</strong> merged into <code>GROUP(x)</code> even though both are dated sets of people: a group's members
-are the organization's record and are true with no grant pointing at them, while a selector's additions
-are meaningless outside the expression they complete
+<p><strong><code>audience_member</code> is deleted, and <code>LIST</code> with it</strong>
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
+A hand-written set of people is now written where every other set is written — in the expression, as
+<code>PERSON(a) + PERSON(b)</code> — and what the table carried that the tree does not is written as lost, not as
+managed: <strong>no per-person dates</strong> (a person is in the audience or not; a June-to-August exception is a
+second grant with its own period, which is what
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>'s
+shape is for), and no <em>who added this person</em> beyond <em>who last saved the tree</em>. The reason it was never
+merged into <code>GROUP(x)</code> survives the table unchanged: a group's members are the organization's record
+and are true with no grant pointing at them, while a name written into an expression is meaningless
+outside the expression it completes
 (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
-Merging them would make the permission table the system's roster. The duplication is kept on purpose,
-and the mitigation is that the editor shows which operand each person arrived through.</p>
-<p><strong><code>PERSON(x)</code> is drawn as the <code>person</code> argument edge, and it is the thirteenth seeded <code>selector_type</code> row.</strong>
+Naming people inside a grant must not make them group members: <code>(GROUP(kitchen) + LIST) - PERSON(a)</code>
+becomes <code>(GROUP(kitchen) + PERSON(honza)) - PERSON(a)</code> — same meaning, one fewer kind of thing — and
+merging the two would still make the permission table the system's roster.</p>
+<p><strong><code>PERSON(x)</code> is drawn as the <code>person</code> argument edge, and it was the thirteenth seeded <code>selector_type</code>
+row added — with <code>LIST</code> deleted, it is one of the twelve that remain.</strong>
 It got there late and by an odd route: D-101's grammar and D-100's exemption table both wrote <code>PERSON(y)</code>
 from the start, the registry was written from the evaluator's arm list instead, and the two disagreed for a
 whole round without any check noticing
@@ -2240,7 +2237,12 @@ whole round without any check noticing
 <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a> —
 which is why this appendix drew the edge while the language was still being argued about. What the row adds
 over that storage fact is one fact of meaning: <strong>an expression may name a single human who is on nobody's
-roster.</strong> <code>PERSON</code>, <code>GUARDIANS</code>, <code>ROLE</code>, <code>GROUP</code> and <code>AUDIENCE</code> are the five codes whose argument names a
+roster</strong> — and since a hand-written set is a sum of these
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
+the edge is load-bearing: every hand-named person in the system is now a <code>selector_arg_id</code> with
+deliberately no foreign key, so a merge or a redaction must repoint every leaf that names the absorbed
+person, and the nightly orphan scan is the backstop rather than the mechanism. <code>PERSON</code>, <code>GUARDIANS</code>,
+<code>ROLE</code>, <code>GROUP</code> and <code>AUDIENCE</code> are the five codes whose argument names a
 person, an office, a group or another audience. The fifth drawn edge, to <code>event</code>, belongs to the
 item-bound codes — <code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code> — whose argument is
 optional exactly because the item being checked usually supplies it
@@ -2646,8 +2648,8 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <tr>
 <td><code>audience</code></td>
 <td>A set of people a grant may name — <strong>an expression over named sets, stored as a tree</strong> (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>), not a rule XOR a list XOR an inclusion</td>
-<td>Its own operand rows; <code>code</code> is optional and is the only thing another audience may name (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>); <code>resolver_key</code>, <code>scope_parameter</code> and <code>include_depth_limit</code> are deleted</td>
-<td>One row per audience. <code>selector_depth_limit</code> defaults to 3 and is counted over the <strong>expanded</strong> tree; an ended audience reaches nobody, so ending one is refused while a live grant names it</td>
+<td>Its own operand rows; <code>code</code> is optional and is the only thing another audience may name (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>); <code>resolver_key</code>, <code>scope_parameter</code>, <code>include_depth_limit</code> and <code>selector_depth_limit</code> are deleted, the last of them by <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></td>
+<td>One row per audience; the tree is stored exactly as the writer wrote it and its height is bounded by nothing — the save-time cycle walks are the only structural guard, and the standing report of the widest and deepest audiences is a convention, not a guard (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>); an ended audience reaches nobody, so ending one is refused while a live grant names it</td>
 <td>yes</td>
 </tr>
 <tr>
@@ -2661,15 +2663,15 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>selector_type</code></td>
 <td>The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names</td>
 <td>Nothing</td>
-<td><strong>Thirteen</strong> seeded rows, every one <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
+<td><strong>Twelve</strong> seeded rows — thirteen for one round, until <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>LIST</code> and its seed row, so every one of them is a rule about people or takes an argument and the registry has no special case left to explain. Every row <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
 <td>no</td>
 </tr>
 <tr>
-<td><code>audience_member</code></td>
-<td>The <code>LIST</code> leaf: this audience's own hand-typed list of people — the only operand that is not a rule about anybody</td>
-<td><code>audience</code>, <code>person</code>, and <code>person</code> as who added them</td>
-<td>No overlapping periods per audience and person, over all rows. Deliberately not merged into a group: merging them would make the permission table the system's roster</td>
-<td>yes</td>
+<td>~~<code>audience_member</code>~~</td>
+<td>~~The <code>LIST</code> leaf: this audience's own hand-typed list of people — the only operand that was not a rule about anybody.~~ <strong>Deleted by <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></strong>, <code>LIST</code> and its seed row with it: a hand-written set is now <code>PERSON(a) + PERSON(b)</code> in the expression, with no per-person dates — a time-windowed exception is a second grant with its own period. The refusal to merge names into a group survives the table: a <code>PERSON(x)</code> leaf is not a <code>GROUP(x)</code> because merging them would make the permission table the system's roster</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
 <td><code>access_log</code></td>
@@ -2924,7 +2926,9 @@ of it is
 the whole unit and position family, with <code>scope_exposure</code>
 (D-097, <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>);
 the level ladder and its per-scope requirements (D-099); the role's permission bundle and its assignment
-table (D-100); and the group-inclusion edge (D-101). Recorded here too, because it is the kind of entry
+table (D-100); the group-inclusion edge (D-101); and <code>audience_member</code> with the <code>LIST</code> operand and its
+seed row (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
+the only row the selector registry has ever lost, in its one round of existence. Recorded here too, because it is the kind of entry
 this list exists for: <code>event.qr</code>, a check-in capability that never had a row in this appendix or anywhere
 else — it entered a round as prose, was argued about by name, and left as prose
 (<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).</p>

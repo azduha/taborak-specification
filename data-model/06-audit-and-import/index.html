@@ -2803,6 +2803,21 @@ is the source's claim about a status rather than a record of the act: nobody pai
 <ul>
 <li>A redaction cannot record when it was performed without recording who performed it:
   <code>performed_at</code> without <code>performed_by</code> is illegal.</li>
+<li><strong>An erasure must also rewrite the expressions that named the person, and say what it changed.</strong>
+  Since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+  a hand-named person is a <code>PERSON(x)</code> leaf of <code>audience_operand</code>, and <code>selector_arg_id</code> carries no foreign
+  key, so nothing refuses the deletion underneath it. <strong>The failure is not a dangling row, it is an inverted
+  grant:</strong> a leaf that resolves to nobody is the empty set, and the empty set subtracts nothing, so an
+  expression reading <code>EVERYONE - PERSON(x)</code> begins denying everybody the moment <code>x</code> is erased. So the erasure
+  walks <code>audience_operand</code> for leaves naming that person, removes or rewrites them under the same
+  <code>access_grant</code> guard that covers any other change to reach, <strong>prints the resolved set before and after for
+  every expression it touched</strong> — the same report
+  <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+  adopted — and names <code>audience_operand</code> in <code>redacted_tables</code>, because a field that lists which tables the
+  erasure reached is worth nothing if the one table where the person still appears is left off it. The nightly
+  orphan scan in <a href="../05-authorization/#11-invariants-to-verify">05-authorization.md §11</a> is the backstop for
+  this, and is not the control: the control is the erasure path itself, because a scan that reports a grant
+  denying everybody every night is a report somebody stops reading.</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>

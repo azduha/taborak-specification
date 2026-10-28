@@ -2129,6 +2129,10 @@ name.</p>
 <td>Reassigned. <strong>Union of permissions results — this is the security-critical step.</strong> Merging two people silently merges two sets of authority, and since <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> that union is literally the rows both people leave behind: no rank resolves a collision, so a <code>deny</code> on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review. <code>role_assignment</code> is gone from this table — the office rows moved to <code>role_holder</code> above, where an overlap is already a review case</td>
 </tr>
 <tr>
+<td><code>audience_operand</code>, where <code>selector_kind</code> is <code>PERSON</code></td>
+<td><strong>Repointed, not reassigned, and this row is newer than the rest of the table.</strong> <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>audience_member</code>, so every hand-named person in the system is now a <code>selector_arg_id</code> — a column with deliberately no foreign key (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>), which is why this row is a requirement on the merge and not something the database notices. <strong>The failure is asymmetric and it is the loud one:</strong> a leaf that resolves to nobody is the empty set, so a grant reading <code>EVERYONE - PERSON(x)</code> where <code>x</code> was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed <code>person_group</code>, a deleted <code>role</code>, an <code>event</code>, a nested <code>audience</code> — because none of them has a key either</td>
+</tr>
+<tr>
 <td><code>person_merge</code></td>
 <td>Row inserted here.</td>
 </tr>

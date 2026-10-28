@@ -1867,14 +1867,23 @@ No <code>role_in_unit</code> display label, because a label like that always bec
 moment somebody asks "can she edit the roster?". The <code>note</code> column is where any of that reasoning goes, as
 prose, unread by the resolver
 (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
-<p><strong>Not the same table as <code>audience_member</code>, and the pair is kept apart on purpose.</strong> Both are dated sets of
-people, which is the shape D-080 teaches a reader to distrust; they stay apart because their maintenance
-differs. A group's rows are the organization's record of who attends, kept by the people who run the group,
-and are true when no grant exists. <code>audience_member</code> rows are a selector's additions, kept by whoever
-composes permissions, and are meaningless outside the expression they complete
-(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
-<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
-Merging them would make the permission table the system's roster.</p>
+<p><strong>There used to be a second dated set of people beside this one, and the argument for keeping them apart is
+worth keeping even though one of them is gone.</strong> <code>audience_member</code> held the names somebody typed into one
+audience; it was the same shape D-080 teaches a reader to distrust, and this page argued at length that the
+two must never be merged, because <strong>merging them would make the permission table the system's roster</strong>.
+<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+deleted that table and its <code>LIST</code> operand — a hand-named person is now a <code>PERSON(x)</code> leaf inside the
+expression itself — so <strong>the duplication is gone rather than reconciled</strong>, and one of the two tables D-080
+would have flagged no longer exists to be flagged.</p>
+<p><strong>What did not go is the hazard, and it is the reason this paragraph survives its subject.</strong> The temptation
+when a grant needs one more person is to add that person to a group, because a group is the thing with a
+roster editor. That is still refused, and for the same reason
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+gave: <strong>a group's rows are true when no grant points at them</strong>, so editing one to move one grant's reach
+edits a roster that other grants read, and it invents a group nobody talks about. Since D-105 the refusal has
+a clean alternative next to it instead of a competing table: write <code>PERSON(honza)</code> in the expression that
+needed him, where it is visible, dated by the grant that carries it, and meaningless outside it
+(<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).</p>
 <hr />
 <h2 id="5-what-this-page-held-before-round-10">5. What this page held before round 10<a class="headerlink" href="#5-what-this-page-held-before-round-10" title="Permanent link">&para;</a></h2>
 <p><strong>The ledger, so that a reader who arrives from an old link or an old report knows what happened.</strong> Every
@@ -2095,10 +2104,15 @@ now confers nothing at all — D-100); background checks (none are recorded — 
 ended while a live grant, or a live audience reachable from one, names it (<strong>refused at save</strong> — D-103 wrote
 its audience row first and extended it to <code>person_group</code> in the round after, on the <code>-</code>-widens reasoning;
 §3 and §6 check 5); whether a <code>PERSON</code> selector should exist so that D-100's one-person exemption is
-writable (it is one of the <strong>thirteen</strong> seeded rows, per D-101's amendment — the registry had been copied
-from the evaluator's arm list and lost the arm, which
+writable (it is one of the <strong>twelve</strong> seeded rows — thirteen until
+<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+removed <code>LIST</code> — and it arrived late by
+<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>'s
+amendment, because the registry had been copied from the evaluator's arm list and lost the arm, which
 <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-is the answer to).</p>
+is the answer to); and whether a hand-typed set of people needs a table of its own (<strong>no</strong> — D-105 deleted
+<code>audience_member</code>, and the round that added <code>PERSON(x)</code> had already removed the only reason it had for
+existing).</p>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
 

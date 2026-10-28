@@ -2454,12 +2454,17 @@ kept <em>out</em> of <code>can()</code>. <strong>Who enforces the rule now: whoe
 in the expression or leaving it out, and the expression is a row that can be read.</p>
 <p><em>Corrected in this round:</em> an earlier draft of this page read D-100's <code>PERSON(y)</code> as shorthand for the
 audience's own <code>LIST</code>, on the grounds that the seeded <code>selector_type</code> registry did not carry the code. <strong>The
-registry was the side that was wrong</strong> — <code>PERSON</code> is the thirteenth seeded selector
+registry was the side that was wrong</strong> — <code>PERSON</code> was seeded then, as the thirteenth row
 (<a href="../05-authorization/#the-selector-registry">data-model/05 §8</a>, <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101's amendment</a>),
-so <code>MEMBERS * ROLE(x) + PERSON(y)</code> parses as written. <strong><code>LIST</code> was never a substitute</strong>, which is the part
-worth remembering: it is one set belonging to one audience, so <code>+ LIST</code> brings everybody on it and nothing on
-that list can except one person from itself. Writing the waiver as <strong>a second grant aimed at the person</strong> is
-still legal, still clearer for something permanent, and is no longer the only writable option.</p>
+so <code>MEMBERS * ROLE(x) + PERSON(y)</code> parses as written. <strong><code>LIST</code> was never a substitute</strong>, which was the part
+worth remembering at the time: it is one set belonging to one audience, so <code>+ LIST</code> brings everybody on it and
+nothing on that list can except one person from itself. <strong>That confusion can no longer recur</strong>, because
+<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+deleted <code>LIST</code> and its table in the round after this correction was written, leaving twelve seeded rows and one
+way to name a person by hand — which is the outcome the paragraph was arguing for, arrived at by deleting the
+thing it had to argue against. Writing the waiver as <strong>a second grant aimed at the person</strong> is still legal and
+still clearer for something permanent, and is now the only way to date it
+(<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105 §2</a>).</p>
 <p><strong>Two of the three carve-outs were never carve-outs.</strong> <strong>Guardianship</strong> (a parent's authority comes
 from a legal relationship, and an unpaid fee must not stop a parent acting for their child) and
 <strong>ownership</strong> (otherwise a lapse locks a person out of the very screen they renew on) stay channels
