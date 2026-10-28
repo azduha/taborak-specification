@@ -1968,33 +1968,64 @@ D-097</strong>, which deleted the units those audiences were built over. The sen
 unchanged and the mechanism is now plainly the one D-098 made: the organization keeps a
 group of the older section and opens the camp to <code>GROUP(&lt;that group&gt;)</code>. An age-gated camp is
 a camp opened to a set whose members are that age.</p>
-<p><strong>What this does not do, deliberately:</strong> it does not enforce an age <em>ceiling</em> on a
-registration for an open event. If a 9-year-old holds <code>event.register_self</code> on a camp for
-teenagers, they can register, and <strong>nothing in the system objects</strong>
-(<a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
-There are no <code>min_age</code>/<code>max_age</code> columns on <code>event</code> and there will not be some, for a reason
-worth keeping in mind when the next restriction is requested: <strong>a condition evaluated at
-registration time that the capability model does not know about is the first rule-engine
-rule</strong>, and the second is always cheaper than the first. Two years after that, the answer to
-"who can register for this?" stops being readable from <code>access_grant</code>.</p>
+<p><strong>There is now a second way to write that sentence, and it is the same kind of thing.</strong>
+<code>OLDER(n)</code> and <code>YOUNGER(n)</code> are seeded operands of the registry
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>),
+so the camp for 11-to-14s is also writable as <code>(MEMBERS * OLDER(11)) - YOUNGER(15)</code> —
+one grant, one expression, no roster to keep current. The group is still the better answer where
+the section is a real group with a real roster behind it, because a maintained group says who
+is in it and an age expression only says who qualifies; the two are not rivals and an
+organization will use both.</p>
+<p><strong>What this page said for four rounds, and what is true now.</strong> Until this round the model
+could not state an age <em>ceiling</em> at all, and that inability was the reason a camp could not
+have one: a 9-year-old holding <code>event.register_self</code> on a camp for teenagers could register,
+and ~~nothing in the system objects~~ — there was nothing in the system that <em>could</em>.
+<code>YOUNGER(n)</code> is a seeded operand now
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>),
+so the ceiling is an ordinary grant: <code>event.register_self</code> on this event, aimed at
+<code>MEMBERS * YOUNGER(15)</code>. <strong><a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>
+therefore stays closed for a different reason than it was closed</strong>, and the difference is the
+whole point of this section: it closed because the sentence was unwritable, and it stays
+closed because the organization <strong>chooses</strong> not to write it and keeps the judgement in the
+roster a leader reads and in the attributed registration that records who let a child through.
+A closed question that could now be opened is a decision, and it should be read as one every
+time the next restriction is requested.</p>
+<p>What has <em>not</em> moved is the column. There are still no <code>min_age</code>/<code>max_age</code> on <code>event</code> and
+there will not be some, and the reason is untouched by the new operands: <strong>a condition
+evaluated at registration time that the capability model does not know about is the first
+rule-engine rule</strong>, and the second is always cheaper than the first. Two years after that, the
+answer to "who can register for this?" stops being readable from <code>access_grant</code>. A ceiling
+written in a grant is readable there; a ceiling written on the event row is exactly the thing
+that is not.</p>
 <p>What makes the residual risk survivable is not a check but three properties the schema already
 has. The registration is <strong>attributable</strong> — <code>source = 'staff'</code> with a named <code>created_by</code>, so
 the judgement belongs to somebody. Age is <strong>one join away</strong> — <code>person.birth_date</code>, which the
 roster query in <a href="../../data-model/08-events/#9-the-three-queries-that-matter">data-model/08 §9</a>
-already selects, so any list a leader works from can carry it without a new column anywhere.
-And the age-bounded case, the ordinary one, is already handled: open the event to the set
-whose members are that age.</p>
-<p><strong>If the shape ever recurs often enough to hurt,</strong> the fix is not a column on <code>event</code>, and it is
-not a rule the organizer types. It is another <strong>operand</strong>: a shipped row in <code>selector_type</code>,
-alongside <code>MEMBERS</code>, whose predicate the resolver owns. That is the distinction
-<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-drew and it holds here exactly — a writer may not type <code>AGE &gt;= 13</code> into an expression, because an
-attribute is not a set of people, while the system may ship <code>AGED_13_PLUS</code> as a named operand
-that <em>is</em> a materializable set. <strong>It ships nothing of the kind today.</strong> The registry is
-organization-read-only, so an age band arrives as a deployment and not as a setting, which is
-the same refusal the round made about attribute operands wearing a friendlier face; until one
-ships, the age-bounded event is an event aimed at a group somebody maintains. Either way every
-answer to "who may register" keeps living in one table, which is the property worth defending.</p>
+already selects, so any list a leader works from can carry it without a new column anywhere;
+and as of this round the same column is also <strong>one operand away</strong>, which is what makes the
+ceiling above a writing choice rather than a feature request. And the age-bounded case, the
+ordinary one, is handled twice over now: open the event to the set whose members are that age,
+by a group somebody maintains or by the age operands themselves.</p>
+<p><strong>The shape recurred, and the fix this page predicted is the one that arrived.</strong> It was never
+going to be a column on <code>event</code>, and never a rule the organizer types; it was another
+<strong>operand</strong> — a shipped row in <code>selector_type</code>, alongside <code>MEMBERS</code>, whose predicate the
+resolver owns. That is what shipped: <code>OLDER(n)</code> and <code>YOUNGER(n)</code>, read against
+<code>person.birth_date</code> <strong>on the date being checked</strong>, composed by <code>+ - *</code> like every other operand
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+~~It ships nothing of the kind today~~ was true when it was written and is the sentence this
+round retired.</p>
+<p><strong>A writer still may not type <code>AGE &gt;= 13</code>, and the reason this page gave for that was wrong.</strong>
+~~because an attribute is not a set of people~~ — <code>OLDER(13)</code> is exactly a set of people: the
+ones who are thirteen or older on the date being checked, in the same way <code>MEMBERS</code> is the set
+of people who pass <code>is_current_member</code> and <code>GUARDIANS(x)</code> is the set who hold a row. Every
+operand in the registry is a test with a set behind it, so the old test would have barred
+<code>MEMBERS</code> too, since nothing here stores the member list. What was doing the work, and is the
+clause to quote from now on, is that <strong>an operand must be a named operand — a row of the
+registry</strong> — and this language has no comparison operator for <code>AGE &gt;= 13</code> to be assembled out
+of. The registry is organization-read-only, so the next predicate anyone wants arrives the way
+an age band did: as a deployment, with its evaluator arm shipped beside it, and not as a
+setting. Either way every answer to "who may register" keeps living in one table, which is the
+property worth defending.</p>
 <hr />
 <h2 id="5-organizers-are-appointed-not-granted">5. Organizers are appointed, not granted<a class="headerlink" href="#5-organizers-are-appointed-not-granted" title="Permanent link">&para;</a></h2>
 <p>An event has a <strong>set of organizers</strong> — the people running it. That list is
@@ -2208,7 +2239,11 @@ photos because a volunteer forgot to tick a box. <code>was_present</code> is thr
 as a safeguarding signal — <strong>keeping it out of the selector language is what keeps it
 meaning "a person recorded this" rather than "this is who may see things"</strong>, and
 <a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>'s
-reasoning for the third value is the reasoning for the refusal.</p>
+reasoning for the third value is the reasoning for the refusal. <strong>The refusal is entirely
+this argument now</strong>, since <code>OLDER(n)</code> proved that an operand may read a column and a date:
+nothing in the language would blink at <code>PRESENT</code>, which is exactly why the consequence has to
+be the thing that says no
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</p>
 <p><strong><code>WHITELISTED</code> does not exist, and is not a selector.</strong> The nearest stored facts are
 <code>source = 'staff'</code> (an organizer entered them) and promotion off the waitlist. Either the
 word is to mean one of those or it names a new column on <code>event_registration</code>, which is an
@@ -2235,9 +2270,26 @@ requirements on the editor and the cache, not on the schema:</p>
   because the same grant on two events has two answers
   (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</li>
 </ul>
-<p>Fail closed as everywhere else in the model: an expression that cannot be evaluated reaches
-nobody, and a preview that cannot be computed shows that it could not be computed rather than
-an empty list.</p>
+<p>Fail closed as everywhere else in the model, <strong>with the direction stated rather than implied</strong>:
+an operand that resolves to nothing contributes the empty set, which <em>narrows</em> what a <code>+</code> or a
+<code>*</code> reaches and <em>widens</em> what a <code>-</code> takes away — <code>EVERYONE - PERSON(x)</code> with a dead <code>x</code> denies
+everybody, lockout and fail-closed being the same event
+(<a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).
+A person with no birth date is not that kind of failure: the operand resolves perfectly well and
+they are simply not in <code>OLDER(18)</code>, exactly as a person with no membership row is not in
+<code>MEMBERS</code>. A broken leaf is no longer silent and still stops nothing — it is listed for the
+audience's owner on the standing report, and no save is refused for it.</p>
+<p><strong>A preview is a statement about the day it was taken.</strong> <code>OLDER(n)</code> and <code>YOUNGER(n)</code> make that
+true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
+are the people who qualify <em>today</em>, and a birthday moves the list with no write, no edit to the
+grant, and nothing for a cache to be told about
+(<a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>).
+<strong>The preview is a workbench, not a record.</strong> The record is the audit row written when the grant
+is saved: it says whom the grant reached on that date, and it is a prediction about the future
+that is honest about being one. Ask the model about a date in the past and it does not read that
+row back — it computes the answer live from a birth date and a date, which is why the row ages
+gracefully instead of becoming a lie. And a preview that cannot be computed still shows that it
+could not be computed, rather than an empty list.</p>
 <hr />
 <h2 id="8-capacity-and-the-waitlist">8. Capacity and the waitlist<a class="headerlink" href="#8-capacity-and-the-waitlist" title="Permanent link">&para;</a></h2>
 <p>An event may have a capacity — beds, bus seats, a fire-safety limit. When it fills:</p>
@@ -2523,7 +2575,13 @@ tracked with the rest. The ones this module raises:</p>
 <ul>
 <li>~~<strong>The age ceiling on an open event</strong>~~ — <strong>settled: accepted as a risk</strong>, the grant is
   the rule, and closing it later would mean a new operand rather than a column (§4,
-  <a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).</li>
+  <a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
+  <strong>That prediction has come true and it changes the shape of the answer, not the answer:</strong> the
+  operand arrived as <code>YOUNGER(n)</code>, so an age ceiling is writable today as
+  <code>event.register_self</code> aimed at <code>MEMBERS * YOUNGER(15)</code>. <strong>EV-1 stays closed, now as a choice
+  the organization renews rather than a limit it inherits</strong> — nobody has to be told the ceiling
+  cannot be stated, only whether it should be (§4,
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
 <li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds exactly one grant,
   <code>event.answer.view</code>. Everything else an organizer needs — editing the event, working the
   roster — now reaches them only through a unit-scope or item grant they happen to hold, and
@@ -2533,7 +2591,10 @@ tracked with the rest. The ones this module raises:</p>
   names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared audience row can stop
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
   as written; whether the editor should warn at the audience instead is unsettled (§7).</li>
-<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it; not a selector (§7).</li>
+<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it, so it is not a selector (§7) — a question about
+  whether the feature is wanted, and not one about whether the language could hold it: a
+  predicate over a column is an ordinary operand now
+  (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
 <li><strong>Event answer retention</strong> (§12). Answers end with the event — but a dietary answer naming a
   condition is data of exactly the same class as what the person record holds, held under weaker rules
   and fresher. No policy yet; see

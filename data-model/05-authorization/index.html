@@ -3609,13 +3609,30 @@ say</strong>, not what the machine computes:</p>
 <ul>
 <li><strong>Sets are the source language, and they are the closed one.</strong> <code>-</code> is complement against
   <code>EVERYONE</code> and <code>*</code> distributes over <code>+</code>, so the set form is no weaker than a boolean one — it buys
-  zero expressive power and everything in the way of safety. D-060 refused a rule engine, and a
-  per-person boolean language is the door to one: once <code>&amp;</code>, <code>|</code> and <code>!</code> exist, the next operand
-  somebody wants is <code>AGE &gt;= 15</code> or <code>FEE_PAID</code>, and there is a parser standing there to accept it. A
-  set language closes it <strong>by rule instead of by discipline</strong>: <em>an operand must be a named,
-  materializable set of people</em>. An attribute is not a set of people. Guardianship is
-  (<code>GUARDIANS(x)</code> is a set), age is not, and the line falls exactly where D-060 already drew it —
-  eligibility stays capability.</li>
+  zero expressive power and everything in the way of safety. D-060 refused a rule engine, and a per-person
+  boolean language is the door to one. <strong>That half of the argument survived round 12 untouched:</strong> <code>+</code>, <code>-</code>
+  and <code>*</code> are the only operators the language has, and it has exactly one spelling of each. What did not
+  survive is the second half of the same sentence, the test it offered for what an operand
+  may be: ~~an operand must be a named, materializable set of people. An attribute is not a set of people.
+  Guardianship is (<code>GUARDIANS(x)</code> is a set), age is not, and the line falls exactly where D-060 already
+  drew it.~~ <strong>That test is wrong, and <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  deleted it rather than repairing it.</strong> <code>OLDER(15)</code> is a property of a person and it <em>is</em> a set of
+  people: the people who are fifteen or older on the checked date — <strong>the same shape of thing</strong>
+  <code>MEMBERS</code> denotes (the people who pass <code>is_current_member</code>) and <code>GUARDIANS(x)</code> denotes (the people who
+  hold a row). <strong>Every operand in the registry is a test with a set on the other side of it</strong>; reading
+  one column is a different thing from joining one table, but it is not a different <em>kind of answer</em>.
+  Read as written, the materializability test would have excluded <code>MEMBERS</code> too, since nothing anywhere
+  stores the member list — which is how it took a round of being quoted in three documents before anybody
+  noticed it proved too much.</li>
+<li><strong>What was doing the work all along, and it is the clause that stays:</strong> an operand must be <strong>named</strong> —
+  a row in §<em>The selector registry</em>. <strong>A writer may compose seeded operands and nothing else.</strong>
+  <code>OLDER(18)</code> is a row, seeded, shipped with its evaluator arm like every other row; <code>AGE &gt;= 18</code> is not
+  one and cannot be, <strong>because the language has no <code>&gt;=</code> to put anywhere</strong>. That is a smaller and sturdier
+  door than the one this bullet used to claim, and it is the one D-060 needed. D-060's decision is
+  untouched — no eligibility rule table, no prerequisite system, nothing evaluated outside <code>can()</code> — only
+  its stated test for what an operand may be is replaced. Eligibility stays capability, and the change
+  round 12 makes to it is exactly this: <strong>there is still no gate the system applies on its own, and there
+  is now a vocabulary a person may use to write one.</strong></li>
 <li><strong>A check never materializes a set.</strong> The resolver compiles the expression down to a predicate for
   the person being checked. <strong>An implementation that evaluates <code>MEMBERS</code> as a list of ids and then
   tests for containment pays three thousand rows per request</strong> — which is the one way to get this
@@ -3632,27 +3649,48 @@ say</strong>, not what the machine computes:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>expr    := term ( '+' term )*
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>term    := operand ( ( '*' | '-' ) operand )*
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>operand := EVERYONE | MEMBERS
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>         | GUARDIANS [ '(' person ')' ]
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>         | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>         | ROLE '(' name ')' | GROUP '(' name ')'
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>         | PERSON '(' person ')'
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>         | AUDIENCE '(' code ')'
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>         | '(' expr ')'
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  Each of ATTENDED, PLACED, CONFIRMED, ON_WAITLIST and ORGANIZERS appears either
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  bare — bound to the item the grant sits on — or written '(' event ')'.  A bare
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  bound operand on a unit-scope grant is refused (§6, *What is refused when a
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  grant is saved*).
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  PERSON takes a person and names a set of one.  A hand-written set of people is
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  therefore a sum, not a leaf: `PERSON(a) + PERSON(b)`
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>  ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  AUDIENCE names another saved audience by its
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>  `code`; an audience with no code cannot be named, and a bare name never
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>  resolves to one ([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)).
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>         | OLDER '(' n ')' | YOUNGER '(' n ')'
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>         | GUARDIANS [ '(' person ')' ]
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>         | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>         | ROLE '(' name ')' | GROUP '(' name ')'
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>         | PERSON '(' person ')'
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>         | AUDIENCE '(' code ')'
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>         | '(' expr ')'
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  OLDER(n) and YOUNGER(n) read person.birth_date AS OF THE DATE THE CHECK IS MADE,
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  so `MEMBERS * OLDER(18) - YOUNGER(6)` reaches different people on different
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  dates with no write, and can(..., on date) for a past date answers for that
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  past date. Their argument is an INTEGER — the first operand argument in the
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  registry that is not an entity reference (§*The selector registry*). There is
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  no comparison operator anywhere in this grammar: no '&gt;=', no '&lt;', no bare AGE
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>  -- which is where D-060's refusal of a rule engine now lives.  See the prose
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>  under this block, and D-107.
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>  The operators did not change this round and there are no new ones: '+', '-'
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>  and '*' are the whole set, each with one spelling. What grew is the operand
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>  list, and nothing else — OLDER and YOUNGER are ordinary named operands,
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>  composed by the same three operators as every other row.
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>  Each of ATTENDED, PLACED, CONFIRMED, ON_WAITLIST and ORGANIZERS appears either
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>  bare — bound to the item the grant sits on — or written '(' event ')'.  A bare
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>  bound operand on a unit-scope grant is refused (§6, *What is refused when a
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>  grant is saved*).
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>  PERSON takes a person and names a set of one.  A hand-written set of people is
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>  therefore a sum, not a leaf: `PERSON(a) + PERSON(b)`
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>  ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>  AUDIENCE names another saved audience by its
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>  `code`; an audience with no code cannot be named, and a bare name never
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>  resolves to one ([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)).
 </code></pre></div>
 <ul>
-<li><code>+</code> union, <code>*</code> intersection, <code>-</code> difference.</li>
+<li><code>+</code> union, <code>*</code> intersection, <code>-</code> difference — <strong>three operators, and round 12 added none of its own.</strong>
+  What it added was two operands the same three operators compose:
+  <code>MEMBERS * OLDER(18) - YOUNGER(6)</code> is an ordinary term
+  (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
+<li><strong>There is no comparison operator in the language.</strong> No <code>&gt;=</code>, no <code>&lt;</code>, no bare <code>AGE</code>: an operand is a
+  registry row and <code>AGE &gt;= 15</code> has no row to be, which is the whole of D-060's protection now
+  (§<em>Author in sets</em>, and <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
 <li><strong><code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; brackets override.</strong></li>
 <li><strong>The canonical rendering prints every bracket, always.</strong> The rendering is derived from the rows
   and is what every screen shows; if it is also kept as a column for search, it is a copy and the
@@ -3710,7 +3748,7 @@ seeded registry in the shape <code>grant_scope_type</code> already has.</p>
 <tr>
 <td><code>argument_type</code></td>
 <td>text, optional</td>
-<td>Which table the argument names a row of — <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code>, <strong><code>audience</code></strong>. Absent exactly when <code>takes_argument</code> is false. This is what the save path compares against the grant's item type, which is a reason the registry is doing real work and not merely tidying. <strong>It is not always a <code>grant_scope_type</code></strong>: <code>person</code> never was and <code>audience</code> never will be, because a grant is never <em>about</em> an audience — it is aimed <em>through</em> one. The two coincide for exactly the item-scoped operands, which is the set the binding check reads.</td>
+<td>Which table the argument names a row of — <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code>, <strong><code>audience</code></strong> — <strong>or a scalar: <code>integer</code>, new in <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a> and the argument kind <code>OLDER</code>/<code>YOUNGER</code> take. Six values now, five of them entity kinds and one of them not an entity</strong>, which is the sentence every page that enumerated these as though they were all entities has carried from this round. Absent exactly when <code>takes_argument</code> is false. This is what the save path compares against the grant's item type, which is a reason the registry is doing real work and not merely tidying. <strong>It is not always a <code>grant_scope_type</code></strong>: <code>person</code> never was and <code>audience</code> never will be, because a grant is never <em>about</em> an audience — it is aimed <em>through</em> one. The two coincide for exactly the item-scoped operands, which is the set the binding check reads. <strong>A scalar argument is never in that set</strong>, since <code>OLDER</code> binds to nothing.</td>
 </tr>
 <tr>
 <td><code>description</code></td>
@@ -3724,13 +3762,20 @@ seeded registry in the shape <code>grant_scope_type</code> already has.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Seeded selectors</strong>, in full, because this table <em>is</em> the language — <strong>twelve rows</strong>, all of them
-shipped. <strong>The count is twelve as of
-<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>,
-which deleted <code>LIST</code>; it was thirteen for one round.</strong> What the deletion bought is stated where it can be
-checked rather than as a mood: <strong>every one of the twelve is either a rule about people or takes an
-argument</strong>, so the registry has no special case left to explain — the operand with neither property was
-the special case. <code>PERSON</code> is the last one added and it was added <em>late, in this same round, by a decision entry that
+<p><strong>Seeded selectors</strong>, in full, because this table <em>is</em> the language — <strong>fourteen rows</strong>, all of them
+shipped. <strong>The count has moved three times in three rounds, so it is stated as a history rather than as a
+number:</strong> thirteen while <code>LIST</code> existed, <strong>twelve for exactly one round</strong> after
+<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+deleted it, and <strong>fourteen as of
+<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a></strong>,
+which seeded <code>OLDER</code> and <code>YOUNGER</code>. <strong>Anyone reading a twelve-row page written last round should not carry
+that number forward: twelve was true for exactly one round and is now two rounds old.</strong> The two new rows
+are the first operands added since <code>PERSON</code> and the first whose argument is not an entity reference. What
+the deletion bought is still stated where it can be checked rather than as a mood: <strong>every one of the
+fourteen is either a rule about people or takes an argument</strong>, so the registry has no special case left to
+explain — the operand with neither property was <code>LIST</code>, and the two newcomers have both of them at once,
+since <code>OLDER(18)</code> is a rule about people <em>and</em> takes an integer. <code>PERSON</code> was the last row added <em>until
+this round</em>, and it was added <em>late, in that round, by a decision entry that
 had already said it was here</em>: this table was written from the evaluator's arm list rather than from
 <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>'s
 grammar, and an arm list copied from an implementation loses the arm nobody implemented. The whole episode is
@@ -3761,10 +3806,22 @@ documents before a round closes, not a database constraint — see §13.</p>
 <td>Holds a membership live on the checked date — <strong>the same predicate the deleted gate applied</strong> (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>); the clause died, the test did not.</td>
 </tr>
 <tr>
+<td><code>OLDER</code></td>
+<td>required (<strong><code>integer</code></strong>)</td>
+<td>no</td>
+<td><strong>The people who are <code>n</code> years old or older on the date being checked</strong>, from <code>person.birth_date</code> — the first operand in the registry whose argument is <strong>a number rather than a row</strong> (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>). It is a row here for the reason the whole table exists: <strong>it is a named operand, and it denotes a set of people</strong> — the same shape of thing <code>MEMBERS</code> denotes, which is a test over membership rows and stores nothing either. <strong>A person with no birth date is not in the set</strong>, as a person with no membership row is not in <code>MEMBERS</code>: that is an ordinary answer, <strong>not a resolution failure</strong>, and §11's report of unresolved leaves must not page about it (§<em>Evaluation</em>). <strong>Its membership moves at midnight with no write</strong>, which is the property this round accepted on purpose — see §<em>The cost of composition</em>.</td>
+</tr>
+<tr>
+<td><code>YOUNGER</code></td>
+<td>required (<strong><code>integer</code></strong>)</td>
+<td>no</td>
+<td><strong>The people strictly younger than <code>n</code> on the date being checked</strong> — <code>OLDER</code>'s mirror, <code>n</code> and up against under <code>n</code>. <strong>Each is the complement of the other, and the language has no complement a bare leaf can carry</strong> (only <code>-</code>, which needs something on its left), so both are seeded rather than one being spelled out of the other; that is the whole of their relationship, and it is why <strong>there is no <code>AGE_BAND</code> row and none is wanted</strong> — a band is composed out of the operators every other row is composed with, and <code>OLDER(13) - OLDER(18)</code> is thirteen to seventeen. Same argument kind, same date rule, same non-failure for a missing birth date.</td>
+</tr>
+<tr>
 <td><code>PERSON</code></td>
 <td>required (<code>person</code>)</td>
 <td>no</td>
-<td><strong>One named person</strong> — a set of one, which is a set, so it passes the materializability test like every other operand. How an exception for a named individual lives <em>inside</em> the expression that granted the rule, next to the thing it exempts (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>). <strong>And since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> it is how several named people are written too:</strong> a hand-written set is a sum of these — <code>PERSON(a) + PERSON(b)</code> — because a set of one is a set, and a set of three is the same thing three times. There is no separate "hand-typed list" operand and no table behind one.</td>
+<td><strong>One named person</strong> — a set of one, which is a set, so it is a named operand like every other row. How an exception for a named individual lives <em>inside</em> the expression that granted the rule, next to the thing it exempts (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>). <strong>And since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> it is how several named people are written too:</strong> a hand-written set is a sum of these — <code>PERSON(a) + PERSON(b)</code> — because a set of one is a set, and a set of three is the same thing three times. There is no separate "hand-typed list" operand and no table behind one.</td>
 </tr>
 <tr>
 <td><code>GUARDIANS</code></td>
@@ -3826,8 +3883,15 @@ documents before a round closes, not a database constraint — see §13.</p>
 (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
 Its table is gone with it (§<em><code>audience_member</code>, re-roled as the <code>LIST</code> leaf — deleted by D-105</em>), and its
 grammar arm is gone too, so there is nothing left for the row to point at. <strong>The table above is exactly
-twelve rows; a thirteenth would be a bug.</strong> §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em> keeps the
-reasoning that survives it.</p>
+fourteen rows; a fifteenth would be a bug</strong>, and the same would have been true of whatever number this
+table held in any previous round. <strong>The number is not the point; the closure is.</strong> What the sentence
+asserts is that <em>this list is the language</em>, so a row appearing anywhere other than here — in a screen's
+dropdown, in a resolver's switch, in a decision entry that never reached this table — is a bug: that is
+what <code>PERSON</code> was for one round, in the other direction. The count is written down only because it is the
+cheapest way to run that check by eye, and a count that has been thirteen, then twelve for exactly one
+round, then fourteen in three rounds is the argument for writing it down rather than for trusting what a
+reader remembers. §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em> keeps the reasoning that survives
+the deletion.</p>
 <p><strong>Rules</strong> (<code>selector_type</code>)</p>
 <ul>
 <li>Rows are platform-seeded. <strong>Adding an operand is a decision entry plus a seed row</strong>, never a row
@@ -3851,21 +3915,45 @@ reasoning that survives it.</p>
 <li><strong>Every <code>code</code> is a reserved name</strong> in the shared role / group / audience namespace
   (§<em>Names are one namespace</em>).</li>
 <li><code>argument_type</code> is absent exactly when <code>takes_argument</code> is false, and names a real table exactly
-  when it is true.</li>
+  when it is true — <strong>one exception, new in
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>:
+  the scalar domain <code>integer</code>, which <code>OLDER</code> and <code>YOUNGER</code> take and which names no table because it names
+  no row.</strong> <strong>Amend the check rather than admire the rule</strong>: anything reading this column now has to know
+  the scalar case exists, and has to know what the scalar is <em>not</em> — <strong>it is not a reference</strong>. That is
+  why §11's assertion that exactly two polymorphic keys in this design go without a foreign key
+  (<code>access_grant.scope_id</code>, <code>audience_operand.selector_arg_id</code>) <strong>is still true at fourteen rows, and true
+  for the right reason rather than by luck</strong>: an <code>18</code> sitting in <code>selector_arg_id</code> points at nothing, so
+  there is nothing for a merge to repoint, nothing for a cascade to find, and nothing for the orphan scan
+  to walk. The check counts <em>references</em>, and <code>18</code> is not one (§<em>A hand-named person is now a keyless
+  reference</em>, where the argument kinds are enumerated).</li>
 <li>The four attendance tiers name columns of <code>event_registration</code> and nothing else. That is the
   requirement that keeps the writer's choice honest — picking between tiers only means something if
   the choices are the stored facts.</li>
 </ul>
-<p><strong>Three operands are refused on purpose, and each refusal is load-bearing.</strong></p>
+<p><strong>Three operands are not in this table, and each absence is load-bearing — but as of this round two of
+them are <em>decisions</em> rather than type errors.</strong> Round 12 deleted the kind of argument those two were
+refused on. While the corpus claimed an attribute was not a set of people, a predicate over a column could
+be excluded by <em>what it is</em>; <code>OLDER</code> is a row, so that class of argument is gone and nothing may be
+excluded that way again. What remains are arguments about consequences, which are less tidy and are the
+real reasons they were always refused
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+<strong>Both answers are unchanged; only the grounds moved.</strong></p>
 <ul>
-<li><strong><code>PRESENT(&lt;event&gt;)</code> over <code>was_present</code> is refused.</strong> The reason is the failure direction:
+<li><strong><code>PRESENT(&lt;event&gt;)</code> over <code>was_present</code> is refused, and this paragraph is the whole reason.</strong> The reason
+  is the failure direction:
   <code>was_present</code> is <code>NULL</code> until somebody takes a register, so an operand built on it would revoke a
   child's access to their own camp photos because a volunteer forgot to tick a box. That column is a
   safeguarding signal, <em>three-valued on purpose</em>
   (<a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>),
   and keeping it out of the selector language is what keeps it meaning "a person recorded this"
   rather than "this is who may see things". <strong>Say this wherever presence tempts a reader</strong>, and this
-  is one of the two places that reader will look.</li>
+  is one of the two places that reader will look. <strong>What this round withdrew is one clause of the older
+  version of this refusal, not the refusal</strong>: <code>PRESENT(event)</code> was previously held to be <em>unspeakable</em>
+  here, and it is not — it is a predicate over a column, which is now an ordinary kind of operand. <strong>It is
+  refused because of what it would do on the <code>-</code> side of an expression when a volunteer forgets a tick
+  box</strong>, which is an argument about consequences and survives
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  untouched.</li>
 <li><strong><code>GRANTS</code> is refused, and its refusal is a different kind from the two above.</strong> It was wanted so that
   an expression could name <em>"the people reached by these grants"</em> — a bulk-editing affordance dressed as
   an operand. <strong>An operand must resolve to a set of people, and a set of grants is not one</strong>, which is
@@ -3876,11 +3964,17 @@ reasoning that survives it.</p>
   bulk edit it was asked for is real and is an <strong>editor affordance</strong> — select the grants, change their
   grantees, in one screen, which changes rows and leaves every stored expression meaning what it meant.
   <strong>Refusing it here is what keeps that screen a UI feature instead of a resolver feature.</strong></li>
-<li><strong><code>WHITELISTED</code> does not exist.</strong> There is no stored state to name: the nearest facts are
-  <code>source = staff</code> (an organizer entered them) and promotion off the waitlist. Either it means one of
+<li><strong><code>WHITELISTED</code> is not seeded, and the reason is that there is nothing to evaluate.</strong> The nearest facts
+  are <code>source = staff</code> (an organizer entered them) and promotion off the waitlist. Either it means one of
   those or it is a new column on <code>event_registration</code>, which is an events decision and not a selector
   decision, so it stays <a href="../../open-questions/">an open question</a> rather than being implied by a word
-  in a grammar.
+  in a grammar. <strong>An operand that reads no state is not a vocabulary item but a syntax error wearing one's
+  clothes</strong>, and this refusal is untouched by round 12 — <strong>what moved is the grounds it was previously
+  given.</strong> <a href="../../open-questions/#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one">F-20</a>
+  is now a question about whether the <em>feature</em> is wanted, and no longer about whether the language could
+  hold the word: since <code>OLDER</code> arrived, a predicate over a column is an ordinary operand, and
+  <code>WHITELISTED</code> is out on its merits rather than on its type
+  (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
 <strong><code>PERSON(x)</code> is in the registry, and this page is the reason anyone noticed it was missing.</strong> Two decision
 entries write it — <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
 has the waived-for-one-person case as <code>MEMBERS * ROLE(x) + PERSON(y)</code> and
@@ -4011,7 +4105,7 @@ brackets instead of silently rewriting them".</p>
 <tr>
 <td><code>selector_arg_id</code></td>
 <td>integer, optional</td>
-<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind. <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s already-accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
+<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind — <strong>or it points at nothing, which is new in <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>: <code>OLDER</code> and <code>YOUNGER</code> write their integer into this same column</strong>, because the column is an integer and the value is one. <strong>This is the one place the round could have broken an invariant and did not</strong>: §11 asserts that exactly two polymorphic columns in this design go without a foreign key, and it still holds at fourteen operands, <strong>for the right reason rather than by luck</strong> — the count is of <em>references</em>, and <code>18</code> is not one: nothing to repoint on a merge, nothing for a cascade to find, nothing for the orphan scan to walk, <strong>which is precisely why that scan filters on the selector's kind and walks the five entity kinds rather than every row in this column</strong> (§<em>A hand-named person is now a keyless reference</em>). <strong>A reader who takes "polymorphic" to mean "always a row id" will write that scan wrong, which is why the sentence is here.</strong> <a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s already-accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -4092,10 +4186,29 @@ brackets instead of silently rewriting them".</p>
   evaluated reaches nobody (§<em>Evaluation</em>). <strong>Fail closed on the allow side, and note that the same
   rule is fail-<em>open</em> looking, which is why it is stated with its two halves rather than as a
   slogan</strong>: an empty operand reached through <code>-</code> makes the result <strong>wider</strong>, so <code>EVERYONE - &lt;nothing&gt;</code>
-  denies everybody. D-103 keeps the rule for exactly that reason — <strong>the loud failure is the one you
-  want</strong>, and the quiet alternative is discovered in an audit two years late. The protection above
-  (an audience named by a live grant cannot be ended or deleted) is what keeps the wide case from
-  arriving by ordinary administration.
+  denies everybody. <strong>The corpus's word for this was <em>"loud"</em>, and round 12 retired it</strong>
+  (<a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>):
+  <code>-</code> was never noisy, it is <strong>the only operator whose failed operand can grant</strong>, and naming a direction
+  "noise" is how a rule gets read backwards. The sentence to keep is the directional one — <strong>a failed
+  operand on the <code>+</code> or <code>*</code> side narrows the set, a failed operand on the <code>-</code> side widens it</strong> — because
+  <em>fail closed</em> names a direction and not a safe state, and <code>EVERYONE - PERSON(x)</code> with a dead <code>x</code> is
+  fail-closed <strong>and</strong> a lockout of everybody in one breath. D-103 kept the rule because a silent widening is
+  discovered in an audit two years late; <strong>what round 12 added is a page, not a rule.</strong> An audience carrying
+  a leaf that does not resolve is <strong>listed for its owner</strong>, in a second column of the report
+  <a href="../../open-questions/#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones">F-21</a>
+  already asks for. <strong>No save is refused because a leaf is broken, and no expression is pinned to the set it
+  resolved to when it was saved</strong> — pinning would make the stored expression a ceiling on truth, and a grant
+  would freeze at the shape it had on the day somebody typed it. <strong>The report is a query with an owner:
+  D-081's
+  <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">convention, not a guard</a></strong>,
+  written as though it were a guard by the round that offered it.
+  <strong>And the line D-106 draws is narrower than it looks: an operand that resolves fine and simply does not
+  contain the person is not on that list.</strong> A person with no birth date is not a failed <code>OLDER(18)</code> — the
+  operand resolves to the people who are that age on the checked date, and the person is not among them,
+  exactly as a person with no membership row is not a failed <code>MEMBERS</code>. <strong>A missing attribute on the person
+  being asked about is an ordinary answer, not a resolution failure</strong>, and a report that conflated the two
+  would page about every incomplete import in the country. The protection above (an audience named by a live
+  grant cannot be ended or deleted) is what keeps the wide case from arriving by ordinary administration.
 - <strong>The <code>AUDIENCE</code> leaves <em>are</em> the reference edges, and there is no edge table</strong>
   (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>). Every
   question about nesting — <em>does this cycle</em>, <em>how deep does this get</em>, <em>which grants name this
@@ -4274,16 +4387,17 @@ hand-named person in the system is a <code>selector_arg_id</code>, and that colu
 accepted trade-off, extended to this column by D-101 and backstopped by an orphan scan rather than by the
 database).</p>
 <p><strong>Requirement, and it is new: a person merge, and a redaction, must repoint every <code>audience_operand</code> leaf
-whose <code>selector_arg_id</code> names the absorbed or erased person, in all five argument kinds.</strong> The merge
+whose <code>selector_arg_id</code> names the absorbed or erased person, in all five argument kinds that name an entity.</strong> The merge
 reassignment table gains the row, the erasure path gains the scan, and the nightly orphan check (§11,
 check 2) <strong>becomes the backstop rather than the mechanism</strong> — a scan that runs the following morning is
 not a reassignment, and by the time it reports, an expression has already resolved wrong. It belongs to
 <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s register
 for precisely the reason that register exists: <strong>the ORM cannot express it, because the column has no key
 to follow.</strong></p>
-<p><strong>Why this is not housekeeping.</strong> A leaf that resolves to nobody is the empty set, which is quiet on the
-allow side and loud on the deny side, and this module's own recurring worked example is a subtraction:
-<code>EVERYONE - PERSON(x)</code>. <strong>Un-repointed, <code>x</code> stops subtracting anybody and the grant denies everybody</strong> —
+<p><strong>Why this is not housekeeping.</strong> A leaf that resolves to nobody is the empty set, which <strong>narrows</strong> the
+result on the <code>+</code> and <code>*</code> sides and <strong>widens</strong> it on the <code>-</code> side — ~~quiet on the allow side and loud on
+the deny side~~, in the wording <a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>
+retired — and this module's own recurring worked example is a subtraction: <code>EVERYONE - PERSON(x)</code>. <strong>Un-repointed, <code>x</code> stops subtracting anybody and the grant denies everybody</strong> —
 the failure the rules two sections back have been pointing at for two rounds, now reachable by an ordinary
 merge rather than by a hand-edited row. Repointing was not required before, and that was defensible only
 while the volume of hand-named people sat in a table that had a key to follow.</p>
@@ -4291,8 +4405,18 @@ while the volume of hand-named people sat in a table that had a key to follow.</
 what it points at. A merge is the case that made the requirement, but an erased event, a deleted group, a
 retired office or an ended audience leave the identical orphan behind them, and <strong>writing the rule as
 "<code>PERSON</code> leaves only" would put the hazard straight back where it has been sitting for two rounds.</strong>
-The five argument kinds are <code>person</code>, <code>role</code>, <code>person_group</code>, <code>event</code> and <code>audience</code>, and they are the
-values <code>selector_type.argument_type</code> takes.</p>
+The five kinds a scan walks are <code>person</code>, <code>role</code>, <code>person_group</code>, <code>event</code> and <code>audience</code>.
+~~And they are the values <code>selector_type.argument_type</code> takes.~~ <strong>That clause was true until round 12 and
+here is its successor, because <code>argument_type</code> has gained a sixth value that is not a kind of thing a scan
+could follow: <code>integer</code>, the argument of <code>OLDER</code> and <code>YOUNGER</code>.</strong>
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+<strong>Six values, five of them entity kinds, and the scans walk the five.</strong> This is the one place to say why,
+because it looks like an omission and is not: <strong>an <code>18</code> in <code>selector_arg_id</code> is not a reference</strong>, so there
+is no row behind it to merge away, none to erase, none for a cascade to find and none for the orphan scan to
+report. <strong>The number this section is about — that exactly two polymorphic columns in this design go without
+a foreign key — is therefore still two, and still two for the reason it was two before</strong>: the count is of
+<em>keys</em>, and a scalar stored in a key's column is not one. <strong>Nobody has to add a <code>person.birth_date</code> branch
+to a merge script, and anyone who does has misread this paragraph.</strong></p>
 <h3 id="what-each-operand-costs">What each operand costs<a class="headerlink" href="#what-each-operand-costs" title="Permanent link">&para;</a></h3>
 <p>The distinction that used to be load-bearing — built-in <em>versus</em> named, rule <em>xor</em> list <em>xor</em>
 inclusion — is gone, and what remained worth comparing was whether a set is <strong>derived</strong> or <strong>kept</strong>.
@@ -4310,7 +4434,7 @@ that exists independently of the expression.</p>
 <tbody>
 <tr>
 <td>Which</td>
-<td>All eleven of <code>EVERYONE</code>, <code>MEMBERS</code>, <code>ROLE</code>, <code>GROUP</code>, <code>GUARDIANS</code>, <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> and <code>AUDIENCE</code> — <strong>derived from another expression rather than from a fact table, which makes <code>AUDIENCE</code> the odd one and the reason this table has a footnote below</strong>, plus <code>PERSON</code>, which is neither: see below</td>
+<td>All thirteen of <code>EVERYONE</code>, <code>MEMBERS</code>, <code>OLDER</code>, <code>YOUNGER</code>, <code>ROLE</code>, <code>GROUP</code>, <code>GUARDIANS</code>, <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> and <code>AUDIENCE</code> — <strong>derived from another expression rather than from a fact table, which makes <code>AUDIENCE</code> the odd one and the reason this table has a footnote below</strong>, plus <code>PERSON</code>, which is neither: see below. <strong><code>OLDER</code> and <code>YOUNGER</code> sit here on the strength of the row above them</strong> — a live read of a stored fact at the checked date, exactly like <code>MEMBERS</code> reading <code>membership</code> — <strong>but they are the first whose answer to <em>"when does someone join?"</em> is not "when a row is written"</strong>: the row was written at birth, and the set changes on its own. §<em>The cost of composition</em> carries what that costs</td>
 <td><strong>None since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>LIST</code>.</strong> The rows it held, the <code>valid_from</code> / <code>valid_to</code> pair, the no-overlap rule and the staleness this column existed to warn about are all gone with it</td>
 </tr>
 <tr>
@@ -4434,7 +4558,15 @@ evaluated as a predicate?</strong></p>
    <code>x = p</code> against a value already stored in the row, so a hand-written sum of twenty names is twenty of
    those and no fact table is consulted</strong>; <code>PLACED</code> is this person's
    <code>event_registration</code> row for the bound event with <code>response = attending</code> and <code>is_waitlisted</code>
-   false; <code>EVERYONE</code> is true.</li>
+   false; <code>EVERYONE</code> is true. <strong><code>OLDER(n)</code> and <code>YOUNGER(n)</code> are the two cheapest reads in the language
+   after <code>PERSON</code>: one row already in hand — <code>person.birth_date</code> — compared against <code>n</code> at <code>at</code>, no join
+   and no fact table.</strong> <strong>They are also the only operands whose answer <code>at</code> changes on its own</strong>: every
+   other leaf asks whether a <em>row</em> was live at <code>at</code>, and these two ask arithmetic about one, which is why
+   a check for a past date has a right answer here (<code>can(p, view, doc, on 2024-05-01, about q)</code> computes
+   the age that day) and why the set can move with no write to invalidate
+   (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+   <strong>A person whose <code>birth_date</code> is null is not in either set</strong>, and that is this rule answering, not
+   failing — item 5 below is about leaves that resolve to nothing, and this is not one of them.</li>
 <li><strong>A bound operand binds to the item under check.</strong> <code>PLACED</code> with no argument means the event in
    the check's scope. <strong>At the unit there is nothing to bind it to, and such a grant could not have
    been saved</strong> (§6's save-time list) — so an unbound-at-unit shape reaching here is a fault, and it
@@ -4512,11 +4644,20 @@ grants instead of being special-cased inside the resolver.</p>
   office record that cannot answer that is not an office record. The grantee pair F-12 contemplated is
   no longer even tempting, because grants now aim <strong>at</strong> roles instead of roles being filled <strong>by</strong>
   grants.</li>
-<li><strong>An expression cannot say anything about a person's attributes.</strong> That is the closure property
-  §<em>Author in sets</em> exists to protect, and it is worth restating as a negative because the temptation
-  is permanent: <code>AGE &gt;= 15</code> is not an operand, is not expressible, and there is no open question
-  asking for it. Eligibility is capability (<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>);
-  a set of people is a set of people.</li>
+<li><strong>An expression cannot compute with a person's attributes.</strong> ~~An expression cannot say anything about
+  a person's attributes.~~ That bullet stood for rounds and
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  narrowed it rather than deleting it, because it was standing on the sentence §<em>Author in sets</em> has now
+  withdrawn — that an attribute is not a set of people. <strong><code>OLDER(15)</code> says something about an attribute and
+  it is a row of the registry</strong>, so the negative that survives is about <em>terms</em>, not about subject matter:
+  <strong><code>AGE &gt;= 15</code> is not an operand, is not expressible, and there is still no open question asking for it</strong>,
+  because there is no comparison operator for it to use and no way to add a row from a screen. <strong>What an
+  author may write is what shipped</strong>; that, and not the type of the thing written about, is the closure
+  property §<em>Author in sets</em> protects. Eligibility is capability
+  (<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>)
+  in the sentence that is now true of it: <strong>no rule is evaluated outside <code>can()</code>, no eligibility rule table
+  exists, and the system gates nobody on its own — an age rule is a grant somebody wrote, visible in the
+  grant list, revocable like one.</strong></li>
 </ul>
 <h3 id="the-cost-of-composition">The cost of composition<a class="headerlink" href="#the-cost-of-composition" title="Permanent link">&para;</a></h3>
 <p><strong>A grant's reach stops being visible in the row that grants it.</strong> Derived membership has never been
@@ -5081,7 +5222,7 @@ else's insert, whereas adding a name today rewrites the expression and therefore
 two-writers hazard stated in §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em>.
 <strong>The <code>person merge</code> entry is now load-bearing in a way it was not</strong>
 (§<em>A hand-named person is now a keyless reference</em>): a merge must <strong>repoint</strong> the <code>audience_operand</code>
-leaves that name the absorbed person, in all five argument kinds, and invalidating the cache afterwards is
+leaves that name the absorbed person, in all five argument kinds that name an entity, and invalidating the cache afterwards is
 not the same act — <strong>a repointing that is missed does not invalidate anything, because nothing was
 written</strong>, and the cached answer and the truth agree with each other while both name nobody.</p>
 <p><strong>The shape of the hard case changed, and the lesson did not — and the case itself is now two.</strong> Under
@@ -5201,14 +5342,17 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
 <p><strong>And since <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
   this scan is a backstop and not the mechanism, which is a downgrade in status and has to be said out
   loud.</strong> Every hand-named person in the system is now a leaf in this column with no key behind it, so a
-  person merge and a redaction are required to <strong>repoint</strong> those leaves in all five argument kinds (§8,
+  person merge and a redaction are required to <strong>repoint</strong> those leaves in all five argument kinds that name an entity (§8,
   <em>A hand-named person is now a keyless reference</em>). <strong>The scan cannot stand in for that requirement, for
   two reasons.</strong> It runs the following morning, and an expression resolves wrong from the moment of the
   merge. And <strong>it only fires when the absorbed person's row is actually removed</strong> — if the merge leaves the
   row in place, as any design that keeps its history will, the leaf still names an existing id, this check
   reports nothing, and the grant quietly keeps a person who no longer signs in. On the allow side that is
-  inert; <strong>under <code>-</code> it is the loud direction, and <code>EVERYONE - PERSON(x)</code> with an un-repointed <code>x</code> denies
-  everybody.</strong>
+  inert — <strong>the failure narrows the set and stops there</strong>; <strong>under <code>-</code> the same failure widens it, and
+  <code>EVERYONE - PERSON(x)</code> with an un-repointed <code>x</code> denies everybody.</strong> <a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>
+  retired this bullet's earlier word for the second half — <em>loud</em> — and the replacement is worth the
+  typographical trouble, because the two halves do not differ in volume, <strong>they differ in which direction a
+  wrong answer moves access</strong>, and only one of those directions can grant.
 - <strong>3. A grant at a scope its code forbids.</strong> An open grant whose <code>scope_id</code> is present while the
   permission's <code>applies_to</code> is <code>unit</code> — or any grant of a <code>system.</code> permission whose <code>applies_to</code> is
   not <code>unit</code>, which is the seeding rule §2 depends on. <strong>Zero expected, and a row means the save-time
@@ -5246,10 +5390,18 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
 <p><strong>Run the same scan for the mirror-image case and report it separately, because it is the more
   dangerous of the two:</strong> an empty operand reached through <code>-</code> makes the expression <strong>wider</strong>, so
   <code>EVERYONE - AUDIENCE(x)</code> with <code>x</code> gone reaches <em>everybody</em> — an allow that meant to exclude now
-  includes, and a deny that meant to exclude now falls on everyone. D-103 counts that loudness as the
-  reason to keep fail-closed evaluation at all, <strong>and loud is only an advantage over quiet when
-  somebody is listening</strong>, which is what this check is for. <code>MEMBERS - AUDIENCE(x)</code> is the quiet
-  version: <strong>the exclusion is the grant's whole point and its
+  includes, and a deny that meant to exclude now falls on everyone. D-103 kept fail-closed evaluation
+  because of exactly this case, and this check used to call the case <em>"loud"</em> — the word
+  <a href="../../decisions/decision-log/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>
+  retired, because a widening is not a noise, it is a direction: <strong>a wide failure is only better than a
+  narrow one when somebody is reading</strong>, which is what this check is for and nothing more. <strong>What D-106
+  added is a second column on the report F-21 asks for</strong> — naming <em>which</em> leaf failed, not merely that one
+  did — <strong>aimed at the audience's owner</strong>, which is the same shape as this check: a listing with somebody's
+  name beside the row. So the control here is <em>report, twice over</em>, and <strong>not</strong> a refusal: nothing in this
+  round stops an audience whose leaf is broken from being saved, and the round's premise is why
+  (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+  <code>MEMBERS - AUDIENCE(x)</code> is the <strong>narrow</strong> version — ~~the quiet version~~, again in the retired word — and
+  it is the easier one to miss: <strong>the exclusion is the grant's whole point and its
   target is gone, which reads on screen as a grant that still names the audience it excludes.</strong> The
   save-time refusal (an audience named by anything live cannot be ended or deleted) is the primary
   control; this check is the one that fires when the refusal was bypassed by a restore or a manual
@@ -5366,10 +5518,17 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   why D-072's removal of the build-time greps is recorded as a weakening rather than a cleanup.
 - <strong>16. TIME-BOMB: no permission path may materialize a set.</strong> The requirement is that
   <strong><code>operand_holds</code> decides membership for one person and never loads a set of ids to test containment
-  in.</strong> An operand is a <em>named, materializable</em> set for the purposes of the editor's preview and the
-  cache key; in the resolver it is a predicate, and D-101 writes the distinction down precisely
-  because an implementation is one lazy join away from getting it the other way and paying three
-  thousand rows per check. <strong>This replaces the old "no permission path may inherit" assertion, whose
+  in.</strong> An operand is a <strong>named</strong> set — a row of <code>selector_type</code>, which is the only test the language
+  has — for the purposes of the editor's preview and the cache key; in the resolver it is a predicate, and
+  D-101 writes the distinction down precisely because an implementation is one lazy join away from getting
+  it the other way and paying three thousand rows per check.
+  ~~An operand is a named, materializable set~~ <strong>for the purposes of this check: that was the wording
+  here while §8 still claimed materializability was the test for what an operand may be, and
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  deleted the test, so this bullet carries its third and last surviving instance.</strong> <strong>The assertion itself
+  does not move an inch:</strong> <code>OLDER(18)</code> is precisely as materializable, and precisely as unmaterialized, as
+  <code>MEMBERS</code> — a birth date read at the checked date and a membership row read at the checked date are both
+  answers computed per person, and neither is allowed to become a list of ids. <strong>This replaces the old "no permission path may inherit" assertion, whose
   subject — the unit hierarchy — no longer exists</strong>, and it is the same <em>kind</em> of rule: a requirement
   about how the code computes, which no migration can state and no reviewer will notice missing until
   the first slow day.</p>
@@ -5492,20 +5651,28 @@ branch (§2).</p>
   note above describes.</li>
 <li><strong><code>grant_scope_type</code></strong>: <code>unit</code> (the only row that is not item-scoped), <code>event</code>, <code>person_group</code>,
   <code>role</code>, and <code>document</code> (deferred).</li>
-<li><strong><code>selector_type</code></strong>: the twelve operands of §8's language, <strong>every one of them seeded, <code>is_system</code>
+<li><strong><code>selector_type</code></strong>: the fourteen operands of §8's language, <strong>every one of them seeded, <code>is_system</code>
   and implemented in the shipped evaluator, because there is no fourth combination and no third kind</strong>
   (§8, <em>The selector registry</em>). <strong>This registry is what both the grant editor's dropdown and the
   parser's reserved words read</strong>, which is what D-101 means by <em>the language becomes data</em> — a new
   operand is a decision entry, a seed row <strong>and a resolver arm in one release</strong>, never a row typed into
   a screen and never a row shipped ahead of the code that evaluates it. <code>AUDIENCE</code> is the newest operand
   anyone <em>designed</em> (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>);
-  <code>PERSON</code> was the last row to arrive — it went in <em>thirteenth</em>, because two decision entries had used it
+  <code>PERSON</code> was the last row to arrive <strong>for two rounds</strong> — it went in <em>thirteenth</em>, because two decision
+  entries had used it
   for a whole round while this table did not carry it (§8, <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>) —
   which is the difference between a registry and a list of what somebody remembered. <strong>The round after,
   <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
   deleted <code>LIST</code> and the table came back to twelve: the row that was added last and the row that was
   deleted last are not the same row, and the count is stated here rather than inferred from either.</strong>
-  <code>GRANTS</code> is refused and therefore absent (§8).</li>
+  <strong>And twelve is now history in the past tense, not the present: round 12 seeded <code>OLDER</code> and <code>YOUNGER</code>
+  together, so the count moved by two in one decision and nothing was deleted, which makes it the first
+  round since <code>PERSON</code> in which this table only grew</strong>
+  (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+  <strong>Their arms ship in the same release as their rows, on the rule two sentences above, and their argument
+  is an integer — the first argument kind here that is not an entity reference</strong>, which is why the merge
+  and orphan scans of §11 walk five kinds and not six (§8, <em>A hand-named person is now a keyless
+  reference</em>). <code>GRANTS</code> is refused and therefore absent (§8).</li>
 <li><strong>Two audiences, both <code>is_system</code>, and both must have a <code>code</code></strong>: <code>everyone</code>, whose expression is
   <code>EVERYONE</code>, and <code>all_members</code>, whose expression is <code>MEMBERS</code>. <strong>The code is not cosmetic any more</strong> —
   since D-103 it is the only way another audience can name them, so a seeded row without one is a
@@ -5670,10 +5837,17 @@ need a paragraph telling readers they were different. That paragraph is now abou
 <li><strong><code>PERSON(x)</code> — closed by this round, and the way it closed is the open item.</strong> Two decision entries wrote
   <code>PERSON()</code> and the seeded registry in §8 did not contain it, so this page concluded the operand did not
   exist and read both examples as <code>LIST</code>. <strong>That was the wrong reading</strong> (it cannot express D-103's example),
-  the registry was the side that was wrong, and the row is seeded now: <code>argument_type = person</code>, twelve rows
-  total — thirteen for one round, then <code>LIST</code> went
-  (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
-  and the operand that was added to fix this drift turned out to be the one the other half of the drift was
+  the registry was the side that was wrong, and the row is seeded now: <code>argument_type = person</code>, and the
+  table that carries it holds <strong>fourteen</strong> rows today — thirteen while <code>LIST</code> existed, <strong>twelve for
+  exactly one round</strong> after
+  (<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>)
+  deleted it, and fourteen since round 12 seeded <code>OLDER</code> and <code>YOUNGER</code>. <strong>The twelve is quoted here only
+  because this bullet is where the count was recorded when it was true</strong>; a reader who takes it forward
+  repeats, one round late, exactly the mistake this bullet exists to record.
+  <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  is the entry that moved it, and it moved the count by growing the table rather than by trading a row.
+  <strong>The point of recording the number twice stands: it is cheap to check and it has been wrong before.</strong>
+  The operand that was added to fix this drift turned out to be the one the other half of the drift was
   arguing for (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101's amendment</a>,
   <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).
   <strong>What is still open is the class, not this operand:</strong> nothing in this module, or in this repository,
@@ -5701,7 +5875,7 @@ need a paragraph telling readers they were different. That paragraph is now abou
   it.</strong> <code>selector_arg_id</code> has no foreign key
   (<a href="../../decisions/decision-log/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>),
   so the merge reassignment table has to be told about <code>audience_operand</code> the way it was told about every
-  other person-referencing table, <strong>in all five argument kinds</strong>, and the orphan scan that would otherwise
+  other person-referencing table, <strong>in all five argument kinds that name an entity</strong>, and the orphan scan that would otherwise
   catch it is both late and blind — late because it runs nightly, blind because a merge that leaves the
   absorbed row in place produces no orphan at all. It belongs to
   <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s register
