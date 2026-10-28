@@ -2272,16 +2272,29 @@ document that changes a person's status.</p>
 <ol>
 <li>Mark it <strong>lapsed</strong>, ending it <strong>at the expiry date</strong> — not at today. The period ended on that
    date whether or not anyone noticed.</li>
-<li><strong>Invalidate the permission cache per person, for every person returned</strong> — not per scope
-   (<a href="../../domain/06-authorization-model/#8-caching-and-the-rebuild-that-replaced-invalidation">domain/06 §8</a>). A lapsed member
-   whose gated grants still resolve is a member who keeps leading. <strong>The step survives the deletion
-   of the gate that motivated it, and the reason changed</strong>: there is no resolver clause to
-   invalidate any more, but <code>MEMBERS</code> is evaluated live on the checked date
+<li>~~<strong>Invalidate the permission cache per person, for every person returned</strong>~~ — not per scope
+   (<a href="../../domain/06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">domain/06 §8</a>).
+   <strong>This step has nothing left to do</strong>: <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+   deleted <code>permission_cache</code>, and with it the per-person invalidation call this step existed to make —
+   the one event that had wanted it for <strong>every member at once</strong>. A lapsed member whose gated grants still
+   resolve is a member who keeps leading, and what stops that now is the read path rather than a step in
+   this job: <code>MEMBERS</code> is evaluated live on the checked date
    (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
-   so a membership transition still changes who every gated grant reaches.
+   so the two facts the predicate reads — the period ending and the <code>lapsed</code> status step 1 writes — are both
+   visible to the next check, with no job in between and nothing left to invalidate.
+   <strong>The step survives the deletion of the gate that motivated it and has now lost its mechanism twice</strong> —
+   first the resolver clause went, then the stored answer went, and the operand cache that sat beside it went
+   with the answer it served (it was keyed per person, selector kind, argument and item, which is why no
+   narrowing of a bump set could have saved it). The operand-keyed caching
    <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-   lets a cache key on an operand rather than a person, which makes this event <em>one</em> invalidation of
-   the <code>MEMBERS</code> operand — cheaper, and no less mandatory.</li>
+   opened the door to is therefore gone as an <em>answer</em> cache and survives only as a <strong>roster</strong> cache:
+   <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+   leaves <code>ROLE(x)</code> over <code>role_holder</code> and <code>GROUP(x)</code> over <code>person_group_member</code> cacheable across requests,
+   keyed by the very name a write touches, and <code>MEMBERS</code> is not one of those — it is a predicate over
+   <code>membership</code> evaluated on the checked date, owned by no single row's write, so a sweep needs no
+   invalidation to be seen. What the sweep still costs is stated where cost belongs: on 1 January the answer
+   moves for every member at once, and a screen opened that day computes it rather than reading it
+   (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</li>
 <li>Open the <strong>renewal window</strong> as a date, never as a status. The resolver does not know windows exist.</li>
 </ol>
 <p><strong>The old step 2 was the root <code>unit_participation</code> row</strong> — <em>do not close it, move its <code>valid_to</code>

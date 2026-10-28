@@ -2994,24 +2994,48 @@ say who writes the row. Integrity check 1 in §10 is the net.</p>
 <p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" stops being a property
 of a grant row once an operand binds: <code>PLACED</code> is different people on different events. The
 editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
-against, and the cache key for a bound operand must include the item. Stated as a requirement
+against, and ~~the cache key for a bound operand must include the item~~ — the answer cache that had a key is
+deleted (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
+but the rule survives it at the layer below: the item is bound at <strong>resolution</strong>, so nothing expanded while
+computing one item may be reused for another. Stated as a requirement
 in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>. That expansion
 is not capped or deferred, and the ground is now stated rather than assumed: a few dozen registrants on a
 typical event and a big camp on the order of two hundred is a preview nobody feels — a size
 <strong>stated, not measured</strong>, with a named trigger to reopen it
 (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</p>
-<p><strong>A write to <code>event_registration</code> is not a ruleset write, and that is the whole staleness story for this
-module.</strong> There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write
-to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table to get right
-(<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
-The ruleset is the grant and expression rows, the permission registry, the guardianship rows,
-<code>role_holder</code> and <code>person_group_member</code>; <strong><code>event_registration</code> is not in it</strong>. So marking a register,
-confirming a place, or promoting somebody off the waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>,
-<code>CONFIRMED</code> and <code>ON_WAITLIST</code> and rebuilds nothing: a cached answer behind those four tiers <strong>may be up to
-one night stale, by design</strong>. This is the module where an implementer would most confidently assume the
-opposite, so it is stated here rather than only in the authorization page. What stays immediate is
-everything a person actually does to authority — revoke, deny, close a grant period, end an assignment —
-because every one of those is a ruleset write.</p>
+<p><strong>A write to <code>event_registration</code> is not a ruleset write — and since <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+that buys it no staleness whatsoever.</strong> ~~There is one cache policy and three triggers — rebuilt nightly in full,
+immediately on any write to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table
+to get right (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+The ruleset is the grant and expression rows, the permission registry, the guardianship rows, <code>role_holder</code> and
+<code>person_group_member</code>; <strong><code>event_registration</code> is not in it</strong>. So marking a register, confirming a place, or
+promoting somebody off the waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code> and
+rebuilds nothing: a cached answer behind those four tiers <strong>may be up to one night stale, by design</strong>. This is the
+module where an implementer would most confidently assume the opposite, so it is stated here rather than only in
+the authorization page. What stays immediate is everything a person actually does to authority — revoke, deny,
+close a grant period, end an assignment — because every one of those is a ruleset write.~~</p>
+<p><strong>What is true now:</strong> marking a register, confirming a place, flipping <code>is_confirmed</code> or promoting somebody off the
+waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code>, and <strong>the change is visible on the
+next check</strong> — the one after the write, with no job in between — because a check resolves the expression against
+live rows and there is no cached answer left to sit behind the roster
+(<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+<strong>The same is true of <code>ORGANIZERS</code></strong>, which reads the organizer rows and not the registration table at all: five
+bound operands, five live reads, and a birthday crossing <code>OLDER(n)</code> moves an answer on exactly the same footing as
+a registration write does. <strong>Immediacy here is by construction, not by policy:</strong> nothing maps a person to an
+answer anywhere in the schema, so there is no row that could be a night old. <strong>And this module was right to be uneasy about the paragraph above.</strong>
+Four tiers computed from four registration tables, with the boundary of what counts drawn in a different file from
+the read path it had to describe, is precisely the shape that made the cache untenable — the deletion this page
+reports arrived because lists like that one omitted <code>membership</code> while <code>membership.terminate</code> ⛔ was the most
+safeguarding-shaped write in the catalog. <strong>What survives of the old vocabulary, said precisely:</strong> a registration
+write is still not a ruleset write, now in the narrowed sense that <strong>it changes no rule's text</strong>, and
+<code>ruleset_version</code> — which keys a <em>compiled expression</em>, not an answer — is bumped by <strong><code>audience_operand</code> and
+<code>selector_type</code></strong> alone, so a registration write is not a ruleset write at all now, in the only sense the phrase
+still has. <em>"Not a ruleset write" no longer buys a night of staleness; it says which two-table bump set you are
+not in, and nothing more.</em> <strong>And the rule whose mechanism just went has to say who enforces it now</strong>
+(<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
+which is the question this paragraph would otherwise leave hanging: <strong>nobody enforces it, because there is nothing
+left to invalidate.</strong> The old sentence's job — <em>"a registration change reaches an answer"</em> — is now done by the
+read path itself, and a page cannot opt out of a read path the way it can forget to add a row to a list.</p>
 <h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
 <p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
 window does not admit it. The guard runs inside the transaction that inserts the row, on every

@@ -1359,10 +1359,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-cache-is-rebuilt-not-invalidated" class="md-nav__link">
+  <a href="#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The cache is rebuilt, not invalidated
+        The cache is deleted: nothing in this schema holds a permission answer
       
     </span>
   </a>
@@ -2164,10 +2164,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-cache-is-rebuilt-not-invalidated" class="md-nav__link">
+  <a href="#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The cache is rebuilt, not invalidated
+        The cache is deleted: nothing in this schema holds a permission answer
       
     </span>
   </a>
@@ -3653,8 +3653,10 @@ say</strong>, not what the machine computes:</p>
   reach?" must be <strong>shown, expanded, in front of a human</strong> — D-091 made that a requirement on the
   screen, and a predicate can only report <code>true</code> while a set <em>is</em> the answer. "What may a treasurer
   do?" (D-100) needs the person→set index, and <code>role_holder</code> and <code>person_group_member</code> <strong>are</strong> it; an
-  expression is unindexable. And a cache can key on an operand and be reused across every grant
-  (§10).</li>
+  expression is unindexable. And naming an operand is what makes a <strong>compilation</strong> reusable at all: a compiled
+  predicate is keyed by the expression it came from and the ruleset version, so one edit to a shared name refreshes
+  every grant that embeds it, which is more reuse than an inlined subtree could ever be given
+  (§10, <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).</li>
 </ul>
 <h3 id="grammar-precedence-and-the-canonical-rendering">Grammar, precedence, and the canonical rendering<a class="headerlink" href="#grammar-precedence-and-the-canonical-rendering" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>expr    := term ( '+' term )*
@@ -4190,8 +4192,14 @@ brackets instead of silently rewriting them".</p>
   deleted the parameter and refused to mint a replacement, so <strong>the size of an audience's expansion is now
   bounded only by acyclicity</strong> — a bound on height no longer exists and a bound on breadth was never
   asserted. What replaces the retired invariant is a <strong>standing report of the widest and deepest audiences
-  and their cost per check</strong>, together with the operand cache of §10. Nothing refuses a save on size, no CI
-  job fails, and the report stops being a control the moment nobody reads it. That is
+  and their cost per check</strong>, together with ~~the operand cache of §10~~. <strong>That pairing got weaker in round 14 and
+  the bullet should say so rather than keep advertising a mitigation that is gone:</strong> cached answers meant a wide
+  expansion was paid for once per person per night, so the cost of a thousand-person <code>EVERYONE</code> stopped being
+  anybody's problem between rebuilds; with the answers deleted (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>) it is paid per check, memoized
+  within a request and cached nowhere wider — compiling once per version removes the parsing and the name
+  resolution from that cost, not the reads. <strong>So this convention now carries more load with the same enforcement.</strong>
+  Nothing refuses a save on size, no CI job fails, and the report stops being a control the moment nobody reads
+  it. That is
   <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
   case exactly — the rule's name outlives the mechanism and the text must say which of the two happened —
   and <strong>D-105 counts this as the third control of that shape the authorization module now depends on.</strong>
@@ -4272,7 +4280,8 @@ counted over all rows, plus <code>added_by</code> naming who put that one person
 the no-overlap rule, the refusal to add a person to a seeded <code>is_system</code> audience (adding somebody to
 <code>everyone</code> was a category error, and the refusal lived in the write path with the editor as its only
 detector), the editor affordance that rendered the operand as <code>LIST (this audience)</code>, and one entry in
-the cache-invalidation trigger list of §10. <strong>The <code>is_system</code> refusal is a rule whose mechanism is gone
+~~the cache-invalidation trigger list of §10~~ — <strong>a list that no longer exists either</strong> (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>), so
+deleting this table has no cache to coordinate with any more. <strong>The <code>is_system</code> refusal is a rule whose mechanism is gone
 and whose name should not survive it:</strong> there is no row left to refuse, so unlike the reports above this
 one retires completely rather than becoming a report.</p>
 <p><strong>What survives, and it is the reason this deletion is not a reversal of D-098.</strong> The refusal to solve a
@@ -4357,7 +4366,10 @@ not by pretending the question has an answer. The report is the save-time listin
 composition</em>, kept over time rather than shown once; whether that is worth building is registered in
 §13 and is the same question as
 <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a> wearing a different
-hat.</p>
+hat. <strong>One half of that identity has since been deleted</strong> — <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a> removed the cached-answers side of
+F-7 — so the comparison no longer points at a live mechanism. <strong>What survives it is the history question, standing
+on its own:</strong> a saved snapshot of whom a grant reached is still the only thing that could answer about 2011, and it
+is still D-110's record rather than a cache.</p>
 <h3 id="names-are-one-namespace-and-reserved-words-are-the-other-half">Names are one namespace, and reserved words are the other half<a class="headerlink" href="#names-are-one-namespace-and-reserved-words-are-the-other-half" title="Permanent link">&para;</a></h3>
 <p><strong>Bare <code>COUNSELORS</code> resolves against roles and groups together</strong>, since <code>ROLE()</code> and <code>GROUP()</code> no
 longer have to disambiguate — which makes <strong>the name namespace load-bearing</strong> in a way it was not
@@ -4704,8 +4716,10 @@ rather than recorded</strong>, and round 10 added a sharper wrinkle.</p>
   (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
   <code>PLACED</code> means different people on different events, so "who does this grant reach?" is unanswerable
   as written when the expression contains a bound operand. <strong>The preview is therefore computed for an
-  item and says so on screen</strong> — an honest screen names the event whose people it is showing — and the
-  cache key for a bound operand must include the item (§10). This is the one place where D-102's
+  item and says so on screen</strong> — an honest screen names the event whose people it is showing — and after
+  <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a> the rule that a bound operand may never answer for another item is a rule about <strong>how a predicate
+  is bound</strong> rather than about what a key must contain — the item is a parameter of the compiled predicate (§10),
+  which is the same requirement with one fewer place to get it wrong. This is the one place where D-102's
   convenience costs a screen an editor's design has to notice, and §13 keeps it open rather than
   assuming it away.</li>
 <li><strong>Editing an audience changes grants you did not make, and the screen has to say so before it
@@ -4736,8 +4750,10 @@ rather than recorded</strong>, and round 10 added a sharper wrinkle.</p>
   does not make history answerable either</strong> — a table of <em>today's</em> answers, rebuilt nightly, is as blind to
   2011 as the cache is. <strong>The honest statement of this limitation is now the flat one: a historical check is
   re-running today's expressions over whatever state survives, and after the payloads expire that state has
-  moved on.</strong> Caching is §10's subject; <strong>history has no owner, and that is recorded as a limit rather than
-  a to-do.</strong></li>
+  moved on.</strong> Caching was §10's subject until round 14 deleted the thing, and the deletion changed only the verb
+  tense of that sentence: <strong>history has no owner, and that is recorded as a limit rather than a to-do.</strong> The cache
+  was as blind to 2011 as no-cache is — which is precisely what made F-7 one question and not two, and what keeps
+  its dissolution valid after the cache is gone.</li>
 <li><strong>Something has to keep count of how big expressions get, because nothing refuses them any more.</strong>
   <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
   deleted the height bound along with the parameter that held it, and refused to mint a replacement, so
@@ -5023,9 +5039,15 @@ ids (§8, <em>Author in sets</em>).</p>
 arguments carried straight through, because a nested audience means the same people on the same date
 for the same item, and <strong>the same predicate shape, because nesting is the moment at which a lazy
 implementation would most plausibly decide to materialize the inner set and test containment.</strong> That is
-§11's check 16 and it covers recursion explicitly: an operand cache keyed on
-<code>(person, selector_kind, selector_arg_id, …)</code> already has a key for a nested audience, which is what
-makes the recursion shallow in practice and not merely shallow in argument. <strong>The recursion terminates
+§11's check 16 and it covers recursion explicitly. <strong>What was asserted here until round 14 was that the operand
+cache keyed on <code>(person, selector_kind, selector_arg_id, …)</code> already had an entry for a nested audience, which is
+what made the recursion shallow in practice and not merely shallow in argument. That sentence is retired with the
+cache</strong> (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>), and <strong>the replacement should be stated at its real size rather than at the old one:</strong>
+within a request the memo resolves a recurring named operand once, so a screen that asks the same question about
+the same person several times pays the depth once; <strong>across requests the recursion runs to whatever depth somebody
+typed, every time.</strong> Since D-105 deleted the depth bound that is the honest price of nesting, and it is why §<em>What
+each operand costs</em> and the width report of §<em>The cost of composition</em> are the controls here rather than a cache
+that would have amortized it away. <strong>The recursion terminates
 by construction, not by a counter</strong>: a cycle through <code>AUDIENCE</code> leaves cannot be saved (§8), so a
 read-path depth cap would be a thing that decides who a grant reaches in exactly the case where the
 data is already wrong. <strong><a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
@@ -5174,139 +5196,96 @@ them, and the reconciliation report of
 must count people marked as counselors in the corpus against <code>role_holder</code> rows written. <strong>It fails
 closed — nothing breaks, which is exactly why nobody notices.</strong></p>
 </blockquote>
-<h3 id="the-cache-is-rebuilt-not-invalidated">The cache is rebuilt, not invalidated<a class="headerlink" href="#the-cache-is-rebuilt-not-invalidated" title="Permanent link">&para;</a></h3>
-<p>~~Cache invalidation, revisited~~ — <strong>the title was the thing that changed.</strong>
-<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
-replaced this section's invalidation policy with <strong>a nightly full rebuild, immediate invalidation on any
-ruleset write, and an explicit administrative request</strong>, and closed F-6 and F-7 with it. What did <em>not</em> change
-is the first sentence below, which is about something else.</p>
-<p>The answer cache and the operand cache are two different things, and round 10 separated them because
-D-101 made operand results reusable in a way the old union-of-arms model never was.</p>
-<p><strong>Fields</strong> (<code>permission_cache</code>)</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Kind</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>person_id</code></td>
-<td>reference to person, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>permission_code</code></td>
-<td>text, required</td>
-<td>The code, as checked.</td>
-</tr>
-<tr>
-<td><code>scope_type</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>scope_id</code></td>
-<td>integer, optional</td>
-<td>The item. <strong>Not optional in practice since D-102</strong> — a bound operand means the same expression yields different people on different items, so an answer computed for one item may never be served for another.</td>
-</tr>
-<tr>
-<td><code>allowed</code></td>
-<td>boolean, required</td>
-<td>The answer that was computed.</td>
-</tr>
-<tr>
-<td><code>computed_at</code></td>
-<td>timestamp, audit time</td>
-<td>When this row was built, which the nightly rebuild rewrites.</td>
-</tr>
-<tr>
-<td>~~<code>expires_at</code>~~</td>
-<td>~~timestamp, required~~</td>
-<td><strong>Replaced in round 13.</strong> A per-entry expiry was how a TTL cache decided when to stop trusting an answer, and D-111 removed every TTL from this design — no TTL, no asymmetric TTL that makes a deny visible sooner than an allow. ~~How long the answer may still be used.~~</td>
-</tr>
-<tr>
-<td><code>ruleset_version</code></td>
-<td>integer, required</td>
-<td><strong>The row that replaced it, and the mechanism that makes "rebuild immediately on a ruleset change" mean something an implementation can do.</strong> One integer on the ruleset, bumped by any write to it (§10, <em>What counts as the ruleset</em>), copied into every cache entry when the entry is built, and <strong>an entry is valid only while the two match.</strong> It exists because the writes that need global invalidation are exactly the ones that name nobody: a <code>role_holder</code> row names its person and a <code>person_group_member</code> row names its person, <strong>but an edit to a shared expression names nobody at all</strong> — the people it stops reaching are whatever it resolves to, and enumerating them means evaluating it for everyone. Bumping an integer never has to answer <em>whom does this reach</em>. <strong>The nightly rebuild is not made redundant by it</strong> — the rebuild is the correctness backstop for everything a version does not cover, which is the calendar: a birthday crossing <code>OLDER(n)</code>/<code>YOUNGER(n)</code>, the 1 January sweep, a period reaching its own <code>valid_to</code>.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rules</strong></p>
-<ul>
-<li>One row per person, permission code, scope type and scope id — where an absent scope type and
-  an absent scope id each count as a key value of their own, not as "any scope".</li>
-<li><strong>An entry is read only when its <code>ruleset_version</code> equals the ruleset's current version.</strong> Everything else
-  is a miss. There is no other validity rule, and adding one is how a TTL comes back.</li>
-<li><strong>A ruleset write bumps the version and computes nothing.</strong> Warming is the nightly job's work or the
-  operator's request, never the write path's: <strong>a write that also recomputes every answer it might touch is
-  the fan-out this section just deleted, arriving as an implementation detail.</strong></li>
-<li><strong>The <code>deprecated | hidden | disabled</code> flag is a ruleset write and therefore bumps the version</strong>
-  (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
-  That is what makes <code>disabled</code> mean <em>now</em> rather than <em>after midnight</em>, and it is worth an integrity check:
-  D-109's <em>"deprecating or hiding must not change the answer"</em> can stay true while <em>"disabling takes effect
-  now"</em> silently stops being true, and only the second one is a safeguarding property (§11).</li>
-</ul>
-<p><strong>An operand cache beside it</strong>, keyed <code>(person, selector_kind, selector_arg_id)</code> for an operand that
-does not bind, and <strong><code>(person, selector_kind, selector_arg_id, item)</code> for a bound one</strong>
-(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>:
-<em>the cache key for a bound operand must include the item</em>). <strong>A bound operand cached without the item
-in its key is a wrong answer waiting for the next event</strong> — <code>PLACED</code> is different people on every
-event, and a cache that does not know which event it answered will answer for all of them. The win is
-that an operand result computed for one grant is reused by every grant that names the same operand,
-which the three-arm model could not do because its answer was a walk rather than a value.</p>
-<p><strong>An <code>AUDIENCE</code> leaf is an ordinary operand for keying purposes and an extraordinary one for
-invalidation</strong> (<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a>).
-Ordinary, because <code>(person, AUDIENCE, &lt;audience id&gt;[, item])</code> is exactly the shape above and needs no
-new column. Extraordinary, because <strong>the answer under that key depends on rows belonging to a different
-audience than the one being evaluated</strong> — which is the paragraph below, and why it had to be rewritten
-in this round rather than left alone.</p>
-<p><strong>Indexes</strong></p>
-<ul>
-<li>on <code>expires_at</code>, for the expiry sweep;</li>
-<li>on <code>person_id</code>, because a membership transition must invalidate by <strong>person</strong>, fast — <code>MEMBERS</code> is
-  now an operand, so every cached answer that depends on it is this person's.</li>
-</ul>
-<p>Invalidated on any write to <code>role_holder</code>, <code>person_group_member</code>, <code>access_grant</code>, <code>audience</code>,
-<code>audience_operand</code>, <code>guardianship_permission</code>, a person merge —
-<strong>and on every membership transition, including the yearly expiry sweep, which touches every member at
-once.</strong> <strong>Read the <code>audience</code> and <code>audience_operand</code> entries as wider than they look</strong>: a write to one
-audience's tree invalidates every audience that can <em>reach</em> it, not only the one written — see the hard
-case below. <strong>The list lost one entry when
-<a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-deleted <code>audience_member</code>, and it is worth naming the loss precisely rather than letting it read as a
-tidying:</strong> an insert into that table used to be an invalidation event that could not collide with anybody
-else's insert, whereas adding a name today rewrites the expression and therefore rewrites
-<code>audience_operand</code> rows — the same trigger, reached by a slower and less concurrent route, which is the
-two-writers hazard stated in §<em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em>.
-<strong>The <code>person merge</code> entry is now load-bearing in a way it was not</strong>
-(§<em>A hand-named person is now a keyless reference</em>): a merge must <strong>repoint</strong> the <code>audience_operand</code>
-leaves that name the absorbed person, in all five argument kinds that name an entity, and invalidating the cache afterwards is
-not the same act — <strong>a repointing that is missed does not invalidate anything, because nothing was
-written</strong>, and the cached answer and the truth agree with each other while both name nobody.</p>
-<p><strong>The shape of the hard case changed, and the lesson did not — and the case itself is now two.</strong> Under
-D-091 the dangerous write was <code>audience_include</code>: one edge three levels down silently changed every
-group above it, and the code saving the edge had no list of what depended on it, so these documents
-assumed the blunt answer — invalidate the audience-derived entries wholesale.</p>
-<p>Round 10 said the graph was gone and the hazard with it, <strong>and D-103 half-took that back.</strong> A write to
-<code>veterans</code> now changes the value of every audience whose expression names <code>AUDIENCE(veterans)</code>, and of
-every grant aimed at those — and the code saving <code>veterans</code> still has no list of what depends on it.
-<strong>The hazard came back in a genuinely smaller form, and the difference is worth naming rather than
-glossing:</strong> the edges are rows in the table that already holds every expression, so the <em>direct</em>
-referrers are one indexed query on <code>(selector_kind, selector_arg_id)</code>, and D-103 already requires that
-query for a different purpose (refusing to delete a referenced audience, §8). <strong>The reverse closure is
-therefore computable where it once was not</strong> — which is a real improvement and still not a reason to
-compute it inside an invalidation path, because "computable" and "cheap enough to run on every write"
-are different claims and the second is the one that gets decided wrongly under load. <strong>The blunt answer
-stands: invalidate audience-keyed operand entries wholesale.</strong></p>
-<p><strong>The second hard case is a table, not a graph.</strong> Adding one person to an office changes every grant
-whose expression names <code>ROLE(that_office)</code> — including grants written later by other people for reasons
-the writer has never seen — and the code that inserts a holder row has no list of those grants either.
-<strong>Neither invalidation can be keyed on the rows that were written.</strong> Both are listed here rather than
-left to whoever implements them for the same reason the membership sweep always was: <strong>the expensive
-invalidation is the one that is easy to decide is unnecessary.</strong></p>
+<h3 id="the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer">The cache is deleted: nothing in this schema holds a permission answer<a class="headerlink" href="#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer" title="Permanent link">&para;</a></h3>
+<p>~~The cache is rebuilt, not invalidated~~ — <strong>the section title has now been wrong twice, and both times about
+the same thing</strong>: first it was an invalidation policy, then a rebuild policy, and
+<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+ended it by deleting the object both titles were about. <strong><code>permission_cache</code> is not in this schema.</strong> Its
+columns — ~~<code>person_id</code>, <code>permission_code</code>, <code>scope_type</code>, <code>scope_id</code>, <code>allowed</code>, <code>computed_at</code>,
+<code>ruleset_version</code>~~, and <code>expires_at</code> before them — are gone, along with the operand cache keyed
+<code>(person, selector_kind, selector_arg_id[, item])</code>, and the full text of the policy that governed them is
+<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>,
+where the text of a decision lives. What is deleted here is a live rule; nothing in this corpus silently forgets
+a past one.</p>
+<p><strong>Why the deletion reached the data model rather than stopping at an implementation note:</strong> the table mapped a
+person to a boolean, and <strong>that is the object §<em>Author in sets. Evaluate per person.</em> and §<em>Evaluation</em> forbid</strong>
+— <em>"The expansion is a predicate, not a set"</em>, <em>"No set of people is ever built"</em> — <strong>a materialized answer to
+"does this person satisfy this expression", kept where no check looks at it.</strong> A design that forbids an object in
+one path and permits it in another spends the rest of its prose explaining the difference, and this section had
+grown exactly that prose. <strong>The rule is now unconditional, which is what it gains.</strong></p>
+<p><strong>What the checks use instead, and what may be held in memory:</strong></p>
+<ol>
+<li><strong>A compiled expression.</strong> Parsed once, operand kinds resolved once, a parameterized predicate emitted once,
+   keyed by the expression's root and <code>ruleset_version</code>, <strong>holding no person and no item</strong>. It is process-local
+   and <strong>not a table</strong>: nothing about it is queryable, durable, or a source of truth, and a restart discards it.
+   <code>ruleset_version</code> therefore bumps on <strong><code>audience_operand</code></strong> (a subtree changed, so every compilation embedding
+   it is stale) and on <strong><code>selector_type</code></strong> (the vocabulary changed) — two tables, down from the eight kinds of write D-111 named — six tables, the D-109 flag and a merge.
+   <code>access_grant</code> is absent because <strong>grants are not compiled</strong>: a check reads the person's live grant rows, so
+   adding, editing or revoking one changes what that read returns and leaves nothing stale to drop — and where a
+   grant is created together with a new audience, the write that matters is the one on <code>audience_operand</code>, which
+   <em>is</em> in the set; the <code>deprecated | hidden | disabled</code> flag is absent because <strong>a state is not
+   compiled in</strong> — resolution consults it live, once per request, which is also what makes <code>disabled</code> take effect
+   now (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>);
+   and <code>role_holder</code>, <code>person_group_member</code>, <code>guardianship_permission</code>, <code>event_registration</code>, a membership
+   transition and a person merge are absent because <strong>there is no answer to invalidate</strong>.</li>
+<li><strong>A request-scoped memo.</strong> The checked person's live grant rows, read once; within the same request, a named
+   operand that recurs. <strong>Lifetime is the request.</strong> It is worth stating in a data model precisely because it is
+   <em>not</em> one: the reason this does not need a section, an index or an invalidation list is that its lifetime is
+   shorter than any question about consistency.</li>
+<li><strong>Two batch reads</strong>, <code>can_many(person, codes[], item?)</code> and <code>which_of(people[], code, item)</code>, so a screen is
+   one resolution rather than a loop. <strong><code>which_of</code> is not a materialization</strong> — it evaluates the predicate for
+   people already in hand; what stays forbidden is deriving a set in order to answer about one person.</li>
+</ol>
+<p><strong>Named rosters are the one thing still held across requests</strong>: <code>ROLE(x)</code> and <code>GROUP(x)</code> keyed by the name,
+holding <strong>the dated rows or the set with its validity ranges</strong>, never the set as of today, so the checked date is
+applied at check time and a period ending at midnight needs no job. <strong>The reason this one survives while the
+answer cache does not is that its key is the thing the write touches:</strong> a <code>role_holder</code> insert invalidates one
+roster, by identity, without asking whom it reaches.
+<strong>And one exclusion, so the exception does not eat the rule:</strong> <code>MEMBERS</code> is <strong>not</strong> a roster and may not be cached
+this way. It is not a row anybody writes — it is the read predicate over <code>membership</code>, whose dated rows the
+<strong>1 January sweep</strong> rewrites for every member at once, which is the same bulk event under another name and lands
+straight back on the invalidation list D-114 deleted. <strong>A roster is a set with a name and its own holder rows;
+<code>MEMBERS</code> is neither</strong>, and the two age operands beside it are a birth date read at the checked date, which is not
+a cacheable set either (§<em>What each operand costs</em>).</p>
+<p><strong>One thing on this page is reversed by that change of denominator, and it has to be described accurately to be
+reversed honestly.</strong> The reverse closure over <code>audience_operand</code> — which expressions embed the audience being
+written — was <strong>never refused on cost grounds.</strong> It was <strong>bypassed</strong>: <a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
+chose a mechanism that did not need it, because the version integer <strong>"never needs to know whom a rule reaches"</strong>,
+and per-entry invalidation had no answer at all for an edit to a shared audience's tree, which is why <em>"F-6's table
+spent four rounds pretending the fan-out was tractable."</em> <strong>That was the right call about the object it had.</strong>
+Removing the answers removes the fan-out it was avoiding: an edit to <code>veterans</code> now invalidates the set of
+<strong>compilations</strong> that embed <code>veterans</code>, which is finite, enumerable, and named by rows that already exist —
+<strong>not</strong> by the reached people, which is the unbounded side and the side that stayed unenumerable.
+<strong>Note the direction, because the save path already walks the other one:</strong> the cycle refusal of
+§<em>The expression tree</em> and check 15 walks <strong>forward</strong> from the tree being saved, while invalidation needs the
+<strong>reverse</strong> direction — the same one the delete-refusal check walks when it asks whether a live grant, or a live
+audience reachable from one through any number of <code>AUDIENCE</code> leaves, names this audience (§<em>The expression tree</em>,
+§11 check 15). <strong>So this is a new use of an existing direction, not a free ride on an existing query</strong>, and the
+listing whose cost §13 still registers as unverified is the same listing: <strong>what this reversal inherits is that
+open question, not a solved one.</strong> It is recorded there rather than resolved here.</p>
+<p><strong>What the deleted indexes were for, and where those needs live now.</strong> An index on <code>expires_at</code> served an expiry
+sweep that no longer exists; there is no sweep, because nothing expires. An index on <code>person_id</code> existed so a
+membership transition could invalidate by person fast — and
+<a href="../03-membership/#6-membership-and-the-authorization-system"><code>03-membership.md</code> §6</a> had made that a hard
+requirement three rounds before the policy it was aimed at was written: <em>"The permission cache must be
+invalidated on every membership transition — including the yearly expiry sweep … retrofitting it is where the
+bugs will be."</em> <strong>The requirement is discharged by deletion, which is the only way those two pages can now agree</strong>
+(<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>);
+what it cost to notice is recorded there and in D-114, and the index that survives is the ordinary one on
+<code>access_grant(grantee…)</code>, because <strong>a check now reads a person's grants directly</strong> — which is the same index the
+resolver needed anyway, and the reason the deletion costs nothing measurable at the size
+<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>
+states.</p>
+<p><strong>What none of this touches.</strong> The merge and redaction duties on <code>audience_operand</code> leaves (§<em>A hand-named person
+is now a keyless reference</em>, §11 check 2) are <strong>unchanged and remain urgent</strong> — they were never cache
+maintenance. What is deleted is the sentence <em>"and invalidating the cache afterwards"</em>; what remains is that a
+missed repoint writes nothing, so nothing is triggered, and the dangling leaf under <code>-</code> <strong>denies everybody</strong>. Two
+other things this section used to own and does not lose: the <strong>bound-operand rule</strong> — an operand computed while
+checking one item may never answer for another, now a rule about how a predicate is bound rather than about a key
+(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
+— and D-109's check pair, <em>"deprecating or hiding must not change an answer"</em> and <em>"disabling takes effect now,
+and must say whose"</em>, which are properties of resolution and were always being tested against the wrong
+mechanism.</p>
 <h3 id="properties-to-verify-when-reviewing-this-function">Properties to verify when reviewing this function<a class="headerlink" href="#properties-to-verify-when-reviewing-this-function" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Deny is checked before everything</strong>, including ownership and guardianship. A restricted
@@ -5356,8 +5335,10 @@ invalidation is the one that is easy to decide is unnecessary.</strong></p>
 grants it. That is correct for UI decisions like "show the admin menu?" but <strong>wrong for enforcement</strong>.
 Every enforcing call must pass a scope. Enforce this in the calling convention — make scope mandatory
 at the API layer for mutating operations.</p>
-<p>The cache definition and its invalidation rules are above, immediately after the resolver —
-they are part of the resolver's contract, not a separate concern.</p>
+<p>What used to be the cache definition and its invalidation rules — and what replaced them — are above, immediately
+after the resolver, because they are part of the resolver's contract and not a separate concern. <strong>That placement is
+why <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a> is written here rather than filed as a deployment note:</strong> the question was never only where to
+keep answers, it was what a check is.</p>
 <p>The person-merge case remains the easiest to forget —
 see <a href="../01-identity/#8-identity_hypothesis-and-person_merge">01-identity.md</a>.</p>
 <hr />
@@ -5580,7 +5561,11 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
 - <strong>16. TIME-BOMB: no permission path may materialize a set.</strong> The requirement is that
   <strong><code>operand_holds</code> decides membership for one person and never loads a set of ids to test containment
   in.</strong> An operand is a <strong>named</strong> set — a row of <code>selector_type</code>, which is the only test the language
-  has — for the purposes of the editor's preview and the cache key; in the resolver it is a predicate, and
+  has — for the purposes of the editor's preview ~~and the cache key~~ <strong>("and the cache key" was the second
+  reason this page ever wanted a set of ids, and
+  <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+  removed it along with the key; only the preview wants one now, and only shows it to a human)</strong>; in the
+  resolver it is a predicate, and
   D-101 writes the distinction down precisely because an implementation is one lazy join away from getting
   it the other way and paying three thousand rows per check.
   ~~An operand is a named, materializable set~~ <strong>for the purposes of this check: that was the wording
@@ -5655,18 +5640,53 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   precise failure this design exists to make impossible, and it is exactly the kind of thing an implementation
   gets wrong by having the editor filter non-active rows out of a list it also uses to evaluate. <em>Effect:</em>
   flipping the same row to <code>disabled</code> must empty exactly the leaves that name it, in every expression, and the
-  write must record the rules it touched, resolved before and after. <strong>Third assertion, and the newest: the flag
-  write must bump the ruleset version</strong> (§10) — if it does not, D-109's inertness half still passes beautifully
-  while <em>"disabling takes effect now"</em> is quietly false, and a <code>true</code> cached before the flip keeps granting
-  until the nightly rebuild. <strong>Nothing else in §11 can see this one</strong>, because the flag is a legitimate value
-  in a legitimate column and every row is well-formed on its own.</li>
+  write must record the rules it touched, resolved before and after. <strong>Third assertion, revised by
+  <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>:
+  the flag must be read live by the resolver, not compiled into a predicate.</strong> It used to read <em>"the flag write
+  must bump the ruleset version (§10)"</em>, which was the mechanism the deleted cache needed and a strange thing to
+  require of a state; what is actually asserted is that flipping a row to <code>disabled</code> changes the next check, not
+  the next rebuild. <strong>The inertness half is unaffected by the deletion and the effect half is now easier to pass
+  and harder to fake</strong>: there is no <code>true</code> that survives a flip, because nothing persisted it, and a
+  <code>deprecated</code> row that stops granting is now a bug in one function rather than a disagreement between two of
+  them. <strong>Nothing else in §11 can see this one</strong>, because the flag is a legitimate value in a legitimate column
+  and every row is well-formed on its own.</li>
+<li><strong>19. TIME-BOMB: no row, table or field anywhere may map a person — or a person and a code, or a person and
+  an item — to a permission answer.</strong> <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+  deleted the one table that did (<code>permission_cache</code>), and the wording here is deliberately the schema-shaped one
+  it left behind, because <strong>this invariant is the reason that table cannot come back later as an optimization.</strong>
+  Assert it the way a schema review asserts things: <strong>no column pairing a person with a boolean that could only
+  have come from a check, no table whose key contains <code>person_id</code> together with <code>permission_code</code> or a
+  <code>selector_kind</code> / <code>selector_arg_id</code> or an item, and no <code>computed_at</code> sitting beside an answer.</strong> Three shapes
+  survive the sweep and each is legal for a reason worth repeating: <strong><code>ruleset_version</code></strong>, an integer about a
+  <em>ruleset</em> that names no person and keys a compilation; <strong>D-110's record of whom a grant reached</strong>, a snapshot
+  taken because it is a historical record — a rule naming a person who has since left must still read as it read
+  then, which is the opposite of an answer kept for speed: it is <em>deliberately</em> stale, and nothing reads it to
+  decide whether to allow something now; and <strong>the audit payloads</strong>, which record that a check happened and
+  expire on their own schedule
+  (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+  <strong>The first is a value in a column; the second and third are records of an event. There is no fourth, and what
+  the check looks for is a row that is a <em>current</em> answer.</strong>
+  <strong>This is enforced structurally, which is the strongest thing this page says about it and also its limit:</strong> the
+  schema has nowhere to put an answer, so an implementation cannot persist one by forgetting not to — it would
+  have to add a table, which is an act. In
+  <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
+  vocabulary the residue is a named convention, not a guard: <strong>nothing stops a team from adding a
+  <code>permission_cache</code> table again in a year, under load, at 2 a.m., because it is the obvious move and this
+  invariant is a paragraph.</strong> What the corpus holds against that is not a mechanism but a record — D-111's three
+  rounds of invalidation policy, the <code>membership</code> write that appeared on no invalidation list while
+  <code>membership.terminate</code> is exactly the ⛔ action a concerned guardian waits on, and the sentence in
+  <a href="../03-membership/#6-membership-and-the-authorization-system"><code>03-membership.md</code> §6</a> that demanded cache
+  invalidation on every membership transition three rounds before the policy that failed to provide it was
+  written. <strong>Read that pairing before writing the migration.</strong></li>
 <li><strong>Where these go.</strong> §11's reports now have a home rather than a schedule: <strong>the permissions page has a tab</strong>
   (<a href="../../decisions/decision-log/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>),
   with <strong><code>Broken</code></strong> holding the rules that name something deprecated, hidden or disabled or that resolve to
   nobody — checks <strong>1, 2, 3, 7's empty half, 12, 13, 14 and 18's second half</strong> all land there — and
   <strong><code>Unusual</code></strong> holding rules that resolve correctly and look odd, which is where <strong>6</strong> lives. <strong>Checks 7's wide
   half and 9 still go to a person rather than to a screen</strong>, because both describe authority getting bigger
-  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>What the tab replaced is four rounds
+  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>Check 19 goes to neither tab</strong>: it is not a fact about a rule, it is a fact about the
+  schema, and the place it can be enforced is a migration review — which is the point of D-114 deleting the
+  table rather than forbidding its contents in prose. <strong>What the tab replaced is four rounds
   of "a standing report nobody is obliged to read"</strong>, and the difference is not that the tab is a guard in
   <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
   sense — nothing is blocked — but that <strong>it is where the person writing the rule already is.</strong></li>
@@ -5998,9 +6018,14 @@ need a paragraph telling readers they were different. That paragraph is now abou
 <li><strong>Whether the reference listing is actually cheap (§8, §10).</strong> D-103 registers the assumption: "which
   live grants name this audience, and at what depth" is one indexed query over the leaf rows, cheap at
   this organization's size, <strong>unverified at any size</strong>. It is on the save path of a screen a person is
-  standing at, and it is also what the wholesale cache invalidation is standing in for. If the import
-  corpus's row-count estimates are wrong, the two decisions that follow — compute the closure on save,
-  or keep invalidating everything — are one decision, not two.</li>
+  standing at — and since <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
+  <strong>it is load-bearing for a policy and not only for a screen</strong>: the blunt version bump it used to stand in for is
+  deleted, and what replaces it — dropping exactly the compilations that embed a changed expression — needs this
+  listing's <strong>direction</strong>, the reverse one, run transitively rather than one hop at a time (§10). <strong>So the
+  assumption got more load-bearing rather than less, and this bullet is where that is registered rather than §10
+  pretending it is settled.</strong> If the import corpus's row-count estimates are wrong there is no blunt instrument
+  left to fall back on, because there is nothing left to invalidate for everyone at once; what there is instead is
+  D-112's trigger and this bullet.</li>
 <li><strong>Whether <code>audience.code</code> should be required rather than optional on <code>is_system</code> rows (§8, §12).</strong>
   The seeded audiences are the resolver's vocabulary and cannot be composed with by anything that lacks
   a code, which makes the code mandatory in every practical sense while leaving it nullable in the
@@ -6022,25 +6047,33 @@ need a paragraph telling readers they were different. That paragraph is now abou
   (§4, §6).</li>
 <li>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable (§6) — a real fork, now covering
   <code>selector_arg_id</code> too.</li>
-<li>~~How long a <code>permission_cache</code> entry may live (§10).~~ <strong>Closed in round 13, and the answer is: it does not
-  live, it is rebuilt.</strong> <a href="../../open-questions/#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a>
-  spent four rounds on that number and on which write invalidates how wide a fan-out, and
-  <a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
-  replaced the whole apparatus with a nightly full rebuild, immediate invalidation on any ruleset write, and an
-  operator's request — <strong>no TTL and no asymmetric TTL</strong>, which is why <code>expires_at</code> is gone from §10's table and
-  <code>ruleset_version</code> is in it. <strong>The two invalidations this bullet called impossible to key are the reason:</strong> a
-  <code>role_holder</code> row names its person, but an edit to a shared audience's tree names nobody, and the answer was
-  never to enumerate the reached people — it was to stop asking, by versioning the ruleset. <strong>The affordability
-  worry the bullet ended on is now answered by a stated size rather than by hope</strong>
-  (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>):
-  a few hundred people × 66 codes × a small number of items is a short nightly job, and D-112 carries the
-  trigger that reopens it.</li>
+<li>~~How long a <code>permission_cache</code> entry may live (§10).~~ ~~<strong>Closed in round 13, and the answer is: it does
+  not live, it is rebuilt.</strong>~~ <strong>Closed twice, and the second closing deleted the subject rather than answering
+  it.</strong> Round 13 spent F-6's four rounds on that number and then removed the need for it
+  (<a href="../../open-questions/#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a>,
+  <a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>):
+  a nightly full rebuild, immediate invalidation on any ruleset write, an operator's request, and <strong>no TTL and no
+  asymmetric TTL</strong> — which is why <code>expires_at</code> left §10's table that round and <code>ruleset_version</code> stayed. <strong>Round
+  14 then deleted the table whose lifetime this bullet asked about</strong>
+  (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+  <strong>Neither closing was wasted, and the pairing is the useful part:</strong> the first closed the TTL question by making
+  a TTL unnecessary, and the second found that the rebuild had quietly inherited the thing the TTL was for — the
+  staleness window moved from the row to the schedule, which is a harder place to notice it. <strong>What is left open
+  here is nothing.</strong> <code>ruleset_version</code> survives as a compilation key with its bump set cut to <code>audience_operand</code>
+  and <code>selector_type</code>, and the affordability question this bullet ended on is answered the same way D-112
+  answers it — by a stated size, now with no job to afford at all.</li>
 <li>~~Cache vs materialized effective-permission table (§8, §10).~~ <strong>Dissolved, not decided</strong> —
   <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>.
   A nightly full rebuild of cached answers and a nightly materialized <code>effective_permission</code> table turned out to
   be <strong>the same job with two names</strong>, and the design was chosen for a reason outside the question. Recorded as
   dissolved on purpose: <strong>a dissolved question is the kind that comes back if nobody writes down that it
-  dissolved</strong>, and D-091's history-not-performance framing is exactly where it would come back from.</li>
+  dissolved</strong>, and D-091's history-not-performance framing is exactly where it would come back from.
+  <strong>Round 14 dissolved the other half of the identity</strong>: with the answer cache deleted
+  (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>)
+  there is no rebuild left to be confused with a history table, so what remains of the question is only the
+  history side — and D-114 records that deleting the cache <strong>did not</strong> answer it, since a table of today's
+  answers was never a record of 2011. <strong>If it comes back, it comes back as that question, and D-114's invariant
+  19 is the thing it has to argue with.</strong></li>
 <li>Retention policy for <code>access_log</code> — legal input required
   (<a href="../../open-questions/#f-8--retention-policy-for-accesslog">F-8</a>).</li>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>

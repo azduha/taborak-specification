@@ -2268,7 +2268,7 @@ people on different events, so "who does this grant reach?" is no longer answera
 grant row alone — for a grant whose expression contains a bound operand, it is answerable
 only as <em>"on event 1204, these 84 people"</em>, and the screen must name the event it computed
 against rather than presenting the list as a property of the grant. The consequences are
-requirements on the editor and the cache, not on the schema:</p>
+requirements on the editor and ~~the cache~~ <strong>the read path</strong>, not on the schema:</p>
 <ul>
 <li>An expression containing a bound operand is previewed <strong>per item</strong>. Asking for a preview of
   such a grant at the unit is not a large computation, it is a refused one — the same refusal
@@ -2278,21 +2278,42 @@ requirements on the editor and the cache, not on the schema:</p>
   so previewing one item evaluates a couple of hundred predicates and nobody feels it
   (<a href="../../decisions/decision-log/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).
   That size is <strong>stated, not measured</strong> — nothing in these documents has measured anything here — and the
-  trigger for reopening it is a few thousand people, or a thousand registrants on one event.</li>
+  trigger for reopening it is a few thousand people, or a thousand registrants on one event. <strong>One dependency
+  arrived since:</strong> the nightly rebuild used to pre-pay this work off the interaction, and with the cache deleted
+  the preview computes it <strong>on open</strong> — still affordable, now with no fallback behind it
+  (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).</li>
 <li>Where no item is in hand, the editor says what the expression <em>means</em>, not who it reaches.</li>
-<li>The cache key for a bound operand <strong>includes the item</strong>
-  (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>),
-  because the same grant on two events has two answers
-  (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</li>
-<li><strong>A registration write is not a ruleset write.</strong> There is one cache policy and three triggers — rebuilt
-  nightly in full, immediately on any write to the ruleset, and on explicit request — and
-  <code>event_registration</code> is not part of the ruleset
+<li>~~The cache key for a bound operand <strong>includes the item</strong>~~ — the answer cache that had that key is deleted
+  (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
+  and the reason it was there is untouched: the same grant on two events has two answers
+  (<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+  A compiled expression holds no item precisely because the item arrives as a parameter, so the item is now bound
+  at <strong>resolution</strong> — nothing expanded or resolved while checking one event may be served for another, and any
+  cache of a <em>resolution</em> rather than of a compilation is keyed by the item or it is wrong.</li>
+<li><strong>A registration write is not a ruleset write, and that no longer means what this bullet said it meant.</strong>
+  ~~There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write to the
+  ruleset, and on explicit request — and <code>event_registration</code> is not part of the ruleset
   (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
   So an answer that runs through <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code> or <code>ON_WAITLIST</code> <strong>may be up to one
   night behind the roster</strong>, and this is the module where an implementer would most confidently assume
   otherwise. It is the same residual window as a birthday, and it is not the safeguarding window: every
   withdrawal a person actually <em>performs</em> — a revoke, a deny, ending a grant's period, ending an
-  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.</li>
+  assignment — is a ruleset write and rebuilds at once. What waits for the night is what nobody does.~~
+  <strong>What is true now:</strong> marking a register, confirming a place, flipping <code>is_confirmed</code> or promoting somebody off
+  the waitlist moves <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code>, and the new state is visible <strong>on the
+  next check</strong>, because resolution is live and there is no answer stored anywhere to be behind the roster — and
+  <code>ORGANIZERS</code>, the fifth bound operand, moves on its own rows with the same immediacy
+  (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+  <strong>This page was right to be uneasy.</strong> A window opened by a boundary drawn in another file, over four tiers this
+  module computes and that file never listed, is the exact shape that got the cache deleted — the omission that
+  did it was <code>membership</code>, and the write that made it fatal was <code>membership.terminate</code> ⛔. <strong>What is still true of
+  the old wording, precisely:</strong> a registration write changes no rule's text, so it is not a ruleset write in the
+  only sense the phrase now carries, and <code>ruleset_version</code> is bumped by <code>audience_operand</code> and <code>selector_type</code>
+  alone. Being outside that set buys a compilation nothing; it buys a check nothing either. <strong>And since this
+  bullet just deleted the mechanism behind a rule, it owes the D-081 answer</strong>
+  (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>):
+  <strong>nobody enforces "a registration change must reach an answer" any more, because there is nothing left to
+  invalidate</strong> — the read path does it, and unlike a bullet in a list, a read path cannot be forgotten.</li>
 </ul>
 <p>Fail closed as everywhere else in the model, <strong>with the direction stated rather than implied</strong>:
 an operand that resolves to nothing contributes the empty set, which <em>narrows</em> what a <code>+</code> or a
@@ -2314,9 +2335,13 @@ remaining way to produce a broken leaf.</strong></p>
 <p><strong>A preview is a statement about the day it was taken.</strong> <code>OLDER(n)</code> and <code>YOUNGER(n)</code> make that
 true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
 are the people who qualify <em>today</em>, and a birthday moves the list with no write and no edit to the
-grant. Nothing is told about it and nothing needs to be: the cache is rebuilt nightly, on any ruleset
+grant. Nothing is told about it and nothing needs to be: ~~the cache is rebuilt nightly, on any ruleset
 write, and on request, and an answer that moved without a ruleset write is simply allowed to be one
-night stale (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+night stale (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>)~~
+— <strong>there is nothing to be stale</strong> (<a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>):
+a birthday moves the answer at the instant it happens, because every check resolves against live rows. What the
+preview is a statement about is <strong>the date it was taken</strong>, and that is a fact about the calendar, not a lag to be
+closed.
 <strong>The preview is a workbench, not a record — and the record is the expression</strong>
 (<a href="../../decisions/decision-log/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).
 The audit row written when a grant is saved says <em>this person wrote these words, about this item, on this

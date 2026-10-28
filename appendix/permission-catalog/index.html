@@ -2068,10 +2068,18 @@ with no write of any kind, one person at a time, at midnight — and a check ask
 answers for that past date, which is a question no snapshot design could answer. <strong>Exactly these two, and
 no others:</strong> the other dated operands — <code>ROLE</code>, <code>GROUP</code>, <code>AUDIENCE</code> — move when somebody makes a write with
 a date on it, which is a different claim and is not the one this sentence makes. Nothing is stored, so there
-is nothing to invalidate: the cache is rebuilt nightly in full, immediately on any write to the ruleset, and
-on explicit request, and an answer that moved without one of those is simply allowed to be a night stale
-(<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
-No table changes when a person turns eighteen, so there is no row to expire and no cache of <em>membership</em> to
+is nothing to invalidate — and since round 14 there is no stored answer left to invalidate either:
+~~the cache is rebuilt nightly in full, immediately on any write to the ruleset, and on explicit request, and
+an answer that moved without one of those is simply allowed to be a night stale~~
+(<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>)
+is retired by <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>,
+which deletes the answer cache and with it the claim that anything could be a night stale. A check resolves
+against live rows, so <strong>a birthday moves an age set at the instant it happens</strong>, with no job standing between
+the birthday and the answer. <strong>What this costs the catalog is a sentence it used to be able to write:</strong> <em>this
+is cheap because it is cached.</em> It cannot write that any more, and the cheapness argument is now one indexed
+read of the checked person's grant rows per request, plus the two batch reads — <code>can_many(person, codes[],
+item?)</code> for a screen's affordances and <code>which_of(people[], code, item)</code> for a list's people. No table changes
+when a person turns eighteen, so there is no row to expire and no cache of <em>membership</em> to
 keep — which is exactly the property age <strong>bands</strong> would not have had, and why bands are not in this design.
 The editor's preview is a workbench and never was a record, and <strong>the record is the expression</strong>: the audit
 row logs the words, and the preview is logged as <em>a rendering on a date</em> rather than as a statement of who
@@ -4087,13 +4095,22 @@ round 10 created them:</strong></p>
   (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>):
   a person turns eighteen, joins the set, and no row was touched — which is exactly why age <em>bands</em>, with
   the per-person expiry dates they would need, are not in this design. <strong>There is no longer an invalidation
-  model for this to be an exception to:</strong> the cache is rebuilt nightly in full, immediately on any write to
-  the ruleset, and on explicit request, with no per-entry TTL and no table of which write invalidates how
-  wide a fan-out
-  (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
-  A birthday is not a ruleset write, so a cached answer about an age set <strong>may be up to one night stale,
-  and the nightly rebuild is what fixes it</strong> — the same ruling this corpus already accepted about how the
-  rules resolve as time passes, now with its mechanism attached. <strong>One thing follows that is open, and one that is closed, and keeping them apart is the whole
+  model for this to be an exception to</strong> — because there is no cache left for one to be about.
+  ~~The cache is rebuilt nightly in full, immediately on any write to the ruleset, and on explicit request,
+  with no per-entry TTL and no table of which write invalidates how wide a fan-out~~
+  (<a href="../../decisions/decision-log/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>)
+  and ~~a birthday is not a ruleset write, so a cached answer about an age set may be up to one night stale,
+  and the nightly rebuild is what fixes it~~ are both retired by
+  <a href="../../decisions/decision-log/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>,
+  which deletes the stored answer outright; what survives of D-111 is the version integer, its bump set cut
+  to the two tables whose rows change what an expression <em>means</em> — <code>audience_operand</code> and <code>selector_type</code> —
+  and what a bump drops is now a compilation, never an answer. <strong>A birthday moves the set at the instant it
+  happens.</strong> What <a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+  waived was the calendar arriving between two rebuilds, and there are no rebuilds any more: its ruling
+  stands, <em>"...how the rules resolve and IT IS FINE"</em>, with nothing left for it to be fine about, and
+  <strong>"up to one night stale" is deleted from this corpus</strong> — under live resolution a birthday, a period reaching its own
+  <code>valid_to</code> and a registration write each move the answer at the instant they happen, and so does a
+  membership termination, which is the one this design used to get wrong. <strong>One thing follows that is open, and one that is closed, and keeping them apart is the whole
   point.</strong> <strong>Open: nothing bounds what such a check costs</strong> — the bound this system had was a depth bound
   and
   <a href="../../decisions/decision-log/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
