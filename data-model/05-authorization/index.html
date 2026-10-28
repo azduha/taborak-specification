@@ -3662,7 +3662,7 @@ say</strong>, not what the machine computes:</p>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>         | '(' expr ')'
 <a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
 <a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  OLDER(n) and YOUNGER(n) read person.birth_date AS OF THE DATE THE CHECK IS MADE,
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  so `MEMBERS * OLDER(18) - YOUNGER(6)` reaches different people on different
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  so `MEMBERS * OLDER(13) * YOUNGER(19)` reaches different people on different
 <a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  dates with no write, and can(..., on date) for a past date answers for that
 <a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>  past date. Their argument is an INTEGER — the first operand argument in the
 <a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  registry that is not an entity reference (§*The selector registry*). There is
@@ -3690,7 +3690,7 @@ say</strong>, not what the machine computes:</p>
 <ul>
 <li><code>+</code> union, <code>*</code> intersection, <code>-</code> difference — <strong>three operators, and round 12 added none of its own.</strong>
   What it added was two operands the same three operators compose:
-  <code>MEMBERS * OLDER(18) - YOUNGER(6)</code> is an ordinary term
+  <code>MEMBERS * OLDER(13) * YOUNGER(19)</code> is an ordinary term
   (<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
 <li><strong>There is no comparison operator in the language.</strong> No <code>&gt;=</code>, no <code>&lt;</code>, no bare <code>AGE</code>: an operand is a
   registry row and <code>AGE &gt;= 15</code> has no row to be, which is the whole of D-060's protection now

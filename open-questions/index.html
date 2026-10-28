@@ -3585,10 +3585,32 @@ one fact stored three times, and nothing in §11 can see any of the three.</stro
   quoted as a design principle.</p>
 </li>
 <li>
-<p><strong>A prose expression names an operand that does not exist: <code>all_in_school</code>.</strong> <a href="../domain/07-events/">domain/07-events.md §1</a> opens the age-gating story with "open the event to an audience — <code>all_in_school</code>", and round 12 found on checking that there is no <code>SCHOOL</code> selector, no <code>school</code> column on <code>person</code>, and no table a <code>SCHOOL(x)</code> could take as an argument. <strong>So the sentence advertises a row nobody minted</strong>, and the school-bounded case it offers as the cheap answer is one an organizer cannot actually build. This is this entry's own defect, one round later, <strong>pointing the other way</strong>: last time the prose used an operand the registry lacked and the registry turned out to be the wrong side; here the registry is right and the prose is the fiction — which is the same failure to check a written expression against the table, and <strong>another page in the family <a href="../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-named</strong> — prose contradicting a registry — rather than a new class, and the third distinct page of it after
-the registry itself and <a href="../domain/06-authorization-model/">domain/06 §6</a>'s selector table. Two exits, both cheap and one of them obligatory: either <code>SCHOOL(x)</code> becomes a row (which means the person model grows a school affiliation it does not have today, so it is a decision entry and not a seed row alone), or the sentence stops naming an audience and says what is really meant — <em>a <code>person_group</code> per school, filled by import</em>, which is expressible today and is probably what the author had in mind. <strong>What is not an option is leaving the name in place</strong>, because that is how <code>PERSON(x)</code> spent a whole round unwritten.</p>
+<p><strong>~~A prose expression names an operand that does not exist: <code>all_in_school</code>.~~ — retracted; that defect is
+  not in this corpus, and writing it here is the real finding.</strong> The paragraph this bullet replaced cited
+  <a href="../domain/07-events/">domain/07-events.md §1</a> as opening its age-gating story with an audience named
+  <code>all_in_school</code>, and argued from there that the prose was advertising a registry row nobody had minted.
+  <strong>The token appears nowhere in this repository</strong> — not on the line cited, not in that file, not in any file:
+  a grep for <code>SCHOOL</code> and <code>in_school</code> across <code>docs/</code> returns this bullet and nothing else. It arrived from a
+  subagent's report of a defect it said it had found and deliberately not touched, it was plausible — the
+  registry genuinely has no <code>SCHOOL</code>, and the sentence it described is the kind of sentence that page does
+  write — and it entered the register <strong>without the one grep that would have killed it</strong>, which is the same
+  operation this entry's entire finding consists of. <a href="../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+  named the class: prose contradicting a registry is a fiction. <strong>This is the fourth page of that class and the
+  only one that was <em>about</em> the registry</strong>, filed in the file whose job is to hold verified open questions —
+  which is what makes it the expensive kind. <strong>A wrong entry in a domain page describes something wrong; a wrong
+  entry here directs work</strong>, and nothing checks this file: no CI, no schema, no resolver, and no reader who
+  would notice, because every sentence in it is written as a question and a question cannot be falsified by
+  reading it. <strong>The control this suggests is not "trust reports less", it is the same control as everywhere
+  else in this module: grep before you write</strong>, including — especially — when the sentence being written is an
+  accusation against somebody else's page.</p>
 </li>
+<li><strong><code>SCHOOL</code> — asked directly, and refused: it is not an important selector, at least not for now.</strong> The
+  question above was worth answering even though its premise was invented, because the underlying question is
+  real: could a <code>SCHOOL(x)</code> operand be added, and should it? It could be, and it is not, and
+  <a href="../decisions/decision-log/#d-108--there-is-no-school-operand-a-selector-may-only-name-a-fact-the-model-stores">D-108</a>
+  is where that is decided — with the reason, the shape to use instead (<strong>a <code>person_group</code> per school, which is
+  expressible today</strong>), and the one thing that would reopen it. <strong>"For now" is honoured by naming the trigger
+  rather than a date.</strong></li>
 </ul>
 <p><strong>What rounds 11 and 12 changed here, and what this entry still does not own.</strong> <strong>One bullet is open</strong> — the
 <code>GUARDIANS</code> one; round 12 closed the age one. <code>PERSON(x)</code> did not close either of them, and deleting <code>LIST</code>

@@ -2801,8 +2801,8 @@ about the people a rule reaches — the two limits drawn there are this page's b
 <code>OLDER(n)</code> and <code>YOUNGER(n)</code> are <strong>ordinary named operands</strong> — <code>n</code> a whole number of years, read against the
 birth date <strong>on the date being checked</strong>, which is why they landed in the column of the table below headed
 "the set, on the checked date" rather than anywhere in a section about conditions.
-<code>MEMBERS * OLDER(18) - YOUNGER(6)</code> is a set expression in exactly the sense <code>MEMBERS * GROUP(cubs) - PERSON(a)</code>
-is, and it parses under the two rules above with nothing added to them.</p>
+<code>MEMBERS * OLDER(13) * YOUNGER(19)</code> — thirteen to eighteen, a band from two operands — is a set expression in exactly the sense
+<code>MEMBERS * GROUP(cubs) * PERSON(a)</code> is, and it parses under the two rules above with nothing added to them.</p>
 <p><strong>Boolean spellings were offered for this language and declined, and the reason is the first paragraph of
 this section.</strong> <code>p ∈ (A ∩ B) ∪ C</code> <strong>is</strong> <code>(p ∈ A ∧ p ∈ B) ∨ p ∈ C</code>, so <code>&amp;</code>, <code>|</code> and <code>!</code> would name three
 operators this grammar already has, and <code>!A</code> is already written <code>EVERYONE - A</code> at the same cost once brackets
