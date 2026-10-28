@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -784,7 +784,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1028,6 +1028,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#there-is-no-owner-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no owner column
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#no-status-column-and-why-that-is-not-an-omission" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1240,10 +1251,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-unit-authority-rule" class="md-nav__link">
+  <a href="#the-unit-authority-rule-and-can_event--both-deleted" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The unit-authority rule
+        The unit-authority rule, and can_event() — both deleted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectors-that-bind-to-an-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selectors that bind to an event
       
     </span>
   </a>
@@ -1585,6 +1607,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#there-is-no-owner-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        There is no owner column
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#no-status-column-and-why-that-is-not-an-omission" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1797,10 +1830,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-unit-authority-rule" class="md-nav__link">
+  <a href="#the-unit-authority-rule-and-can_event--both-deleted" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The unit-authority rule
+        The unit-authority rule, and can_event() — both deleted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectors-that-bind-to-an-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selectors that bind to an event
       
     </span>
   </a>
@@ -1932,9 +1976,14 @@
 <p><code>event</code>, <code>event_organizer</code>, <code>event_registration</code>, <code>event_question</code>, <code>event_answer</code>.</p>
 <p>Domain rationale: <a href="../../domain/07-events/">../domain/07-events.md</a>.</p>
 <p><strong>Nothing here is provisional.</strong> This module was designed against the authorization model
-rather than beside it, and every hook it uses — <code>access_grant.scope_type = 'event'</code>,
-<code>grant_scope_type</code>, audiences, <code>permission_level</code> — was already in place and seeded. The
+rather than beside it, and every hook it uses — <code>access_grant</code> scoped to an item,
+<code>grant_scope_type</code>, audiences and their selectors — was already in place and seeded. The
 tables below fill those hooks; they do not extend the model.</p>
+<p>Round 10 removed one thing this module was built around: <strong>an event has no owning unit</strong>
+(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+<code>event.org_unit_id</code> is gone, <code>can_event()</code> is gone, and the unit-authority rule that every
+event permission used to be reached through is gone. What the module uses instead is a set
+of <strong>selectors that bind to the event being checked</strong>, specified in §8.</p>
 <hr />
 <h2 id="1-why-these-five-tables-and-no-event_series">1. Why these five tables, and no <code>event_series</code><a class="headerlink" href="#1-why-these-five-tables-and-no-event_series" title="Permanent link">&para;</a></h2>
 <table>
@@ -1947,7 +1996,7 @@ tables below fill those hooks; they do not extend the model.</p>
 <tbody>
 <tr>
 <td><code>event</code></td>
-<td>The occasion. One owning unit, a date, a registration window, an optional capacity</td>
+<td>The occasion. A date, a registration window, an optional capacity — and no owner (§2)</td>
 </tr>
 <tr>
 <td><code>event_organizer</code></td>
@@ -1967,7 +2016,9 @@ tables below fill those hooks; they do not extend the model.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>No recurrence.</strong> A weekly meeting is <code>unit_participation</code>, not an event
+<p><strong>No recurrence.</strong> A weekly meeting is a <strong>group</strong> — a <code>person_group</code> with dated member rows
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>) —
+not an event
 (<a href="../../domain/07-events/#1-what-an-event-is-and-what-it-is-not">../domain/07-events.md §1</a>).
 Adding <code>event_series</code> would mean every downstream table — registrations, capacity, presence,
 organizers, questions — needs a second possible home, and the feature that needed recurrence
@@ -1995,11 +2046,6 @@ is already modelled.</p>
 <td><code>public_id</code></td>
 <td>external identifier, required</td>
 <td>Unique. Generated when the event is created</td>
-</tr>
-<tr>
-<td><code>org_unit_id</code></td>
-<td>reference to org unit, required</td>
-<td>EXACTLY ONE owning unit, and it is never absent. A joint camp is one unit's event that another unit's children register for, via an audience grant — see <a href="../../domain/07-events/#2-an-event-belongs-to-one-unit">../domain/07-events.md §2</a>. This is forced by D-049, not merely preferred: two owners would create an exception to "the root may not read a sub-unit's events" shaped exactly like a joint camp, with no principled place to stop</td>
 </tr>
 <tr>
 <td><code>title</code></td>
@@ -2044,7 +2090,7 @@ is already modelled.</p>
 <tr>
 <td><code>registration_opens_at</code></td>
 <td>instant in time, optional</td>
-<td><code>NULL</code> = open as soon as the event is visible. The event is visible to whoever holds <code>event.view</code>, which for a fresh event is its organizers and nobody else (<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>), so <code>NULL</code> is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed</td>
+<td><code>NULL</code> = open as soon as the event is visible. The event is visible to whoever holds <code>event.view</code>, which after D-102 normally includes everyone holding it at the unit — see <a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a> for what that does to the private-by-default draft. So <code>NULL</code> is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed</td>
 </tr>
 <tr>
 <td><code>registration_closes_at</code></td>
@@ -2054,7 +2100,7 @@ is already modelled.</p>
 <tr>
 <td><code>capacity</code></td>
 <td>integer, optional</td>
-<td><code>NULL</code> = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and organizers may exceed it (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>)</td>
+<td><code>NULL</code> = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>)</td>
 </tr>
 <tr>
 <td><code>waitlist_deadline</code></td>
@@ -2089,7 +2135,7 @@ is already modelled.</p>
 <tr>
 <td><code>created_by</code></td>
 <td>reference to person, optional</td>
-<td></td>
+<td>Who created the row. <strong>Not an owner</strong> — <code>created_by</code> is attribution, and <a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> still holds that a permission is never derived from an identity</td>
 </tr>
 <tr>
 <td><code>updated_at</code></td>
@@ -2121,6 +2167,8 @@ is already modelled.</p>
   waitlist deadline is meaningless without a capacity to fill or a fee to pay, and stating
   this prevents a column that silently does nothing.</li>
 <li><code>public_id</code> is unique.</li>
+<li><strong>No column of <code>event</code> names a scope.</strong> There is no owner, no holding group, no creating
+  unit, and no rule anywhere in this module that reads one (§8).</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
@@ -2128,16 +2176,46 @@ is already modelled.</p>
   rows that are not cancelled. Every "what is happening" and "what is still open" list
   excludes cancelled events, so the cancelled ones are simply not in the index.</li>
 </ul>
+<h3 id="there-is-no-owner-column">There is no owner column<a class="headerlink" href="#there-is-no-owner-column" title="Permanent link">&para;</a></h3>
+<p>~~<code>org_unit_id</code> — reference to org unit, required. EXACTLY ONE owning unit, and it is never
+absent.~~ <strong>Deleted by
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>.</strong>
+The column's note used to carry the argument that forced it: a joint camp is one unit's
+event that another unit's children register for via an audience grant, and two owners would
+have created an exception to "the root may not read a sub-unit's events" shaped exactly like
+a joint camp, with no principled place to stop. That argument was sound while
+<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>
+was alive. <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+deleted the sub-units, D-049 with them, and there is nothing left for the column to protect.</p>
+<p><strong>An event is an item in <code>grant_scope_type</code> under the code <code>event</code>, and nothing more.</strong> A
+grant at the unit reaches every event; a grant on one event reaches that event and nothing
+else; <code>event.create</code> has <code>applies_to = unit</code>, so writing it on an event is refused when the
+grant is saved, with the reason in the message
+(<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</p>
+<p><strong>The deletion leaves no residue in this file, which is worth recording as a fact rather than
+a hope.</strong> There is no index on an owner (the lists above are the whole set), no check in §10
+that reads one, no cascade, and no rule in §5 or §8 that compares one. The people connected
+to an event are reached through <code>event_organizer</code> and <code>event_registration</code>, which point at
+the event directly and never needed the owner.</p>
+<p><strong>Import consequence.</strong> The one-off import owes <code>event</code> rows and <code>event_registration</code> rows
+and it owes <strong>no owner column</strong> — one less thing to invent a value for
+(<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+It does owe the per-event seeded grant in §8, which is the residue the deletion <em>does</em> leave.</p>
 <h3 id="no-status-column-and-why-that-is-not-an-omission">No <code>status</code> column, and why that is not an omission<a class="headerlink" href="#no-status-column-and-why-that-is-not-an-omission" title="Permanent link">&para;</a></h3>
 <p>Nothing is stored that can be derived. "Is this event over?" is <code>ends_at</code> in the past. "Is it
 cancelled?" is <code>cancelled_at</code> set. "Needs attention now" — the list an admin screen runs — is
 every event with <code>cancelled_at</code> absent and <code>ends_at</code> not yet past, ordered by <code>starts_at</code>.</p>
 <p><code>completed</code> is derived, never stored, so there is no state to keep consistent and no job to
-move rows between states. <strong>Draft</strong> is not a state either: a new event has no grants beyond
-its organizers, so nobody else can see it, and publishing is an <code>access_grant</code>, not an
-<code>UPDATE</code>. A status column and a permission system that both claim to answer "who may see
-this?" will eventually disagree, and the one that gets enforced is whoever wrote the last
+move rows between states. <strong>Draft</strong> is not a state either: publishing is an <code>access_grant</code>,
+not an <code>UPDATE</code>. A status column and a permission system that both claim to answer "who may
+see this?" will eventually disagree, and the one that gets enforced is whoever wrote the last
 <code>IF</code>.</p>
+<p>One clause of the old argument went with the owner column. ~~A new event has no grants beyond
+its organizers, so nobody else can see it~~ — with no owner, a fresh event is visible to
+everybody already holding <code>event.view</code> at the unit, which is the normal case. Privacy is
+therefore an act rather than a default; see
+<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>.</p>
 <h3 id="why-fee_schedule_id-and-not-an-event_fee-table">Why <code>fee_schedule_id</code> and not an <code>event_fee</code> table<a class="headerlink" href="#why-fee_schedule_id-and-not-an-event_fee-table" title="Permanent link">&para;</a></h3>
 <p>The fee amount, currency and validity already live in <code>fee_schedule</code>
 (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), which is temporal — so a
@@ -2176,12 +2254,12 @@ because "was Jan an organizer of that camp?" must have one answer, not a set of 
 <tr>
 <td><code>organizer_role</code></td>
 <td>text, optional</td>
-<td><code>lead</code>, <code>assistant</code>, <code>cook</code>, <code>driver</code>, <code>medic</code>, <code>quartermaster</code> — free text. NOT a controlled vocabulary: every organization labels these differently, and a closed list here would be a guess of the kind D-054 removed for unit types</td>
+<td><code>lead</code>, <code>assistant</code>, <code>cook</code>, <code>driver</code>, <code>medic</code>, <code>quartermaster</code> — free text. NOT a controlled vocabulary: every organization labels these differently, and a closed list here would be a guess of the kind <a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a> refused for reason codes. <em>(This note pointed at D-054 until D-097 deleted the unit-type vocabulary it argued about; the argument is unchanged and the living precedent for "the system does not ship somebody's vocabulary" is D-095.)</em></td>
 </tr>
 <tr>
 <td><code>is_primary</code></td>
 <td>boolean, required</td>
-<td>Default false. The person the parents are told to call. At most one per event (§10 check 3)</td>
+<td>Default false. The person the parents are told to call. At most one per event — a uniqueness rule the schema can express, so it is a constraint and not a report (Rules, below)</td>
 </tr>
 <tr>
 <td><code>sort_order</code></td>
@@ -2229,7 +2307,9 @@ the screens knew about would delete the record of who was coming.</p>
 </blockquote>
 <h3 id="organizers-are-appointments-not-grants">Organizers are appointments, not grants<a class="headerlink" href="#organizers-are-appointments-not-grants" title="Permanent link">&para;</a></h3>
 <p><code>event_organizer</code> is the <strong>domain</strong> answer to "who is running this camp?" — the labelled,
-ordered list that parents see. It is deliberately <strong>not</strong> an <code>access_grant</code>
+ordered list that parents see. It is deliberately <strong>not</strong> an <code>access_grant</code>, and
+<a href="../../decisions/decision-log/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
+is untouched by round 10
 (<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>):</p>
 <ul>
 <li>A grant has no room for <code>organizer_role = 'cook'</code>.</li>
@@ -2237,8 +2317,18 @@ ordered list that parents see. It is deliberately <strong>not</strong> an <code>
 <li>Revoking a grant to remove a cook would also revoke their ability to see the event at
   all, which is not what "they are no longer cooking" means.</li>
 </ul>
-<p><strong>Authority to act on the event does not come from this table.</strong> It comes from the owning
-unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or from <code>system.admin</code>.</p>
+<p><strong>Authority to act on the event does not come from this table.</strong> It comes from a live allow —
+at the unit, which reaches this event, or on this event — and never from a role or an
+appointment conferring anything by itself
+(<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).</p>
+<p>What <em>did</em> change is what this table is now <strong>aimed at</strong>. It is the extension of the selector
+<code>ORGANIZERS</code>, so a grant can name the people running an event without any of them being
+granted anything by being listed
+(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+<strong>An operand is a set, not a grant</strong> — the same sentence
+<a href="../05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a> repeats
+for named sets generally, and it is why D-062 survives the deletion of the mechanism that used
+to make organizers matter. See §8 for the seeded grant that aims at this table.</p>
 <hr />
 <h2 id="4-event_registration">4. <code>event_registration</code><a class="headerlink" href="#4-event_registration" title="Permanent link">&para;</a></h2>
 <p>One row per person per event. <strong>Two stored values; "unanswered" is the absence of a row.</strong></p>
@@ -2265,7 +2355,7 @@ unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or fr
 <tr>
 <td><code>person_id</code></td>
 <td>reference to person, required</td>
-<td><code>person_id</code>, NOT <code>membership_id</code> — same reasoning as <code>unit_participation</code> (D-041, <a href="../03-membership/#5-unit_participation">03-membership.md §5</a>). An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would make every one of those children a "current member" today through the gate (D-039, D-056)</td>
+<td><code>person_id</code>, NOT <code>membership_id</code> — the reasoning <code>unit_participation</code> gave and <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> carried over to <code>person_group_member</code>, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside <code>MEMBERS</code> today — see the note below</td>
 </tr>
 <tr>
 <td><code>response</code></td>
@@ -2280,7 +2370,7 @@ unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or fr
 <tr>
 <td><code>source</code></td>
 <td>enum: <code>self</code> / <code>staff</code> / <code>guardian</code> / <code>import</code>, required</td>
-<td>Default <code>self</code>. How this person got here, and the audit answer to "how did they get in?". <code>staff</code> bypasses the contribute requirement deliberately (<a href="../../domain/07-events/#6-the-hinge-organizers-and-the-scope-mismatch">../domain/07-events.md §6</a>): organizers may register anyone. <code>guardian</code> is acting-under-guardianship; the acting person is in <code>access_log</code></td>
+<td>Default <code>self</code>. How this person got here, and the audit answer to "how did they get in?". <code>staff</code> is written by a person holding <code>event.register_other</code>, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. <code>guardian</code> is acting-under-guardianship; the acting person is in <code>access_log</code></td>
 </tr>
 <tr>
 <td><code>registered_by</code></td>
@@ -2310,12 +2400,12 @@ unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or fr
 <tr>
 <td><code>was_present</code></td>
 <td>boolean, three-valued</td>
-<td><code>NULL</code> = not yet marked — no register was taken. <code>true</code> = turned up. <code>false</code> = marked absent. THREE-VALUED ON PURPOSE: "we did not take a register" and "we took one and they were not there" are different facts, and only one is a safeguarding signal. For a camp this is the record of who was actually in the organization's care, and it cannot be reconstructed afterwards (§9)</td>
+<td><code>NULL</code> = not yet marked — no register was taken. <code>true</code> = turned up. <code>false</code> = marked absent. THREE-VALUED ON PURPOSE: "we did not take a register" and "we took one and they were not there" are different facts, and only one is a safeguarding signal. For a camp this is the record of who was actually in the organization's care, and it cannot be reconstructed afterwards (§9). <strong>It is deliberately not the basis of any selector</strong> — <code>PRESENT(&lt;event&gt;)</code> is refused, and why is in §8</td>
 </tr>
 <tr>
 <td><code>presence_marked_by</code></td>
 <td>reference to person, optional</td>
-<td>The person who took the register. Held by whoever has <code>event.presence.mark</code>, which is deliberately ONE LEVEL BELOW <code>event.manage_participants</code> (contribute, not manage) so the volunteer at the door is not also the person who can delete a child from the roster</td>
+<td>The person who took the register. Held by whoever has been <em>allowed</em> <code>event.presence.mark</code> — deliberately a separate code from <code>event.manage_participants</code>, not a rung beneath it: after <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> there is no ladder for one permission to sit below another, and that is the stronger form of the same protection. The volunteer at the door is not also the person who can delete a child from the roster, because they were granted one code and not the other</td>
 </tr>
 <tr>
 <td><code>presence_marked_at</code></td>
@@ -2367,19 +2457,32 @@ unit's roles (via §7's rule), from an explicit <code>access_grant</code>, or fr
 <ul>
 <li><strong>The set the capacity test counts</strong> — an event's registrations whose <code>response</code> is
   <code>attending</code> and which are not waitlisted. Capacity is compared against exactly this set
-  (§5), and the other registrations of an event must not slow it down.</li>
-<li>An event's waitlist in <code>waitlist_position</code> order, restricted to waitlisted rows.</li>
+  (§5), and the other registrations of an event must not slow it down. <strong>This index is also
+  exactly the extension of the <code>PLACED</code> selector</strong> (§8), so the audience the capacity rule
+  counts and the audience a grant may name are the same rows, served by the same index — no
+  second index and no second definition.</li>
+<li>An event's waitlist in <code>waitlist_position</code> order, restricted to waitlisted rows — which is
+  the extension of <code>ON_WAITLIST</code> (§8).</li>
 <li>An event's registrations by <code>was_present</code>, restricted to rows where presence has been
-  marked at all.</li>
+  marked at all. Note that this index serves a <strong>report</strong> (§9) and no selector: the rows it
+  is missing are precisely the unmarked ones, and that is the reason <code>PRESENT</code> is refused.</li>
 </ul>
 <h3 id="why-person_id-not-membership_id">Why <code>person_id</code>, not <code>membership_id</code><a class="headerlink" href="#why-person_id-not-membership_id" title="Permanent link">&para;</a></h3>
-<p>Same argument as <code>unit_participation</code> (<a href="../03-membership/#5-unit_participation">03-membership.md §5</a>),
-and it is stronger here. An imported 1998 camp roster names children who have no membership
-row to point at. With the corpus being large and number-bearing
+<p>The argument <code>unit_participation</code> made
+(<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>, before D-097 deleted it) and
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+transferred to <code>person_group_member</code>, and it is stronger here. An
+imported 1998 camp roster names children who have no membership row to point at. With the
+corpus being large and number-bearing
 (<a href="../../decisions/decision-log/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>),
-linking to <code>membership</code> would make those rows unrepresentable — and, worse, an inferred
-open-ended membership created to satisfy the FK would make every one of those children a
-<em>current</em> member today through the gate.</p>
+linking to <code>membership</code> would make those rows unrepresentable.</p>
+<p><strong>And the harm moved rather than went away.</strong> It used to be argued through the membership
+gate, which made a 1998 camper a current member with authority today. The gate is deleted
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+and the same harm now runs through the selector: <code>MEMBERS</code> is evaluated live on the checked
+date, so an inferred open-ended membership puts every one of those children inside <code>MEMBERS</code>
+today, and every live grant whose expression contains <code>MEMBERS</code> reaches them. An
+open-ended row is the dangerous object under both models; only the mechanism changed.</p>
 <p><strong>The trade-off, stated:</strong> no database constraint can enforce "only members may register", and
 none is wanted — eligibility is capability (<a href="../../domain/07-events/#4-who-may-register-capability-not-a-separate-rule-engine">../domain/07-events.md §4</a>),
 and capability is a grant, not a membership row.</p>
@@ -2388,9 +2491,9 @@ and capability is a grant, not a membership row.</p>
 <p><strong>Capacity is a threshold, not a block.</strong> Registering for a full event succeeds and produces
 a waitlisted row.</p>
 <p><strong>Is this event at capacity?</strong> The question is asked of one event and answered only from the
-registrations it has: count its <code>attending</code>, non-waitlisted registrations and compare that
-count with its <code>capacity</code>. An event with no <code>capacity</code> is never full — with no capacity set
-there is nothing to reach, and the answer is no.</p>
+registrations it has: count its <code>attending</code>, non-waitlisted registrations — <strong>its <code>PLACED</code>
+set</strong> (§8) — and compare that count with its <code>capacity</code>. An event with no <code>capacity</code> is never
+full — with no capacity set there is nothing to reach, and the answer is no.</p>
 <p><strong>The placing rule</strong> runs before the row is written, once per row, on every insert, so that
 EVERY insert path obeys it — self-service, staff, guardian and import alike.
 Application-level placement would let one of the four paths forget, and the forgotten one
@@ -2409,7 +2512,9 @@ is decided, because confirmation is a property of the place the earlier steps ga
    that event's waitlist — <code>1</code> when the waitlist is empty. If any of the three fails, set
    <code>is_waitlisted</code> false and <code>waitlist_position</code> absent. A staff registration is admitted
    even past capacity: the organizer who knows there are two spare tents is not to be blocked
-   by a number they cannot edit mid-camp (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>).
+   by a number they cannot edit mid-camp
+   (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>,
+   <a href="../../decisions/decision-log/#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it">D-065</a>).
    The overrun is permitted, attributed, and REPORTED (§10, check 5).</li>
 <li>Confirmation: immediate when there is no fee to wait for. If the event has no
    <code>fee_schedule_id</code>, set <code>is_confirmed</code> true and <code>confirmed_at</code> to now. Otherwise set
@@ -2422,7 +2527,9 @@ release below write the same flags deliberately.</p>
 <p><strong>The <code>source = 'self'</code> disjunct is the whole of "organizers may register anyone", made
 mechanical.</strong> Removing it silently reverses the answer: every staff registration would be
 waitlisted behind self-service ones, and the leader adding a child on the day would be
-told the camp is full when they can see two spare beds.</p>
+told the camp is full when they can see two spare beds. Note what this rule does <strong>not</strong>
+consult: not a level, not a role, and since D-102 not an owning unit. <code>source</code> is a stored
+fact written by whoever holds <code>event.register_other</code>, and the capacity rule reads the fact.</p>
 </blockquote>
 <h3 id="promotion-which-is-a-deliberate-act">Promotion, which is a deliberate act<a class="headerlink" href="#promotion-which-is-a-deliberate-act" title="Permanent link">&para;</a></h3>
 <p>Promotion is <strong>not automatic</strong> — no trigger, no job. An organizer picks someone from the
@@ -2504,8 +2611,9 @@ make every fee, membership or event alike, confirm an event place.</p>
 <ol>
 <li>Take the obligation the call names.</li>
 <li>Follow its <code>event_registration_id</code> to the registration it pays for.</li>
-<li>Confirm that registration only when it is <code>attending</code> and not waitlisted — a waitlisted
-   person stays waiting until promoted (§5), so paying does not by itself place them.</li>
+<li>Confirm that registration only when it is <code>attending</code> and not waitlisted — in the
+   selector vocabulary, only when it is <code>PLACED</code> (§8); a waitlisted person stays waiting
+   until promoted (§5), so paying does not by itself place them.</li>
 <li>Confirming means setting <code>is_confirmed</code> true and <code>confirmed_at</code> to now.</li>
 </ol>
 <blockquote>
@@ -2681,6 +2789,10 @@ anything a form asks is read by whoever runs that event, and the number of such 
 by whoever creates the event
 (<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
 <a href="../../domain/07-events/#12-the-forms-questions-and-answers">../domain/07-events.md §12</a>).</p>
+<p><strong>Round 10 moved that sentence from the resolver into a row.</strong> "Read by whoever runs that
+event" is now a seeded grant — <code>event.answer.view</code> on the event, aimed at <code>ORGANIZERS</code> (§8).
+That makes the warning <em>checkable</em> in a way it was not before: the number of people who can
+read an event's answers is a grant plus the roster in §3, and both are readable.</p>
 </blockquote>
 <p><strong>This sentence's reason has now been rewritten twice, and the second rewriting killed the claim.</strong>
 It began as "the <code>dependent.*</code> namespace is unreachable by unit leaders"; <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
@@ -2688,13 +2800,15 @@ deleted that namespace and the claim survived on a better reason — no <code>ev
 the medical record, and no wildcard is left to sweep it in (D-068). <strong>Both halves are now gone: there
 is no medical record</strong> (<a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
 and the facts that would have been in one are attributes on the person, which
-<strong>a unit leader holding <code>person.view</code> over their own unit can read</strong>
+<strong>a person holding <code>person.view</code> at the unit can read</strong> — and after
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> the unit is the
+only scope there is, so that grant reads everyone's
 (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes §4</a>). A claim that had outlived two
 of its reasons should not be repaired a third time; it is stated as what is now true:</p>
 <ul>
-<li><strong>The form is no longer the ceiling on what an organizer may know.</strong> An organizer who is also a
-  leader of the registrant's unit may already have read the allergy. Any document implying the
-  contrary was quietly making a privacy promise the model does not keep.</li>
+<li><strong>The form is no longer the ceiling on what an organizer may know.</strong> An organizer who holds
+  <code>person.view</code> may already have read the allergy. Any document implying the contrary was
+  quietly making a privacy promise the model does not keep.</li>
 <li><strong>What the form is for changed accordingly</strong> — it asks <em>now</em>, about <em>this</em> event, of a person who
   may not be in the system at all, and its answer carries a date. That is a genuine property the
   record does not have: a recorded attribute says what somebody believed, once, at no particular
@@ -2741,34 +2855,143 @@ there is no policy for how long answers survive their event. See
 answered the weakest-protected copy of a health fact is the freshest one.</p>
 <hr />
 <h2 id="8-projections-and-guards">8. Projections and guards<a class="headerlink" href="#8-projections-and-guards" title="Permanent link">&para;</a></h2>
-<h3 id="the-unit-authority-rule">The unit-authority rule<a class="headerlink" href="#the-unit-authority-rule" title="Permanent link">&para;</a></h3>
-<p>The resolver matches scope <strong>exactly</strong>, so a <code>unit_leader</code> at <code>('org_unit', 7)</code> does not
-satisfy a check at <code>('event', 42)</code> — even when unit 7 owns event 42. This is the hinge of
-the module (<a href="../../domain/07-events/#6-the-hinge-organizers-and-the-scope-mismatch">../domain/07-events.md §6</a>).</p>
-<p><strong><code>can_event(person, permission_code, event, at)</code></strong> is one permission check for events, used
-by the API in place of a bare <code>can()</code>. An event is an ARTIFACT of its owning unit, not a
-child of it, so a permission is satisfied at <code>('event', E)</code> if it is satisfied at
-<code>('org_unit', E.org_unit_id)</code> AND the event's owner is that same unit.</p>
-<p>This is NOT inheritance downward. It does not reach the unit's SUB-units, and it does not
-grow when the hierarchy is restructured — the event's owner is one unit, fixed by D-049.
-Authority for a sub-unit's events still requires that sub-unit's own roles or an exposure,
-exactly as before.</p>
-<p>The check has three steps, and the order is only the order of two independent questions:</p>
+<h3 id="the-unit-authority-rule-and-can_event--both-deleted">The unit-authority rule, and <code>can_event()</code> — both deleted<a class="headerlink" href="#the-unit-authority-rule-and-can_event--both-deleted" title="Permanent link">&para;</a></h3>
+<p>~~A permission is satisfied at <code>('event', E)</code> if it is satisfied at the event's owning unit
+<code>('org_unit', E.org_unit_id)</code> AND the event's owner is that same unit.~~ <strong>Withdrawn by
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,</strong>
+which deleted <code>event.org_unit_id</code> (§2) and with it the whole rule, together with
+<a href="../../decisions/decision-log/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a>'s
+artifact-and-child distinction. <code>can_event(person, permission_code, event, at)</code> is deleted;
+<strong>every event check goes through the ordinary <code>can()</code> and nothing else.</strong></p>
+<p><strong>Who enforces it now — <code>can()</code>, with no event-shaped clause in it.</strong> The resolver matches
+scope exactly, exactly as before, and the gap D-063 was written to close cannot open: the
+only non-item scope is the unit, and a grant at the unit reaches every item of every type
+(<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
+The person whose job is to run the organization's camps passes a check at <code>('event', 42)</code>
+because their allow is at the unit, not because anything tested the event.</p>
+<p><strong>D-063's reasoning, kept because the problem it named is still a problem.</strong> The old design
+refused to let authority inherit from a body down to that body's events, and bought a narrow
+rule instead of a wide one, on the grounds that inheritance's blast radius grows with every
+restructure while an owner column's does not. Both halves of that pair are gone: there are no
+bodies and no restructures
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
+so there is nothing left to keep narrow. What replaced the distinction is not inheritance and
+not a test — it is the <strong>absence of an intermediate scope</strong>. Between the unit and an event
+there is now nothing to inherit through, which is the same outcome D-063 was reaching for by
+way of a rule.</p>
+<p><strong>D-063's two-way door, spent.</strong> It promised that "deleting the second <code>can()</code> call is the
+whole change, and it needs no data migration", because nothing had been written to
+<code>access_grant</code> to make the rule work. Round 10 collected on that: deleting the rule is the
+whole change and needed no migration. The door back is narrower now — an owner column, a
+resolver tier that reads it, and the checks this section deletes — and the bound selectors
+below would survive it unchanged, because an ownership grant and a bound operand answer
+different questions.</p>
+<h3 id="selectors-that-bind-to-an-event">Selectors that bind to an event<a class="headerlink" href="#selectors-that-bind-to-an-event" title="Permanent link">&para;</a></h3>
+<p>Six sets describe the people connected to an event, and each is a <strong>selector that binds to
+the item being checked</strong> — written with no argument inside an item-scope grant, and with an
+explicit event in every other context. They are seeded rows of <code>selector_type</code>, the registry
+of <a href="../05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>, and
+that registry is what makes the two write-path rules below checkable rather than a matter of
+tact
+(<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>,
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
+<p><strong>The four attendance tiers, defined over <code>event_registration</code> columns and nothing else:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operand</th>
+<th>Definition</th>
+<th>Read it as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ATTENDED</code></td>
+<td><code>response</code> is <code>attending</code></td>
+<td>said yes to this event</td>
+</tr>
+<tr>
+<td><code>PLACED</code></td>
+<td><code>response</code> is <code>attending</code> <strong>and</strong> <code>is_waitlisted</code> is false</td>
+<td>holds a place — <strong>the capacity set</strong> (§5)</td>
+</tr>
+<tr>
+<td><code>CONFIRMED</code></td>
+<td><code>PLACED</code> <strong>and</strong> <code>is_confirmed</code> is true</td>
+<td>the place is paid for, or the event was free</td>
+</tr>
+<tr>
+<td><code>ON_WAITLIST</code></td>
+<td><code>response</code> is <code>attending</code> <strong>and</strong> <code>is_waitlisted</code> is true</td>
+<td>waiting for a place</td>
+</tr>
+</tbody>
+</table>
+<p>These are definitions, not four new ideas, and their shape is arithmetic on two existing
+columns: <code>CONFIRMED ⊆ PLACED</code>, <code>PLACED</code> and <code>ON_WAITLIST</code> partition <code>ATTENDED</code>, and a <code>not_attending</code>
+row is in none of them. Nothing is a level and nothing orders anything else; <code>CONFIRMED</code> is
+not "more" than <code>ON_WAITLIST</code>, it is a different conjunction. <strong>The extension of <code>PLACED</code> is
+the set §5 counts against <code>capacity</code></strong>, and the same partial index serves both (§4).</p>
+<p><code>ORGANIZERS</code> is the fifth, and its definition is the roster in §3 — the labelled, ordered,
+domain answer to "who runs this", evaluated over <code>event_organizer</code> rows for the event
+checked. The sixth is <code>GUARDIANS</code>, which binds to the person an item is about rather than to
+an event.</p>
+<p><strong><code>PRESENT(&lt;event&gt;)</code> is refused.</strong> An operand over <code>was_present</code> is the obvious sixth
+attendance tier and it is not available, and the reason is the failure direction:
+<code>was_present</code> is <code>NULL</code> until somebody takes a register, so a grant aimed at <code>PRESENT</code> would
+revoke a child's access to their own camp photos because a volunteer forgot to tick a box.
+The column is a safeguarding signal and is three-valued on purpose
+(<a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>);
+keeping it out of the selector language is what keeps it meaning "a person recorded this"
+rather than "this is who may see things". Where presence is needed it is needed as a report
+(§9), and the report is honest about the rows it does not have.</p>
+<p><strong><code>WHITELISTED</code> does not exist.</strong> There is no stored state to name: the nearest facts are
+<code>source = 'staff'</code> (an organizer entered them) and promotion off the waitlist. Until the
+organization decides which of those it means, or adds a column, the operand is not available
+and the name is not reserved (§11).</p>
+<p><strong>Two binding rules, both refused when the grant is saved, both naming the operand in the
+message:</strong></p>
 <ol>
-<li>Ask <code>can()</code> whether the person holds the permission at scope <code>('event', the event's id)</code>,
-   as of the given date.</li>
-<li>Ask <code>can()</code> the same question at scope <code>('org_unit', the event's owning unit)</code>, as of the
-   same date.</li>
-<li>Either one being true is enough. If there is no such event, the answer is no.</li>
+<li><strong>A bound (argument-less) operand is legal only on an item-scope grant.</strong> At the unit there
+   is no item for it to bind to, so a grant at the unit whose expression names <code>PLACED</code>,
+   <code>ATTENDED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code> or <code>ORGANIZERS</code> is refused. The explicit form
+   (<code>PLACED(&lt;event&gt;)</code>) remains legal at the unit, and it means the same words with the event
+   written down — which is the difference between the two, not an accident of parsing.</li>
+<li><strong>A bound operand is legal only on a matching item type.</strong> <code>PLACED</code> on a <code>person_group</code>
+   grant is refused, because that item is not an event. This is <code>selector_type.argument_type</code>
+   checked against <code>grant_scope_type</code> at the write — which is the reason D-101's registry is
+   doing real work and not merely tidying a table.</li>
 </ol>
-<blockquote>
-<p><strong><code>can_event</code> is a convenience wrapper, not a new channel.</strong> It calls <code>can()</code> twice on
-scopes that already resolve, and adds no authority of its own. If the organization later
-decides leaders should not automatically run every event their unit creates, <strong>deleting
-the second <code>can()</code> call is the whole change</strong> — and making organizers
-<code>access_grant</code>-based then needs no data migration, because nothing was written to
-<code>access_grant</code> to make this work.</p>
-</blockquote>
+<p>A consequence of rule 1 worth naming for whoever builds the editor: <strong>an audience is a stored
+row and a grant is a different stored row</strong>, so an audience whose expression contains a bound
+operand is perfectly storable and simply cannot be aimed at a unit-scope grant. The refusal
+lands on the grant, where D-102 puts it, and the audience browser should show which scopes an
+expression is usable at rather than letting the save discover it
+(<a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>).</p>
+<p><strong>The seeded grant: <code>event.answer.view</code> on an event to <code>ORGANIZERS</code>.</strong> This is where
+<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>'s
+"answers are read by that event's organizers" now lives — a row in <code>access_grant</code>, not a
+clause in the resolver, which is the same move D-102 made to the whole of unit authority over
+an event. It is aimed at a <strong>set</strong>, so it does not contradict
+<a href="../../decisions/decision-log/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
+and does not make <code>event_organizer</code> a grant table: adding a cook to the roster changes a set,
+and the grant keeps pointing at the set. The registered spelling of the code is the catalog's
+<code>event.answer.view</code>, singular <em>answer</em>, which <a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
+now uses too — it wrote <code>event.answers.view</code> while the entry was new, and the two spellings were
+one code, not two.</p>
+<p><em>Assumption:</em> a grant's scope is the unit or exactly one item, and a bound operand is legal
+only on an item-scope grant, so the seeded grant <strong>cannot be one row for every event</strong>. This
+module reads it as a <strong>seed template instantiated by the event-creation path</strong>, which writes
+one item-scope grant on each new event; the one-off import owes the same row for every event
+it writes, or an imported camp's organizers cannot read that camp's answers. D-102 does not
+say who writes the row. Integrity check 1 in §10 is the net.</p>
+<p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" stops being a property
+of a grant row once an operand binds: <code>PLACED</code> is different people on different events. The
+editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
+against, and the cache key for a bound operand must include the item. Stated as a requirement
+in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>;
+<a href="../../open-questions/#f-6--the-permission-cache-lifetime-and-what-invalidates-it">F-6</a>
+carries the caching side.</p>
 <h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
 <p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
 window does not admit it. The guard runs inside the transaction that inserts the row, on every
@@ -2806,18 +3029,23 @@ where losing the roster is harmless.</p>
 <h2 id="9-the-three-queries-that-matter">9. The three queries that matter<a class="headerlink" href="#9-the-three-queries-that-matter" title="Permanent link">&para;</a></h2>
 <h3 id="who-has-not-replied-yet">Who has not replied yet?<a class="headerlink" href="#who-has-not-replied-yet" title="Permanent link">&para;</a></h3>
 <p>"Unanswered" is a subtraction (<a href="../../domain/07-events/#3-registration-one-record-two-stored-answers-and-no-unanswered">../domain/07-events.md §3</a>).
-The subtrahend is <em>who could contribute</em> — which, for an open event, is an audience.</p>
+The subtrahend is <em>who the event is open to</em> — which, for an open event, is an audience.</p>
 <p>The question asked of one camp is: <strong>every person who may register for it and has not
 answered.</strong> The audience is the eligible set, the registration table is the answered set, and
 the answer is the difference between them, listed by preferred name. What makes the question
 answerable at all:</p>
 <ul>
-<li>The eligible set is <em>evaluated</em>, not stored: it is the people named by the event's
-  <code>access_grant</code> rows through their audiences, assessed as of the day the question is asked,
-  not as of the day the grant was written. A child who joined the pack last week is on this
-  list; a child who has left is not.</li>
-<li>Only grants on this event count, and only grants that are not <code>revoked</code> in level and have
-  not been revoked themselves.</li>
+<li>The eligible set is <em>evaluated</em>, not stored: it is the people named by the live <strong>allow</strong>
+  grants of <code>event.register_self</code> — at the unit, which reaches this event, or on this event —
+  through their audiences, assessed as of the day the question is asked, not as of the day the
+  grant was written. A child who joined a group last week is on this list; a child who has
+  left is not.</li>
+<li>Only live allows count, and a person against whom a live <strong>deny</strong> of the same code applies
+  is not eligible however many allows reach them — deny is absolute, and an eligibility list
+  that ignored it would chase people who were deliberately excluded
+  (<a href="../../decisions/decision-log/#d-013--explicit-deny-revoked-is-checked-before-everything">D-013</a>).</li>
+<li>Where the grant's expression contains a bound operand, the eligible set is computed
+  <strong>against this event</strong>, which is the only thing it can mean (§8).</li>
 <li>The answered set is one row per person at most (§4), so the subtraction cannot leave the
   same person on the list twice.</li>
 <li>People who have been merged away are excluded, so a tombstone never turns up on a list
@@ -2826,7 +3054,7 @@ answerable at all:</p>
 <p><strong>This is the query that would be impossible if <code>unanswered</code> were a stored value</strong>, because
 the eligible set — an audience, evaluated as a rule — is what defines the question. Storing
 "unanswered" rows would mean enumerating an audience into rows, and re-enumerating whenever
-a child joins the pack.</p>
+a child joins a group.</p>
 <h3 id="who-is-actually-coming">Who is actually coming?<a class="headerlink" href="#who-is-actually-coming" title="Permanent link">&para;</a></h3>
 <p>Four numbers about one event, in one answer, all counted over that event's <code>attending</code>
 registrations: how many are not waitlisted (coming), how many are waitlisted (waiting), how
@@ -2835,6 +3063,10 @@ event's <code>capacity</code>. An event with no registrations still has to produ
 <p>The four numbers an organizer needs, in one row: coming, waiting, holding a place without
 having paid, and the limit. <code>attending &gt; capacity</code> is the overrun, and it is visible here
 rather than prevented (§10 check 5).</p>
+<p>The first two of the four are <code>PLACED</code> and <code>ON_WAITLIST</code> counted rather than listed, and the
+third is <code>PLACED</code> minus <code>CONFIRMED</code>. The selector definitions in §8 and the counts here are
+one set of facts stated twice on purpose: the screen and the grant must not be able to
+disagree about who "coming" means.</p>
 <h3 id="who-was-actually-there">Who was actually there?<a class="headerlink" href="#who-was-actually-there" title="Permanent link">&para;</a></h3>
 <p>For one camp, the attending registrations listed with each person's preferred name, birth
 date and <code>was_present</code>, <strong>with the unmarked listed first</strong> — the unmarked sort ahead of both
@@ -2843,16 +3075,26 @@ is the camp roster as a safeguarding record, not a plan.</p>
 <p><code>NULLS FIRST</code> puts the unmarked at the top, which is the work remaining. Once every row is
 <code>true</code> or <code>false</code>, this is the answer to "who was in the organization's care at that camp" —
 and it is the reason <code>was_present</code> is three-valued rather than a boolean defaulting to false.</p>
+<p><strong>This report has no selector twin, and that is the point.</strong> Nothing in the selector language
+computes over <code>was_present</code>, so no grant can reach fewer people because the register was
+never taken. §8 states the refusal; this query is the reason it matters.</p>
 <hr />
 <h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
 <p><strong>Invariants to verify</strong></p>
 <ol>
-<li><strong>An event whose owning unit has closed.</strong> Counts events whose unit's status is <code>closed</code>
-   while that unit's own period is still open; a non-zero result means either the event was
-   miscategorised or the unit's closure was recorded without ending its future events.</li>
-<li><strong>Overlapping events for the same unit.</strong> Counts pairs of events belonging to one unit,
-   neither cancelled, whose start-to-end instants overlap. Not an error — a pack may run two
-   things at once — but worth a glance, since it is often a duplicate entry.</li>
+<li><strong>A bound selector on a grant that cannot bind it.</strong> Counts live grants whose expression
+   contains <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code> or <code>ORGANIZERS</code> in argument-less
+   form and whose scope is the unit, or whose scope is an item of a type other than the
+   operand's <code>argument_type</code>. <strong>Both rules are refused on the write path</strong> (§8), so a non-zero
+   result is evidence about the code, not the data: somebody added a path that saves a grant
+   without going through the check, and a grant like this resolves to the empty set and
+   silently authorizes nobody.</li>
+<li><strong>An event whose organizers hold no seeded answer-view grant.</strong> Counts non-cancelled events
+   that have at least one <code>event_organizer</code> row and no live allow of <code>event.answer.view</code> on
+   that event aimed at <code>ORGANIZERS</code>. The seeded grant is written by the code that creates the
+   event (§8), so the failure shape is the one check 10 knows well: an event imported or
+   created by a path that forgot, where the organizers cannot read the answers of the camp
+   they are running, and every row they left behind is individually correct.</li>
 <li><strong>An event with no organizer.</strong> Counts events that are neither cancelled nor already begun
    and have no <code>event_organizer</code> row at all — an event nobody is running: either abandoned
    mid-setup, or a data-entry error. Not a rule on write, because an event is legitimately
@@ -2861,8 +3103,8 @@ and it is the reason <code>was_present</code> is three-valued rather than a bool
    person carries a merge pointer. The merge should have repointed them; a non-zero result
    catches the ones it missed.</li>
 <li><strong>An event running over its stated capacity.</strong> Counts, for each non-cancelled event that
-   has a capacity, its attending non-waitlisted registrations, and reports the events where
-   that count exceeds the capacity. PERMITTED — organizers may exceed deliberately
+   has a capacity, its <code>PLACED</code> registrations, and reports the events where that count exceeds
+   the capacity. PERMITTED — a staff registration may exceed deliberately
    (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>) — so this
    is a report, not an error. A pattern of overruns means the capacity numbers are wrong, not
    that the rule is.</li>
@@ -2883,8 +3125,8 @@ and it is the reason <code>was_present</code> is three-valued rather than a bool
 <li>
 <p><strong>A registration outside its event's registration window.</strong> Counts registrations whose
    <code>registered_at</code> falls before the window opens or after it closes, excluding the ones an
-   organizer recorded deliberately (<code>registration_kind = 'organized'</code>, whose window is the
-   event's own period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
+   organizer recorded deliberately (<code>source = 'staff'</code>, whose window is the event's own
+   period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
    <strong>there is no constraint behind that guard</strong> — a window spans two columns of two tables, so
    the check runs inside the writing transaction or nowhere
    (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).
@@ -2900,21 +3142,37 @@ and it is the reason <code>was_present</code> is three-valued rather than a bool
    correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
    more expensively; this is the version worth running nightly.</li>
 </ol>
+<p><strong>Checks 1, 2 and 10 are the same shape and should be read as one warning.</strong> Each tests
+whether a piece of <em>code</em> that nothing else depends on actually ran: the grant save, the event
+creation, the placing rule. Each will read empty on correct data and each is the kind of bug
+that a schema change never surfaces, because every row a forgotten step leaves behind is
+individually valid.</p>
 <p><strong>Check 5 is the important one to read correctly.</strong> It will produce rows, and that is not a
 failure — exceeding capacity is a permitted, attributed act
 (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>). What the
 report is <em>for</em> is the pattern: an event that overruns every year has a capacity number that
 is wrong, and the fix is to change the number rather than to start refusing people.</p>
+<p><em>Numbering note:</em> checks 1 and 2 were rewritten in place rather than dropped, and 3–10 keep
+the numbers other files cite them by.</p>
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
 <p>Tracked in <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>.</p>
 <ul>
 <li>~~<strong>The age ceiling on an open event.</strong>~~ <strong>Settled: there is none</strong>
   (<a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
-  No <code>min_age</code>/<code>max_age</code> on <code>event</code>, no age branch anywhere in the registration path. If it is ever
-  revisited the shape is a new <strong>built-in audience</strong>, not a column on the row.</li>
+  No <code>min_age</code>/<code>max_age</code> on <code>event</code>, no age branch anywhere in the registration path. If it is
+  ever revisited the shape is a new <strong>seeded selector operand</strong>, not a column on the row.</li>
 <li>~~<strong>Whether <code>event.manage_participants</code> should split.</strong>~~ <strong>It did</strong>, into
-  <code>event.presence.mark</code> at <code>contribute</code> (§4).</li>
+  <code>event.presence.mark</code> — no longer "a level lower", because there are no levels, but a
+  separate code, which is the same protection stated in the only vocabulary D-099 leaves
+  (§4, EV-5).</li>
+<li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds <code>event.answer.view</code> and nothing
+  else, so an organizer who holds no unit-scope grant can read the answers of a camp they are
+  running and can do nothing else at it. Whether that is the intended shape or an omission is
+  not settled, and this module has not seeded more on its own initiative (§3, §8).</li>
+<li><strong>Who writes the per-event seeded grant.</strong> Read as a template the creation path and the
+  import both instantiate; D-102 does not say (§8, check 2).</li>
+<li><strong><code>WHITELISTED</code>.</strong> No stored state to name, so no operand and no reserved name (§8).</li>
 <li><strong>Retention of <code>event_answer</code>.</strong> Answers end with the event and there is no policy saying when (§7).
   This used to be argued from the answer being <em>health data</em>, which
   <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
@@ -2928,10 +3186,14 @@ is wrong, and the fix is to change the number rather than to start refusing peop
   cancelling voids the outstanding requests and money that already arrived waits in the
   unmatched queue (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>).</li>
 <li><strong><code>was_present</code> as a safeguarding record.</strong> Whether presence needs its own retention or its
-  own permission, given what it is (§9 of the domain doc).</li>
-<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> §8's <code>can_event</code> makes the
-  unit's roles reach its events. If the organization would rather organizers be opt-in per
-  event, that is one clause — and no data migration (§8).</li>
+  own permission, given what it is (§9 of the domain doc). D-102's refusal of <code>PRESENT</code> makes
+  the second half of that question sharper: presence now governs nothing about access, which
+  is either why it needs no permission of its own or why its retention is all that is left.</li>
+<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> D-102 settled the <em>mechanism</em> —
+  a set named by a selector, aimed at by grants — without changing D-062's answer that the
+  roster is not itself a grant. What remains open is smaller than it used to be: whether more
+  codes should be seeded to <code>ORGANIZERS</code>, which is the question above
+  (<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>).</li>
 <li><strong>Waitlist notification.</strong> Promotion is deliberate; telling the promoted person is not
   designed. It belongs to the communication module.</li>
 </ul>

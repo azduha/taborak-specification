@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -1008,7 +1008,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -2076,9 +2076,42 @@ identical whether the match was exact, partial, or absent, and it stays identica
 account exists to be found.</p>
 <p><strong>Resolving the claim is not a new permission and not a new queue.</strong> A reviewer confirms or rejects the
 hypothesis, which is <code>person.merge</code> and already sits with <code>identity_reviewer</code>; confirming it merges the
-two person rows under §9's rules and the pending account goes with the row that was absorbed, rejecting it
-lifts the gate and the account activates. <strong>No new code is involved on either side</strong>, for the same reason
-§9 gives for reversal needing none: undoing and correcting an identity are one act by one named human.
+two person rows under §9's rules, rejecting it lifts the gate and the account activates. <strong>No new code is
+involved on either side</strong>, for the same reason §9 gives for reversal needing none: undoing and correcting
+an identity are one act by one named human.</p>
+<p><strong>Confirming the claim closes the placeholder account; it does not move it.</strong> This is the part of the flow
+that looks obvious and is wrong, so the wrong version is written out first: the sign-up's person row is
+absorbed, the sign-up's account still points at it, so repoint <code>account.person_id</code> at the survivor and the
+applicant keeps the login they were building. <strong>That write is refused by §4's own rule</strong> — one live account
+per person, unique over the pending, active and suspended rows — for the common case where the survivor
+already has an account; and in the case where it is <em>not</em> refused it quietly makes a login older than the
+person's own, carrying a consent timestamp, a verification and a credential history that belong to an act
+the survivor never performed. <strong>The rule is instead, in this order:</strong></p>
+<ol>
+<li><strong>Close the placeholder account</strong> — <code>status</code> becomes <code>closed</code>, with the reason naming the hypothesis
+   that closed it. Closed rows are outside the uniqueness rule (§4), which is exactly why closing works
+   where repointing does not, and the row survives as the record that someone applied.</li>
+<li><strong>Move the credential, not the account.</strong> The typed address was verified as far as it ever was, and
+   throwing it away punishes the one person in this flow who did the right thing. It is added to the
+   survivor's live account as an <code>account_credential</code> row (§5) — credentials are many-per-account already,
+   which is why this is an addition rather than an exception. <strong>Where that account has no live account to
+   receive it</strong>, the survivor is given one, carrying the moved credential and the placeholder's
+   <code>verified_at</code>: the address was verified, and making somebody click a second link to prove a claim a
+   reviewer has already confirmed is bureaucracy with a security costume.</li>
+<li><strong>A credential of the same type already live on the survivor's account is not overwritten.</strong> Two
+   password rows do not both become current; the arriving one is left unverified and a <code>field_conflict</code>
+   (§10's queue) is raised for the person to sort out, because this is the one branch where the system
+   cannot tell whether it is looking at the same address typed twice or at two different claims to one
+   mailbox.</li>
+<li><strong>One audit entry names both accounts, both persons and the hypothesis</strong>, and it is written by the same
+   transaction that closes the row. Not two entries, and not the merge's own entry doing double duty: the
+   merge says two people became one, and this says a login changed hands, which is the question whoever
+   reverses the merge (§9) will actually be asking.</li>
+</ol>
+<p><strong>What this costs is the applicant's session, and it is worth naming.</strong> Someone mid-sign-up whose claim is
+confirmed does not continue in the account they were filling in; they log in to the one they already had.
+That is one extra login against the alternative of an account that belongs to two people's history at
+once, and the holding message (§4 above) is where they are told it.
 Two costs come with it and both are stated rather than absorbed. <strong>A genuinely new person who happens to match now
 waits for a human</strong>, so the blocking condition carries an age check shaped like <code>field_conflict</code>'s thirty
 days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it
@@ -2887,15 +2920,26 @@ above can express.</p>
 <li><strong>Redacted people still referenced by a live account.</strong> Count <code>account</code> rows that are not
   closed and belong to a person with <code>redacted_at</code> set; non-zero means an erasure left a
   working login behind.</li>
-<li><strong>Imported people with no participation.</strong> Count people whose <code>record_origin</code> is
-  <code>legacy_import</code> and who have no <code>unit_participation</code> row at all; non-zero probably means a
-  partially applied batch. <strong>This check is the reverse of the one it replaced, and the reversal is
+<li><strong>Imported people with no membership period.</strong> Count people whose <code>record_origin</code> is
+  <code>legacy_import</code> and who have no <code>membership</code> row at all. <strong>What makes this a check rather than a census
+  is the ratio:</strong> a batch in which nobody has a period is a batch whose rows simply said nothing, and a
+  batch whose stated-coverage figure disagrees with the periods written is a partially applied one. A row
+  that created a membership its export did not state is a different finding, and lives in
+  <a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a>.
+  <strong>It has been reversed twice, and both reversals are on the record, because this row is really a claim
+  about what an import is allowed to conclude.</strong> It began as exactly this check — imported people with no
+  <code>membership</code>. ~~That was the ordinary condition of every imported row once a roster was held to make a
+  participation and nothing else, so the check reported the entire legacy corpus as a failed batch, which
+  is precisely how a check stops being read~~;
   <a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-  and not a change of mind about imports.</strong> It counted imported people with no <code>membership</code>, which after
-  "a roster makes a participation and nothing else" is the ordinary condition of every imported row — so
-  the old version would have reported the entire legacy corpus as a failed batch, which is precisely how a
-  check stops being read. A roster that <em>did</em> create memberships is a different finding and lives in
-  <a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a>.</li>
+  therefore reversed it to <em>no participation row</em>. That reversal is now void twice over: the participation
+  table is deleted
+  (<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>), and
+  the people export turned out to <strong>state membership periods</strong>, so the import writes bounded <code>membership</code>
+  rows for precisely those people and nobody else
+  (<a href="../../decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+  What the round-9 rewrite got right and is kept: a check whose trigger condition is normal for the whole
+  corpus is not a check.</li>
 <li><strong>A redacted person with descriptive values still attached.</strong> Stated where the rows are, as check 6
   of <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> — attribute rows belonging to a
   redacted person, and attribute values still present in <code>audit_log</code>. It is named here because the

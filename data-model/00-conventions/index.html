@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -1019,7 +1019,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1660,7 +1660,7 @@ four, because an ORM hides the list:</p>
   other semi-structured payloads whose shape is per-row by design.</li>
 <li><strong>Recursive queries</strong> — for the unit hierarchy. Note that this one is <em>only</em> for structure:
   no authorization path may walk the hierarchy
-  (<a href="../../domain/06-authorization-model/#2-scope-authority--no-downward-inheritance">../domain/06-authorization-model.md</a>).</li>
+  (<a href="../../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">../domain/06-authorization-model.md</a>).</li>
 </ul>
 <p>Native enum types are avoided — see §5.</p>
 <p><strong>What the ORM changes, and what it must not be allowed to change: see §6a. Read it before
@@ -1706,7 +1706,7 @@ an accepted decision, not discovered as an outage.</strong> Tracked in
 <tr>
 <td>Boolean</td>
 <td><code>is_</code> / <code>has_</code> / <code>requires_</code> prefix</td>
-<td><code>is_primary</code>, <code>requires_membership</code></td>
+<td><code>is_system</code>, <code>binds_to_item</code></td>
 </tr>
 <tr>
 <td>Timestamp</td>
@@ -1721,12 +1721,12 @@ an accepted decision, not discovered as an outage.</strong> Tracked in
 <tr>
 <td>Junction table</td>
 <td><code>&lt;a&gt;_&lt;b&gt;</code> in alphabetical order</td>
-<td><code>role_permission</code>, not <code>permission_role</code></td>
+<td><code>audience_member</code>, not <code>member_audience</code></td>
 </tr>
 <tr>
 <td>Lookup table</td>
 <td>singular of the vocabulary it <em>is</em></td>
-<td><code>access_level</code>, <code>reason_code</code></td>
+<td><code>selector_type</code>, <code>reason_code</code></td>
 </tr>
 <tr>
 <td>Index</td>
@@ -1790,8 +1790,8 @@ are narrow enough to prove the rule rather than erode it.</p>
 <td>Tombstone: set <code>merged_into_person_id</code>; row remains</td>
 </tr>
 <tr>
-<td>A unit closed</td>
-<td>Set <code>org_unit.valid_to</code> and <code>status = 'closed'</code></td>
+<td>A group ended</td>
+<td>Set <code>person_group.valid_to</code>; its member rows remain</td>
 </tr>
 <tr>
 <td>GDPR-style erasure requested</td>
@@ -1844,57 +1844,35 @@ deleted it, and the rule it expressed is unchanged: the vocabulary lives with th
 values are closed, and the vocabulary is reviewable without reading application code.</p>
 <h3 id="critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical">Critical rule: status strings are ordered, and the order is not alphabetical<a class="headerlink" href="#critical-rule-status-strings-are-ordered-and-the-order-is-not-alphabetical" title="Permanent link">&para;</a></h3>
 <p>Several status columns have a <strong>meaningful progression</strong>, and code must compare by <strong>rank</strong>,
-never by string. Wherever rank matters there is a lookup table carrying an integer rank, and the
-one that matters most is this one:</p>
-<table>
-<thead>
-<tr>
-<th>Level</th>
-<th>Rank</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>revoked</code></td>
-<td>0</td>
-<td>Explicitly denied; overrides all grants</td>
-</tr>
-<tr>
-<td><code>view</code></td>
-<td>10</td>
-<td>Read only</td>
-</tr>
-<tr>
-<td><code>contribute</code></td>
-<td>20</td>
-<td>Read and add</td>
-</tr>
-<tr>
-<td><code>manage</code></td>
-<td>30</td>
-<td>Full control of the item</td>
-</tr>
-<tr>
-<td><code>admin</code></td>
-<td>40</td>
-<td>Full control including granting access</td>
-</tr>
-</tbody>
-</table>
-<p>Gaps of ten are deliberate: insertions between levels (an <code>approve</code> tier between <code>view</code> and
-<code>contribute</code>) must not require renumbering a stored vocabulary.</p>
-<p><strong>Never compare level strings lexicographically.</strong> <code>'admin' &lt; 'contribute'</code> alphabetically. A
-system that sorts grants by string therefore ranks <em>full control including granting access</em>
-<strong>below</strong> <em>read and add</em> — a security bug that produces no error, no failed test, and no log
-line. This is the single most dangerous sentence in this file, and it is the reason the ladder is
-data rather than a language feature.</p>
-<p><strong>One ladder, every ladder.</strong> A guardian's right over a child is <code>none</code>, <code>view</code>, or <code>write</code>, and
-those map onto this same ladder at 0, 10 and 20 rather than getting a second scale
+never by string. The rule outlived the vocabulary it was written for, so read it as a rule about the
+next ordered column you add, not about the one that used to sit here.</p>
+<p><strong>The ladder that used to be the example is gone.</strong> <code>revoked</code>(0) / <code>view</code>(10) / <code>contribute</code>(20) /
+<code>manage</code>(30) / <code>admin</code>(40) was deleted by
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>:
+a grant names one permission code and its effect is <code>allow</code> or <code>deny</code>, so there is no ladder to rank and
+the mistake this section existed to prevent — <code>'admin' &lt; 'contribute'</code> alphabetically, which ranked <em>full
+control including granting access</em> <strong>below</strong> <em>read and add</em> with no error, no failed test and no log line
+(<a href="../../decisions/decision-log/#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>) — is
+<strong>no longer constructible</strong>. That is a better fix than the guard was, and the guard stays in this file
+because the next ordered vocabulary will need it.</p>
+<p><strong>And the survivor is the dangerous shape, not the safe one.</strong> One ordered vocabulary is left: a
+guardian's right over a child is <code>none</code>, <code>view</code>, or <code>write</code>
 (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
-Two scales would have to be kept in step and would eventually not be, which is how a guardian
-ends up able to do <em>more</em> than a manager. When adding any new ordered vocabulary, ask whether it
-is this ladder wearing a name.</p>
+Those three words happen to sort alphabetically in exactly the intended order — <code>none</code> &lt; <code>view</code> &lt; <code>write</code> —
+so a string comparison here <strong>passes every test you can write today</strong>, and breaks silently the first time
+somebody adds a fourth value in the middle of the scale. The old bug at least announced itself on the
+first comparison; this one is a trap set for whoever extends the list. So:</p>
+<ul>
+<li><strong>Never compare the right to itself as a string.</strong> Ask whether the permission being checked is a <code>read</code>
+  or a <code>write</code> (<code>permission.right_kind</code>, D-099) and whether the guardian's right covers that kind.
+  The comparison is against a column on the permission, not between two words.</li>
+<li><strong>"One ladder, every ladder" is withdrawn</strong> — there is no longer a master scale for a guardian's right
+  to be a slice of. The replacement is the smaller claim: <strong>one comparison, one column.</strong> Adding a second
+  way to rank rights is how a guardian ends up able to do <em>more</em> than the adult who holds the grant.</li>
+</ul>
+<p>When adding any new ordered vocabulary, ask the same two questions this section has always asked: is it
+data with a stored rank, or is it this rule wearing a name — and if it is data, does a string comparison
+of it happen to look correct?</p>
 <hr />
 <h2 id="6-the-temporal-pattern">6. The temporal pattern<a class="headerlink" href="#6-the-temporal-pattern" title="Permanent link">&para;</a></h2>
 <p>The pattern behind every period in this system.</p>
@@ -2224,20 +2202,20 @@ review is the kind of thing an organization discovers from a regulator.</p>
 </thead>
 <tbody>
 <tr>
-<td>References <strong>restrict</strong>; none cascade a delete</td>
-<td>Nothing cascades. A person cannot be removed while memberships reference them.</td>
+<td>References <strong>restrict</strong>, with <strong>one</strong> deliberate exception</td>
+<td>A person cannot be removed while memberships reference them, and nothing but the exception below cascades. <strong>The exception is <code>event_organizer.event_id</code></strong> — deleting an event removes its organizer rows, the single <code>ON DELETE CASCADE</code> in this design (<a href="../08-events/#3-event_organizer">08-events.md §3</a> explains why it is safe there and nowhere else). <em>(This row used to read "nothing cascades" and then "no cascading deletes anywhere", both of which were false while the design shipped that cascade; the correction is the point, not the wording.)</em></td>
 </tr>
 <tr>
-<td>No cascading deletes anywhere</td>
-<td>Cascade delete is the enemy of a 40-year audit trail, and ORM relation configs default to it. <strong>Check every one.</strong></td>
+<td>Cascade delete is refused everywhere else</td>
+<td>It is the enemy of a 40-year audit trail, and ORM relation configs default to it. <strong>Check every one</strong>, and read the exception above before you "fix" the one row that is allowed to cascade.</td>
 </tr>
 <tr>
 <td>Optional references document <em>why</em> they are optional</td>
 <td>An optional reference is usually a design decision worth recording, and it is invisible in the schema.</td>
 </tr>
 <tr>
-<td><code>access_grant.scope_id</code> is the <strong>one</strong> reference-less key</td>
-<td>It is polymorphic by design; see <a href="../../domain/06-authorization-model/#5-access-grants--the-per-item-layer">../domain/06-authorization-model.md</a>. Nothing else may be.</td>
+<td>There are exactly <strong>two</strong> reference-less keys, and both are polymorphic on purpose</td>
+<td><code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, the second documented in <a href="../05-authorization/#8-audience--grants-that-target-a-set-of-people">05-authorization.md §8</a>. Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, <a href="../05-authorization/#11-invariants-to-verify">Invariants to verify</a>, carries both scans and the nightly report that replaces the missing foreign key. <em>(This row used to read "<code>access_grant.scope_id</code> is the <strong>one</strong> reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened <code>selector_arg_id</code> from three tables to five got written down. It is the same defect <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a> was entered for, in a conventions page rather than a registry.)</em></td>
 </tr>
 <tr>
 <td>Circular references are broken with an optional column, not a deferred constraint</td>
@@ -2247,8 +2225,11 @@ review is the kind of thing an organization discovers from a regulator.</p>
 </table>
 <p>The polymorphic <code>access_grant.scope_id</code> deserves its warning again now that the schema is
 generated: <strong>an ORM will want to make this a real relation, and making it one is a design
-change.</strong> It points at a person, a unit, an event or an organization depending on a sibling
-column. No foreign key can express that, and every query that joins it must filter on
+change.</strong> It points at <strong>the unit</strong>, or at exactly one item — an <code>event</code>, a <code>person_group</code>, a <code>role</code>, or
+the deferred <code>document</code> — depending on the sibling <code>scope_type</code> column
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted the
+unit family from that list, so "a unit" and "an organization" are now the same answer rather than two of
+them). No foreign key can express that, and every query that joins it must filter on
 <code>scope_type</code> first. If the ORM maps it as a relation to one table, the others become silent
 wrong answers rather than errors.</p>
 <hr />
@@ -2261,10 +2242,14 @@ wrong answers rather than errors.</p>
   makes old audit entries lie.</li>
 <li><strong>Backfills are separate from schema changes</strong>, in their own migration, so a failed backfill
   does not roll back a schema change and vice versa.</li>
-<li><strong>Seed data for vocabularies</strong> (<code>access_level</code>, <code>permission</code>, <code>org_unit_type</code>, <code>reason_code</code>)
+<li><strong>Seed data for vocabularies</strong> (<code>permission</code>, <code>reason_code</code>, <code>grant_scope_type</code>, and
+  <code>selector_type</code> — the last of these being the language an audience expression is written in,
+  <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>)
   lives in migrations, not in application startup code, so the vocabulary is versioned with the
   data it describes. Application-startup seeding produces environments that disagree about what
-  <code>contribute</code> means.</li>
+  <code>event.answer.view</code> reaches. It is also the reason <code>selector_type</code> is read-only to an
+  organization: an operand added at runtime is a word no resolver knows, and the empty set is a
+  quiet way to say so.</li>
 <li><strong>Two documents are the source of truth for what a migration must achieve:</strong> each data-model
   file's <strong>Rules</strong> block for the constraints, and its <strong>Invariants to verify</strong> block for the
   reports. A migration that implements neither set completely has generated a schema, not a
@@ -2288,11 +2273,11 @@ states the fields, rules, invariants and open issues for its part of the model.<
 </tr>
 <tr>
 <td><a href="../02-organization/">02-organization.md</a></td>
-<td><code>org_unit</code>, <code>org_unit_type</code>, <code>org_unit_type_rule</code>, <code>org_unit_name</code>, <code>org_unit_relationship</code>, <code>position</code>, <code>position_assignment</code></td>
+<td><code>person_group</code>, <code>person_group_member</code> — and nothing else, because there is no unit table: the unit is a scope (<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>)</td>
 </tr>
 <tr>
 <td><a href="../03-membership/">03-membership.md</a></td>
-<td><code>membership</code>, <code>membership_type</code>, <code>membership_request</code>, <code>unit_participation</code></td>
+<td><code>membership</code>, <code>membership_type</code>, <code>membership_request</code></td>
 </tr>
 <tr>
 <td><a href="../04-relationships/">04-relationships.md</a></td>
@@ -2300,7 +2285,7 @@ states the fields, rules, invariants and open issues for its part of the model.<
 </tr>
 <tr>
 <td><a href="../05-authorization/">05-authorization.md</a></td>
-<td><code>permission</code>, <code>role</code>, <code>role_permission</code>, <code>role_assignment</code>, <code>scope_exposure</code>, <code>access_grant</code>, <code>permission_level</code>, <code>audience</code>, <code>audience_member</code>, <code>access_log</code></td>
+<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code>, <code>audience</code>, <code>audience_operand</code>, <code>audience_member</code> (the <code>LIST</code> leaf), <code>selector_type</code>, <code>grant_scope_type</code>, <code>access_log</code></td>
 </tr>
 <tr>
 <td><a href="../06-audit-and-import/">06-audit-and-import.md</a></td>

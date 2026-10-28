@@ -507,7 +507,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -595,6 +595,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="1. The flow you described">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-doors-one-gate-each" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two doors, one gate each
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1014,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1419,6 +1436,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. The flow you described">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-doors-one-gate-each" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two doors, one gate each
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1687,17 +1721,102 @@ member.</p>
 (<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>).
 <code>membership</code> opens at stage 5, and <code>pending_payment</code> is a real membership status so that
 "approved, awaiting payment" is a visible worklist rather than an invisible backlog.</p>
+<h3 id="two-doors-one-gate-each">Two doors, one gate each<a class="headerlink" href="#two-doors-one-gate-each" title="Permanent link">&para;</a></h3>
+<p>The flow above is one of two ways a person ends up in the organization's records, and for eight
+rounds this document wrote as if it were the only one. There are two entry paths and each has
+exactly one gate, with no third control anywhere
+(<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>,
+whose reasoning
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+transfers to groups intact — joining one is still somebody else's act):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Membership of the unit</strong></th>
+<th><strong>A group</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>How you get in</strong></td>
+<td>You pay. Stages 1–5 above are this door, and it is <strong>the only self-service entry in the system</strong> — it opens a <code>membership</code> and nothing beside it</td>
+<td>Somebody else writes a <code>person_group_member</code> row</td>
+</tr>
+<tr>
+<td><strong>What stops you</strong></td>
+<td>The fee</td>
+<td><code>person_group.member.manage</code>, held at the unit — which reaches every group — or granted on one group as an item</td>
+</tr>
+<tr>
+<td><strong>Money</strong></td>
+<td>The yearly fee</td>
+<td>Nothing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nobody writes themselves into a group.</strong> The people who run a group add people to it; that is the
+whole of the rule, and it is carried by a permission rather than by a workflow.
+<strong><code>person_group.member.manage</code> has no self-scoped variant and none will be added</strong> — a grant is
+always "over this group's roster", never "over my own", so the shape of request that would let a
+person place themselves is not refused by a check, it is not expressible. The same holds for
+offices: <strong>nobody appoints themselves</strong>, and the catalog holds no code that could say otherwise
+(<a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md §5</a>).</p>
+<p><strong>No fee below the membership, and no model wants one.</strong> The fee is the organization's; joining a
+group carries no money — <em>"into the sub-units, there is no fee, it is entirely managed by the
+organization, including adding more members."</em> That was said about units and it transfers unchanged,
+a group being among the things listed as having <strong>no</strong> fee
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+Putting a fee on a member row would immediately ask who sets the amount, who chases it, and what
+happens to a child whose family cannot pay a group's arrears, and none of those questions exist in
+the corpus or in any answer given. That is a refused model, not an unasked one.</p>
+<p><strong>What the asymmetry costs.</strong> The group door has no membership check behind it — a counselor may add
+somebody who is not a member, and nothing in the write stops them, because D-095 refuses a third
+gate as firmly as it refuses the first two. What keeps that person from reading anything is
+<code>MEMBERS</code> in the grants that matter — the test
+<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>
+was, now carried in the grant text rather than the resolver
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
+— which is what that test was always for. <strong>A group membership is a fact about belonging, not a
+credential</strong>: a member of a group can do nothing by being one, and the tidier table does not quietly
+promote it
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+The other cost is directional and appears in the other direction at import: <strong>the membership door is
+the only place a person's own initiative can produce a record</strong>, which is why the legacy corpus
+could be matched against people and never against groups (<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03
+§7</a>).</p>
+<p><strong>And one cost is new, named where
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+names it.</strong> Under the deleted hierarchy, access to a body's children had to be granted <em>by that
+body</em>, by people who recruited its leader and can be asked. A group's roster write is the same shape
+of permission and may be held at the unit, where it reaches every group in the organization, so what
+is left of the safeguarding story is a permission held by a named adult, an audit trail whose
+recorded values expire after two years
+(<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+and a report of who holds the write — <strong>minus the part where the named adult was somebody the body
+chose</strong>. Nothing in the remaining model reproduces that property, and this document says so rather
+than letting the reader infer it.</p>
 <hr />
 <h2 id="2-membership-request">2. Membership request<a class="headerlink" href="#2-membership-request" title="Permanent link">&para;</a></h2>
-<p>A request records the person it is <strong>for</strong>, the membership type asked for, and the unit the
-applicant would like — optional, because the organization may assign the unit at approval
-instead. <code>status</code> is one of <code>draft</code>, <code>submitted</code>, <code>under_review</code>, <code>approved</code>, <code>rejected</code>,
-<code>withdrawn</code>, <code>expired</code>, and <code>submitted_at</code> says when it went in. The review is carried on the
-same row: who took it up, when they decided, and on a rejection a
-<code>rejection_reason_code</code> with a free-text <code>rejection_note</code> beside it. When an approval produces
-a membership, <code>membership_id</code> is set to it.</p>
-<p>An approved request points at the membership it produced; the link is not optional once the
-approval exists.</p>
+<p>A request records the person it is <strong>for</strong> and the membership type asked for, and nothing else.
+<code>status</code> is one of <code>draft</code>, <code>submitted</code>, <code>under_review</code>, <code>approved</code>, <code>rejected</code>, <code>withdrawn</code>,
+<code>expired</code>, and <code>submitted_at</code> says when it went in. The review is carried on the same row: who took
+it up, when they decided, and on a rejection a <code>rejection_reason_code</code> with a free-text
+<code>rejection_note</code> beside it. An approved request points at the membership it produced; the link is
+not optional once the approval exists.</p>
+<p><strong>A request asks for membership of the unit, and it names no group.</strong> <code>requested_unit_id</code> is
+<strong>deleted</strong>, along with the index over it
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+~~The unit named on a request is a preference, not a door: a request opens the root and produces a
+root participation row, and the pack the applicant wrote down is a sentence addressed to whoever
+reviews it.~~ <strong>Withdrawn by D-098</strong>, which also deleted the table the column pointed at
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+The want behind the field is genuine — a reviewer would like to know where the applicant hopes to
+turn up — and it is served by the <code>notes</code> the row already carries, which is what the field always
+was in effect: a sentence, carrying no authority. <strong>Which group a new member lands in is a write on
+the group, not a preference on the request</strong>: one <code>person_group_member</code> row, written by somebody
+holding <code>person_group.member.manage</code> (§1), in a separate act with its own permission and its own
+audit entry. An approved request that produced no group row is a complete, ordinary outcome.</p>
 <h3 id="why-a-request-is-not-a-membership-with-a-status">Why a request is not a membership with a status<a class="headerlink" href="#why-a-request-is-not-a-membership-with-a-status" title="Permanent link">&para;</a></h3>
 <p>Tempting to collapse them, but:</p>
 <ul>
@@ -1726,32 +1845,42 @@ because neither was a membership requirement to begin with:</p>
 <li><strong>Guardian consent for a minor's account</strong> is a fact about the guardianship relation, held
   in <code>guardianship_permission</code>, not a box ticked during an application
   (<a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">data-model/04</a>).</li>
-<li><strong>Position eligibility</strong> — a scoutmaster must be an adult — is a property of the position
-  (<a href="../../data-model/02-organization/#7-position-and-position_assignment">data-model/02 §7.1</a>),
-  not of membership. Membership is ageless
-  (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).</li>
+<li><strong>Who may hold an office</strong> — a scoutmaster must be an adult — was never a property of membership, and
+  after
+  <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+  it is not a stored property of the office either: <code>position.min_age</code> is deleted with positions and
+  <code>role</code> carries no age column, so what remains is <code>is_minor()</code> in a report (§7). Membership is
+  ageless (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).</li>
 </ul>
 <p><strong>And background checks do not exist in this system at all</strong>
-(<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
-If the organization introduces them, the home is a dated record with an expiry, and it
-belongs at the position-eligibility layer rather than the membership gate — a lapsed check is
-a reason someone may not hold a role, not a reason they stop being a member.</p>
+(<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>). If
+the organization introduces them, the home is a dated record with an expiry, and it belongs with the
+office rather than the membership gate — a lapsed check is a reason someone may not hold a role, not
+a reason they stop being a member. Which layer would hold it is unresolved, since the layer that
+used to hold eligibility went out with positions
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>;
+§7 and §9).</p>
 <hr />
 <h2 id="3-membership">3. Membership<a class="headerlink" href="#3-membership" title="Permanent link">&para;</a></h2>
 <p>A membership row belongs to one person and one membership type, and carries a <code>status</code> of
 <code>pending_payment</code>, <code>active</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code> or <code>suspended</code> — always chosen
-deliberately, never defaulted. The period is <code>valid_from</code> and <code>valid_to</code>, and an absent
-<code>valid_to</code> means the period is still open: it is the current membership, not a row someone
-forgot to close. <code>joined_via_request_id</code> records the request it came out of,
-<code>termination_reason_code</code> the reason it was ended, <code>data_confidence</code> is <code>high</code>, <code>medium</code> or
-<code>low</code>, and <code>import_batch_id</code> is set on imported rows and on nothing else. <strong>Since
-<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-neither column is ever populated on a <code>membership</code> row</strong>, because no <code>membership</code> row is ever
-imported: the corpus carries no payment evidence, so the legacy batch writes <code>person</code> and
-<code>unit_participation</code> and leaves membership to the live register. This sentence used to read "legacy
-imports are <code>low</code>", which assumed a row the import no longer creates. The provenance a historical
-membership does have is a person: entering one is <code>membership.backdate</code>, it is attributed to whoever
-typed it, and its confidence is a choice they made rather than a value inherited from a batch.</p>
+deliberately, never defaulted. The period is <code>valid_from</code> and <code>valid_to</code>, and an absent <code>valid_to</code>
+means the period is still open: it is the current membership, not a row someone forgot to close.
+<code>joined_via_request_id</code> records the request it came out of, <code>termination_reason_code</code> the reason it
+was ended, <code>data_confidence</code> is <code>high</code>, <code>medium</code> or <code>low</code>, and <code>import_batch_id</code> is set on imported
+rows and on nothing else. **For one round these two <strong>For one round these two columns were dead on
+this table</strong> — the corpus carried no payment evidence, so the batch wrote <code>person</code> rows and left
+membership to the live register, and this paragraph said a <code>membership</code> row is never imported
+<a href="../../decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
+reversed that, because it turned out the source states a membership period directly rather than only
+attendance: the import now writes <code>membership</code> rows for the periods the export states,
+<code>data_confidence = 'low'</code> and <code>import_batch_id</code> set on every one of them, both ends of the period
+dated (<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>). <strong>What did not come back
+is the open-ended row</strong>: an imported membership never runs to today and none is inferred from an
+attendance row, which is the half of the old rule that was doing the protecting. So
+<code>data_confidence</code> on this table has two live sources again and they mean different things: on a
+backdated row it is a human's judgement (<code>membership.backdate</code>, attributed to whoever typed it), on
+an imported row it is the batch speaking for itself.</p>
 <h3 id="overlap-rules--the-invariant-that-matters">Overlap rules — the invariant that matters<a class="headerlink" href="#overlap-rules--the-invariant-that-matters" title="Permanent link">&para;</a></h3>
 <p>A person must not hold two <strong>open</strong> memberships at the same time, and the rule is enforced by
 the database rather than by application code. Its precise statement is in
@@ -1764,13 +1893,28 @@ the database rather than by application code. Its precise statement is in
 <li>Periods are half-open, so a membership ending on 30 June and another opening on 30 June do
   not collide.</li>
 </ul>
-<p>The constraint used to be scoped to <code>membership_type_id</code>, because a person might
-legitimately be an <code>honorary</code> and an <code>adult</code> member at once. With <strong>one membership type</strong>
+<p>The constraint used to be scoped to <code>membership_type_id</code>, because a person might legitimately be an
+<code>honorary</code> and an <code>adult</code> member at once. With <strong>one membership type</strong>
 (<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>)
-that escape hatch is gone, and the constraint becomes the clean person-level invariant:
-<strong>one person, one open membership, ever.</strong> The type column was what made "am I a paid-up
-member?" a hard question; now it is one row, one status, one date
-(<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).</p>
+that escape hatch is gone, and the constraint becomes the clean person-level invariant: <strong>one
+person, one open membership, ever.</strong> The type column was what made "am I a paid-up member?" a hard
+question; now it is one row, one status, one date. (This sentence cited
+<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>
+until round 10; that decision was about belonging to a sub-unit, its table is deleted
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
+and nothing about this invariant ever depended on it.)</p>
+<p><strong>This is the invariant the import now writes against.</strong> For one round the sentence could be written
+the other way — with no imported membership, there is nothing for it to violate — and D-093 removed the
+premise, not the rule
+(<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>). Say exactly what fires, because the
+rule's reach is narrow: it watches the three live statuses, so what the exclusion constraint refuses at
+apply time is an imported period colliding with a <strong>live</strong> membership — an export period that runs into
+or past the person's current one, which an open-ended imported row would produce for thousands of people
+in one transaction. What it does <em>not</em> refuse is an overlap between two closed imported periods: the
+statuses are outside its reach by design, so a source file that double-books somebody across 1993 lands
+quietly, marked only as <code>data_confidence = 'low'</code>. That is the honest cost of the same decision that
+keeps a returning member's old period from gating anything today, and it is why the batch is reviewed
+before it applies rather than after.</p>
 <p><em>Assumption:</em> <code>btree_gist</code> is available (PostgreSQL), because a temporal overlap is the one
 rule that can only be refused <em>during</em> the write that would create it. If the target database
 cannot express exclusion constraints, the fallback is a check inside the writing transaction
@@ -1797,21 +1941,20 @@ obligation, so "what did we charge in 1998?" is answered from the obligation, no
 <p><strong>Membership is ageless</strong> (<a href="../../decisions/decision-log/#d-038--membership-is-ageless">D-038</a>).
 No age floor, no age ceiling, no age-out, no child→adult transition. Age survives as a fact
 about a <strong>person</strong> (<code>person.birth_date</code>) and matters where the law makes it matter:
-guardianship, safeguarding, and position eligibility
+guardianship and safeguarding
 (<a href="#7-there-are-no-age-transitions">§7 was the age-transition section — there is no longer a §7</a>).
-Being a counselor or a leader is a <strong>position</strong>, never a membership type.</p>
+Being a counselor or a leader is a <strong>role</strong>, never a membership type (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</p>
 <hr />
 <h2 id="4-multiple-memberships-over-a-lifetime">4. Multiple memberships over a lifetime<a class="headerlink" href="#4-multiple-memberships-over-a-lifetime" title="Permanent link">&para;</a></h2>
 <p>This is your 1990–2010 / 2024–present case. It is not an edge case; it is the normal
 shape of a long-lived organization's data.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>person 100 — Jan Novák
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  ├── membership #1   member   1990-09-01 → 2010-06-30   terminated  (left)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  │     └── unit_participation   Pack 12  1990-09-01 → 1998-06-30
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  │     └── unit_participation   Pack 31  1998-09-01 → 2010-06-30
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  ├── (gap 2010 → 2024 — 14 years, no membership rows)
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  └── membership #2   member   2024-10-01 → NULL          active
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        └── unit_participation   Group 5  2024-10-01 → NULL
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        └── position_assignment  scoutmaster, Group 5  2025-01-01 → NULL
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  │     └── (nothing here: the corpus names no groups, so nobody's data says where he was)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  ├── (gap 2010 → 2024 — 14 years, no membership rows)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  └── membership #2   member   2024-10-01 → NULL          active
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        └── person_group_member  Thursday group  2024-10-01 → NULL
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        └── role_holder          counselors      2025-01-01 → NULL
 </code></pre></div>
 <p>Note what the two membership rows now <em>share</em>: the same type. They differ only in their
 period and their end reason. In the original framing this person was a <strong>child</strong> member and
@@ -1819,6 +1962,30 @@ then an <strong>adult</strong> member; in this one they were a <strong>member</s
 then an adult the whole time. The second framing is the true one, and it is why the
 memorable case still works: the person never changed, and neither did the type — only the
 period did.</p>
+<p><strong>Half of this picture is reachable without a human, and the other half is not.</strong> Membership #1 and
+its dates are exactly what the membership export states, so the one-off import writes them —
+bounded, <code>data_confidence = 'low'</code>, batch id set
+(<a href="../../decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+The group row is the other half: <strong>the corpus names no groups either</strong>, so a 1990s roster exists
+only because somebody who remembers typed it, and the import owes <strong>no belonging rows of any kind</strong>
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+What the diagram used to draw beside each membership — a <strong>root-unit</strong> participation row mirroring
+the very same period — is gone with the table, and the picture is now about the two periods, which
+is the most the import can actually say. The 1990s belonging the deleted rows might once have held
+was never in the corpus either
+(<a href="../../decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>),
+so what is lost is a place it could have been written down, not a fact that was stored and then
+thrown away.</p>
+<p><strong>One row of the new diagram is thinner than the row it replaced, and the difference is a fact about
+roles.</strong> <code>position_assignment</code> could name the body a person led; <code>role_holder</code> cannot, because
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+left exactly one scope and there is no body to hold an office <em>of</em> — a role is always held at the
+unit. So "he was scoutmaster <strong>of that group</strong>" is no longer a stored pair: the office and the group
+are two rows about the same person, and the link between them is somebody's reading of them.
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+records the neighbouring loss in the same register — the elected-versus-appointed distinction
+survives only as a role the organization invents — and neither is a hole this module can fill.</p>
 <p>Everything the system needs follows from this:</p>
 <ul>
 <li><strong>"Is this person a member?"</strong> → is there a membership with <code>valid_to IS NULL</code> (or
@@ -1964,21 +2131,34 @@ What replaces it is a <strong>window tracked as dates, not as a status</strong>
 </tr>
 </tbody>
 </table>
-<p><strong>The 1 January date has a consequence that reaches past the membership table.</strong> The yearly
-sweep is the only <em>bulk</em> event in a system carefully built to have none: on a single day,
-every membership in the organization lapses at once. That makes it the day the permission
-cache is invalidated for everyone, the day renewal traffic peaks, and — if
-<code>system.gate_exempt</code> were not in place — the day the system administrator would lose access to
-the system they administer (<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).</p>
-<p><strong>All four calendar values are columns —
-<code>duration_months</code>, <code>expiry_month</code>, <code>expiry_day</code>, <code>renewal_grace_days</code> — and that is a requirement rather than a convenience.</strong>
-The organizational year runs with the calendar, and 60 days was chosen for the window on the
-explicit condition that it stays easy to change
+<p><strong>The 1 January date has a consequence that reaches past the membership table.</strong> The yearly sweep is
+the only <em>bulk</em> event in a system carefully built to have none: on a single day, every membership in
+the organization lapses at once. That makes it the day the permission cache is invalidated for
+everyone and the day renewal traffic peaks — and it used to be, on the same day, the day the system
+administrator lost access to the system they administer, which is the hazard
+<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>
+existed to close.</p>
+<p><strong>That mechanism is deleted</strong>
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>):
+there is no <code>system.gate_exempt</code>, no <code>person_holds_gate_exempt</code>, and no resolver clause left to hold
+a door open. The answer now sits in grant text. A grant written <code>MEMBERS * ROLE(it)</code> stops applying
+to its holder at the sweep; a grant written <code>ROLE(it)</code> does not, because <code>MEMBERS</code> is simply not in
+it — which is exactly how D-100 says a whole office is made exempt, and the same sentence that makes
+the administrator survivable is the one that makes a lapsed treasurer dangerous. <em>Assumption:</em>
+<strong>which offices are written without <code>MEMBERS</code>, and who decides, is not settled by D-100</strong> — the
+standing report of live grants naming a <code>ROLE(...)</code> operand without <code>MEMBERS</code> is what makes each
+choice visible to a human (<a href="../../data-model/03-membership/#6-membership-and-the-authorization-system">data-model/03
+§6</a>), and §9 lists the
+undecided half as a question.</p>
+<p><strong>All four calendar values are columns — <code>duration_months</code>, <code>expiry_month</code>, <code>expiry_day</code>,
+<code>renewal_grace_days</code> — and that is a requirement rather than a convenience.</strong> The organizational
+year runs with the calendar, and 60 days was chosen for the window on the explicit condition that it
+stays easy to change
 (<a href="../../decisions/decision-log/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>):
-<em>"Make it 60 days, but it should not be hard to modify."</em> Because the window and the date live
-in a row rather than in a scheduled job, moving them is an <code>UPDATE</code>. The failure this prevents
-is a job that contains the literal <code>60</code> — invisible, and wrong the first time the organization
-changes its mind.</p>
+<em>"Make it 60 days, but it should not be hard to modify."</em> Because the window and the date live in a
+row rather than in a scheduled job, moving them is an <code>UPDATE</code>. The failure this prevents is a job
+that contains the literal <code>60</code> — invisible, and wrong the first time the organization changes its
+mind.</p>
 <p><strong>Why dates rather than a status.</strong> Your own answers pointed two ways on this, and it is
 worth being honest about that: you described the window as existing <em>"for them to pay to stay
 members"</em> — which implies still being a member — and separately confirmed they are <em>"expired
@@ -2021,12 +2201,12 @@ about their age.</p>
 <td>Guardianship — and the system does <strong>not</strong> notice the birthday. No auto-expiry and no review queue; a person ends the row (D-069)</td>
 </tr>
 <tr>
-<td>Whether a unit takes minors at all</td>
-<td><code>org_unit_type.allows_minors</code> — a safeguarding flag</td>
+<td>Who may be added to a group</td>
+<td>Nowhere in the data. <code>org_unit_type.allows_minors</code> was removed by <a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a> and the units it was a column on by <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>; <strong>no column says which group takes children, and none will</strong>. The control is <code>person_group.member.manage</code>, held at the unit or on one group, in the hands of the people who run it (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> transfers <a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a> intact), and <a href="../04-organization-structure/">domain/04-organization-structure.md</a> owns it</td>
 </tr>
 <tr>
-<td>Whether a person may hold a leadership position</td>
-<td><code>position.min_age</code>, and <code>is_minor()</code> in the eligibility report</td>
+<td>Whether a person may hold an office</td>
+<td>Nowhere either. <code>position.min_age</code> is deleted with positions (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>) and <code>role</code> carries no age column, so what remains is <code>is_minor()</code> in a report over <code>role_holder</code>. <strong>That is a deletion rather than a move</strong>: the eligibility check this row pointed at no longer exists, and §9 carries the question</td>
 </tr>
 <tr>
 <td>Consent for a minor's own account</td>
@@ -2038,6 +2218,20 @@ about their age.</p>
 </tr>
 </tbody>
 </table>
+<p><strong>One row of that table is emptier than it looks, and a membership document should say so out
+loud.</strong> This section could once answer <em>"which units take minors?"</em> from a flag on a type. That flag
+is gone, the units went with it a round later, and no column on <code>person_group</code> replaces it, so what
+this module has to offer on safeguarding is a permission held by named adults, an audit trail whose
+recorded values expire after two years
+(<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+and a report of who holds the write. The argument that this is a stronger control than a boolean,
+and the plain statement of what it cannot answer, belong to the groups module
+(<a href="../04-organization-structure/">domain/04-organization-structure.md</a>); what belongs here is the
+observation that <strong>the fee gate never protected a child either</strong> — it protects the organization's
+membership roll, and it was never load bearing for placement. <strong>What
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+additionally takes is the part where the adult holding that write was somebody the body itself
+chose</strong>; it is recorded as a loss there and not argued away here.</p>
 <p><strong>The edge case this removes.</strong> The old design had to reason about a person who was
 simultaneously finishing a child membership and starting an adult one, and about whether the
 overlap constraint would block it. That case cannot arise: there is one membership, it
@@ -2046,13 +2240,25 @@ not notice.</p>
 <hr />
 <h2 id="8-since-1985--the-ten-queries-this-design-must-answer">8. Since 1985 — the ten queries this design must answer<a class="headerlink" href="#8-since-1985--the-ten-queries-this-design-must-answer" title="Permanent link">&para;</a></h2>
 <p>Stated explicitly so they can be tested. All are point-in-time queries and all must remain
-answerable indefinitely:</p>
+answerable indefinitely — with two exceptions this document now carries openly rather than editing
+away: <strong>query 3 has no answer for any group before go-live</strong>, because the corpus names no groups,
+and <strong>query 8 has no answer at all any more</strong>, because the thing it checked against no longer
+exists. A list of ten that quietly became eight is how a specification loses a requirement:</p>
 <ol>
 <li>Who is an active member today?</li>
 <li>Who was a member on any given date in the past?</li>
-<li>Who was in unit U on date D? (requires <code>unit_participation</code>, and for the organization
-   itself the root participation row makes it the same query — see
-   <a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>)</li>
+<li>Who was in group G on date D? — <strong>a point-in-time read over <code>person_group_member</code></strong>, whose rows are
+   dated at both ends for exactly this question
+   (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>);
+   the group's own lifetime is a second, different fact and both are kept. "Who was in the
+   organization on date D?" is now a <code>membership</code> read with no belonging row involved: <strong>two
+   queries, two shapes</strong>, and no "and everything nested under it" left to ask about
+   (<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+   <strong>For a group this stops at go-live, and the stop is the corpus's, not the query's</strong>: the import
+   names no groups either, so "who was in the Thursday group in 2011?" has no answer at all rather
+   than a wrong one, and every group row from before launch is somebody's typed recollection
+   (<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>,
+   <a href="../../decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>)</li>
 <li>What is the full membership history of person P, including gaps?</li>
 <li>Who is <strong>inside the renewal window</strong> right now? (a case needing follow-up — the worklist
    that replaced "who is in grace")</li>
@@ -2060,27 +2266,59 @@ answerable indefinitely:</p>
 <li>Which members are <strong>under 18 and have no guardian recorded</strong>? (a safeguarding gap, not a
    membership one — the old background-check query was retired by
    <a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>)</li>
-<li>Which minors are in units that do not accept them? (a data-quality check against
-   <code>org_unit_type.allows_minors</code>)</li>
+<li><strong>Which minors are in groups that do not accept them?</strong> — no longer answerable, and left numbered
+   rather
+   than renumbered away, so that the gap sits on the list instead of off it. It was a data-quality
+   check against <code>org_unit_type.allows_minors</code>;
+   <a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
+   removed that column and
+   <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+   removed the units it was a column on, and a group is explicitly listed as carrying no such rule
+   (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+   So there is nothing to check a placement against, in either vocabulary, and no plan for there to
+   be one. What stands in its place is upstream — nobody is added to a group by somebody who does
+   not hold that group's roster write — plus a report of who holds that write, which is a question
+   about grants, not about people (§7)</li>
 <li>Who are the returning members — more than one membership with a gap between?</li>
 <li>How many members did the organization have in each year since 1985? (historical
     reporting — must include closed memberships and must not double-count)</li>
 </ol>
-<p><strong>Four of these reach only as far back as <code>membership</code> rows reach, and the legacy import creates
-none</strong> (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
-Queries 2, 4, 9 and 10 therefore return <em>participation</em> for the decades that arrive from paper, and the
-honest form of "how many members did the organization have in 1998?" is "we know how many people took
-part in units in 1998; we do not know how many were members", because a roster with no fee behind it
-evidences presence and nothing more. The wrong answer is one decision away — generate a <code>membership</code>
-per roster row and every historical query instantly returns a confident number built on nothing, while
-<code>is_current_member()</code> quietly hands today's authority to people last seen in 2003
-(<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
-These stay on the list because they are answerable, indefinitely, for everything this system registers
+<p><strong>Round 8 said four of these reach only as far back as <code>membership</code> rows reach, because the legacy
+import created none, and that for the decades arriving from paper queries 2, 4, 9 and 10 return
+<em>participation</em>. Half of that is now false</strong>
+(<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
+<a href="../../decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+The source states membership periods, so the import writes bounded memberships and those four
+queries do reach into the corpus — <strong>over an export, though, not over a register</strong>, and the only
+thing telling the two kinds of row apart is <code>data_confidence = 'low'</code> and a batch id, which no
+report is obliged to notice (<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>). So
+query 10 is answerable in a form that should be labelled on the way out of the chart: a member count
+where the source states a period, and nothing where it does not.</p>
+<p><strong>The wrong answer is still exactly one decision away, and the ban that stops it is one sentence.</strong>
+Generate a <code>membership</code> per attendance row and every historical query instantly returns a confident
+number built on nothing, while <code>is_current_member()</code> quietly hands today's authority to people last seen
+in 2003 (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+What stops that is not the column set but the rule: <strong>never an open-ended imported membership, never one
+inferred from attendance.</strong> What round 8 got right and kept is the reasoning underneath — evidence and
+inference are different rows, and a file that says <em>member 1990–1995</em> is the first kind while a line-up
+of names at an event is the second.</p>
+<p><strong>The question that did not come back is query 3 for anything before go-live.</strong> Importing membership
+rows says nothing about which group a person was in, because a membership is not a placement; the
+group answer stays empty until somebody types a roster in by hand — which is the only way a group
+row can be written at all, the corpus naming no groups
+(<a href="../../decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>)
+— and the honest reading of a pre-go-live roster is that it is somebody's recollection. <strong>What is
+<em>not</em> lost is the shape of the answer after go-live</strong>: the member rows are dated precisely so that
+"who was in the Thursday group in 2011?" stays a point-in-time read that survives the audit trail's
+payload expiry
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>'s
+second loss, which is the <em>unit</em> framing — the subtree question — rather than the roster).</p>
+<p>These stay on the list because they are answerable, indefinitely, for everything this system registers
 itself — and that indefinite half is itself a decision now, the accounting skeleton being kept as the
 organization's history
 (<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
-For the corpus, the participation query is the answer, and printing it as such beats letting an
-inferred row answer the membership one.</p>
+For the corpus, print which of the two answers a number came from.</p>
 <p>Query 10 is the one that fails in most systems, and it fails specifically because someone
 made membership a boolean.</p>
 <p>Query 1 is now <em>slightly</em> harder than it looks, and deliberately: it is not
@@ -2093,13 +2331,35 @@ resolver, which is the worst kind of bug to find.</p>
 <ul>
 <li>The organizational calendar: which date the fee expires on, and how long the renewal window
   is (§6). The mechanism is settled; the two numbers are a guess.</li>
-<li>What the root-unit participation row does when someone renews inside the window, given the
-  backdated period (§6, and
-  <a href="../../data-model/03-membership/#51-a-participation-row-on-the-root-unit">data-model/03 §5.1</a>).</li>
-<li>Whether <code>unit_participation</code> should reference the membership, for referential integrity at
-  the cost of the import case (§3).</li>
-<li>Which roles are exempt from the membership gate — a decision per role, not a default
-  (<a href="../../data-model/05-authorization/#3-role-and-role_permission">data-model/05 §3</a>).</li>
+<li><strong>Which offices are written without <code>MEMBERS</code>, and who decides that an office survives its
+  holder's lapse.</strong>
+  The gate left the resolver for the grant text (§6,
+  <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+  so the decision is made one grant at a time and nothing records the <em>why</em> — only whether the word
+  is in the expression. The standing report makes the outcome visible; it does not make the choice.
+  Carried also at <a href="../../data-model/03-membership/#9-open-issues">data-model/03 §9</a>.</li>
+<li><strong>Whether an age rule has any home now.</strong> <code>position.min_age</code> is deleted with positions
+  (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+  a <code>role</code>
+  carries none, and a <code>person_group</code> is refused one
+  (<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
+  so "a scoutmaster must be an adult" survives only as a report over <code>role_holder</code> and <code>is_minor()</code>
+  (§7). If the organization wants that rule enforced rather than reported, it needs a decision this
+  round did not make.</li>
+<li>What <code>status</code> an imported closed membership carries (§3). The enum offers <code>pending_payment</code>, <code>active</code>,
+  <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code>, and none of them says <em>a source stated this
+  period and nobody in the system decided anything</em>: <code>terminated</code> claims an end reason the export
+  does not give, <code>completed</code> claims a lifecycle the model no longer has (§5 says no <code>completed</code> row
+  is produced any more, while the enum and <a href="../../data-model/03-membership/#3-membership">data-model/03
+  §3</a> both still carry the value and use it in an
+  example). This is a naming question with a reporting consequence — a <code>status</code> that reads as a
+  decision will be reported as one.</li>
+<li>~~Which roles are exempt from the membership gate~~ — the question became "which grants name
+  <code>ROLE(...)</code>
+  without <code>MEMBERS</code>", which is per grant rather than per role and is a report rather than a setting
+  (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+  and the bullet above). <strong>It stays on this list because the decision is still owed</strong>, only the
+  shape of it has changed.</li>
 </ul>
 <p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: activation on
 payment or approval (on payment, §1); per person or per household (per person and flat, §6 —
@@ -2107,7 +2367,28 @@ and the household grouping has since been removed entirely,
 <a href="../../decisions/decision-log/#d-057--household-is-removed">D-057</a>);
 renewal shape A or B (A, §6); age-out timing and the child→adult transition (neither exists,
 §7); background checks as a requirement (§2); and simultaneous memberships of different types
-(impossible — one type, one open membership, §3).</p>
+(impossible — one type, one open membership, §3). Two from round 9:</p>
+<ul>
+<li><strong>Whether a body may refuse a minor, and who may add a person to one</strong> — answered twice over, and
+  the same
+  way both times. No unit carried restrictions of any kind and entry was somebody else's act: the
+  fee at the membership, <code>unit_participation.manage</code> everywhere below it, no self-scoped variant of
+  either
+  (<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>,
+  <a href="../../open-questions/#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act">C-6</a>,
+  §1). Round 10 deleted the units and
+  <a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+  carried the ruling across intact: a group carries no restrictions, nobody writes themselves onto a
+  roster, and the gate is <code>person_group.member.manage</code>. What that gives up is stated in §7 rather
+  than here twice.</li>
+<li><strong>Whether the one-off import may create memberships</strong> — it may, for the periods the source states,
+  both
+  ends dated, never open-ended and never inferred from attendance (§3). This was answered <em>no</em> one
+  round earlier and the answer reversed with the description of the corpus, not with the reasoning
+  about what a membership means
+  (<a href="../../decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
+  <a href="../../decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).</li>
+</ul>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
 
@@ -2144,7 +2425,7 @@ renewal shape A or B (A, §6); age-out timing and the child→adult transition (
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../04-organization-structure/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Organization Structure">
+          <a href="../04-organization-structure/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Groups and the Unit">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2154,7 +2435,7 @@ renewal shape A or B (A, §6); age-out timing and the child→adult transition (
                 Previous
               </span>
               <div class="md-ellipsis">
-                Organization Structure
+                Groups and the Unit
               </div>
             </div>
           </a>

@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -782,7 +782,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1153,6 +1153,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-a-grant-is-and-what-it-used-to-carry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a grant is, and what it used to carry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-grantee-is-an-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A grantee is an expression
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#there-is-no-wildcard-except-systemadmin" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1263,10 +1285,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5a-scope-exposure-and-audiences" class="md-nav__link">
+  <a href="#5a-groups-roles-and-audiences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5a. Scope exposure and audiences
+        5a. Groups, roles and audiences
       
     </span>
   </a>
@@ -1347,6 +1369,45 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="11. Roles — proposed seed set">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-seed-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the seed ships
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-worked-example-offices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worked-example offices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-gate-moved-into-the-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The gate moved into the expression
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1483,6 +1544,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-a-grant-is-and-what-it-used-to-carry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a grant is, and what it used to carry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-grantee-is-an-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A grantee is an expression
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#there-is-no-wildcard-except-systemadmin" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1593,10 +1676,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5a-scope-exposure-and-audiences" class="md-nav__link">
+  <a href="#5a-groups-roles-and-audiences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5a. Scope exposure and audiences
+        5a. Groups, roles and audiences
       
     </span>
   </a>
@@ -1678,6 +1761,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="11. Roles — proposed seed set">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-seed-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the seed ships
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-worked-example-offices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worked-example offices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-gate-moved-into-the-expression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The gate moved into the expression
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1725,10 +1847,28 @@
 
 
 <h1 id="appendix--permission-catalog">Appendix — Permission Catalog<a class="headerlink" href="#appendix--permission-catalog" title="Permanent link">&para;</a></h1>
-<p>Every permission code, its namespace, and the channel that resolves it.</p>
+<p>Every permission code, its namespace, and the grant that carries it.</p>
 <p>This is the <strong>proposed</strong> catalog, seeded in
 <a href="../../data-model/05-authorization/#12-what-the-organization-starts-with">../data-model/05-authorization.md</a>.</p>
 <blockquote>
+<p><strong>Round 10 rewrote this page.</strong>
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+deleted the unit hierarchy,
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+the level ladder,
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+positions, <code>role_permission</code> and the membership gate,
+<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+the audience's rule/list/inclusion arms, and
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
+event ownership. Thirteen codes here lost their subject, and five arrived for the two new tables.
+What changed shape is not only the list: a code is no longer paired with a level, so a row in this
+catalog is a capability and nothing more. <strong>Whoever grants it says how far it reaches, for how
+long, and to whom</strong> — in one row, whose grantee is an expression
+(<a href="#what-a-grant-is-and-what-it-used-to-carry">§1</a>). <strong>And §1's two naming shapes are rules now</strong>, not
+descriptions of the rows below: the last segment names the action, a middle segment names something
+the schema stores, no grade words and no prefix — with <code>system.admin</code> named as the single exception
+(<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).</p>
 <p><strong>Deliberately comprehensive and granular, and staying that way</strong>
 (<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
 This is a <strong>menu, not a checklist.</strong> Administrators assign people only the permissions they
@@ -1747,12 +1887,169 @@ comprehensive <em>role</em> list would be a specification pretending to be data.
 <hr />
 <h2 id="1-conventions">1. Conventions<a class="headerlink" href="#1-conventions" title="Permanent link">&para;</a></h2>
 <h3 id="code-shape">Code shape<a class="headerlink" href="#code-shape" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&lt;resource&gt;.&lt;action&gt;              e.g.  membership.request.approve
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&lt;resource&gt;.&lt;subresource&gt;.&lt;action&gt; e.g.  unit_participation.view
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>&lt;resource&gt;.&lt;action&gt;               e.g.  person.edit
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&lt;resource&gt;.&lt;subresource&gt;.&lt;action&gt; e.g.  event.answer.view
 </code></pre></div>
 <p><code>resource</code> is always the first segment and matches <code>permission.resource</code>. Codes are
-<strong>stable identifiers</strong> — the <code>display_name</code> may change, the code may not. Renaming a code
-is a breaking change requiring a migration that rewrites <code>role_permission</code> rows.</p>
+<strong>stable identifiers</strong> — the <code>display_name</code> may change, the code may not. Renaming a code is a
+breaking change requiring a migration that rewrites every <code>access_grant</code> row naming it. Before
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+the same migration also rewrote <code>role_permission</code> rows; that table is deleted, and a grant is now
+the only place a code is written down — which makes the rule <em>smaller</em>, not weaker.</p>
+<p><strong>Those two shapes are rules for adding a code, and since
+<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+they are written here as rules rather than as a description of what is already in the tables below.</strong>
+As a description they arbitrated nothing: both readings of one disputed name fitted them exactly, and
+that dispute ended with the capability deleted rather than either spelling chosen (§12). Three rules,
+and the moment they cost nothing is the moment a code is added:</p>
+<ol>
+<li><strong>The last segment names the action.</strong> Read the code on its own and ask <em>what does this let me
+   do?</em> <code>event.grant_access</code> answers it; a noun-final code states an object instead. Since
+   <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+   a grant permits exactly one thing, so a grant of an object would need a second sentence to say
+   what it permits — and a second sentence is where a permission's real scope always hides.</li>
+<li><strong>A middle segment names something the schema stores.</strong> <code>answer</code> is <code>event_answer</code>, <code>presence</code> is
+   a column of <code>event_registration</code>, and <code>contact</code>, <code>credential</code>, <code>member</code>, <code>participant</code> and
+   <code>request</code> are rows. <strong>A permission may not be built out of an artifact the database does not
+   keep</strong>, because a grant has to be checkable against stored state and there is none to check
+   against: the payment's QR code is exactly that artifact, and
+   <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>
+   already ruled it a rendering of three stored facts rather than data. <strong>No code in this catalog
+   spells <code>qr</code>, and none may</strong> (§12).</li>
+<li><strong>No grade words, and no prefix.</strong> Not <code>admin</code>, <code>all</code> or <code>everything</code>, and not any code whose
+   meaning is <em>"every sibling under this prefix"</em> —
+   <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+   deleted sixteen of them and computed the wrong answer for the one it chose to exempt,
+   <code>dependent.admin</code> — which <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+   then deleted too, for having no set left to stand for (the table further below). D-104 restates that
+   decision as a rule about codes that have not been written yet, <strong>which is the only form of it that
+   can still prevent anything.</strong></li>
+</ol>
+<p><strong>One exception, named because a rule with an unnamed exception is a rumour: <code>system.admin</code>.</strong> Its
+last segment is not an action, and it stays. It survives because its meaning is <em>defined by the
+resolver</em> — checked outright, <code>applies_to = unit</code>, never reachable through an item grant (§7) — rather
+than read off its name, and because D-068 exempted it in so many words rather than by omission. <strong>It
+is the only code in this system allowed to be a noun, and the exemption sets no precedent</strong>:
+<code>&lt;resource&gt;.admin</code> is precisely what rule 3 refuses and precisely what was deleted.</p>
+<p><strong>The three rules were run against the sixty-six live codes in the tables below and corrected
+nothing</strong> — sixty-five satisfy both tests, and the sixty-sixth is <code>system.admin</code>. That null result is
+the reason this section changed voice rather than its contents: <strong>a convention that is followed and
+not stated fails exactly once, on the first thing nobody thought to compare</strong>, and the thing this
+round failed on had never existed anywhere but in prose (§12). <strong>Nothing in the schema will ever
+notice a code drifting from its row</strong> — the check D-104 adopts is a person remembering to run a report
+over the seeded registries in both directions, which this repository can only ever do by hand
+(<a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>).</p>
+<h3 id="what-a-grant-is-and-what-it-used-to-carry">What a grant is, and what it used to carry<a class="headerlink" href="#what-a-grant-is-and-what-it-used-to-carry" title="Permanent link">&para;</a></h3>
+<p><strong>A grant is five things: a grantee (a person or an audience expression) + a scope (the unit, or
+exactly one item) + one permission code + <code>effect ∈ allow, deny</code> + a period.</strong> The answer it feeds:</p>
+<blockquote>
+<p><strong>allowed</strong> when some live allow applies <strong>and no</strong> live deny applies.
+(<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>)</p>
+</blockquote>
+<p>That is the whole of the precedence rule, and this catalog carries no column beside a code because
+of it. What the level column used to promise, and what covers it now:</p>
+<table>
+<thead>
+<tr>
+<th>~~<code>access_level</code> used to~~</th>
+<th>Now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~~bundle several codes under one word — "<code>manage</code> on this event"~~</td>
+<td>One grant row per code. A bundle is a <strong>role</strong> or an <strong>audience</strong>, which is what <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a> already said: <em>roles are the bundle</em></td>
+</tr>
+<tr>
+<td>~~grade one act at two strengths — <code>view</code> against <code>edit</code>~~</td>
+<td>Two codes, plus <code>permission.right_kind ∈ read \| write</code> saying which side each sits on</td>
+</tr>
+<tr>
+<td>~~decide whether a grant was enough for the code being checked~~</td>
+<td>Nothing to decide. A grant names exactly one code, and the answer is yes or no</td>
+</tr>
+<tr>
+<td>~~order two grants that both apply — locality, <a href="../../decisions/decision-log/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>~~</td>
+<td>Nothing to order: two allows that apply produce one answer. <strong>Deny is absolute, and that half of D-032 survives untouched</strong></td>
+</tr>
+<tr>
+<td>~~carry <code>revoked</code> as the bottom rung~~</td>
+<td><code>effect = deny</code> on a grant row, and it is still asked first</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Withdrawn by
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>.</strong>
+The rank integer it rested on went with it
+(<a href="../../decisions/decision-log/#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>),
+and so did <code>permission_level</code>, the table that mapped levels onto codes: the famous bug it guarded —
+<code>'admin' &lt; 'contribute'</code> comparing alphabetically and inverting the model — cannot occur in a system
+with no levels, which is a better fix than the guard. The question that dies with the column is
+<em>"what does <code>manage</code> give me on this event?"</em>: there is no such word, so there is no such lookup.
+The question it buys is <em>"what exactly does this person have?"</em>, answered by reading grant rows.</p>
+<p><strong>Two columns moved onto <code>permission</code> itself, and only one of them is comfortable.</strong></p>
+<ul>
+<li><strong><code>right_kind ∈ read | write</code></strong> survives <strong>only</strong> so that
+  <a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>'s
+  guardianship channel has something to compare a permission against now that the ladder is gone:
+  <code>none</code> covers nothing, <code>view</code> covers <code>read</code> codes, <code>write</code> covers both. Nothing else in the system
+  compares it. <strong>It is a column whose only job is one other mechanism, and saying so is cheaper than
+  discovering it later</strong> (§6).</li>
+<li><strong><code>applies_to ∈ unit | unit_and_item</code></strong> is where a code may be granted at all, and it is checked
+  <strong>when the grant is saved</strong>, not at check time: an item scope is refused for codes like
+  <code>event.create</code> (an event cannot be created twice, so a creation permission attached to a thing that
+  already exists answers no question) and <code>membership.terminate</code> (a membership is a fact about a
+  person at the unit, not something an event owns). <em>The example D-099 gives for the second half is
+  <code>membership.manage</code>, and this catalog has never carried a code of that name — §12 records that
+  rather than minting it.</em> The <code>system</code> namespace is unit-only the same way, which is <strong>who enforces
+  now</strong> for the old
+  rule that <code>system.admin</code> can never arrive through an item grant
+  (<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).</li>
+</ul>
+<p><strong>Scope is two things, not a ladder.</strong> A grant at the unit — the organization, of which there is one,
+and which is a scope and never a row
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>) —
+reaches <strong>every item of every type</strong>. A grant on one item reaches that item and nothing else. There
+is no tier between them and no relation on the item to test: no owner, no parent, no covering body.</p>
+<h3 id="a-grantee-is-an-expression">A grantee is an expression<a class="headerlink" href="#a-grantee-is-an-expression" title="Permanent link">&para;</a></h3>
+<p>Wherever this catalog writes a grantee, it is a legal expression in the selector language of
+<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>:
+the leaves <code>EVERYONE</code>, <code>MEMBERS</code>, <code>GUARDIANS[(person)]</code>, <code>LIST</code> — <em>this audience's own hand-typed
+people</em>, and nothing else — <code>PERSON(person)</code>, <code>ROLE(name)</code>, <code>GROUP(name)</code>, <code>AUDIENCE(name)</code>, and the
+five event-bound sets <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> — each writable
+with its argument spelled, or bound to the item being checked
+(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
+— combined with <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection</strong>, and brackets.</p>
+<p><strong>Those thirteen leaves are the registry, not a sample of it.</strong> They are the seeded <code>selector_type</code>
+rows: the twelve <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+copied from the evaluator's arm list, plus <code>PERSON</code> as the thirteenth, which that entry's registry
+amendment adds and
+<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+settles after two module pages had written a waiver expression that did not parse against a registry
+with twelve rows. <strong>A leaf outside that registry does not parse</strong>, and the refusals below are operands
+people ask for that the registry does not carry.</p>
+<p><strong>Every expression below is printed in the canonical stored form, which brackets every bracket,
+always.</strong> <code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; and the stored
+string never relies on a reader who memorized that
+(<a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).
+So <code>event.answer.view</code> on an event is aimed at <code>ORGANIZERS</code>, an open camp is opened by
+<code>MEMBERS</code>, a gated office is <code>MEMBERS * ROLE(treasurers)</code>, and the exemption for one named person is
+<code>(MEMBERS * ROLE(treasurers)) + PERSON(jan)</code> — a second grant aimed at a person is the other way to
+write the same thing, and keeps the exception off the expression everyone else reads.</p>
+<p><strong>Three refusals belong next to the language, because each is a temptation this catalog creates.</strong></p>
+<ul>
+<li><strong><code>PRESENT(&lt;event&gt;)</code> is refused.</strong> <code>was_present</code> is <code>NULL</code> until somebody takes a register, so an
+  operand over it would revoke a child's access to their own camp photos because a volunteer forgot
+  to tick a box. Presence stays a three-valued safeguarding signal
+  (<a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>),
+  and nowhere in this file is it a set anyone may be granted over.</li>
+<li><strong><code>WHITELISTED</code> does not exist.</strong> There is no stored state to name, so it is an open question and
+  never a selector.</li>
+<li><strong>A bare name is one namespace across roles and groups</strong>
+  (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>),
+  which makes §11's office names a load-bearing vocabulary, and makes every selector code a reserved
+  name: an office called <code>MEMBERS</code> is refused when it is saved.</li>
+</ul>
 <h3 id="there-is-no-wildcard-except-systemadmin">There is no wildcard, except <code>system.admin</code><a class="headerlink" href="#there-is-no-wildcard-except-systemadmin" title="Permanent link">&para;</a></h3>
 <p>Every capability in this catalog is <strong>narrow and explicit</strong>. A check for <code>X.y</code> is satisfied
 by an exact grant of <code>X.y</code> — or by <code>system.admin</code>, which is checked outright and is the only
@@ -1766,14 +2063,18 @@ which also deleted the resolver branch that implemented it.</p>
 <p><strong>"Someone who can do everything about events" is a role, not a permission</strong> — the
 organization composes it from the thirteen <code>event.*</code> codes. That is the division D-052 already
 drew: <strong>the code implements capabilities, the organization groups them.</strong> A per-resource
-<code>admin</code> was the code guessing at a bundle on the organization's behalf.</p>
-<p><strong>The cost, because it is real.</strong> A new narrow permission is <em>not</em> automatically covered by
-roles that should imply it; someone must add it. Integrity check <strong>18</strong> is the safety net the
-wildcard used to be — it lists permissions no role grants, which is what a missed bundle looks
-like. It fails <strong>closed</strong>: a capability goes unheld and somebody says so, rather than a
-capability going unmeant and nobody saying so.</p>
+<code>admin</code> was the code guessing at a bundle on the organization's behalf. Since
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+the composition is literal: a role confers nothing, so the bundle is thirteen live grants whose
+expression names <code>ROLE(x)</code> — thirteen rows you can read, which is what D-068 was reaching for.</p>
+<p><strong>The cost, because it is real.</strong> A new narrow permission is <em>not</em> automatically covered by the
+offices that should imply it; someone must write the grant row. Integrity check <strong>18</strong> is the safety
+net the wildcard used to be — it lists permissions <strong>no live grant names</strong>, which is what a missed
+bundle looks like now that no role carries a permission list of its own. It fails <strong>closed</strong>: a
+capability goes unheld and somebody says so, rather than a capability going unmeant and nobody
+saying so.</p>
 <h3 id="two-things-named-admin-which-are-not-the-same-thing">Two things named "admin", which are not the same thing<a class="headerlink" href="#two-things-named-admin-which-are-not-the-same-thing" title="Permanent link">&para;</a></h3>
-<p>The word used to be ambiguous three ways. Two rounds of deletion left two, and the third is
+<p>The word used to be ambiguous three ways. Three rounds of deletion left one, and the others are
 recorded as deleted rather than quietly dropped:</p>
 <table>
 <thead>
@@ -1785,19 +2086,19 @@ recorded as deleted rather than quietly dropped:</p>
 </thead>
 <tbody>
 <tr>
-<td><code>access_level.admin</code> (rank 40)</td>
+<td>~~<code>access_level.admin</code> (rank 40)~~</td>
 <td>A <strong>grant level</strong> — how much authority a grant carries, in <code>view</code> &lt; <code>contribute</code> &lt; <code>manage</code> &lt; <code>admin</code>. Used by <code>permission_level</code> to decide whether a given grant satisfies a given permission.</td>
-<td><strong>Real, untouched</strong></td>
+<td><strong>Deleted</strong> — the whole ladder, top rung included, by <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>. This row read "real, untouched" until round 10, which is what "untouched" was worth</td>
 </tr>
 <tr>
 <td><code>system.admin</code></td>
-<td>The <strong>one wildcard permission</strong>: everything, held through a role, never through an item grant</td>
-<td><strong>Real, untouched</strong></td>
+<td>The <strong>one wildcard permission</strong>: everything, carried by a grant at the unit and never on an item (<code>applies_to = unit</code>)</td>
+<td><strong>Real, and the one named exception</strong> — the only code in this system allowed to end in a noun. Exempted by name in words by D-068, and named as an exception by <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>, because its meaning is defined by the resolver rather than read off the name. <strong>Not a precedent</strong> (§1)</td>
 </tr>
 <tr>
 <td><code>&lt;resource&gt;.admin</code></td>
 <td>A <strong>wildcard permission code</strong> implying every sibling on that resource</td>
-<td><strong>Deleted</strong> — all sixteen, by <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a></td>
+<td><strong>Deleted</strong> — all sixteen, by <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>, and refused in advance for codes not yet written by <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>: a grade word, and a prefix read as a permission</td>
 </tr>
 <tr>
 <td><code>dependent.medical.admin</code>, <code>dependent.admin</code></td>
@@ -1823,17 +2124,28 @@ spells <code>admin</code>.</strong></p>
 </thead>
 <tbody>
 <tr>
-<td><code>NULL</code></td>
-<td><code>role_assignment</code>, <code>access_grant</code>, ownership</td>
-<td>1, 3, 4</td>
+<td><em>(absent)</em></td>
+<td><code>access_grant</code> — aimed at a person or at an audience — and ownership</td>
+<td>1, 3</td>
 </tr>
 <tr>
 <td><code>system</code></td>
-<td><code>role_assignment</code> only — <strong>never</strong> item grants</td>
-<td>4</td>
+<td><code>access_grant</code> <strong>at the unit only</strong> — <code>applies_to = unit</code>, so <strong>never</strong> on an item</td>
+<td>1</td>
 </tr>
 </tbody>
 </table>
+<p>The channel numbers are the three in
+<a href="../../domain/06-authorization-model/#1-the-three-channels-of-authority">../domain/06-authorization-model.md §1</a>:
+grants, guardianship, ownership. <strong>There used to be a fourth row in this table and a fourth channel
+above it</strong> — <code>role_assignment</code>, the channel a <code>system</code> permission could only be reached through.
+<strong>Withdrawn by
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>:</strong>
+<code>role_assignment</code> is <code>role_holder</code>, a role confers nothing, and every code in this catalog —
+<code>system.admin</code> included — arrives through the one grant channel now. <em>Who enforces that a <code>system</code>
+code stays out of item grants: <code>applies_to</code>, checked on save</em>
+(<a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
+not the absence of a channel.</p>
 <p><strong>There is no <code>dependent</code> namespace</strong> (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>);
 §9 explains what replaced it, and what was lost with it.</p>
 <p><strong>That leaves the guardianship channel with no prefix to dispatch on, which has to be answered
@@ -1847,8 +2159,9 @@ routed through guardianship at all, because the code did not carry the right pre
 a channel; the shape of the request selects it.</p>
 <p>The <code>guardianship.*</code> codes are additionally satisfiable by <strong>being a party to the row</strong>, and not
 only by a grant (<a href="../../decisions/decision-log/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).</p>
-<p><code>system</code> permissions remain non-grantable by item grant: <code>system.admin</code> must never be delegable to
-a single event or to a parent.</p>
+<p><code>system</code> permissions remain non-grantable on an item: <code>system.admin</code> must never be delegable to a
+single event, a group, or an office. What enforces it is no longer the shape of the channel that
+could carry it but a column on the code itself.</p>
 <h3 id="sensitivity-marker">Sensitivity marker<a class="headerlink" href="#sensitivity-marker" title="Permanent link">&para;</a></h3>
 <p>The <strong>Sens.</strong> column flags permissions that need extra care:</p>
 <table>
@@ -1872,13 +2185,22 @@ a single event or to a parent.</p>
 <td>Granting it confers authority over the permission system itself</td>
 </tr>
 <tr>
+<td>🔒🔒</td>
+<td>The <strong>escalating</strong> half of that family: granting it changes what <strong>other people</strong> can do, not merely what the holder can do. <code>role.*</code> is marked this way in <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>, which names it "the most sensitive code family in the catalog"</td>
+</tr>
+<tr>
 <td>⛔</td>
 <td>Granting it can end someone's membership or standing</td>
 </tr>
 </tbody>
 </table>
 <p>These marks should drive UI warnings and the alerting in
-<a href="../../data-model/05-authorization/#11-invariants-to-verify">../data-model/05-authorization.md</a>.</p>
+<a href="../../data-model/05-authorization/#11-invariants-to-verify">../data-model/05-authorization.md</a>.
+<strong>A mark grades what a grant exposes, not the table a code names</strong>
+(<a href="../../decisions/decision-log/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>),
+and the two new families are placed by that rule: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a
+roster is a list of people, and <code>role.*</code> keeps <strong>🔒🔒</strong> because writing a holder row writes who may
+hold everything else.</p>
 <hr />
 <h2 id="2-people-and-identity">2. People and identity<a class="headerlink" href="#2-people-and-identity" title="Permanent link">&para;</a></h2>
 <table>
@@ -1973,11 +2295,13 @@ propagating a decision is a migration nobody decided.</p>
 <p><strong>Before <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>,</strong>
 the way to keep them apart was to carve them out of <code>person.admin</code>'s prefix match — a
 special case in the resolver that was invisible in every role editor. Now there is no
-wildcard to carve out of, and the question moves somewhere reviewable: a role bundling all
-of <code>person.*</code> reaches them, and you can <em>see</em> it in <code>role_permission</code>. <strong>The guidance that
-replaces the special case is in §11</strong> — no seeded role mixes <code>person.merge</code> or
-<code>person.redact</code> with routine <code>person.edit</code>, and one that does should be named for what it
-is. This is now a report a person can read, not a caveat about a resolver rule.</p>
+wildcard to carve out of, and the question moves somewhere reviewable: an office bundling all
+of <code>person.*</code> reaches them, and you can <em>see</em> it — since
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+deleted <code>role_permission</code>, the bundle <em>is</em> the live grant rows naming <code>ROLE(x)</code>, one row per code,
+dated and attributable. <strong>The guidance that replaces the special case is in §11</strong> — no seeded
+office mixes <code>person.merge</code> or <code>person.redact</code> with routine <code>person.edit</code>, and one that does should
+be named for what it is. This is now a report a person can read, not a caveat about a resolver rule.</p>
 <p><strong><code>person.background_check.*</code> is gone</strong> (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
 The organization has no background checks handled by this system, so there is nothing to
 view and nothing to record. If that changes, the permission pair and a dated record with an
@@ -2141,109 +2465,162 @@ login they have, not acquiring a second one.</p>
 <td>⚠</td>
 <td>Enter or correct historical membership periods</td>
 </tr>
-<tr>
-<td><code>unit_participation.view</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>See who takes part in a sub-unit</td>
-</tr>
-<tr>
-<td><code>unit_participation.manage</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>Add, move or end participation</td>
-</tr>
 </tbody>
 </table>
 <blockquote>
+<p><strong>Two rows stood at the foot of this table and are gone.</strong> ~~<code>unit_participation.view</code> and
+<code>unit_participation.manage</code> — see who takes part in a sub-unit; add, move or end participation~~
+were <strong>deleted by
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong>
+with the table they read and the sub-units that had rosters. Their work is retargeted, not lost:
+<em>"who is in the organization?"</em> is <code>membership.view</code> — one query over <code>membership</code>, with no depth in
+it — and <em>"who is in this group?"</em> and <em>"write that group's roster"</em> are <code>person_group.view</code> and
+<code>person_group.member.manage</code> (§5a,
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+Everything D-095 said of <code>unit_participation.manage</code> — never self-scoped, the write is somebody
+else's act, the report is the control — transfers to the new code intact, and is written there.</p>
 <p><strong><code>membership.terminate</code> is the most consequential non-system permission in the
 catalog.</strong> A lapse is administrative; a termination is a decision about a person's
 standing in a youth organization, frequently with safeguarding and reputational
 consequences. It should be held by very few people, and it must not be implied by
-<code>membership.lapse</code>. Grant it explicitly, per person.</p>
-<p><strong><code>membership.transfer</code> is gone.</strong> "Transfer a member between units" was an artefact of
-units holding memberships. With participation (<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>),
-moving between sub-units is <code>unit_participation.manage</code> — close one row, open another —
-and it does not touch the person's membership at all. There is nothing to transfer.</p>
-<p><strong>These permissions are gated by membership when held through a role that requires one</strong>
+<code>membership.lapse</code>. Grant it explicitly, per person — which since
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+is the only thing a grant <em>can</em> be: one code, one effect.</p>
+<p><strong><code>membership.transfer</code> is gone, and round 10 removed the sentence that pointed at a replacement.</strong>
+"Transfer a member between units" was an artefact of units holding memberships, and it was last
+answered by <em>"moving between sub-units is <code>unit_participation.manage</code> — close one row, open another"</em>
+(<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
+<strong>That replacement is now itself deleted</strong> (<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+The discipline survives and the object moved: moving a person from one group to another is
+<code>person_group.member.manage</code> — close one dated row, open another
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
+<a href="../../data-model/02-organization/#4-joins-leaves-and-transfers-close-one-row-open-another">../data-model/02-organization.md §4</a>)
+— and it does not touch the person's membership at all. There is still nothing to transfer.</p>
+<p><strong><code>person_group.member.manage</code> has no self-scoped variant, and none will be added</strong>
+(<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>,
+whose reasoning
+<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+transfers intact). Every grant of it means <em>"over this group's roster"</em> or <em>"over every group's
+roster"</em>, never <em>"over my own row"</em> — so <strong>"nobody writes themselves into a group"</strong> is not a check
+the write performs, it is the shape of the thing being granted: there is no smaller grant to make
+yourself. The same holds for <code>role.assign</code> (§7): <strong>nobody appoints themselves</strong>, and D-095's
+instruction was explicitly not to mint a code that could express either act. This is also where the
+safeguarding story moved to. <code>org_unit_type.allows_minors</code> was removed a round ago and the units it
+graded are now gone too, so no column anywhere says which sets are for children and nothing here
+refuses to place a minor in one; what is left is this code held by named adults at the unit, the
+write audited the way any business-table write is, its recorded values emptied after 24 months
+(<a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+and a report of who holds it
+(<a href="../../domain/04-organization-structure/#3-joining-a-group-is-somebody-elses-act">../domain/04-organization-structure.md §3</a>).
+<strong>What is lost is not in this list:</strong> D-097 names it plainly — the named adult used to be somebody
+the body chose, and there is no body
+(<a href="../../domain/04-organization-structure/#1-the-organization-is-one-unit-and-the-unit-is-a-scope">../domain/04-organization-structure.md §1</a>).
+The gate in front of a <em>membership</em> is the fee; a group has no fee and no second gate, so this
+permission is the only one
+(<a href="../../domain/05-membership-lifecycle/#1-the-flow-you-described">../domain/05-membership-lifecycle.md §1</a>).</p>
+<p>~~<strong>These permissions are gated by membership when held through a role that requires one</strong>
 (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
-The gate is a property of the <em>role</em>, not of the permission, so it is not visible in this
-table — see <a href="../../data-model/05-authorization/#3-role-and-role_permission">../data-model/05-authorization.md §3</a>.
-The single exception is <code>system.gate_exempt</code> (§7), which <em>is</em> the gate's waiver and is
-therefore exempt from the gate itself (<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).</p>
+The gate is a property of the <em>role</em>, not of the permission, so it is not visible in this table.
+The single exception is <code>system.gate_exempt</code> (§7), which <em>is</em> the gate's waiver and is therefore
+exempt from the gate itself
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).~~
+<strong>Withdrawn by
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>.</strong>
+Nothing about a code says whether it requires a paid-up holder, so this table has nothing to hide
+and nothing to warn about. <strong>Who performs the membership test now: the grantee expression</strong>, which
+says <code>MEMBERS * ROLE(x)</code> when the fee is meant to matter and omits it when it is not — evaluated
+live on the checked date (§11,
+<a href="../../domain/06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">../domain/06-authorization-model.md §6.1</a>).</p>
 </blockquote>
 <h2 id="5-organization-and-positions">5. Organization and positions<a class="headerlink" href="#5-organization-and-positions" title="Permanent link">&para;</a></h2>
+<p><strong>Nothing is granted here, because nothing described is left.</strong> Both halves of this title died in round
+10 for different reasons: the six <code>org_unit.*</code> codes went with the unit hierarchy
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>)
+and the two <code>position.*</code> codes went with positions
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
+The heading stays so that a reader arriving from an old bookmark finds the reason and not an empty
+space, and because this catalog is the only list of grantable codes — a code leaving it silently is a
+migration nobody decided (§2).</p>
 <table>
 <thead>
 <tr>
-<th>Code</th>
-<th>Namespace</th>
-<th>Sens.</th>
-<th>Grants</th>
+<th>~~Deleted code~~</th>
+<th>Went with</th>
+<th>Where the act is now</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>org_unit.view</code></td>
-<td>—</td>
-<td></td>
-<td>See units</td>
+<td>~~<code>org_unit.view</code>~~</td>
+<td><code>org_unit</code> (D-097)</td>
+<td>Nowhere. The unit is a <strong>scope</strong>, not a row: there is no list of units to read, and no "which units exist" report to run</td>
 </tr>
 <tr>
-<td><code>org_unit.create</code></td>
-<td>—</td>
-<td></td>
-<td>Create a unit</td>
+<td>~~<code>org_unit.create</code>~~</td>
+<td>ditto</td>
+<td>Nowhere, and nothing needs creating. The unit arrives as a code in <code>grant_scope_type</code>, not as data</td>
 </tr>
 <tr>
-<td><code>org_unit.edit</code></td>
-<td>—</td>
-<td></td>
-<td>Edit a unit's details</td>
+<td>~~<code>org_unit.edit</code>~~, ~~<code>org_unit.rename</code>~~</td>
+<td><code>org_unit_name</code> and its rename history (D-097)</td>
+<td>Renaming a <strong>group</strong> is <code>person_group.edit</code> (§5a), and it is cheap: a grant and an expression store kind + id, never a name, so a rename rewrites nothing (D-101)</td>
 </tr>
 <tr>
-<td><code>org_unit.rename</code></td>
-<td>—</td>
-<td></td>
-<td>Rename or renumber a unit</td>
+<td>~~<code>org_unit.restructure</code>~~</td>
+<td>splits, mergers and successions (D-097)</td>
+<td>Nowhere, and the loss is stated once in D-097: a group that splits is an old group that ended and two that began, with no edge between them unless somebody writes one</td>
 </tr>
 <tr>
-<td><code>org_unit.restructure</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>Split or merge units</td>
+<td>~~<code>org_unit.close</code>~~</td>
+<td><code>org_unit.status</code> (D-097)</td>
+<td><code>person_group.end</code> (§5a) — which ends a <strong>set</strong>, and is graded accordingly</td>
 </tr>
 <tr>
-<td><code>org_unit.close</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>Close a unit</td>
-</tr>
-<tr>
-<td><code>position.view</code></td>
-<td>—</td>
-<td></td>
-<td>See positions</td>
-</tr>
-<tr>
-<td><code>position.assign</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>Appoint someone to a position</td>
+<td>~~<code>position.view</code>~~, ~~<code>position.assign</code>~~</td>
+<td><code>position</code>, <code>position_assignment</code>, <code>is_leadership</code>, <code>max_holders</code>, the appointment workflows (D-100)</td>
+<td><code>role.view</code> and <code>role.assign</code> (§7). An elected leader is a holder of a role, and the audience rule that used to read <code>unit_leaders</code> is <code>ROLE(leaders)</code> — which, unlike the rule round 6 had to correct because it was silently matching nobody, means what its name says</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Why <code>position.assign</code> was split from everything else, kept because the reasoning outlived the code.</strong>
+An appointment was made <em>to</em> a person by somebody else, was never self-scoped, and came with
+eligibility rules about the office rather than the appointment — <code>position.min_age</code>, <code>max_holders</code>,
+<code>requires_membership</code>
+(<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>).
+All three of those columns are deleted with the table, and none of them is a self-service door in the
+new model either: <code>role.assign</code> has no self-scoped form (§7). The reasoning that survives is the one
+that made <code>role.assign</code> 🔒🔒 — <strong>nobody appoints themselves</strong>, and no code in this catalog can be
+sharpened into that act.</p>
+<p><strong>"An appointment writes one row, not two" — and now nothing writes a second row either.</strong> The
+sentence existed to stop a leadership position silently deriving authority: the derivation from a
+position to a set of people lived in a group's <em>filling rule</em>, where it stopped covering the person on
+the day the assignment closed
+(<a href="../../decisions/decision-log/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>).
+<strong>Filling rules were superseded by
+<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+and positions by D-100, so the derivation is gone rather than relocated:</strong> a holder row is written by a
+named person under <code>role.assign</code>, and the only thing that turns it into authority is a grant naming
+<code>ROLE(x)</code>. <em>What is genuinely lost is the elected-versus-appointed distinction as stored data</em>
+(D-100): it survives only as offices the organization invents — <code>elected_council</code> beside
+<code>appointed_it</code> — or not at all
+(<a href="../../domain/04-organization-structure/#6-appointments-which-no-longer-end-at-a-position">../domain/04-organization-structure.md §6</a>).</p>
 <blockquote>
-<p><code>org_unit.restructure</code> is separated because a split rewrites the answer to historical
-questions. It is not routine editing. <strong>Reparenting is no longer among the things it
-grants</strong> — a unit cannot change parent at all
-(<a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>),
-so the permission covers splits and mergers and the closing of a unit that "moved".</p>
+<p><code>org_unit.restructure</code> was separated from routine editing because a split rewrites the answer to
+historical questions. <strong>Reparenting had already been taken out of it</strong> — a unit could not change
+parent at all (<a href="../../decisions/decision-log/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>,
+itself now reversed by D-097) — and the splits and mergers it did grant are gone too, so the
+separation is recorded here rather than kept anywhere live.</p>
 </blockquote>
-<h2 id="5a-scope-exposure-and-audiences">5a. Scope exposure and audiences<a class="headerlink" href="#5a-scope-exposure-and-audiences" title="Permanent link">&para;</a></h2>
-<p>Two mechanisms that had been missing from this catalog while sitting in the seed data and
-carrying some of the design's weight. Both are now listed, and the first is arguably the most
-consequential permission in the authorization model.</p>
+<h2 id="5a-groups-roles-and-audiences">5a. Groups, roles and audiences<a class="headerlink" href="#5a-groups-roles-and-audiences" title="Permanent link">&para;</a></h2>
+<p>Three things the catalog used to describe with units, exposure rows and filling rules, and which are
+now three small tables: <strong>a group</strong> (<code>person_group</code>, dated member rows, a lifetime) is company
+(<a href="../../decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>);
+<strong>a role</strong> (<code>role</code>, <code>role_holder</code>) is an office, and confers nothing
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>);
+<strong>an audience</strong> is an expression over named sets, and is what a grant aims at
+(<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
+Writing a group's roster and writing an office's holder list are <strong>different codes on purpose</strong> — that
+difference is the whole reason there are two tables — and the office codes are in §7.</p>
 <table>
 <thead>
 <tr>
@@ -2255,48 +2632,115 @@ consequential permission in the authorization model.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>scope.expose</code></td>
-<td>—</td>
-<td>🔒</td>
-<td><strong>Expose this unit's scope</strong> to a parent unit's role assignment</td>
-</tr>
-<tr>
-<td><code>scope.exposure.review</code></td>
+<td><code>person_group.view</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>See and revoke the exposures made over this unit</td>
+<td>See which groups exist, their lifetimes, and <strong>who is in them</strong> — a roster is a list of people, which is what ⚠ grades</td>
+</tr>
+<tr>
+<td><code>person_group.create</code></td>
+<td>—</td>
+<td></td>
+<td>Create a group: a name, a description, a lifetime. <code>applies_to = unit</code></td>
+</tr>
+<tr>
+<td><code>person_group.edit</code></td>
+<td>—</td>
+<td></td>
+<td>Change a group's name or description. A rename rewrites no grant (§5)</td>
+</tr>
+<tr>
+<td><code>person_group.end</code></td>
+<td>—</td>
+<td></td>
+<td>Set the group's <code>valid_to</code>. It ends a <strong>set</strong>, not anyone's standing — hence no ⛔, deliberately</td>
+</tr>
+<tr>
+<td><code>person_group.member.manage</code></td>
+<td>—</td>
+<td>⚠</td>
+<td><strong>Add, move or end a member.</strong> Never self-scoped (§4); <code>applies_to = unit_and_item</code></td>
 </tr>
 <tr>
 <td><code>audience.view</code></td>
 <td>—</td>
 <td></td>
-<td>See built-in audiences and named groups</td>
+<td>See the expressions a grant can be aimed at, and <strong>the people each one resolves to</strong></td>
 </tr>
 <tr>
 <td><code>audience.manage</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>Create and populate named groups</td>
+<td>Create an audience; change its expression, or the <code>LIST</code> a <code>LIST</code> leaf resolves to</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong><code>scope.expose</code> is the only door between unit levels.</strong> Authority never inherits downward
+<p>~~<strong><code>scope.expose</code> and <code>scope.exposure.review</code> stood at the top of this section, and <code>scope.expose</code>
+was arguably the most consequential permission in the authorization model.</strong> It was the only door
+between unit levels: authority never inherits downward
 (<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>),
-and this permission is the single mechanism that crosses the boundary — so it is graded 🔒
-despite being an obscure-sounding code, and it is <em>higher</em>-stakes than several codes with
-more obvious names.</p>
-<p><strong>What makes it safe is who can write it.</strong> Every <code>scope_exposure</code> row is written <strong>by the
-unit it covers</strong>: a parent unit's officer cannot satisfy it for a child unit, which is what
-makes the no-inheritance rule enforceable rather than aspirational
+and this was the single mechanism that crossed the boundary — graded 🔒 despite the obscure name, and
+made safe by <em>who could write it</em>, since every <code>scope_exposure</code> row was written by the unit it
+covers, so a parent's officer could not satisfy it for a child unit
 (<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).
-There is no bulk variant (<a href="../../decisions/decision-log/#d-045--the-bulk-scope-exposure-tool-is-removed">D-045</a>) —
-every row is a deliberate, individual, attributable decision about one assignment.</p>
-<p><strong><code>audience.manage</code> is the permission that creates a grant target.</strong> Whoever holds it can
-assemble a named list of people which a later <code>access_grant</code> may then address
+There was no bulk variant, and every row was a deliberate, attributable decision about one
+assignment
+(<a href="../../decisions/decision-log/#d-045--the-bulk-scope-exposure-tool-is-removed">D-045</a>).~~
+<strong>Deleted by
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
+with the table, the direction-of-authority check, and the nightly alert that was its only detector.</strong>
+They are kept here struck because the question they answered — <em>may the center read what happens
+inside a body it does not run?</em> — <strong>no longer has a subject</strong>, and someone who remembers the answer
+"no, unless the body says so" should find that fact rather than a silent gap. The same reasoning is
+worked through in
+<a href="../../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">../domain/06-authorization-model.md §2.1</a>.</p>
+<p><strong><code>person_group.member.manage</code> is a ⚠ next to a 🔒🔒 two rows away, and the gap is the design.</strong>
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+refuses to merge <code>person_group</code> and <code>role</code> into one table with a <code>kind</code> column precisely because one
+membership table gives a single code that both adds a child to the Thursday group <strong>and</strong> puts the
+holder into <code>SYSTEM_ADMINS</code>. Same columns, different codes, and <code>GROUP(x)</code> / <code>ROLE(x)</code> distinct in
+the grant text so the difference is visible to whoever reads the grant. <strong>A group additionally
+authorizes nothing by existing</strong>: no parent, no type, no leadership, no roles of its own, no fee —
+a member of a group can <em>do</em> nothing, which is
+<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> one
+level down (<a href="../../domain/04-organization-structure/#2-what-a-group-is-and-everything-a-group-is-not">../domain/04-organization-structure.md §2</a>).</p>
+<p><strong>A group and a role are both <em>items</em>, which is what makes "these two may work this roster" a
+grant.</strong> Both are registered in <code>grant_scope_type</code>, so the code above can be held at the unit —
+reaching <strong>every</strong> group, existing and future, because nothing stands between a unit grant and an
+item after D-097 — or written on one group, reaching that roster only
+(<a href="../../data-model/02-organization/#3-a-group-is-an-item-a-grant-can-be-written-on-one">../data-model/02-organization.md §3</a>).
+Reaching the second requires the first: a grant on an item is written by someone who holds the code
+at the unit, or holds a grant on that item.</p>
+<p>A <strong>live grant whose group has ended</strong> is a listed oddity rather than a failure: it applies to
+nobody, which is the safe direction, and the report of such rows is where the stale one surfaces
+(<a href="../../data-model/02-organization/#6-integrity-checks">../data-model/02-organization.md §6</a>).</p>
+<p><strong><code>audience.manage</code> is the permission that creates a grant target, and it is wider than it was.</strong>
+Whoever holds it can assemble a set of people which a later <code>access_grant</code> may then address
 (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>) —
-so it is authority over <em>who could be granted</em>, one step removed from granting. Whether it
-belongs to a dedicated <code>audience_admin</code> or to unit leaders is open (§12).</p>
+authority over <em>who could be granted</em>, one step removed from granting. Whether it belongs to a
+dedicated office or to whoever runs things is open (§12).</p>
+<p><strong>It used to be one code over three arms; it is now one code over a whole expression, and the
+hazard changed shape rather than leaving.</strong>
+<a href="../../decisions/decision-log/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>
+let a group be filled by a rule, a hand-kept list, or an inclusion of other groups, and the
+inclusion arm was the one that worried, because <em>"add the kitchen crew to everything the troop-staff
+group is used for"</em> silently widened every grant aimed at anything including it. <strong><code>audience_include</code>
+is deleted by <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>,</strong>
+along with <code>include_depth_limit</code>, the transitive walk and the write-time cycle check over a graph —
+an audience is a tree of <code>+ - *</code> now, a tree cannot cycle, and composition happens in the grant
+(<code>GROUP(kitchen) + ROLE(troop_staff)</code>) instead of in an edge nobody could see the shape of. What
+did <strong>not</strong> get smaller: <code>EVERYONE</code> is a legal operand, so nothing in this table distinguishes
+<em>"add these five people"</em> from <em>"this grant reaches the whole organization"</em>, and no separate code
+was invented to do it. That stays an open question, not an answer (§12), and until it is answered
+the only control is the one D-091 named and D-102 sharpened: <strong>the editor shows the people a grant
+reaches, expanded, computed for an item, rather than the expression's name</strong>
+(<a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).</p>
+<p><strong>The display is itself a read over people, and this catalog does not grade that yet.</strong> Showing a
+resolved set means enumerating which humans an expression currently covers — which is what
+<code>audience.view</code> is for, on a row carrying no sensitivity mark. Listing the holders of
+<em>"everyone except the counselors in <code>schuzka2026-1</code>"</em> is not the same kind of act as listing the
+kitchen crew, and the grading was written before the two could be one query (§12).</p>
 </blockquote>
 <hr />
 <h2 id="6-guardianship">6. Guardianship<a class="headerlink" href="#6-guardianship" title="Permanent link">&para;</a></h2>
@@ -2352,6 +2796,16 @@ codes and are <strong>an</strong> route, never <strong>the</strong> route.</p>
 <code>dependent.*</code> namespace, and there is no such namespace to grant from
 (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
 <code>guardianship.change_right</code> replaces it, and does less: one value, three choices.</p>
+<p><strong>What the three choices are compared against, now that the ladder is gone.</strong> D-074's <code>none</code> /
+<code>view</code> / <code>write</code> used to be read off the access-level ladder — <code>write</code> reached <code>contribute</code>, <code>view</code>
+reached <code>view</code>. <strong>That comparison was deleted with the ladder by
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,</strong>
+and the guardianship channel would have had nothing left to compare a permission against. It
+compares against a column instead: <code>permission.right_kind ∈ read | write</code>, where <code>none</code> covers
+nothing, <code>view</code> covers the <code>read</code> codes, and <code>write</code> covers both. <strong>That is the column's only
+customer in the whole system</strong> (§1), and it is why a code added to this catalog has to be typed
+<code>read</code> or <code>write</code> at all: the column is required, because a nullable one whose null-ness silently
+means something would let a permission arrive with a guardian's answer already decided by nobody.</p>
 </blockquote>
 <h2 id="7-permissions-administration">7. Permissions administration<a class="headerlink" href="#7-permissions-administration" title="Permanent link">&para;</a></h2>
 <table>
@@ -2368,37 +2822,37 @@ codes and are <strong>an</strong> route, never <strong>the</strong> route.</p>
 <td><code>role.view</code></td>
 <td><code>system</code></td>
 <td></td>
-<td>See roles and their permissions</td>
+<td>See the offices that exist and <strong>who has held them, over what period</strong> (<code>role_holder</code>)</td>
 </tr>
 <tr>
 <td><code>role.create</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td>Create a role</td>
+<td>Create an office: a code, a name, a description. It carries no permission — see the note below</td>
 </tr>
 <tr>
 <td><code>role.edit</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td>Change what a role grants — <strong>takes effect immediately for every holder</strong></td>
+<td>Change an office's name or description</td>
 </tr>
 <tr>
 <td><code>role.delete</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td>Delete a role. Only possible if it was <strong>never assigned</strong> and is not a system role</td>
+<td>Delete an office. Only possible if it was <strong>never held</strong> and is not a system role</td>
 </tr>
 <tr>
 <td><code>role.assign</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td><strong>Assign a role to a person</strong></td>
+<td><strong>Write a <code>role_holder</code> row</strong> — make someone a holder. <code>applies_to = unit_and_item</code>: on one role, this is "manage the counselors roster"</td>
 </tr>
 <tr>
 <td><code>role.unassign</code></td>
 <td><code>system</code></td>
 <td>🔒</td>
-<td>End a role assignment</td>
+<td>Close a <code>role_holder</code> row — set its <code>valid_to</code></td>
 </tr>
 <tr>
 <td><code>permission.view</code></td>
@@ -2416,66 +2870,118 @@ codes and are <strong>an</strong> route, never <strong>the</strong> route.</p>
 <td><code>access_grant.create</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>Create an item grant</td>
+<td>Create a grant — the act that turns a code into someone's authority</td>
 </tr>
 <tr>
 <td><code>access_grant.revoke</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>Revoke an item grant</td>
+<td>End a grant early, or write a <code>deny</code></td>
 </tr>
 <tr>
 <td><code>system.admin</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td><strong>Everything.</strong> Single top-level capability.</td>
+<td><strong>Everything.</strong> Single top-level capability, <code>applies_to = unit</code></td>
 </tr>
 <tr>
-<td><code>system.gate_exempt</code></td>
+<td>~~<code>system.gate_exempt</code>~~</td>
 <td><code>system</code></td>
-<td>🔒</td>
-<td><strong>Waive the membership gate for this person.</strong> Every gated role they hold keeps granting while their fee is unpaid (D-051).</td>
+<td>~~🔒~~</td>
+<td><strong>Deleted by <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></strong> — see the note below the table</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><strong><code>role.assign</code> is the permission to escalate privilege.</strong> Whoever holds it can grant
-themselves <code>system.admin</code>. It must be held by very few people and every assignment must
-be logged and alerted on. Note that <code>system.admin</code> is deliberately a <strong>single top-level
-permission</strong> rather than a per-resource one — concentrating the most dangerous capability
-and alarming on its holders is safer than scattering equivalents of it.</p>
-<p><strong>Roles are runtime data, and these four permissions are how the organization administers
-them.</strong> <code>role.create</code> composes a new permission group; <code>role.edit</code> changes what an existing
-one grants; <code>role.delete</code> removes one that was created by mistake. The seed roles in §11 are
-therefore a <em>starting point to be edited</em>, not a fixed vocabulary — which is why §11 no
-longer claims to answer "which roles carry <code>system.gate_exempt</code>". That is a configuration
-decision the organization makes at runtime, not one the specification can make for it.</p>
+<p><strong>A role confers nothing.</strong> That is the sentence that rewrites this whole section, and it is worth
+reading before the table above, because three of the six rows above used to mean something they can
+no longer mean. <code>role_permission</code> is deleted, and with it the answer to <em>"what does this role
+grant?"</em>: <strong>the codes an office carries are the live grants whose expression names <code>ROLE(x)</code></strong>
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../domain/06-authorization-model/#4-roles-are-offices-groups-are-company">../domain/06-authorization-model.md §4</a>).
+What <code>role.create</code> and <code>role.edit</code> touch is a <strong>name, a description, an order</strong> — an office is a set
+with a label, and a set is not a grant
+(<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).
+<code>role.view</code> used to read "see roles and their permissions", and what it shows now is the holder
+register, which is the question the table can still answer and the one
+<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> was closed to keep
+answerable: <em>who was treasurer in 2023?</em></p>
+<p><strong><code>role.assign</code> is the permission to escalate privilege.</strong> Whoever holds it can write themselves a
+holder row in an office that grants them <code>system.admin</code>. It must be held by very few people and
+every holder row must be logged and alerted on. Note that <code>system.admin</code> is deliberately a <strong>single
+top-level permission</strong> rather than a per-resource one — concentrating the most dangerous capability
+and alarming on its holders is safer than scattering equivalents of it. <strong><code>role.assign</code> has no
+self-scoped form and none will be added</strong> (§4,
+<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>):
+the reason it is not a check the write performs is that there is no smaller grant to make yourself.</p>
+<p><strong>Roles are runtime data, and these six permissions are how the organization administers them.</strong>
+<code>role.create</code> names a new office; <code>role.edit</code> renames one; <code>role.delete</code> removes one created by
+mistake; the reach of any of them is written by <code>access_grant.create</code> down the table. §11 is
+therefore a <em>starting point to be edited</em>, not a fixed vocabulary — which is why §11 no longer
+claims to answer "which roles are exempt from the membership gate". That question is not answered in
+configuration any more either: it is answered in the text of each grant, by whether its expression
+contains <code>MEMBERS</code>.</p>
 <p><strong>There is no <code>role.retire</code>, and a role cannot be switched off</strong>
 (<a href="../../decisions/decision-log/#d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053</a>).
-A role is a definition and is valid always; the period lives on the <strong>assignment</strong>. Ending a
-role's use means ending its assignments, which is <code>role.unassign</code> — one person at a time, or
-a loop over the holders. This is the right shape: what ends is <em>someone's authority</em>, and
-that is a fact about a person, not about a definition.</p>
-<p><strong><code>role.edit</code> is a bulk privilege change wearing the clothes of a settings screen.</strong> Editing
-a role's permissions takes effect immediately for <strong>every holder</strong>, with no assignment
-touched and no notification. It is marked 🔒🔒 alongside <code>role.assign</code> for that reason. The
-two are different powers — <code>role.assign</code> escalates one person, <code>role.edit</code> escalates
-everyone holding the role — and neither is implied by the other.</p>
-<p><strong><code>role.delete</code> only works on a role that has never been assigned</strong> and is not <code>is_system</code>.
-No delete may leave a <code>role_assignment</code> pointing at a role that is gone:
-<a href="../../data-model/05-authorization/#3-role-and-role_permission">../data-model/05-authorization.md §3</a>
+A role is a definition and is valid always; the period lives on the <strong>holder row</strong>. Ending a role's
+use means closing holder rows, which is <code>role.unassign</code> — one person at a time, or a loop over the
+holders. This is still the right shape, and the round that deleted the role's own permission list
+left this alone on purpose: what ends is <em>someone's authority</em>, and that is a fact about a person,
+not about a definition. <strong>What died with the gate is the reassurance that used to come with it</strong> —
+the old note pointed out that a dormant authority would quietly expire anyway when the holder's fee
+lapsed. Nothing does that now, so the report of holder rows that never end
+(<a href="../../decisions/decision-log/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>,
+whose posture transfers from assignments to holder rows) is carrying all of the weight.</p>
+<p>~~<strong><code>role.edit</code> is a bulk privilege change wearing the clothes of a settings screen.</strong> Editing a
+role's permissions takes effect immediately for <strong>every holder</strong>, with no assignment touched and no
+notification. It is marked 🔒🔒 alongside <code>role.assign</code> for that reason. The two are different
+powers — <code>role.assign</code> escalates one person, <code>role.edit</code> escalates everyone holding the role — and
+neither is implied by the other.~~ <strong>Withdrawn in substance by
+<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>:
+there are no longer any permissions on a role to edit,</strong> so the screen this paragraph warned about
+has nothing dangerous left on it. <strong>The hazard it named did not go away — it moved to the grant.</strong>
+Whoever can save a grant aimed at <code>ROLE(x)</code> escalates <strong>everyone holding <code>x</code></strong>, immediately, without
+touching a holder row and without notifying anybody: that is the new bulk privilege change, it is
+<code>access_grant.create</code> with an expression in it, and it is exactly why <code>role.*</code> stays 🔒🔒 while the
+composition of grants is the least-graded write in the catalog (§12). The two powers are still not
+each other, and neither is implied by the other.</p>
+<p><strong><code>role.delete</code> only works on an office that has never been held</strong> and is not <code>is_system</code> — which is
+what protects the one seeded role, <code>counselors</code>, from an editor (§11). No delete may leave a
+<code>role_holder</code> pointing at a role that is gone:
+<a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3</a>
 states the guard and the order it refuses in. The two halves are not equally strong, and the
 difference is the reason this permission is not self-policing. The first is referential
-integrity — <code>role_assignment.role_id</code> references <code>role.id</code>, which is a migration-level
-constraint, so it refuses a delete that arrives from an import, from a manual fix, or from a
-second client as surely as from the screens. The second, <code>is_system</code>, is a property of the row
-being deleted and no index can see it: it is a check inside the transaction that deletes, and
-a model-layer guard there is a friendlier message, not the refusal. A role that has been held
-is left in place, so the answer to "what authority did this person have in 2019?" survives —
-which is precisely when someone asks it.</p>
-<p><strong><code>access_grant.create</code> is scoped by <code>permission_level</code>:</strong> holding it lets you grant
-others access <em>to items you have <code>admin</code> on</em>, and only at a level at or below your own.
-Without that restriction, any item-grant holder becomes a universal grantor.</p>
+integrity — <code>role_holder.role_id</code> references <code>role.id</code>, a migration-level constraint, so it refuses
+a delete that arrives from an import, from a manual fix, or from a second client as surely as from
+the screens. The second, <code>is_system</code>, is a property of the row being deleted and no index can see
+it: it is a check inside the transaction that deletes, and a model-layer guard there is a friendlier
+message, not the refusal. A role that has been held is left in place, so the answer to "what office
+did this person hold in 2019?" survives — which is precisely when someone asks it.</p>
+<p><strong><code>system.gate_exempt</code> is deleted, and this is the round's largest deletion seen from here.</strong> It used
+to be the <em>permission</em> that waived the membership gate for one named person
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>),
+alongside <code>role.requires_membership</code>, which waived it for a whole office, and both existed only
+because the resolver asked the question of every grant
+(<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+The resolver no longer asks it, so there is nothing to waive and no exemption to be granted: the
+waiver is now the <strong>expression the grant was written with</strong> — <code>MEMBERS * ROLE(x)</code> where the fee must
+hold, <code>ROLE(x)</code> where it need not, and <code>(MEMBERS * ROLE(x)) + PERSON(y)</code> when one named person is to
+survive their own lapse. <code>person_holds_gate_exempt</code> goes with it, and so does the lockout hazard
+that came from performing a permission check <em>through</em> <code>can()</code> inside the exemption
+(§11, <a href="../../domain/06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">../domain/06-authorization-model.md §6.1</a>).</p>
+<p>~~<strong><code>access_grant.create</code> is scoped by <code>permission_level</code>:</strong> holding it lets you grant others
+access <em>to items you have <code>admin</code> on</em>, and only at a level at or below your own. Without that
+restriction, any item-grant holder becomes a universal grantor.~~ <strong>Withdrawn by
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,</strong>
+which deleted the ladder the ceiling was drawn from. <strong>What bounds a grantor now:</strong> the code is one
+code, <code>applies_to</code> refuses it on an item it does not fit, the scope is the item the grant names or
+the unit, <code>MEMBERS</code> is the writer's act, and a delegation may not exceed the delegator's own
+authority — but that test is written only for delegations
+(<a href="../../domain/06-authorization-model/#9-delegation">../domain/06-authorization-model.md §9</a>).
+<strong>For an ordinary grant, no decision in D-097..D-102 says you may grant only what you hold.</strong>
+<em>D-099 noticed the hazard and answered a different half of it: the price of one row per code is paid
+in rows, and the report of dead-weight denies is the hygiene that came with it.</em> The ceiling is
+therefore recorded as an open question (§12), not as a rule this catalog holds.</p>
 </blockquote>
 <h2 id="8-audit-and-system">8. Audit and system<a class="headerlink" href="#8-audit-and-system" title="Permanent link">&para;</a></h2>
 <table>
@@ -2589,9 +3095,21 @@ The grading above is what is settled: the trail is read with the guard of person
 permission or combination of permissions that guard turns out to be.</p>
 </blockquote>
 <h2 id="8a-events">8a. Events<a class="headerlink" href="#8a-events" title="Permanent link">&para;</a></h2>
-<p>The per-item grant scope the whole authorization model was built toward. <strong>Registration is
-eligibility</strong> — <code>event.register_self</code> at <code>contribute</code> <em>is</em> the rule for who may sign up, and
-there is no separate eligibility mechanism (<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>).</p>
+<p>The per-item grant scope the whole authorization model was built toward — and since
+<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,
+<strong>an item like any other</strong>. Nothing owns an event: <code>event.org_unit_id</code> is deleted, and with it
+<code>can_event()</code> — the unit-authority rule nearly every code below used to be reached through. A grant at
+the unit reaches every event because there is no tier between the unit and the item and no owner to
+test; <strong>every event check goes through the ordinary resolver and nothing else.</strong> <strong>Registration is
+eligibility</strong> — a live allow of <code>event.register_self</code> <em>is</em> the rule for who may sign up, and there is
+no separate eligibility mechanism
+(<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>).
+<strong>And there is no door code.</strong> The capability these thirteen codes are sometimes read as containing
+was never registered anywhere — not in this table, not in any other page
+(<a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>,
+§12); arriving people are recorded by whoever holds <code>event.presence.mark</code>, with a clipboard if
+necessary, and <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>
+keeps the only QR code in this system attached to a payment, where it is a rendering and not a row.</p>
 <table>
 <thead>
 <tr>
@@ -2612,7 +3130,7 @@ there is no separate eligibility mechanism (<a href="../../decisions/decision-lo
 <td><code>event.create</code></td>
 <td>—</td>
 <td></td>
-<td>Create an event</td>
+<td>Create an event. <strong>Held at the unit</strong> — there is no owner to create one <em>for</em> since D-102 deleted the column that would have named one</td>
 </tr>
 <tr>
 <td><code>event.edit</code></td>
@@ -2630,7 +3148,7 @@ there is no separate eligibility mechanism (<a href="../../decisions/decision-lo
 <td><code>event.organizer.manage</code></td>
 <td>—</td>
 <td>⚠</td>
-<td>Add or remove organizers</td>
+<td>Add or remove organizers — a <strong>roster write</strong>, which aims <code>ORGANIZERS</code> at more people and so widens every grant pointed at that set</td>
 </tr>
 <tr>
 <td><code>event.register_self</code></td>
@@ -2654,13 +3172,13 @@ there is no separate eligibility mechanism (<a href="../../decisions/decision-lo
 <td><code>event.presence.mark</code></td>
 <td>—</td>
 <td>⚠</td>
-<td><strong>Mark who turned up</strong> — nothing else</td>
+<td><strong>Mark who turned up</strong> — nothing else, and never a set anyone is granted over (§1)</td>
 </tr>
 <tr>
 <td><code>event.answer.view</code></td>
 <td>—</td>
 <td>⚠⚠</td>
-<td><strong>Read registrant answers</strong> (tent, dietary, …) — see the note in §8a</td>
+<td><strong>Read registrant answers</strong> (tent, dietary, …) — the note below, and the seeded grant</td>
 </tr>
 <tr>
 <td><code>event.question.manage</code></td>
@@ -2672,7 +3190,7 @@ there is no separate eligibility mechanism (<a href="../../decisions/decision-lo
 <td><code>event.grant_access</code></td>
 <td>—</td>
 <td>🔒</td>
-<td>Grant access to an event. Requires level <code>admin</code></td>
+<td>Grant access to an event. <strong>The level it used to demand is gone</strong>; what distinguishes it from <code>access_grant.create</code> now is the scope, not a rung (§12)</td>
 </tr>
 <tr>
 <td><code>event.delete</code></td>
@@ -2682,75 +3200,97 @@ there is no separate eligibility mechanism (<a href="../../decisions/decision-lo
 </tr>
 </tbody>
 </table>
+<p><strong>Where each of these may be granted, and what kind of right it is</strong> — the two columns
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+added, replacing the table of required levels that stood here:</p>
 <table>
 <thead>
 <tr>
-<th>Permission</th>
-<th>scope_type</th>
-<th>required_level</th>
+<th>Code</th>
+<th><code>applies_to</code></th>
+<th><code>right_kind</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>event.view</code></td>
-<td>event</td>
-<td><code>view</code></td>
+<td><code>event.create</code></td>
+<td><code>unit</code></td>
+<td><code>write</code></td>
 </tr>
 <tr>
-<td><code>event.register_self</code></td>
-<td>event</td>
-<td><code>contribute</code></td>
+<td><code>event.view</code>, <code>event.answer.view</code></td>
+<td><code>unit_and_item</code></td>
+<td><code>read</code></td>
 </tr>
 <tr>
-<td><code>event.presence.mark</code></td>
-<td>event</td>
-<td><code>contribute</code></td>
-</tr>
-<tr>
-<td><code>event.edit</code>, <code>event.manage_participants</code>, <code>event.cancel</code></td>
-<td>event</td>
-<td><code>manage</code></td>
-</tr>
-<tr>
-<td><code>event.grant_access</code>, <code>event.delete</code></td>
-<td>event</td>
-<td><code>admin</code></td>
+<td>every other <code>event.*</code> code</td>
+<td><code>unit_and_item</code></td>
+<td><code>write</code></td>
 </tr>
 </tbody>
 </table>
+<p><strong><code>unit_and_item</code> is the whole of the old per-scope table,</strong> and it says less: at the unit a code
+reaches every event, on one event it reaches that event, and no level rides on top of either. The
+<code>read</code> rows are <code>read</code> because a guardian's <code>view</code> is meant to reach them (§6) — which is the only
+reason the column exists.</p>
 <blockquote>
-<p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose, and it sits a
-level <em>lower</em>.</strong> Marking presence is a task handed to whoever is at the door with a
-clipboard; managing the roster is a task for the event's leadership. One permission covering
-both forces the organization to hand the clipboard-holder the ability to delete a child from
-the camp roster. Splitting it costs two rows and makes the ordinary delegation ordinary —
-and note the level: presence is <code>contribute</code>, so <strong>the volunteer taking the register is
-somebody with <code>contribute</code> on the event, which is the same bar as being able to register.</strong>
-That is the right bar for the job, and it is not the bar for altering who is coming.</p>
-<p>It follows the shape of <code>membership.lapse</code> versus <code>membership.terminate</code>
+<p><strong>The five sets bound to an event are grantees, not codes.</strong> <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>,
+<code>ON_WAITLIST</code> and <code>ORGANIZERS</code> name the people connected to the item a grant is written on, and they
+belong to the audience language, not to this catalog: <strong>an operand is a set, and a set is not a
+grant</strong>
+(<a href="../../decisions/decision-log/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
+survives untouched — <em>an <code>event_organizer</code> row grants nothing</em>). Two refusals come with them and both
+land when the grant is saved: a <strong>bound</strong> (argument-less) operand is legal only on an item-scope
+grant, and only where <code>selector_type.argument_type</code> matches the item — <code>PLACED</code> on a group grant is
+refused because that item is not an event. And <code>PRESENT(&lt;event&gt;)</code> is refused outright (§1).
+The definitions, and the reason <code>PLACED</code> rather than <code>ATTENDED</code> is the capacity set, are in
+<a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>.</p>
+<p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose, and it used to sit a
+level <em>lower</em>.</strong> Marking presence is a task handed to whoever is at the door with a clipboard;
+managing the roster is a task for the event's leadership. One permission covering both forces the
+organization to hand the clipboard-holder the ability to delete a child from the camp roster.
+Splitting it costs two rows and makes the ordinary delegation ordinary. <strong>What the split was graded
+with is gone</strong> — the note used to add <em>"and note the level: presence is <code>contribute</code>, the same bar as
+being able to register"</em>, and there is no bar to compare now
+(<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
+<strong>The split is worth more than the level was:</strong> the distinction the level made softly — this
+volunteer is not roster leadership — is now written as the only thing a grant can say, one code, and
+granting <code>event.presence.mark</code> on an event cannot smuggle in <code>event.manage_participants</code> the way
+<code>contribute</code> once sat underneath <code>manage</code>. It follows the shape of <code>membership.lapse</code> versus
+<code>membership.terminate</code>
 (<a href="../../decisions/decision-log/#d-022--lapsing-and-termination-are-different-permissions">D-022</a>) —
-one routine, one consequential — and it is free to add because the catalog is a menu, not a
-fixed set (<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
-<strong>It was previously an open question (EV-5); it is resolved here as a split.</strong></p>
-<p><strong><code>event.register_self</code> at <code>contribute</code> is the whole of <a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>.</strong> Granting a
-whole audience <code>contribute</code> on an event is how an open camp is opened, and it is <strong>one row</strong>: an
-<code>access_grant</code> scoped to that event, addressed to the <code>all_members</code> audience, at level
-<code>contribute</code>. One row is the point — nobody is enumerated, so nobody is left out when the roster
-changes, and nothing has to be re-run when someone joins.</p>
-<p>An age-restricted camp is a <code>unit:&lt;id&gt;:participants</code> audience instead. <strong>There is no age
-rule on the event and there will not be one</strong> — an open event with an age ceiling is
-accepted as a risk, on the grounds that a registration-time condition the capability model
-does not know about is the first rule-engine rule
+one routine, one consequential — and it is free to add because the catalog is a menu, not a fixed set
+(<a href="../../decisions/decision-log/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
+<strong>It was previously an open question (EV-5); it is resolved there as a split, and the split
+outlived the ladder it was graded on.</strong></p>
+<p><strong><code>event.register_self</code> is the whole of
+<a href="../../decisions/decision-log/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>.</strong>
+Opening an event to the membership is <strong>one row</strong>: an <code>access_grant</code> scoped to that event, of
+<code>event.register_self</code>, aimed at <code>MEMBERS</code>. One row is the point — nobody is enumerated, so nobody is
+left out when the roster changes, and nothing has to be re-run when someone joins. <strong>It used to be
+one row at <code>contribute</code>,</strong> and the level was doing a second job there that nobody assigned it: it
+made the eligibility grant the same <em>size</em> as the presence task. With the level gone the row says one
+thing, which is the smaller claim and the one that survives review.</p>
+<p>An age-restricted camp is a <strong>narrower expression</strong> instead — <code>MEMBERS * GROUP(camp_2026_junior)</code>
+aimed at the same one code, or the same subtraction pattern read the other way. <strong>There is no age
+rule on the event and there will not be one</strong> — an open event with an age ceiling is accepted as a
+risk, on the grounds that a registration-time condition the capability model does not know about is
+the first rule-engine rule
 (<a href="../../decisions/decision-log/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
-If it ever needs closing, the shape is a new <strong>built-in audience</strong>, not a column.</p>
+If it ever needs closing, the shape is a new <strong>selector</strong> in the <code>selector_type</code> registry, not a
+column
+(<a href="../../domain/07-events/#an-age-rule-is-an-audience-not-a-rule">../domain/07-events.md §4</a>) —
+and note that <code>GROUP(...)</code> is a set somebody maintains, so <em>"who is eligible"</em> stays a roster with a
+person's name on every row rather than a predicate the resolver evaluates.</p>
 <p><strong><code>event.cancel</code> is separated from <code>event.edit</code> deliberately.</strong> Cancelling is the most
 consequential thing anyone does to an event: it affects every registrant, it usually
 involves money, and it is a decision rather than an edit. It does not notify anyone — that
 is the communication module's job, and conflating the two makes "who cancelled this, and
 when?" harder to answer than it should be.</p>
-<p><strong><code>event.delete</code> is on this list and <code>org_unit</code> has no equivalent, because events are the
-one thing in this data model that can be deleted.</strong> A draft event with no registrations is a
-mistake to be cleaned up; anything else is cancelled, not deleted
+<p><strong><code>event.delete</code> is on this list and nothing else has an equivalent, because events are the
+one thing in this data model that can be deleted.</strong> (The comparison used to be with <code>org_unit</code>,
+which had no delete permission and had six codes of its own; §5.) A draft event with no
+registrations is a mistake to be cleaned up; anything else is cancelled, not deleted
 (<a href="../../decisions/decision-log/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).
 <strong>No event with even one registration row may be deleted</strong> — Guard 2 in
 <a href="../../data-model/08-events/#guards">../data-model/08-events.md §8</a> is the rule, and cancelling
@@ -2759,10 +3299,27 @@ who may ask, and only a migration-level constraint — <code>event_registration.
 <code>event.id</code> with no cascade — refuses the same delete when it arrives from an import or a
 hand-written fix instead of a screen. Enforcing this in the model layer alone would leave the
 record of who was coming deletable by everything except the intended route.</p>
-<p><strong><code>event.answer.view</code> is where <a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a> lives.</strong> Answers to an event's questions
-are readable by that event's organizers with no additional gate, because a unit leader holds
-no guardianship over the children in their unit — guardianship authority belongs to the guardians
-(§9). That is a deliberate widening and it is recorded as one.</p>
+<p><strong><code>event.answer.view</code> is where <a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a> lives, and since round 10 it
+lives there as a <em>grant</em>.</strong> The sentence "answers are read by that event's organizers" used to be
+hard-coded prose beside the resolver, reached through the event's owning unit. <strong><code>event.org_unit_id</code>
+is deleted, so the sentence is now said where permissions are said: a seeded grant of
+<code>event.answer.view</code>, scoped to the event, aimed at <code>ORGANIZERS</code></strong>
+(<a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+<em>Because a bound operand is legal only on an item-scope grant, this cannot be one row for every event:
+what ships is a <strong>template</strong>, and D-102 now says plainly that the event-creation path instantiates it
+beside the event row, in the same transaction as the event, and that the import owes one instantiation
+per event it writes
+(<a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>).</em>
+<em>What remains open is only the safety net: an event whose two writes were not one transaction has no
+organizer who can read its answers, and "these two rows exist together" is a report —</em> events with no
+answer-view grant — <em>that no layer of this project can express as a constraint</em>
+(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>).
+The rule itself is unchanged: whoever runs an event reads that event's answers with no additional
+gate, because holding an office grants nothing (§7) and leadership is not guardianship — guardianship
+authority belongs to the guardians (§9). That is a deliberate widening and it is recorded as one.
+The catalog's registered spelling is <strong><code>event.answer.view</code></strong>, singular — the arbiter for a spelling the
+round briefly had two of, and the reason §12 says a code is a row and prose is only prose (§12,
+<a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>).</p>
 <p><strong>Its premise has since been narrowed, and not by reversing it</strong>
 (<a href="../../decisions/decision-log/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>).
 D-061 was written when an event form was the <em>only</em> route by which a camp leader learned a child
@@ -2778,7 +3335,9 @@ children's personal data, graded as though it were logistics. <a href="../../dec
 refuses a class of data more delicate than the rest, so either an adrenaline-pen answer is person
 data — it is — or the grading on the audit trail was wrong. <strong>The raise narrows nothing</strong>: D-061
 stands, an event's organizers read that event's answers with no additional gate, and all that changed
-is what a reviewer should notice before ticking the box for a role handed to thirty volunteers.</p>
+is what a reviewer should notice before ticking the box for the grant that reaches thirty volunteers —
+and since D-102 there is a box to tick: the seeded grant above, rather than a clause in a resolver
+nobody can read.</p>
 <p><strong>Which leaves the discipline exactly where it was, and says so plainly:</strong> the rule that only
 preference-level detail belongs on a form is guidance on the form's label and nothing more. No layer
 enforces it and no layer can: nothing distinguishes
@@ -2839,16 +3398,25 @@ as a dissolved question rather than an answered one. <strong>Read the inexpressi
 not as pending work.</strong></p>
 <p><strong>What still holds:</strong></p>
 <ul>
-<li><code>write</code> ranks at <code>contribute</code> (20), <strong>not</strong> <code>manage</code>. A guardian cannot do organization-wide
-  things, and cannot reach a different dependent's records — authority is per guardianship row.</li>
-<li>The <strong>organization-wide deny channel is untouched.</strong> A deny still beats any grant, at any scope
-  (<a href="../../decisions/decision-log/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>), so
-  "this guardian, nothing" remains expressible. What was lost is a <em>narrow</em> deny, not the ability
-  to refuse.</li>
+<li>~~<code>write</code> ranks at <code>contribute</code> (20), <strong>not</strong> <code>manage</code>.~~ <strong>Withdrawn by
+  <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>:</strong>
+  there is no ladder for it to rank on, and the bullet's real content was never its rung. What it was
+  guarding is untouched by D-099 — <strong>a guardian cannot do organization-wide things, and cannot reach a
+  different dependent's records: authority is per guardianship row</strong>, because the channel is entered by
+  whose record the act touches and answers only about that row
+  (<a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>).
+  What <code>write</code> now means is <em>this row's dependent, both kinds</em>: it covers the <code>write</code> codes and the
+  <code>read</code> ones, where <code>view</code> covers only <code>read</code> and <code>none</code> covers nothing — compared against
+  <code>permission.right_kind</code>, not against a level (§6).</li>
+<li>The <strong>deny is untouched.</strong> A live deny beats every allow that applies, at any scope, in any channel
+  (D-032's first half, now its entire content, restated by
+  <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
+  so "this guardian, nothing" remains expressible — a <code>deny</code> at the unit aimed at
+  <code>GUARDIANS(&lt;person&gt;)</code>, or at the person. What was lost is a <em>narrow</em> deny, not the ability to refuse.</li>
 <li>A guardianship at <code>none</code> grants literally nothing, so <strong>being a guardian still grants nothing by
   itself</strong> — the safeguarding property that motivated the eighteen codes survives without them.</li>
-<li>Answers to an event's questions are still read through <code>event.answer.view</code>, which is a role-side
-  permission and never was a guardian one
+<li>Answers to an event's questions are still read through <code>event.answer.view</code>, which is a permission on
+  the grant side, carried by the seeded grant to <code>ORGANIZERS</code> (§8a), and never was a guardian one
   (<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).</li>
 </ul>
 <p><strong>If the split turns out to matter in operation it is still a new decision</strong> — one grant scope over
@@ -2856,7 +3424,10 @@ a defined set of data, argued from the current documents — and not a restorati
 <a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 is closed</a>,
 so reopening it means producing the case that was declined, not finding the code that was deleted.</p>
 <p>See <a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">../data-model/04-relationships.md §2</a>
-for the value, its defaults by <code>source</code>, and the ladder it is a range of.</p>
+for the value, its defaults by <code>source</code>, and the three-value ordering it is a range of — <code>none</code> &lt; <code>view</code>
+&lt; <code>write</code>, which is D-074's own ordering over one column and <strong>not</strong> the access-level ladder
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+deleted. Nothing in this catalog is a range of anything.</p>
 <h2 id="10-deferred-namespaces">10. Deferred namespaces<a class="headerlink" href="#10-deferred-namespaces" title="Permanent link">&para;</a></h2>
 <p>Placeholders for features you have not specified. Listed so the naming convention is
 established before anyone invents an inconsistent one.</p>
@@ -2872,12 +3443,12 @@ established before anyone invents an inconsistent one.</p>
 <tr>
 <td><code>document</code></td>
 <td><code>document.view</code>, <code>document.create</code>, <code>document.edit</code>, <code>document.delete</code>, <code>document.grant_access</code></td>
-<td></td>
+<td><code>document</code> is already a row of <code>grant_scope_type</code>, marked deferred — the item exists in the registry before the module does, which is what the polymorphic <code>scope_id</code> is for (D-011). The code is the one this catalog's own §1 rule pays for: <code>document.grant_access</code> sits beside <code>access_grant.create</code> exactly as <code>event.grant_access</code> does, and §12 asks the question once for both.</td>
 </tr>
 <tr>
 <td><code>fee</code></td>
 <td><code>fee.view</code>, <code>fee.create</code>, <code>fee.waive</code>, <code>fee.refund</code></td>
-<td>⛔ <code>fee.waive</code> and <code>fee.refund</code> are sensitive — hardship waivers must not be visible to unit leaders.</td>
+<td>⛔ <code>fee.waive</code> and <code>fee.refund</code> are sensitive — a hardship waiver must not be visible to whoever happens to run a group. There is no unit level to be below any more, so the mark and the grant list are the whole control.</td>
 </tr>
 <tr>
 <td><code>payment</code></td>
@@ -2897,7 +3468,7 @@ established before anyone invents an inconsistent one.</p>
 <tr>
 <td><code>message</code></td>
 <td><code>message.send_direct</code>, <code>message.broadcast</code></td>
-<td><strong>Decided in shape, undesigned in detail</strong> (<a href="../../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>). Everyone may send direct; <code>broadcast</code> is an ordinary <strong>scoped</strong> permission, so granted on a unit it reaches that unit and granted organization-wide it reaches everyone. The older <code>send_to_unit</code> / <code>send_to_org</code> pair is replaced by one code at two scopes. Recipient chooses the channel, which is not a permission at all. <strong>A direct message to a minor is mirrored to that minor's guardians and the sender is told it will be</strong> — no permission, no age branch in the resolver (<a href="../../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>)</td>
+<td><strong>Decided in shape, undesigned in detail</strong> (<a href="../../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>). Everyone may send direct; <code>broadcast</code> is an ordinary <strong>scoped</strong> permission. <strong>D-077 wrote "one code at two scopes" when there were two scopes to have</strong> — a unit and the organization; after <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> they are the same scope, so the code reaches everyone when it is held at the unit, and the narrower reading the pair used to buy would have to be a <strong>grant on a <code>person_group</code></strong>, reaching that roster — which is the shape D-099 makes available and D-077 could not have. <em>Which of those messaging means, and whether <code>message.broadcast</code> should be <code>applies_to = unit_and_item</code>, is messaging's decision, not this catalog's</em> (§12). Recipient chooses the channel, which is not a permission at all. <strong>A direct message to a minor is mirrored to that minor's guardians and the sender is told it will be</strong> — no permission, no age branch in the resolver (<a href="../../decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>)</td>
 </tr>
 <tr>
 <td><code>partner</code></td>
@@ -2906,231 +3477,401 @@ established before anyone invents an inconsistent one.</p>
 </tr>
 </tbody>
 </table>
-<p>Generate each resource's <code>permission_level</code> rows at the same time — see
-<a href="../../data-model/05-authorization/#7-permission_level--connecting-permissions-to-grant-levels">../data-model/05-authorization.md</a>.</p>
+<p><strong>What each new resource owes the authorization module changed in round 10, and the old sentence about
+it is deleted rather than adapted.</strong> ~~Generate each resource's <code>permission_level</code> rows at the same
+time.~~ That table is deleted by
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,
+so what a new resource owes is now four things, all of them cheap and all of them required: <strong>codes</strong>
+(two or more lowercase segments, first segment = <code>resource</code>), each with a <strong><code>right_kind</code></strong> — <code>read</code> or
+<code>write</code>, required, because that column is a guardian's answer and not a hint (§6) — each with an
+<strong><code>applies_to</code></strong>, checked on save (§1); and a row in <strong><code>grant_scope_type</code></strong> if its records are things a
+grant can be written on, which is what makes a document or a group an item at all.</p>
 <hr />
 <h2 id="11-roles--proposed-seed-set">11. Roles — proposed seed set<a class="headerlink" href="#11-roles--proposed-seed-set" title="Permanent link">&para;</a></h2>
-<p><strong>A starting point, not a specification.</strong> Roles are runtime data: the organization creates
-them, composes them from permissions, assigns them, edits what they grant, and deletes the
-unused ones
-(<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). This section exists to
-show the <em>shape</em> of a plausible set, so that the model can be reviewed against something
-concrete. Do not read a row here as a requirement, and do not expect the list to survive
-contact with the organization.</p>
+<p><strong>A starting point, not a specification.</strong> <em>The heading is kept because its slug is cited from the
+decision log and from four other pages, not because the words still fit:</em> this section used to list
+roles with their permissions attached to them, and a role has no contents now. ~~Scope required ·
+<code>Req.</code> · Waives gate · Key permissions~~ — <code>role_permission</code> is deleted, with <code>role.scope_required</code>
+and <code>role.requires_membership</code> beside it
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+so <strong>the codes an office carries are the live grants whose expression names it</strong>: one row per code,
+each with its own scope and its own period. <code>MEMBERS * ROLE(treasurers)</code> on <code>fee.create</code> is one such
+row, and it — not the office, and not a bundle table nobody read — is what lets a treasurer issue a
+fee. What a role <em>is</em> now is two things: a name a grant can be aimed at, and the register that answers
+<em>who held this in 2023</em> (<code>role_holder</code> — which is exactly why
+<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> is closed, with the
+answer <em>no</em>: a holder row names one person). Roles stay runtime data — the organization creates them,
+names them, writes and closes their holders, and deletes the unused ones
+(<a href="../../data-model/05-authorization/#3-role--an-office">§7</a>). <strong>What is no longer runtime data
+is reach</strong>, which is administered through <code>access_grant.create</code> and <code>access_grant.revoke</code> and is
+therefore reviewed in <code>access_grant</code>, not in a role editor (§7).</p>
+<h3 id="what-the-seed-ships">What the seed ships<a class="headerlink" href="#what-the-seed-ships" title="Permanent link">&para;</a></h3>
+<p><strong>Counting only the tables this section is about: one role and one grant, and the role is empty.</strong>
+Everything else the seed carries is vocabulary — the permission rows of this catalog, the
+<code>selector_type</code> operands (§1), the <code>grant_scope_type</code> rows that make an event or a group or a role an
+item, and two <code>is_system</code> audiences whose expressions are <code>EVERYONE</code> and <code>MEMBERS</code>
+(<a href="../../data-model/05-authorization/#12-what-the-organization-starts-with">§7</a>). <strong>None of those is
+authority</strong>, and the sentence is repeated here because this section is where a reader looks for it.</p>
 <table>
 <thead>
 <tr>
-<th>Role</th>
-<th>Scope required</th>
-<th><code>Req.</code></th>
-<th>Waives gate</th>
-<th>Key permissions</th>
-<th>Term</th>
+<th>Seeded row</th>
+<th>Table</th>
+<th><code>is_system</code></th>
+<th>Holders at seed</th>
+<th>What it grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>counselors</code></td>
+<td><code>role</code></td>
+<td><strong>yes</strong></td>
+<td><strong>nobody</strong> — <code>role_holder</code> is empty</td>
+<td><strong>Nothing.</strong> A set is not a grant (§1, §5a)</td>
+</tr>
+<tr>
+<td><code>event.answer.view</code>, item-scoped on an event, aimed at <code>ORGANIZERS</code></td>
+<td><code>access_grant</code></td>
+<td>—</td>
+<td>—</td>
+<td>The one rule that used to be prose in the resolver: answers are read by that event's organizers (<a href="../../decisions/decision-log/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>, amended by <a href="../../decisions/decision-log/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why a role and not a group</strong>, when D-098's own definition of a group is <em>"a temporary set of members
+that do events together"</em> and counselors are neither temporary nor event-shaped: the table decides
+<strong>which code protects the set</strong>, and every safeguarding convention in this area hangs from that answer
+being unchangeable by an ordinary grant — <code>role.*</code> is 🔒🔒, <code>person_group.member.manage</code> is ⚠
+(§5a). <strong>It ships <code>is_system</code> so that an editor refuses to delete it</strong>, and so that the §7 rule
+<em>deletable only if never held, and never if it is a system role</em> has something to refuse.</p>
+<p><strong>Nothing in the seed names <code>ROLE(counselors)</code>, and that is the design rather than an omission.</strong>
+Being a counselor confers nothing until someone writes the grant
+(<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>);
+D-100 repeats the sentence D-042 has always said. <strong>What that leaves open is not a permission but a
+number</strong>, and it is the price D-100 names for moving the gate into the expression: the reach of the
+counselor office is only as correct as the roster, so the import reconciliation of
+<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+counts people marked as counselors in the legacy corpus against <code>role_holder</code> rows written. An import
+that misses three hundred counselors <strong>fails closed</strong> — nobody's access breaks — which is exactly why
+nobody notices.</p>
+<p><strong>Who may make someone a counselor, over just that one office.</strong> <code>role.assign</code> writes a <code>role_holder</code>
+row and is <code>applies_to = unit_and_item</code> (§7), so holding it <strong>at the unit</strong> lets you fill every office
+in the organization, which is what 🔒🔒 is for, while a grant of it <strong>on the item <code>counselors</code></strong> says
+<em>these two may manage the counselor roster</em> and nothing else. That is D-098's move read symmetrically,
+and it is why <code>role</code> is a row of <code>grant_scope_type</code>.</p>
+<p><strong>The one seeded grant is written without <code>MEMBERS</code>, and must not be "corrected."</strong> An organizer
+appointed for one weekend is not required to hold a current membership — D-062's appointment model
+assumes exactly that — so a <code>MEMBERS</code> on that row would take an organizer's read of their own event's
+answers away the night their fee lapsed. <strong>It is also the seed's only grant, which means no seeded
+grant carries <code>MEMBERS</code> at all</strong>, and that is worth stating because one of D-100's three controls
+reads <em>"seeded grants and any grant template carry <code>MEMBERS</code>, so the path of least repetition is the
+safe path"</em>: in this seed the path of least repetition carries nothing (§12). <em>And the seeded row is a
+<strong>template</strong> rather than one grant covering every event — a bound operand cannot sit on a unit-scope
+grant — so the row a reader finds is written beside each event by the event-creation path (§8a).</em></p>
+<h3 id="the-worked-example-offices">The worked-example offices<a class="headerlink" href="#the-worked-example-offices" title="Permanent link">&para;</a></h3>
+<p><strong>None of the following ships.</strong> These are the names the rest of the corpus uses whenever it needs an
+office to talk about, written out the way an office now has to be written: as grant rows. Each row
+below is <strong>one grant per code</strong>, all aimed at one expression, all at the unit — there is nowhere else
+for a code about people to be aimed (§1) — each with its own period. Do not read a row as a
+requirement, and do not expect the list to survive contact with the organization.</p>
+<table>
+<thead>
+<tr>
+<th>Office</th>
+<th>The grant rows that are its reach</th>
+<th>Grantee expression</th>
+<th>Why that expression</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>system_admin</code></td>
-<td>organization</td>
-<td>—</td>
-<td><strong>yes</strong></td>
-<td><code>system.admin</code>, <code>system.gate_exempt</code></td>
-<td>12 mo</td>
+<td><code>system.admin</code> — <strong>one row, and it is enough</strong></td>
+<td><code>ROLE(system_admin)</code></td>
+<td><strong>no <code>MEMBERS</code></strong>, deliberately: the 1 January case below</td>
 </tr>
 <tr>
 <td><code>registrar</code></td>
-<td>organization</td>
-<td>yes</td>
-<td>no</td>
-<td><code>membership.request.*</code>, <code>membership.activate</code>, <code>person.*</code> (except merge/redact), <code>unit_participation.view</code> (root rows only — see note), <code>import.*</code></td>
-<td>12 mo</td>
+<td><code>person.view</code> ⚠⚠, <code>person.create</code>, <code>person.edit</code> ⚠, <code>person.contact.view</code> ⚠, <code>person.contact.edit</code> ⚠, <code>account.view</code> ⚠, <code>account.create</code>, <code>account.suspend</code> ⚠, <code>account.close</code> ⚠, <code>account.credential.reset</code> 🔒, <code>membership.view</code> ⚠, <code>membership.request.create</code>, <code>membership.request.review</code> ⚠, <code>membership.activate</code>, <code>membership.backdate</code> ⚠, <code>import.view</code> ⚠, <code>import.stage</code>, <code>import.apply</code> 🔒, <code>import.revert</code> 🔒 — <strong>nineteen rows</strong></td>
+<td><code>MEMBERS * ROLE(registrar)</code></td>
+<td>staff working the organization's own records; the office stops when the fee lapses</td>
 </tr>
 <tr>
 <td><code>membership_approver</code></td>
-<td>organization</td>
-<td>yes</td>
-<td>no</td>
-<td><code>membership.request.review</code>, <code>membership.request.approve</code></td>
-<td>12 mo</td>
+<td><code>membership.request.review</code> ⚠, <code>membership.request.approve</code> ⛔</td>
+<td><code>MEMBERS * ROLE(membership_approver)</code></td>
+<td>as above</td>
 </tr>
 <tr>
 <td><code>treasurer</code></td>
-<td>organization or unit</td>
-<td>yes</td>
-<td>no</td>
-<td><code>fee.*</code>, <code>payment.*</code>, <code>report.finance.view</code></td>
-<td>12 mo</td>
+<td><code>fee.view</code>, <code>fee.create</code>, <code>fee.waive</code>, <code>fee.refund</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>report.finance.view</code></td>
+<td><code>MEMBERS * ROLE(treasurer)</code></td>
+<td>as above</td>
 </tr>
 <tr>
 <td><code>safeguarding_officer</code></td>
-<td>organization</td>
-<td>yes</td>
-<td>no</td>
-<td><code>report.safeguarding.view</code>, <code>membership.terminate</code></td>
-<td>12 mo</td>
+<td><code>membership.view</code> ⚠, <code>report.safeguarding.view</code> ⚠⚠, <code>membership.terminate</code> ⛔</td>
+<td><code>MEMBERS * ROLE(safeguarding_officer)</code></td>
+<td>whoever finds the problem and whoever ends a membership over it are the same person, and nobody else</td>
 </tr>
 <tr>
-<td><code>unit_admin</code></td>
-<td>org_unit</td>
-<td>yes</td>
-<td>no</td>
-<td><code>org_unit.view</code>, <code>unit_participation.view</code>, <code>position.view</code>, <code>org_unit.edit</code> (own unit only)</td>
-<td>12 mo</td>
-</tr>
-<tr>
-<td><code>unit_leader</code></td>
-<td>org_unit</td>
-<td><strong>no</strong></td>
-<td>no</td>
-<td><code>org_unit.view</code>, <code>unit_participation.view</code>, <code>position.view</code>, <code>event.*</code> (own unit), <code>report.membership.view</code> (own unit)</td>
-<td>12 mo</td>
-</tr>
-<tr>
-<td><code>assistant_leader</code></td>
-<td>org_unit</td>
-<td><strong>no</strong></td>
-<td>no</td>
-<td>Subset of <code>unit_leader</code></td>
-<td>12 mo</td>
+<td><code>leaders</code></td>
+<td>the thirteen <code>event.*</code> codes (§8a), <code>membership.view</code> ⚠, <code>person_group.view</code> ⚠, <code>report.membership.view</code> ⚠ — <strong>sixteen rows</strong></td>
+<td><code>ROLE(leaders)</code></td>
+<td><strong>this is what <code>unit_leader</code> was</strong>, including its <code>Req. = no</code>: volunteers, so no <code>MEMBERS</code> (property 4) — and nothing bounds it to one unit any more</td>
 </tr>
 <tr>
 <td><code>audience_admin</code></td>
-<td>organization or unit</td>
-<td>yes</td>
-<td>no</td>
-<td><code>audience.view</code>, <code>audience.manage</code></td>
-<td>12 mo</td>
+<td><code>audience.view</code>, <code>audience.manage</code> ⚠</td>
+<td><code>MEMBERS * ROLE(audience_admin)</code></td>
+<td>§5a, including the naming rule this office is subject to</td>
 </tr>
 <tr>
 <td><code>identity_reviewer</code></td>
-<td>organization</td>
-<td>yes</td>
-<td>no</td>
-<td><code>person.merge</code>, <code>import.view</code>, <code>import.apply</code></td>
-<td>12 mo</td>
+<td><code>person.merge</code> 🔒, <code>import.view</code> ⚠, <code>import.apply</code> 🔒</td>
+<td><code>MEMBERS * ROLE(identity_reviewer)</code></td>
+<td>and <strong>no <code>person.view</code></strong> — property 5</td>
 </tr>
 <tr>
 <td><code>auditor</code></td>
-<td>organization</td>
-<td><strong>no</strong></td>
-<td>no</td>
-<td><code>audit.view</code>, <code>audit.export</code>, <code>report.view</code> — <strong>read-only, no writes</strong></td>
-<td>12 mo</td>
+<td><code>audit.view</code> ⚠⚠, <code>audit.export</code> ⚠⚠, <code>report.view</code> ⚠ — <strong>read-only, no writes</strong></td>
+<td><code>ROLE(auditor)</code></td>
+<td><strong>no <code>MEMBERS</code></strong>: an auditor who forgets to pay must not lose the read (property 4)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Read the <code>*</code> shorthand as a bundle to be written out, not a wildcard to be relied on.</strong>
-Since <a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
-there is no resolver rule that makes <code>person.*</code> mean anything; the notation here is an
-abbreviation for <em>"every <code>person.</code> code listed in §2"</em>, and a real role holds an explicit
-<code>role_permission</code> row for each. Two consequences for whoever seeds this:</p>
+<p><strong><code>Term</code> left the table and went to two places, and that is worth knowing before you set either.</strong>
+The old table had one twelve-month column per role. An office is now held for a period
+(<code>role_holder.valid_from</code>/<code>valid_to</code>) <strong>and</strong> every one of its grants has a period of its own, so an
+office's reach is an intersection of up to twenty dates, and the question <em>when does this person stop
+being able to do that?</em> has more than one right answer. Nothing forces either kind of row to end —
+<a href="../../decisions/decision-log/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>
+transfers to <code>role_holder</code> intact, and the control is still the report.</p>
+<p><strong>Three of these offices name codes this catalog has not registered, and one office is made entirely
+of them.</strong> The treasurer's eight rows are <code>fee.*</code>, <code>payment.*</code> and <code>report.finance.view</code>, and all
+three of those namespaces are <a href="#10-deferred-namespaces">§10</a> placeholders — so <strong>that office cannot
+be written today</strong>, and its row count is a wish rather than a migration. <code>safeguarding_officer</code> and
+<code>leaders</code> each name one deferred report code among otherwise live rows, which is the milder form of
+the same thing. The counts above therefore say what an office would hold once finance ships; the live
+half of each list is what a seed migration could insert now. Nothing in the schema stops a grant row
+naming a code that does not exist, so this paragraph is
+<a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>
+one section further along: the catalog names the office, the office names the code, and no row agrees.</p>
+<p><strong>Read <code>event.*</code> above as a count, not as a wildcard.</strong> Since
+<a href="../../decisions/decision-log/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+there is no resolver rule that makes <code>person.*</code> mean anything; the notation means <em>"every <code>person.</code>
+code listed in §2"</em>, and a real office has an explicit <strong>grant row</strong> for each — which since D-100 is
+the only place such a list exists at all. Three consequences for whoever writes these:</p>
 <ol>
-<li><strong><code>registrar</code> is written as <code>person.*</code> <em>except</em> <code>person.merge</code> and <code>person.redact</code>, and
-   that exclusion is now literal.</strong> It used to be a caveat about a wildcard's prefix match.
-   It is now just the rows you do not insert — and it is visible in <code>role_permission</code>, dated,
-   and alarmable. <code>identity_reviewer</code> is the role that <em>does</em> hold <code>person.merge</code> — and since
-   round 8, <code>person.merge</code> is the whole of identity correction: merging, unmerging, and deciding a
-   sign-up collision (§2) — listed beside <code>registrar</code> so the difference between the two is legible.
-   <strong>A role that bundles a resource <em>including</em> its 🔒 codes should be named for that</strong>, since
-   nothing else records the choice any more. The wording here used to say <em>irreversible</em> codes;
+<li><strong><code>registrar</code> omits <code>person.merge</code> and <code>person.redact</code> by not having those rows, and the exclusion
+   was always this literal.</strong> It used to be phrased as a caveat about a wildcard's prefix match, and as
+   a caveat it was worth a paragraph; now it is simply the two rows nobody inserted, visible in
+   <code>access_grant</code> with a date and an author and alarmable like any other row. <code>identity_reviewer</code> is
+   the office that <em>does</em> hold <code>person.merge</code> — and since round 8 <code>person.merge</code> is the whole of
+   identity correction: merging, reversing a merge, and deciding a sign-up collision (§2) — listed
+   beside <code>registrar</code> so the difference between the two is legible. <strong>An office that bundles a resource
+   <em>including</em> its 🔒 codes should be named for that</strong>, since nothing else records the choice any more;
+   the wording here used to say <em>irreversible</em> codes, and
    <a href="../../decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
-   removed one of the two codes that wording pointed at, and the marker is the honest referent —
+   removed one of the two that wording pointed at, so the marker is the honest referent —
    <code>person.redact</code> is irreversible, <code>person.merge</code> is undoable but unions permissions the moment it
    runs.</li>
-<li><strong><code>unit_leader</code> holding <code>event.*</code> means thirteen explicit rows</strong> (§8a), and a fourteenth
-   added later is <em>not</em> in the role until someone adds it. Integrity check 18 surfaces an
-   orphaned permission — one no role grants at all. It does not surface "this role arguably
-   should have had it." That is the cost D-068 accepts, and it lands here, in the seed table,
-   rather than being absorbed silently by the resolver.</li>
-<li><strong><code>auditor</code> is a role that reads the whole person record, and does it without <code>person.view</code>.</strong>
-   <code>audit.view</code> is graded ⚠⚠ in §8 precisely because the payload is a second copy of the record,
-   so this row grants a ⚠⚠ read over what the system believed about a child and when it believed it.
+<li><strong><code>leaders</code> holding <code>event.*</code> means thirteen explicit rows</strong> (§8a), and a fourteenth added later is
+   <em>not</em> in the office until someone writes it. Integrity check 18 surfaces an orphaned permission — one
+   <strong>no live grant names</strong> — and it does not surface <em>"this office arguably should have had it."</em> That is
+   the cost D-068 accepts, and since round 10 it lands here rather than being absorbed silently by a
+   resolver: with <code>role_permission</code> gone there is no per-office list left for a reader to compare a
+   catalog row against, so a documented code that nothing grants is now invisible in a way it never was.</li>
+<li><strong><code>auditor</code> is an office that reads the whole person record, and does it without <code>person.view</code>.</strong>
+   <code>audit.view</code> is graded ⚠⚠ in §8 precisely because the payload is a second copy of the record, so
+   this row grants a ⚠⚠ read over what the system believed about a child and when it believed it.
    Since <a href="../../decisions/decision-log/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
    that read has a floor it did not have before: payloads older than 24 months are emptied, so what is
-   exposed reaches back two years and no further, while the who-did-what-to-which-row part reaches
-   back for the life of the system. That bounds this row's exposure and does not soften its grading.
-   Nothing here forbids it — it is a plausible role — but the row must not be
-   described to anyone as "just the logs", and it is scoped and term-limited for the same reason
-   the ⚠⚠ rows above it are.</li>
+   exposed reaches back two years and no further, while the who-did-what-to-which-row part reaches back
+   for the life of the system. That bounds this row's exposure and does not soften its grading. Nothing
+   here forbids it — it is a plausible office — but the row must not be described to anyone as "just the
+   logs", and it is scoped and dated for the same reason the ⚠⚠ rows above it are.</li>
 </ol>
-<p><code>Req.</code> is <code>role.requires_membership</code>: whether the role stops granting anything when the
-holder's fee lapses (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
-The proposals follow one rule — <strong>staff-like roles working on the organization's own records
-require a membership; volunteer-facing roles do not.</strong></p>
-<p><strong><code>Waives gate</code></strong> is the separate, person-level <em>permission</em> <code>system.gate_exempt</code>
-(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>).
-The two columns answer different questions and are not alternatives: <code>Req. = no</code> exempts
-everyone who holds the role, everywhere; <code>system.gate_exempt</code> exempts a named person across
-every role they hold. <code>system_admin</code> carries it because on 1 January the sweep lapses every
-membership including the administrator's — without the exemption, the person who would repair
-the system loses the ability to use it on the day it breaks.</p>
+<h3 id="the-gate-moved-into-the-expression">The gate moved into the expression<a class="headerlink" href="#the-gate-moved-into-the-expression" title="Permanent link">&para;</a></h3>
+<p>~~<code>Req.</code>~~ was <code>role.requires_membership</code>: whether the office stopped conferring anything the moment
+its holder's fee lapsed
+(<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).
+~~Waives gate~~ was the separate, person-level <em>permission</em> <code>system.gate_exempt</code>
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>),
+and the two columns answered different questions and were never alternatives: the flag exempted
+everyone holding an office, everywhere, while the permission exempted one named person across every
+office they held. <strong>Both columns, both mechanisms and the resolver clause that implemented them are
+deleted by D-100.</strong> <code>MEMBERS</code> is an operand now, evaluated live on the checked date, and whether an
+office survives its holder's lapse is a property of the expression written on the grant:</p>
+<table>
+<thead>
+<tr>
+<th>Old mechanism</th>
+<th>New expression</th>
+<th>What the writer is saying</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The gate applied to an office with <code>requires_membership = true</code></td>
+<td><code>MEMBERS * ROLE(x)</code></td>
+<td>this office is for people who are members right now</td>
+</tr>
+<tr>
+<td>The gate waived for a whole office</td>
+<td><code>ROLE(x)</code></td>
+<td>written <strong>without</strong> <code>MEMBERS</code>; a lapse in the fee ledger does not stop this office</td>
+</tr>
+<tr>
+<td>The gate waived for one named person (<code>system.gate_exempt</code>)</td>
+<td><code>(MEMBERS * ROLE(x)) + PERSON(y)</code></td>
+<td>one person is the exception, and the exception is visible to everyone who reads the grant</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A second grant aimed at <code>PERSON(y)</code> is the other way to write the third row</strong>, leaving the gated
+expression alone; D-100 keeps both legal and calls the second arguably clearer for a permanent
+exception, because it keeps the exception off the expression everyone else reads. What is gone is the
+<em>permission</em> — not the ability.</p>
+<p><strong>The posture reversed, so name the new failure instead of burying it.</strong> The gate used to be
+<strong>default-on</strong>, which made forgetting it impossible and waiving it a deliberate act. It is now
+<strong>opt-in per grant</strong>: an expression written <code>ROLE(treasurers)</code> with no <code>MEMBERS</code> authorizes a lapsed
+member, silently, for as long as the grant lives. Three controls, none of which is the resolver:</p>
+<ul>
+<li><strong>A standing report of live grants that name a <code>ROLE(…)</code> operand and contain no <code>MEMBERS</code>.</strong> An
+  office held by a non-member is the case worth a human eye, and this report is narrow enough to
+  actually be read — <code>system_admin</code>, <code>leaders</code> and <code>auditor</code> are on it here, and all three are on it
+  <em>because someone chose them</em>, which is the whole point.</li>
+<li><strong>Seeded grants and any grant template carry <code>MEMBERS</code></strong>, so the path of least repetition is the
+  safe path. <em>In this seed that control has nothing to work on: the seed's one grant must not carry
+  <code>MEMBERS</code>, and it is the only one, so every office grant anyone ever writes will have been written by
+  hand — the safe path is not the short one. Recorded in §12.</em></li>
+<li><strong>Import completeness.</strong> The counselor office is only as correct as the roster behind it, and the
+  gate used to fall out of membership alone; the duty is stated above, and it fails closed.</li>
+</ul>
+<p><strong>One value in the old table was never a preference, and it is the one to copy carefully.</strong>
+<code>system_admin</code> was marked <em>Waives gate = yes</em> because on 1 January the expiry sweep of
+<a href="../../decisions/decision-log/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>
+lapses every membership in the organization including the administrator's, and without the exemption
+the person who would repair the system loses the ability to use it on the day it breaks. That is a
+property of the system, not a policy choice, and it is carried now by <strong>writing that one row
+<code>ROLE(system_admin)</code>, with no <code>MEMBERS</code></strong> — which turns a flag nobody read into an expression with
+an outage attached to getting it wrong. The loud mistake is the opposite one: writing
+<code>MEMBERS * ROLE(system_admin)</code> "for consistency" reproduces the lockout, silently, with no error
+message — D-051's documented hazard outlives the mechanism that produced it. <strong>Whether any office
+in the shipped seed is written this way is a different question, and the answer is no: the seed
+contains no office grants at all</strong> (<a href="#what-the-seed-ships">What the seed ships</a>, §12).</p>
 <blockquote>
-<p><strong>This table is a starting set, not a specification</strong> — and the <code>Waives gate</code> column is the
-clearest case of why. Roles are runtime data: the organization creates, edits and deletes
-them (<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). Whether a
-treasurer or a safeguarding officer should also survive their own lapse is a configuration
-decision the organization makes in the admin UI, not one this document can settle for it.
-Only <code>system_admin</code> is marked certain, because the lockout case above is a property of the
-system rather than a policy preference.</p>
-<p><strong><code>registrar</code> holding <code>unit_participation.view</code> at organization scope is not a bug, and it
-will be read as one</strong> (<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).
-Scope is an exact match: the registrar's scope is the root unit, so the role reads the
-<strong>root</strong> participation rows — which is what "who is in the organization?" needs
-(<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
-It does <strong>not</strong> reach into any pack's roster; that requires the pack to write a
-<code>scope_exposure</code>. Someone who assumes a parent can see its children will "fix" this by
-widening the role, and that fix would silently reverse D-049.</p>
+<p><strong>~~<code>registrar</code> holding <code>unit_participation.view</code> at organization scope is not a bug, and it will be
+read as one.~~</strong> Both halves of that note died with the hierarchy. The code is deleted (§4), and the
+oddity it defended — a scope that matched only the root's own rows and refused to read into a pack's
+roster, because crossing into a sub-unit took a <code>scope_exposure</code>
+(<a href="../../decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>,
+<a href="../../decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>) —
+has no subject after <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>:
+there is one scope, so there is nothing for it to fail to reach, and <code>membership.view</code> answers <em>who is
+in the organization?</em> on its own. <strong>What is genuinely lost is the mistake nobody can make any more.</strong>
+The old hazard was a well-meaning administrator widening a parent's role to see a child unit's roster,
+silently reversing D-049; there is no child unit to widen toward, and the equivalent act today — a
+grant at the unit — is not a hazard but the ordinary case.</p>
 </blockquote>
-<p><strong>Five properties worth noting:</strong></p>
+<p><strong>Eight properties worth noting: six carried over from the old table and retargeted, two new because
+round 10 created them:</strong></p>
 <ol>
 <li><strong><code>membership_approver</code> is separate from <code>registrar</code>.</strong> Deciding who becomes a member is
    a different act from processing records. If your organization wants one person to do
-   both, grant both roles — but keep them separately attributable.</li>
+   both, hold both offices — which now literally means two holder rows and two sets of grant rows —
+   but keep them separately attributable, because that separation is the only thing the office names
+   buy.</li>
 <li><strong><code>safeguarding_officer</code> holds <code>membership.terminate</code>.</strong> The permission to end someone's
    membership sits with the person responsible for safeguarding, not with whoever chases
-   fees. This is deliberate. Note that the role <strong>lost</strong> <code>person.background_check.*</code> and
+   fees. This is deliberate. Note that the office <strong>lost</strong> <code>person.background_check.*</code> and
    gained nothing in its place, because the organization records no background checks
-   (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).</li>
-<li><strong>No role is a guardian.</strong> There used to be a rule that no role bundles
+   (<a href="../../decisions/decision-log/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
+   What it also does not have here is <code>person.view</code>: three rows, and the ⚠⚠ one is the report rather
+   than the record. <strong>If working a case needs the record, that is a fourth grant row</strong> — scoped, dated,
+   attributable, and visible to anyone who asks what this office can read, which is the review §2 moved
+   to when it graded <code>person.view</code> ⚠⚠.</li>
+<li><strong>No office is a guardian.</strong> There used to be a rule that no role bundles
    <code>dependent.*</code>, and the namespace it named no longer exists
    (<a href="../../decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
    The safeguarding property it protected is the one that survives, restated against the mechanism
    that now provides it: <strong>the guardianship channel is only consulted when the subject of the act
    is someone else, and it only finds a guardianship row.</strong> Leadership is not guardianship, so no
-   role hands anyone a guardian's right over a child — not the right to act for that child, and not
+   office hands anyone a guardian's right over a child — not the right to act for that child, and not
    the row that decides what the family may see.
-   <strong>What a role can now do, and does openly, is read the child's record.</strong> That sentence used to
+   <strong>What an office can now do, and does openly, is read the child's record.</strong> That sentence used to
    be false, and <a href="../../decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-   is why it is not: with no privileged subset inside the person record, a leader granted
-   <code>person.view</code> over their own unit reads the whole of a member's descriptive data, allergy list
-   included (<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>). Nothing about leading a
-   unit grants it — no channel opens on its own, and the row that would is explicit, scoped, dated
-   and readable in <code>role_permission</code>. That is also why §2 now grades that code ⚠⚠: the safeguarding
-   review moved from <em>"is there a code we kept out of roles?"</em> to <em>"which roles were given this
-   one?"</em>, which is a question the catalog can actually answer.
-   <strong>Do not re-derive the old rule as a list of codes to keep out of roles</strong> — the rule is about
+   is why it is not: with no privileged subset inside the person record, a leader granted <code>person.view</code>
+   reads the whole of a member's descriptive data, allergy list included
+   (<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>) — <strong>and round 10 widened what one such
+   grant means</strong>, because after D-097 there is no narrower scope than the unit for a code about people,
+   so that single row reaches every member in the organization (§1). Nothing about leading anything
+   grants it: no channel opens on its own, and the row that would is explicit, scoped, dated and
+   readable in <code>access_grant</code>. That is also why §2 now grades that code ⚠⚠: the safeguarding review
+   moved from <em>"is there a code we kept out of offices?"</em> to <em>"which grants were given this one?"</em>,
+   which is a question the catalog can actually answer.
+   <strong>Do not re-derive the old rule as a list of codes to keep out of offices</strong> — the rule is about
    the channel, and there is no code left to quarantine.</li>
-<li><strong><code>unit_leader</code> and <code>assistant_leader</code> are <code>Req. = no</code>.</strong> They are held by volunteers, and
-   the failure this prevents is specific: the volunteer whose own fee is unpaid still runs
-   the Thursday meeting, and must not lose their roster the night it lapses. The
-   corresponding <code>position.requires_membership</code> stays <code>true</code>, so the unpaid volunteer shows
-   up on a chase-up report — <strong>the report is how the organization notices, the resolver is
-   not how it punishes.</strong> See
-   <a href="../../domain/06-authorization-model/#4-roles--bundles-of-permissions">../domain/06-authorization-model.md §4</a>.</li>
+<li><strong><code>system_admin</code>, <code>leaders</code> and <code>auditor</code> are the three example offices written without <code>MEMBERS</code>,
+   and the last two are the successors to the old <code>Req. = no</code>.</strong> The rule the old column followed was
+   one sentence — <strong>staff-like offices working on the organization's own records require a membership;
+   volunteer-facing offices do not</strong> — and it survives as a writing habit, because a resolver clause
+   does not survive otherwise.
+   The failure it prevents is specific: the volunteer whose own fee is unpaid still runs the Thursday
+   meeting, and must not lose their roster the night it lapses. ~~The corresponding
+   <code>position.requires_membership</code> stays <code>true</code>, so the unpaid volunteer shows up on a chase-up report.~~
+   Positions are deleted (D-100), so the noticing moved: that volunteer's office now appears on the
+   standing report of grants that name a <code>ROLE(…)</code> operand and carry no <code>MEMBERS</code>, <strong>which is how the
+   organization notices, and the resolver is still not how it punishes</strong>. See
+   <a href="../../domain/06-authorization-model/#4-roles-are-offices-groups-are-company">../domain/06-authorization-model.md §4</a>.</li>
 <li><strong><code>identity_reviewer</code> decides identity questions about children without a read over the person
-   record.</strong> The row carries <code>person.merge</code>, <code>import.view</code> and <code>import.apply</code>, and <strong><code>person.view</code> is
-   not in it</strong>: the reviewer works from the candidate pair, the <code>match_signals</code> recorded against it,
-   and the names and dates those signals compare. That is deliberate as it stands — the question being
-   decided is whether two rows are one human, and the descriptive values underneath are not evidence
-   about that — and it is the same shape as <code>auditor</code> reading the trail without holding <code>person.view</code>.
-   What round 8 changed is the pressure on it. This is now also the role a <strong>blocked sign-up</strong> lands
+   record.</strong> The office carries three rows — <code>person.merge</code>, <code>import.view</code>, <code>import.apply</code> — and
+   <strong><code>person.view</code> is not among them</strong>: the reviewer works from the candidate pair, the
+   <code>match_signals</code> recorded against it, and the names and dates those signals compare. That is
+   deliberate as it stands — the question being decided is whether two rows are one human, and the
+   descriptive values underneath are not evidence about that — and it is the same shape as <code>auditor</code>
+   reading the trail without holding <code>person.view</code>.
+   What round 8 changed is the pressure on it. This is now also the office a <strong>blocked sign-up</strong> lands
    on: an account held out of <code>active</code> by an unresolved hypothesis, with an age check alerting because
    the stalled item is a person who cannot log in
    (<a href="../../decisions/decision-log/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
    <strong>If reviewers begin asking for context they cannot see, that is the finding to act on</strong>, and the two
-   honest answers are a scoped, dated <code>person.view</code> on this role, or a review screen that shows more of
-   the <em>signals</em>. Reaching instead for an organization-wide <code>person.view</code> would put the catalog's
-   largest ⚠⚠ read in the role with the most write authority over identity.</li>
+   honest answers are a scoped, dated <code>person.view</code> on this office, or a review screen that shows more
+   of the <em>signals</em>. Reaching instead for an organization-wide <code>person.view</code> would put the catalog's
+   largest ⚠⚠ read in the office with the most write authority over identity. Tracked as
+   <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>,
+   where none of the three positions is yet recorded as taken.</li>
+<li><strong>No office in this set holds <code>person_group.member.manage</code>, and that is a hole rather than a neutral
+   omission</strong> — the sentence used to be about <code>unit_participation.manage</code>, and the code is deleted. What
+   D-095 decided has not moved: joining a set is somebody else's act, the write is never self-scoped, and
+   this code is now the only thing standing between a person and a group's roster (§5a). As written,
+   <code>leaders</code> may <em>see</em> a roster and cannot write one. <strong>The gap is wider than it was, not narrower</strong>,
+   because the answer behind D-095 was <em>"they will be assigned to the unit by the counselors"</em> — and the
+   counselor office is seeded with no grants at all (<a href="#what-the-seed-ships">What the seed ships</a>), so
+   on the shipped seed nobody at all may write a roster. <strong>It is recorded here instead of added to
+   the table on purpose</strong>: which volunteer office may put a child on a group's roster is the
+   organization's decision, and an appendix that quietly hands it to <code>leaders</code> would be making a
+   safeguarding choice on someone else's behalf (§12).</li>
+<li><strong><code>attribute.define</code> is held by nothing here, and an office is the wrong shape for the answer.</strong>
+   <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">open-questions AT-2</a>
+   points at this section as the place the question gets answered, and the honest answer for a volunteer
+   organization is one or two people rather than an office: <strong>a grant aimed at <code>PERSON(x)</code></strong> (§1) is the
+   form that fits, with a date on it, and an office would only be a way of making one person's job
+   look like a policy. What is <em>not</em> the answer is leaving it unheld while proposals keep arriving
+   through ordinary data entry (§12).</li>
+<li><strong>An office name is now load-bearing in a way it never was, because names are one namespace.</strong>
+   A bare name in an expression resolves against <code>role</code> and <code>person_group</code> together, so an office
+   called <code>leaders</code> and a group called <code>leaders</code> cannot both exist, and the collision is caught on the
+   write path rather than by a constraint (there is no constraint spanning two tables)
+   (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>,
+   <a href="../../decisions/decision-log/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
+   Every <code>selector_type.code</code> is reserved on top of that, so an office called <code>MEMBERS</code> is refused when
+   it is saved rather than silently rewriting every expression in the system. <strong><code>audience_admin</code> is
+   therefore a name with a second duty</strong>: as well as saying who may edit audiences (§5a), it occupies a
+   name no group may take — and note that it grants nothing over <code>person_group</code> at all, so whoever
+   manages audiences and whoever manages groups may be, and here are, different people.</li>
 </ol>
 <hr />
 <h2 id="12-open-issues">12. Open issues<a class="headerlink" href="#12-open-issues" title="Permanent link">&para;</a></h2>
@@ -3140,27 +3881,163 @@ widening the role, and that fix would silently reverse D-049.</p>
   so there is no longer a "prune this down" review to do.
   What remains is <em>additive</em>: each unbuilt module brings its own permissions as it is
   specified, and unused rows cost nothing.</li>
-<li><strong><code>Req.</code> and <code>Waives gate</code> are configuration, not specification.</strong> Both columns are
-  attributes of roles, and roles are runtime data the organization administers
-  (<a href="../../data-model/05-authorization/#3-role-and-role_permission">§7</a>). The values shown are
-  reasoned defaults to start from
+<li><strong>Which offices' grants carry <code>MEMBERS</code> is now a decision with no default recorded anywhere.</strong>
+  ~~Both were attributes of roles, and roles are runtime data the organization administers, so the
+  values shown were reasoned defaults~~
   (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>,
-  <a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>);
-  the organization changes them in the admin UI. The one value that is <em>not</em> a preference is
-  <code>system_admin</code> carrying <code>system.gate_exempt</code> — the 1 January lockout is a property of the
-  system, not a policy choice.</li>
+  <a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>
+  — both mechanisms deleted by D-100). The answer is now written into a grant's expression, and what
+  the specification still owes is the thing D-100 nominates as the only control: <strong>a standing report of
+  live grants naming a <code>ROLE(…)</code> operand whose expression contains no <code>MEMBERS</code></strong> — who runs it, how
+  often, and what makes a row on it a finding rather than a fact. §11 puts three offices on it on
+  purpose, which is not the same as having the report. Tracked as
+  <a href="../../open-questions/#f-13--should-a-role-grant-without-members-be-a-lint-warning-or-only-a-report">F-13</a>,
+  which asks the sharper half of the same question: <strong>a warning at save time, or a report afterwards</strong> —
+  and a report is the weaker answer precisely because a lockout is silent.</li>
+<li><strong>Nothing bounds what a holder of <code>access_grant.create</code> may write, and the catalog no longer
+  pretends otherwise.</strong> ~~A grant could not carry a level above the writer's own~~ — that was
+  <code>permission_level</code>'s second job, and the table is deleted by
+  <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>.
+  So <strong>anyone with <code>access_grant.create</code> can grant <code>system.admin</code> to anyone, including themselves</strong>, and
+  the only remaining guard is <code>applies_to = unit</code>, which stops the <em>shape</em> of the grant and not the act
+  (§1, §7). Every earlier answer to "who can grant what" is gone with it: the ceiling was the one thing
+  the deleted ladder was still doing, and nothing replaced it. Whether the answer is a second code for
+  granting the <code>system.</code> namespace, a two-person rule, or "the audit trail and a small organization's
+  judgment" is open, and it is the sharpest hole round 10 left in this file.</li>
+<li><strong><code>event.grant_access</code> may now be an orphan, and it is one the round created.</strong> Its whole purpose was
+  to demand a <em>level</em> over an event that the general grant path could not express; with the level gone,
+  what distinguishes it from <code>access_grant.create</code> is the scope alone (§8a). Either it is a scoped
+  front door onto the same table — in which case the catalog should say so and the two codes'
+  relationship should be an invariant — or it is a code with no remaining subject, which is the class of
+  bug D-068 made visible. <strong>It is left in the catalog, marked, rather than deleted here</strong>: deleting a
+  code because one mechanism died is the events module's call, not an appendix's.</li>
+<li><strong>A <code>deny</code> that matches no <code>allow</code> is invisible, and D-099 asks for a report nobody has written.</strong> The
+  new integrity report is <em>"a live deny matching no live allow is dead weight"</em> (§9 restates it). It is
+  not the same question as integrity check 18's — that one asks which <strong>permissions</strong> no grant names,
+  this one asks which <strong>grants</strong> do nothing — and it is easy to under-build: a deny aimed at a set that
+  currently resolves nobody looks identical to a deny that is working. Open only as a report with no
+  owner; the semantics are settled.</li>
+<li><strong><code>audience.manage</code> is one code over an expression, and the largest act it covers is still
+  unmarked.</strong> ~~D-091's inclusion arm~~ is gone, and composition <em>is</em> the expression now
+  (<a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>):
+  the arm that used to need its own code is an ordinary <code>+</code> beside a leaf, and the leaf that should
+  worry everyone is <code>EVERYONE</code>.
+  The shape of the concern is unchanged and one edit shorter: <strong>whoever can edit one expression can
+  widen every live grant aimed at it</strong>, including by writing <code>EVERYONE</code>, which is legal, reachable, and
+  resolves to non-members and the public — <strong>and the reach is now transitive</strong>, because
+  <a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a> lets one audience be
+  named inside another, so editing a widely-named audience widens every grant aimed at every audience
+  that names it. Either composition is documented as plainly inside
+  <code>audience.manage</code> — accepting exactly that consequence — or it gets a code of its own; <strong>no code was
+  invented here to fill the gap</strong>. The interim control is the editor showing the expanded set and the
+  affected grants <em>before</em> the save, which is a user-interface requirement carried in
+  <a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
+  not a permission.</li>
+<li><strong><code>audience.view</code> carries no sensitivity mark, and the thing it shows is a list of people.</strong> A grant
+  aimed at a name used to point at a set whose contents were mostly typed in; now the same row resolves
+  through dated holder rows, group rosters and <code>MEMBERS</code>, and an expression containing <code>EVERYONE</code>
+  resolves to the whole organization and beyond it. Whether reading a resolved expression needs a grade
+  of its own — or whether <code>person.view</code> already covers it and the <em>display</em> is the leak to watch — is
+  unsettled (§5a).</li>
+<li><strong>~~Whether <code>PERSON(x)</code> exists~~ — closed: it is the thirteenth seeded <code>selector_type</code> row.</strong> This
+  bullet recorded the round's sharpest disagreement, and
+  <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+  settles it the way <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+  and D-101's registry amendment already had: <em>"<code>PERSON(y)</code> is a selector, and this entry is the reason
+  it had to become one."</em> So <code>(MEMBERS * ROLE(x)) + PERSON(y)</code> parses (§1, §11), and the waiver D-100
+  wrote for itself is legal against the registry at last. <strong><code>LIST</code> was never a stand-in, and the reason
+  is arithmetic</strong>: <code>+ LIST</code> adds everyone on that list and <code>- LIST</code> removes everyone on it, so an
+  audience cannot use it to except one person from itself. <strong>What is left is a repair, not a question</strong>
+  — the two module pages that call <code>PERSON(…)</code> <em>"not in the language at all"</em>, one of them refusing the
+  leaf while its own gate table writes it, and the domain grammar that omits it for the same reason,
+  need this round's correction; the registry row and the printed grammar belong to
+  <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">../data-model/05-authorization.md §8</a>
+  and <a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
+  not to this appendix. <strong>The fallback survives the answer</strong>: a second grant aimed at the person is the
+  other way to write the exception, and the better one when the exception should not appear in the
+  expression everybody else reads (§11).</li>
+<li><strong>The shipped seed contains no office grants at all, so D-100's 1 January assumption is unmet.</strong> The
+  entry assumes <em>"the seeded <code>is_system</code> role set contains at least one such office"</em> written without
+  <code>MEMBERS</code>; the seed is one empty role and one grant about event answers (§11). Either the seed grows
+  an administrative office, or <strong>the first January after go-live is a support call</strong> — and the seed
+  control <em>"seeded grants carry <code>MEMBERS</code>, so the path of least repetition is the safe path"</em> has
+  nothing to apply to, which means every office grant in existence will have been written by hand.</li>
 <li>Whether <code>report.*</code> should be per-report permissions or one <code>report.view</code> with
   row-level filtering.</li>
-<li>Whether the organization has roles this catalog does not anticipate (a chaplain, a
-  quartermaster, a camp chief). <strong>This is now answerable by the organization itself</strong> rather
-  than by a change to the data model and a migration — which is the point of roles being runtime data.</li>
-<li>Which built-in audiences the organization needs, and who may create named groups —
-  <code>audience_admin</code> is proposed, but it may belong to unit leaders instead
-  (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
-<li><strong><code>attribute.define</code> is in the catalog and in no seed role, and that gap is the open half of the
+<li>Whether the organization has offices this catalog does not anticipate (a chaplain, a
+  quartermaster, a camp chief). <strong>This is answerable by the organization itself</strong> rather than by a
+  change to the data model and a migration — one <code>role</code> row and some grants — which is the point of
+  roles being runtime data. Since D-098 the same is true of a set of people who simply do things
+  together, and the two are told apart by which table they are in and therefore by which code protects
+  them (§5a).</li>
+<li>Which seeded audiences the organization needs beyond <code>everyone</code> and <code>all_members</code>, and who may create
+  a <code>person_group</code> — <code>audience_admin</code> is proposed, and it is an office rather than a unit leader's extra
+  code now that there are no units
+  (<a href="../../decisions/decision-log/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>,
+  <a href="../../open-questions/#f-5--which-operands-are-missing-from-the-selector-registry">F-5</a>).
+  This bullet used to say <em>"named groups"</em> as a kind, opposed to <em>"built-in audiences"</em>;
+  <a href="../../decisions/decision-log/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>
+  deleted the kinds and D-101 deleted the filling rules, so what is left is genuinely two questions:
+  which <code>selector_type</code> operands ship — <strong>the count is settled at thirteen (§1), so the open half is
+  whether <code>WHITELISTED</code> ever becomes a fourteenth, which would need stored state it does not have</strong>
+  (§1) — and who may create a group, which is <code>person_group.create</code> (§5a).</li>
+<li><strong>Which office may put a person on a group's roster is unanswered, and on the shipped seed nobody
+  may.</strong> ~~Which role holds the right to place a person in a unit~~ — the code and the unit are both
+  gone, and what replaced them is <code>person_group.member.manage</code>: one code, <code>applies_to = unit_and_item</code>,
+  never self-scoped, and the only thing between a person and a roster (§5a, §11 property 6). The
+  catalog's side is settled; what is missing is a decision the organization records as <code>role</code> rows and
+  grant rows, not a code.</li>
+<li><strong><code>message.broadcast</code> lost a scope it was specified against, and messaging has not ruled on the
+  consequence.</strong> <a href="../../decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>
+  wrote <em>"one code at two scopes"</em> — the organization, or one unit — and D-097 collapsed the pair into
+  the single unit scope. So a broadcaster reaches everyone, and the narrower reading now has to be a
+  grant aimed at a <code>person_group</code>, which is a different shape of decision (who may create the group, and
+  whether it is the <em>broadcast</em> grant or the group roster that carries the ⚠). §10 records it as
+  messaging's call; <strong>the catalog has not silently re-specified it either way</strong>, including whether the
+  code should become <code>applies_to = unit_and_item</code>.</li>
+<li><strong><code>membership.manage</code> does not exist, and five places in this round's documents refuse it.</strong> D-099
+  quotes the organization's own observation — <em>"on an event, <code>membership.manage</code>, or <code>event.create</code>, make
+  no sense"</em> — the domain model and the authorization module each restate that sentence as the reason
+  <code>applies_to</code> exists, and the events page carries a refusal row naming the code. <strong>This catalog has
+  never registered it</strong> — membership acts are <code>membership.activate</code>, <code>.lapse</code>, <code>.suspend</code>,
+  <code>.terminate</code>, <code>.backdate</code> and the request pair (§4) — and <strong>no code is minted here to make an example
+  true</strong>: a refusal that names nothing refuses nothing, which is the class of bug D-097's <code>unit_leaders</code>
+  correction exists to warn about. Either those five places re-point the example at a registered code —
+  <code>membership.terminate</code> is the exact fit, a fact about a person at the unit that no event owns — or the
+  code is registered here first, and then it owes what every registered code owes: a <code>right_kind</code>, an
+  <code>applies_to</code>, a ⛔ mark, and a row in §4. <strong>This was one instance of the gap D-104 closes as
+  <a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>:
+  a code is a seeded row, this catalog is prose about rows, and the check adopted is a two-way report
+  over the seeded registries, run by hand.</strong> D-104 supplied the grammar and the report; <strong>it did not
+  re-point these five sentences</strong>, and that repair still belongs to whoever owns each of those pages.</li>
+<li><strong>The registered spelling of the answer-read code is the catalog's, singular, and the round said so
+  out loud.</strong> <a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>
+  records that D-102 wrote the plural while its own entry was new, that the two spellings were one code
+  and not two, and that <strong>the catalog is the arbiter</strong> — so the seeded grant in §11 and the code in §8a
+  are <code>event.answer.view</code>, and no other spelling is registered anywhere. That case was easy, because
+  the catalog was self-consistent and naming it arbiter settled something. <strong>The hard case ended
+  differently, and how it ended is the finding:</strong>
+  <a href="../../decisions/decision-log/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
+  greps the closed round for the door-code capability the round spent a dispute on and finds it
+  <strong>nowhere</strong> — not in this catalog, not in the events module, not in the ERD, not in the decision log.
+  <strong>There is no QR capability, seeded or deferred, anywhere in this system.</strong> A thing was possible in
+  prose, was half-designed in the course of arguing about its name, and left as prose: the registry —
+  the one place a permission legally exists, since
+  <a href="../../decisions/decision-log/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+  made these documents the specification rather than a description of a schema — never had a row, so
+  nothing refused anything, and no reviewer asked the one question that ends the argument, <em>which seeded
+  row carries this?</em> What survives of the dispute is §1's three rules, the report D-104 adopts, and a
+  presence story that is <code>event.presence.mark</code> and nothing more (§8a,
+  <a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>).
+  <strong>If door scanning is ever wanted it arrives as an open question and then a decision entry naming the
+  permission, the artifact that rotates and who may reprint it — not as a code beside a paragraph about
+  a door.</strong></li>
+<li><strong><code>attribute.define</code> is in the catalog and in no seed office, and that gap is the open half of the
   design.</strong> The permission and its rules are settled (§2); who holds it, and how long a <code>proposed</code>
   code may sit before it is an embarrassment rather than a queue, are not — tracked as <strong>AT-2</strong> in
-  <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">../open-questions.md</a>. The risk of leaving it unheld is specific and slow:
+  <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">../open-questions.md</a>,
+  and §11 property 7 records the shape the answer should take (a dated grant aimed at one person, not an
+  office). The risk of leaving it unheld is specific and slow:
   proposals keep arriving through ordinary data entry, and a vocabulary nobody curates stops
   answering questions while still storing everything
   (<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).
@@ -3170,21 +4047,65 @@ widening the role, and that fix would silently reverse D-049.</p>
   (<a href="../../decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
   <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md §7</a>).
   Who holds the permission afterwards, day to day, is still what is open.</li>
+<li><strong>Which role holds the right to place a person in a unit is unanswered in the seed set</strong>, and it is
+  now the only question standing between a child and a unit's roster (§11 property 6). The catalog's
+  side of it is settled — one code, unit-scoped, never self-scoped — so what is missing is not a code
+  but a decision the organization has to record in <code>role</code> rows.</li>
 </ul>
 <p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: whether
 <code>person.admin</code> should subsume <code>person.merge</code> and <code>person.redact</code> (moot — there are no
-per-resource <code>admin</code> permissions at all, and the question moved into reviewable role contents,
+per-resource <code>admin</code> permissions at all, and the question moved into reviewable office contents,
 D-068); whether <code>event.manage_participants</code> should split off presence (it did, into
-<code>event.presence.mark</code> at <code>contribute</code> — EV-5); the <code>event</code> resource's real permission set
-(§8a, thirteen codes); whether any permission should require current membership status (yes,
-via the role — D-039);
-<code>person.background_check.*</code> (removed — D-043); <code>membership.transfer</code> (obsolete once
-participation replaced unit membership — D-041); whether <code>org_unit.restructure</code> includes
-reparenting (it cannot — D-036); whether reversing a merge deserves a code of its own (it does not —
+<code>event.presence.mark</code> — EV-5 asked whether the new code sat a level lower, and
+<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">round 10 deleted the ladder</a>,
+so what survives is the split and the two codes' different <code>right_kind</code> (§8a)); the <code>event</code> resource's
+real permission set (§8a, thirteen codes); ~~whether any permission should require current membership
+status (yes, via the role — D-039)~~ — <strong>reversed: no permission requires it</strong>, and the expression on
+each grant says who does (D-100, §11); <code>person.background_check.*</code> (removed — D-043);
+~~<code>membership.transfer</code> (obsolete once participation replaced unit membership — D-041)~~ — the
+replacement was itself deleted with the hierarchy, so the code is gone outright and moving a person
+between groups is <code>person_group.member.manage</code> (§5a); whether <code>org_unit.restructure</code> includes
+reparenting (~~it cannot — D-036~~ — moot twice over: reparenting needed a hierarchy, and
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+deleted it, so the code is off this catalog and the act is the organization renaming a scope it no
+longer stores (§5)); whether reversing a merge deserves a code of its own (it does not —
 undoing an identity correction is the same act as making one, so <code>person.unmerge</code> is gone from §2 and
 unmerge is <code>person.merge</code>, D-087); and whether a colliding sign-up needs a claim object and a way to
 link it (it needs neither — the hypothesis queue already exists and deciding it is <code>person.merge</code>,
-D-089).</p>
+D-089). From round 9: whether a person may hold ~~<code>unit_participation.manage</code>~~ or ~~<code>position.assign</code>~~
+over themselves — ~~no, because there is no self-scoped form of either~~ <strong>the same answer, on the two
+codes that replaced them</strong>: neither <code>person_group.member.manage</code> nor <code>role.assign</code> has a self-scoped
+form and none will be added, D-095's reasoning transferring intact (§4, §7); whether anything below the
+root needed a gate of its own (it did not — and there is no root-or-below any more, and no gate; the
+unit type carried no restriction, and D-100 deleted the resolver's membership clause, D-095, D-097);
+whether an appointment should also write a role assignment (~~it should not — the derivation belongs on
+a group's filling rule, D-091~~ — positions are deleted, filling rules are deleted, and
+<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> is <strong>closed with the
+answer no</strong>: a holder row names one person, which is the only way an office can answer <em>who held this
+in 2023</em>, D-100); and whether group membership needs a rule against nesting now that groups nest
+(~~it does not — a cycle is refused when the edge is saved~~ — the edge table is deleted and nesting
+moved into the expression tree, where a tree could not cycle on its own; when
+<a href="../../decisions/decision-log/#d-103--an-audience-may-name-another-audience">D-103</a> reopened <em>an audience
+naming another audience</em>, cycles became possible <strong>between</strong> audiences and the guard came back as a
+reachability walk over the reference closure with a depth bound, refused when the row is saved —
+<strong>still a write path with no permission of its own</strong>,
+which is the part this catalog cares about, D-101, D-103). From round 10, additionally: whether a grant
+should carry a strength, a locality, or more than one code (no, no, and no — D-099); whether the unit is
+a row or a scope (a scope — D-097); whether
+anything may be exposed across a unit boundary (there is no boundary to cross — D-031, D-049 and
+D-045's <code>scope.exposure</code> review are all deleted together); whether leadership is a position (it is an
+office, and the elected/appointed distinction survives only as a name the organization invents, D-100);
+whether an event has an owner (no — D-102, and <code>can_event()</code> with it); whether presence is a set anyone
+may be granted over (it is not — <code>PRESENT</code> is refused, and the refusal is written down in three
+documents so that nobody re-adds it as a convenience); whether a code's last segment had to be an
+action, or merely usually was (<strong>it is a rule now — D-104 promotes §1's two shapes from description to
+requirement, names <code>system.admin</code> as the single noun allowed, and finds sixty-five of the sixty-six
+live codes already obeying it</strong>); and whether <code>PERSON(x)</code> is in the selector language at all (it is —
+the thirteenth seeded <code>selector_type</code> row, D-101's amendment, D-104). <strong>What closed those two is worth
+keeping beside them:</strong> the report D-104 adopts diffs every dotted token in prose against every seeded
+registry in both directions, would have caught all four of the round's instances, and <strong>can only ever
+be run by hand here, because this repository has no build step</strong> — a convention, not a guard, and the
+one that decides whether this catalog's tables and the corpus's prose are still one thing next round.</p>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
 

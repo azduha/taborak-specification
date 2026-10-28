@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -784,7 +784,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1549,11 +1549,6 @@ API</strong> already tagged (§2a, <a href="../../decisions/decision-log/#d-075-
 <td><code>NULL</code> = applies to any type, e.g. an organization-wide surcharge</td>
 </tr>
 <tr>
-<td><code>org_unit_id</code></td>
-<td>reference to org unit, optional</td>
-<td><code>NULL</code> = organization-wide. Set for a unit-level supplementary fee</td>
-</tr>
-<tr>
 <td><code>period_months</code></td>
 <td>integer, required</td>
 <td>Default 12</td>
@@ -1595,6 +1590,21 @@ API</strong> already tagged (§2a, <a href="../../decisions/decision-log/#d-075-
 </tr>
 </tbody>
 </table>
+<p><strong><code>org_unit_id</code> is deleted with the units</strong>
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
+and what it was for is the part worth keeping on the record. The column was optional, <code>NULL</code> meant
+organization-wide, and it existed so that one body could carry <em>a supplementary fee above the
+organization's</em>. Nobody ever asked for one:
+<a href="../../decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
+had already ruled that entry below the membership carries no money — <em>"into the sub-units, there is
+no fee"</em> — so the column was a possibility no answer had taken, and round 10 deleted both the column
+and the bodies it could have pointed at. <strong>A fee is now what it has always been charged as: flat,
+per person, at the unit</strong>
+(<a href="../../decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>).
+What a schedule may still vary is the membership type — one row, so nothing in practice — and the
+period during which that price was the price. If a group ever needs a charge of its own, that is a
+policy question for §5 and a new shape of obligation, not a column to keep reserved against a table
+that no longer exists.</p>
 <p><strong>Rules</strong></p>
 <ul>
 <li><code>code</code> is unique. It covers all rows, not only active ones.</li>
@@ -1763,10 +1773,11 @@ no obligation is invisible until someone reconciles money against the roster. (<
 <p><strong>Exactly one, never zero and never two — and unlike most rules in these documents this one can
 still be stated declaratively, so a migration should state it.</strong> Three columns, exactly one set:
 count how many are present and require that count to be one, which is a condition on the row and
-nothing else. No subquery, no other table, and therefore emittable by any migration that can put
-a condition on a row at all — the case where the ORM argument simply does not apply. <strong>It is worth naming explicitly, because it is the counterexample to the
-general worry</strong> — most of what D-072 deleted genuinely cannot be restated declaratively
-(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>),
+nothing else. No subquery, no other table, and therefore emittable by any migration that can put a
+condition on a row at all — the case where the ORM argument simply does not apply. <strong>It is worth
+naming explicitly, because it is the counterexample to the general worry</strong> — most of what D-072
+deleted genuinely cannot be restated declaratively (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question
+F-10</a>),
 and this is not one of them.</p>
 <p>What is worth keeping from this rule's history is its <strong>shape</strong>: the previous version admitted
 <em>at most two</em> of the three, because one of the arms was a dormant <code>household_id</code> kept against a
@@ -2243,8 +2254,15 @@ second.</strong></p>
 <p><strong>The activation gate.</strong> A membership's fee is settled when <strong>no obligation attached to it has a
 positive balance after discounts</strong> — where obligations carrying <code>waived</code>, <code>written_off</code> or
 <code>refunded</code> are excluded from the question entirely, because a waived fee that nobody is going to
-collect must not read as an unpaid one. "Settled" is the only thing money says about membership;
-it does not grant permissions by itself (<a href="../../decisions/decision-log/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>).</p>
+collect must not read as an unpaid one. "Settled" is the only thing money says about membership; it
+does not grant permissions by itself
+(<a href="../../decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).
+What changed in round 10 is the route from a settled fee to anything a person may do: the fee makes
+<code>is_current_member()</code> true, <code>is_current_member()</code> is what <code>MEMBERS</code> evaluates, and only a grant
+whose expression names <code>MEMBERS</code> cares
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
+— which is one step longer than the old resolver clause and one place less where money could quietly
+become authority.</p>
 <h3 id="the-yearly-expiry-sweep">The yearly expiry sweep<a class="headerlink" href="#the-yearly-expiry-sweep" title="Permanent link">&para;</a></h3>
 <p>Run on 1 January (<a href="../../decisions/decision-log/#d-047--the-fee-expires-on-1-january">D-047</a>).
 <strong>This is the one automatic membership transition in the system</strong>, and the only thing in this
@@ -2254,21 +2272,47 @@ document that changes a person's status.</p>
 <ol>
 <li>Mark it <strong>lapsed</strong>, ending it <strong>at the expiry date</strong> — not at today. The period ended on that
    date whether or not anyone noticed.</li>
-<li><strong>Do not close the root <code>unit_participation</code> row.</strong> Move its <code>valid_to</code> forward instead, so a
-   renewal inside the window extends one continuous row rather than starting a second one
-   (<a href="../../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>,
-   <a href="../03-membership/#51-a-participation-row-on-the-root-unit">03-membership.md §5.1</a>).</li>
 <li><strong>Invalidate the permission cache per person, for every person returned</strong> — not per scope
-   (<a href="../../domain/06-authorization-model/#8-caching-and-invalidation">domain/06 §8</a>).
-   A lapsed member whose gated roles still resolve is a member who keeps leading.</li>
-<li>Open the <strong>renewal window</strong> as a date, never as a status. The resolver does not know windows
-   exist.</li>
+   (<a href="../../domain/06-authorization-model/#8-caching-and-invalidation">domain/06 §8</a>). A lapsed member
+   whose gated grants still resolve is a member who keeps leading. <strong>The step survives the deletion
+   of the gate that motivated it, and the reason changed</strong>: there is no resolver clause to
+   invalidate any more, but <code>MEMBERS</code> is evaluated live on the checked date
+   (<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+   so a membership transition still changes who every gated grant reaches.
+   <a href="../../decisions/decision-log/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+   lets a cache key on an operand rather than a person, which makes this event <em>one</em> invalidation of
+   the <code>MEMBERS</code> operand — cheaper, and no less mandatory.</li>
+<li>Open the <strong>renewal window</strong> as a date, never as a status. The resolver does not know windows exist.</li>
 </ol>
+<p><strong>The old step 2 was the root <code>unit_participation</code> row</strong> — <em>do not close it, move its <code>valid_to</code>
+forward, so that a renewal inside the window extends one continuous row rather than starting a
+second one</em>
+(<a href="../../decisions/decision-log/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>,
+<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>). <strong>It is deleted rather than folded
+into the steps above</strong>
+(<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
+and this is written down so the sweep's meaning cannot drift silently: the row it edited does not
+exist, so there is nothing to extend and no second record of the person's presence to keep in step
+with the first. <strong>Nothing else in the sweep changed.</strong> Step 1 still writes the only data this job
+produces, the backdated renewal period the extension used to mirror is still produced by the payment
+rule above it, and the renewal window is still a date. Had the step simply been dropped from the
+list, the sweep would read as a job that had always had three steps, and nobody could ask what
+became of the fourth.</p>
 <p><strong>Note the personnel consequence, which is easy to miss and fatal to get wrong.</strong> This runs for
-everyone at once, <strong>including the person who runs it.</strong> Without <code>system.gate_exempt</code>
-(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>)
-the administrator locks themselves out on this date, with no permission left with which to undo
-it.</p>
+everyone at once, <strong>including the person who runs it.</strong> Until round 10 the answer was
+<code>system.gate_exempt</code>
+(<a href="../../decisions/decision-log/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>):
+a permission that waived the membership test for named people, so the administrator kept their
+access on 1 January. <strong>That mechanism is deleted</strong>
+(<a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
+— no <code>system.gate_exempt</code>, no <code>person_holds_gate_exempt</code>, no resolver clause to waive. The answer is
+now the grant text: a grant written <code>MEMBERS * ROLE(it)</code> stops applying to its holder at the sweep,
+and a grant written <code>ROLE(it)</code> keeps applying, because the set test is simply not in it.
+<em>Assumption:</em> <strong>which offices are written that way is not settled by D-100</strong>, and getting it wrong
+fails in the direction that locks a person out with no permission left with which to undo it — the
+standing report of live grants naming a <code>ROLE(...)</code> operand without <code>MEMBERS</code> is what makes each
+such choice visible before 1 January rather than on it (<a href="../03-membership/#6-membership-and-the-authorization-system">03-membership.md
+§6</a>).</p>
 <blockquote>
 <p><strong>This reverses an earlier recommendation, and the reversal is worth recording.</strong> This
 document previously said "do not auto-lapse — produce the worklist and let a human act."
@@ -2330,9 +2374,20 @@ as a real gap. Worth a report: members who lapsed and then paid within a few day
    ends</strong>, and the renewal window does <em>not</em> extend it. That is worth confirming with
    whoever handles the policy, because the softer "still covered during grace" reading was
    the alternative D-040 explicitly rejected.</li>
-<li><strong>Scholarships/hardship waivers</strong> — a <code>waived</code> status exists but the process is
-    unspecified, and in a youth organization this is often a sensitive, need-to-know
-    process that must not be visible to unit leaders.</li>
+<li><strong>Scholarships/hardship waivers</strong> — a <code>waived</code> status exists but the process is unspecified, and
+    in a
+    youth organization this is often a sensitive, need-to-know process that must not be visible to
+    every adult who runs a group. <strong>This got harder in round 10 rather than easier, and it is the
+    finance module's share of
+    <a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>'s
+    first loss.</strong> With no units there is no smaller scope a waiver can live inside: a <code>fee.view</code>
+    held at the unit reaches every person's money, because after D-097 there is nothing between the
+    unit and an item except the items themselves. What separates a hardship waiver from general
+    visibility is now only <strong>which codes exist and who holds them</strong> — <code>fee.view</code> against
+    <code>fee.waive</code>, plus the deny effect
+    (<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
+    which can exclude a named person from a unit grant but cannot carve a private subset out of one.
+    Worth a deliberate answer rather than a shrug.</li>
 <li>
 <p><strong>What gets a variable symbol, and one per what?</strong> — <strong>new, and raised by
     <a href="../../decisions/decision-log/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>

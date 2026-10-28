@@ -710,7 +710,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -987,7 +987,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1761,8 +1761,8 @@ verified, and the period it applied for.</p>
 <p><strong>Purpose</strong> is the field that makes this useful operationally:
 <code>login</code>, <code>membership</code>, <code>emergency</code>, <code>billing</code>, <code>guardian_contact</code>. A person can have one
 address for billing and another for emergency contact, and the permission system can treat
-them differently — emergency contacts are visible to a unit leader on a camp roster;
-billing details are not.</p>
+them differently — emergency contacts are visible to whoever holds the roster read on that
+camp; billing details are not.</p>
 <h3 id="external-identifiers">External identifiers<a class="headerlink" href="#external-identifiers" title="Permanent link">&para;</a></h3>
 <p>One row per identifier held against a person: a <code>scheme</code>, a <code>value</code>, and when it was verified
 if it ever was. <code>(scheme, value)</code> is unique among the identifiers that are still current — a
@@ -1803,15 +1803,20 @@ value on the <code>guardianship</code> row is always the open one's.</p>
 row for the <code>(guardian, dependent)</code> pair and the right level it holds, not against roles. This
 keeps the two authority channels distinct:</p>
 <ul>
-<li><strong>Roles</strong> answer "what may this person do in the organization?"</li>
+<li><strong>Grants</strong> answer "what may this person do in the organization?" — and since
+  <a href="../../decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+  an office is only something a grant can be <em>aimed at</em>, never a source of authority in its own right.</li>
 <li><strong>Guardianship</strong> answers "what may this person do regarding this child?"</li>
 </ul>
-<p>A unit leader does not hold a guardian's right over unit members by virtue of leading
-the unit. If the organization genuinely needs leaders to see a camper's emergency contacts,
-that is granted through a <em>role</em> permission with a unit scope, resolved at the event, and
-audited — not through a fictional guardianship. That role-side code is <code>person.view</code>, and it has
-no narrower cousin to reach for if the grant turns out to feel too wide
-(<a href="../08-person-data/">08-person-data.md</a>).</p>
+<p>Holding an office does not give anybody a guardian's right over a child. After D-100 that is not even a
+judgement about how wide offices are drawn: <strong>an office confers nothing by being held</strong>, so leadership has
+no channel of its own and reaches data the same way every other non-guardian does — through grants. If the
+organization needs its leaders to see a camper's emergency contacts, that is <em>said</em>, as a grant of
+<code>person.view</code>, and the scope chosen is the entire decision: after
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> the
+choices are <strong>every member of the organization</strong> or <strong>the people on one event</strong>, with nothing between them,
+and <code>person.view</code> has no narrower cousin to reach for if the first one turns out to feel like what it is
+(<a href="../08-person-data/">08-person-data.md</a>). Audited either way; never through a fictional guardianship.</p>
 <h3 id="recording-acts-on-behalf">Recording acts on behalf<a class="headerlink" href="#recording-acts-on-behalf" title="Permanent link">&para;</a></h3>
 <p>Every operation performed on behalf of another person writes to <code>access_log</code> with both
 parties: <code>actor_person_id</code> is the parent, <code>subject_person_id</code> is the child, and <code>on_behalf</code>

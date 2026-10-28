@@ -633,7 +633,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -910,7 +910,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -1436,19 +1436,41 @@ See <a href="decisions/decision-log/">decisions/decision-log.md</a> for what is 
 <p>Nothing about being a child, an adult, a counselor, a parent, or a member is a
 property of a human being. Each of those is either</p>
 <ul>
-<li>an <strong>event or period</strong> — membership, guardianship, holding a position; or</li>
-<li>a <strong>derived</strong> fact — "child" means "has an open membership of type <code>child</code>",
-  "parent" means "is the subject of a guardianship relation".</li>
+<li>an <strong>event or period</strong> — membership, guardianship, holding an office, being in a group; or</li>
+<li>a <strong>derived</strong> fact — "child" means "a person whose recorded birth date makes them a minor <em>today</em>",
+  "parent" means "is one side of an active <code>guardianship</code> row".</li>
 </ul>
+<p><strong>There is no membership of type <code>child</code>, and there never was more than one membership type at all</strong>
+(<a href="decisions/decision-log/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
+and membership is <strong>ageless</strong> — no floor, no ceiling, no age-out, no child→adult transition
+(<a href="decisions/decision-log/#d-038--membership-is-ageless">D-038</a>). This list used to define "child" as
+<em>an open membership of type <code>child</code></em>, which was wrong twice over: it named a type that does not exist and
+it made an age into an enrollment. Age is a fact about the person, and it matters where the law says it
+matters — guardianship, and whatever rule an organizer writes for one event — never in the
+membership row, and <strong>no longer in anything an organization unit carries</strong>: <code>org_unit_type.allows_minors</code>
+went with D-095 and the unit itself went with
+<a href="decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, so <strong>no
+column anywhere says which bodies are for children</strong> — the control that replaced the flag is that a named
+adult holds the write, and nobody joins anything themself
+(<a href="decisions/decision-log/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>).</p>
 <p>This matters because of a case you named explicitly: someone who was a member from
 September 1990 to June 2010, and again from October 2024 to the present. They were a
 <em>child member</em>, then nothing, then an <em>adult counselor</em>. That is one <code>person</code> row and
 <strong>two <code>membership</code> rows</strong>. A model that puts <code>is_member</code> or <code>member_type</code> on the person
 cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
-(The 1990–2010 membership is the <em>optimistic</em> half of that sentence: the legacy import creates
-participation only, since the corpus it reads carries no payment evidence at all, so that membership
-exists only where somebody recorded it on evidence — <a href="decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>.
-"Who was in Pack 12 in 1998?" is answered by the participation row either way.)</p>
+(The 1990–2010 membership is now the <em>reachable</em> half of that sentence rather than the optimistic one.
+The legacy corpus is <strong>two exports</strong> — people, with the period each was a member of the organization, and
+events, with who attended — and the people export <strong>states membership periods</strong>, so the import writes
+bounded <code>membership</code> rows, both ends dated and marked <code>data_confidence = 'low'</code>
+(<a href="decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
+<a href="decisions/decision-log/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+A period the export does not state still exists only where somebody recorded it on evidence, and an
+imported period never runs open-ended and is never inferred from attendance.
+<strong>"Who was in Pack 12 in 1998?" is not answered either way</strong>, and round 10 made the question doubly
+unanswerable: neither export named a sub-unit, and there are no sub-units to name now
+(<a href="decisions/decision-log/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
+<a href="decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). A group's
+roster before go-live is a thing a person types in, never a thing the import inferred.)</p>
 <p>So there are five rules the data model obeys throughout:</p>
 <table>
 <thead>
@@ -1467,35 +1489,45 @@ exists only where somebody recorded it on evidence — <a href="decisions/decisi
 <tr>
 <td>2</td>
 <td>Participation is a period, not a boolean</td>
-<td><code>membership</code>, <code>unit_participation</code>, <code>guardianship</code>, <code>position_assignment</code> all carry <code>valid_from</code> / <code>valid_to</code>.</td>
+<td><code>membership</code>, <code>person_group_member</code>, <code>guardianship</code>, <code>role_holder</code> all carry <code>valid_from</code> / <code>valid_to</code>.</td>
 </tr>
 <tr>
 <td>3</td>
 <td>Access is granted, never implied by identity</td>
-<td>Being a parent does not by itself grant access to the child's data — a <code>guardianship_permission</code> row does.</td>
+<td>Being a parent does not by itself grant access to the child's data — the <code>guardianship</code> row's <code>right_level</code> does, and <code>none</code> is a value it is allowed to hold (<a href="decisions/decision-log/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</td>
 </tr>
 <tr>
 <td>4</td>
-<td>Belonging to a sub-unit is not membership</td>
-<td>There is <strong>one</strong> membership, at the organization. Sub-units hold participation records.</td>
+<td>A group is not membership, and neither is an office</td>
+<td>There is <strong>one</strong> membership, at the unit. A <code>person_group</code> holds a dated roster and a <code>role</code> holds dated holders, and <strong>neither grants anything</strong> by being what it is.</td>
 </tr>
 <tr>
 <td>5</td>
-<td>Authority does not flow down the hierarchy</td>
-<td>A unit is covered only if it exposes its scope — including the root, and including for reading.</td>
+<td>Authority is one permission, allowed or denied</td>
+<td>A grant names one permission code, one scope (the unit, or exactly one item) and an effect. <strong>Allowed when some live allow applies and no live deny applies.</strong> No levels, no "nearer wins", deny absolute.</td>
 </tr>
 </tbody>
 </table>
-<p>Rule 4 is load-bearing: <a href="decisions/decision-log/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>.
+<p>Rule 4 is load-bearing, and it is now carried by two tables instead of one:
+<a href="decisions/decision-log/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+for groups, <a href="decisions/decision-log/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+for offices, both standing on
+<a href="decisions/decision-log/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>.
 "Am I a paid-up member?" is one row, one status, one date — regardless of how many
-Thursday-evening groups the person turns up to.</p>
-<p>Rule 5 is the organization's own constitutional principle, and it has no exceptions short of
-the alarmed <code>system_admin</code> escape hatch: <a href="decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>.
-It applies to <strong>reading</strong> as well as acting — the root does not see into a pack's events and
-rosters unless the pack exposes them
-(<a href="decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>).
-Most of what the root needs is not a crossing at all, because the membership registry and the
-fees belong to the root in the first place.</p>
+Thursday-evening groups the person turns up to, and regardless of whether they run any of them.</p>
+<p>Rule 5 replaced the organization's old constitutional principle rather than inheriting it. What used to
+sit here was <em>"authority does not flow down the hierarchy: a unit is covered only if it exposes its
+scope"</em>, and it died with the hierarchy
+(<a href="decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>,
+<a href="decisions/decision-log/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>,
+both deleted by <a href="decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+<strong>The property it bought is gone and this page says so plainly:</strong> access to a body's children used to have
+to be granted <em>by that body</em>, by people who recruited the leader and can be asked. With one unit there is
+no such body, a unit-scope grant reaches every member, and what remains of the safeguarding story is a
+named adult holding the write, an audit trail whose payloads expire after two years, and a report — minus
+the part where the adult was somebody the body chose. What the round did <strong>not</strong> lose is the half of the
+rule that still has a subject: nothing is implied by who somebody is, and a deny cannot be outvoted
+(<a href="decisions/decision-log/#d-013--explicit-deny-revoked-is-checked-before-everything">D-013</a>).</p>
 <hr />
 <h2 id="reading-order">Reading order<a class="headerlink" href="#reading-order" title="Permanent link">&para;</a></h2>
 <h3 id="domain-what-the-organization-actually-is">Domain (what the organization actually is)<a class="headerlink" href="#domain-what-the-organization-actually-is" title="Permanent link">&para;</a></h3>
@@ -1568,11 +1600,11 @@ fees belong to the root in the first place.</p>
 </tr>
 <tr>
 <td><a href="data-model/02-organization/">data-model/02-organization.md</a></td>
-<td><code>org_unit</code>, types, hierarchy, positions.</td>
+<td><code>person_group</code>, <code>person_group_member</code> — named sets of people, their lifetimes, their dated rosters. There is no unit table; the unit is a scope.</td>
 </tr>
 <tr>
 <td><a href="data-model/03-membership/">data-model/03-membership.md</a></td>
-<td><code>membership</code>, <code>membership_request</code>, <code>unit_participation</code>.</td>
+<td><code>membership</code>, <code>membership_request</code> — the period, the renewal window, the sweep. (<code>unit_participation</code> is deleted by D-097; §5 of that page is the tombstone.)</td>
 </tr>
 <tr>
 <td><a href="data-model/04-relationships/">data-model/04-relationships.md</a></td>
@@ -1580,7 +1612,7 @@ fees belong to the root in the first place.</p>
 </tr>
 <tr>
 <td><a href="data-model/05-authorization/">data-model/05-authorization.md</a></td>
-<td><code>permission</code>, <code>role</code>, <code>role_assignment</code>, <code>access_grant</code>.</td>
+<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code> (one code, allow or deny), <code>audience</code> + <code>audience_operand</code> + <code>selector_type</code> (the grantee expression).</td>
 </tr>
 <tr>
 <td><a href="data-model/06-audit-and-import/">data-model/06-audit-and-import.md</a></td>
@@ -1619,7 +1651,7 @@ fees belong to the root in the first place.</p>
 </tr>
 <tr>
 <td><a href="open-questions/">open-questions.md</a></td>
-<td>Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: <strong>section B, identity and history, is closed in full</strong> — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus (<a href="decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>–<a href="decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</td>
+<td>Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: <strong>section B, identity and history, is closed in full</strong> — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus (<a href="decisions/decision-log/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>–<a href="decisions/decision-log/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>) — and <strong>section C, organization, is closed with it</strong> — the root's read into a sub-unit, a reused unit number, what a permission group is and what appointing writes, what the corpus names, and who may place a person in a unit (<a href="decisions/decision-log/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>–<a href="decisions/decision-log/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>). <strong>Round 10 then deleted the subject of several of those answers</strong> by removing the hierarchy they were all about (<a href="decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>); they stay where they are, readable, marked. <strong>Closed sections are not empty ones</strong>: what they closed stays readable, and the questions that moved out of them are elsewhere — F-12 for a rule-filled role, A-4 for the organizational year, and the composition power over a group in the catalog's §12.</td>
 </tr>
 </tbody>
 </table>
@@ -1629,9 +1661,20 @@ fees belong to the root in the first place.</p>
 membership over time, organizational units, guardianship, events, and the authorization system.</p>
 <p><strong>Deliberately deferred</strong> (referenced so the data model does not block them, not designed):
 fees and payment processing beyond the provisional shape in
-<a href="data-model/07-finance/">data-model/07-finance.md</a>, communication/messaging, documents,
-reporting, and the API/UI layer. Each is listed in
+<a href="data-model/07-finance/">data-model/07-finance.md</a>, documents,
+reporting, notifications, and the API/UI layer. Each is listed in
 <a href="open-questions/">open-questions.md</a> with the hooks already left for it.</p>
+<p><strong>Communication sits between the two lists, and the line is worth drawing rather than guessing.</strong>
+This list used to name it flatly as undesigned, which stopped being true when its <strong>shape</strong> was decided:
+internal first, external channels are delivery rather than a product, everyone may send a direct message,
+<code>broadcast</code> is one ordinary scoped permission, and <strong>the recipient chooses the channel</strong>
+(<a href="decisions/decision-log/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>),
+with a direct message to a minor mirrored to its guardians and no sender-side age check anywhere
+(<a href="decisions/decision-log/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>).
+Its codes are in <a href="appendix/permission-catalog/">appendix/permission-catalog.md</a>. <strong>What is still
+undesigned is the module</strong>: templates, opt-out granularity, retention, moderation — the Communication row
+of <a href="open-questions/">open-questions.md</a>'s section H. <strong>Notifications stay genuinely undesigned</strong> — the
+renewal window made them dated rather than status-driven, which is a design note, not a design.</p>
 <p><strong>Off this list, because the module it named does not exist:</strong> <em>health records</em>. There is no health
 module waiting to be designed. <a href="decisions/decision-log/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
 decided that everything the organization knows about a person beyond a name, a gender and an age is

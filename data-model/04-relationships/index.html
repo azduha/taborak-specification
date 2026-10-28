@@ -505,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    Organization Structure
+    Groups and the Unit
   
 
     
@@ -784,7 +784,7 @@
   <span class="md-ellipsis">
     
   
-    Organization
+    Groups
   
 
     
@@ -966,10 +966,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#it-is-the-same-ladder-not-a-new-one" class="md-nav__link">
+  <a href="#three-values-two-kinds-and-no-scale" class="md-nav__link">
     <span class="md-ellipsis">
       
-        It is the same ladder, not a new one
+        Three values, two kinds, and no scale
       
     </span>
   </a>
@@ -1506,10 +1506,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#it-is-the-same-ladder-not-a-new-one" class="md-nav__link">
+  <a href="#three-values-two-kinds-and-no-scale" class="md-nav__link">
     <span class="md-ellipsis">
       
-        It is the same ladder, not a new one
+        Three values, two kinds, and no scale
       
     </span>
   </a>
@@ -1838,9 +1838,18 @@ is now one of three values. See §2 for what that costs.</p>
 <p>Staff may always do it when asked. <strong>Staff may never be the only way it happens.</strong></p>
 <p><strong>The parties are principals, not third parties with a grant.</strong> A guardianship row is not the
 guardian's record, and it is not the subject's record. It is a record <em>of a relationship between
-them</em>, and both hold it. This is scope authority — the rule that authority over a nested thing
-originates at that thing (<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>)
-— applied to a household instead of a unit.</p>
+them</em>, and both hold it.</p>
+<p><strong>This claim used to borrow its justification from a rule that no longer exists.</strong> It was written as
+<em>scope authority</em> — ~~the rule that authority over a nested thing originates at that thing~~
+(<a href="../../decisions/decision-log/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>),
+"applied to a household instead of a unit" — which was a good analogy right up until
+<a href="../../decisions/decision-log/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted
+the nesting it was borrowed from, along with the crossing mechanism that made it a rule rather than a
+sentiment. The claim does not need the borrowing. <strong>A relationship row belongs to the people in it</strong> is a
+statement about this channel and stands on its own, and it is the reason neither party needs a grant to act
+on the row. What the deleted rule was really doing on this page was answering <em>who may end it</em>, and that
+answer is already given locally, a paragraph above: a party to the row, or staff acting on a request — with
+staff never the only way it can happen.</p>
 <p><strong>It is not the ownership channel, and the distinction is worth keeping.</strong> Ownership is <em>your own
 record</em>. Ending a guardianship over yourself is not editing your own record; it is dissolving a
 relationship you are one half of. Mechanically this is the <strong>guardianship channel gaining a
@@ -2008,15 +2017,25 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
   re-establishment — the rights must not silently carry over. A new relationship is a new row and
   a new, deliberate level.</li>
 </ul>
-<h3 id="it-is-the-same-ladder-not-a-new-one">It is the same ladder, not a new one<a class="headerlink" href="#it-is-the-same-ladder-not-a-new-one" title="Permanent link">&para;</a></h3>
-<p>The system already ranks authority as <code>revoked</code>(0) &lt; <code>view</code>(10) &lt; <code>contribute</code>(20) &lt; <code>manage</code>(30)
-&lt; <code>admin</code>(40) and compares by integer rank, never by string. The three guardian rights map onto
-it: <strong><code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20.</strong></p>
-<p>This is not a convenience. A parallel enum would have meant a second authorization model with its
-own comparison rules, and the resolver would have needed a special case to know which ladder it
-was on. Guardian authority is a <strong>range of the existing ladder</strong>, and <code>write</code> landing on
-<code>contribute</code> rather than on <code>manage</code> or <code>admin</code> is what keeps a guardian from being able to do
-organization-wide things.</p>
+<h3 id="three-values-two-kinds-and-no-scale">Three values, two kinds, and no scale<a class="headerlink" href="#three-values-two-kinds-and-no-scale" title="Permanent link">&para;</a></h3>
+<p><strong>This section used to argue that the guardian rights were not a second authorization model by mapping
+them onto the shared level ladder</strong> — <code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20, so the resolver would never
+need to know which ladder it was standing on. <strong>The ladder is deleted</strong>
+(<a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
+so that argument is gone and the requirement underneath it is still met, by a different mechanism: the
+level is compared against a column on the permission, <strong><code>permission.right_kind ∈ read | write</code></strong> —
+<strong><code>none</code> covers nothing, <code>view</code> covers the codes marked <code>read</code>, <code>write</code> covers both.</strong> There is nothing to
+order and no rank to keep in step, because three values against two kinds is a lookup, not a scale. The
+column exists for exactly this comparison and for no other customer in the system
+(<a href="../05-authorization/#right_kind-a-column-with-exactly-one-customer">05-authorization.md §1</a>).</p>
+<p><strong>What the ladder was really buying survives, and it never was the numbers.</strong> A guardian was never a staff
+member, and that was expressed by <code>write</code> landing on <code>contribute</code> rather than <code>manage</code>. It is now expressed
+by the shape of the request: <strong>the guardianship channel is entered only when the check is about somebody
+other than the actor</strong> (<a href="../../decisions/decision-log/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>),
+so the widest guardian right in the system reaches the child's record and cannot reach a roster, a fee
+schedule or another family — not because its rank was too low, but <strong>because those checks are not about the
+child and the channel is never asked</strong>. Losing the ladder costs the comparison; the boundary moved into the
+one place that was always enforcing it.</p>
 <h3 id="what-the-collapse-gives-up-written-down-rather-than-discovered-later">What the collapse gives up, written down rather than discovered later<a class="headerlink" href="#what-the-collapse-gives-up-written-down-rather-than-discovered-later" title="Permanent link">&para;</a></h3>
 <p>Before D-074, a guardianship carried a set of capability codes — <code>dependent.profile.view</code>,
 <code>dependent.medical.view</code>, <code>dependent.consent.give</code>, <code>dependent.fee.pay</code>, and thirteen others,
@@ -2029,7 +2048,7 @@ visibility and nothing else is now a <code>view</code> guardian, which means she
 the medical file too.</p>
 <p>What still holds:</p>
 <ul>
-<li><code>write</code> is <code>contribute</code>, not <code>manage</code>. A guardian cannot do organization-wide things.</li>
+<li><code>write</code> is not <code>manage</code>, and since <a href="../../decisions/decision-log/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> there is no <code>manage</code> to be short of: the ceiling on a guardian is the <strong>channel</strong>, which answers only for checks about this child. A guardian cannot do organization-wide things because those checks are not about the child, not because a rank was too low.</li>
 <li>Authority is per row, so a guardian of one child sees nothing of another's.</li>
 <li>The <strong>organization-wide deny channel is untouched</strong>: a <code>guardianship</code> row granting <code>write</code> can
   still be refused by a deny, because deny is absolute and scope-independent
