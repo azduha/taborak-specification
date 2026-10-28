@@ -1891,31 +1891,30 @@ records and only read another's. See
 <a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
 <a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   reference-less polymorphic keys stay exactly two. Fourteen seeded rows:         │
 <a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
-<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   `PRESENT(&lt;event&gt;)` is not seeded, by decision and not by type: a tick box       │
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
 <a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
-<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want       │
-<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   of any state to evaluate (F-20). Neither is refused by the language now         │
-<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   that a predicate over a column is an ordinary operand; both are refused         │
-<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   on what they would do.                                                          │
-<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>                                                                                   │
-<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
-<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>   ──────────────────────────────────────────────────────────────────────────────
-<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
-<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>       item of every type; a personal deny beats an audience allow, because this step has
-<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>       already returned (D-013 — whose `revoked` LEVEL is now an EFFECT on a grant row).
-<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>    1  a live ALLOW at the unit ── reaches every item of every type: after D-097 there is
-<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>       no tier between the unit and an item, and after D-102 no owner to ask.
-<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
-<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>       `can_event()` and the unit-authority rule are deleted (D-102).
-<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
-<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
-<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
-<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
-<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>    5  default DENY.
-<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
-<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>   the audit names, never what the answer is. **Locality is deleted** — it only ever ordered
-<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>   allows against each other, and a boolean has nothing to order (D-099, deleting the second
-<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>   half of D-032; the first half is step 0 and is now its entire content).
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   in it would refuse either name — both are kept out by what they would do.       │
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>                                                                                   │
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   ──────────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>       item of every type; a personal deny beats an audience allow, because this step has
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>       already returned (D-013 — whose `revoked` LEVEL is now an EFFECT on a grant row).
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    1  a live ALLOW at the unit ── reaches every item of every type: after D-097 there is
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>       no tier between the unit and an item, and after D-102 no owner to ask.
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>       `can_event()` and the unit-authority rule are deleted (D-102).
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    5  default DENY.
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>   the audit names, never what the answer is. **Locality is deleted** — it only ever ordered
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>   allows against each other, and a boolean has nothing to order (D-099, deleting the second
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>   half of D-032; the first half is step 0 and is now its entire content).
 </code></pre></div>
 <p><strong>Key points:</strong></p>
 <ul>
@@ -2207,9 +2206,9 @@ nothing for a cascade to find, nothing for the orphan scan to walk, and the bind
 <code>argument_type</code> against a grant's item type simply does not apply to an operand that binds to no item.
 <strong>There are still exactly two reference-less polymorphic keys</strong> — <code>access_grant.scope_id</code> and
 <code>audience_operand.selector_arg_id</code> — and <code>18</code> is not one of them, because the check is about references
-(§8). The two operands read <code>person.birth_date</code> <strong>as of the date being checked</strong>, which is why they sit in
-this diagram at all: they are ordinary named operands, composed by <code>+ - *</code> like every other row of the
-registry, and the set they name changes with no write.</p>
+(§8). The two operands read <code>person.birth_date</code> <strong>as of the date being checked</strong>, which is why they are a
+registry row and nothing more: they are ordinary named operands, composed by <code>+ - *</code> like every other, and
+the set they name changes with no write at all.</p>
 <p><strong>No leaf resolves to anything but people, and that is why there is no <code>GRANTS(…)</code>.</strong> An operand resolves
 to a <strong>set of people</strong>, because a set of people is what a grantee is; a set of <em>grants</em> is a filter over
 the grant list, and "these twenty rows, now also for that office" is something an editor does while

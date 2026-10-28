@@ -2239,11 +2239,12 @@ photos because a volunteer forgot to tick a box. <code>was_present</code> is thr
 as a safeguarding signal — <strong>keeping it out of the selector language is what keeps it
 meaning "a person recorded this" rather than "this is who may see things"</strong>, and
 <a href="../../decisions/decision-log/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>'s
-reasoning for the third value is the reasoning for the refusal. <strong>The refusal is entirely
-this argument now</strong>, since <code>OLDER(n)</code> proved that an operand may read a column and a date:
-nothing in the language would blink at <code>PRESENT</code>, which is exactly why the consequence has to
-be the thing that says no
-(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</p>
+reasoning for the third value is the reasoning for the refusal. <strong>And this consequence is the
+whole of the refusal</strong>, which is worth saying out loud now that the language has an operand
+that reads a column against a date: <code>OLDER(n)</code> reads <code>person.birth_date</code>
+(<a href="../../decisions/decision-log/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>),
+so nothing structural stops anybody writing <code>PRESENT</code> — there is only ever going to be this
+argument standing in the way, and it holds on its own.</p>
 <p><strong><code>WHITELISTED</code> does not exist, and is not a selector.</strong> The nearest stored facts are
 <code>source = 'staff'</code> (an organizer entered them) and promotion off the waitlist. Either the
 word is to mean one of those or it names a new column on <code>event_registration</code>, which is an
