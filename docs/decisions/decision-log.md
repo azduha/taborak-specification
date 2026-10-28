@@ -6362,8 +6362,12 @@ documents, **the grep is the test suite.**
 5. **`binds_to_item` keeps its meaning and loses its exhibit.** D-102 introduced the column to settle a question
    about guardianship — it *"records whose guardianship is being asked about, which is the only thing `GUARDIANS`
    ever needed and could not say"* — and the thing it was introduced to classify turns out not to exist.
-   **The column is undamaged:** `ATTENDED`, `PLACED`, `CONFIRMED` and `ON_WAITLIST` are `true` because they cannot
-   be evaluated without the event the grant sits on, and everything else is `false` because it can. What changes
+   **The column is undamaged:** `ATTENDED`, `PLACED`, `CONFIRMED`, `ON_WAITLIST` and `ORGANIZERS` are `true`
+   because they cannot be evaluated without the event the grant sits on, and everything else is `false` because it
+   can — **five `true` rows, and this clause first printed four**, having written the four attendance tiers and
+   forgotten the roster, which is the same slip in the same entry that exists to record slips of exactly this
+   kind: a count written from the shape of a sentence instead of from the table. `ORGANIZERS` is `true` on the
+   registry's own row (`yes, event`) and is named in the same save-path rule in `data-model/08-events.md`. What changes
    is that the column is now justified by **the event operands, which is a large and ordinary reason**, instead of
    by one strange case that was never real. **Where the confusion actually lived, because the two sentences are
    the evidence:** `data-model/05`'s registry row read `Binds to item` = **"yes, `person`"** — the one row in a
@@ -6373,7 +6377,10 @@ documents, **the grep is the test suite.**
    sixth is `GUARDIANS`, which binds to the person an item is about rather than to an event."* **An operand with
    no seed row, listed among five that have rows, declared bound by a page while its own row used a column whose
    definition excludes it.** Corrected at both sites: **nothing guardian-shaped is bound to anything, because
-   nothing guardian-shaped is an operand, and there are five attendance tiers.**
+   nothing guardian-shaped is an operand.** **What is left is four attendance tiers plus the organizer roster —
+   five operands that bind, and no sixth**, which is the naming `data-model/08-events.md` uses and the one this
+   entry should have used the first time: "five tiers" and "five binding operands" are different claims wearing
+   the same number, and only one of them is about the tiers.
 
    **The lesson is not about guardianship, it is about registries that are copied.** A row can be wrong in a
    way no check catches, because the check compares the row's fields to each other and a field used to mean two
@@ -6413,9 +6420,29 @@ emptied by the same ruling that caused it, ten minutes later, and **an entry tha
 have put a real-sounding question in front of somebody who could not answer it.** A question written against a
 capability should be checked against the channel that grants it before it is written down.
 
+**The seam this entry leaves open, and whose it is.** [D-109](#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)
+says a selector that a rule may name is **never deleted** — it is deprecated, hidden, or disabled — and this
+entry deletes a row. **The two are reconciled by a fact about dates, not by an exception: the row is unseeded in
+the same round it is criticized, in a spec that has shipped no release, so the set of stored expressions naming
+it is empty by construction.** It would not have stayed empty. The argument-less form was unsavable on every
+scope (`person` never was a `grant_scope_type`), but the explicit `GUARDIANS(p)` form — legal arity, an argument
+type that column can hold, and no item-type check because an explicit argument binds to nothing — **was savable,
+and one writer finding it in a dropdown would have made this deletion illegal.** **That is the whole of the reconciliation, so
+it is also a standing instruction:** a deployment that does hold such a leaf must **hide the row, rewrite the
+leaves, and only then unseed it**, because deleting a row under a live leaf produces precisely the failing leaf
+D-109 retired deletion to prevent, and D-109 said the only remaining way to make one was a redacted person.
+**If this entry is ever re-read as licence to delete a seeded operand, the reading is wrong: what licenses the
+deletion here is the emptiness of the set of grants that could name it, and that set has to be checked, not
+assumed.**
+
 **See:** [D-074](#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) (why there is no
 capability list to select from), [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
-(`OWN_WARD`, which is what actually serves the need today), [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
+(the `view`/`write` level on the live `guardianship` row, which is what actually serves the need — this line
+ first named that thing **`OWN_WARD`**, a token invented in this line and found nowhere else in the corpus — the
+ second name this entry manufactured after the F-24 question it disowns above, and the one that reached a
+ reference, where it looks like a row someone seeded. **It is named here in prose and linked from nowhere, which
+ is the smallest honest repair: deleting the words would hide the invention, and leaving the link would keep it.**
+ [D-102](#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
 (`binds_to_item`, whose definition this entry keeps and whose prose it corrects),
 [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) (the test that
 caught it), [D-108](#d-108--there-is-no-school-operand-a-selector-may-only-name-a-fact-the-model-stores) (its
