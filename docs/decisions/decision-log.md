@@ -4911,9 +4911,13 @@ that ships a grammar and then grows an arm is worth seeing to have grown one.)*
 *(The `LIST` arm is since gone. [D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 deleted it, and a hand-written set is now written the way every other set in this grammar is written — as
 an operand, `PERSON(a) + PERSON(b)`. The arm is left printed here because this entry shipped it; the
-registry that has to be true today has fourteen rows, not thirteen — twelve for the round that deleted
+registry that has to be true today has **thirteen** rows — twelve for the round that deleted
 `LIST`, plus the two attribute rows
-[D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added.)*
+[D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added, minus
+the `GUARDIANS` row [D-113](#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)
+deleted. **This footnote said "fourteen rows, not thirteen" until round 13, and a footnote whose number has to be
+re-typed by whoever changes the table is the same defect the footnote itself is describing** — which is why it
+keeps its own history rather than just its new number.)*
 
 *(Two arms have been added since this entry shipped, also by
 [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded):
@@ -5490,10 +5494,14 @@ shape, in its cheapest instance), and the report is the check that they still ag
 
 **See:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
 which this closes, [data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry)
-for the registry (**fourteen rows today**: thirteen when this sentence was written, twelve for the one round
-[D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) owned, and fourteen
-again since [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
-added two — **four numbers, and only the first and last are counts of the same table**), and
+for the registry (**thirteen rows today** — back to thirteen, which is the number this sentence started with
+and not the set it counted: twelve for the one round
+[D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) owned, thirteen as it was
+written, fourteen once [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+added two, and thirteen again after
+[D-113](#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector) removed one — **five
+numbers, the first and the last are equal, and they are not the same thirteen: the old one held `GUARDIANS` and
+no age operands, this one holds both age operands and no guardian operand**), and
 [permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the naming patterns, which are
 now rules and are written there as such.
 
@@ -5781,7 +5789,11 @@ grammar; [D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-
 **Decision, in five clauses.**
 
 1. **The tree grows attribute leaves.** Two seeded operands arrive — `OLDER(n)` and `YOUNGER(n)` — read
-   against the person's birth date **as of the date the check is made**. The registry has fourteen rows.
+   against the person's birth date **as of the date the check is made**. The registry has fourteen rows —
+   **thirteen as this entry is being re-read**, `GUARDIANS` having left in
+   [D-113](#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector); the number stays
+   printed here because growing the table by two is the whole content of this clause, and it is the only
+   measurement in it.
 2. **The operators do not change at all.** `+ - *` are the only operators this language has, and
    `OLDER`/`YOUNGER` are just two more operands composed by them — `MEMBERS * OLDER(13) * YOUNGER(19)`, a band,
    is the same shape as `MEMBERS * GROUP(cubs) * PERSON(a)`. **There is no comparison operator**: no `>=`, no
