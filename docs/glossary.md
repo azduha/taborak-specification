@@ -538,12 +538,21 @@ expression down to a predicate and never materializes a set. The named sets are 
 `PERSON(x)` (**one person**, and since
 [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 **the only way to write a set somebody typed by hand**: `PERSON(a) + PERSON(b)`) — plus `EVERYONE`,
-`MEMBERS`, `GUARDIANS`, and the five event operands. **The count is left unsaid here on purpose:** the
+`MEMBERS`, `GUARDIANS`, the two age operands `OLDER(n)` and `YOUNGER(n)`, and the five event operands.
+**The operators are `+ - *` and round 12 added none of its own**: the age operands are ordinary named
+operands composed by those three, so `MEMBERS * OLDER(18) - YOUNGER(6)` is an ordinary term and the
+language's *vocabulary* grew by decision while its *grammar* did not grow at all.
+**The count is left unsaid here on purpose:** the
 registry grew a row while round 10 was closing, when `PERSON` turned out to have been written by two
 decisions and seeded by neither
 ([D-104](decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)),
-and **lost one while round 11 was closing**
-([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)). ~~A group was filled by any combination of **three optional arms**: a filling rule, a
+**lost one while round 11 was closing**
+([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
+and **grew two while round 12 was closing**, when `OLDER` and `YOUNGER` were seeded
+([D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded))
+— **which is why this page counts nothing: the number has moved three times in three rounds, and the one
+place a count belongs is the registry table itself**
+([data-model/05 §8](data-model/05-authorization.md#the-selector-registry)). ~~A group was filled by any combination of **three optional arms**: a filling rule, a
 hand-kept list, and the groups it **included**, unioned on the checked date~~
 ([D-091](decisions/decision-log.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group))
 — **superseded by D-101**, which turned the rule arm into the selectors and the manual arm into the `LIST`
@@ -555,30 +564,54 @@ is not visible in the row that grants it**, so whoever edits a grant or an audie
 of people — **for a specific item**, since round 10 — rather than a name
 ([domain/06 §6.2](domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets)).
 **Fail closed in every direction:** an operand that does not resolve is the empty set, and an expression that
-cannot be evaluated reaches nobody.
+cannot be evaluated reaches nobody. **The direction is the half people get backwards, and the corpus's old
+word for it is retired:** it used to say the `-` side was *"loud"*, which names a volume where there is only
+a direction. What is true is that **a failed operand on the `+` or `*` side narrows the set and a failed
+operand on the `-` side widens it**, so `EVERYONE - PERSON(x)` with a dead `x` is fail-closed **and**
+locks out everybody, in one step, which is not a safe state
+([D-106](decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
+**What round 12 added to this rule is a page, not a refusal:** an audience carrying a leaf that does not
+resolve is listed for its owner, and **no save is refused because a leaf is broken**. **And a missing value
+on the person being asked about is not a failure at all** — a person with no birth date is simply not in
+`OLDER(18)`, exactly as a person with no membership row is not in `MEMBERS`; the operand resolved perfectly
+well, and a report that conflated the two would page about every incomplete import in the country.
 
-**Selector** — One **operand** of an audience expression: a named, materializable set of people. The legal
-set is a seeded registry, `selector_type` — `code`, `takes_argument`, `binds_to_item`, `argument_type` —
-which the parser reads as its reserved words, the editor builds its dropdown from, and the save path checks
-arity against. **The language became data, and it is a closed language anyway:** every row ships with the
-platform, the registry is organization-read-only, and a new operand is a decision entry plus a seed row,
-never a row somebody types into a screen. An operand must be a **set of people**, which is the line that
-keeps [D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)'s
-refusal of a rule engine true: guardianship is a set, age is not, so *"13 and over"* is a group somebody
-maintains and never a term a writer types
+**Selector** — One **operand** of an audience expression: **a named operand, which means a row.** The
+corpus defined this for rounds as ~~a named, materializable set of people~~ and used it to refuse
+age — *"an attribute is not a set of people; guardianship is, age is not"* — and
+**that test is deleted, not relaxed**
+([D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)):
+`OLDER(18)` is a test over one column and it denotes the set of people who are eighteen or older on the
+checked date, which is the same shape of answer `MEMBERS` gives from a membership table and `GUARDIANS(x)`
+gives from a guardianship table. **Every operand is a test with a set on the other side of it**, so the
+test as written proved too much — it would have excluded `MEMBERS`, since nothing anywhere stores the
+member list. **What is required of an operand is that it be named.** The legal set is a seeded registry,
+`selector_type` — `code`, `takes_argument`, `binds_to_item`, `argument_type` — which the parser reads as
+its reserved words, the editor builds its dropdown from, and the save path checks arity against. **The
+language became data, and it is a closed language anyway:** every row ships with the platform, the registry
+is organization-read-only, and a new operand is a decision entry plus a seed row, never a row somebody
+types into a screen. **That closure, not the set-ness, is the line that keeps
+[D-060](decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)'s
+refusal of a rule engine true:** `OLDER(13)` is a row, and `AGE >= 13` is not one and cannot be, because
+**the language has no `>=` anywhere to put it** — no comparison operator, and the operators it does have
+(`+ - *`) did not change this round either. So *"13 and over"* is a term a writer types from the registry
+now, and anything not in the registry is still a group somebody maintains or a thing this system cannot
+say. **Eligibility stays capability: the system applies no gate on its own; a person may write one with
+the vocabulary that ships**
 ([data-model/05 §8](data-model/05-authorization.md#the-selector-registry)).
 
 | Operand | The set, on the checked date | Argument |
 |---|---|---|
 | `EVERYONE` | Any person, including those with no account and no membership | none |
 | `MEMBERS` | Holds a membership live on the checked date | none |
+| `OLDER(n)` / `YOUNGER(n)` | **`n` or older** / **strictly under `n`**, both read from the birth date **on the checked date** — so this set gains and loses people at midnight with no write, and `can(..., on date)` for a past date answers for that past date. **A person with no birth date is in neither of them, which is an ordinary answer and not a resolution failure** — as a person with no membership row is not in `MEMBERS` (D-107) | a whole number of years — **the registry's first argument that is not an entity**, and therefore nothing for a merge to repoint |
 | `GUARDIANS` | Guardians of the person this item is about, or of the named person | optional person |
 | `ROLE(x)` / bare `x` | Holders of that office (`role_holder`) | a role name |
 | `GROUP(x)` / bare `x` | Members of that group (`person_group_member`) | a group name |
 | `AUDIENCE(code)` | The value of another saved audience's expression | an audience `code` |
-| `PERSON(x)` | **One named person** — a set of one, so it passes the materializability test. Summed, it is also **the hand-typed set**: `PERSON(a) + PERSON(b)` is the whole of what `audience_member` used to hold (D-105) | a person |
+| `PERSON(x)` | **One named person** — a set of one, which is a set, so it is an ordinary row of the registry like every other operand. Summed, it is also **the hand-typed set**: `PERSON(a) + PERSON(b)` is the whole of what `audience_member` used to hold (D-105) | a person |
 | `ATTENDED` / `PLACED` / `CONFIRMED` / `ON_WAITLIST` / `ORGANIZERS` | The four attendance tiers and the organizer roster | optional event |
-| `PRESENT(e)` | — | **refused** |
+| `PRESENT(e)` | — | **refused, and now as a decision rather than as a type error.** A predicate over a column became an ordinary kind of operand the moment `OLDER(n)` was seeded, so nothing excludes `PRESENT` by *what it is*; it stays out because of what it would do — a tick box on a check-in screen would revoke a leader's access to their own camp photos whenever somebody forgot to tick it (D-107 withdrew the older claim that the language could not express it; the refusal stands) |
 
 **`PERSON(x)` was an argument and `LIST` was a set, which is the argument that kept them both for one round —
 and it was right about the semantics and wrong about the conclusion.** The difference was real while both were
@@ -793,9 +826,14 @@ ships at all**, because a seeded group would be an invented one and the corpus n
 argument D-054 made about the unit vocabulary and which D-097 retired along with the vocabulary; and **one
 role ships**, `counselors`, marked `is_system`, because a permanent organization-wide population is the
 opposite of D-098's definition of a group. Plus the platform's own vocabulary: the permission codes, the
-`grant_scope_type` rows, the twelve `selector_type` rows (`PERSON` the last to arrive — two decision entries
-had been writing it while the registry, copied from the evaluator's arm list, lacked it — and `LIST` the last
-to leave, deleted with its table and its seed row one round later by D-105), the two audiences
+`grant_scope_type` rows, the **fourteen** `selector_type` rows (`PERSON` was the last to arrive *for two
+rounds* — two decision entries had been writing it while the registry, copied from the evaluator's arm list,
+lacked it — and `LIST` the last to leave, deleted with its table and its seed row one round later by D-105,
+which left **twelve for exactly one round**; `OLDER` and `YOUNGER` arrived together after that, so the count
+went from twelve straight to fourteen, the only round this seed has had in which nothing was deleted
+([D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+and their argument is an integer, **the first seeded operand argument that is not a row in some table**), the
+two audiences
 `everyone` and `all_members`, and
 **a grant template rather than a row** for "every event's answers go to its organizers" — a bound operand is
 only legal on an item-scope grant, so the event-creation path instantiates that grant beside each event

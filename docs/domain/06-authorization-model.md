@@ -489,7 +489,9 @@ The steps run in this order:
    - **An ended guardianship never opens this channel again.** What a former guardian may still do is
      what any other person may do, through their own grants.
    - **The row is the whole test.** The guard must not be rewritten as "the subject is a minor": the
-     resolver contains no age branch, and
+     resolver contains no age branch — since round 12 it contains an `OLDER(n)` **operand**, which is a set a
+     grant has to name before anything is looked at, and the difference is the point: **nothing consults a
+     birth date unless somebody wrote a rule that needed it**, and no rule is inferred — and
      [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)
      and
      [D-077](../decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
@@ -516,10 +518,13 @@ ones, and step 2's "says nothing" fall-through — and neither order is load-bea
 Points worth stressing:
 
 - **Default deny.** Step 4. Any new resource starts with nobody able to touch it.
-- **Fail closed, in every direction.** An operand that does not resolve is the empty set; an
-  expression that cannot be evaluated reaches nobody; a scope type nobody registered grants nothing.
-  This is the same posture as step 4 and step 0, and it is the direction every uncertainty in this
-  model resolves in.
+- **Fail closed, in every direction — and *closed* is a direction here, not a safe place to stand.** An
+  operand that does not resolve is the empty set; an expression that cannot be evaluated reaches nobody; a
+  scope type nobody registered grants nothing. This is the same posture as step 4 and step 0, and it is the
+  direction every uncertainty in this model resolves in. **Round 12 kept this rule exactly and refused three
+  chances to make it louder** ([D-106](../decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)):
+  an empty set *narrows* an allow and **widens** a deny, so fail-closed arithmetic is what the expression
+  says, not what safety wants — and the answer chosen was a report, not a refusal.
 - **A grant may name an audience instead of a person.** The grantee is resolved by the expression in
   §6.2; the scope and the code are resolved exactly as for a personal grant.
 - **Effective permissions are never stored.** They are computed per request. A stored permission
@@ -630,14 +635,42 @@ which is why it is a requirement rather than an implementation note.
 The two notations the organization was offered — set algebra, and a per-person boolean formula —
 describe the same function: `p ∈ (A ∩ B) ∪ C` **is by definition** `(p ∈ A ∧ p ∈ B) ∨ p ∈ C`. The
 choice therefore never decided what the machine computes; it decided **what gets stored and what a
-writer is allowed to say**. The set form won because it is **the closed one**, and closure was the
-whole case.
-[D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)
-refused a rule engine, and a per-person boolean language is the door to one: once `&`, `|` and `!`
-exist, the next operand anybody wants is `AGE >= 15` or `FEE_PAID`, and there is a parser standing
-there to accept it. A set language closes that **by rule instead of by discipline**: *an operand must
-be a named, materializable set of people.* An attribute is not a set of people. Guardianship is
-(`GUARDIANS(x)` is a set), age is not, and the line falls exactly where D-060 already drew it.
+writer is allowed to say**. The set form won. ~~It won because it is the closed one, and closure was
+the whole case.~~
+
+**That struck clause was the argument this page made for four rounds, and round 12 withdrew it**
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+It is kept here, in the order it was argued, because the argument was reasonable and the place it went
+wrong is worth finding:
+
+> [D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)
+> refused a rule engine, and a per-person boolean language is the door to one: once `&`, `|` and `!`
+> exist, the next operand anybody wants is `AGE >= 15` or `FEE_PAID`, and there is a parser standing
+> there to accept it. A set language closes that **by rule instead of by discipline**: *an operand must
+> be a named, materializable set of people.* ~~An attribute is not a set of people. Guardianship is
+> (`GUARDIANS(x)` is a set), age is not, and the line falls exactly where D-060 already drew it.~~
+
+**The struck sentence is wrong about sets, not about rule engines.** `OLDER(18)` **is** a set of people:
+the set of people who are eighteen or older on the date being checked. `MEMBERS` is the set of people who
+pass `is_current_member`; `GUARDIANS(x)` is the set of people who hold a row. **Every operand in the
+registry is a test with a set on the other side of it**, and reading one column against one date is not a
+different kind of thing from joining one table against one period — so the test this page leaned on was
+never holding anything up, and `MEMBERS` would have failed it, since nothing in the model stores the list
+of members. **The line was real, and it ran one clause earlier: an operand must be a *named* operand — a
+row of the registry.** `OLDER(18)` is a row. `AGE >= 15` is not a row and cannot be one, because **the
+language has nowhere to put `>=`**. That is what keeps the rule engine out now, and it is a better fact
+than the one it replaced: it does not depend on which predicates a reader happens to grant the status of
+"set".
+
+**So: the vocabulary is open and the grammar is closed.** More attribute operands will arrive, as rows and
+by decision; the three operators stay the three operators, and [D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)'s
+decision stands untouched: no eligibility rule table, no prerequisite system, nothing evaluated anywhere
+but in `can()`. **What changed is that a person may now write an age gate out of the vocabulary. What did
+not change is that the system applies none of its own accord.** The premise behind opening it at all is
+quoted in
+[D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded):
+*the people writing these rules know what they are writing*, which is a claim about the authors and not
+about the people a rule reaches — the two limits drawn there are this page's business too.
 
 ### Grammar
 
@@ -649,12 +682,35 @@ operand  := EVERYONE | MEMBERS
           | PERSON '(' person ')'
           | AUDIENCE '(' code ')'
           | GUARDIANS | GUARDIANS '(' person ')'
+          | OLDER '(' n ')' | YOUNGER '(' n ')'
           | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
           | ATTENDED '(' event ')' | PLACED '(' event ')' | CONFIRMED '(' event ')'
           | ON_WAITLIST '(' event ')' | ORGANIZERS '(' event ')'
-          | PRESENT '(' event ')'        ← refused, see below
+          | PRESENT '(' event ')'        ← not seeded, by decision; see below
           | '(' expr ')'
 ```
+
+**Round 12 added two arms to this block and left the operators alone**
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+`OLDER(n)` and `YOUNGER(n)` are **ordinary named operands** — `n` a whole number of years, read against the
+birth date **on the date being checked**, which is why they landed in the column of the table below headed
+"the set, on the checked date" rather than anywhere in a section about conditions.
+`MEMBERS * OLDER(18) - YOUNGER(6)` is a set expression in exactly the sense `MEMBERS * GROUP(cubs) - PERSON(a)`
+is, and it parses under the two rules above with nothing added to them.
+
+**Boolean spellings were offered for this language and declined, and the reason is the first paragraph of
+this section.** `p ∈ (A ∩ B) ∪ C` **is** `(p ∈ A ∧ p ∈ B) ∨ p ∈ C`, so `&`, `|` and `!` would name three
+operators this grammar already has, and `!A` is already written `EVERYONE - A` at the same cost once brackets
+are printed the way the canonical form requires. **A notation that expresses nothing new is not free:** two
+spellings of one operator means the canonical rendering has to pick one, the editor has to accept both, the
+write-path checks have to reason about both, and two people's identical rules stop being textually comparable
+— which is the property the canonical rendering exists to buy. **`+ - *` remain the only operators**, and
+negation stays a subtraction from `EVERYONE`, which has the extra merit of printing the universe it negates
+against instead of hiding it behind one character.
+
+**There is still no comparison operator, and that is where the entire safety of this now lives.** No `>=`,
+no `<`, no bare `AGE`, no `FEE_PAID` unless `FEE_PAID` is a row of the registry with an evaluator behind it.
+A writer composes named operands; **the vocabulary grows by decision, not by typing.**
 
 **Two arms were missing from this block until round 11, and one was missing in the wrong direction.**
 `PERSON(p)` and `AUDIENCE(code)` are both in the registry and neither was printed here, so a reader who
@@ -701,6 +757,8 @@ expression in the system. What is stored is always kind + id, so **a rename neve
 |---|---|---|---|
 | `EVERYONE` | Any person, including non-members and the public | none | Legal — and the reason the editor must show its reach (§*The cost*) |
 | `MEMBERS` | Anyone with a current membership | none | Evaluated live. §6.1 |
+| `OLDER(n)` | Anyone whose birth date makes them `n` or more years old **on the checked date** | a whole number of years | [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded). The first operand in the registry whose argument is **not a thing** — an integer, so it references nothing: nothing to repoint on a merge, nothing for a cascade |
+| `YOUNGER(n)` | Anyone strictly under `n` years old **on the checked date** | a whole number of years | The pair exists so the complement is not written `EVERYONE - OLDER(n)`, which is correct and unreadable. The two partition the population **among people who have a birth date**: someone without one is in neither, and that is not a failure — see §*The rules that make the tree safe* |
 | `GUARDIANS` / `GUARDIANS(p)` | Guardians of the person this item is about / of `p` | optional person | |
 | `PERSON(p)` | Just that person | a person | How a named individual's exception lives inside the expression that granted the rule; since [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) also how several named people are written — summed |
 | `ROLE(x)` / `x` | Holders of role `x` (`role_holder`) | a role name | |
@@ -711,9 +769,9 @@ expression in the system. What is stored is always kind + id, so **a rename neve
 | `CONFIRMED` / `CONFIRMED(e)` | Holds a paid place: `PLACED` and `is_confirmed` | optional event | |
 | `ON_WAITLIST` / `ON_WAITLIST(e)` | Attending and waitlisted | optional event | |
 | `ORGANIZERS` / `ORGANIZERS(e)` | Runs this event | optional event | Appointed on the event, and still grants nothing by itself (§*Event sets*) |
-| `PRESENT(e)` | — | **refused** | §*Event sets* |
+| `PRESENT(e)` | — | **not seeded** | §*Event sets*. Not seeded **by decision** — since [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) nothing here could refuse it as a kind |
 
-**Twelve selectors, and this table is a copy of
+**Fourteen selectors, and this table is a copy of
 [data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry), which is the
 registry.** It is worth recording how far this copy had drifted before round 11 noticed: it never grew a row
 for `PERSON` ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)'s

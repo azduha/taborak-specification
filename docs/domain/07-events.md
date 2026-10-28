@@ -183,35 +183,69 @@ unchanged and the mechanism is now plainly the one D-098 made: the organization 
 group of the older section and opens the camp to `GROUP(<that group>)`. An age-gated camp is
 a camp opened to a set whose members are that age.
 
-**What this does not do, deliberately:** it does not enforce an age *ceiling* on a
-registration for an open event. If a 9-year-old holds `event.register_self` on a camp for
-teenagers, they can register, and **nothing in the system objects**
-([D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
-There are no `min_age`/`max_age` columns on `event` and there will not be some, for a reason
-worth keeping in mind when the next restriction is requested: **a condition evaluated at
-registration time that the capability model does not know about is the first rule-engine
-rule**, and the second is always cheaper than the first. Two years after that, the answer to
-"who can register for this?" stops being readable from `access_grant`.
+**There is now a second way to write that sentence, and it is the same kind of thing.**
+`OLDER(n)` and `YOUNGER(n)` are seeded operands of the registry
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+so the camp for 11-to-14s is also writable as `(MEMBERS * OLDER(11)) - YOUNGER(15)` —
+one grant, one expression, no roster to keep current. The group is still the better answer where
+the section is a real group with a real roster behind it, because a maintained group says who
+is in it and an age expression only says who qualifies; the two are not rivals and an
+organization will use both.
+
+**What this page said for four rounds, and what is true now.** Until this round the model
+could not state an age *ceiling* at all, and that inability was the reason a camp could not
+have one: a 9-year-old holding `event.register_self` on a camp for teenagers could register,
+and ~~nothing in the system objects~~ — there was nothing in the system that *could*.
+`YOUNGER(n)` is a seeded operand now
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+so the ceiling is an ordinary grant: `event.register_self` on this event, aimed at
+`MEMBERS * YOUNGER(15)`. **[D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)
+therefore stays closed for a different reason than it was closed**, and the difference is the
+whole point of this section: it closed because the sentence was unwritable, and it stays
+closed because the organization **chooses** not to write it and keeps the judgement in the
+roster a leader reads and in the attributed registration that records who let a child through.
+A closed question that could now be opened is a decision, and it should be read as one every
+time the next restriction is requested.
+
+What has *not* moved is the column. There are still no `min_age`/`max_age` on `event` and
+there will not be some, and the reason is untouched by the new operands: **a condition
+evaluated at registration time that the capability model does not know about is the first
+rule-engine rule**, and the second is always cheaper than the first. Two years after that, the
+answer to "who can register for this?" stops being readable from `access_grant`. A ceiling
+written in a grant is readable there; a ceiling written on the event row is exactly the thing
+that is not.
 
 What makes the residual risk survivable is not a check but three properties the schema already
 has. The registration is **attributable** — `source = 'staff'` with a named `created_by`, so
 the judgement belongs to somebody. Age is **one join away** — `person.birth_date`, which the
 roster query in [data-model/08 §9](../data-model/08-events.md#9-the-three-queries-that-matter)
-already selects, so any list a leader works from can carry it without a new column anywhere.
-And the age-bounded case, the ordinary one, is already handled: open the event to the set
-whose members are that age.
+already selects, so any list a leader works from can carry it without a new column anywhere;
+and as of this round the same column is also **one operand away**, which is what makes the
+ceiling above a writing choice rather than a feature request. And the age-bounded case, the
+ordinary one, is handled twice over now: open the event to the set whose members are that age,
+by a group somebody maintains or by the age operands themselves.
 
-**If the shape ever recurs often enough to hurt,** the fix is not a column on `event`, and it is
-not a rule the organizer types. It is another **operand**: a shipped row in `selector_type`,
-alongside `MEMBERS`, whose predicate the resolver owns. That is the distinction
-[D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
-drew and it holds here exactly — a writer may not type `AGE >= 13` into an expression, because an
-attribute is not a set of people, while the system may ship `AGED_13_PLUS` as a named operand
-that *is* a materializable set. **It ships nothing of the kind today.** The registry is
-organization-read-only, so an age band arrives as a deployment and not as a setting, which is
-the same refusal the round made about attribute operands wearing a friendlier face; until one
-ships, the age-bounded event is an event aimed at a group somebody maintains. Either way every
-answer to "who may register" keeps living in one table, which is the property worth defending.
+**The shape recurred, and the fix this page predicted is the one that arrived.** It was never
+going to be a column on `event`, and never a rule the organizer types; it was another
+**operand** — a shipped row in `selector_type`, alongside `MEMBERS`, whose predicate the
+resolver owns. That is what shipped: `OLDER(n)` and `YOUNGER(n)`, read against
+`person.birth_date` **on the date being checked**, composed by `+ - *` like every other operand
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+~~It ships nothing of the kind today~~ was true when it was written and is the sentence this
+round retired.
+
+**A writer still may not type `AGE >= 13`, and the reason this page gave for that was wrong.**
+~~because an attribute is not a set of people~~ — `OLDER(13)` is exactly a set of people: the
+ones who are thirteen or older on the date being checked, in the same way `MEMBERS` is the set
+of people who pass `is_current_member` and `GUARDIANS(x)` is the set who hold a row. Every
+operand in the registry is a test with a set behind it, so the old test would have barred
+`MEMBERS` too, since nothing here stores the member list. What was doing the work, and is the
+clause to quote from now on, is that **an operand must be a named operand — a row of the
+registry** — and this language has no comparison operator for `AGE >= 13` to be assembled out
+of. The registry is organization-read-only, so the next predicate anyone wants arrives the way
+an age band did: as a deployment, with its evaluator arm shipped beside it, and not as a
+setting. Either way every answer to "who may register" keeps living in one table, which is the
+property worth defending.
 
 ---
 
@@ -376,7 +410,11 @@ photos because a volunteer forgot to tick a box. `was_present` is three-valued *
 as a safeguarding signal — **keeping it out of the selector language is what keeps it
 meaning "a person recorded this" rather than "this is who may see things"**, and
 [D-067](../decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)'s
-reasoning for the third value is the reasoning for the refusal.
+reasoning for the third value is the reasoning for the refusal. **The refusal is entirely
+this argument now**, since `OLDER(n)` proved that an operand may read a column and a date:
+nothing in the language would blink at `PRESENT`, which is exactly why the consequence has to
+be the thing that says no
+([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 
 **`WHITELISTED` does not exist, and is not a selector.** The nearest stored facts are
 `source = 'staff'` (an organizer entered them) and promotion off the waitlist. Either the
@@ -407,9 +445,27 @@ requirements on the editor and the cache, not on the schema:
   because the same grant on two events has two answers
   ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
-Fail closed as everywhere else in the model: an expression that cannot be evaluated reaches
-nobody, and a preview that cannot be computed shows that it could not be computed rather than
-an empty list.
+Fail closed as everywhere else in the model, **with the direction stated rather than implied**:
+an operand that resolves to nothing contributes the empty set, which *narrows* what a `+` or a
+`*` reaches and *widens* what a `-` takes away — `EVERYONE - PERSON(x)` with a dead `x` denies
+everybody, lockout and fail-closed being the same event
+([D-106](../decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
+A person with no birth date is not that kind of failure: the operand resolves perfectly well and
+they are simply not in `OLDER(18)`, exactly as a person with no membership row is not in
+`MEMBERS`. A broken leaf is no longer silent and still stops nothing — it is listed for the
+audience's owner on the standing report, and no save is refused for it.
+
+**A preview is a statement about the day it was taken.** `OLDER(n)` and `YOUNGER(n)` make that
+true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
+are the people who qualify *today*, and a birthday moves the list with no write, no edit to the
+grant, and nothing for a cache to be told about
+([F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)).
+**The preview is a workbench, not a record.** The record is the audit row written when the grant
+is saved: it says whom the grant reached on that date, and it is a prediction about the future
+that is honest about being one. Ask the model about a date in the past and it does not read that
+row back — it computes the answer live from a birth date and a date, which is why the row ages
+gracefully instead of becoming a lie. And a preview that cannot be computed still shows that it
+could not be computed, rather than an empty list.
 
 ---
 
@@ -695,6 +751,12 @@ tracked with the rest. The ones this module raises:
 - ~~**The age ceiling on an open event**~~ — **settled: accepted as a risk**, the grant is
   the rule, and closing it later would mean a new operand rather than a column (§4,
   [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
+  **That prediction has come true and it changes the shape of the answer, not the answer:** the
+  operand arrived as `YOUNGER(n)`, so an age ceiling is writable today as
+  `event.register_self` aimed at `MEMBERS * YOUNGER(15)`. **EV-1 stays closed, now as a choice
+  the organization renews rather than a limit it inherits** — nobody has to be told the ceiling
+  cannot be stated, only whether it should be (§4,
+  [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 - **What else should be seeded to `ORGANIZERS`.** D-102 seeds exactly one grant,
   `event.answer.view`. Everything else an organizer needs — editing the event, working the
   roster — now reaches them only through a unit-scope or item grant they happen to hold, and
@@ -704,7 +766,10 @@ tracked with the rest. The ones this module raises:
   names `PLACED` cannot be aimed at a unit-scope grant, so a shared audience row can stop
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
   as written; whether the editor should warn at the audience instead is unsettled (§7).
-- **`WHITELISTED`.** No stored state to name it; not a selector (§7).
+- **`WHITELISTED`.** No stored state to name it, so it is not a selector (§7) — a question about
+  whether the feature is wanted, and not one about whether the language could hold it: a
+  predicate over a column is an ordinary operand now
+  ([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 - **Event answer retention** (§12). Answers end with the event — but a dietary answer naming a
   condition is data of exactly the same class as what the person record holds, held under weaker rules
   and fresher. No policy yet; see

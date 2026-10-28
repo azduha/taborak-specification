@@ -1775,6 +1775,20 @@ for the definitional one.
 There is no eligibility rule table, no age gate, no prerequisite system. `event.register_self`
 is already mapped to `contribute` in `permission_level`.
 
+> **Amended by [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+> in round 12, in the direction of this entry's purpose rather than of its letter.** The words *"no age gate"*
+> were doing two jobs in that paragraph. As **"the system applies no eligibility test of its own; there is no
+> rule table; nothing is evaluated outside `can()`"** — they stand, and that is the decision this entry was
+> recording. As **"nobody may write an age test in this model"** — they are now false, and were only ever true
+> because of a sentence in [domain/06 §6](../domain/06-authorization-model.md) that round 12 deleted:
+> *"an attribute is not a set of people … age is not."*
+> `OLDER(n)` and `YOUNGER(n)` are seeded operands now, so `event.register_self` may be granted to
+> `MEMBERS * YOUNGER(15)`, and the age ceiling this entry explicitly declined to enforce — the one
+> [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule) went on to record as
+> unenforced — is **statable**. **What has not moved is who decides.** A gate is a grant somebody wrote, shown
+> by the preview, attributed in the audit trail; it is not a conclusion the system draws from a birth date.
+> This entry's real subject was always that, and it is why the entry is amended rather than superseded.
+
 **Why.** Your answer: *"I feel like the people with 'contribute' permissions (capabilities) on
 that item should be allowed to register."*
 
@@ -1807,7 +1821,11 @@ An age-gated camp is a camp opened to `unit:<id>:participants` for a unit whose 
 are that age. **This is the case audiences ([D-042](#d-042--grants-may-target-audiences-not-only-individuals))
 were built for**, and events are where the investment pays off.
 
-**What this does not do, stated plainly.** It does **not** enforce an age *ceiling* on an
+**What this does not do, stated plainly.** *(Round 12: this paragraph describes a choice now, not a limitation
+— `YOUNGER(n)` is seeded, so an organizer who wants a ceiling grants `event.register_self` to
+`MEMBERS * YOUNGER(15)` and sees whom it reaches before saving. What still does not exist is a test the system
+runs by itself. [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded).)*
+It does **not** enforce an age *ceiling* on an
 open event. If a nine-year-old holds `contribute` on a camp for teenagers, they can register.
 The design **decides eligibility by who may register, not by inspecting the person** — the
 check *is* the grant. Whether that is sufficient is carried in
@@ -4893,7 +4911,18 @@ that ships a grammar and then grows an arm is worth seeing to have grown one.)*
 *(The `LIST` arm is since gone. [D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 deleted it, and a hand-written set is now written the way every other set in this grammar is written — as
 an operand, `PERSON(a) + PERSON(b)`. The arm is left printed here because this entry shipped it; the
-registry that has to be true today has twelve rows, not thirteen.)*
+registry that has to be true today has fourteen rows, not thirteen — twelve for the round that deleted
+`LIST`, plus the two attribute rows
+[D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added.)*
+
+*(Two arms have been added since this entry shipped, also by
+[D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded):
+`OLDER(n)` and `YOUNGER(n)`. **No operator was added.** The boolean spellings `&`, `|`, `!` were proposed
+along with them and **declined** — `+ - *` are still the only three, and a negation is still written
+`EVERYONE -`. **This entry's grammar is therefore amended twice**, and the second amendment is the one that
+changes what a writer may say: an age test is now statable in this language, which this entry's own appeal to
+D-060 said it was not. The materializability test this entry leaned on is corrected there too — it was never
+what was doing the work.)*
 
 **Two arms the first draft of this grammar omitted, and both were load-bearing elsewhere in the round.**
 `PERSON(x)` names one person — a set of one, so it passes the materializability test, and it is how
@@ -5461,9 +5490,10 @@ shape, in its cheapest instance), and the report is the check that they still ag
 
 **See:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
 which this closes, [data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry)
-for the registry (twelve rows since
-[D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), thirteen when this
-sentence was written), and
+for the registry (**fourteen rows today**: thirteen when this sentence was written, twelve for the one round
+[D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) owned, and fourteen
+again since [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+added two — **four numbers, and only the first and last are counts of the same table**), and
 [permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the naming patterns, which are
 now rules and are written there as such.
 
@@ -5677,3 +5707,225 @@ rewritten by hand, **and rewriting an expression changes who a grant reaches** �
 resolved set before and after for every audience it touches, which is the same report
 [D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
 adopted as its remedy, run once, on the rows this migration puts at risk.
+
+---
+
+## D-106 — A failed operand stays the empty set; the missing half was a report, not a refusal
+
+**Status:** decided (from your answer)
+**Date:** refinement round 12
+**Amends:** the failure semantics described in
+[D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) and written out in
+[data-model/05 §8](../data-model/05-authorization.md#the-selector-registry)
+
+**Decision.** Nothing about resolution changes. An operand whose argument names nothing — a deleted
+person, a renamed role, a merged-away id — **is the empty set**, and `EVERYONE - PERSON(x)` with a dead
+`x` therefore still denies everybody. What is added is not a rule but a page: **an audience with a leaf
+that does not resolve is listed**, for the audience's owner, on the same report
+[F-21](../open-questions.md#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones)
+already asked for, in a second column. No save is refused because a leaf is broken. No expression is
+pinned. The failure stays fail-closed and stops being silent.
+
+**Why.** Your answer, in full: *"It still feels unnecessary, it is enough to notify, do not deny (it
+might cause very advanced problems more, than it gains to be loud)."*
+
+**Two fixes were on the table and both are declined here, so that neither is proposed again.**
+
+1. **"Treat an unresolvable id as the named one"** — resolve `PERSON(x)` to the person by name when the
+   id is gone. Declined: it invents a person the model does not have, and it invents them *on the widening
+   side*, which is the one place a wrong answer grants instead of withholds.
+2. **"Never wider than saved"** — at save time, record the resolved set and refuse any later resolution
+   that reaches more people than the saved one. Declined, and it is worth seeing why: it makes the
+   *stored expression* a ceiling on truth, so a person who leaves a unit cannot be removed from what a
+   grant means without a write, and a grant silently freezes at the shape it had on the day it was saved.
+   It buys a guarantee nobody asked for by breaking the one property an expression has over a snapshot —
+   that it means today what it says today.
+
+**The vocabulary is retired, and this is a D-081 case.** The corpus has been saying *"the `-` side is
+loud"*, which names a volume where there is only a direction. What is true: **a failed operand on the `+`
+or `*` side narrows the set, and a failed operand on the `-` side widens it.** `-` is not noisy; it is the
+only operator whose failed operand can grant. Everywhere the corpus says "loud" it should say that, and
+everywhere it says "fail closed" it should be clear that *closed* is a direction, not a safe state —
+`EVERYONE - PERSON(x)` failing is fail-closed **and** lockout-everybody, in one step.
+
+**The line this entry draws, which is narrower than it looks.** D-106 is about an operand that **cannot be
+resolved at all**, because its argument names nothing. It is not about a person who lacks a value. A person
+with no birth date is not a failed `OLDER(18)` — the operand resolves perfectly well, to the set of people
+who are 18 or older on the date being checked, and that person is simply not in it, exactly as a person with
+no membership row is not in `MEMBERS`. **A missing attribute on the person being asked about is not a
+resolution failure and never reaches this entry**, which is the distinction the report has to preserve or it
+will page about three thousand people with incomplete imports.
+
+**What this costs, said plainly.** A broken leaf on a `-` side denies people with no signal beyond a page
+nobody is required to read, and the report is a query with an owner, not a guard — in D-081's phrase,
+**a convention, not a guard**. It was offered as one and it is written as one. The reason to accept that is
+in [D-107](#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded), which
+records the premise that makes a notification enough: the people writing these expressions are the people
+who know what they say.
+
+**See:** [domain/06 §6.4](../domain/06-authorization-model.md) for the rules that make the tree safe,
+[data-model/05 §8](../data-model/05-authorization.md#the-selector-registry) for where the empty-set rule is
+stated, and [F-15](../open-questions.md#f-15--what-does-the-per-item-audience-preview-cost-at-real-event-sizes),
+which this does not answer — a report is not a preview and neither is free.
+
+---
+
+## D-107 — The grammar opens: an attribute may be an operand, and the vocabulary stays seeded
+
+**Status:** decided (from your answer)
+**Date:** refinement round 12
+**Amends:** [D-060](#d-060--eligibility-is-capability-there-is-no-separate-rule-engine), whose stated test
+for what an operand may be is deleted here; [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)'s
+grammar; [D-105](#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)'s count
+
+**Decision, in five clauses.**
+
+1. **The tree grows attribute leaves.** Two seeded operands arrive — `OLDER(n)` and `YOUNGER(n)` — read
+   against the person's birth date **as of the date the check is made**. The registry has fourteen rows.
+2. **The operators do not change at all.** `+ - *` are the only operators this language has, and
+   `OLDER`/`YOUNGER` are just two more operands composed by them — `MEMBERS * OLDER(18) - YOUNGER(6)` is
+   the same shape as `MEMBERS * GROUP(cubs) - PERSON(a)`. **There is no comparison operator**: no `>=`, no
+   `<`, no bare `AGE`. The boolean spellings `&`, `|` and `!` were put to this language and **declined**;
+   §Why the operators stayed three is the record of that, since this entry was first written granting them.
+3. **D-060 survives; its sentence does not.** See below — this is the load-bearing clause.
+4. **A selector's membership may change with no write, by ruling.** Recorded in §Time below.
+5. **The premise is written down.** Recorded in §Authors below, with the two things it does not buy.
+
+**Why the gate opened, in the words that opened it.** Asked whether the boolean grammar could be given
+attribute operands, the answer came back as a question first: *"Can the grammar still work with the sets?
+`OLDER(18)` is still a set of people."* It is, and that question is the whole decision, because the corpus's
+argument against admitting age was never about age:
+
+> *"an operand must be a named, materializable set of people. An attribute is not a set of people.
+> Guardianship is (`GUARDIANS(x)` is a set), age is not, and the line falls exactly where D-060 already drew
+> it."* — [domain/06 §6](../domain/06-authorization-model.md), until this round
+
+**That sentence is wrong and it is deleted.** `OLDER(18)` denotes the set of people who are eighteen or
+older on the date being checked. `MEMBERS` denotes the set of people who pass `is_current_member`.
+`GUARDIANS(x)` denotes the set of people who hold a row. **Every operand in the registry is a test with a
+set on the other side of it**; a birth-date comparison is not a different kind of thing, it is a test that
+reads one column instead of joining one table. The materializability test was therefore never what kept rule
+engines out — `MEMBERS` would have failed it too, since nothing stores the member list.
+
+**What was doing the work, and it is kept.** *An operand must be **named**.* Not "must be a set" —
+**must be a row**. `OLDER(18)` is in the registry; `AGE >= 18` is not, and cannot be, because the language
+has no place to put `>=`. The door D-060 was guarding is now shut by the clause that actually fits it:
+**a writer may compose seeded operands and nothing else.** D-060's decision — no eligibility rule table, no
+prerequisite system, no rule evaluated outside `can()` — is untouched, and its `**Decision.**` paragraph is
+amended rather than replaced, because *"no age gate"* was its plainest consequence and is now false in the
+plain sense and true in the real one: **there is still no gate the system applies on its own; there is a
+vocabulary a person may use to write one.**
+
+**The precedent that made this cheap is already in the corpus, and it is the reason no new storage appeared.**
+[data-model/01-identity.md](../data-model/01-identity.md) opens by refusing to store age at all: *"There is no
+`is_member`, `member_type`, `is_child`, `is_adult`…"* — because a stored age flag is a fact that goes false at
+midnight, and this model's rule about facts that go false is to keep the input (the birth date) and compute the
+rest. **Round 12 did not change that rule; it used it.** `OLDER(n)` is where a computed fact is allowed to
+live in this design — in the resolver, evaluated on the checked date, never in a column — which is also why
+adding it cost two seed rows and no table, and why the four-decade-old instinct to add an `is_adult` column
+remains refused.
+
+**Why the operators stayed three.** The boolean spellings were put to this language — `&`, `|`, `!` beside
+`+ - *` — and the answer came back first as the observation that settled the whole round: *"`OLDER(18)` is
+still a set of people."* It is, and once that is seen, boolean notation has no work left to do.
+`p ∈ (A ∩ B) ∪ C` **is by definition** `(p ∈ A ∧ p ∈ B) ∨ p ∈ C`, and with `EVERYONE` in the language `!X`
+**is** `EVERYONE - X`. So `& | !` would be a **second spelling of three operators the language already has**,
+and a second spelling is not free even when it is pure sugar: the canonical rendering has to pick one, the
+editor has to accept both, every write-path check has to reason over both, and two people's identical rules
+stop being textually comparable — which is the property the canonical rendering exists to buy, and the reason
+[F-22](../open-questions.md#f-22--forty-hand-typed-names-print-as-thirty-nine-pairs-of-brackets-is-that-the-editors-problem)
+exists at all. **The case for them was genuine**: a person writing an eligibility rule is thinking in
+conditions, not in algebra. But that is an **editor's** case, and it is answered in the editor — what a writer
+types is a rendering, what is stored is a set expression, and if the editor ever wants to accept `!` it can
+expand it into `EVERYONE -` on the way in and never store that anything happened. **Declined, then, and
+recorded as declined** rather than left absent, because this entry granted them twenty minutes earlier and an
+entry that reverses itself inside its own round should show that it did.
+
+**One argument this round made and dropped, and why it is on the record anyway.** The case for a closed
+*vocabulary* was made in governance terms: volunteers will write `FEE_PAID` into an audience and nobody will
+notice until it is wrong. That argument is not answered here, it is **overruled** — see §Authors — and it is
+left in this entry because it was aimed at the wrong half of the design. **A row per operand, shipped with
+its evaluator arm so that a code with no arm behind it is a deployment bug rather than a held feature
+([D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)),
+costs a trusted author nothing**; what would have cost them something is a language that refuses to grow, and
+this one does not. The shape that survived both rulings is worth naming, because the two rulings pull in
+opposite directions: **the vocabulary is open, the grammar is closed.** New tests arrive as named rows a
+person may compose with the three operators they already know; the language never grows a place to put a
+comparison. That is the whole difference between a vocabulary that grows and a parser that accepts anything,
+and it is a difference in *where the decision is made*, not in how much freedom anybody has.
+
+**Time, and what accepting it costs.** Your ruling, in full: *"I know, that the time will change, how the
+rules resolve and IT IS FINE."* Recorded as accepted rather than as an open risk, with its mechanics stated
+so that nobody rediscovers them as a bug:
+
+- A derived set can gain or lose a member with **no write at all**, at midnight, one person at a time.
+  This is the first exception to [F-6](../open-questions.md#f-6--the-permission-cache-lifetime-and-what-invalidates-it)'s
+  model in which invalidation is caused by a write; the answer is not a new invalidation path but the
+  observation that a cached decision is already keyed to a date and already expires.
+- **Nothing is stored, so there is nothing to invalidate.** No table changes when a person turns eighteen;
+  there is no row to expire and no cache of *membership* to keep. This is the property that age *bands*
+  would not have had, which is why they are not in this design.
+- **What it buys is history.** `can(p, view, doc, on 2024-05-01, about q)` now has a right answer for an
+  age-bearing rule, computed from a birth date and a date, which is a question no snapshot design could
+  answer and which the audit trail will ask.
+
+**The honest residue is not performance, it is the record.** A check for yesterday answers for yesterday,
+but *the decision taken yesterday* — "this grant reaches these people", printed by the preview and written
+into audit at the moment of the write
+([D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)) — was a snapshot
+of a set that has since moved. That is not a cache problem and it is not raised again as one; it is carried
+as [F-23](../open-questions.md#f-23--a-derived-set-moves-with-no-write-is-the-preview-the-record-of-who-was-reached).
+
+**Authors: the premise, and the two things it does not buy.** Your standing answer, quoted because several
+entries in this round argue against something it already settled: *"The people writing the rules WILL know,
+what they are doing. I know, that the time will change, how the rules resolve and IT IS FINE."* Until now
+this was implied by
+[D-091](#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)'s preview
+— the entry that requires it — and by the absence of anything like a lint; it is now a premise, and it has
+three consequences and two limits.
+
+- **The preview is a workbench, not a guard.** It stays required — but the corpus's justification for it
+  ("the writer may not know whom they are reaching") is replaced with *"the writer can ask, and the answer
+  is printed and logged"*. Same requirement, different reason, and the difference matters to whoever is
+  tempted to make it a confirmation dialog.
+- **No new save-time refusal anywhere in this round**, and none is implied by it. The only refusals left in
+  the write path are **structural** (a cycle, a dangling `parent_id`, an argument of the wrong kind).
+- **A report is offered rather than a block**, which is exactly the shape D-106 chose.
+- **It does not buy a different audience.** Competence in the author says nothing about the people the rule
+  *reaches*. The fail-closed order, guardianship's allows-only ceiling, and the unreachable `dependent.*`
+  namespace are untouched by this premise, because those protect people who did not write the rule. This is
+  the boundary of the premise and it is drawn here rather than discovered later.
+- **It does not buy an unlogged write.** Every refusal this round declined was a refusal to *stop* a save;
+  none of them was a refusal to *record* one. The audit trail is where the premise stops being a
+  courtesy — see [D-088](#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short) for what it
+  keeps and for how long it keeps it.
+
+**Refusals become decisions, and both of them keep their answers.** `PRESENT(event)` and `WHITELISTED` were
+refused as *kind* — "not materializable", "no stored state" — and with attribute operands admitted, that
+class of argument is gone: a predicate over a column is now an ordinary operand, so nothing can be excluded
+by what it *is*. Both stay out, on their own merits, which were always the real reason:
+
+- **`PRESENT(event)` — still not seeded.** A tick box on a check-in screen would become the thing that
+  revokes a leader's access to their own camp when somebody forgets to tick it. That is an argument about
+  consequences and it survives intact; what is withdrawn is the claim that the language could not express it.
+- **`WHITELISTED` — still not seeded**, because there is no state to evaluate
+  ([F-20](../open-questions.md#f-20--whitelisted-is-asked-for-as-an-operand-should-the-language-have-one)),
+  and an operand that reads nothing is a syntax error wearing a vocabulary's clothes. F-20 stays open as a
+  question about whether the *feature* is wanted, and is no longer a question about whether the type system
+  forbids it.
+
+**Storage, and the one invariant this could have broken.** `OLDER`'s argument is an **integer**, which makes
+it the first operand argument in the registry that is not an entity reference. **The registry still names
+exactly two reference-less polymorphic keys** — `access_grant.scope_id` and `audience_operand.selector_arg_id`
+— because a scalar stored in `selector_arg_id` is not a key pointing at anything: nothing to repoint on a
+merge, nothing for a cascade to find, nothing for F-10's orphan check to walk. **§11's check that the count
+is two stays true, and stays true for the right reason rather than by luck**: the check is about *references*,
+and `18` is not one. `argument_type` therefore gains a scalar domain, and the pages that enumerated the
+argument kinds as though they were all entities say "five kinds, one of them not an entity" from now on.
+
+**See:** [domain/06 §6 and §6.1](../domain/06-authorization-model.md) for the language and the corrected
+argument, [data-model/05 §8](../data-model/05-authorization.md#the-selector-registry) for the fourteen-row
+registry, [permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the leaf list,
+[F-5](../open-questions.md#f-5--which-operands-are-missing-from-the-selector-registry), which closes on its
+age half, and [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule),
+which stays closed for a different reason than it was.

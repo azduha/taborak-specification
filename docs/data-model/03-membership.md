@@ -551,8 +551,8 @@ so `MEMBERS * ROLE(x) + PERSON(y)` parses as written. **`LIST` was never a subst
 worth remembering at the time: it is one set belonging to one audience, so `+ LIST` brings everybody on it and
 nothing on that list can except one person from itself. **That confusion can no longer recur**, because
 [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-deleted `LIST` and its table in the round after this correction was written, leaving twelve seeded rows and one
-way to name a person by hand — which is the outcome the paragraph was arguing for, arrived at by deleting the
+deleted `LIST` and its table in the round after this correction was written, leaving twelve seeded rows — fourteen
+since [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) put age in the language — and one way to name a person by hand — which is the outcome the paragraph was arguing for, arrived at by deleting the
 thing it had to argue against. Writing the waiver as **a second grant aimed at the person** is still legal and
 still clearer for something permanent, and is now the only way to date it
 ([D-105 §2](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).

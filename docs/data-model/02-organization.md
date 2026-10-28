@@ -473,9 +473,9 @@ now confers nothing at all — D-100); background checks (none are recorded — 
 ended while a live grant, or a live audience reachable from one, names it (**refused at save** — D-103 wrote
 its audience row first and extended it to `person_group` in the round after, on the `-`-widens reasoning;
 §3 and §6 check 5); whether a `PERSON` selector should exist so that D-100's one-person exemption is
-writable (it is one of the **twelve** seeded rows — thirteen until
+writable (it is one of the **fourteen** seeded rows — thirteen until
 [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-removed `LIST` — and it arrived late by
+removed `LIST`, twelve until [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added `OLDER` and `YOUNGER` — and it arrived late by
 [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)'s
 amendment, because the registry had been copied from the evaluator's arm list and lost the arm, which
 [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)

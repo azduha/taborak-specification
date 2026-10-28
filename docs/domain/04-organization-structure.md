@@ -348,8 +348,11 @@ operand bracketed, a leaf left bare:
 **`PERSON` is a seeded selector, so that third row parses.** It did not when this page first printed the
 expression: the registry of seeded operands had been written from the evaluator's arm list rather than from
 D-101's grammar, and the arm nobody had implemented yet is exactly the kind of thing such a copy loses. The
-registry carries **twelve** rows and `PERSON` is one of them — takes an argument, that argument is a
-person, binds to no item. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
+registry carries **fourteen** rows today and `PERSON` is one of them — takes an argument, that argument is a
+person, binds to no item. Twelve of those fourteen is what the table held between
+[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+and [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded), which is the kind of arithmetic this corpus keeps having to spell out, and it is spelled out
+here because a reader who joined at row fourteen cannot reconstruct it from the row count. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
 the class of defect it belongs to, a registry prose contradicts, is what
 [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
 answers. **Twelve, not the thirteen this page printed last round:**

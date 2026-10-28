@@ -876,17 +876,32 @@ one fact stored three times, and nothing in §11 can see any of the three.**
   reopens whether a person is an item, and pulls `person` ids into the orphan check), or `binds_to_item` is
   false for `GUARDIANS` and the registry row plus §8's sentence are corrected. **The second is cheap and the
   first is a decision entry.**
-- **Age is now unsayable in the model, and one of these questions will want it.** `position.min_age` went
-  with positions (D-100), `allows_minors` went with units (D-095), membership is ageless (D-038), and EV-1
-  decided that a future age ceiling "would be a built-in audience" — which in the new language means an
-  operand. There is no row for it and no table it could take as an argument: `argument_type` names a table,
-  and an age band is a range, not a row. So either age gets a seeded band table to point at for the sake of
-  two or three rows, or these documents should say plainly that **age never enters the selector language**
-  and EV-1's escape hatch is closed. Leaving it unstated is the one option that gets worse quietly.
+- **~~Age is now unsayable in the model, and one of these questions will want it.~~ — closed by
+  [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded):
+  age was a set all along.** The bullet argued that age has no table to point at — `argument_type` names a
+  table, an age band is a range and not a row — and offered two exits: seed a band table for the sake of two
+  or three rows, or write down that **age never enters the selector language**. **Both exits were wrong in the
+  same direction, and the direction is the interesting part.** `argument_type` has gained a scalar: `OLDER(n)`
+  takes a whole number of years, which points at no table and needs none. And the premise under the whole
+  bullet — that an operand has to be a *stored* set — is the sentence D-107 deleted, along with "*an attribute
+  is not a set of people … age is not*". `OLDER(n)` and `YOUNGER(n)` are seeded rows now, read against the
+  birth date **on the date being checked**, so `event.register_self` granted to `MEMBERS * YOUNGER(15)` states
+  a ceiling in this language. **EV-1's escape hatch is therefore open rather than closed, which changes the
+  reason that entry is closed and not its answer.** What the bullet got right is still true and is why it is
+  written up as a closure instead of deleted: age arrived exactly the way the rules for new facts require —
+  a decision entry and a seed row, never a row typed into a screen — and *"leaving it unstated is the one
+  option that gets worse quietly"* was the correct call, because this bullet was three rounds from being
+  quoted as a design principle.
 
-**What round 11 changed here, and what this entry still does not own.** The two bullets above are the whole
-open list; `PERSON(x)` did not close either of them, and deleting `LIST` did not open a third, because **the
-language can state exactly the same facts about people as it could with thirteen operands** — the one thing
+- **A prose expression names an operand that does not exist: `all_in_school`.** [domain/07-events.md §1](domain/07-events.md) opens the age-gating story with "open the event to an audience — `all_in_school`", and round 12 found on checking that there is no `SCHOOL` selector, no `school` column on `person`, and no table a `SCHOOL(x)` could take as an argument. **So the sentence advertises a row nobody minted**, and the school-bounded case it offers as the cheap answer is one an organizer cannot actually build. This is this entry's own defect, one round later, **pointing the other way**: last time the prose used an operand the registry lacked and the registry turned out to be the wrong side; here the registry is right and the prose is the fiction — which is the same failure to check a written expression against the table, and **another page in the family [D-104](decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+named** — prose contradicting a registry — rather than a new class, and the third distinct page of it after
+the registry itself and [domain/06 §6](domain/06-authorization-model.md)'s selector table. Two exits, both cheap and one of them obligatory: either `SCHOOL(x)` becomes a row (which means the person model grows a school affiliation it does not have today, so it is a decision entry and not a seed row alone), or the sentence stops naming an audience and says what is really meant — *a `person_group` per school, filled by import*, which is expressible today and is probably what the author had in mind. **What is not an option is leaving the name in place**, because that is how `PERSON(x)` spent a whole round unwritten.
+
+**What rounds 11 and 12 changed here, and what this entry still does not own.** **One bullet is open** — the
+`GUARDIANS` one; round 12 closed the age one. `PERSON(x)` did not close either of them, and deleting `LIST`
+did not open a third, because **the language can state exactly the same facts about people as it could with
+thirteen operands** — a claim that was true of round 11 and is *narrower* than round 12, which is the
+difference between deleting an operand that added nothing and adding one that adds a kind of fact. The one thing
 that went with `LIST` is the *dates on individual names*, and that is not a missing operand: no row could
 restore it, and [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 ruled that a windowed exception is a second grant with its own period instead. Two adjacent questions are
@@ -906,7 +921,10 @@ operand is a decision entry plus a seed row, never a row typed into a screen** (
 this 🟢, since the cost is not code, it is the argument. **The one bullet this round settled cost exactly what
 this paragraph predicted a missing operand would cost** — one seed row, one reserved word, one namespace
 reservation — which is the only way in which it was a cheap question: it was cheap to *fix* and took a whole
-round to notice.
+round to notice. **Round 12 paid the age bill and it came to precisely this invoice, plus one deleted
+sentence**: two seed rows, two reserved words, [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded),
+and the correction of a claim this corpus repeated for four rounds because it sounded like a type system.
+The bill was never the expensive part; **not noticing which claim you were leaning on was.**
 
 ---
 
@@ -948,6 +966,7 @@ measured it.** An invalidation that is too slow to run is not a slow feature, it
 | `membership` open/close, and the 1 January sweep | by **person**, not by scope, and only where an expression contains `MEMBERS` — the sweep is no longer the universal invalidator it was while the gate existed |
 | `event_registration` insert, waitlist move, `is_confirmed` | every cached answer **on that event** for the four attendance tiers, which are computed rather than stored |
 | `person` merge or unmerge | both directions, by person id, since sets are keyed on person — **and since D-105 invalidating is not enough**: every `audience_operand` leaf whose `selector_arg_id` names the absorbed person has to be *repointed*, because a leaf that resolves to nobody is the empty set, which is silent on the allow side and **widens a deny on the `-` side** ([F-10](#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)) |
+| **no write at all** — somebody turns sixteen | every cached answer **about that person** whose expression contains `OLDER(16)` or `YOUNGER(16)`, at midnight, entirely predictable and announced by nothing. This is the list's **first entry with no causing write**, and [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) accepts it **by ruling, not by oversight**: *"I know, that the time will change, how the rules resolve and IT IS FINE."* The row is here so that nobody implements it as a bug — the cache is already keyed to a date, a check for a past date has to answer for that past date, and there is no row to expire because nothing was ever stored. **No new mechanism, and one more reason the TTL below is the actual question** |
 | ~~a unit's parent changing~~, ~~a `scope_exposure` write~~ | **retired** — the hierarchy and `scope_exposure` are deleted (D-097), and with them the two widest fan-outs the list used to have |
 
 **What is genuinely still a question.** The TTL, and one shape of invalidation that has no good answer yet:
@@ -1783,6 +1802,18 @@ schema and the likeliest answer is one sentence naming a person; but the failure
 slow system, it is **the wide audience nobody looked at, on a check path that has no reason left to complain**,
 and unlike F-16 there is no measurement that makes it go away — only a reader.
 
+**Round 12 gave this report a second column, and it should not become a second page.**
+[D-106](decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)
+refused every refusal that would have made a broken operand stop a save, and what it bought instead is a list:
+*the audiences with a leaf that resolves to nobody*. That is the same page, the same audience owner, the same
+"somebody has to open it" weakness — **one report, two columns: the widest expansions, and the failing leaves**
+— and [F-23](#f-23--a-derived-set-moves-with-no-write-is-the-preview-the-record-of-who-was-reached) would add a
+third ("whom does this reach today, against whom it reached when it was saved"). **Three findings from three
+rounds, each of which concluded that the answer is a report nobody is obliged to read, is itself a finding**:
+this module now has a page it cannot do without and no decision that anyone looks at it. Whoever answers this
+entry is answering all three, and the honest version of the answer names a person and a cadence rather than a
+feature.
+
 ---
 
 ### F-22 🟢 Forty hand-typed names print as thirty-nine pairs of brackets. Is that the editor's problem?
@@ -1836,6 +1867,44 @@ is also the moment someone decides what a grant looks like on a screen.
 
 ---
 
+### F-23 🟡 A derived set moves with no write. Is the preview the record of who was reached?
+
+**(arrived with round 12, from [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded).)**
+
+**The question.** A grant's reach is printed by the editor before the grant is saved, and that printing is
+what the audit trail keeps as "whom this grant was made to mean". Until round 12 every operand in the language
+moved only when somebody **wrote** something, so the snapshot and the set could only diverge for as long as a
+cache was warm. `OLDER(n)` and `YOUNGER(n)` are the first operands whose set moves on its own, at midnight,
+with no row changing and no event to subscribe to — so the record of a decision made in March is now a snapshot
+of a set that has, by November, quietly changed members. **What exactly is the record of: the words, or the
+people the words reached on the day they were saved?**
+
+**What this is *not*, stated so it is not raised again.** It is not a performance question, not a cache
+correctness question, and not a request to make the language static. Those three were put and answered
+([F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it) carries the ruling: *"I know, that the time
+will change, how the rules resolve and IT IS FINE"*), and a check for a past date already answers for that past
+date. **What survived the ruling is the record, not the resolution** — the difference being that resolution
+has an answer for every date, while the *audit trail* has an answer only for the date it was written.
+
+**Options, none of them free.**
+
+| Option | What it buys | What it costs |
+|---|---|---|
+| **Nothing — the words are the record** | The design stays exactly as decided; an audit row records an expression and a person's act, which is arguably all a document about a rule can honestly hold | The people-list printed in March stops being reproducible, so "who could read this in May" has no answer in the audit trail and must be re-derived from birth dates on demand |
+| **Re-derive on demand: a "whom does this reach today, and on any date" query** | A real answer for any date, computed from data the model already keeps, with no new stored set | It is a report nobody is obliged to read, i.e. **a convention, not a guard**, and it is the same page [F-21](#f-21--nothing-bounds-an-audience-expansion-now-who-reads-the-report-of-the-widest-ones) and [D-106](decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal) already put on one page — which argues for building them together, once |
+| **Store the resolved set with each preview** | The March snapshot stays readable forever | A per-person history of an audience is **exactly the roster table this corpus deleted twice** ([D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) and the assumption row behind it), and it would hold personal data about people who were never granted anything — which collides with the redaction window |
+
+**How to answer it.** Pick the middle row and say plainly that the third is refused, because the temptation
+to keep the list is the oldest reflex in this module and it has now been declined in three different costumes.
+**The tell that this is the right shape**: the middle row answers a question a person asks, while the third row
+stores an answer to a question nobody asked, about people who did nothing, indefinitely.
+
+**Needed.** One sentence in the audit module about what a preview snapshot *is* — a rendering of the words on
+a date, not a statement of fact about people — and a decision about whether the reach query is one page with
+F-21's two columns or a third page nobody will open.
+
+---
+
 ## G. Events — designed, with three things left open
 
 The module is written: [domain/07-events.md](domain/07-events.md) and
@@ -1858,6 +1927,17 @@ age-bounded case is already handled by opening an event to the right unit.
 `all_members` is a rule the resolver evaluates, so `members_aged_13_plus` can be one too. That
 keeps every answer to "who may register" inside `access_grant`, which is the property D-060
 bought and D-070 defended.
+
+> **Round 12: this entry stays closed, and its reason changed.** The escape hatch above assumed an age test
+> would have to be *built in* — a named audience, a row somebody ships. [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+> seeded the test instead: `event.register_self` granted to `MEMBERS * YOUNGER(15)` is the ceiling, written by
+> an organizer on the day they want it, previewed, and attributed. **So the ceiling is now statable and this
+> entry is still answered "leave it", which makes it a choice the organization makes per event rather than a
+> consequence of the model being unable to say otherwise.** That is a strictly better place for a closed
+> question to sit, and it is worth marking as such — because the previous reason was a limitation dressed as a
+> decision, and a limitation quietly stops being one the day the vocabulary grows. **Nothing else in this entry
+> moves**: the nine-year-old, the tick box nobody ticked, `source = 'staff'`, and the roster query one join from
+> birth dates are all still exactly as accepted.
 
 ### EV-2 🟡 Retention of `event_answer`
 
@@ -2427,9 +2507,10 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 58 | ~~The `PERSON(x)` appearing in D-100's and D-101's worked expressions is **shorthand** for a second grant row, not a missing seeded operand~~ (D-101's registry amendment, class in D-104) **†** — **the opposite: it was seeded** — **as the thirteenth row to arrive** (`takes_argument` true, `argument_type` `person`, `binds_to_item` false), and **today as one of the twelve that remain**, because [D-105](decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `LIST` in the round after. The ordinal belongs to round 10 and the count to round 11: **the registry has never held thirteen rows at the same time as it held twelve**, and neither number says anything about how many it holds now. The registry was the side that was wrong. It was written by two decision entries while the seeded table — copied from the evaluator's arm list rather than from D-101's grammar — carried twelve rows without it, so `MEMBERS * ROLE(x) + PERSON(y)` did not parse for a whole round and the wrong repair (`PERSON(y)` read as `LIST`, which subtracts everybody on the list) was already circulating — **a repair that is now impossible to write, the only fix this one got without a decision**. **The assumption this row recorded was the wrong answer, and saying so is the point: the registry was checked against nothing** | [D-101](decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [F-5](#f-5--which-operands-are-missing-from-the-selector-registry) |
 | 59 | Two expressions with one meaning are **two audiences**: nothing computes semantic equality, and nothing will (D-101) † | [F-14](#f-14--is-semantic-equality-of-two-expressions-worth-a-fingerprint) |
 | 60 | An audience preview is **per-item and lazy**, and no screen expands a set for more than one item at a time (consequence of D-102's per-item reached set) — **unmeasured at real event sizes** | [F-15](#f-15--what-does-the-per-item-audience-preview-cost-at-real-event-sizes) |
-| 61 | A cache key is `(person, permission, item)`, and a stale allow is the failure that matters because deny is absolute (D-102, D-099) — **the asymmetric-TTL answer is proposed in [F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it) and decided by nobody** | [data-model/05](data-model/05-authorization.md#cache-invalidation-revisited) |
+| 61 | A cache key is `(person, permission, item)`, and a stale allow is the failure that matters because deny is absolute (D-102, D-099) — **the asymmetric-TTL answer is proposed in [F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it) and decided by nobody** — **round 12 made the key short by one component**: `OLDER(n)` puts the **date being checked** inside the answer with no write behind it, so a key of `(person, permission, item)` can hold an answer from before a birthday unless the cache cannot outlive the day. [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) accepts that by ruling rather than extending the key; the consequence is carried in [F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it), where it is a table row and not a fix | [data-model/05](data-model/05-authorization.md#cache-invalidation-revisited) |
 | 62 | A `person_group_member` row **lies inside its group's own period** — assumed in §2 of [data-model/02](data-model/02-organization.md#2-person_group_member), reported by integrity check 2 as "a list to read rather than a breach", and **ruled nowhere**. Raised by the page's own author as an assumption these documents are standing on | [data-model/02 §8](data-model/02-organization.md#8-open-issues) |
 | 63 | ~~A **group** may be ended while a live grant or a live expression names it~~ (D-103, amended in the round after the audience row) **†** — **refused at save, in both directions**: ending a group while a live grant, or a live audience reachable from one, names it, **and** writing a new grant onto an already-ended group. The reason is the `-` asymmetry, not the allow side — a live grant on an ended group is safe on the allow side and **widens a deny** on the `-` side, so an ended operand is a way to silently empty a set that was narrowing something. Checked over `audience_operand` rows whose `selector_kind = 'GROUP'`, the same query as the audience rule. **`ROLE(x)` needs no such rule, and the difference is the finding:** an office has no `role.retire`, no status, and deletion is already refused while holder rows exist, so **an office cannot be emptied quietly while a group can be emptied in one click.** The hazard is a property of the shape, not of the idea | [D-103](decisions/decision-log.md#d-103--an-audience-may-name-another-audience), [data-model/02 §8](data-model/02-organization.md#8-open-issues) |
+| 64 | An operand's set moves **when somebody writes** — twelve rounds of invalidation lists were built on this and none of them said it out loud † — **falsified by design by [D-107](decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)**: `OLDER(n)` and `YOUNGER(n)` move at midnight, for one person, with no row to change and no event to subscribe to. **Accepted, not fixed** — *"I know, that the time will change, how the rules resolve and IT IS FINE"* — and the residue that survived the ruling is not resolution but **the record**, which is [F-23](#f-23--a-derived-set-moves-with-no-write-is-the-preview-the-record-of-who-was-reached) | [F-6](#f-6--the-permission-cache-lifetime-and-what-invalidates-it) |
 
 ---
 
