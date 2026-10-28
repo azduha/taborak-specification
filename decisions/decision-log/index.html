@@ -8695,9 +8695,13 @@ that ships a grammar and then grows an arm is worth seeing to have grown one.)</
 <p><em>(The <code>LIST</code> arm is since gone. <a href="#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
 deleted it, and a hand-written set is now written the way every other set in this grammar is written — as
 an operand, <code>PERSON(a) + PERSON(b)</code>. The arm is left printed here because this entry shipped it; the
-registry that has to be true today has fourteen rows, not thirteen — twelve for the round that deleted
+registry that has to be true today has <strong>thirteen</strong> rows — twelve for the round that deleted
 <code>LIST</code>, plus the two attribute rows
-<a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a> added.)</em></p>
+<a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a> added, minus
+the <code>GUARDIANS</code> row <a href="#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>
+deleted. <strong>This footnote said "fourteen rows, not thirteen" until round 13, and a footnote whose number has to be
+re-typed by whoever changes the table is the same defect the footnote itself is describing</strong> — which is why it
+keeps its own history rather than just its new number.)</em></p>
 <p><em>(Two arms have been added since this entry shipped, also by
 <a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>:
 <code>OLDER(n)</code> and <code>YOUNGER(n)</code>. <strong>No operator was added.</strong> The boolean spellings <code>&amp;</code>, <code>|</code>, <code>!</code> were proposed
@@ -9347,10 +9351,14 @@ Until then the registry and the prose are two copies of one thing
 shape, in its cheapest instance), and the report is the check that they still agree.</p>
 <p><strong>See:</strong> <a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>,
 which this closes, <a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md §8</a>
-for the registry (<strong>fourteen rows today</strong>: thirteen when this sentence was written, twelve for the one round
-<a href="#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> owned, and fourteen
-again since <a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
-added two — <strong>four numbers, and only the first and last are counts of the same table</strong>), and
+for the registry (<strong>thirteen rows today</strong> — back to thirteen, which is the number this sentence started with
+and not the set it counted: twelve for the one round
+<a href="#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> owned, thirteen as it was
+written, fourteen once <a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>
+added two, and thirteen again after
+<a href="#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a> removed one — <strong>five
+numbers, the first and the last are equal, and they are not the same thirteen: the old one held <code>GUARDIANS</code> and
+no age operands, this one holds both age operands and no guardian operand</strong>), and
 <a href="../../appendix/permission-catalog/#1-conventions">permission-catalog §1</a> for the naming patterns, which are
 now rules and are written there as such.</p>
 <hr />
@@ -9599,7 +9607,11 @@ grammar; <a href="#d-105--there-are-no-lists-a-hand-written-set-is-an-expression
 <p><strong>Decision, in five clauses.</strong></p>
 <ol>
 <li><strong>The tree grows attribute leaves.</strong> Two seeded operands arrive — <code>OLDER(n)</code> and <code>YOUNGER(n)</code> — read
-   against the person's birth date <strong>as of the date the check is made</strong>. The registry has fourteen rows.</li>
+   against the person's birth date <strong>as of the date the check is made</strong>. The registry has fourteen rows —
+   <strong>thirteen as this entry is being re-read</strong>, <code>GUARDIANS</code> having left in
+   <a href="#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>; the number stays
+   printed here because growing the table by two is the whole content of this clause, and it is the only
+   measurement in it.</li>
 <li><strong>The operators do not change at all.</strong> <code>+ - *</code> are the only operators this language has, and
    <code>OLDER</code>/<code>YOUNGER</code> are just two more operands composed by them — <code>MEMBERS * OLDER(13) * YOUNGER(19)</code>, a band,
    is the same shape as <code>MEMBERS * GROUP(cubs) * PERSON(a)</code>. <strong>There is no comparison operator</strong>: no <code>&gt;=</code>, no
