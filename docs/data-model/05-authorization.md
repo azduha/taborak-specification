@@ -967,8 +967,12 @@ say**, not what the machine computes:
   `EVERYONE` and `*` distributes over `+`, so the set form is no weaker than a boolean one — it buys
   zero expressive power and everything in the way of safety. D-060 refused a rule engine, and a per-person
   boolean language is the door to one. **That half of the argument survived round 12 untouched:** `+`, `-`
-  and `*` are the only operators the language has, and it has exactly one spelling of each. What did not
-  survive is the second half of the same sentence, the test it offered for what an operand
+  and `*` are the only operators this language has, one spelling each; the boolean spellings `&`, `|` and
+  `!` were put to it in the round that admitted the age operands and **were declined**, which is the record
+  [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
+  keeps under *why the operators stayed three*. **The vocabulary grew by two rows and the grammar did not
+  grow at all** — that is the whole of what this round did to the language. What did not survive is the
+  second half of the same sentence, the test it offered for what an operand
   may be: ~~an operand must be a named, materializable set of people. An attribute is not a set of people.
   Guardianship is (`GUARDIANS(x)` is a set), age is not, and the line falls exactly where D-060 already
   drew it.~~ **That test is wrong, and [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
