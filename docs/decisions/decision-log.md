@@ -4897,8 +4897,12 @@ registry that has to be true today has twelve rows, not thirteen.)*
 
 **Two arms the first draft of this grammar omitted, and both were load-bearing elsewhere in the round.**
 `PERSON(x)` names one person — a set of one, so it passes the materializability test, and it is how
-`system.gate_exempt`'s "except Honza" is written inside the expression that granted the rule in the first
-place, which keeps the exception visible next to the thing it exempts. And **bare `name`**, because the
+the membership gate's *"except Honza"* is written inside the expression that granted the rule in the first
+place, which keeps the exception visible next to the thing it exempts. **(This entry's first draft credited
+that pattern to `system.gate_exempt`, which [D-100](#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+had already deleted in the same round: the waiver is an expression now, not a permission code. A live pattern
+pointed at by a dead code is F-19's defect wearing a decision entry's clothes, so it is named rather than
+quietly corrected.)** And **bare `name`**, because the
 round's own control is written `MEMBERS * COUNSELORS`: an expression that does not parse is not a control.
 `ROLE()` and `GROUP()` remain as explicit qualification, required in the canonical rendering.
 
@@ -4922,7 +4926,8 @@ is the answer to it.
 > copied from an implementation is what lost the arm — but the closing proof left with the thing it proved.
 > `PERSON(x)` and `LIST` were never the same operand wearing two names, and they no longer have to be
 > distinguished at all, because one of them was a table. What `PERSON` carries now, alone, is every
-> hand-named person the language can name: the "except Honza" inside `system.gate_exempt`'s own expression,
+> hand-named person the language can name: the *"except Honza"* in `MEMBERS * ROLE(x) + PERSON(y)` — the
+> expression that replaced the deleted gate's waiver, not a permission code of its own,
 > and the run of leaves that spells out the set a list used to hold.
 
 `*` and `-` bind tighter than `+`; **`*` and `-` bind equally, left to right**; brackets override. The rule
