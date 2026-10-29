@@ -160,11 +160,11 @@ catches `X - X` on one node and nothing else.
 A hand-written set of people is written in the expression, as `PERSON(a) + PERSON(b)`, in the same
 place every other set in this language is written; a set that is dated and shared between grants is a
 `person_group`. **The heading is kept so that pages linking here land on the guardrail rather than on
-nothing.** The table's own rules go with it — the per-person `valid_from` / `valid_to` half-open period
-and its no-overlap rule, `added_by` naming who put one person there, the editor rendering an operand as
-`LIST (this audience)`, and the refusal to add a person to a seeded `is_system` audience (adding
-somebody to `everyone` was a category error); the refusal has no row left to refuse, so it retires
-rather than becoming a report. What an expression carries is one period — its grant's — and `created_by`
+nothing.** None of these are in the system: a per-person `valid_from` / `valid_to` half-open period with
+its no-overlap rule, an `added_by` naming who put one person there, an editor rendering an operand as
+`LIST (this audience)`, and a refusal to add a person to a seeded `is_system` audience — adding somebody
+to `everyone` is a category error, and with no list there is no row left to refuse, so that one retires
+instead of becoming a report. What an expression carries is one period — its grant's — and `created_by`
 on a node, which answers *who last saved this tree*.
 
 **Not a roster edit.** The refusal to solve a grant's exception by editing a group roster stands,
