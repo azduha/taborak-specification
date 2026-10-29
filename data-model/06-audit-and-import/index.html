@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/06-audit-and-import/">
       
       
-        <link rel="prev" href="../05d-invariants-and-seed/">
+        <link rel="prev" href="../05e-keys-and-callers/">
       
       
         <link rel="next" href="../06a-import/">
@@ -1209,6 +1209,8 @@
       
         
       
+        
+      
     
     
     
@@ -1378,6 +1380,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2121,6 +2151,8 @@
       
         
       
+        
+      
     
     
     
@@ -2564,6 +2596,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2813,12 +2873,17 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 <tr>
 <td><code>actor_person_id</code></td>
 <td>reference to person, optional</td>
-<td>Taken from the request context, not from the row. <code>NULL</code> for migrations, imports, and batch jobs</td>
+<td>Taken from the request context, not from the row. <code>NULL</code> for migrations, imports, and batch jobs, and <code>NULL</code> when an integration made the call — <code>api_key_id</code> below carries the actor then</td>
+</tr>
+<tr>
+<td><code>api_key_id</code></td>
+<td>reference to <code>api_key</code>, optional</td>
+<td>Which registered integration made the call, when the request authenticated as a caller rather than as a person (<a href="../05e-keys-and-callers/">05e-keys-and-callers.md §14</a>). <strong>Set together with <code>actor_person_id</code> never</strong>: a request is made by a person or by a key, and a row naming both answers <em>who did this</em> twice, which is the impersonation this design refuses at the resolver instead (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>). It names the caller and nothing beside it — not the person who installed that key, whose column is attribution for an act and never an actor here</td>
 </tr>
 <tr>
 <td><code>actor_label</code></td>
 <td>text, optional</td>
-<td><code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code> — for changes with no person actor. Otherwise a forensic gap</td>
+<td><code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code> — free text, and only for the writers that have no row to name themselves by — this system's own writes to itself, the 1 January membership sweep, payload reduction, migrations and the bank statement pull, whose name is <a href="../../open-questions/#f-25">F-25</a>. A caller that is not a person is a row in <code>api_key_id</code>, not a label, so an integration's write never arrives here. Otherwise a forensic gap — the count of rows naming none of the three is check 4 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a></td>
 </tr>
 <tr>
 <td><code>operation</code></td>
@@ -2875,7 +2940,9 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 <p><strong>Indexes</strong></p>
 <ul>
 <li>One row's history: table name and <code>record_id</code>, newest <code>occurred_at</code> first.</li>
-<li>One actor's actions, newest first.</li>
+<li>One actor's actions, newest first — <strong>two of these, not one</strong>, because an actor is a person in one
+  column and a key in another: rows naming a person, and rows naming a key. The review that asks what an
+  integration wrote is asked by key.</li>
 <li>Everything in one transaction, by <code>transaction_id</code>.</li>
 <li>By time alone, newest first.</li>
 <li>Rows by a <em>member of</em> <code>changed_fields</code>. The targeted history queries ask "which rows
@@ -2889,16 +2956,19 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 its audit row stand or fail together.</strong> "The audit trail usually has it" is not a version of this rule — the
 trail is how the organization answers "who changed this child's address, and when?", and an answer that
 depends on which code path made the change is not an answer. <strong>The layer that owes it is the write itself,
-on every path</strong>: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, and a row
-somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
+on every path</strong>: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, a call
+made with a key, and a row somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
 never at risk; check 5 in §5 is the net under the rest, and it is a report, not a guard.</p>
 <p>The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
 detail: the redaction step has to run before the write, and the "nothing changed" test has to run
 before anything is spent on a row that would log noise.</p>
 <ol>
-<li>Read the acting person and the on-behalf-of person from the request context
-   (<code>app.current_person_id</code>, <code>app.on_behalf_of</code>); an unset or empty value means no actor,
-   not an error.</li>
+<li>Read the acting person, the acting key where the request authenticated as one, and the
+   on-behalf-of person from the request context (<code>app.current_person_id</code>, <code>app.on_behalf_of</code>);
+   an unset or empty value means no <em>person</em> actor, not an error. A context naming a key has an
+   actor and is not that case: the key goes in <code>api_key_id</code>, and a row whose actor is a key never
+   sets <code>on_behalf_of</code>, because a key acts for itself
+   (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</li>
 <li>On an <strong>insert</strong>, take the new row as the after-image.</li>
 <li>On an <strong>update</strong>, take both the old and the new row, and work out the changed fields:
    the keys present in both images whose values differ, named in key order.</li>
@@ -2909,10 +2979,10 @@ before anything is spent on a row that would log noise.</p>
    where the row belongs to a redacted person — the personal data erasure has already removed
    from the business tables. Everything else is stored as it stands, including a person's
    descriptive values, which are guarded by §8 item 7 rather than stripped here.</li>
-<li>Write one audit row carrying: the actor and the on-behalf-of persons, the operation as
-   lower-cased <code>insert</code>, <code>update</code> or <code>delete</code>, the table name, the record id taken from the
-   new row and falling back to the old one, the changed fields, both redacted images, and
-   the session id, ip address and request id from the request context.</li>
+<li>Write one audit row carrying: the actor — <code>actor_person_id</code> or <code>api_key_id</code>, never both — and the
+   on-behalf-of person, the operation as lower-cased <code>insert</code>, <code>update</code> or <code>delete</code>, the table name,
+   the record id taken from the new row and falling back to the old one, the changed fields, both
+   redacted images, and the session id, ip address and request id from the request context.</li>
 <li>Change nothing about the row being written. The audit row describes the change and never
    amends it — and it commits in the same transaction as the change. That togetherness is what a
    trigger gave for free and what a logging step written beside the write must supply deliberately:
@@ -3100,9 +3170,9 @@ set two clocks for this system and they point in opposite directions. The accoun
 clock at all</strong> (§4, and <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8 item 3</a>). This
 table has two clocks in one row: <strong>the rows live as long as the system does, and the payloads live 24
 months.</strong> After the window a row is <em>reduced</em> — <code>old_values</code> and <code>new_values</code> emptied, everything else
-left untouched: actor, on-behalf-of, operation, table name, record id, changed fields, transaction,
-session, channel. The trail goes on answering <em>"who changed this row, when, and were they allowed to"</em>
-for the life of the system, and stops answering <em>"and to what"</em> after two years. Twelve months is the
+left untouched: actor person, actor key, on-behalf-of, operation, table name, record id, changed
+fields, transaction, session, channel. The trail goes on answering <em>"who changed this row, when, and
+were they allowed to"</em> for the life of the system, and stops answering <em>"and to what"</em> after two years. Twelve months is the
 <strong>floor</strong> a window may be set to, not a stylistic preference: anything shorter stops covering a full
 year of a child's activities, and a year is the unit an incident is asked in.</p>
 <p><strong>Why the cleanup-job sentence does not forbid this, which matters because the two rules are one word
@@ -3224,9 +3294,12 @@ than only to whoever next opens the record, and the open question is argued ther
 <a href="../01-identity/#what-is-deliberately-not-on-this-table">01-identity.md §2</a> as well as here.</p>
 <h3 id="23-history-query">2.3 History query<a class="headerlink" href="#23-history-query" title="Permanent link">&para;</a></h3>
 <p>The full change history of one row is found by taking the <code>audit_log</code> rows for its table
-name and record id, newest <code>occurred_at</code> first, and reading out when it happened, the
-operation, which fields changed, the old and new values, and who did it — the actor's
-person name where there is an actor, and <code>actor_label</code> where there is not.</p>
+name and record id, newest <code>occurred_at</code> first, and reading out when it happened, the operation,
+which fields changed, the old and new values, and who did it. That last one has three answers, not
+two: the actor's person name where the row names a person, the integration's <code>code</code> where it names a
+key — never anything derived from its secret, which this table does not hold in the first place —
+and <code>actor_label</code> where it names neither
+(<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</p>
 <p><strong>For a <code>person_attribute</code> row this query <em>is</em> the history, not a shadow of it.</strong> Values are
 overwritten in place
 (<a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>),
@@ -3237,8 +3310,9 @@ kind of answer</strong>: who, when, which row, which field, and no value (§2.2,
 degradation to be smoothed over on the screen. An entry with a reduced payload and an entry that
 genuinely recorded no value are two different facts, and a history view that renders both as an empty
 cell tells a reader the organization never knew something it has since stopped holding — so the reduced
-state has to be <em>said</em>, the way <code>actor_label</code> is said when there is no actor person. The date the row
-crossed the window is not stored anywhere and should not be: it is the row's own <code>occurred_at</code> plus the
+state has to be <em>said</em>, the way a key's <code>code</code> or an <code>actor_label</code> is said when the row names no person.
+The date the row crossed the window is not stored anywhere and should not be: it is the row's own
+<code>occurred_at</code> plus the
 window, which is configuration a reader of the screen may not have, so the honest label is that the
 values are no longer retained rather than a date of when they went.</p>
 <p>The consequence is the one §2.2 spends its length on, restated where it bites: <strong>a history screen over this
@@ -3285,7 +3359,7 @@ than an omission now:
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../05d-invariants-and-seed/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Invariants and Seed Data">
+          <a href="../05e-keys-and-callers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Keys and Machine Callers">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3295,7 +3369,7 @@ than an omission now:
                 Previous
               </span>
               <div class="md-ellipsis">
-                Invariants and Seed Data
+                Keys and Machine Callers
               </div>
             </div>
           </a>

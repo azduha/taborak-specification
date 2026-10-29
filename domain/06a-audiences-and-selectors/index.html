@@ -1333,6 +1333,8 @@
       
         
       
+        
+      
     
     
     
@@ -1502,6 +1504,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2135,6 +2165,8 @@
       
         
       
+        
+      
     
     
     
@@ -2578,6 +2610,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2758,14 +2818,18 @@
 
 
 <h1 id="audiences-and-selectors">Audiences and Selectors<a class="headerlink" href="#audiences-and-selectors" title="Permanent link">&para;</a></h1>
-<p>The language a grant is aimed at a set of people in: the expression grammar, the seeded selector
-registry, the rules that keep the tree safe, and what a grant's reach is recorded in. This is the
-audience half of <a href="../06-authorization-model/">06-authorization-model.md</a> and continues its numbering at
-§6.2 — read that page first for scopes, channels, grants, the resolver and precedence.</p>
+<p>The language a grant is aimed at a set of <strong>people</strong> in: the expression grammar, the seeded selector
+registry, the rules that keep the tree safe, and what a grant's reach is recorded in. Every set this
+language names is a set of people, and a grant may instead name one person or one registered key — and
+a key is inside no set this language can name
+(<a href="../06-authorization-model/#10a-a-key--a-caller-that-is-not-a-person">06 §10a</a>). This is the audience half
+of <a href="../06-authorization-model/">06-authorization-model.md</a> and continues its numbering at §6.2 — read that
+page first for scopes, channels, grants, the resolver and precedence.</p>
 <h3 id="62-audiences--an-expression-over-named-sets">6.2 Audiences — an expression over named sets<a class="headerlink" href="#62-audiences--an-expression-over-named-sets" title="Permanent link">&para;</a></h3>
-<p>A grant names a <strong>person or an audience, never both</strong>
-(<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>). An
-audience is <strong>an expression over named sets of people</strong>, stored as a tree of binary nodes and aimed at
+<p>A grant names a <strong>person, an audience or a registered key — exactly one of the three, never two</strong>
+(<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>,
+<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+An audience is <strong>an expression over named sets of people</strong>, stored as a tree of binary nodes and aimed at
 by a grant
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
 Fields, storage rules and the write-path checks are in
@@ -3000,6 +3064,16 @@ fourteenth is a decision entry plus a seed row
 (<a href="../../open-questions/#f-5">F-5</a>).
 A count printed in prose is a count somebody has to reprint when the table changes, and no check prints
 it, so the registry row set is the number.</p>
+<p><strong>A key can never be one of them.</strong> No selector names a registered caller, no operand may hold one in
+either of its reference arms, and a fourteenth row for "the integrations" was offered and refused: <strong>a
+caller is one row and never a set</strong>, for the same reason an office is one person and never a rule — a set
+is the wrong grain for a thing that must be individually revocable. So a grant aimed at integrations is
+one grant per caller, and there is no set they are all in, <code>EVERYONE</code> included, since that operand reads
+<em>any person</em>. <strong>The registry stays at thirteen</strong>, and the module's largest machinery is untouched: nothing
+about a key is compiled, and <code>ruleset_version</code> still bumps on <code>audience_operand</code> plus <code>selector_type</code> and
+on nothing else
+(<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>,
+<a href="../06-authorization-model/#10a-a-key--a-caller-that-is-not-a-person">06 §10a</a>).</p>
 <p><strong>Bound operands — the argument-less forms — are the important half, and they exist to kill a specific
 flaw.</strong> <code>ATTENDED(&lt;event 1204&gt;)</code> written on event 1204 is one grant per event with the event's own id
 typed into it, so "every participant may see the other participants" is a thing you do 400 times and
@@ -3233,7 +3307,7 @@ This page promises no other answer and stores no list that would be one.</p>
   trigger is a materialized table <strong>on its own merits</strong> — a performance structure with a per-person
   invalidation handle and a stated staleness window, not a way back into the past (<a href="../06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">06 §8</a>).</li>
 </ul>
-<p><em>Decisions behind this page: D-011, D-042, D-060, D-061, D-062, D-067, D-074, D-081, D-088, D-091, D-098, D-100, D-101, D-102, D-103, D-104, D-105, D-107, D-109, D-110, D-111, D-112, D-113.</em></p>
+<p><em>Decisions behind this page: D-011, D-042, D-060, D-061, D-062, D-067, D-074, D-081, D-088, D-091, D-098, D-100, D-101, D-102, D-103, D-104, D-105, D-107, D-109, D-110, D-111, D-112, D-113, D-116, D-117.</em></p>
 
 
 

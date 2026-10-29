@@ -1209,6 +1209,8 @@
       
         
       
+        
+      
     
     
     
@@ -1378,6 +1380,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2163,6 +2193,8 @@
       
         
       
+        
+      
     
     
     
@@ -2593,6 +2625,34 @@
     
   
     Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
   
 
     
@@ -3519,7 +3579,11 @@ not, and — if the fee buys insurance — a coverage record that is untrue, all
 is not allowed to be wrong on the common path.</p>
 <p>Auto-refunding is refused for two reasons: it needs the bank integration to work outbound as well
 as inbound, which is a second integration with its own authorization; and it returns the
-grandparent's attempt at a camp contribution.</p>
+grandparent's attempt at a camp contribution. <strong>The first of those has changed kind while the refusal
+stands.</strong> Calls coming <em>in</em> are a designed thing now — a registered key, granted like any other caller
+(<a href="../05e-keys-and-callers/">05e</a>) — so "outbound is a second integration with its own authorization" is no
+longer an absence but a decision with a shape to copy, and the outbound direction itself is
+<a href="../../open-questions/#f-27">F-27</a>. The second reason was never a mechanism, and stands alone.</p>
 <p><strong>Cancellation is where most of the volume comes from, and it is decided now rather than later.</strong>
 <a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
 made cancellation a recorded fact rather than a state, so the event survives, the registrations
@@ -3668,7 +3732,9 @@ within a few days.</p>
    (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>,
    §2a). Reliable payment dates are what the renewal window depends on, and the bank import is what
    supplies them.</li>
-<li><strong>Accounting integration:</strong> does anything need to be exported to an accounting system?</li>
+<li><strong>Accounting integration:</strong> does anything need to be exported to an accounting system? <strong>What is
+   open here is the direction.</strong> Who may call this system is designed (<a href="../05e-keys-and-callers/">05e</a>);
+   this system calling anyone else is <a href="../../open-questions/#f-27">F-27</a>.</li>
 <li><strong>Currency and jurisdiction</strong> — currently assumed <code>EUR</code>.</li>
 <li><strong>Does the fee cover insurance?</strong> If so, "member on the date of the incident" becomes a
    legal record with its own retention needs. This one interacts directly with the

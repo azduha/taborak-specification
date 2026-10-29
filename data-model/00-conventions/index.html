@@ -1444,6 +1444,8 @@
       
         
       
+        
+      
     
     
     
@@ -1613,6 +1615,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2246,6 +2276,8 @@
       
         
       
+        
+      
     
     
     
@@ -2676,6 +2708,34 @@
     
   
     Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
   
 
     
@@ -3347,7 +3407,7 @@ someone runs them. A prohibition nobody runs is a convention, not a guard.</p>
 <tr>
 <td><code>created_by</code></td>
 <td>person, optional</td>
-<td>Who inserted. Absent for system and import jobs.</td>
+<td>Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations (<a href="../../open-questions/#f-25">F-25</a>). An import batch is not one of them: <code>import_batch.created_by</code> is <strong>required</strong> there (<a href="../06a-import/#3-import-pipeline">06a §3</a>), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the <strong>key</strong> there, and no person is inferred from it (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</td>
 </tr>
 <tr>
 <td><code>updated_at</code></td>
@@ -3396,6 +3456,15 @@ application happens to take gives you an audit trail that is silently incomplete
 maintain them at the database level or accept that <code>updated_at</code> means "last changed through the
 app". Do not leave it undecided; an audit column nobody thinks about is worse than no audit
 column, because people rely on it.</p>
+<p><strong><code>api_key.created_by</code> is required, and it is the one column of this shape in the authorization module
+that is never blank.</strong> Installing a permanent outside authority is the most sensitive write that module
+offers, and a key nobody is answerable for is exactly what this file's posture refuses. The line above
+about jobs does not reach it, because no job installs a key: a person installs a key, and a key never
+installs one — <code>api_key.create</code> is among the codes a key may never be granted
+(<a href="../05e-keys-and-callers/">05e-keys-and-callers.md §15</a>,
+<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
+Required is not inherited: the column says who performed the install and nothing else, and a key outlives
+that person with its authority untouched (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).</p>
 <hr />
 <h2 id="8-personal-data-and-erasure">8. Personal data and erasure<a class="headerlink" href="#8-personal-data-and-erasure" title="Permanent link">&para;</a></h2>
 <p>This system holds data about <strong>children</strong>, which raises the stakes on every decision here.</p>
@@ -3613,7 +3682,7 @@ states the fields, rules, invariants and open issues for its part of the model.<
 </tr>
 <tr>
 <td><a href="../05-authorization/">05-authorization.md</a></td>
-<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code>, <code>audience</code>, <code>audience_operand</code>, <code>selector_type</code>, <code>grant_scope_type</code>, <code>access_log</code> — and <strong>no member table for an audience</strong>, because a hand-named person is a <code>PERSON(x)</code> leaf in the expression (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>)</td>
+<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code>, <code>audience</code>, <code>audience_operand</code>, <code>selector_type</code>, <code>grant_scope_type</code>, <code>access_log</code>, <code>api_key</code> (a caller that is not a person: <a href="../05e-keys-and-callers/">05e-keys-and-callers.md</a> §14–§17) — and <strong>no member table for an audience</strong>, because a hand-named person is a <code>PERSON(x)</code> leaf in the expression (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>)</td>
 </tr>
 <tr>
 <td><a href="../06-audit-and-import/">06-audit-and-import.md</a></td>

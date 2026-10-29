@@ -1211,6 +1211,8 @@
       
         
       
+        
+      
     
     
     
@@ -1482,10 +1484,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-uniqueness-rule-has-to-be-careful-with-audiences" class="md-nav__link">
+  <a href="#the-uniqueness-rule-has-to-be-careful-with-grantees" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The uniqueness rule has to be careful with audiences
+        The uniqueness rule has to be careful with grantees
       
     </span>
   </a>
@@ -1671,6 +1673,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2304,6 +2334,8 @@
       
         
       
+        
+      
     
     
     
@@ -2747,6 +2779,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2979,10 +3039,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-uniqueness-rule-has-to-be-careful-with-audiences" class="md-nav__link">
+  <a href="#the-uniqueness-rule-has-to-be-careful-with-grantees" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The uniqueness rule has to be careful with audiences
+        The uniqueness rule has to be careful with grantees
       
     </span>
   </a>
@@ -3097,15 +3157,15 @@
 <p><code>permission</code>, <code>role</code>, <code>role_holder</code> and <code>access_grant</code> — the four tables an answer is made of — and
 the shape of the check they add up to. Design rationale, in plain language:
 <a href="../../domain/06-authorization-model/">../domain/06-authorization-model.md</a>.</p>
-<p><strong>Section numbers are shared across the five parts</strong> and never renumbered, because other
-pages cite them by number and their anchors are built from them: <a href="./">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues).</p>
+<p><strong>Section numbers are shared across the six parts</strong> and never renumbered, because other
+pages cite them by number and their anchors are built from them: <a href="./">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues), and <a href="../05e-keys-and-callers/">05e</a> §14–§17 (a key, and what it may hold).</p>
 <hr />
 <h2 id="1-the-shape-of-the-answer">1. The shape of the answer<a class="headerlink" href="#1-the-shape-of-the-answer" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>permission ─────────────── the atomic capability.       'membership.request.approve'
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                            + where it may be granted:  applies_to  unit | unit_and_item
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                            + read or write:            right_kind
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>access_grant ───────────── THE ONE TABLE THAT GRANTS.   grantee (person | audience),
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>access_grant ───────────── THE ONE TABLE THAT GRANTS.   grantee (person | audience | api_key),
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                                                       scope ('unit' | exactly one item),
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                                       one code, effect (allow | deny),
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                                       period
@@ -3125,7 +3185,8 @@ pages cite them by number and their anchors are built from them: <a href="./">05
 <a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>                          the reference edge to another tree)  edge to another audience)
 <a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
 <a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>guardianship ───────────── authority over one PERSON: right_level   (04-relationships.md)
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>access_log ─────────────── what was decided, and by what authority.
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>api_key ────────────────── a caller that is nobody: a third grantee   (05e-keys-and-callers.md §14)
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>access_log ─────────────── what was decided, and by what authority.
 </code></pre></div>
 <p><strong>One table grants.</strong> <code>access_grant</code> is the only place authority is written (<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>),
 plus the guardianship channel over one person, whose authority is <code>guardianship.right_level</code>
@@ -3167,6 +3228,11 @@ have in common is the temporal pattern every dated row in this system uses:</p>
 <td><em>this grantee may, or may not, do this one thing here</em></td>
 </tr>
 <tr>
+<td>Who the row can name</td>
+<td><strong>A person, always</strong></td>
+<td>A person, a set of people, or a registered integration (§14)</td>
+</tr>
+<tr>
 <td>Carries authority</td>
 <td><strong>No</strong> — confers nothing (§3)</td>
 <td>Yes; it is the only thing that does</td>
@@ -3195,9 +3261,15 @@ have in common is the temporal pattern every dated row in this system uses:</p>
 </table>
 <p><strong>The row count is the price, and it was paid deliberately</strong>
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
-One grant per code is what buys <em>"what exactly does this person have?"</em> answered by reading rows,
-and it costs the question <em>"what does <code>manage</code> give me on this event?"</em>, which has no answer because
-there is no such word.</p>
+One grant per code is what buys <em>"what exactly does this person have?"</em> answered by reading rows —
+the same answer for a set of people, and the same answer for an integration (§15) — and it costs the
+question <em>"what does <code>manage</code> give me on this event?"</em>, which has no answer because there is no such word.</p>
+<p><strong>The grantee column grew a third kind in the same table and <code>role_holder</code> did not</strong>, and the asymmetry is
+the model rather than an oversight: an office is held by a person because holding one is a thing a human
+does, and an office confers nothing anyway (§3). <strong>A key holds no office, appears in no <code>role_holder</code> row,
+and is in no set that <code>ROLE(x)</code> could reach.</strong> Its whole authority is the grant rows naming it, which is
+why auditing an integration means reading one list rather than reconstructing one
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</p>
 <hr />
 <h2 id="2-permission">2. <code>permission</code><a class="headerlink" href="#2-permission" title="Permanent link">&para;</a></h2>
 <p><strong>Fields</strong></p>
@@ -3292,11 +3364,15 @@ row constrains where a grant may sit.</p>
   <em>What <code>namespace</code> does</em>.</li>
 </ul>
 <h3 id="there-is-no-wildcard-permission">There is no wildcard permission<a class="headerlink" href="#there-is-no-wildcard-permission" title="Permanent link">&para;</a></h3>
-<p>A check for <code>X.y</code> is satisfied by <strong>an exact allow of <code>X.y</code></strong>, or by <code>system.admin</code>, which is
-checked outright and is the only permission meaning <em>everything</em>.</p>
+<p>A check for <code>X.y</code> is satisfied by <strong>an exact allow of <code>X.y</code></strong>, or by <code>system.admin</code>, which is checked
+outright and is the only permission meaning <em>everything</em> — <strong>every code, whatever its <code>namespace</code></strong>, the
+<code>system</code> namespace's own nine rows included. What keeps it off an item is not a branch in the resolver
+but the value it is seeded with: <code>applies_to = unit</code>, refused at the save (<em>What <code>namespace</code> does</em>, and
+integrity check 3). A rule that qualified this one by namespace would be a rule about a namespace, which
+the section below forbids for every namespace (<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>A check for permission 'X.y' is satisfied by:
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    - an exact allow of 'X.y', OR
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    - an allow of 'system.admin'   (NULL-namespace permissions only)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    - an allow of 'system.admin'
 </code></pre></div>
 <p><strong>There are no <code>&lt;resource&gt;.admin</code> codes</strong> — no prefix matching in the resolver, and none to come by
 (<a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>).
@@ -3366,6 +3442,12 @@ the direction this model fails in everywhere else. This is a seeding convention 
 D-074's fail-closed posture rather than a ruling in D-099, and §11 has no check for it — a code
 mis-marked <code>read</code> is visible to a human reading the catalog and invisible to the database, which is
 worth knowing before trusting it.</p>
+<p><strong>Of round 16's four new codes, <code>api_key.view</code> is the one marked <code>read</code></strong> — it is the read of a list. The
+three writes are <code>write</code>, as any code that lets its bearer mint a caller is. <strong>The marking changes no
+answer</strong>, in either direction: this column is consulted only by the guardianship channel, which asks about
+one child's record, and these four codes exist only at the unit — so a key never reaches the column, and
+neither does anything else. It is filled in because the column is required of every code, two values
+above (§2, <em>Rules</em>).</p>
 <h3 id="what-namespace-does">What <code>namespace</code> does<a class="headerlink" href="#what-namespace-does" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -3384,7 +3466,7 @@ worth knowing before trusting it.</p>
 <tr>
 <td><code>system</code></td>
 <td>A code about the system itself. It is <strong>seeded <code>applies_to = unit</code></strong>, so no grant on an item can carry it, and the resolver no longer branches on the prefix.</td>
-<td><code>system.permission.edit</code></td>
+<td><code>permission.edit</code></td>
 </tr>
 </tbody>
 </table>
@@ -3862,6 +3944,11 @@ D-099's lists of what is seeded, and §13 records it as one.</p>
 <td>The grantee, when the grant names a set (§8). Evaluated against the person being checked, per person, as a predicate — never as a list of ids.</td>
 </tr>
 <tr>
+<td><code>api_key_id</code></td>
+<td>reference to <code>api_key</code>, optional</td>
+<td>The grantee, when the grant names a caller that is nobody (§14). A key is in no set, so this row is read as written and never evaluated (<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).</td>
+</tr>
+<tr>
 <td><code>scope_type</code></td>
 <td>reference to <code>grant_scope_type</code>, required</td>
 <td><code>unit</code>, or an item type.</td>
@@ -3950,8 +4037,12 @@ D-099's lists of what is seeded, and §13 records it as one.</p>
 </table>
 <p><strong>Rules</strong></p>
 <ul>
-<li>Exactly one of <code>person_id</code> and <code>audience_id</code> is set. A grant to neither is meaningless; a
-  grant to both would be ambiguous — any person in the audience, or only this one?</li>
+<li><strong>Exactly one of <code>person_id</code>, <code>audience_id</code> and <code>api_key_id</code> is set.</strong> A grant to none of them is
+  meaningless; a grant to two would be ambiguous — any person in the audience, or only this one? A grant
+  to both a person and a key would be a grant to a caller and a different caller at once, and there is no
+  reading of it. The three are named <em>together</em> because a rule with an unnamed third case is how a model
+  acquires an answer that depends on which column an implementation happened to look at first
+  (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</li>
 <li><code>valid_to</code> is either absent or strictly after <code>valid_from</code>.</li>
 <li><code>scope_id</code> is absent exactly at <code>unit</code> scope — and that is the whole of what the rule says. It
   constrains the absent case alone; <code>grant_scope_type.item_table</code> is what states which table an id
@@ -3973,6 +4064,15 @@ D-099's lists of what is seeded, and §13 records it as one.</p>
 <li><strong>An audience grant cannot be delegated.</strong> <code>is_delegated</code> requires <code>delegated_from</code>, which is a
   person, and delegating "everyone" is not a coherent act: if <code>audience_id</code> is set, <code>is_delegated</code>
   is false.</li>
+<li><strong>A grant to an API key cannot be delegated either</strong>, on the same reasoning and with the same test:
+  if <code>api_key_id</code> is set, <code>is_delegated</code> is false. Lending is one person's act towards another; a grant
+  to an integration carries the authority of whoever installed it rather than anybody's, so the rule
+  borrowed from the bullet above is not an extra burden here but the absence of a thing that was never
+  present. <strong>The mandatory expiry is refused for a key too</strong>, for the same reason: that expiry exists to
+  stop a loan outliving its reason, and there is no loan to expire
+  (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
+  <strong>One rule over three grantees, not a third rule for the third grantee</strong>
+  (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</li>
 </ul>
 <h3 id="inheritance-stated-once">Inheritance, stated once<a class="headerlink" href="#inheritance-stated-once" title="Permanent link">&para;</a></h3>
 <p><strong>A grant at the unit reaches every item of every type.</strong> A grant on one item reaches that item and
@@ -3995,7 +4095,7 @@ question "who is connected to this event?" is answered by the operands of §8's 
 a special clause for that ("<code>system.admin</code> qualifies whatever the checked scope is"); it existed
 because organization scope and unit scope were different tiers. With one unit scope and plain
 inheritance, the clause has nothing to fix.</p>
-<h3 id="the-uniqueness-rule-has-to-be-careful-with-audiences">The uniqueness rule has to be careful with audiences<a class="headerlink" href="#the-uniqueness-rule-has-to-be-careful-with-audiences" title="Permanent link">&para;</a></h3>
+<h3 id="the-uniqueness-rule-has-to-be-careful-with-grantees">The uniqueness rule has to be careful with grantees<a class="headerlink" href="#the-uniqueness-rule-has-to-be-careful-with-grantees" title="Permanent link">&para;</a></h3>
 <p>The obvious index — one live grant per (grantee, scope) — never worked, because a person can
 legitimately hold a <strong>personal</strong> grant <em>and</em> be covered by an <strong>audience</strong> grant on the same item,
 and those are different rows with different lifetimes. <strong>A second reason it cannot work: one code per row,
@@ -4010,20 +4110,27 @@ the second of them.</p>
   person and are open, unrevoked, and <code>effect = allow</code>.</li>
 <li><strong>At most one live allow per (audience, scope, permission)</strong>, counted the same way over the rows
   that name an audience.</li>
-<li>A person and an audience are <strong>different grantees</strong>, so the same code on the same item may exist
-  once for the person and once for a set they are in. It grants nothing extra and it is not an
-  error; it is two people's decisions about the same capability, which is what the grantee pair has
-  always meant.</li>
+<li><strong>At most one live allow per (key, scope, permission)</strong>, counted the same way over the rows that name
+  an API key.</li>
+<li>A person, an audience and a key are <strong>three different grantees</strong>, so the same code on the same item may
+  exist once for the person, once for a set they are in, and once for an integration. It grants nothing
+  extra and it is not an error; it is a decision about the same capability written more than once, which is
+  what the grantee column has always meant. <strong>A key's row is not a second copy of a person's</strong>, and no row
+  here is read as another one's duplicate
+  (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
-<li>person, audience and scope lookups, each restricted to open rows;</li>
+<li>person, audience, key and scope lookups, each restricted to open rows;</li>
 <li><strong>a deny-only index over open rows with <code>effect = deny</code>, keyed by grantee, scope and permission</strong> —
   the deny lookup runs on every check, at every scope, and it is the first thing the resolver does.</li>
 </ul>
-<p><strong>Denies are excluded from both unique indexes</strong>, so a deny may coexist with an allow on the same
+<p><strong>Denies are excluded from all three unique indexes</strong>, so a deny may coexist with an allow on the same
 grantee, scope and code — which is exactly what makes an explicit deny meaningful. A <strong>personal deny
-beats an audience allow</strong>, because the deny check runs first and is scope-independent (§10).</p>
+beats an audience allow</strong>, because the deny check runs first and is scope-independent (§10). <strong>A deny
+aimed at a key defeats that key's allows and nobody else's</strong>, and a deny aimed at the person who installed
+a key does not touch the key at all: deny is absolute over the grantee it names, and these are different
+grantees (<a href="../../decisions/round-16/#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down">D-118</a>).</p>
 <h3 id="effect-and-why-a---in-an-expression-is-not-a-deny"><code>effect</code>, and why a <code>-</code> in an expression is not a deny<a class="headerlink" href="#effect-and-why-a---in-an-expression-is-not-a-deny" title="Permanent link">&para;</a></h3>
 <p><strong>Two mechanisms that both subtract, and are not interchangeable</strong>
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>):</p>
@@ -4083,7 +4190,7 @@ rather than edited. So the predicate is "open <em>and</em> unrevoked <em>and</em
 partial index that gets one of them wrong is invisible until the day someone cannot save a grant
 they should be able to.</p>
 <h3 id="what-is-refused-when-a-grant-is-saved">What is refused when a grant is saved<a class="headerlink" href="#what-is-refused-when-a-grant-is-saved" title="Permanent link">&para;</a></h3>
-<p><strong>Five checks, one transaction, each with the layer named</strong> — because none of them is a database
+<p><strong>Six checks, one transaction, each with the layer named</strong> — because none of them is a database
 rule, and D-081 forbids writing them as if one were:</p>
 <ol>
 <li><strong>The code may be granted at this scope.</strong> <code>permission.applies_to</code> permits the scope shape
@@ -4109,15 +4216,22 @@ rule, and D-081 forbids writing them as if one were:</p>
    of §11 item 2, and the null-code case is that item's neighbour in item 12. <strong>A leaf pointing at an
    unnamed audience is refused rather than resolved-at-read</strong>, because resolving it later would make a
    grant's reach depend on whether somebody had typed a code into a different screen.</li>
+<li><strong>A code that a key may never hold is not granted to a key.</strong> <code>system.admin</code> and the four
+   <code>api_key.*</code> codes are refused when <code>api_key_id</code> is set (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>,
+   <a href="../05e-keys-and-callers/">§15</a>). <strong>This is the sharpest of the six, and the reason it is here rather
+   than in a constraint is worth stating:</strong> the other five read columns — this one reads a list of five
+   codes that is a column of nothing at all, an equality written against named rows precisely so that no
+   rule can derive it and widen it. No database rule can span it, so <strong>integrity check 20 (§11) is the
+   entire net</strong> for rows that were written before the rule existed or by a path that skipped the save.</li>
 </ol>
-<p><strong>Why the save path and not the check path, said once for all five.</strong> A grant that cannot mean
+<p><strong>Why the save path and not the check path, said once for all six.</strong> A grant that cannot mean
 anything is a data-entry mistake, and a data-entry mistake is refused where the person making it is
 standing. The resolver's job in the same situation is the opposite and is already fixed: an operand
 that does not resolve is the empty set, so anything that slips past these checks denies rather
 than widens (§8, <em>Evaluation</em>) — <strong>except through <code>-</code>, where an empty operand widens, which is why
 these are refusals and not warnings.</strong> Checks 3 and 4 (§11) report what got through, and a row there
 means the write path was skipped — there is no constraint to have disabled.</p>
-<p><strong>A sixth refusal lives on the other screen.</strong> Ending or deleting an <em>audience</em> is refused while a live
+<p><strong>A seventh refusal lives on the other screen.</strong> Ending or deleting an <em>audience</em> is refused while a live
 grant, or a live audience reachable from one, names it (§8, <em>Rules</em>). It is listed here only so that a
 reader of this section does not conclude the grant save is the whole write path.</p>
 <h3 id="no-foreign-key-on-scope_id--the-accepted-trade-off">No foreign key on <code>scope_id</code> — the accepted trade-off<a class="headerlink" href="#no-foreign-key-on-scope_id--the-accepted-trade-off" title="Permanent link">&para;</a></h3>

@@ -16,7 +16,7 @@
         <link rel="prev" href="../05c-access-log-and-resolver/">
       
       
-        <link rel="next" href="../06-audit-and-import/">
+        <link rel="next" href="../05e-keys-and-callers/">
       
       
         
@@ -1211,6 +1211,8 @@
       
         
       
+        
+      
     
     
     
@@ -1468,6 +1470,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2093,6 +2123,8 @@
       
         
       
+        
+      
     
     
     
@@ -2536,6 +2568,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2674,8 +2734,8 @@
 <h1 id="data-model--authorization-invariants-seed-data-open-issues">Data Model — Authorization: invariants, seed data, open issues<a class="headerlink" href="#data-model--authorization-invariants-seed-data-open-issues" title="Permanent link">&para;</a></h1>
 <p>The invariants a correct implementation must hold, the rows the platform ships
 with, and what is still open on this part of the model.</p>
-<p><strong>Section numbers are shared across the five parts</strong> and never renumbered, because other
-pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="./">05d</a> §11–§13 (invariants, seed data, open issues).</p>
+<p><strong>Section numbers are shared across the six parts</strong> and never renumbered, because other
+pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="./">05d</a> §11–§13 (invariants, seed data, open issues), and <a href="../05e-keys-and-callers/">05e</a> §14–§17 (a key, and what it may hold).</p>
 <hr />
 <h2 id="11-invariants-to-verify">11. Invariants to verify<a class="headerlink" href="#11-invariants-to-verify" title="Permanent link">&para;</a></h2>
 <p>Each entry states what it counts and what a non-zero result would mean. They are verified by
@@ -2782,7 +2842,9 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   (§8, <em>What audiences do not do</em>).
 - <strong>9. Holders of <code>system.admin</code>.</strong> Everyone with a live allow of it, however they came by it —
   through a personal grant or through an expression naming an office. This should be a very short
-  list, and it should alert on change.
+  list, and it should alert on change. <strong>A key never appears on it and cannot</strong>: that grant is refused when
+  it is saved and counted by check 20, so a list containing only people is also the evidence that the
+  refusal held.
 - <strong>10. Expression trees that are not trees.</strong> Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose <code>audience_id</code> differs from its parent's; a row whose
   <code>parent_id</code> names no row; an audience with zero or several root rows. <strong>Zero expected, and every
@@ -2932,12 +2994,21 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   A <code>deprecated</code> row that stops granting is therefore a bug in one function, and a <code>disabled</code> row that
   does not is visible in the same place. <strong>Nothing else in §11 can see this one</strong>, because the flag is a
   legitimate value in a legitimate column and every row is well-formed on its own.
-- <strong>19. TIME-BOMB: no row, table or field anywhere may map a person — or a person and a code, or a person
-  and an item — to a permission answer.</strong> This is the reason a permission cache cannot come back later as
+- <strong>19. TIME-BOMB: no row, table or field anywhere may map a caller — or a caller and a code, or a caller
+  and an item — to a permission answer.</strong> <strong>A caller is a person or a registered key, and the widening is
+  deliberate rather than a tidy-up</strong>: as written over persons only, a table keyed by <code>api_key_id</code> and
+  <code>permission_code</code> holding a boolean would not have been forbidden by this invariant
+  (<a href="../../decisions/round-16/#d-123--invariant-19-reads-a-caller-not-a-person">D-123</a>), and <em>"the
+  integration's permissions"</em> is the most natural table in this system to write — it reads like
+  configuration, not like a cache. This is the reason a permission cache cannot come back later as
   an optimization (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
-  Assert it the way a schema review asserts things: <strong>no column pairing a person with a boolean that could
-  only have come from a check, no table whose key contains <code>person_id</code> together with <code>permission_code</code> or a
-  <code>selector_kind</code> / <code>selector_arg_id</code> or an item, and no <code>computed_at</code> sitting beside an answer.</strong> Three
+  Assert it the way a schema review asserts things: <strong>no column pairing a caller with a boolean that could
+  only have come from a check, no table whose key contains <code>person_id</code> or <code>api_key_id</code> together with
+  <code>permission_code</code> or a <code>selector_kind</code> / <code>selector_arg_id</code> or an item, and no <code>computed_at</code> sitting beside
+  an answer.</strong> <strong><code>api_key.last_used_at</code> is named here and cleared, but it is not a fourth shape:</strong> a
+  timestamp of when something happened answers no permission question and nothing reads it to decide one,
+  while <code>api_key.last_checked_permission</code> would be exactly the row this check exists to catch, and is the
+  name a review should search for. Three
   shapes survive the sweep and each is legal for a reason worth repeating: <strong><code>ruleset_version</code></strong>, an integer
   about a <em>ruleset</em> that names no person and keys a compilation; <strong>D-110's record of whom a grant reached</strong>,
   deliberately stale because it is a historical record — a rule naming a person who has since left must
@@ -2952,6 +3023,34 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   vocabulary the residue is a named convention, not a guard: <strong>nothing stops a team from adding a
   <code>permission_cache</code> table again in a year, under load, at 2 a.m., because it is the obvious move and this
   invariant is a paragraph.</strong> <strong>Read D-114 before writing that migration.</strong></p>
+<ul>
+<li><strong>20. A refused code granted to a key.</strong> A live grant naming <code>api_key_id</code> whose permission is
+  <code>system.admin</code> or one of the four <code>api_key.*</code> codes
+  (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
+  <strong>This check is the entire net</strong>, and saying so is the point: the refused set is an equality against five
+  named codes, <code>permission</code> and <code>access_grant</code> share no column, and so no database rule can span them —
+  unlike check 3, which reads one column of the permission row and can therefore always see the shape it
+  counts. A row here means the save path was skipped, not that a constraint was disabled. <strong>The refused set
+  is written out code by code and never derived</strong>, for the reason check 17 states for <code>.admin</code>: an
+  allow-list is where a wildcard comes back to life.</li>
+<li><strong>21. A grant naming a key that cannot be used.</strong> A live, unrevoked grant naming an <code>api_key</code> row that is
+  revoked or past its <code>valid_to</code>. The grant is inert — an expired secret cannot authenticate, so nothing is
+  being reached — and that is precisely why the check exists: <strong>dead weight of this kind reads as an active
+  integration to the next person reviewing who can do what</strong>, which is the same failure check 5 reports for
+  a deny that denies nothing and check 13 for a code nothing grants. Closing the grant is a person's act
+  with a reason, and §14's revocation triple is where the reason is written.</li>
+<li><strong>22. TIME-BOMB: nothing may read a key's own columns to decide an answer.</strong> An assertion, not a report:
+  no code path reaches for <code>last_used_at</code>, <code>owner_person_id</code> or <code>created_by</code> when it resolves a permission,
+  and no check consults the person who installed an integration at all
+  (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>,
+  <a href="../../decisions/round-16/#d-123--invariant-19-reads-a-caller-not-a-person">D-123</a>). <strong>The reason this needs
+  its own numbered assertion is that every one of those columns is right there on the row the check has
+  already loaded</strong>, which makes creator-derived authority the cheapest wrong turn available: a suspended
+  account, a lapsed membership or a <code>deny</code> written against whoever installed a key would otherwise change
+  what the key may do, and D-005's <em>"a permission is never derived from an identity"</em> forbids exactly that —
+  including when the identity belongs to somebody else. 15 and 16 are CI assertions too, and this belongs
+  beside them for the same reason: <strong>a prohibition nobody runs is a convention, not a guard.</strong></li>
+</ul>
 <p><strong>Checks 3, 4, 5, 6 and 9 are the ones to wire to alerts, plus one half of 7.</strong></p>
 <ul>
 <li><strong>3 and 4 are the reports that stand in for the database rules that do not exist.</strong> A row in either
@@ -2979,10 +3078,18 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
   <strong><code>Broken</code></strong> holds the rules that name something deprecated, hidden or disabled or that resolve to nobody
   — checks <strong>1, 2, 3, 7's empty half, 12, 13, 14 and 18's second half</strong> all land there — and <strong><code>Unusual</code></strong>
-  holds rules that resolve correctly and look odd, which is where <strong>6</strong> lives. <strong>Check 7's wide
+  holds rules that resolve correctly and look odd, which is where <strong>6</strong> lives. <strong><code>Unusual</code> also gains a line
+  of keys</strong> — each live <code>api_key</code> with what it is granted, when it was last used, and whether the person in
+  its <code>owner_person_id</code> still has an account — because a permanent outside authority is exactly the kind of
+  correctly-configured oddity a tab is for
+  (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
+  <strong>There is no age threshold on that line</strong>: a bound somebody might want to change belongs in a column, and
+  inventing one is not this page's call. <strong>Check 7's wide
   half and check 9 go to a person rather than to a screen</strong>, because both describe authority getting bigger
-  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>Check 19 goes to neither tab</strong>: it
-  is a fact about the schema, not about a rule, and the place it can be enforced is a migration review. The
+  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>Checks 20 and 21 land in <code>Broken</code>
+  beside 3, 4 and 13</strong> — one is a save-path refusal that got through, the other is authority that reads as
+  live and is not. <strong>Checks 19 and 22 go to neither tab</strong>: they are facts about the schema and about the
+  resolver, not about a rule, and the place either can be enforced is a migration review or a CI assertion. The
   tab is not a guard in
   <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
   sense — nothing is blocked — but <strong>it is where the person writing the rule already is</strong>, which a report on
@@ -3033,6 +3140,13 @@ only what a grant naming <code>ROLE(counselors)</code> says
 <strong>Consistency requirement, and it is the import's problem too:</strong> <code>MEMBERS * ROLE(counselors)</code> is only
 as correct as that roster, so the import reconciliation of D-090 counts people marked as counselors in
 the corpus against <code>role_holder</code> rows written.</p>
+<p><strong>No seeded office holds any of the four <code>api_key.*</code> codes, and none should.</strong> Whoever holds
+<code>system.admin</code> already satisfies those checks because <code>system.admin</code> satisfies every code
+(<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>),
+so seeding one would move the capability to install a permanent outside authority into a row nobody chose,
+on an office whose purpose is something else
+(<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
+<strong>It arrives by an ordinary grant or it does not arrive.</strong></p>
 <p><strong>Everything else is starter material the organization edits</strong> — including the <code>system_admin</code> office
 the catalog sketches, whose reason for existing is that someone has to hold <code>system.admin</code> before
 anything can be granted. <strong>What §12 must fix, and does, is the <em>shape</em> rather than the list</strong>: a
@@ -3044,7 +3158,8 @@ branch (§2).</p>
 <ul>
 <li><strong>The permission vocabulary</strong> — each code marked <code>is_system</code> so it cannot be deleted or renamed —
   spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
-  legacy import, reporting, the thirteen <code>event.*</code> codes, and messaging. <strong>The one complete list is
+  legacy import, reporting, the thirteen <code>event.*</code> codes, messaging, and the four <code>api_key.*</code> codes of <a href="../05e-keys-and-callers/">05e §15</a> —
+  <code>api_key.view</code>, <code>api_key.create</code>, <code>api_key.rotate</code>, <code>api_key.end</code>, every one <code>applies_to = unit</code>. <strong>The one complete list is
   <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a></strong>; this document keeps no second
   copy of it, because two copies drift for exactly the reason above.</li>
 <li><strong><code>grant_scope_type</code></strong>: <code>unit</code> (the only row that is not item-scoped), <code>event</code>, <code>person_group</code>,
@@ -3180,6 +3295,14 @@ the assertion that it stays the only one).</p>
 <hr />
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
+<li><strong>Three questions about callers that are not people, registered rather than guessed at.</strong> Round 16
+  designed the arriving integration and deliberately stopped there: this system's <strong>own</strong> writers are still
+  a NULL plus an <code>actor_label</code> (<a href="../../open-questions/#f-25">F-25</a>), the case where nobody who could hold
+  <code>system.admin</code> can reach a screen has no mechanism (<a href="../../open-questions/#f-26">F-26</a>), and calls going
+  <em>out</em> have no design at all (<a href="../../open-questions/#f-27">F-27</a>).
+  <a href="../05e-keys-and-callers/">05e §17</a> states each from this module's side; none of the three is answered by
+  adding a column to <code>api_key</code>, and a key is a poor fit for the first of them — <strong>a sweep is not a caller
+  and should not have to authenticate.</strong></li>
 <li>The complete permission catalog and real role definitions (§12) — needs your input. The question is
   <strong>which starter grants are written with <code>MEMBERS</code> in the expression and which are not</strong>: <code>role</code> has no
   <code>requires_membership</code> switch to carry the answer
@@ -3191,7 +3314,11 @@ the assertion that it stays the only one).</p>
   <em>grant</em> cannot exist — but a <em>caller</em> that asks <code>can(person, 'event.create', 'event', 1204, …)</code>
   gets the unit's answer rather than an error. <strong>Assumption, not a ruling:</strong> the honest answer is a
   refusal at the API layer naming the code and the scope, because a caller that asks that question has
-  a bug worth surfacing. Nothing in D-097..D-103 settles it.</li>
+  a bug worth surfacing. Nothing in D-097..D-103 settles it. <strong>Round 16 gave that word a second sense
+  and changed this answer not at all:</strong> a call made with a key asks <code>can_key(api_key, 'event.create',
+  'event', 1204, …)</code> and is refused the same way, by the same layer, for the same reason
+  (<a href="../05e-keys-and-callers/#16-how-a-call-made-with-a-key-is-checked">05e §16</a>,
+  <a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</li>
 <li><strong><code>selector_depth_limit</code> (§8): moot — there is no such parameter to give a default</strong>
   (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
   What the question was reaching for is live: <strong>a bound on <em>height</em> does not bound what an expression
@@ -3378,13 +3505,13 @@ D-102, D-103, D-104, D-105, D-106, D-107, D-109, D-110, D-111, D-112, D-113, D-1
         
         
           
-          <a href="../06-audit-and-import/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Model — Audit and Import: the two audit trails, and audit_log">
+          <a href="../05e-keys-and-callers/" class="md-footer__link md-footer__link--next" aria-label="Next: Keys and Machine Callers">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Data Model — Audit and Import: the two audit trails, and audit_log
+                Keys and Machine Callers
               </div>
             </div>
             <div class="md-footer__button md-icon">

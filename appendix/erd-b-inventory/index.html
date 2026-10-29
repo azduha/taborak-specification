@@ -1207,6 +1207,8 @@
       
         
       
+        
+      
     
     
     
@@ -1376,6 +1378,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2091,6 +2121,8 @@
       
         
       
+        
+      
     
     
     
@@ -2521,6 +2553,34 @@
     
   
     Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
   
 
     
@@ -3013,14 +3073,14 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>grant_scope_type</code></td>
 <td>The registry of things a grant may be written on, and the table its id lives in. <strong><code>unit</code> is its only non-item row</strong> — which is where the unit now lives</td>
 <td>Nothing</td>
-<td>One row per scope kind: <code>unit</code>, <code>event</code>, <code>person_group</code>, <code>role</code>, and <code>document</code> deferred. Adding a grantable thing is a row here rather than a migration</td>
+<td>One row per scope kind: <code>unit</code>, <code>event</code>, <code>person_group</code>, <code>role</code>, and <code>document</code> deferred. Adding a grantable thing is a row here rather than a migration. <strong><code>api_key</code> is deliberately absent</strong>: a key is a grantee and never a thing a permission is granted <em>on</em>, so <em>"rotate the accounting key and no other"</em> is not a writable grant at this scale, and the debt is recorded rather than hidden (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>)</td>
 <td>no</td>
 </tr>
 <tr>
 <td><code>access_grant</code></td>
 <td><strong>The only table that grants.</strong> A grantee, a scope, one permission, an effect, a period</td>
-<td><code>person</code> <strong>or</strong> <code>audience</code>, never both; <code>grant_scope_type</code> and <code>⇒ scope_id</code>, absent exactly at <code>unit</code>; <code>permission</code>; <code>person</code> as grantor, delegator and revoker</td>
-<td>At most one live <strong>allow</strong> per grantee, scope <strong>and permission</strong> — denies sit outside the rule on purpose, because allow-beside-deny is the only way to say <em>"the unit's events, except this one"</em>; a delegation must carry an end date</td>
+<td><strong>Exactly one grantee of three kinds:</strong> <code>person</code>, <code>audience</code> or <code>api_key</code> — never two, never none (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>); <code>grant_scope_type</code> and <code>⇒ scope_id</code>, absent exactly at <code>unit</code>; <code>permission</code>; <code>person</code> as grantor, delegator and revoker — always a person, including on a grant whose grantee is a key</td>
+<td>At most one live <strong>allow</strong> per grantee, scope <strong>and permission</strong>, counted once per grantee kind so the one rule is <strong>three</strong> partial unique indexes — denies sit outside all three on purpose, because allow-beside-deny is the only way to say <em>"the unit's events, except this one"</em>; a delegation must carry an end date, and a grant naming a key is never a delegation and so carries no mandatory expiry (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>, <a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>)</td>
 <td>yes</td>
 </tr>
 <tr>
@@ -3045,9 +3105,16 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td>no</td>
 </tr>
 <tr>
+<td><code>api_key</code></td>
+<td><strong>A caller that is nobody</strong>: one registered integration, installed by a named person, holding one live secret that is shown once and kept only as a hash. Not an account (a way for a person to log in), not an office (held by a person, confers nothing), not a selector (no expression can name one) — and so a grantee in exactly the sense a person is (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>)</td>
+<td><code>person</code> as <code>owner_person_id</code> — <strong>a contact, not a channel</strong>, never read to decide an answer; <code>person</code> as <code>created_by</code>, required, because attribution for an act is not a dependency of the authority; <code>person</code> as revoker. Grants name it from <code>access_grant.api_key_id</code>, a real foreign key and not a third reference-less key (§8)</td>
+<td>One row per integration; <code>code</code> and <code>secret_hash</code> each unique among live rows — the second a lookup before it is a constraint; <code>valid_to</code> optional, absent meaning current, and <strong>nothing forces a key to end</strong>: the report is the control (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>). Rotating replaces the hash in place, so there is no window in which both secrets work and no history of past ones (<a href="../../decisions/round-16/#d-119--a-key-is-one-row-holding-one-live-secret-and-it-rotates-in-place">D-119</a>). Nothing at all is derived from <code>created_by</code>, and no key is ever inside an expression — the registry keeps its thirteen rows and none of them names a key (<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>)</td>
+<td>yes</td>
+</tr>
+<tr>
 <td><code>access_log</code></td>
 <td>The audit trail — who did what, by what authority, with what result</td>
-<td><code>person</code> as actor and as subject; <code>⇒ authorization_ref_id</code> naming <code>access_grant</code> <strong>or</strong> <code>guardianship_permission</code> — the enum holds exactly those two channels, so an older row reading <code>role</code> or <code>system</code> names a channel this model cannot read, which is deliberate (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>); <code>⇒ entity_id</code></td>
+<td><code>person</code> as actor and as subject, <strong>or</strong> <code>api_key</code> as actor instead of a person — the two are never both set; <code>⇒ authorization_ref_id</code> naming <code>access_grant</code> <strong>or</strong> <code>guardianship_permission</code> — the enum holds exactly those two channels, so an older row reading <code>role</code> or <code>system</code> names a channel this model cannot read, which is deliberate (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>); <code>⇒ entity_id</code></td>
 <td>Append-only today; <strong>proposed</strong> to take the same 24-month window as the audit payload, which would make this cell wrong as written — <strong>F-8</strong>, unconfirmed (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>
@@ -3071,7 +3138,7 @@ nothing at all, on their own.</p>
 <tr>
 <td><code>audit_log</code></td>
 <td>The row-level trail of changes to business tables, <strong>before and after values included until the payload window passes</strong></td>
-<td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf</td>
+<td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf, <strong>or</strong> <code>api_key</code> as actor instead of a person — the two actor columns are mutually exclusive and <code>on_behalf_of</code> is never set on a row whose actor is a key (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>)</td>
 <td>One row per change; the row is never deleted, but a scheduled <strong>payload reduction</strong> empties the values 24 months after writing (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>
@@ -3279,18 +3346,30 @@ A scalar is not a third one: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> w
 <code>audience_operand.selector_arg_id</code>, and there is no table that number should have named, so there is no
 registry lookup to miss, no orphan for the scan to find and nothing for a merge to repoint. The count is
 about references, and <code>18</code> is not one
-(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</p>
+(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+A third candidate arrived with <code>api_key</code> and is not one either: <code>access_grant.api_key_id</code> names exactly
+one table, always, so it carries an ordinary foreign key and needs none of the four things above — no
+registry saying which table it means, no save-path check against that registry, no orphan for the scan, no
+rule about what an unreadable kind resolves to. <strong>Becoming the third grantee cost a column with a
+constraint, not a column without one</strong>
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</p>
 <p><code>access_grant</code> has <strong>no <code>grantee</code> column</strong> — that is the one <strong>mutual-exclusion</strong> case rather than a
-missing-FK case: exactly one of <code>person_id</code> / <code>audience_id</code> is set, never both, never neither. Both
-columns are nullable, so nothing but the rule says whom a grant means; a grant naming neither is
-meaningless and one naming both is ambiguous about whom in the audience it speaks for.
+missing-FK case: exactly one of <code>person_id</code> / <code>audience_id</code> / <code>api_key_id</code> is set, never two, never none.
+All three columns are nullable, so nothing but the rule says whom a grant means; a grant naming none is
+meaningless and one naming two is ambiguous about whom in the audience it speaks for. The three are not
+three spellings of one thing: a person and a key are read exactly as written, and only an audience is an
+expression evaluated as of the date being checked
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>,
+<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).
 <code>audience_operand</code> carries the same shape of rule one table down — <code>operator</code> with <code>left_id</code>/<code>right_id</code>,
 <strong>or</strong> <code>selector_kind</code> with <code>selector_arg_id</code> where the registry says the code takes an argument — and for
 the same reason: a row satisfying neither is a node in no tree, and an expression containing one resolves
 to nobody.</p>
-<p>Every other column ending in <code>_id</code> has a real foreign key with <code>ON DELETE RESTRICT</code>, <strong>with one
-exception</strong>: <code>event_organizer.event_id</code> is the single <code>ON DELETE CASCADE</code> in the design — an appointment is
-nothing once the occasion it appointed somebody to is gone, and the guards in
+<p>Every other column ending in <code>_id</code> has a real foreign key with <code>ON DELETE RESTRICT</code> — the newest of them
+<code>api_key</code>'s <code>owner_person_id</code>, <code>created_by</code> and <code>revoked_by</code>, and the <code>api_key_id</code> carried by
+<code>access_grant</code>, <code>access_log</code> and <code>audit_log</code> — <strong>with one exception</strong>: <code>event_organizer.event_id</code> is the
+single <code>ON DELETE CASCADE</code> in the design — an appointment is nothing once the occasion it appointed
+somebody to is gone, and the guards in
 <a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">../data-model/08a-event-guards-and-checks.md §8</a> are what make that
 delete safe to allow at all. Two operands whose argument is an integer add no key and no cascade, because
 there is no row for either to be a child of — still one cascading column, still <code>event_organizer.event_id</code>.

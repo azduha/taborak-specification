@@ -1207,6 +1207,8 @@
       
         
       
+        
+      
     
     
     
@@ -1376,6 +1378,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2068,6 +2098,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#8b-keys--a-caller-that-is-nobody" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8b. Keys — a caller that is nobody
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2144,6 +2185,8 @@
       
         
           
+        
+      
         
       
         
@@ -2617,6 +2660,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2802,6 +2873,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#8b-keys--a-caller-that-is-nobody" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8b. Keys — a caller that is nobody
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2836,8 +2918,8 @@
 
 
 <h1 id="appendix--permission-catalog-the-codes">Appendix — Permission Catalog: the codes<a class="headerlink" href="#appendix--permission-catalog-the-codes" title="Permanent link">&para;</a></h1>
-<p>Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, and events — each with the grant that carries it.</p>
-<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../permission-catalog/">permission-catalog.md</a> holds §1, the conventions; <a href="./">permission-catalog-a-codes.md</a> holds §2–§8a, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.</p>
+<p>Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../permission-catalog/">permission-catalog.md</a> holds §1, the conventions; <a href="./">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.</p>
 <hr />
 <h2 id="2-people-and-identity">2. People and identity<a class="headerlink" href="#2-people-and-identity" title="Permanent link">&para;</a></h2>
 <table>
@@ -3124,13 +3206,17 @@ What it gives up is worth naming: nobody collectively chooses the named adult, b
 to choose (<a href="../../domain/04-organization-structure/#1-the-organization-is-one-unit-and-the-unit-is-a-scope">../domain/04-organization-structure.md §1</a>).
 A group has no fee, so unlike a <em>membership</em> there is no gate in front of it besides this permission
 (<a href="../../domain/05-membership-lifecycle/#1-the-flow-you-described">../domain/05-membership-lifecycle.md §1</a>).</p>
-<p><strong>Nothing about a code says whether it requires a paid-up holder</strong>, so this table has nothing to hide and
-nothing to warn about. <strong>The grantee expression performs the membership test:</strong> it says
-<code>MEMBERS * ROLE(x)</code> when the fee is meant to matter and omits it when it is not, evaluated live on the
-checked date (§11,
+<p><strong>Nothing about a code says whether it requires a paid-up holder</strong>, so this table has nothing to hide
+and nothing to warn about. <strong>Where a grantee is a set, the grantee's expression performs the membership
+test:</strong> it says <code>MEMBERS * ROLE(x)</code> when the fee is meant to matter and omits it when it is not,
+evaluated live on the checked date (§11,
 <a href="../../domain/06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">../domain/06-authorization-model.md §6.1</a>),
 which is where the gate went when <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-deleted it along with the code that waived it.</p>
+deleted it along with the code that waived it. <strong>The two grantees that are not sets carry no such test</strong>:
+a grant written to one named person, or to one registered key (§8b,
+<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>),
+has no expression to evaluate, so the fee is nobody's question there and the grantee's own standing is
+the whole of what was chosen.</p>
 </blockquote>
 <h2 id="5-organization-and-positions">5. Organization and positions<a class="headerlink" href="#5-organization-and-positions" title="Permanent link">&para;</a></h2>
 <p><strong>Nothing is granted here, because nothing described is left.</strong> The six <code>org_unit.*</code> codes went with the
@@ -3413,7 +3499,7 @@ a grant carries no level to compare a code against.</p>
 <td><code>system.admin</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td><strong>Everything.</strong> Single top-level capability, <code>applies_to = unit</code></td>
+<td><strong>Everything.</strong> Single top-level capability, <code>applies_to = unit</code>. <strong>Never grantable to a registered key</strong> (§8b)</td>
 </tr>
 </tbody>
 </table>
@@ -3735,6 +3821,10 @@ survives untouched — <em>an <code>event_organizer</code> row grants nothing</e
 land when the grant is saved: a <strong>bound</strong> (argument-less) operand is legal only on an item-scope
 grant, and only where <code>selector_type.argument_type</code> matches the item — <code>PLACED</code> on a group grant is
 refused because that item is not an event. And <code>PRESENT(&lt;event&gt;)</code> is refused outright (§1).
+<strong>A grantee is not always one of these sets</strong>, and the other two kinds are named rather than implied: a
+grant written to one named person, or to one registered key (§8b), has no operand in it and no set behind
+it, because no selector names a key and a key is in nobody's set — including the set of every person
+(<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).
 The definitions, and the reason <code>PLACED</code> rather than <code>ATTENDED</code> is the capacity set, are in
 <a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08a-event-guards-and-checks.md §8</a>.</p>
 <p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose.</strong> Marking presence is a
@@ -3823,6 +3913,149 @@ a database
 (<a href="../../data-model/08-events/#health-facts-and-the-discipline-this-requires">../data-model/08-events.md §7</a>).
 It rests entirely on whoever writes the form.</p>
 </blockquote>
+<h2 id="8b-keys--a-caller-that-is-nobody">8b. Keys — a caller that is nobody<a class="headerlink" href="#8b-keys--a-caller-that-is-nobody" title="Permanent link">&para;</a></h2>
+<p><strong>A registered key is the third thing a permission is held <em>by</em>.</strong> An integration that calls this
+system over its API is one row in <code>api_key</code>, installed by a named person, holding one secret that is
+shown once and kept only as a hash — and it is a <strong>grantee</strong>, in the same sense a person is, reached
+through the same single grant channel and no other
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+It is not an account, which is a way for a person to log in, and it is not a selector: <strong>no expression
+names a key</strong>, so a key holds the grants that name it and nothing besides
+(<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).
+The table itself, what its secret may and may not do, and the resolver entry point a call is checked
+through are in <a href="../../data-model/05e-keys-and-callers/">../data-model/05e-keys-and-callers.md</a>; what
+the catalog owes is four rows, typed.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Namespace</th>
+<th>Sens.</th>
+<th>Grants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key.view</code></td>
+<td>—</td>
+<td></td>
+<td>Which keys exist, what each of them is granted, and when each was last used</td>
+</tr>
+<tr>
+<td><code>api_key.create</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Register a key — mints its secret and shows it once, and never again</td>
+</tr>
+<tr>
+<td><code>api_key.rotate</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Replace a live key's secret, showing the new one once — <strong>no window in which both secrets work</strong></td>
+</tr>
+<tr>
+<td><code>api_key.end</code></td>
+<td>—</td>
+<td>🔒</td>
+<td>Set a key's <code>valid_to</code>, or revoke it now with a reason</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Where each of these may be granted, and what kind of right it is</strong> (§1) — nothing else rides on top:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th><code>applies_to</code></th>
+<th><code>right_kind</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key.view</code></td>
+<td><code>unit</code></td>
+<td><code>read</code></td>
+</tr>
+<tr>
+<td><code>api_key.create</code>, <code>api_key.rotate</code>, <code>api_key.end</code></td>
+<td><code>unit</code></td>
+<td><code>write</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The marking changes no answer, and is filled in because the column is required.</strong> <code>right_kind</code> has
+one customer, the guardianship channel (§6), and that channel asks about one child's record — while
+these four codes live at the unit
+(<a href="../../data-model/05-authorization/#right_kind-a-column-with-exactly-one-customer">../data-model/05-authorization.md §2</a>).
+<code>api_key.view</code> is <code>read</code> because it is the read of a list, and the three writes are <code>write</code> because
+each lets its bearer install or unmake a caller. <strong><code>api_key.view</code> carries no sensitivity mark</strong>, on the
+precedent of <code>role.view</code> and <code>permission.view</code> two sections away: reading the register of integrations
+exposes nobody's personal data, and the secret the row holds never leaves the row — not on this screen,
+not in an export, not in a log line. <em>Why the mark follows what a grant exposes and not the table a
+code names:
+<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>.</em></p>
+<blockquote>
+<p><strong>None of these four is <code>system.*</code>, and that is a difference rather than a spelling.</strong> The <code>system</code>
+namespace holds the codes that administer <em>this system's own machinery</em> — the catalog, the offices,
+the grant rows (§7) — and it is the one place where the rule that <code>permission.resource</code> equals the
+code's first segment is waived: in a <code>system.</code> code those two disagree on purpose
+(<a href="../../data-model/05-authorization/#2-permission">../data-model/05-authorization.md §2</a>). These four
+act on a table that exists, exactly as <code>event.*</code> and <code>person_group.*</code> do, so the first segment
+already <em>is</em> the resource and a prefix would be a second, drifting copy of a name the code carries.
+<strong>And a prefix would buy nothing</strong>, because a namespace routes nothing: the resolver stopped
+branching on the prefix, and
+<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>
+deleted the last reading under which one routed something. The unit-only reach is carried by
+<code>applies_to</code> above, where the save checks it; what a reader needs is the 🔒. The precedent is in §7
+and is stronger than anything here: <code>access_grant.create</code>, the act that turns a code into somebody's
+authority, carries <strong>no</strong> namespace at all.</p>
+<p><strong>What a key may never be granted is five named codes, not a set derived by rule: <code>system.admin</code> and
+the four above.</strong> The grant is refused when it is saved
+(<a href="../../data-model/05-authorization/#what-is-refused-when-a-grant-is-saved">../data-model/05-authorization.md §6</a>),
+and <strong>integrity check 20 is the entire net</strong>, because no database rule spans <code>permission</code> and
+<code>access_grant</code>
+(<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
+One sentence covers both halves — <strong>a key may not change what a key can do, and may not become
+everything.</strong> A bearer secret holding <em>everything</em> is the whole organization in a request header; a
+key holding <code>api_key.create</code> mints its own replacements, so rotating a stolen key means looking for
+the rows a thief installed rather than the rows a person installed. Like check 17's <code>.admin</code>
+assertion this is <strong>an equality against named rows</strong>, and not <code>*.api_key</code> and not "any code about
+keys": an allow-list is where a wildcard comes back to life, which is exactly why the refused set is
+spelled out code by code.</p>
+<p><strong>No seeded office holds any of the four</strong>, and none should: whoever holds <code>system.admin</code> already
+satisfies every one of these checks, because <code>system.admin</code> satisfies every code
+(<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>).
+<strong>The capability to install a permanent outside authority is the capability to escalate</strong>, and the
+🔒 on the three writes is that sentence — it arrives through <code>access_grant.create</code> like every other
+code, so there is no second route to it and no seeded office that quietly holds it. The fourth thing
+a new resource owes this catalog, a row in <code>grant_scope_type</code>, is <strong>declined for a key on purpose</strong>
+(<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>):
+a key is not a grantable item, so none of these codes can be written <em>on</em> one and <strong>"rotate the
+accounting key and no other" is not writable</strong> — anyone who may issue a key may issue any key. That
+is accepted at this scale, and it is recorded here as an unpaid debt rather than as a design feature.</p>
+<p><strong>A key's authority is its grants, in full and only.</strong> Two of the three channels of authority compare
+a person against a row — ownership and guardianship — and for a key neither is refused by a fresh
+rule so much as unreachable, because there is no person for either to compare
+(<a href="../../decisions/round-16/#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down">D-118</a>).
+The consequence worth reading twice: <strong>a deny written against the person who installed a key does
+not touch the key.</strong> Deny is absolute, but it defeats the allows of the grantee it names, and these
+are two grantees. What covers that is a list rather than a guard: the <strong>Unusual section of the tab on
+the permissions page</strong> lists live keys beside people, with what each holds, when it was last used and
+whether its contact still has an account, so a review reads one grant list and not two
+(<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>,
+<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
+<strong>A grant to a key is never a delegation</strong>, on the reasoning that already refuses it for an audience:
+lending is one person's act towards another, and there is no person here to lend
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).</p>
+</blockquote>
+<p><strong>§1's naming rules hold here with no exception taken:</strong> every last segment is an act, and the first
+segment names stored state — a table that now exists. <strong><code>rotate</code> is a last segment this corpus has
+deleted before</strong>, as <code>event.qr.rotate</code> in <a href="../removed-concepts/">removed-concepts.md</a> — a code that never
+existed in any registry and was deleted for being prose only
+(<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).
+These rows are not its revival. The lesson of that deletion is <em>a name must have a row behind it</em>, and
+here the row exists before the prose does
+(<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).</p>
 
 
 

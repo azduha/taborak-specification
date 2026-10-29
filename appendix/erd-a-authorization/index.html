@@ -1207,6 +1207,8 @@
       
         
       
+        
+      
     
     
     
@@ -1376,6 +1378,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2091,6 +2121,8 @@
       
         
       
+        
+      
     
     
     
@@ -2534,6 +2566,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2688,92 +2748,99 @@
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                    ▼
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a> ╔═══════════════════════════════════════════════════════════════╗
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a> ║                         access_grant                          ║  THE ONLY TABLE THAT
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a> ║  person_id   ─┐  exactly ONE names the grantee: both is       ║  GRANTS (D-005). A grant at
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a> ║  audience_id ─┘  ambiguous, neither is meaningless            ║  the unit reaches EVERY item
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a> ║  scope_type ────►  grant_scope_type                           ║  of every type; a grant on
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a> ║               unit | event | person_group | role | document   ║  one item reaches that item
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a> ║  scope_id  ⇒ (polymorphic, NO foreign key; ABSENT exactly at  ║  and nothing else (D-099).
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a> ║               'unit' — that absence IS "the unit is a scope,  ║  There is no middle tier
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a> ║               not a row")                                     ║  left for anything to
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a> ║  permission_id ───► permission   (one code, never a bundle)   ║  inherit down.
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a> ║  effect ∈ allow | deny      DENY IS ABSOLUTE: checked first,  ║
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a> ║                             scope-independent, beats every    ║  A grant is one code and one
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a> ║                             allow, no tie-break of any kind   ║  effect: no level, no locality,
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a> ║  valid_from / valid_to [T] · granted_by · revoked_by/_at      ║  and no wildcard — a check for
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a> ║  is_delegated · delegated_from  (a delegation must expire)    ║  'X.y' needs a grant of 'X.y'.
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a> ╚═══════════════════════════════════════════════════════════════╝
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        ▲ aimed at by id                        ▲ named by code from a leaf (D-103)
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        │
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>   ┌──────────────────────┐                 ┌───────────────────────┐
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>   │         role         │  an office, and │       audience        │  an EXPRESSION over
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>   │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101). Nothing here
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   │ is_system ·          │  by itself:     │ one shape: an         │  is a roster: an operand
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ sort_order           │  the codes an   │  expression over named│  names a set, and the set
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ NO period (D-053)    │  office carries │  sets, with no depth  │  is computed at the check
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ NO scope (D-100): an │  are the live   │  limit (D-101, D-105).│  it is asked about.
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>   │ office is held at the│  grants whose   └───────────┬───────────┘
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   │ unit, never per item │  audience names ├───────────┴──────────────────────────┐
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   └──────────┬───────────┘  ROLE(x)        ▼                                      │
-<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>              │ dated holders     ┌─────────────────────┐                          │
-<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>              ▼                   │  audience_operand   │  hand-written people     │  the audience's
-<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>   ┌────────────────────────────┐ │ one row = ONE NODE: │  are PERSON(a) +         │  expression is
-<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>   │ person · role ·            │ │ operator + left_id  │  PERSON(b) leaves in     │  evaluated live
-<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  this same tree (D-105); │  at the resolver
-<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>   │ granted_by · note          │ │ selector_kind +     │  a person is in the set  │  (D-101)
-<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │  or not, with no dates   │
-<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>   │ a role is held at the unit │ │ (NO FK — see below) │  of their own.           │
-<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>   └────────────────────────────┘ └──────────┬──────────┘                          │
-<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>                                             │ every leaf is typed by              │
-<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>                                             ▼                                     │
-<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>                                  ┌─────────────────────────────┐                  │
-<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>                                  │        selector_type        │  SEEDED and      │
-<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>                                  │ code (a RESERVED word) ·    │  organization-   │
-<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>                                  │ takes_argument ·            │  read-only: the  │
-<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>                                  │ binds_to_item ·             │  language is data│
-<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>                                  │ argument_type · is_system   │  (D-101), not    │
-<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>                                  └─────────────────────────────┘  extensible at   │
-<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>                                                                   runtime         │
-<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>                                                                                   │
-<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>   A BOUND operand — the argument-less `PLACED`, `ORGANIZERS`, `CONFIRMED`,        │
-<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>   `ATTENDED`, `ON_WAITLIST` — means "relative to the item being                   │
-<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>   checked". Legal only on an item-scope grant whose type matches `argument_type`  │
-<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>   (`PLACED` on a group grant is refused, `ORGANIZERS` on a unit grant is          │
-<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>   refused), and the seeded `event.answer.view` → `ORGANIZERS` is therefore a      │
-<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>   TEMPLATE instantiated beside each event row, not one row for every event        │
-<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>   (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
-<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   their argument is an integer — the registry's first non-reference — so          │
-<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   reference-less polymorphic keys stay exactly two. Thirteen seeded rows:         │
-<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
-<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
-<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
-<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
-<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
-<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   in it would refuse either name — both are kept out by what they would do.       │
-<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   `GUARDIANS` is not seeded: a guardian holds a level over a child, not a set of  │
-<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   codes, so an audience aimed at guardians offers one code at a time what the     │
-<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   guardianship channel grants outright (D-113).                                   │
-<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>                                                                                   │
-<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
-<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>   ──────────────────────────────────────────────────────────────────────────────
-<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
-<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>       item of every type; a personal deny beats an audience allow, because this step has
-<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>       already returned (D-013). Revoking is ending that row's period, never a rank of its own.
-<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>    1  a live ALLOW at the unit ── reaches every item of every type: there is no tier
-<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>       between the unit and an item (D-097), and no owner of an item to ask (D-102).
-<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
-<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       one resolver, and no special case for events inside it (D-102).
-<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
-<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
-<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
-<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
-<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>    5  default DENY.
-<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
-<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>   the audit names, never what the answer is. There is **no locality rule**: locality could
-<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>   only ever order allows against each other, and a boolean has nothing to order (D-099).
-<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>   Step 0 is not an ordering either — it is a check that runs before every other.
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a> ║  person_id   ─┐  exactly ONE of the three names the grantee:  ║  GRANTS (D-005). A grant at
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a> ║  audience_id ─┤  two is ambiguous, none is meaningless; a key ║  the unit reaches EVERY item
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a> ║  api_key_id  ─┘  is in no set, so it is read, never evaluated ║
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a> ║  scope_type ────►  grant_scope_type                           ║  of every type; a grant on
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a> ║               unit | event | person_group | role | document   ║  one item reaches that item
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a> ║  scope_id  ⇒ (polymorphic, NO foreign key; ABSENT exactly at  ║  and nothing else (D-099).
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a> ║               'unit' — that absence IS "the unit is a scope,  ║  There is no middle tier
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a> ║               not a row")                                     ║  left for anything to
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a> ║  permission_id ───► permission   (one code, never a bundle)   ║  inherit down.
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a> ║  effect ∈ allow | deny      DENY IS ABSOLUTE: checked first,  ║
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a> ║                             scope-independent, beats every    ║  A grant is one code and one
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a> ║                             allow, no tie-break of any kind   ║  effect: no level, no locality,
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a> ║  valid_from / valid_to [T] · granted_by · revoked_by/_at      ║  and no wildcard — a check for
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a> ║  is_delegated · delegated_from  (a delegation must expire)    ║  'X.y' needs a grant of 'X.y'.
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a> ╚═══════════════════════════════════════════════════════════════╝
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        ▲ aimed at by id                        ▲ named by code from a leaf (D-103)
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>   ┌──────────────────────┐                 ┌───────────────────────┐
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>   │         role         │  an office, and │       audience        │  an EXPRESSION over
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101). Nothing here
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ is_system ·          │  by itself:     │ one shape: an         │  is a roster: an operand
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ sort_order           │  the codes an   │  expression over named│  names a set, and the set
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ NO period (D-053)    │  office carries │  sets, with no depth  │  is computed at the check
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>   │ NO scope (D-100): an │  are the live   │  limit (D-101, D-105).│  it is asked about.
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   │ office is held at the│  grants whose   └───────────┬───────────┘
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   │ unit, never per item │  audience names ├───────────┴──────────────────────────┐
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>   └──────────┬───────────┘  ROLE(x)        ▼                                      │
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>              │ dated holders     ┌─────────────────────┐                          │
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>              ▼                   │  audience_operand   │  hand-written people     │  the audience's
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>   ┌────────────────────────────┐ │ one row = ONE NODE: │  are PERSON(a) +         │  expression is
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>   │ person · role ·            │ │ operator + left_id  │  PERSON(b) leaves in     │  evaluated live
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>   │ valid_from · valid_to ·    │ │  ...or... ONE LEAF: │  this same tree (D-105); │  at the resolver
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>   │ granted_by · note          │ │ selector_kind +     │  a person is in the set  │  (D-101)
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>   │ NO scope columns at all:   │ │ selector_arg_id ⇒   │  or not, with no dates   │
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>   │ a role is held at the unit │ │ (NO FK — see below) │  of their own.           │
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>   └────────────────────────────┘ └──────────┬──────────┘                          │
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>                                             │ every leaf is typed by              │
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>                                             ▼                                     │
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>                                  ┌─────────────────────────────┐                  │
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>                                  │        selector_type        │  SEEDED and      │
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>                                  │ code (a RESERVED word) ·    │  organization-   │
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>                                  │ takes_argument ·            │  read-only: the  │
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>                                  │ binds_to_item ·             │  language is data│
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>                                  │ argument_type · is_system   │  (D-101), not    │
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>                                  └─────────────────────────────┘  extensible at   │
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>                                                                   runtime         │
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>                                                                                   │
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>   A BOUND operand — the argument-less `PLACED`, `ORGANIZERS`, `CONFIRMED`,        │
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>   `ATTENDED`, `ON_WAITLIST` — means "relative to the item being                   │
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>   checked". Legal only on an item-scope grant whose type matches `argument_type`  │
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>   (`PLACED` on a group grant is refused, `ORGANIZERS` on a unit grant is          │
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>   refused), and the seeded `event.answer.view` → `ORGANIZERS` is therefore a      │
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>   TEMPLATE instantiated beside each event row, not one row for every event        │
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   their argument is an integer — the registry's first non-reference — so          │
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   reference-less polymorphic keys stay exactly two. Thirteen seeded rows:         │
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   in it would refuse either name — both are kept out by what they would do.       │
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   `GUARDIANS` is not seeded: a guardian holds a level over a child, not a set of  │
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   codes, so an audience aimed at guardians offers one code at a time what the     │
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>   guardianship channel grants outright (D-113).                                   │
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>                                                                                   │
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>   can_key(api_key, permission_code, scope_type, scope_id, at) ── same resolver, no person
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>   ──────────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>       item of every type; a personal deny beats an audience allow, because this step has
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>       already returned (D-013). Revoking is ending that row's period, never a rank of its own.
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    1  a live ALLOW at the unit ── reaches every item of every type: there is no tier
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       between the unit and an item (D-097), and no owner of an item to ask (D-102).
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>       one resolver, and no special case for events inside it (D-102).
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>    5  default DENY.
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>   A KEY reaches steps 0, 1, 2 and 5 and no others: steps 3 and 4 each compare a person
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>   against a row, and a key is not a person — so neither channel is refused by a rule of its
+<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>   own, neither is reachable (D-118). can_key therefore takes no owner and no person of any
+<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>   kind: that parameter would be the impersonation hole, because a claimed person is exactly
+<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>   that — claimed (D-121).
+<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
+<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>   the audit names, never what the answer is. There is **no locality rule**: locality could
+<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>   only ever order allows against each other, and a boolean has nothing to order (D-099).
+<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>   Step 0 is not an ordering either — it is a check that runs before every other.
 </code></pre></div>
 <p><strong>Key points:</strong></p>
 <ul>
@@ -2825,8 +2892,10 @@
   to be granted <strong>by that body</strong> — by the people who recruited its leader and can be asked. What
   remains is a permission held by a named adult, an audit trail whose payloads expire after two years,
   and a report of who holds the write, minus the part where the adult was somebody the body chose.</em></li>
-<li><strong>A grantee may be an audience.</strong> <code>access_grant.person_id</code> and <code>audience_id</code> are mutually exclusive —
-  never both, never neither. An audience is <strong>an expression over named sets</strong>
+<li><strong>A grantee may be an audience, or a key.</strong> <code>access_grant.person_id</code>, <code>audience_id</code> and <code>api_key_id</code>
+  carry exactly one value between them — never two, never none
+  (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+  An audience is <strong>an expression over named sets</strong>
   (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>):
   every operand is evaluated live and nothing is stored as a roster, a hand-written set is written
   <code>PERSON(a) + PERSON(b)</code> like any other set
@@ -2847,6 +2916,15 @@
   Nothing else a rule names is deleted any more, and the empty set a <code>disabled</code> operand yields is
   somebody's deliberate act, not a failure. A person with no birth date is not such a failure either:
   that operand resolves perfectly well, and they are simply not in the set.</li>
+<li><strong>A key is the third grantee, and it holds no expression.</strong> The seeded <code>selector_type</code> registry keeps
+  its <strong>thirteen</strong> rows and none of them names a key, so there is nothing to compile for one and no set it
+  could join — <code>EVERYONE</code> is every <em>person</em>, so a key is not even in the widest operand
+  (<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).
+  What that keeps is this diagram's largest machinery unchanged: a grant naming a key is read as written,
+  <code>ruleset_version</code> keeps the two tables that bump it, and <code>api_key_id</code> is a <strong>real foreign key</strong>, so the
+  reference-less polymorphic keys stay the two they were. What it costs is that <strong>"grant this to the
+  integrations" is not one sentence</strong>: twelve integrations need twelve grants, and the thirteenth is a
+  write somebody performs.</li>
 <li><strong>Nothing owns an event</strong> (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
   The people connected to an event are named by operands that bind to it — <code>ORGANIZERS</code>, <code>PLACED</code>,
   <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code> — each a set the item itself defines. An operand is a set, not
@@ -2903,6 +2981,7 @@
     ACCESS_GRANT {
         uuid person_id FK
         integer audience_id FK
+        integer api_key_id FK
         string scope_type FK
         integer scope_id
         integer permission_id FK
@@ -2920,6 +2999,20 @@
         boolean is_system
         date valid_from
         date valid_to
+    }
+    API_KEY {
+        integer id PK
+        string code
+        string name
+        string secret_hash
+        date valid_from
+        date valid_to
+        timestamp last_used_at
+        uuid owner_person_id FK
+        uuid created_by FK
+        timestamp revoked_at
+        uuid revoked_by FK
+        string revoke_reason
     }
     PERSON_GROUP {
         uuid id PK
@@ -2939,14 +3032,21 @@
     PERSON ||--o{ ACCESS_GRANT : "is granted to"
     PERSON ||--o{ ACCESS_GRANT : "delegated by"
     AUDIENCE ||--o{ ACCESS_GRANT : "is granted to"
+    API_KEY ||--o{ ACCESS_GRANT : "is granted to"
     PERMISSION ||--o{ ACCESS_GRANT : "is its one code"
     GRANT_SCOPE_TYPE ||--o{ ACCESS_GRANT : "types the scope"</code></pre>
 <p><strong>Key point:</strong> <code>access_grant</code> is a pentagon of references and grants exactly one thing — a grantee
-(person <strong>or</strong> audience), a scope, <strong>one</strong> permission, an <strong>effect</strong>, a period
+(person <strong>or</strong> audience <strong>or</strong> key), a scope, <strong>one</strong> permission, an <strong>effect</strong>, a period
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
-Uniqueness follows the shape: at most one live <strong>allow</strong> per grantee, scope <strong>and permission</strong>, with
-denies deliberately outside the rule so a deny can sit beside an allow on the same item — that pair is
-the only way to say <em>"this person has the unit's events, except this one"</em>.</p>
+Uniqueness follows the shape: at most one live <strong>allow</strong> per grantee, scope <strong>and permission</strong> — and
+because a unique index does not constrain a row whose grantee column is <code>NULL</code>, that one rule is
+<strong>three</strong> unique indexes, one counted over the rows naming a person, one over the rows naming an
+audience, one over the rows naming a key
+(<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+Denies sit deliberately outside all three so a deny can sit beside an allow on the same item — that pair is
+the only way to say <em>"this person has the unit's events, except this one"</em>. A person, a set and a key are
+three grantees, so the same code on the same item may live once for each of them, and no row there is
+another one's duplicate.</p>
 <p><strong>No line leaves <code>scope_id</code>, and that is the diagram telling the truth.</strong> The edge that exists runs to
 <code>grant_scope_type</code>, the seeded registry (<code>unit</code> — the only row with <code>is_item_scoped = false</code>, <code>event</code>,
 <code>person_group</code>, <code>role</code>, <code>document</code> deferred) which is what states which table the unresolved id belongs
@@ -2968,7 +3068,12 @@ The second arrow into <code>person</code> is <code>granted_by</code>, and it is 
 The <strong>act</strong> of appointing is what <code>audit_log</code> holds, with its actor taken from the request context rather
 than from the row (<a href="../../data-model/06-audit-and-import/#2-audit_log">../data-model/06-audit-and-import.md §2</a>);
 the two are not one column's job, and every other actor column here (<code>access_grant.granted_by</code>,
-<code>person_group_member.added_by</code>) points the same way for the same reason.</p>
+<code>person_group_member.added_by</code>) points the same way for the same reason. <strong>The first actor column in this
+appendix that does not point at a person is on a trail, not in this diagram:</strong> <code>access_log.api_key_id</code> and
+<code>audit_log.api_key_id</code> name the registered caller a request authenticated as, mutually exclusive with each
+trail's <code>actor_person_id</code> — a request is made by a person or by a key, never by both at once, so there is
+no actor column to disagree about and <code>on_behalf</code> is never set on a row whose actor is a key
+(<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</p>
 <p><strong>Names are one namespace.</strong> <code>role.code</code>, <code>person_group.name</code> and a set <code>audience.code</code> are unique
 <strong>together</strong>, case- and separator-folded, and every <code>selector_type.code</code> is reserved — so a group called
 <code>MEMBERS</code> is refused at the save rather than discovered later as an expression whose meaning moved. No
@@ -3063,7 +3168,10 @@ nothing for a cascade to find, nothing for the orphan scan to walk, and the bind
 registry row and nothing more: they are ordinary named operands, composed by <code>+ - *</code> like every other, and
 the set they name changes with no write at all.</p>
 <p><strong>No leaf resolves to anything but people, and that is why there is no <code>GRANTS(…)</code>.</strong> An operand resolves
-to a <strong>set of people</strong>, because a set of people is what a grantee is; a set of <em>grants</em> is a filter over
+to a <strong>set of people</strong>, because a set of people is what a grantee that is a set is — the two grantees that
+are not sets, one named person and one registered key, name a single bearer and are reached without this
+tree at all (<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>);
+a set of <em>grants</em> is a filter over
 the grant list, and "these twenty rows, now also for that office" is something an editor does while
 finding the rows to act on, not something a stored grantee could ever be evaluated against. The bulk
 operation stays an affordance over the list, and the registry refuses the kind rather than leaving it

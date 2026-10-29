@@ -1211,6 +1211,8 @@
       
         
       
+        
+      
     
     
     
@@ -1488,6 +1490,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2121,6 +2151,8 @@
       
         
       
+        
+      
     
     
     
@@ -2564,6 +2596,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2730,11 +2790,15 @@
 <h1 id="data-model--authorization-the-audience-table-the-grammar-the-selector-registry">Data Model — Authorization: the audience table, the grammar, the selector registry<a class="headerlink" href="#data-model--authorization-the-audience-table-the-grammar-the-selector-registry" title="Permanent link">&para;</a></h1>
 <p>What an audience is as a row, how an expression is written and rendered, and
 which operands the language has.</p>
-<p><strong>Section numbers are shared across the five parts</strong> and never renumbered, because other
-pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="./">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues).</p>
+<p><strong>Section numbers are shared across the six parts</strong> and never renumbered, because other
+pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="./">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues), and <a href="../05e-keys-and-callers/">05e</a> §14–§17 (a key, and what it may hold).</p>
 <hr />
 <h2 id="8-audience--grants-that-target-a-set-of-people">8. <code>audience</code> — grants that target a set of people<a class="headerlink" href="#8-audience--grants-that-target-a-set-of-people" title="Permanent link">&para;</a></h2>
-<p>A grant can name a <strong>person</strong> or an <strong>audience</strong> (D-042). <strong>An audience is an expression over
+<p>A grant can name a <strong>person</strong>, an <strong>audience</strong> or a <strong>registered key</strong> (D-042, widened by
+<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+<strong>This section is the language of the middle one</strong>: a person is a reference and so is a key
+(<a href="../05e-keys-and-callers/">05e §14</a>), while an audience is a set, and a set needs a language. <strong>An
+audience is an expression over
 named sets, stored as a tree</strong>
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>):
 <code>MEMBERS * ROLE(treasurers) - GROUP(schuzka2026-1)</code> is one grant's grantee. One grant composes a

@@ -1388,6 +1388,8 @@
       
         
       
+        
+      
     
     
     
@@ -1557,6 +1559,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2190,6 +2220,8 @@
       
         
       
+        
+      
     
     
     
@@ -2620,6 +2652,34 @@
     
   
     Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
   
 
     
@@ -3224,6 +3284,12 @@ person record to be excepted from: everything other than name, gender and age is
 So the right level is <code>none</code>, <code>view</code> or <code>write</code>, applied to the record <strong>whole</strong>, and what
 was given up is not a half-built feature but an arrangement the organization decided not
 to want.</p>
+<p><strong>A key is a grantee, and never an operand.</strong> Where a guardian holds a channel and no grant,
+an integration holds grants and belongs to no set, <code>EVERYONE</code> included — and it is not an
+<strong>account</strong>, which is a way for a person to log in
+(<a href="../glossary-authorization/#authorization">API key</a>,
+<a href="../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>,
+<a href="../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).</p>
 <p><strong>Acting on behalf</strong> — Performing an operation as another person, under that guardianship
 row's right level (<code>view</code> to read it, <code>write</code> to change it). Every such operation records
 both the acting person and the subject person
@@ -3231,8 +3297,9 @@ both the acting person and the subject person
 <hr />
 <h2 id="authorization">Authorization<a class="headerlink" href="#authorization" title="Permanent link">&para;</a></h2>
 <p>The authorization vocabulary — <strong>permission, scope, grant, allow and deny, channel, audience,
-selector, the expression grammar, the compilation, and the states a named thing gets instead of
-deletion</strong> — is defined on its own page: <a href="../glossary-authorization/">glossary-authorization.md</a>.</p>
+selector, the expression grammar, the compilation, a key and the caller a check is answered
+about, and the states a named thing gets instead of deletion</strong> — is defined on its own page:
+<a href="../glossary-authorization/">glossary-authorization.md</a>.</p>
 <hr />
 <h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h2>
 <p><strong>Event</strong> — A dated occasion that people <strong>register</strong> for: a camp, a trip, a hike, a
@@ -3432,7 +3499,7 @@ as-of 1990–2010 and audit time 2026. Do not conflate them.</p>
 </tr>
 <tr>
 <td>"they're allowed to attend"</td>
-<td>a live <strong>allow</strong> grant naming <code>event.register_self</code>, aimed at them or at a set they belong to, <strong>and no live deny anywhere</strong> naming them — not a level, and nothing inherited from a unit that owns the event</td>
+<td>a live <strong>allow</strong> grant naming <code>event.register_self</code>, aimed at them or at a set they belong to (a grant aimed at an <strong>integration</strong> is the third kind of grantee and answers for that integration alone, never for a person attending), <strong>and no live deny anywhere</strong> naming them — not a level, and nothing inherited from a unit that owns the event</td>
 </tr>
 <tr>
 <td>"open to everyone"</td>
@@ -3465,7 +3532,7 @@ as-of 1990–2010 and audit time 2026. Do not conflate them.</p>
 </tbody>
 </table>
 <hr />
-<p><em>Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113.</em></p>
+<p><em>Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113, D-116, D-117.</em></p>
 
 
 

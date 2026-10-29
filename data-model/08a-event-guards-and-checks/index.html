@@ -1209,6 +1209,8 @@
       
         
       
+        
+      
     
     
     
@@ -1378,6 +1380,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2182,6 +2212,8 @@
       
         
       
+        
+      
     
     
     
@@ -2625,6 +2657,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2855,7 +2915,10 @@
 <hr />
 <h2 id="8-projections-and-guards">8. Projections and guards<a class="headerlink" href="#8-projections-and-guards" title="Permanent link">&para;</a></h2>
 <h3 id="the-unit-authority-rule-and-can_event--both-deleted">The unit-authority rule, and <code>can_event()</code> — both deleted<a class="headerlink" href="#the-unit-authority-rule-and-can_event--both-deleted" title="Permanent link">&para;</a></h3>
-<p><strong>Every event check goes through the ordinary <code>can()</code> and nothing else.</strong> There is no
+<p><strong>Every event check goes through the ordinary <code>can()</code> and nothing else</strong> — or through <code>can_key()</code>, which is
+that same function's other door and takes no person
+(<a href="../05c-access-log-and-resolver/#10-the-resolver">05c §10</a>); an integration's call at <code>('event', 42)</code> is
+matched exactly the same way, by an allow at the unit or on that event. There is no
 <code>can_event(person, permission_code, event, at)</code> wrapper and no unit-authority rule for events:
 an event is an item like any other, and the resolver matches scope exactly. The person whose
 job is to run the organization's camps passes a check at <code>('event', 42)</code> because their allow is

@@ -1211,6 +1211,8 @@
       
         
       
+        
+      
     
     
     
@@ -1526,6 +1528,34 @@
     
   
     Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
   
 
     
@@ -2159,6 +2189,8 @@
       
         
       
+        
+      
     
     
     
@@ -2602,6 +2634,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2806,8 +2866,8 @@
 <h1 id="data-model--authorization-the-expression-tree-and-what-each-operand-costs">Data Model — Authorization: the expression tree and what each operand costs<a class="headerlink" href="#data-model--authorization-the-expression-tree-and-what-each-operand-costs" title="Permanent link">&para;</a></h1>
 <p>The storage half of §8: the <code>audience_operand</code> tree itself, the namespace rule,
 what each operand costs, and how a tree is evaluated.</p>
-<p><strong>Section numbers are shared across the five parts</strong> and never renumbered, because other
-pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="./">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues).</p>
+<p><strong>Section numbers are shared across the six parts</strong> and never renumbered, because other
+pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="./">05b</a> §8 continued (the tree and what each operand costs), <a href="../05c-access-log-and-resolver/">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues), and <a href="../05e-keys-and-callers/">05e</a> §14–§17 (a key, and what it may hold).</p>
 <hr />
 <h3 id="the-expression-tree">The expression tree<a class="headerlink" href="#the-expression-tree" title="Permanent link">&para;</a></h3>
 <p><strong>Each row of <code>audience_operand</code> is one node</strong> — a binary tree: two operands and one operator per row.
@@ -3226,7 +3286,9 @@ predicate, not a set</strong> (§<em>Author in sets</em>).</p>
 <p>A grant applies when <strong>one</strong> grant row satisfies all of these. These are conditions on a single row,
 tested together — their order carries no meaning:</p>
 <ol>
-<li>The grant names an audience; a personal grant is not this question's business.</li>
+<li>The grant names an audience; a grant naming one person, or one registered key, is not this question's
+   business — neither is a set, so neither is evaluated here at all
+   (<a href="../../decisions/round-16/#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one">D-117</a>).</li>
 <li>Its <code>scope_type</code> is the scope type being checked, and its <code>scope_id</code> matches the scope id being
    checked, with an absent id counting as equal to an absent checked id.</li>
 <li>Its <code>effect</code> is <code>allow</code> — denies belong to the channel that runs first (§10).</li>
