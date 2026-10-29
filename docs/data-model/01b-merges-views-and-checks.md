@@ -28,7 +28,7 @@ them by number and their anchors are built from them:
 | `confidence` | number between 0 and 1, required | Inclusive of both ends |
 | `match_signals` | jsonb, required | A list of signals, each with a name, a weight and whether it matched — `[{signal: 'birth_date_exact', weight: 0.4, matched: true}, {signal: 'name_normalised', weight: 0.3, matched: true}, …]`. Stored so a human reviewer can see **WHY** the matcher proposed this |
 | `status` | text, required | One of: `proposed`, `needs_review`, `confirmed`, `rejected`, `superseded`. Default `proposed` |
-| `proposed_by` | text, required | One of: `import_job`, `match_job`, `person`, `staff`. `match_job` is the nightly batch matcher, as opposed to a person suggesting a match by hand. (Named `background_match` before background checks were removed from the design; renamed so the two never get confused.) |
+| `proposed_by` | text, required | One of: `import_job`, `match_job`, `person`, `staff`. `match_job` is the nightly batch matcher, as opposed to a person suggesting a match by hand |
 | `proposed_by_person_id` | reference to person, optional | Set when a person proposed it |
 | `proposed_at` | timestamp, audit time | Default: now |
 | `reviewed_by` | reference to person, optional | |
@@ -173,12 +173,11 @@ collapsed: a merged row is a *duplicate* that points at the real answer, while a
 people, and a listing that shows one and hides the other is worse than either, because it teaches
 the reader that the redacted child is a data-entry error.
 
-> **This is a correction, not a restatement.** The view as this document first carried it
-> excluded merged rows only, while §1 and §2 both said every listing must exclude redacted ones
-> too, and §9's own opening sentence claimed the views encoded both. Three statements, one of them
-> the code. The code lost. It is fixed here rather than noted as a discrepancy, because with the
-> SQL gone (§1 of D-072) there is nothing left to disagree with the prose — **the prose is now the
-> only place the rule lives, so it has to be right.**
+> **Nothing else carries this rule.** There is no view definition anywhere in this repository (§1 of
+> [D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)), so this page is the only place the rule lives and it has to be right.
+> [D-080](../decisions/round-06.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
+> records the time it was not: the view excluded merged rows while §1 and §2 required both of them, and the
+> prose lost.
 
 **What is deliberately *not* excluded anywhere: the row itself.** A redacted person is still a
 row with a still-working id, so historical references keep resolving
@@ -219,17 +218,14 @@ into C. A single-level pointer lookup would return B, whose row is itself tombst
 means a historical record links to a tombstone and the UI shows a blank name — or the
 wrong one.
 
-**Chains are a decision, not an assumption, and this used to be an assumption.** The sentence this
-replaces read *"Assumption: merge chains are allowed rather than flattened at merge time"*, and it argued
-for chains on the ground that flattening makes unmerge nearly impossible — a defence resting on a
-capability nobody had asked for. Someone has since asked for it, as a requirement (§8), and
-[D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
-is that request: with chains kept a reversal is a replay, with flattening it is a rebuild. So the
-direction of the argument is reversed and the trade is now asymmetric in a way it was not before —
-**flattening is closed off, not merely slower**, and "flattening is faster" no longer buys anything except
-the death of a feature somebody named.
+**Chains are a decision, not an assumption.** They stay because reversing a merge is a required operation
+rather than a convenience — someone asked for it as a requirement (§8), and
+[D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation) is that request.
+The shape of the trade follows from it: with chains kept, a reversal is a replay; with flattening, it is a
+rebuild. **Flattening is therefore closed off, not merely slower**, and "flattening is faster" buys nothing
+except the death of a feature somebody named.
 
-**Two rules keep a permanent chain safe, and neither existed while this was an assumption.**
+**Two rules keep a permanent chain safe.**
 
 - **A cycle cannot be created, and the place it cannot be created is the merge, not the read** (§8's
   rule). A read-side hop limit is not a weaker version of this guard; it is a different and worse thing,
@@ -239,17 +235,15 @@ the death of a feature somebody named.
   argument for following every hop above is the argument for having no bound. Instead a chain longer
   than **three hops is reported**, because four merges in a row on one line of people does not mean the
   data is odd: it means the matcher is producing duplicates faster than a human can settle them, which is
-  a statement about the queue and not about the row. Check 3 in §10, which used to treat an absorbed
-  survivor as a breach, is corrected for exactly this: **a survivor that has itself been absorbed is what
-  a chain looks like when it works.** Only the length means anything.
+  a statement about the queue and not about the row. Check 3 in §10 is written for exactly this: **a
+  survivor that has itself been absorbed is what a chain looks like when it works**, so only the depth of a
+  chain means anything.
 
-**And the rule immediately above now has a check under it.** "Every place that accepts a person id from
-outside must call this" is a rule about application code, which application code can forget, and
-[D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
-removed the database-level ways of catching the forgetting. The net is check 4 in §10 — live rows that
-reference a tombstoned person — which is the only form of this failure that is still visible after the
-fact, and the reason §9's prose is no longer the only thing standing between a foreign key and a
-tombstone.
+"Every place that accepts a person id from outside must call this" is a rule about application code, which
+application code can forget, and
+[D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) took away the database-level ways
+of catching the forgetting. **Check 4 in §10 is the net under it** — live rows that reference a tombstoned
+person, the only form of this failure that is still visible after the fact.
 
 ---
 
@@ -270,12 +264,12 @@ above can express.
   append-only table in §8 exists to make impossible.
 - **A merge chain longer than three hops.** Walk each tombstone's pointer and count the hops to the
   survivor; report the chains over three. **This is a report about a queue, not a finding about a row.**
-  It replaces a check that counted `person_merge` rows whose `surviving_person_id` has its own merge
-  pointer set and called a non-zero result a breach — with [D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
-  deciding that chains stay, **that count is the normal shape of the data and its expected value is not
-  zero**; a person absorbed twice has a survivor who was absorbed, by construction. What carries
-  information is the *depth*: four merges in a row on one line of people means the matcher is producing
-  duplicates faster than a human can settle them. It is read alongside the review queue's age, never on
+  How *many* survivors have themselves been absorbed means nothing: with chains kept
+  [D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
+  a person absorbed twice has a survivor who was absorbed, by construction, so that count is the normal
+  shape of the data and its expected value is not zero. What carries information is the *depth*: four merges
+  in a row on one line of people means the matcher is producing duplicates faster than a human can settle
+  them. It is read alongside the review queue's age, never on
   its own, and it is not alertable — there is nothing wrong to fix on the row, and an alert that can only
   be answered by "work faster" trains people to ignore alerts.
 - **A live row that references a tombstoned person.** Count rows in any table that names a person which
@@ -309,20 +303,17 @@ above can express.
   batch whose stated-coverage figure disagrees with the periods written is a partially applied one. A row
   that created a membership its export did not state is a different finding, and lives in
   [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks).
-  **It has been reversed twice, and both reversals are on the record, because this row is really a claim
-  about what an import is allowed to conclude.** It began as exactly this check — imported people with no
-  `membership`. ~~That was the ordinary condition of every imported row once a roster was held to make a
-  participation and nothing else, so the check reported the entire legacy corpus as a failed batch, which
-  is precisely how a check stops being read~~;
+  **A check whose trigger condition is normal for the whole corpus is not a check.** This row is really a
+  claim about what an import is allowed to conclude, and it has had to pass that test twice. Once when a
+  roster-only row was the ordinary condition of the entire legacy corpus, so the check reported all of it
+  as a failed batch — which is why
   [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
-  therefore reversed it to *no participation row*. That reversal is now void twice over: the participation
-  table is deleted
-  ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), and
-  the people export turned out to **state membership periods**, so the import writes bounded `membership`
-  rows for precisely those people and nobody else
+  turned it to *no participation row*. Once when the people export turned out to **state membership
+  periods**, so the import writes bounded `membership` rows for precisely those people and nobody else
   ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
-  What the round-9 rewrite got right and is kept: a check whose trigger condition is normal for the whole
-  corpus is not a check.
+  The reading in between is void on its own terms: the participation table it named is deleted
+  ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+  What survived both reversals is the test, which is why the row is read as a ratio and not as a count.
 - **A redacted person with descriptive values still attached.** Stated where the rows are, as check 6
   of [09-attributes.md §8](09-attributes.md#8-integrity-checks) — attribute rows belonging to a
   redacted person, and attribute values still present in `audit_log`. It is named here because the
@@ -334,9 +325,8 @@ above can express.
 
 ## 11. Open issues
 
-- Erasure policy specifics: what must be redacted vs. retained. **Smaller than it used to be, and not
-  gone.** The retention *shape* is decided — the trail's payloads expire on a window, the accounting
-  skeleton has no clock at all
+- Erasure policy specifics: what must be redacted vs. retained. **The retention shape is decided; what is
+  open is whether it has a basis.** The shape is
   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   *named* `membership` and fee rows has a basis. See
@@ -346,17 +336,11 @@ above can express.
 - Whether the organization has (or will have) a national SSO identity provider — this
   determines how much of `account_credential` is actually used.
 
-**Resolved, kept visible so that nobody reopens them by reading the tables alone.** Whether merge chains
-are allowed or flattened at merge time (§9): **chains stay**, because reversing a merge is a required
-operation rather than a convenience, and the two rules a permanent chain needs are now written where they
-are obeyed — the cycle refusal in §8, the length report in §10
-([D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
-[B-2](../open-questions.md#b-2)). And whether a
-person may hold two live accounts simultaneously: **no**, enforced by the partial unique index in §4 —
-with the case that made the question hard answered by a gate rather than by an exception, so that a
-colliding sign-up files a claim and activates nothing instead of becoming a second account or being
-silently linked
-([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing),
-[B-4](../open-questions.md#b-4)).
+Both questions this page grew up around are settled and closed in the register: whether merge chains stay
+(they do, and the two rules a permanent chain needs are written where they are obeyed — the cycle refusal
+in §8, the length report in §10), and whether a person may hold two live accounts at once
+(**no** — and the case that made that question hard is answered by a gate rather than an exception, so a
+colliding sign-up files a claim and activates nothing instead of becoming a second account). See
+[B-2](../open-questions.md#b-2) and [B-4](../open-questions.md#b-4).
 
 All tracked in [../open-questions.md](../open-questions.md).
