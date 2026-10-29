@@ -2686,7 +2686,7 @@ brackets instead of silently rewriting them (<a href="../../decisions/round-10b/
   stands in place of the check is a <strong>standing report of the widest and deepest audiences, their
   closure size and their cost per check</strong>, kept running rather than computed once at save, and its home
   is the tab on the permissions page
-  (<a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>).
+  (<a href="../../open-questions/#f-21">F-21</a>).
   <strong>Nothing refuses a save on size, no CI job fails, and the report stops being a control the moment
   nobody reads it</strong> — <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
   convention rather than a guard, and the third control of that shape this module depends on. <strong>The
@@ -2710,7 +2710,7 @@ brackets instead of silently rewriting them (<a href="../../decisions/round-10b/
   one breath. <strong>Why</strong> the answer stays the empty set: a silent widening is discovered in an audit two
   years late, so the visibility goes on a page instead — <strong>an audience carrying a leaf that does not
   resolve is listed for its owner</strong>, in a second column of the report
-  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
+  <a href="../../open-questions/#f-21">F-21</a>
   already asks for. <strong>No save is refused because a leaf is broken, and no expression is pinned to the
   set it resolved to when it was saved</strong> — pinning would make the stored expression a ceiling on truth,
   and a grant would freeze at the shape it had on the day somebody typed it. <strong>The report is a query
@@ -2749,7 +2749,7 @@ writer's brackets behind their back. The tree needs one fifteen-line evaluator a
 granted exactly this set on that row"</em> does not fall out of storage — <strong>and that is accepted, not
 mitigated: nothing computes the semantic equality of two expressions</strong>, so no warning fires when a
 second audience means what a first one means
-(<a href="../../open-questions/#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will">F-14</a>,
+(<a href="../../open-questions/#f-14">F-14</a>,
 <a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>). The
 same reasoning is why <em>"this selector reaches nobody"</em> belongs to the editor preview that has to exist
 anyway (§<em>The cost of composition</em>) rather than to a syntactic check the tree cannot perform — a tree
@@ -2831,7 +2831,7 @@ reach cannot be reconstructed is still the right tool for a rule — <code>MEMBE
 by a roster of everyone — but the gap gets closed by a report, not by pretending the question has an
 answer. The report is the save-time listing in §<em>The cost of composition</em>, kept over time rather than
 shown once; whether that is worth building is registered in §13 and is the same question as
-<a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>,
+<a href="../../open-questions/#f-7">F-7</a>,
 which is <strong>dissolved</strong> (§<em>The cost of composition</em>). <strong>A saved snapshot of whom a grant reached is the
 only thing that could answer about 2011, and the system keeps none</strong> — the expression is the record, and
 it is a rule, not a snapshot
@@ -3099,7 +3099,7 @@ rather than special-cased inside the resolver.</p>
   without even pretending to compose it carefully. The mitigation is the editor's expanded set below,
   not a rule about which operands may appear where.</li>
 <li><strong>A role cannot be held by a rule.</strong> <code>role_holder</code> names one person, and
-  <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> <strong>is closed by
+  <a href="../../open-questions/#f-12">F-12</a> <strong>is closed by
   <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
   and its answer is no</strong> — a derived holder list cannot answer "who was treasurer in 2023", and an
   office record that cannot answer that is not an office record. Grants aim <strong>at</strong> roles; roles are not
@@ -3156,7 +3156,7 @@ sharper.</p>
   empties those payloads after 24 months, and derived membership is not stored at all. After two years
   the question is answered by re-running expressions against state that has itself moved on, and it is
   answered with today's confidence. <strong>That is the flat statement of the limitation: a historical check
-  is re-running today's expressions over whatever state survives.</strong> <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>
+  is re-running today's expressions over whatever state survives.</strong> <a href="../../open-questions/#f-7">F-7</a>
   is <strong>dissolved, not answered</strong>: a nightly rebuild of cached answers and a nightly materialized
   <code>effective_permission</code> table turned out to be one job with two names, and neither would have made
   history answerable — a table of <em>today's</em> answers, rebuilt nightly, is as blind to 2011 as no table
@@ -3170,7 +3170,7 @@ sharper.</p>
   (<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>);
   the failure mode of a report nobody reads is that it stops being read and nothing else happens. <strong>Who
   reads it is answered with the cheapest object available: not a report and not a job, a
-  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">tab</a>
+  <a href="../../open-questions/#f-21">tab</a>
   on the permissions page.</strong> The answer to <em>who reads it</em> is therefore <em>nobody, necessarily</em> — a tab is
   read by whoever opens it — and that is a decision rather than an oversight, with
   <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s

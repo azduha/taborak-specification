@@ -2482,7 +2482,7 @@ the group exists
 <li>Which groups was he in during 2003? — <code>person_group_member</code> answers it, because those rows are dated
   rather than derived from a rule that could change its mind.</li>
 <li>Who held the office of <code>treasurers</code> in 2023? — the same shape of answer, one <code>role_holder</code> row, which is
-  the reason <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> was closed
+  the reason <a href="../../open-questions/#f-12">F-12</a> was closed
   with the answer <em>no</em>.</li>
 <li>Would that grant have reached him on that date? — holder row, expression and grant are all evaluated as
   of the same <code>at</code>, and none of the three may be stored as a materialized list
@@ -2680,7 +2680,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 </tr>
 <tr>
 <td><code>role_holder</code></td>
-<td>Who holds an office for what period — <strong>one named person, never a rule</strong>: <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> was closed by D-100 with the answer <em>no</em>, because an office record that cannot answer "who held this in 2023" is not one</td>
+<td>Who holds an office for what period — <strong>one named person, never a rule</strong>: <a href="../../open-questions/#f-12">F-12</a> was closed by D-100 with the answer <em>no</em>, because an office record that cannot answer "who held this in 2023" is not one</td>
 <td><code>role</code>; <code>person</code> twice — the holder, and the person who appointed them</td>
 <td>At most one <strong>open</strong> row per person and role; no overlap over all rows; nothing forces a row to end, and the standing report is the control (<a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>)</td>
 <td>yes</td>

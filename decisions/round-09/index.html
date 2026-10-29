@@ -2561,7 +2561,7 @@ a <strong>role</strong> is still held by one named person, because <code>role_as
 office and it is read to answer "who was treasurer in 2023". A derived holder list cannot answer that,
 and an office record that cannot answer it is not an office record. So a rule-filled role is <strong>not</strong>
 decided here: it is registered as
-<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> — the change is one
+<a href="../../open-questions/#f-12">F-12</a> — the change is one
 grantee pair on <code>role_assignment</code>, exactly the shape D-042 already put on <code>access_grant</code>, and it wants
 an answer about the historical question before it wants an implementation.</p>
 <p><strong>The cost, stated where it will be felt.</strong> Membership of a rule group has never been stored — D-042
@@ -2579,7 +2579,7 @@ and memberships as they are today. Two consequences follow, and the second is th
   that made it true, and <a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
   empties those payloads after 24 months; the derived membership was never stored at all. So after two
   years the question is answered by re-running rules against state that has itself moved on. <strong>The route
-  back is <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a></strong> — a
+  back is <a href="../../open-questions/#f-7">F-7</a></strong> — a
   materialized effective-permission snapshot, kept as history rather than as a cache — which until now
   looked like a performance question and is now also the only thing that could make this answerable.</li>
 </ul>
@@ -2589,7 +2589,7 @@ inside it for one of the two kinds this decision deletes, and a document that re
 the word for a fragment of it is worse than one that renames neither. The glossary carries both words.
 What does change is that <strong><code>group</code> no longer names a kind of anything</strong>: there is one thing, and it has
 arms.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-4--closed--a-group-is-filled-by-a-rule-and-a-list-and-appointing-creates-nothing">C-4</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-4">C-4</a>.</p>
 <p><strong>See:</strong> <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05a-audience-and-grammar.md §8</a>,
 <a href="../../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">domain/06-authorization-model.md</a>,
 <a href="../../domain/04-organization-structure/#6-appointments">domain/04-organization-structure.md §4</a>.</p>
@@ -2657,7 +2657,7 @@ types itself</strong> (a people batch, an events batch, each with the mapping an
 batch carries two mappers that can never both apply.</strong> The first is the smaller change and it is what
 these documents now assume; it is recorded as a design consequence here rather than as a new question,
 because the answer that decided the shape also decided this about it.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-5--closed--the-corpus-names-no-units-and-none-are-assigned">C-5</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>,
 <a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
 <hr />
@@ -2714,7 +2714,7 @@ too strict for a one-time one, and the safety that mattered is not the ban but t
 register, distinguished only by <code>data_confidence</code> and <code>import_batch_id</code>. A membership-rate chart that
 spans the import boundary is comparing a source that states membership with a system that records it,
 and nothing in the query knows the difference.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-5--closed--the-corpus-names-no-units-and-none-are-assigned">C-5</a>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>
 (together with <a href="#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).</p>
 <p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/#31-what-a-source-row-actually-evidences">data-model/06-audit-and-import.md §3.1</a>,
 <a href="../../data-model/03-membership/#5-unit_participation--deleted-by-d-097">data-model/03-membership.md §5.1</a>,
@@ -2762,7 +2762,7 @@ attendance figures these documents will be asked for are <em>arrived</em>, not <
   (<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>) while the event itself
   is kept indefinitely.</li>
 </ul>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-5--closed--the-corpus-names-no-units-and-none-are-assigned">C-5</a>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>
 (together with <a href="#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).</p>
 <p><strong>See:</strong> <a href="../../data-model/08-events/#2-event">data-model/08-events.md §2–§4</a>,
 <a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
@@ -2836,7 +2836,7 @@ resurrected column whose name implies it enforces something.</p>
 <p><strong>Not changed by this, because it was never about units:</strong> membership stays ageless (D-038), <code>position.min_age</code>
 stays a real eligibility constraint about the <em>position</em> (a scoutmaster must be an adult), and the
 guardianship channel is untouched.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act">C-6</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-6">C-6</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/04-organization-structure/#1-the-organization-is-one-unit-and-the-unit-is-a-scope">domain/04-organization-structure.md §1, §4</a>,
 <a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">data-model/02-organization.md §1</a>,
 <a href="../../domain/05-membership-lifecycle/#1-the-flow-you-described">domain/05-membership-lifecycle.md</a>.</p>
@@ -2871,7 +2871,7 @@ guessing from an overlapping name. Refusing to default either way was considered
 <code>domain/04 §6</code> used to say (<em>"record which was chosen and why on the unit"</em>); what D-096 adds is the
 direction the record goes in when nobody records anything, because a default that is unstated is a
 default that gets implemented by whoever writes the matching screen.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#c-3--closed--a-reused-unit-number-is-a-new-unit">C-3</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#c-3">C-3</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/04-organization-structure/#4-a-name-carries-no-identity">domain/04-organization-structure.md §3, §6</a>,
 <a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">data-model/02-organization.md §4–§5</a>.</p>
 <p><strong>Superseded by <a href="../round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>.</strong> There are no

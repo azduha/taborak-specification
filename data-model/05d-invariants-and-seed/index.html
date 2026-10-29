@@ -2523,7 +2523,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   one:</strong> a widening is not a noise, it is a direction, and <strong>a wide failure is only better than a narrow
   one when somebody is reading</strong>
   (<a href="../../decisions/round-11-12/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).
-  <strong>The permissions page's tab (<a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>)
+  <strong>The permissions page's tab (<a href="../../open-questions/#f-21">F-21</a>)
   therefore carries a second column naming <em>which</em> leaf failed, not merely that one did, aimed at the
   audience's owner</strong> — a listing with somebody's name beside the row. <strong>So the control here is <em>report,
   twice over</em>, and not a refusal:</strong> nothing stops an audience whose leaf is broken from being saved
@@ -2604,7 +2604,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
      save, nothing that fails if the report is not read, which is
      <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
      case: a rule's name outliving its mechanism.
-     <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
+     <a href="../../open-questions/#f-21">F-21</a>
      is the open question about who reads it. Half 3 is therefore the whole structural story: acyclicity
      at save, and nothing else.
   3. <strong>No sharing table may exist, and the read path must grow neither a depth cap nor a cycle
@@ -2955,7 +2955,7 @@ the assertion that it stays the only one).</p>
   What the question was reaching for is live: <strong>a bound on <em>height</em> does not bound what an expression
   actually costs</strong>, which is how many <em>audiences</em> it reaches — a depth limit of 3 still permits a wide flat
   sum of twenty <code>AUDIENCE()</code> leaves and prices each one at a fetch. <strong>Neither shape is bounded.</strong>
-  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>
+  <a href="../../open-questions/#f-21">F-21</a>
   is closed on exactly that point — <em>nothing bounds what an expression costs, and at the stated size that
   is accepted rather than merely unaddressed</em> — so what remains open is <em>what would make somebody wish
   there were a limit</em>.
@@ -2965,7 +2965,7 @@ the assertion that it stays the only one).</p>
   default number nobody asked for is not this page's call; naming the size at which the answer would change
   is. The standing report of §8 and §11's half 2 is what a real number would eventually be argued from.</li>
 <li><strong>Nothing computes an expression's <em>fingerprint</em> (§8): refused, not deferred</strong>
-  (<a href="../../open-questions/#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will">F-14</a>,
+  (<a href="../../open-questions/#f-14">F-14</a>,
   <a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).
   Two expressions with the same meaning are two different row sets, and <em>"you already granted exactly this
   set on that item"</em> does not fall out of storage — <strong>that is accepted, not mitigated.</strong> A watered-down
@@ -2982,7 +2982,7 @@ the assertion that it stays the only one).</p>
   not contain. Which item the editor picks by default — the grant's item, an event the writer chooses, the
   next event with registrants — is not decided anywhere.</li>
 <li><strong><code>WHITELISTED</code> (§8) is not seeded, and no selector will be: there is no stored state to evaluate</strong>
-  (<a href="../../open-questions/#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway">F-20</a>).
+  (<a href="../../open-questions/#f-20">F-20</a>).
   The candidate readings — <code>source = staff</code>, promotion off the waitlist, a new column on
   <code>event_registration</code> — are not narrowed, and that is the answer rather than an evasion: <strong>an operand with
   no state to read resolves to nothing</strong>, and picking a meaning in order to seed a row would invent an
@@ -3038,7 +3038,7 @@ the assertion that it stays the only one).</p>
 <li><strong>A nested audience's past reach is not reconstructable, and that is the answer (§8, <em>Three named
   sets</em>):</strong> the record of whom a grant reached <strong>is the expression</strong>
   (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,
-  closing <a href="../../open-questions/#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised">F-17</a>).
+  closing <a href="../../open-questions/#f-17">F-17</a>).
   <code>GROUP(x)</code> answers <em>"was she in it on 1 June 2024?"</em> from its dated rows and <code>AUDIENCE(x)</code> does not, and
   <strong>that is not a gap, because the system never promised the answer</strong> — what it keeps is the words, and
   D-109's rule that nothing a rule names is deleted is what keeps them evaluable. <strong>What is logged as
@@ -3056,13 +3056,13 @@ the assertion that it stays the only one).</p>
   <strong>No TTL is being asked about, because there is no row to put one on:</strong> <code>expires_at</code> is not a column of
   §10 and <code>ruleset_version</code> is, as a compilation key bumped by writes to <code>audience_operand</code> and
   <code>selector_type</code>
-  (<a href="../../open-questions/#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a>,
+  (<a href="../../open-questions/#f-6">F-6</a>,
   <a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
   <strong>Nothing is open here.</strong> The affordability question F-6 ended on is answered by
   <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s
   stated size and trigger, and there is no rebuild job to afford.</li>
 <li><strong>Cache vs a materialized effective-permission table (§8, §10): dissolved, not decided</strong> —
-  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>.
+  <a href="../../open-questions/#f-7">F-7</a>.
   A rebuild of cached answers and a materialized <code>effective_permission</code> table are <strong>the same job with two
   names</strong>, which is why the pair is recorded as dissolved rather than answered — and <strong>a dissolved question
   is the kind that comes back if nobody writes down that it dissolved</strong>, with "history, not performance"
@@ -3074,7 +3074,7 @@ the assertion that it stays the only one).</p>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>
 </ul>
 <p><strong>Settled, stated as answers.</strong> A role may <strong>not</strong> be held by a rule
-(<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a>, D-100). An
+(<a href="../../open-questions/#f-12">F-12</a>, D-100). An
 audience composes other sets through an expression whose leaves name other sets, and <code>AUDIENCE()</code> is the
 form that settled it (D-101, D-103); there is no inclusion edge table in this model — the edges are leaves
 (D-091). A saved rule is reusable by name <strong>only if it has a <code>code</code></strong> (D-103). Permissions do not depend on

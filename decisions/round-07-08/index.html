@@ -2628,7 +2628,7 @@ permission, no resolver branch, no new table. <strong>The undesigned module now 
 before it is designed</strong>, which is the point of taking this decision early: a messaging design that
 ships private delivery to minors with neither restriction nor mirroring would have to be reopened
 after the fact, when the storage of message bodies and the retention policy are already fixed.</p>
-<p><strong>See:</strong> <a href="../../open-questions/#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians">MSG-1, closed</a>,
+<p><strong>See:</strong> <a href="../../open-questions/#msg-1">MSG-1, closed</a>,
 <a href="../../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">permission-catalog</a>,
 <a href="../../glossary/#communication">glossary — Mirroring</a>.</p>
 <hr />
@@ -2947,7 +2947,7 @@ record. Two further things follow and are stated where they belong:</p>
   database-level ways of catching it; the net is a report for live rows that reference a tombstoned
   person, which is the only form of this failure that is visible afterwards.</li>
 </ul>
-<p><strong>Closes:</strong> <a href="../../open-questions/#b-2--closed--merge-chains-stay-because-unmerge-is-required">B-2</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-2">B-2</a>.</p>
 <p><strong>See:</strong> <a href="../../data-model/01-identity/#9-views">data-model/01-identity.md §9–§10</a>,
 <a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03-identity-and-legacy.md §6</a>.</p>
 <hr />
@@ -3017,7 +3017,7 @@ B-3 already names, now with a concrete policy to review rather than a blank.</p>
 default (<strong>F-8</strong>, which needs your confirmation, and which is a weaker question because
 <a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05-authorization §9</a> keeps the payloads of <em>reads</em>
 out of that table to begin with).</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">B-3</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-3">B-3</a>.</p>
 <p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/">data-model/06-audit-and-import.md §2.2, §4, §6</a>,
 <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">data-model/00-conventions.md §8</a>,
 <a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">data-model/09-attributes.md §6</a>.</p>
@@ -3076,7 +3076,7 @@ gate means a reviewer's answer now decides whether a child can log in, which is 
 queue, and it is registered as
 <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>
 rather than settled here.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim">B-4</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-4">B-4</a>.</p>
 <p><strong>See:</strong> <a href="../../data-model/01-identity/#4-account">data-model/01-identity.md §4–§5, §8</a>,
 <a href="../../domain/03-identity-and-legacy/#4-match-signals">domain/03-identity-and-legacy.md §4</a>.</p>
 <hr />
@@ -3120,7 +3120,7 @@ life of that vocabulary — hundreds of codes from one file. Two things follow:<
 <code>scheme = 'legacy'</code>, imported verbatim and never reissued; where it is present the match is exact and
 the heuristics are for backfilling it, not for deciding identity (D-056). At thousands of rows the
 review is a work queue with a trustworthy set at the top of it, which
-<a href="../../open-questions/#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data">B-1</a> already
+<a href="../../open-questions/#b-1">B-1</a> already
 called a strengthening of D-004 rather than a relaxation.</p>
 <p><strong>What this makes sharper rather than smaller.</strong> With attendance and no money,
 <a href="../../data-model/06-audit-and-import/#31-what-a-source-row-actually-evidences">06-audit §3.1</a> is the
@@ -3130,7 +3130,7 @@ remaining import question, because it is what an end date gets inferred from.</p
 <p><strong>Still not known, and it is operational.</strong> The exact record count and the year range. Both are inputs a
 batch carries; neither changes a table. B-1 is closed on the design and these two numbers are recorded
 as the import's own inputs.</p>
-<p><strong>Closes:</strong> <a href="../../open-questions/#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data">B-1</a>.</p>
+<p><strong>Closes:</strong> <a href="../../open-questions/#b-1">B-1</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>,
 <a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>,
 <a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">data-model/09-attributes.md §7</a>.</p>

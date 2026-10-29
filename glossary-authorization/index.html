@@ -2609,7 +2609,7 @@ with the two rules that must survive any growth being <em>a check compiles its e
 predicate and never materializes the set</em> and <em>a listing is paginated</em>. <strong>Nothing lists the
 widest or deepest audiences</strong> — the permissions tab lists only what is broken and what looks
 odd — and that is <strong>a convention and not a guard</strong> either way. See
-<a href="../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>.</p>
+<a href="../open-questions/#f-21">F-21</a>.</p>
 <p><strong><code>AUDIENCE(code)</code></strong> — The operand that names <strong>another saved audience's expression</strong>,
 evaluated live. It is what makes a <strong>rule namable</strong>: <code>GROUP()</code> and <code>ROLE()</code> name rosters,
 so without it the advice <em>"name the composite once and aim grants at it"</em> had nothing to
@@ -2734,7 +2734,7 @@ that may be kept are a <em>Compiled expression</em>, <em>The request memo</em> a
 The <em>historical</em> question points at no table either, because <strong>the record of whom a grant
 reached is the expression</strong>, not a snapshot of people; a materialized <code>effective_permission</code>
 table would have to arrive on its own merits, when the stated size says it must, and be named
-for what it is (<a href="../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>).</p>
+for what it is (<a href="../open-questions/#f-7">F-7</a>).</p>
 <p><strong>Compiled expression</strong> — <strong>The only thing in this system that may be cached across
 requests, and it is not an answer.</strong> Parse the stored tree once, resolve operand kinds
 once, emit the parameterized predicate once — keyed by <strong>the expression's root plus
@@ -2771,7 +2771,7 @@ was the N+1 across a screen. The per-item preview and the permissions tab are wr
 against these, not against a loop of single checks, and they therefore do their work <strong>on
 open</strong>; at the size stated above that is affordable, and it is recorded as <strong>a dependency,
 not a measurement</strong>
-(<a href="../open-questions/#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it">F-15</a>).</p>
+(<a href="../open-questions/#f-15">F-15</a>).</p>
 <p><strong>Deprecated / hidden / disabled</strong> — <strong>The three states a named thing gets instead of being
 deleted</strong>, and the rule that keeps them three different things: <strong>only <code>disabled</code> changes
 an answer.</strong> Nothing a stored expression can name — a <code>selector_type</code> row, a <code>role</code>, a

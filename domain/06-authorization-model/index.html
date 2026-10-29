@@ -2966,7 +2966,7 @@ matter:</p>
   (<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).
   A guardianship is between two named people and an owner is one person. <strong>That is a boundary, not an
   oversight</strong> — it is why an office can be <em>aimed at</em> but never <em>held by</em> a rule (§4,
-  <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a>).</li>
+  <a href="../../open-questions/#f-12">F-12</a>).</li>
 <li><strong>A deny lives in channel 1 and defeats all three</strong> (§7.1). Nowhere else can one be written, and
   nowhere else can one be argued with.</li>
 </ul>
@@ -3218,7 +3218,7 @@ Where the appointment workflows end is
 <p><strong>A role is held by exactly one person per row.</strong> A role cannot be held by a rule the way a group is:
 an office record that cannot answer "who was treasurer in 2023" is not an office record, and a derived
 holder list cannot answer that
-(<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a>).
+(<a href="../../open-questions/#f-12">F-12</a>).
 Grants aim at roles rather than roles being filled by grants, which is the same fact seen from the
 other side.</p>
 <h3 id="the-holder-period-matters">The holder period matters<a class="headerlink" href="#the-holder-period-matters" title="Permanent link">&para;</a></h3>
@@ -3362,7 +3362,7 @@ it (<a href="../../decisions/round-02-03/#d-032--deny-is-absolute-locality-order
   notices. There is a second reason to keep that question open: the snapshot is also the only artefact
   that could ever answer <em>who could read this in 2023</em>, since set membership is recomputed from state
   that keeps moving and the audit payload that recorded the change expires (§6.2,
-  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>).</li>
+  <a href="../../open-questions/#f-7">F-7</a>).</li>
 <li><strong>Time is a parameter.</strong> <code>at</code> defaults to now, but the resolver accepts a historical time. This
   enables "could this person have done this on that date?" — needed for auditing past actions, and
   free if built in from the start. The dated rows behind <code>MEMBERS</code>, <code>GROUP(x)</code>, <code>ROLE(x)</code> and the
@@ -3747,8 +3747,8 @@ Recorded in <a href="../../open-questions/">../open-questions.md</a>; the open l
   answer is decided while its threshold is not — <em>every</em> <code>ROLE(...)</code> operand without <code>MEMBERS</code>, or only
   the offices marked sensitive? It lands in the tab's <code>Unusual</code> section either way, so what is still
   undecided is only how wide that section is
-  (<a href="../../open-questions/#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken">F-13</a>,
-  <a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>).</li>
+  (<a href="../../open-questions/#f-13">F-13</a>,
+  <a href="../../open-questions/#f-21">F-21</a>).</li>
 <li><strong>The holder period.</strong> Nothing forces a <code>role_holder</code> row to end, and the report stands alone (§4,
   <a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>).</li>
 <li><strong>Who may compose an expression?</strong> <code>audience.manage</code> covers creating and editing a set, and the
@@ -3763,8 +3763,8 @@ Recorded in <a href="../../open-questions/">../open-questions.md</a>; the open l
   answered by the same evaluator running over history as it is written, which is not a promise for the
   operands whose set is a current fact
   (<a href="../06a-audiences-and-selectors/#what-a-grants-reach-is-recorded-in">06a</a>,
-  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>,
-  <a href="../../open-questions/#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised">F-17</a>).</li>
+  <a href="../../open-questions/#f-7">F-7</a>,
+  <a href="../../open-questions/#f-17">F-17</a>).</li>
 </ul>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 <hr />
