@@ -2997,9 +2997,9 @@ the same list written twice, and they drift.</strong> A reconciliation found doc
 seed row, among them a code several of the catalog's own seed roles assign and one of the two codes
 D-068 exists to protect; the <code>event.*</code> codes are the standing example of the two lists disagreeing.
 <strong>With no wildcard, a code the catalog advertises and the database does not name is a capability nobody
-can be granted</strong>, and the permission editor is the only place the gap shows. With <code>role_permission</code> gone
-there is no per-role list left to compare a catalog row against either, so a documented code that nothing
-grants is invisible to anything but a report. <strong>Integrity check 13</strong> reads the grants for exactly that
+can be granted</strong>, and the permission editor is the only place the gap shows. Nothing in the schema pairs
+codes with roles, so there is no per-role list to compare a catalog row against either: a documented code
+that nothing grants is invisible to anything but a report. <strong>Integrity check 13</strong> reads the grants for exactly that
 reason (D-068).</p>
 <p><strong>There is no SQL check for this</strong> — one side is a Markdown file. The discipline is the
 check: when adding a permission, add it in <strong>both</strong> places in the same edit, and treat a catalog
@@ -3038,7 +3038,7 @@ the catalog sketches, whose reason for existing is that someone has to hold <cod
 anything can be granted. <strong>What §12 must fix, and does, is the <em>shape</em> rather than the list</strong>: a
 <code>system.</code> permission is seeded <code>applies_to = unit</code>, so it can never arrive through an item grant. That
 is not a configuration choice — it is the structural guarantee that a shared item cannot hand someone
-authority over the permission system, and it is now carried by a column value instead of by a resolver
+authority over the permission system, and it is carried by a column value rather than by a resolver
 branch (§2).</p>
 <p><strong>What the organization starts with, in one list.</strong> The platform ships:</p>
 <ul>
