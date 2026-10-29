@@ -2950,7 +2950,7 @@ is true of the payloads for 24 months and is untrue afterwards (§2.2).</strong>
 and what it means is that the guard on <code>audit_log</code> is now load-bearing in a way it was not: <strong>an audit
 entry about a person is as sensitive as the person data it quotes</strong>, which is stated as a requirement
 on <code>audit.view</code>'s sensitivity mark in
-<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">../appendix/permission-catalog.md §8</a>
+<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">appendix/permission-catalog-a-codes.md §8</a>
 and argued in <a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a> — where the case against
 copying data into a less-guarded place applies to this table directly, since this table is the copy.
 The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
@@ -3072,7 +3072,7 @@ them this section's own decisions:</p>
 </ul>
 <p>What is right about the proposal is kept as the guard instead: the copy <em>is</em> as sensitive as what it
 quotes, so the permission that reads it belongs at the top of the catalog
-(<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">../appendix/permission-catalog.md §8</a>), and
+(<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">appendix/permission-catalog-a-codes.md §8</a>), and
 that is a line in a document rather than a mechanism, which is the weakness to keep in view.</p>
 <p><strong>What the credential list is not, stated where a reviewer will read it.</strong> It is not the thing
 protecting personal data, and it cannot become that, because <strong>a list of names is only as good as
