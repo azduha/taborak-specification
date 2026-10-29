@@ -4334,8 +4334,8 @@ lapsed parent kept their guardian's right over their child's records. The gate i
 (<a href="../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
 and that does not resolve this — it <strong>removes the thing that used to make the exemption visible</strong>. The
 membership test moved into grant expressions, and a guardianship is not a grant: it is one of the three
-channels, reached through <code>guardianship_permission</code>, and there is no expression in it to write <code>MEMBERS</code>
-in. So a lapsed parent keeps their right exactly as before, <strong>and there is now no mechanism anywhere that
+channels, read off a live <code>guardianship</code> row's <code>right_level</code> — <code>guardianship_permission</code> is that value's
+history, not a door — and there is no expression in it to write <code>MEMBERS</code> in. So a lapsed parent keeps their right exactly as before, <strong>and there is now no mechanism anywhere that
 could condition it</strong> short of a new rule in the resolver. Confirm that is intended rather than inherited:
 an unpaid parent and a paid one are indistinguishable inside the guardianship channel, and they have become
 indistinguishable everywhere else too. ~~unless somebody writes <code>MEMBERS * GUARDIANS(p)</code> into a grant — which

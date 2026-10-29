@@ -3582,10 +3582,10 @@ D-099's lists of what is seeded, and §13 records it as one.</p>
 <li>A grant is never a delegation from the person it is granted to: <code>delegated_from</code> does not
   equal <code>person_id</code>.</li>
 <li>A revocation names who made it: if <code>revoked_at</code> is set, <code>revoked_by</code> is set.</li>
-<li><strong>A delegation must expire:</strong> if <code>is_delegated</code> is true, <code>valid_to</code> is set. With <code>delegation_of</code>
-  deleted (§4) this is the <em>only</em> remaining guard against a delegation outliving its reason — the
-  old second half, re-validating a source assignment at check time, has no assignment to
-  re-validate. Integrity check 11 (§11) reports an open-ended one.</li>
+<li><strong>A delegation must expire:</strong> if <code>is_delegated</code> is true, <code>valid_to</code> is set. This expiry is the whole
+  guard against a delegation outliving its reason: nothing about the person who lent it is
+  re-validated when a check runs, so an open-ended delegation would go on working after the act that
+  justified it was gone. Integrity check 11 (§11) reports one.</li>
 <li><strong>An audience grant cannot be delegated.</strong> <code>is_delegated</code> requires <code>delegated_from</code>, which is a
   person, and delegating "everyone" is not a coherent act: if <code>audience_id</code> is set, <code>is_delegated</code>
   is false.</li>

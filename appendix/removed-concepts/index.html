@@ -2228,8 +2228,8 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a></td>
 </tr>
 <tr>
-<td><code>GUARDIANS</code>, <code>GUARDIANS(p)</code></td>
-<td>an operand naming the guardians of the person an item is about</td>
+<td><code>GUARDIANS</code>, <code>GUARDIANS(p)</code>, <code>guardians_of</code></td>
+<td>a named set of the same people, then an operand naming the guardians of the person an item is about</td>
 <td>guardianship is a channel entered by the shape of a request and carrying a <code>right_level</code>, not a set a grant aims at</td>
 <td>the channel answers for a guardian; a kept set of contact adults is a <code>GROUP(x)</code></td>
 <td><a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a></td>
@@ -2354,6 +2354,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
 </tr>
 <tr>
+<td><code>requires_scope</code> on <code>permission</code></td>
+<td>a column fixing the level at which that permission could be granted at all — <code>organization</code> or <code>org_unit</code></td>
+<td>both values named bodies this schema no longer has, and the ladder it slotted permissions into is gone as well; no decision entry names this column in either its deleted or its kept list</td>
+<td>nothing: the scope is said on the grant, never on the permission, and any code may be granted at the unit or on one item its <code>applies_to</code> allows</td>
+<td>— (no decision names it; the ruling that made it impossible is <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>)</td>
+</tr>
+<tr>
 <td><code>selector_depth_limit</code></td>
 <td>a configuration parameter capping how deep an audience's expression tree could nest, refused at save over the expanded tree</td>
 <td>the argument that justified a bound was a stored column that no longer exists, and the property it underwrote — that a check costs a bounded amount — was given up on purpose: an expansion is bounded only by acyclicity</td>
@@ -2382,11 +2389,25 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
 </tr>
 <tr>
+<td><code>unit:&lt;id&gt;:participants</code>, <code>unit_participants</code></td>
+<td>the audience naming one unit's participants — written as an id string, and the set the worked example of an age-gated camp opened itself to</td>
+<td>there is one unit and it is a scope with no rows under it, so a unit's participants were never a set to name: they are the members</td>
+<td><code>MEMBERS</code></td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
 <td><code>unit_participation</code>, with its <code>is_primary</code> and <code>role_in_unit</code></td>
 <td>the period a person took part in one sub-unit, and the root row every membership owed</td>
 <td>no sub-units; membership is one query and a group roster is another</td>
 <td><code>membership</code> for the membership, <code>person_group_member</code> for the roster</td>
 <td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td><code>delegation_of</code> on <code>access_grant</code></td>
+<td>a reference to the assignment row a delegated grant was lent from, which the checker re-validated at check time</td>
+<td>the table it pointed at is gone, and with it the second half of the guard — there is no source row left to re-validate; no decision entry names this column</td>
+<td><code>is_delegated</code> with <code>delegated_from</code> naming the person who lent it, and the rule that a delegation must expire (integrity check 11 reports an open-ended one)</td>
+<td>— (no decision names it; the deletion of the table it referred to is <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)</td>
 </tr>
 <tr>
 <td><code>is_delegatable</code> on <code>role</code></td>
