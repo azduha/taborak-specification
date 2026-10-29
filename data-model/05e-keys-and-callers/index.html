@@ -2136,6 +2136,8 @@
       
         
       
+        
+      
     
     
     
@@ -2607,6 +2609,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2769,8 +2799,10 @@ person and confers nothing; it is not a selector, and no expression can name one
 <p>Until this table existed the design had machine writers and no word for one: <code>created_by</code> was "absent for
 system and import jobs", <code>access_log.actor_person_id</code> was "absent for system actions", and the audit
 trigger treated an empty request context as <em>no actor, not an error</em>. <strong>That NULL is what this table
-replaces</strong> — for the calls an outside system makes. What this system does to itself is still unnamed, and
-says so in §17.</p>
+replaces</strong> — for the calls an outside system makes. <strong>What this system does to itself keeps the empty
+column</strong>, which is read as a complete answer to <em>who did this</em> and named, where the trail has a label
+column, from a fixed list (§17,
+<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).</p>
 <p><strong>Fields</strong></p>
 <table>
 <thead>
@@ -3027,15 +3059,20 @@ that was never written:</p>
 <h2 id="17-what-is-not-designed-here">17. What is not designed here<a class="headerlink" href="#17-what-is-not-designed-here" title="Permanent link">&para;</a></h2>
 <p>Stated because a reader will otherwise assume the nearest mechanism applies.</p>
 <ul>
-<li><strong>What this system does to itself is still a NULL.</strong> The 1 January membership sweep, payload reduction,
-  migrations and the bank statement pull name themselves in <code>audit_log.actor_label</code> as free text —
-  <code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code> — while a key now names itself as a row. The asymmetry is
-  known, and the forensic-gap check counts three ways instead of two so the combination is covered rather
-  than broken. Naming those writers is
-  <a href="../../open-questions/#f-25">F-25</a>, and a key is a poor fit for them: a sweep is not a caller and should
-  not have to authenticate.</li>
-<li><strong>Break-glass access is <a href="../../open-questions/#f-26">F-26</a>.</strong> A key is not a person and cannot stand in
-  for the person who cannot log in.</li>
+<li><strong>What this system does to itself is not a caller and has no row.</strong> The 1 January membership sweep, payload
+  reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
+  the system acting on its own and is a complete answer to <em>who did this</em>; where the audit trail keeps a
+  label, it is one of five from a list rather than free text
+  (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>,
+  <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
+  <strong><code>api_key</code> was deliberately not stretched to cover them</strong>: a sweep is not a caller, and a table whose rows
+  may or may not carry a secret is a table whose invariants become conditional.</li>
+<li><strong>Break-glass is a report and a procedure, not a mechanism</strong>
+  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
+  A key is not a person, carries nobody's authority and may never hold <code>system.admin</code>, so it cannot stand in
+  for somebody who cannot log in; what it can do is nothing, which is why the answer is check 9's second
+  column and a written procedure
+  (<a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a>).</li>
 <li><strong>The outbound direction is <a href="../../open-questions/#f-27">F-27</a>.</strong> Everything here is a caller arriving.
   Anything this system initiates — an accounting export, a refund, a webhook (a mechanism this corpus
   deleted rather than deferred) — has no design, and the one refusal that cited "a second integration with

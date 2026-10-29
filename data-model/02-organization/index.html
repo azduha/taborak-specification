@@ -2178,6 +2178,8 @@
       
         
       
+        
+      
     
     
     
@@ -2649,6 +2651,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2899,7 +2929,7 @@ and the absence table below is the same list stated as columns.</p>
 <tr>
 <td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
 <td>timestamp, audit time; reference to <code>person</code></td>
-<td>The standard audit columns. <code>created_by</code> is NULL for system jobs.</td>
+<td>The standard audit columns (<a href="../00-conventions/#7-standard-columns">00-conventions §7</a>). An empty <code>created_by</code> is read as this system acting on its own by <a href="../00-conventions/#7a-what-an-empty-actor-column-means">§7a</a> — and <strong>this table has no routine case of one</strong>: the import owes it no rows (§1) and the seed ships none (§7), so an empty one here is a migration or a one-off correction, which is the shape §7a's list is written to name.</td>
 </tr>
 </tbody>
 </table>

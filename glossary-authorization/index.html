@@ -2101,6 +2101,8 @@
       
         
       
+        
+      
     
     
     
@@ -2572,6 +2574,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2686,8 +2716,8 @@
 
 
 <h1 id="glossary--authorization-terms">Glossary — Authorization terms<a class="headerlink" href="#glossary--authorization-terms" title="Permanent link">&para;</a></h1>
-<p>The authorization half of the <a href="../glossary/">glossary</a>: the words a grant, an audience or an
-expression is written out of. Terms defined elsewhere in the glossary —
+<p>The authorization half of the <a href="../glossary/">glossary</a>: the words a grant, an audience, an
+expression or an audit row is written out of. Terms defined elsewhere in the glossary —
 <a href="../glossary/#identity">person</a>, <a href="../glossary/#organization">group and office</a>,
 <a href="../glossary/#relationships">guardianship</a> — are not repeated here.</p>
 <hr />
@@ -2759,7 +2789,23 @@ per kind of caller — <strong><code>can(person, permission_code, scope_type, sc
 owner_person_id)</code></strong> and <strong><code>can_key(api_key, permission_code, scope_type, scope_id, at)</code></strong> —
 and the second <strong>takes no person of any kind</strong>: a claimed person would make the trail's word
 for who acted an input
-(<a href="../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</p>
+(<a href="../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).
+<strong>Nothing else is</strong> — this system writing to itself is not a third caller, it is an empty actor
+column, and it holds no grants (<em>An empty actor column</em> below).</p>
+<p><strong>An empty actor column</strong> — <code>actor_person_id</code> with nothing in it, in <code>access_log</code> or in
+<code>audit_log</code>, or an empty <code>created_by</code> / <code>updated_by</code>: <strong>read as this system acting on its own, a
+complete answer to "who did this" rather than a missing one.</strong> It is <strong>not a caller</strong> — a check is
+answered about a person or a key (see <strong>Caller</strong> above) — and this system holds no grants, is
+named by no grant and appears in no <code>role_holder</code> row; nothing in a permission check reads an
+empty actor column to decide an answer. Two limits keep it narrow: <strong>only where empty is legal</strong>
+(<code>import_batch.created_by</code> and <code>api_key.created_by</code> are required, and a grant's <code>granted_by</code>
+names a person) and <strong>only in an actor column</strong> — an absent <code>scope_id</code> is a check at the unit,
+not a writer. <strong>Where the trail has a label column, the writer's name comes from a fixed list</strong>,
+so a label such as <code>system:renewal-sweep</code> is one of the few names this system signs its own
+writes with and <strong>bare <code>system</code> is retired</strong>; the list, what it costs, and the check that reports
+an off-list label are stated once in
+<a href="../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>
+(<a href="../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).</p>
 <p><strong>Allow / deny, and the decision rule</strong> — <strong>Allowed when some live allow applies and no
 live deny applies.</strong> That is the whole of precedence, and everything else in the model is
 elaboration (<a href="../domain/06-authorization-model/#7-precedence">domain/06 §7</a>). <strong>A deny is
@@ -3191,7 +3237,7 @@ cannot be lent and cannot be lent around, and <code>system.admin</code> is never
 is said on the grant, not on the role</strong> (<em>an assumption; see the index in
 <a href="../open-questions/#i-assumption-index">open-questions.md</a></em>).</p>
 <hr />
-<p><em>Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123.</em></p>
+<p><em>Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-125.</em></p>
 
 
 

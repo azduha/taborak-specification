@@ -644,6 +644,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#when-nobody-who-can-hold-systemadmin-can-sign-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When nobody who can hold system.admin can sign in
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2246,6 +2257,8 @@
       
         
       
+        
+      
     
     
     
@@ -2717,6 +2730,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2853,6 +2894,17 @@
     <span class="md-ellipsis">
       
         Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-nobody-who-can-hold-systemadmin-can-sign-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When nobody who can hold system.admin can sign in
       
     </span>
   </a>
@@ -3148,6 +3200,41 @@ registration on a fuzzy score is the failure this rule would most deserve
    acted and <em>as whom</em>. An account shared between people makes every audit entry
    worthless, and in a youth organization the audit trail is the point.</li>
 </ol>
+<h3 id="when-nobody-who-can-hold-systemadmin-can-sign-in">When nobody who can hold <code>system.admin</code> can sign in<a class="headerlink" href="#when-nobody-who-can-hold-systemadmin-can-sign-in" title="Permanent link">&para;</a></h3>
+<p><code>system.admin</code> is the capability this system has no substitute for: it is what rotates or ends an
+integration that is writing right now, what releases a data subject's erasure, and the only code that
+satisfies every other check (<a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>).
+<strong>A key cannot be the way back in</strong> — it is not a person, carries nobody's authority, and may never be
+granted that code (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>)
+— and no self-service path exists anywhere here: nobody joins, appoints or un-suspends themselves, so an
+emergency door would be the second, weaker authorization this design rejects by name.
+<strong>What exists instead is a report and this procedure</strong>
+(<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).</p>
+<ol>
+<li><strong>Read the report before acting from memory.</strong> Integrity check 9 lists everyone with a live allow of
+   <code>system.admin</code>, however they came by it, and says for each of them whether they can sign in:
+   <code>account.status</code> is <code>active</code> <strong>and</strong> their credential is live
+   (<code>account_credential.valid_to</code> unset or in the future, not revoked). An <strong>empty second column is the
+   alert</strong>, and it goes to the same person the list already goes to
+   (<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>).</li>
+<li><strong>One named person is written down before it is needed</strong>, and someone knows their telephone number.
+   <strong><code>api_key.owner_person_id</code> is not that person</strong> — it answers <em>whose integration is this</em>, not <em>who
+   fixes it</em> (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).</li>
+<li><strong>The recovery is performed on an account, never on a grant.</strong> Un-suspend the account, or re-issue the
+   credential, whichever is the actual obstacle. <strong>This is the one write in this design made outside the
+   application, and it stays that way</strong>: it produces no audit row, and nothing in the schema distinguishes
+   it from somebody editing a row they had no business editing.</li>
+<li><strong>Everything after it is ordinary.</strong> The recovered person acts through the screens, so every authority
+   change that follows carries <code>granted_by</code>, an <code>authorization_channel</code> and an audit row like anybody else's.
+   <strong>The recovery restores a person's access; it does not hand out authority</strong>, which is the difference
+   between this and the sealed emergency credential that was refused.</li>
+</ol>
+<p><strong>What catches the edit afterwards</strong> is one line of the integrity-check list: an audited row whose newest
+audit row predates its <code>updated_at</code> is a change the trail never saw
+(<a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>). It is a report rather than a guard,
+and it is honest about its own limit — whoever can make the edit can also write an audit row by hand, because
+the trail is append-only to the application and not to whoever holds the database. <strong>That is the residual
+risk this procedure accepts, stated here so that nobody discovers it during the incident.</strong></p>
 <hr />
 <h2 id="4-contact-points-and-identifiers">4. Contact points and identifiers<a class="headerlink" href="#4-contact-points-and-identifiers" title="Permanent link">&para;</a></h2>
 <p>A person's email, phone and address are <strong>rows, not columns</strong>. Each row carries its type, its

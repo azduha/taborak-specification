@@ -2123,6 +2123,8 @@
       
         
       
+        
+      
     
     
     
@@ -2581,6 +2583,34 @@
     
   
     Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
   
 
     
@@ -3138,7 +3168,7 @@ nothing at all, on their own.</p>
 <tr>
 <td><code>audit_log</code></td>
 <td>The row-level trail of changes to business tables, <strong>before and after values included until the payload window passes</strong></td>
-<td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf, <strong>or</strong> <code>api_key</code> as actor instead of a person — the two actor columns are mutually exclusive and <code>on_behalf_of</code> is never set on a row whose actor is a key (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>)</td>
+<td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf, <strong>or</strong> <code>api_key</code> as actor instead of a person — the two actor columns are mutually exclusive and <code>on_behalf_of</code> is never set on a row whose actor is a key (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>); <strong>a row naming neither is this system acting on its own</strong>, a complete answer to <em>who did this</em>, and the trail's own <code>actor_label</code> then says which writer it was, from a fixed list rather than from free text (<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">../data-model/00-conventions.md §7a</a>, <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>)</td>
 <td>One row per change; the row is never deleted, but a scheduled <strong>payload reduction</strong> empties the values 24 months after writing (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>

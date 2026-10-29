@@ -1112,6 +1112,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#7a-what-an-empty-actor-column-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7a. What an empty actor column means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#8-personal-data-and-erasure" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2278,6 +2289,8 @@
       
         
       
+        
+      
     
     
     
@@ -2749,6 +2762,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2956,6 +2997,17 @@
     <span class="md-ellipsis">
       
         7. Standard columns
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7a-what-an-empty-actor-column-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7a. What an empty actor column means
       
     </span>
   </a>
@@ -3407,7 +3459,7 @@ someone runs them. A prohibition nobody runs is a convention, not a guard.</p>
 <tr>
 <td><code>created_by</code></td>
 <td>person, optional</td>
-<td>Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations (<a href="../../open-questions/#f-25">F-25</a>). An import batch is not one of them: <code>import_batch.created_by</code> is <strong>required</strong> there (<a href="../06a-import/#3-import-pipeline">06a §3</a>), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the <strong>key</strong> there, and no person is inferred from it (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</td>
+<td>Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). An import batch is not one of them: <code>import_batch.created_by</code> is <strong>required</strong> there (<a href="../06a-import/#3-import-pipeline">06a §3</a>), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the <strong>key</strong> there, and no person is inferred from it (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</td>
 </tr>
 <tr>
 <td><code>updated_at</code></td>
@@ -3465,6 +3517,81 @@ installs one — <code>api_key.create</code> is among the codes a key may never 
 <a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
 Required is not inherited: the column says who performed the install and nothing else, and a key outlives
 that person with its authority untouched (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).</p>
+<hr />
+<h2 id="7a-what-an-empty-actor-column-means">7a. What an empty actor column means<a class="headerlink" href="#7a-what-an-empty-actor-column-means" title="Permanent link">&para;</a></h2>
+<p><strong>Stated here once, because four pages used to state it their own way and round 16 proved they would
+drift.</strong> <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>.</p>
+<p><strong>An actor column left empty is read as this system acting on its own, and that is a complete answer to
+"who did this".</strong> Not a missing answer and not a forensic gap. It applies to
+<code>access_log.actor_person_id</code> (<a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>), to
+<code>audit_log.actor_person_id</code> (<a href="../06-audit-and-import/">06 §2</a>), and to the standard <code>created_by</code> and
+<code>updated_by</code> above. Since round 16 a machine that calls in from outside is <strong>not</strong> in this reading: it is
+a row, in <code>api_key_id</code>, and an empty actor column now means the writers that have no row — the sweeps, the
+reductions, the migrations.</p>
+<p><strong>Two limits, because a rule about actors stated as a rule about NULLs gets misread everywhere.</strong></p>
+<ul>
+<li><strong>Only where empty is legal.</strong> <code>import_batch.created_by</code> is required
+  (<a href="../06a-import/#3-import-pipeline">06a §3</a>), <code>api_key.created_by</code> is required
+  (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>),
+  and a grant's <code>granted_by</code> names a person. Those rows have no empty to interpret.</li>
+<li><strong>Only in an actor column.</strong> An absent <code>scope_id</code> is a check at the unit; an absent
+  <code>authorization_ref_id</code> is no grant involved; an absent <code>subject_person_id</code> is an action about nobody's
+  record. None of them is the system.</li>
+</ul>
+<p><strong>And where the trail has a label column, the label comes from this list.</strong> It is the one place a writer's
+name is written down, so a row nobody recognizes has something to be compared against — the vocabulary is
+what turns <em>"the system"</em> from a shrug into a claim.</p>
+<table>
+<thead>
+<tr>
+<th>The label</th>
+<th>Who wrote the row</th>
+<th>What it was doing there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system:renewal-sweep</code></td>
+<td>the 1 January renewal sweep</td>
+<td>Expiring memberships whose window closed — and nothing else; a guardianship's <code>valid_to</code> is <strong>never set by a job</strong> (<a href="../04-relationships/">04 §1</a>)</td>
+</tr>
+<tr>
+<td><code>system:payload-reduction</code></td>
+<td>payload reduction</td>
+<td>Emptying <code>old_values</code> and <code>new_values</code> once a row passes the payload window (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
+</tr>
+<tr>
+<td><code>system:bank-pull</code></td>
+<td>the bank statement fetch</td>
+<td>The <code>bank_transaction</code> and <code>payment</code> rows that answer a variable symbol (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>). <strong>For the run with nobody in the room</strong> — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does</td>
+</tr>
+<tr>
+<td><code>migration:&lt;id&gt;</code></td>
+<td>a named migration</td>
+<td>Any structural change, <strong>and any one-off correction</strong> — a fix that is not in a migration is a fix nobody can attribute</td>
+</tr>
+<tr>
+<td><code>import_batch:&lt;id&gt;</code></td>
+<td>a run of the import pipeline</td>
+<td>Not anonymous and never was: <code>import_batch.created_by</code> names the person who uploaded the file</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bare <code>system</code> is not one of them.</strong> It means "one of the above, and I am not saying which", which is the
+drift the vocabulary exists to stop
+(<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). <strong>A writer that is not on the
+list joins the list on this page before it writes</strong>, and
+<a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> reports any row whose label is not here.</p>
+<p><strong>What this costs, and what it does not do.</strong> Nothing in the database refuses an off-list label: this is a
+documented vocabulary, not a table, so the enforcement is a report and a review. A row written by a
+one-off script that guessed at a label from this list will therefore look legitimate, which is the honest
+downside of choosing no column over a <code>system_writer</code> registry
+(<a href="../../decisions/round-17/#what-this-round-refused-and-what-it-still-declines">D-125 refused that registry, and refused a secretless kind of <code>api_key</code></a>).
+<strong>And the empty column carries attribution only.</strong> Nothing in a permission check reads one, which is the
+same rule that already forbids reading a key's <code>last_used_at</code> to decide an answer
+(<a href="../05d-invariants-and-seed/#11-invariants-to-verify">check 22</a>) — so this is not the nullable-whose-absence-silently-means-something
+that <a href="../05-authorization/">§2 of the authorization model</a> warns about, because its meaning is written down
+in one place instead of inferred in four.</p>
 <hr />
 <h2 id="8-personal-data-and-erasure">8. Personal data and erasure<a class="headerlink" href="#8-personal-data-and-erasure" title="Permanent link">&para;</a></h2>
 <p>This system holds data about <strong>children</strong>, which raises the stakes on every decision here.</p>

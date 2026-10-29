@@ -2363,6 +2363,8 @@
       
         
       
+        
+      
     
     
     
@@ -2821,6 +2823,34 @@
     
   
     Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
   
 
     
@@ -4203,16 +4233,24 @@ whether its owner still has an account, keys listed beside people so a safeguard
 — and <strong>there is deliberately no age threshold</strong>: the report prints an age and a person decides whether it
 is old. What that costs is stated as plainly as it should be: a forgotten key is live forever unless
 somebody reads a list, and a copied secret cannot be recalled.</p>
-<p><strong>What is deliberately not designed here.</strong></p>
+<p><strong>What sits outside this design.</strong> Two of these were open last round and are settled elsewhere; they are
+listed here because a reader of this page needs to know where the edge is, not because they are unresolved.</p>
 <ul>
-<li><strong>What this system does to itself is still a NULL.</strong> The 1 January sweep, payload reduction,
-  migrations and the bank statement pull still name themselves in a free-text label while a key names
-  itself as a row. The asymmetry is known and covered by the forensic-gap check; naming those writers is
-  <a href="../../open-questions/#f-25">F-25</a>, and a key is a poor fit for them, because a sweep is not a caller and
-  should not have to authenticate.</li>
-<li><strong>A way in when nobody who could hold <code>system.admin</code> can log in</strong> is break-glass, and this is not it: a
-  key is not a person, carries nobody's authority, and cannot hold the corpus's break-glass code
-  (<a href="../../open-questions/#f-26">F-26</a>).</li>
+<li><strong>What this system does to itself is not a caller, and no longer apologises for it.</strong> The 1 January sweep,
+  payload reduction, migrations and the bank pull hold no grants and have no row: their write is the row
+  with an empty actor column, which is a complete answer to <em>who did this</em>, and where the audit trail keeps a
+  label that label comes from a fixed list rather than from whoever ran the job
+  (<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>,
+  <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
+  <strong>A key stayed the wrong shape for them on purpose</strong>: a sweep is not a caller and should not have to
+  authenticate, which is why a secretless kind of <code>api_key</code> was refused rather than built.</li>
+<li><strong>A way in when nobody who could hold <code>system.admin</code> can log in is a report and a written procedure, not a
+  mechanism.</strong> Integrity check 9 lists who could hold it and now also says whether they can sign in, and the
+  recovery itself is written beside the account state machine
+  (<a href="../02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a>,
+  <a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
+  <strong>What is refused is the mechanism</strong>: a key is not a person, carries nobody's authority, and may never hold
+  that code, so it cannot be the thing that walks in when a person cannot.</li>
 <li><strong>The outbound direction.</strong> Everything above is a caller arriving. An export, a refund, anything this
   system pushes rather than is asked for has no design
   (<a href="../../open-questions/#f-27">F-27</a>).</li>
@@ -4248,20 +4286,13 @@ somebody reads a list, and a copied secret cannot be recalled.</p>
   (<a href="../06a-audiences-and-selectors/#what-a-grants-reach-is-recorded-in">06a</a>,
   <a href="../../open-questions/#f-7">F-7</a>,
   <a href="../../open-questions/#f-17">F-17</a>).</li>
-<li><strong>What is this system's own name when it writes to itself?</strong> An outside caller is a row; the 1 January
-  sweep, payload reduction, migrations and the bank statement pull still sign themselves with free text in
-  a label, and a key is the wrong shape for them — a sweep is not a caller and should not have to
-  authenticate (<a href="../../open-questions/#f-25">F-25</a>).</li>
-<li><strong>A way in when nobody who could hold <code>system.admin</code> can log in.</strong> Break-glass has no design, and a key
-  is no stand-in for it: a key is not a person, carries nobody's authority, and may never hold that code
-  (<a href="../../open-questions/#f-26">F-26</a>).</li>
 <li><strong>The integration this system calls.</strong> Everything §10a designs is a caller arriving; who authorizes an
   export, a refund or a pull — and whether a permission code and an actor are even the right shape for what
   is a job — is open (<a href="../../open-questions/#f-27">F-27</a>).</li>
 </ul>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 <hr />
-<p><em>Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-072, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-124.</em></p>
+<p><em>Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-072, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-124, D-125, D-126.</em></p>
 
 
 

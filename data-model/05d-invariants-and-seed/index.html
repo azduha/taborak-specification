@@ -2125,6 +2125,8 @@
       
         
       
+        
+      
     
     
     
@@ -2596,6 +2598,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2840,11 +2870,16 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   It is on the list because a language with union in it lets one edit widen a grant to every person
   with no account and no membership, and the person who made the edit is the only control
   (§8, <em>What audiences do not do</em>).
-- <strong>9. Holders of <code>system.admin</code>.</strong> Everyone with a live allow of it, however they came by it —
-  through a personal grant or through an expression naming an office. This should be a very short
-  list, and it should alert on change. <strong>A key never appears on it and cannot</strong>: that grant is refused when
-  it is saved and counted by check 20, so a list containing only people is also the evidence that the
-  refusal held.
+- <strong>9. Holders of <code>system.admin</code>, and whether they can sign in.</strong> Everyone with a live allow of it, however
+  they came by it — through a personal grant or through an expression naming an office. This should be a
+  very short list, and it should alert on change. <strong>A key never appears on it and cannot</strong>: that grant is
+  refused when it is saved and counted by check 20, so a list containing only people is also the evidence
+  that the refusal held. <strong>The second column is what turns the list into a warning:</strong> for each holder, is
+  <code>account.status</code> <code>active</code> <strong>and</strong> is their credential live — <code>account_credential.valid_to</code> unset or still
+  in the future, not revoked (<a href="../01a-accounts-and-contacts/">01a §5</a>). <strong>An empty second column is the
+  report's real output:</strong> a world in which somebody could hold the capability and nobody can reach a screen
+  is the state D-126's procedure exists for, and it goes to the same place, within the hour
+  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
 - <strong>10. Expression trees that are not trees.</strong> Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose <code>audience_id</code> differs from its parent's; a row whose
   <code>parent_id</code> names no row; an audience with zero or several root rows. <strong>Zero expected, and every
@@ -3059,7 +3094,10 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   that denies nothing, and an office granted without the membership operand. Both are lists a human
   reads, and both are the entire remaining control on their failure.</li>
 <li><strong>9 should email someone every time its result changes</strong> — a new holder of <code>system.admin</code> is either
-  a planned change or an incident, and either way someone should know within the hour.</li>
+  a planned change or an incident, and either way someone should know within the hour. <strong>Its second column
+  alerts on being empty</strong>, which is a different kind of change: the authority exists and nobody can use it,
+  which is the state the written procedure in <a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a>
+  is for (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).</li>
 <li><strong>Check 7 is the exception to the rule that this list is read rather than alerting on.</strong> Its empty
   half — a grant reaching nobody — is inert and belongs on a weekly list. <strong>Its wide half, a grant that
   got wider because something under a <code>-</code> stopped resolving, is the only entry in §11 that describes
@@ -3295,14 +3333,17 @@ the assertion that it stays the only one).</p>
 <hr />
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Three questions about callers that are not people, registered rather than guessed at.</strong> Round 16
-  designed the arriving integration and deliberately stopped there: this system's <strong>own</strong> writers are still
-  a NULL plus an <code>actor_label</code> (<a href="../../open-questions/#f-25">F-25</a>), the case where nobody who could hold
-  <code>system.admin</code> can reach a screen has no mechanism (<a href="../../open-questions/#f-26">F-26</a>), and calls going
-  <em>out</em> have no design at all (<a href="../../open-questions/#f-27">F-27</a>).
-  <a href="../05e-keys-and-callers/">05e §17</a> states each from this module's side; none of the three is answered by
-  adding a column to <code>api_key</code>, and a key is a poor fit for the first of them — <strong>a sweep is not a caller
-  and should not have to authenticate.</strong></li>
+<li><strong>One question left about callers that are not people.</strong> Round 16 designed the arriving integration and
+  stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
+  system acting on its own, with a five-label vocabulary instead of free text
+  (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
+  and check 9 above is its sibling) and the case where nobody who could hold <code>system.admin</code> can reach a screen
+  is a report and a written procedure rather than a mechanism
+  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
+  <strong>What stays open is the other direction:</strong> calls going <em>out</em> have no design at all
+  (<a href="../../open-questions/#f-27">F-27</a>). <a href="../05e-keys-and-callers/">05e §17</a> states each from this module's side,
+  and none of the three was ever answered by adding a column to <code>api_key</code> — <strong>a sweep is not a caller and
+  should not have to authenticate.</strong></li>
 <li>The complete permission catalog and real role definitions (§12) — needs your input. The question is
   <strong>which starter grants are written with <code>MEMBERS</code> in the expression and which are not</strong>: <code>role</code> has no
   <code>requires_membership</code> switch to carry the answer

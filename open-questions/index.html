@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/open-questions/">
       
       
-        <link rel="prev" href="../decisions/round-16/">
+        <link rel="prev" href="../decisions/round-17/">
       
       
       
@@ -2041,6 +2041,8 @@
       
         
       
+        
+      
     
     
     
@@ -2512,6 +2514,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2714,28 +2744,6 @@
     <span class="md-ellipsis">
       
         F-18 🟢 Does a role record elected versus appointed, and what does an election write?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-25--what-is-this-systems-own-name-when-it-writes-to-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-25 🟡 What is this system's own name when it writes to itself?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-26--when-nobody-who-can-hold-systemadmin-can-log-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-26 🟡 When nobody who can hold system.admin can log in
       
     </span>
   </a>
@@ -3090,28 +3098,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#f-25--what-is-this-systems-own-name-when-it-writes-to-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-25 🟡 What is this system's own name when it writes to itself?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-26--when-nobody-who-can-hold-systemadmin-can-log-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-26 🟡 When nobody who can hold system.admin can log in
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#f-27--the-integration-that-this-system-calls" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3316,7 +3302,7 @@
 
 
 <h1 id="open-questions">Open Questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h1>
-<p>Everything still unresolved — eighteen questions, each with its <strong>schema impact</strong>, what changes
+<p>Everything still unresolved — sixteen questions, each with its <strong>schema impact</strong>, what changes
 once you answer, ordered roughly by how much they block.</p>
 <p>Marked: 🔴 <strong>blocking</strong> something else · 🟡 <strong>important</strong> · 🟢 can be deferred.</p>
 <p><strong>A question that has been answered is not kept here.</strong> Its entry is deleted; what remains is one
@@ -3586,76 +3572,6 @@ an elected office?") which D-100's posture — opt-in, review by report — woul
 nobody enforces is a column that lies after the first exception.</p>
 <p><strong>Needed.</strong> Not before implementation. Before the first AGM, which is when somebody asks whether the system
 can show that the current chair was elected.</p>
-<h3 id="f-25--what-is-this-systems-own-name-when-it-writes-to-itself"><a id="f-25"></a>F-25 🟡 What is this system's own name when it writes to itself?<a class="headerlink" href="#f-25--what-is-this-systems-own-name-when-it-writes-to-itself" title="Permanent link">&para;</a></h3>
-<p><strong>Raised as a loss by round 16, not as a feature request.</strong> Until <a href="../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>
-an outside caller and this system's own scheduled writers were the same nothing: a NULL in an actor column
-and a free-text label. Round 16 gave the outside caller a row and deliberately left the others as they
-were, which made the asymmetry visible instead of shared. The writers that still have no name are named in
-the corpus itself: <code>created_by</code> is absent for "the writers that have no row of their own"
-(<a href="../data-model/00-conventions/#7-standard-columns">00-conventions §7</a>), <code>access_log.actor_person_id</code> is "absent for system
-actions" (<a href="../data-model/05c-access-log-and-resolver/#9-access_log">05c §9</a>), <code>audit_log.actor_label</code> holds
-<code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code> (<a href="../data-model/06-audit-and-import/">06 §1</a>), the 1 January
-sweep and payload reduction run with no actor at all, and one rule is addressed to a writer outright —
-"never by a job" (<a href="../data-model/04-relationships/">04 §2</a>).</p>
-<p><strong>Question.</strong> Does a scheduled writer get a row that can be named, granted and revoked — or does it stay a
-label in a text column?</p>
-<p><strong>Why it might be nothing.</strong> The corpus already has a doctrine for exactly this: an authorless write is
-correct when "a permission for it would imply a person choosing not to run it"
-(<a href="../appendix/permission-catalog-a-codes/">permission-catalog-a §8</a>), which is why payload reduction has no
-code. A sweep is not a caller; making it authenticate is a mechanism serving nobody, and there is nobody to
-hold the secret. The forensic-gap check
-(<a href="../data-model/06b-redaction-and-checks/">06b §5</a>) already counts rows with no actor at all, and round 16
-widened it to count the three shapes rather than two, so a row naming neither a person nor a key is still
-watched.</p>
-<p><strong>Why it might be something.</strong> <code>actor_label</code> answers <em>who</em> only as well as whoever wrote the string chose:
-<code>system</code> today, <code>system:cleanup</code> tomorrow, and no row behind either. So the question the corpus can answer
-about an integration — <em>what may it do?</em> — cannot be asked about the sweep, whose reach is whatever the
-trigger and the job let it do. That is not a gap an attacker exploits; it is a gap the next person
-reviewing a strange row falls into, which is when the question gets asked.</p>
-<p><strong>Positions.</strong> Leave it (free text plus the widened gap check, cheapest, and honest about what it is); give
-<code>api_key</code> a second kind — a row per scheduled writer with <strong>no secret</strong>, since nothing authenticates as it —
-which reuses the table, the report and the trail but bends §14's "one row is one caller and one live
-secret"; or a small <code>system_writer</code> registry keyed by a stable code, which says plainly that a job is not a
-caller and costs a table, four codes nobody grants, and a seeding rule.</p>
-<p><strong>Schema impact.</strong> Zero, one column, or one table plus its seeding and its report line. <strong>The middle option
-is the one to think twice about</strong>, because a table whose rows may or may not carry a secret is a table whose
-invariants become conditional — and conditional invariants are where an implementation guesses.</p>
-<p><strong>Needed.</strong> Not before implementation. Before the first review of a row nobody recognizes, which is the
-moment somebody asks what the nightly sweep is allowed to touch.</p>
-<hr />
-<h3 id="f-26--when-nobody-who-can-hold-systemadmin-can-log-in"><a id="f-26"></a>F-26 🟡 When nobody who can hold <code>system.admin</code> can log in<a class="headerlink" href="#f-26--when-nobody-who-can-hold-systemadmin-can-log-in" title="Permanent link">&para;</a></h3>
-<p><strong>Left open on purpose by round 16.</strong> A registered key was offered as the answer to "the treasurer is
-locked out on the last day of the renewal window" and refused: a key is not a person, carries nobody's
-authority, and <code>can_key</code> takes no person
-(<a href="../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>); and <code>system.admin</code>, which
-is the corpus's break-glass capability
-(<a href="../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>), is one of the codes a key may never be granted
-(<a href="../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
-<strong>Both halves of the refusal stand; what is missing is the thing the refusal was refusing to stand in
-for.</strong></p>
-<p><strong>Question.</strong> What happens when every person who could hold <code>system.admin</code> has an account whose <code>status</code> is
-not <code>active</code> — suspended, closed, or never finished verifying
-(<a href="../data-model/01a-accounts-and-contacts/">01a §1</a>) — and the system needs a write today?</p>
-<p><strong>Why it might be nothing.</strong> The failure needs several things wrong at once, the state is visible
-(<code>role_holder</code>, <code>access_grant</code> and <code>account.status</code> together answer "who could do this, and can they
-reach a screen?"), and a report over those three columns is a cheaper control than any emergency
-mechanism. There is no self-service in this design anywhere: nobody joins, appoints or un-suspends
-themselves, so "an emergency path" contradicts a posture the corpus holds everywhere else.</p>
-<p><strong>Why it might be something.</strong> Every other dead end in this system fails closed and says so; this one
-resolves offline, by whoever is nearest a database, which is the one write path with no audit row, no
-<code>granted_by</code> and no <code>authorization_channel</code>. The corpus's answer to a bypass it refuses to design is to
-name the gap in a check — and there is no check here, because nothing in the schema would show the
-difference between a legitimate superuser and a hand-edited grant.</p>
-<p><strong>Positions.</strong> A report of <em>who could hold it and whether they can sign in</em>, and the acceptance that a
-true lockout is a database edit (cheapest, consistent, and honest that the escape hatch is outside the
-model); a seeded <code>recovery</code> key with <code>system.admin</code>, sealed and never grantable to a person — which is the
-mechanism round 16 refused and would have to be argued for on its own terms; or a <em>time-boxed</em> self-service
-path, which is a new module and not a column.</p>
-<p><strong>Schema impact.</strong> Zero for the report. A sealed key is one boolean on <code>api_key</code> that the resolver must
-honour, which is a rule in the resolver for a caller kind that currently needs none — the most expensive
-kind of small change in this design.</p>
-<p><strong>Needed.</strong> Before go-live, as an agreed <em>procedure</em> rather than a feature: someone must be the person who
-can be telephoned, and D-120's <code>owner_person_id</code> is not that person.</p>
 <hr />
 <h3 id="f-27--the-integration-that-this-system-calls"><a id="f-27"></a>F-27 🟢 The integration that this system calls<a class="headerlink" href="#f-27--the-integration-that-this-system-calls" title="Permanent link">&para;</a></h3>
 <p><strong>Everything round 16 designed is inbound.</strong> A key is a caller arriving
@@ -3664,7 +3580,8 @@ and any webhook are this system leaving, and nothing describes who authorizes th
 endpoint anywhere to authenticate</strong>, because webhooks left the design with the card gateway
 (<a href="../data-model/07-finance/">07-finance §2b</a>).</p>
 <p><strong>Question.</strong> Does an outbound call need a permission code and an actor at all, or is it a job — which
-would make it <a href="#f-25">F-25</a> wearing a different hat?</p>
+would make it <a href="../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
+the answer round 17 gave to the writers that stay inside this system, wearing a different hat?</p>
 <p><strong>Why it might be nothing.</strong> A person performing an export in a screen is already an ordinary checked
 action, audited like any other write; a scheduled pull is a job, and jobs have no codes by doctrine. The
 secret the remote system holds is not this system's authorization state and never was.</p>
@@ -3921,7 +3838,7 @@ person data with no privileged subset (<a href="../decisions/round-07-08/#d-083-
 <tr>
 <td><strong>API and UI</strong></td>
 <td><code>api_key</code> and its four codes: who may call in is <strong>designed</strong> (<a href="../data-model/05e-keys-and-callers/">05e</a>, <a href="../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>); the resolver's <code>at</code> parameter exists partly for this</td>
-<td><strong>The caller is designed; the wire is not.</strong> What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and <a href="../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a> is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). Three things stay open: the system's own writers (<a href="#f-25">F-25</a>), break-glass (<a href="#f-26">F-26</a>), and calls going out (<a href="#f-27">F-27</a>).</td>
+<td><strong>The caller is designed; the wire is not.</strong> What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and <a href="../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a> is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). One question stands here: calls going out (<a href="#f-27">F-27</a>). Beside it, three things are settled rather than open — this system's own writers are an empty actor column read as the system acting on its own and named by a fixed label list (<a href="../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>), a lockout is a report plus a written procedure rather than a mechanism (<a href="../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>), and everything a caller sends over the wire is API work, not schema work.</td>
 </tr>
 <tr>
 <td><strong>Notifications</strong></td>
@@ -4725,6 +4642,16 @@ the entry, and this index is a register, not a second copy of it.</p>
 <td><a href="../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a></td>
 </tr>
 <tr>
+<td><a id="f-25"></a>F-25</td>
+<td>What is this system's own name when it writes to itself?</td>
+<td><a href="../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a></td>
+</tr>
+<tr>
+<td><a id="f-26"></a>F-26</td>
+<td>When nobody who can hold <code>system.admin</code> can sign in, what happens?</td>
+<td><a href="../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a></td>
+</tr>
+<tr>
 <td><a id="ev-3"></a>EV-3</td>
 <td>What happens to outstanding payment requests when an event is cancelled?</td>
 <td><a href="../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a></td>
@@ -4745,7 +4672,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 <h2 id="how-to-answer">How to answer<a class="headerlink" href="#how-to-answer" title="Permanent link">&para;</a></h2>
 <p><strong>Nothing here blocks anything.</strong> No question on this page is marked 🔴, and none has been since round 4:
 the model is settled enough that most answers here change data rather than structure, which is what makes
-them worth a moment rather than a decision meeting. Seven are marked 🟡 and eight 🟢. The list below is
+them worth a moment rather than a decision meeting. Seven are marked 🟡 and nine 🟢. The list below is
 what to answer first — roughly half of what it was before <a href="../decisions/round-13/">round 13</a> closed four of
 its nine items, which is worth saying before the list is trusted again.</p>
 <ol>
@@ -4824,7 +4751,7 @@ raised them. Each of those pages now says so at the top.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../decisions/round-16/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 16">
+          <a href="../decisions/round-17/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 17">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4834,7 +4761,7 @@ raised them. Each of those pages now says so at the top.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Round 16
+                Round 17
               </div>
             </div>
           </a>

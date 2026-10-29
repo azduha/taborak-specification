@@ -16,7 +16,7 @@
         <link rel="prev" href="../round-15/">
       
       
-        <link rel="next" href="../../open-questions/">
+        <link rel="next" href="../round-17/">
       
       
         
@@ -2045,6 +2045,8 @@
       
         
       
+        
+      
     
     
     
@@ -2684,6 +2686,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2918,7 +2948,8 @@ access", which turned out to be four questions wearing one name: what an outside
 somebody does when nobody can log in. Two were chosen and two were declined. <strong>An outside system
 calling in, and our own clients talking to our API, are in scope</strong>; naming the corpus's own authorless
 writes and a break-glass way in are not, and are registered as
-<a href="../../open-questions/#f-25">F-25</a> and <a href="../../open-questions/#f-26">F-26</a> rather than guessed at.</p>
+<a href="../../open-questions/#f-25">F-25</a> and <a href="../../open-questions/#f-26">F-26</a> rather than guessed at. <strong>Both were
+settled in <a href="../round-17/">round 17</a>; this round's own text below still describes the state as it was then.</strong></p>
 <p><strong>The finding the whole round hangs on is that this design already has a machine actor, and its name is
 NULL.</strong> Three pages write as though one acts: <code>created_by</code> is "Absent for system and import jobs"
 (<a href="../../data-model/00-conventions/">00-conventions.md §7</a>), <code>person_group.created_by</code> "is NULL for system
@@ -3397,10 +3428,15 @@ prose.</p>
   membership sweep, payload reduction, migrations and the bank statement pull still name themselves in
   <code>audit_log.actor_label</code> as free text (<code>system</code>, <code>migration:0042</code>, <code>import_batch:17</code>), while a key now
   names itself as a reference. The asymmetry is real and the forensic-gap check now counts three ways
-  instead of two, so it is covered rather than broken; it is not <em>named</em>.</li>
+  instead of two, so it is covered rather than broken; it is not <em>named</em>. <strong>Closed in round 17 by
+  <a href="../round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a></strong>,
+  which read the empty actor column as the answer rather than naming the writers.</li>
 <li><strong><a href="../../open-questions/#f-26">F-26</a> — a way in when nobody can log in.</strong> Break-glass. Distinct from a
   permanent machine credential, and this round's key is a poor fit for it precisely because a key is not
-  a person.</li>
+  a person. <strong>Closed in round 17 by
+  <a href="../round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a></strong>, which
+  made it a report and a written procedure rather than a mechanism — so this round's refusal stands
+  untouched.</li>
 <li><strong><a href="../../open-questions/#f-27">F-27</a> — the outbound direction.</strong> The accounting export question, the
   refund question, and anything that pushes rather than being pulled. The corpus has always had exactly
   one inbound flow and no outbound one, and it deleted the only push mechanism it ever discussed
@@ -3463,13 +3499,13 @@ and the pages that describe a grant as written to a person or an expression were
         
         
           
-          <a href="../../open-questions/" class="md-footer__link md-footer__link--next" aria-label="Next: Open Questions">
+          <a href="../round-17/" class="md-footer__link md-footer__link--next" aria-label="Next: Round 17">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Open Questions
+                Round 17
               </div>
             </div>
             <div class="md-footer__button md-icon">

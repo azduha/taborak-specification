@@ -2164,6 +2164,8 @@
       
         
       
+        
+      
     
     
     
@@ -2635,6 +2637,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2922,7 +2952,7 @@ sentence is here so that the first person to ask the question finds the sentence
 <tr>
 <td><code>created_by</code></td>
 <td>reference to person, required</td>
-<td></td>
+<td><strong>Required, and it is the reason no import is anonymous.</strong> The pipeline's own writes name themselves <code>import_batch:&lt;id&gt;</code> (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>), and that label leads here — to the person who uploaded the file — so an imported row is attributed twice over, once to the batch and once through it to somebody</td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -3254,7 +3284,11 @@ an imported event, deleting the row breaks it. Therefore:</p>
 <li>After that window, corrections are made by editing the data, not by reverting. This is
   the honest behaviour; a "revert" that silently orphans references is worse than refusing.</li>
 <li><strong>Step 2's removals are audited like any other write</strong>, one entry per row deleted, each
-  naming the batch. This is the only hard delete a business row can meet, and it is precisely
+  naming the batch — and the batch is not an anonymous name: its label under
+  <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a> is <code>import_batch:&lt;id&gt;</code>, and
+  that row's <code>created_by</code> is required, so the entry leads to a person whoever read it. Where a person
+  pressed the revert themselves, <code>actor_person_id</code> names them and no label is involved at all.
+  This is the only hard delete a business row can meet, and it is precisely
   the case where someone will later ask "this person existed in March and is gone now — what
   happened?" An undo that erases the rows and leaves no trace of having erased them is not a
   rollback but a cover-up, and it is the same undo a reviewer is trusting when they agree to
