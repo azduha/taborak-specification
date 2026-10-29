@@ -864,16 +864,24 @@ whether its owner still has an account, keys listed beside people so a safeguard
 is old. What that costs is stated as plainly as it should be: a forgotten key is live forever unless
 somebody reads a list, and a copied secret cannot be recalled.
 
-**What is deliberately not designed here.**
+**What sits outside this design.** Two of these were open last round and are settled elsewhere; they are
+listed here because a reader of this page needs to know where the edge is, not because they are unresolved.
 
-- **What this system does to itself is still a NULL.** The 1 January sweep, payload reduction,
-  migrations and the bank statement pull still name themselves in a free-text label while a key names
-  itself as a row. The asymmetry is known and covered by the forensic-gap check; naming those writers is
-  [F-25](../open-questions.md#f-25), and a key is a poor fit for them, because a sweep is not a caller and
-  should not have to authenticate.
-- **A way in when nobody who could hold `system.admin` can log in** is break-glass, and this is not it: a
-  key is not a person, carries nobody's authority, and cannot hold the corpus's break-glass code
-  ([F-26](../open-questions.md#f-26)).
+- **What this system does to itself is not a caller, and no longer apologises for it.** The 1 January sweep,
+  payload reduction, migrations and the bank pull hold no grants and have no row: their write is the row
+  with an empty actor column, which is a complete answer to *who did this*, and where the audit trail keeps a
+  label that label comes from a fixed list rather than from whoever ran the job
+  ([00-conventions §7a](../data-model/00-conventions.md#7a-what-an-empty-actor-column-means),
+  [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
+  **A key stayed the wrong shape for them on purpose**: a sweep is not a caller and should not have to
+  authenticate, which is why a secretless kind of `api_key` was refused rather than built.
+- **A way in when nobody who could hold `system.admin` can log in is a report and a written procedure, not a
+  mechanism.** Integrity check 9 lists who could hold it and now also says whether they can sign in, and the
+  recovery itself is written beside the account state machine
+  ([domain/02 §3](02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in),
+  [D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+  **What is refused is the mechanism**: a key is not a person, carries nobody's authority, and may never hold
+  that code, so it cannot be the thing that walks in when a person cannot.
 - **The outbound direction.** Everything above is a caller arriving. An export, a refund, anything this
   system pushes rather than is asked for has no design
   ([F-27](../open-questions.md#f-27)).
@@ -910,13 +918,6 @@ somebody reads a list, and a copied secret cannot be recalled.
   ([06a](06a-audiences-and-selectors.md#what-a-grants-reach-is-recorded-in),
   [F-7](../open-questions.md#f-7),
   [F-17](../open-questions.md#f-17)).
-- **What is this system's own name when it writes to itself?** An outside caller is a row; the 1 January
-  sweep, payload reduction, migrations and the bank statement pull still sign themselves with free text in
-  a label, and a key is the wrong shape for them — a sweep is not a caller and should not have to
-  authenticate ([F-25](../open-questions.md#f-25)).
-- **A way in when nobody who could hold `system.admin` can log in.** Break-glass has no design, and a key
-  is no stand-in for it: a key is not a person, carries nobody's authority, and may never hold that code
-  ([F-26](../open-questions.md#f-26)).
 - **The integration this system calls.** Everything §10a designs is a caller arriving; who authorizes an
   export, a refund or a pull — and whether a permission code and an actor are even the right shape for what
   is a job — is open ([F-27](../open-questions.md#f-27)).
@@ -925,4 +926,4 @@ All tracked in [../open-questions.md](../open-questions.md).
 
 ---
 
-*Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-072, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-124.*
+*Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-072, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-124, D-125, D-126.*

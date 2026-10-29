@@ -118,6 +118,43 @@ Why: [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sig
    acted and *as whom*. An account shared between people makes every audit entry
    worthless, and in a youth organization the audit trail is the point.
 
+### When nobody who can hold `system.admin` can sign in
+
+`system.admin` is the capability this system has no substitute for: it is what rotates or ends an
+integration that is writing right now, what releases a data subject's erasure, and the only code that
+satisfies every other check ([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
+**A key cannot be the way back in** — it is not a person, carries nobody's authority, and may never be
+granted that code ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined))
+— and no self-service path exists anywhere here: nobody joins, appoints or un-suspends themselves, so an
+emergency door would be the second, weaker authorization this design rejects by name.
+**What exists instead is a report and this procedure**
+([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+
+1. **Read the report before acting from memory.** Integrity check 9 lists everyone with a live allow of
+   `system.admin`, however they came by it, and says for each of them whether they can sign in:
+   `account.status` is `active` **and** their credential is live
+   (`account_credential.valid_to` unset or in the future, not revoked). An **empty second column is the
+   alert**, and it goes to the same person the list already goes to
+   ([05d §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)).
+2. **One named person is written down before it is needed**, and someone knows their telephone number.
+   **`api_key.owner_person_id` is not that person** — it answers *whose integration is this*, not *who
+   fixes it* ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+3. **The recovery is performed on an account, never on a grant.** Un-suspend the account, or re-issue the
+   credential, whichever is the actual obstacle. **This is the one write in this design made outside the
+   application, and it stays that way**: it produces no audit row, and nothing in the schema distinguishes
+   it from somebody editing a row they had no business editing.
+4. **Everything after it is ordinary.** The recovered person acts through the screens, so every authority
+   change that follows carries `granted_by`, an `authorization_channel` and an audit row like anybody else's.
+   **The recovery restores a person's access; it does not hand out authority**, which is the difference
+   between this and the sealed emergency credential that was refused.
+
+**What catches the edit afterwards** is one line of the integrity-check list: an audited row whose newest
+audit row predates its `updated_at` is a change the trail never saw
+([06b §5](../data-model/06b-redaction-and-checks.md#5-integrity-checks)). It is a report rather than a guard,
+and it is honest about its own limit — whoever can make the edit can also write an audit row by hand, because
+the trail is append-only to the application and not to whoever holds the database. **That is the residual
+risk this procedure accepts, stated here so that nobody discovers it during the incident.**
+
 ---
 
 ## 4. Contact points and identifiers

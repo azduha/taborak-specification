@@ -49,9 +49,9 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 | `id` | surrogate id | |
 | `occurred_at` | timestamp, audit time | Default: now |
 | `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. |
-| `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs, and `NULL` when an integration made the call — `api_key_id` below carries the actor then |
+| `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` when an integration made the call — `api_key_id` below carries the actor then — and `NULL` for the writers that have no request context at all: a migration, the yearly expiry sweep, a run of the import pipeline, whose person is in `import_batch.created_by` and not here. [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) reads that empty as **this system acting on its own**, which is an answer and not a missing one. **A correction made by hand through the application is not one of those writers** — somebody was in front of a screen, and their name goes in this column |
 | `api_key_id` | reference to `api_key`, optional | Which registered integration made the call, when the request authenticated as a caller rather than as a person ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)). **Set together with `actor_person_id` never**: a request is made by a person or by a key, and a row naming both answers *who did this* twice, which is the impersonation this design refuses at the resolver instead ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). It names the caller and nothing beside it — not the person who installed that key, whose column is attribution for an act and never an actor here |
-| `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — free text, and only for the writers that have no row to name themselves by — this system's own writes to itself, the 1 January membership sweep, payload reduction, migrations and the bank statement pull, whose name is [F-25](../open-questions.md#f-25). A caller that is not a person is a row in `api_key_id`, not a label, so an integration's write never arrives here. Otherwise a forensic gap — the count of rows naming none of the three is check 4 of [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks) |
+| `actor_label` | text, optional | **Not free text: a value from the label list of [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)** — `system:renewal-sweep`, `system:payload-reduction`, `system:bank-pull`, `migration:0042`, `import_batch:17` are instances of its rows, and bare `system` is retired, because it means "one of the above, and I am not saying which" ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). It exists for the writers that have no row of their own, and **a writer that is not on that list joins it there before it writes** — the list is prose, so nothing in the database refuses a label outside it and check 4 of [06b §5](06b-redaction-and-checks.md#5-integrity-checks) is what notices. A caller that is not a person is a row in `api_key_id`, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none |
 | `operation` | text, required | One of: `insert`, `update`, `delete` |
 | `table_name` | text, required | |
 | `record_id` | surrogate id, required | The row that changed. No reference: the table is named per row, so it points at any table in the database |
@@ -84,8 +84,15 @@ its audit row stand or fail together.** "The audit trail usually has it" is not 
 trail is how the organization answers "who changed this child's address, and when?", and an answer that
 depends on which code path made the change is not an answer. **The layer that owes it is the write itself,
 on every path**: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, a call
-made with a key, and a row somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
-never at risk; check 5 in §5 is the net under the rest, and it is a report, not a guard.
+made with a key — which names its key — and a row somebody corrects by hand through the application, which
+names that person. The paths with nobody in front of a screen and no key behind them are the scheduled
+writers and the migrations, and an empty actor column is their name, with `actor_label` saying which of
+them ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)). Model-layer validation
+logs the intended path, which is the only path that was never at risk; check 5 in §5 is the net under the
+rest, and it is a report, not a guard. **The one thing this rule cannot reach is a change made from outside
+the application altogether** — it writes no audit row because there is no write to attach one to, and
+[§5's report of a change the trail never saw](06b-redaction-and-checks.md#5-integrity-checks) is what
+notices afterwards, not before.
 
 The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
 detail: the redaction step has to run before the write, and the "nothing changed" test has to run
@@ -93,8 +100,9 @@ before anything is spent on a row that would log noise.
 
 1. Read the acting person, the acting key where the request authenticated as one, and the
    on-behalf-of person from the request context (`app.current_person_id`, `app.on_behalf_of`);
-   an unset or empty value means no *person* actor, not an error. A context naming a key has an
-   actor and is not that case: the key goes in `api_key_id`, and a row whose actor is a key never
+   an unset or empty value means no *person* actor, not an error — [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)
+   reads it as this system acting on its own, and step 7 is where that gets its name. A context naming a
+   key has an actor and is not that case: the key goes in `api_key_id`, and a row whose actor is a key never
    sets `on_behalf_of`, because a key acts for itself
    ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 2. On an **insert**, take the new row as the after-image.
@@ -107,7 +115,14 @@ before anything is spent on a row that would log noise.
    where the row belongs to a redacted person — the personal data erasure has already removed
    from the business tables. Everything else is stored as it stands, including a person's
    descriptive values, which are guarded by §8 item 7 rather than stripped here.
-7. Write one audit row carrying: the actor — `actor_person_id` or `api_key_id`, never both — and the
+7. Write one audit row carrying: the actor — `actor_person_id` or `api_key_id`, never both — **and, where
+   the write had no actor of either kind, the `actor_label` naming which of this system's own writers it
+   was, taken from the list in [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means):
+   the renewal sweep, payload reduction, the bank statement pull, a named migration, or a named batch.**
+   The label is not a fallback for a writer that could have named someone — a person who corrects a row by
+   hand through the application is `actor_person_id`, and a call that authenticated is `api_key_id` — so a
+   row arriving here with none of the three has not joined the list, and check 4 of
+   [06b §5](06b-redaction-and-checks.md#5-integrity-checks) reports it. Then the
    on-behalf-of person, the operation as lower-cased `insert`, `update` or `delete`, the table name,
    the record id taken from the new row and falling back to the old one, the changed fields, both
    redacted images, and the session id, ip address and request id from the request context.
@@ -422,7 +437,10 @@ which fields changed, the old and new values, and who did it. That last one has 
 two: the actor's person name where the row names a person, the integration's `code` where it names a
 key — never anything derived from its secret, which this table does not hold in the first place —
 and `actor_label` where it names neither
-([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). The third answer is a
+label from [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)'s list and not a
+string somebody typed, so it names a writer rather than marking an absence — which is what lets the history
+view print it as an answer.
 
 **For a `person_attribute` row this query *is* the history, not a shadow of it.** Values are
 overwritten in place

@@ -117,11 +117,16 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   It is on the list because a language with union in it lets one edit widen a grant to every person
   with no account and no membership, and the person who made the edit is the only control
   (§8, *What audiences do not do*).
-- **9. Holders of `system.admin`.** Everyone with a live allow of it, however they came by it —
-  through a personal grant or through an expression naming an office. This should be a very short
-  list, and it should alert on change. **A key never appears on it and cannot**: that grant is refused when
-  it is saved and counted by check 20, so a list containing only people is also the evidence that the
-  refusal held.
+- **9. Holders of `system.admin`, and whether they can sign in.** Everyone with a live allow of it, however
+  they came by it — through a personal grant or through an expression naming an office. This should be a
+  very short list, and it should alert on change. **A key never appears on it and cannot**: that grant is
+  refused when it is saved and counted by check 20, so a list containing only people is also the evidence
+  that the refusal held. **The second column is what turns the list into a warning:** for each holder, is
+  `account.status` `active` **and** is their credential live — `account_credential.valid_to` unset or still
+  in the future, not revoked ([01a §5](01a-accounts-and-contacts.md)). **An empty second column is the
+  report's real output:** a world in which somebody could hold the capability and nobody can reach a screen
+  is the state D-126's procedure exists for, and it goes to the same place, within the hour
+  ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
 - **10. Expression trees that are not trees.** Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose `audience_id` differs from its parent's; a row whose
   `parent_id` names no row; an audience with zero or several root rows. **Zero expected, and every
@@ -339,7 +344,10 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   that denies nothing, and an office granted without the membership operand. Both are lists a human
   reads, and both are the entire remaining control on their failure.
 - **9 should email someone every time its result changes** — a new holder of `system.admin` is either
-  a planned change or an incident, and either way someone should know within the hour.
+  a planned change or an incident, and either way someone should know within the hour. **Its second column
+  alerts on being empty**, which is a different kind of change: the authority exists and nobody can use it,
+  which is the state the written procedure in [domain/02 §3](../domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in)
+  is for ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
 - **Check 7 is the exception to the rule that this list is read rather than alerting on.** Its empty
   half — a grant reaching nobody — is inert and belongs on a weekly list. **Its wide half, a grant that
   got wider because something under a `-` stopped resolving, is the only entry in §11 that describes
@@ -583,14 +591,17 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 
 ## 13. Open issues
 
-- **Three questions about callers that are not people, registered rather than guessed at.** Round 16
-  designed the arriving integration and deliberately stopped there: this system's **own** writers are still
-  a NULL plus an `actor_label` ([F-25](../open-questions.md#f-25)), the case where nobody who could hold
-  `system.admin` can reach a screen has no mechanism ([F-26](../open-questions.md#f-26)), and calls going
-  *out* have no design at all ([F-27](../open-questions.md#f-27)).
-  [05e §17](05e-keys-and-callers.md) states each from this module's side; none of the three is answered by
-  adding a column to `api_key`, and a key is a poor fit for the first of them — **a sweep is not a caller
-  and should not have to authenticate.**
+- **One question left about callers that are not people.** Round 16 designed the arriving integration and
+  stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
+  system acting on its own, with a five-label vocabulary instead of free text
+  ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
+  and check 9 above is its sibling) and the case where nobody who could hold `system.admin` can reach a screen
+  is a report and a written procedure rather than a mechanism
+  ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+  **What stays open is the other direction:** calls going *out* have no design at all
+  ([F-27](../open-questions.md#f-27)). [05e §17](05e-keys-and-callers.md) states each from this module's side,
+  and none of the three was ever answered by adding a column to `api_key` — **a sweep is not a caller and
+  should not have to authenticate.**
 - The complete permission catalog and real role definitions (§12) — needs your input. The question is
   **which starter grants are written with `MEMBERS` in the expression and which are not**: `role` has no
   `requires_membership` switch to carry the answer

@@ -357,7 +357,11 @@ appendix that does not point at a person is on a trail, not in this diagram:** `
 `audit_log.api_key_id` name the registered caller a request authenticated as, mutually exclusive with each
 trail's `actor_person_id` — a request is made by a person or by a key, never by both at once, so there is
 no actor column to disagree about and `on_behalf` is never set on a row whose actor is a key
-([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). **A trail row naming
+neither is not a missing arrow:** the empty column is this system acting on its own and a complete answer to
+*who did this*, and where the trail has a label column the writer's name comes from a fixed list rather than
+from free text ([../data-model/00-conventions.md §7a](../data-model/00-conventions.md#7a-what-an-empty-actor-column-means),
+[D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
 
 **Names are one namespace.** `role.code`, `person_group.name` and a set `audience.code` are unique
 **together**, case- and separator-folded, and every `selector_type.code` is reserved — so a group called

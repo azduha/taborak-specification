@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-124 of them and lists the reversals. Read the round you are curious about — each one says what was
+126 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -164,6 +164,8 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-122](round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined) | What a key owes the catalog: four codes at the unit, and the fourth owed thing declined | decided (from your answer) | round 16 |
 | [D-123](round-16.md#d-123--invariant-19-reads-a-caller-not-a-person) | Invariant 19 reads "a caller", not "a person" | decided (found by writing this round) | round 16 |
 | [D-124](round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row) | Two defects: `system.admin` satisfies every code, and one prose code named no row | decided (defect fix, not a design change) | round 16 |
+| [D-125](round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | An empty actor column is this system acting on its own, and its name comes from a fixed list | decided (from your answer) | round 17 |
+| [D-126](round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism) | Break-glass is a report and a written procedure, not a mechanism | decided (from your answer) | round 17 |
 
 ## Reversed decisions
 

@@ -1,7 +1,7 @@
 # Glossary — Authorization terms
 
-The authorization half of the [glossary](glossary.md): the words a grant, an audience or an
-expression is written out of. Terms defined elsewhere in the glossary —
+The authorization half of the [glossary](glossary.md): the words a grant, an audience, an
+expression or an audit row is written out of. Terms defined elsewhere in the glossary —
 [person](glossary.md#identity), [group and office](glossary.md#organization),
 [guardianship](glossary.md#relationships) — are not repeated here.
 
@@ -82,6 +82,23 @@ owner_person_id)`** and **`can_key(api_key, permission_code, scope_type, scope_i
 and the second **takes no person of any kind**: a claimed person would make the trail's word
 for who acted an input
 ([D-121](decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
+**Nothing else is** — this system writing to itself is not a third caller, it is an empty actor
+column, and it holds no grants (*An empty actor column* below).
+
+**An empty actor column** — `actor_person_id` with nothing in it, in `access_log` or in
+`audit_log`, or an empty `created_by` / `updated_by`: **read as this system acting on its own, a
+complete answer to "who did this" rather than a missing one.** It is **not a caller** — a check is
+answered about a person or a key (see **Caller** above) — and this system holds no grants, is
+named by no grant and appears in no `role_holder` row; nothing in a permission check reads an
+empty actor column to decide an answer. Two limits keep it narrow: **only where empty is legal**
+(`import_batch.created_by` and `api_key.created_by` are required, and a grant's `granted_by`
+names a person) and **only in an actor column** — an absent `scope_id` is a check at the unit,
+not a writer. **Where the trail has a label column, the writer's name comes from a fixed list**,
+so a label such as `system:renewal-sweep` is one of the few names this system signs its own
+writes with and **bare `system` is retired**; the list, what it costs, and the check that reports
+an off-list label are stated once in
+[00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means)
+([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
 
 **Allow / deny, and the decision rule** — **Allowed when some live allow applies and no
 live deny applies.** That is the whole of precedence, and everything else in the model is
@@ -439,4 +456,4 @@ is said on the grant, not on the role** (*an assumption; see the index in
 
 ---
 
-*Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123.*
+*Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-125.*

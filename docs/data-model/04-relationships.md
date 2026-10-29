@@ -187,7 +187,7 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
 | `valid_from` | date, required | |
 | `valid_to` | date, optional | NULL = current. Ending this row without ending the guardianship *changes* the right; a new row starts it again |
 | `changed_reason` | free text | e.g. `default for self-registered guardianship`, `court order 2026-03-14`, `guardian request` |
-| `changed_by` | reference to person, optional | NULL when the default was applied by the application at creation |
+| `changed_by` | reference to person, optional | NULL when the default was applied by the application at creation. [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) is what that empty means — a complete answer, not a person nobody remembered |
 
 **Rules**
 

@@ -392,7 +392,8 @@ both the acting person and the subject person
 
 The authorization vocabulary — **permission, scope, grant, allow and deny, channel, audience,
 selector, the expression grammar, the compilation, a key and the caller a check is answered
-about, and the states a named thing gets instead of deletion** — is defined on its own page:
+about, what an empty actor column in a trail says, and the states a named thing gets instead of
+deletion** — is defined on its own page:
 [glossary-authorization.md](glossary-authorization.md).
 
 ---

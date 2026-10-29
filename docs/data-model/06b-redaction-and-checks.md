@@ -116,16 +116,27 @@ what the record said.
 - **Batches left in a non-terminal state for a long time.** Count `import_batch` rows whose
   status is none of `applied`, `reverted`, `failed` and which were created more than 30 days
   ago; non-zero means a run somebody stopped steering.
-- **Audit rows with no actor at all.** Count `audit_log` rows with none of an `actor_person_id`, an
-  `api_key_id` or an `actor_label`; any non-zero count is a forensic gap — a row that answers *who did
-  this* with nothing. The count runs over three columns because the trail has three ways to name an
-  actor: a person, a registered integration ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)),
-  and the free text still left for this system's own writers, which have no name yet
-  ([F-25](../open-questions.md#f-25)). **The third column is what keeps the report readable rather than
-  loud.** A row naming a key and nothing else is a complete answer to *who did this*, and a count that
-  looked only at `actor_person_id` and `actor_label` would report every integration write as a gap until
-  whoever reads it stopped reading; a row naming a label and nothing else stays the legal shape F-25
-  leaves open; a row naming none of the three is the gap, and is still one.
+- **Audit rows whose actor names nothing.** The trail has three ways to say *who did this*: a person, a
+  registered integration ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)), and — for the writers
+  that have no row of their own — a label from the list in
+  [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means). The report runs over all
+  three columns, because a version of it that looked only at `actor_person_id` and `actor_label` would
+  count every integration write as a finding until whoever reads it stopped reading. **What it no longer
+  counts as a gap is the shape it was built to count.** A row naming no person and no key is not a row that
+  failed to answer *who did this*: §7a reads it as this system acting on its own, and the renewal sweep,
+  payload reduction, the bank statement pull and a named migration write rows in exactly that shape,
+  correctly and by design ([00-conventions §7](00-conventions.md#7-standard-columns)). Two things are
+  reported instead. **(a) A row whose `actor_label` is not one of the labels §7a lists, including a row
+  naming no person, no key and no label at all** — the vocabulary is a documented list and not a table, so
+  nothing in the database refuses a label from outside it and this count is the only thing that ever notices
+  ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
+  A row that reaches the trail with nobody and nothing in it has not joined that list, which is the failure
+  the list exists to catch. **(b) A row on a write path that owed a person and named none**, in the two
+  shapes a reader can actually test: a transaction whose request context carried a `current_person_id`
+  ([06 §2.1 step 1](06-audit-and-import.md#21-the-trigger)) while `actor_person_id` stayed empty, and any audit row about one of the rows §7a names as
+  having no empty to interpret — `import_batch.created_by` and `api_key.created_by` are required and a
+  grant's `granted_by` names a person, so a business row that cannot lawfully be authorless cannot have
+  been written by a writer that is.
   **What this check cannot catch, said because two rows a reader would want are not among them.** A row
   naming a key *and* a person — the row a forensic reader most wants flagged — is never reported here.
   It is illegal, and the rule carried by the two columns is what refuses it
@@ -189,6 +200,32 @@ what the record said.
   the oldest rows full and looks entirely healthy to a sample. And read the window from the same place
   the job does, because a check holding one value and a job holding another reports clean forever, which
   is the exact failure this check exists to prevent and the one it can cause by itself.
+
+- **A change the trail never saw: an audited row whose newest audit row predates its own `updated_at`.**
+  For every table [06 §2.1](06-audit-and-import.md#21-the-trigger) obligates, take each row's `updated_at`
+  and the newest `occurred_at` among the audit
+  rows naming that table and `record_id`, and report the rows where the change is newer than the trail's
+  knowledge of it. **It exists because of the one write this design performs outside the application**: the
+  recovery in the break-glass procedure un-suspends an account or re-issues a credential by hand, produces
+  no audit row, and leaves a row that is live, referenced and invisible to every other check in this section
+  ([domain/02-actors.md §3](../domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in),
+  [D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+  **It can see the recovery at all because `account` is a business table**, and a business table owes an
+  audit row on every insert and update ([06 §2.1](06-audit-and-import.md#21-the-trigger)); which tables
+  those are is a recommendation awaiting confirmation (§6), and that is this report's real ceiling —
+  **a table nobody confirmed is a table this check reads as never changing.**
+  Nothing in the schema distinguishes a legitimate recovery from somebody editing a row they had no business
+  editing, so this is a report and not a guard, like every item above it. **What it cannot catch.** An edit
+  that also inserts its own audit row by hand — the trail is append-only to the application, not to whoever
+  holds the database. And an edit that leaves `updated_at` alone, which is the quieter half of the blind
+  spot: [00-conventions §7](00-conventions.md#7-standard-columns) is explicit that nothing maintains
+  `updated_at` unless somebody says so, so **this report is exactly as wide as whatever maintains that
+  column**, and an application that sets it only on its own screens narrows it to those screens. **What it
+  does not lose to payload reduction:** reduction empties `old_values` and `new_values` and keeps the row
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+  and a reduced row keeps its `occurred_at` — so 24 months after the values went, this check still has both
+  timestamps to compare. Coverage outlives content by design, which is the one part of this list that gets
+  no worse with age.
 
 **Check 5 is worth automating as a test**, not just a nightly query — a test that reads the
 table list in these documents and asserts every business table on it appears on the audited list,

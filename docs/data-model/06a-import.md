@@ -55,7 +55,7 @@ sentence is here so that the first person to ask the question finds the sentence
 | `row_count` | integer, optional | |
 | `status` | text, required | One of: `staging`, `parsed`, `matching`, `review`, `applying`, `applied`, `reverted`, `failed`. Default `staging` |
 | `dry_run` | boolean, required | Default false. A dry run parses and matches but writes nothing to business tables |
-| `created_by` | reference to person, required | |
+| `created_by` | reference to person, required | **Required, and it is the reason no import is anonymous.** The pipeline's own writes name themselves `import_batch:<id>` ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)), and that label leads here — to the person who uploaded the file — so an imported row is attributed twice over, once to the batch and once through it to somebody |
 | `created_at` | timestamp, audit time | |
 | `applied_at` | timestamp, audit time, optional | |
 | `applied_by` | reference to person, optional | |
@@ -217,7 +217,11 @@ an imported event, deleting the row breaks it. Therefore:
 - After that window, corrections are made by editing the data, not by reverting. This is
   the honest behaviour; a "revert" that silently orphans references is worse than refusing.
 - **Step 2's removals are audited like any other write**, one entry per row deleted, each
-  naming the batch. This is the only hard delete a business row can meet, and it is precisely
+  naming the batch — and the batch is not an anonymous name: its label under
+  [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) is `import_batch:<id>`, and
+  that row's `created_by` is required, so the entry leads to a person whoever read it. Where a person
+  pressed the revert themselves, `actor_person_id` names them and no label is involved at all.
+  This is the only hard delete a business row can meet, and it is precisely
   the case where someone will later ask "this person existed in March and is gone now — what
   happened?" An undo that erases the rows and leaves no trace of having erased them is not a
   rollback but a cover-up, and it is the same undo a reviewer is trusting when they agree to

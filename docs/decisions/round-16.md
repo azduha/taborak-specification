@@ -10,7 +10,8 @@ access", which turned out to be four questions wearing one name: what an outside
 somebody does when nobody can log in. Two were chosen and two were declined. **An outside system
 calling in, and our own clients talking to our API, are in scope**; naming the corpus's own authorless
 writes and a break-glass way in are not, and are registered as
-[F-25](../open-questions.md#f-25) and [F-26](../open-questions.md#f-26) rather than guessed at.
+[F-25](../open-questions.md#f-25) and [F-26](../open-questions.md#f-26) rather than guessed at. **Both were
+settled in [round 17](round-17.md); this round's own text below still describes the state as it was then.**
 
 **The finding the whole round hangs on is that this design already has a machine actor, and its name is
 NULL.** Three pages write as though one acts: `created_by` is "Absent for system and import jobs"
@@ -538,10 +539,15 @@ Declined by your answer, and registered rather than guessed:
   membership sweep, payload reduction, migrations and the bank statement pull still name themselves in
   `audit_log.actor_label` as free text (`system`, `migration:0042`, `import_batch:17`), while a key now
   names itself as a reference. The asymmetry is real and the forensic-gap check now counts three ways
-  instead of two, so it is covered rather than broken; it is not *named*.
+  instead of two, so it is covered rather than broken; it is not *named*. **Closed in round 17 by
+  [D-125](round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)**,
+  which read the empty actor column as the answer rather than naming the writers.
 - **[F-26](../open-questions.md#f-26) — a way in when nobody can log in.** Break-glass. Distinct from a
   permanent machine credential, and this round's key is a poor fit for it precisely because a key is not
-  a person.
+  a person. **Closed in round 17 by
+  [D-126](round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)**, which
+  made it a report and a written procedure rather than a mechanism — so this round's refusal stands
+  untouched.
 - **[F-27](../open-questions.md#f-27) — the outbound direction.** The accounting export question, the
   refund question, and anything that pushes rather than being pulled. The corpus has always had exactly
   one inbound flow and no outbound one, and it deleted the only push mechanism it ever discussed

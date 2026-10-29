@@ -20,8 +20,10 @@ person and confers nothing; it is not a selector, and no expression can name one
 Until this table existed the design had machine writers and no word for one: `created_by` was "absent for
 system and import jobs", `access_log.actor_person_id` was "absent for system actions", and the audit
 trigger treated an empty request context as *no actor, not an error*. **That NULL is what this table
-replaces** — for the calls an outside system makes. What this system does to itself is still unnamed, and
-says so in §17.
+replaces** — for the calls an outside system makes. **What this system does to itself keeps the empty
+column**, which is read as a complete answer to *who did this* and named, where the trail has a label
+column, from a fixed list (§17,
+[D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
 
 **Fields**
 
@@ -196,15 +198,20 @@ that was never written:
 
 Stated because a reader will otherwise assume the nearest mechanism applies.
 
-- **What this system does to itself is still a NULL.** The 1 January membership sweep, payload reduction,
-  migrations and the bank statement pull name themselves in `audit_log.actor_label` as free text —
-  `system`, `migration:0042`, `import_batch:17` — while a key now names itself as a row. The asymmetry is
-  known, and the forensic-gap check counts three ways instead of two so the combination is covered rather
-  than broken. Naming those writers is
-  [F-25](../open-questions.md#f-25), and a key is a poor fit for them: a sweep is not a caller and should
-  not have to authenticate.
-- **Break-glass access is [F-26](../open-questions.md#f-26).** A key is not a person and cannot stand in
-  for the person who cannot log in.
+- **What this system does to itself is not a caller and has no row.** The 1 January membership sweep, payload
+  reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
+  the system acting on its own and is a complete answer to *who did this*; where the audit trail keeps a
+  label, it is one of five from a list rather than free text
+  ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means),
+  [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
+  **`api_key` was deliberately not stretched to cover them**: a sweep is not a caller, and a table whose rows
+  may or may not carry a secret is a table whose invariants become conditional.
+- **Break-glass is a report and a procedure, not a mechanism**
+  ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+  A key is not a person, carries nobody's authority and may never hold `system.admin`, so it cannot stand in
+  for somebody who cannot log in; what it can do is nothing, which is why the answer is check 9's second
+  column and a written procedure
+  ([domain/02 §3](../domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in)).
 - **The outbound direction is [F-27](../open-questions.md#f-27).** Everything here is a caller arriving.
   Anything this system initiates — an accounting export, a refund, a webhook (a mechanism this corpus
   deleted rather than deferred) — has no design, and the one refusal that cited "a second integration with

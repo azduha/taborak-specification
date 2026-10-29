@@ -1,6 +1,6 @@
 # Open Questions
 
-Everything still unresolved — eighteen questions, each with its **schema impact**, what changes
+Everything still unresolved — sixteen questions, each with its **schema impact**, what changes
 once you answer, ordered roughly by how much they block.
 
 Marked: 🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred.
@@ -332,93 +332,6 @@ nobody enforces is a column that lies after the first exception.
 **Needed.** Not before implementation. Before the first AGM, which is when somebody asks whether the system
 can show that the current chair was elected.
 
-### <a id="f-25"></a>F-25 🟡 What is this system's own name when it writes to itself?
-
-**Raised as a loss by round 16, not as a feature request.** Until [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)
-an outside caller and this system's own scheduled writers were the same nothing: a NULL in an actor column
-and a free-text label. Round 16 gave the outside caller a row and deliberately left the others as they
-were, which made the asymmetry visible instead of shared. The writers that still have no name are named in
-the corpus itself: `created_by` is absent for "the writers that have no row of their own"
-([00-conventions §7](data-model/00-conventions.md#7-standard-columns)), `access_log.actor_person_id` is "absent for system
-actions" ([05c §9](data-model/05c-access-log-and-resolver.md#9-access_log)), `audit_log.actor_label` holds
-`system`, `migration:0042`, `import_batch:17` ([06 §1](data-model/06-audit-and-import.md)), the 1 January
-sweep and payload reduction run with no actor at all, and one rule is addressed to a writer outright —
-"never by a job" ([04 §2](data-model/04-relationships.md)).
-
-**Question.** Does a scheduled writer get a row that can be named, granted and revoked — or does it stay a
-label in a text column?
-
-**Why it might be nothing.** The corpus already has a doctrine for exactly this: an authorless write is
-correct when "a permission for it would imply a person choosing not to run it"
-([permission-catalog-a §8](appendix/permission-catalog-a-codes.md)), which is why payload reduction has no
-code. A sweep is not a caller; making it authenticate is a mechanism serving nobody, and there is nobody to
-hold the secret. The forensic-gap check
-([06b §5](data-model/06b-redaction-and-checks.md)) already counts rows with no actor at all, and round 16
-widened it to count the three shapes rather than two, so a row naming neither a person nor a key is still
-watched.
-
-**Why it might be something.** `actor_label` answers *who* only as well as whoever wrote the string chose:
-`system` today, `system:cleanup` tomorrow, and no row behind either. So the question the corpus can answer
-about an integration — *what may it do?* — cannot be asked about the sweep, whose reach is whatever the
-trigger and the job let it do. That is not a gap an attacker exploits; it is a gap the next person
-reviewing a strange row falls into, which is when the question gets asked.
-
-**Positions.** Leave it (free text plus the widened gap check, cheapest, and honest about what it is); give
-`api_key` a second kind — a row per scheduled writer with **no secret**, since nothing authenticates as it —
-which reuses the table, the report and the trail but bends §14's "one row is one caller and one live
-secret"; or a small `system_writer` registry keyed by a stable code, which says plainly that a job is not a
-caller and costs a table, four codes nobody grants, and a seeding rule.
-
-**Schema impact.** Zero, one column, or one table plus its seeding and its report line. **The middle option
-is the one to think twice about**, because a table whose rows may or may not carry a secret is a table whose
-invariants become conditional — and conditional invariants are where an implementation guesses.
-
-**Needed.** Not before implementation. Before the first review of a row nobody recognizes, which is the
-moment somebody asks what the nightly sweep is allowed to touch.
-
----
-
-### <a id="f-26"></a>F-26 🟡 When nobody who can hold `system.admin` can log in
-
-**Left open on purpose by round 16.** A registered key was offered as the answer to "the treasurer is
-locked out on the last day of the renewal window" and refused: a key is not a person, carries nobody's
-authority, and `can_key` takes no person
-([D-121](decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)); and `system.admin`, which
-is the corpus's break-glass capability
-([D-068](decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)), is one of the codes a key may never be granted
-([D-122](decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
-**Both halves of the refusal stand; what is missing is the thing the refusal was refusing to stand in
-for.**
-
-**Question.** What happens when every person who could hold `system.admin` has an account whose `status` is
-not `active` — suspended, closed, or never finished verifying
-([01a §1](data-model/01a-accounts-and-contacts.md)) — and the system needs a write today?
-
-**Why it might be nothing.** The failure needs several things wrong at once, the state is visible
-(`role_holder`, `access_grant` and `account.status` together answer "who could do this, and can they
-reach a screen?"), and a report over those three columns is a cheaper control than any emergency
-mechanism. There is no self-service in this design anywhere: nobody joins, appoints or un-suspends
-themselves, so "an emergency path" contradicts a posture the corpus holds everywhere else.
-
-**Why it might be something.** Every other dead end in this system fails closed and says so; this one
-resolves offline, by whoever is nearest a database, which is the one write path with no audit row, no
-`granted_by` and no `authorization_channel`. The corpus's answer to a bypass it refuses to design is to
-name the gap in a check — and there is no check here, because nothing in the schema would show the
-difference between a legitimate superuser and a hand-edited grant.
-
-**Positions.** A report of *who could hold it and whether they can sign in*, and the acceptance that a
-true lockout is a database edit (cheapest, consistent, and honest that the escape hatch is outside the
-model); a seeded `recovery` key with `system.admin`, sealed and never grantable to a person — which is the
-mechanism round 16 refused and would have to be argued for on its own terms; or a *time-boxed* self-service
-path, which is a new module and not a column.
-
-**Schema impact.** Zero for the report. A sealed key is one boolean on `api_key` that the resolver must
-honour, which is a rule in the resolver for a caller kind that currently needs none — the most expensive
-kind of small change in this design.
-
-**Needed.** Before go-live, as an agreed *procedure* rather than a feature: someone must be the person who
-can be telephoned, and D-120's `owner_person_id` is not that person.
-
 ---
 
 ### <a id="f-27"></a>F-27 🟢 The integration that this system calls
@@ -430,7 +343,8 @@ endpoint anywhere to authenticate**, because webhooks left the design with the c
 ([07-finance §2b](data-model/07-finance.md)).
 
 **Question.** Does an outbound call need a permission code and an actor at all, or is it a job — which
-would make it [F-25](#f-25) wearing a different hat?
+would make it [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
+the answer round 17 gave to the writers that stay inside this system, wearing a different hat?
 
 **Why it might be nothing.** A person performing an export in a screen is already an ordinary checked
 action, audited like any other write; a scheduled pull is a job, and jobs have no codes by doctrine. The
@@ -696,7 +610,7 @@ person data with no privileged subset ([D-083](decisions/round-07-08.md#d-083--t
 | **Health records** ✅ | **Designed — as [domain/08](domain/08-person-data.md) and [data-model/09](data-model/09-attributes.md)** | **There was no medical record to design.** [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) ruled that everything about a person except name, gender and age is one class of data, held as fields in a vocabulary the organization defines at runtime ([D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). Reading is `person.view`, writing is `person.edit`, and only the vocabulary needs a code of its own. What is left undesigned is policy around one class rather than a second module: what happens to the history of a value once the audit payloads expire, and whether `attribute.define` is a sufficient gate for a vocabulary free to invent a "health" category tomorrow — which is [AT-4](#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data). |
 | **Communication** | `message.send_direct`, `message.broadcast` (scoped) — shape decided, detail undesigned | **Shape decided by [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel):** internal first, external channels are delivery; everyone may send direct; `broadcast` is one scoped permission; **the recipient picks the channel.** Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was **declined as a sender restriction** and replaced by mirroring — see [MSG-1](#msg-1). |
 | **Reporting** | `report.*` permissions sketched | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-back-to-the-paper--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year, as far back as the records reach) is the acceptance test. |
-| **API and UI** | `api_key` and its four codes: who may call in is **designed** ([05e](data-model/05e-keys-and-callers.md), [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)); the resolver's `at` parameter exists partly for this | **The caller is designed; the wire is not.** What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and [D-072](decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). Three things stay open: the system's own writers ([F-25](#f-25)), break-glass ([F-26](#f-26)), and calls going out ([F-27](#f-27)). |
+| **API and UI** | `api_key` and its four codes: who may call in is **designed** ([05e](data-model/05e-keys-and-callers.md), [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)); the resolver's `at` parameter exists partly for this | **The caller is designed; the wire is not.** What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and [D-072](decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). One question stands here: calls going out ([F-27](#f-27)). Beside it, three things are settled rather than open — this system's own writers are an empty actor column read as the system acting on its own and named by a fixed label list ([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)), a lockout is a report plus a written procedure rather than a mechanism ([D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)), and everything a caller sends over the wire is API work, not schema work. |
 | **Notifications** | — | Expiring roles, members inside the renewal window, unpaid fees. Note the renewal window makes this *dated* rather than status-driven — a nightly job over `in_renewal_window()`. |
 | **Payment gateway** | — | **Answered, so this row is now narrower than it was.** The organization collects via **bank API**, not a card gateway ([D-075](decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)): no webhooks, no disputes, no processor reconciliation. What remains undesigned is the **statement import** itself — file formats, the idempotency key, and what happens to an account the bank revises. |
 | **Multi-language** | — | Unit names and permission display names are all in the database. Whether they need translation columns is unanswered. |
@@ -864,6 +778,8 @@ the entry, and this index is a register, not a second copy of it.
 | <a id="f-21"></a>F-21 | Who reads the report about what an expression names and what it costs? | [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) | Nobody, because there is nothing to read. [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) retires the standing reports *about rules* with one tab on the permissions page — **Broken** lists every live rule naming a deprecated, hidden or disabled thing or failing to resolve — and [D-112](decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event) is what made the cost acceptable. Reports outside the expression language survive it: the dead-deny line in *Deny*, and [D-071](decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s report of assignments nobody forced to end. |
 | <a id="f-22"></a>F-22 | May the editor fold and flatten an expression for display? | [D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) | Yes, with one hard limit: **display is free, storage is not.** The editor may fold a sum of same-kind leaves onto one line; it may not change the stored canonical string, because the cycle walk, the reserved-name rule and the listing of what names an audience all reason over the stored form ([D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)). |
 | <a id="f-23"></a>F-23 | Is a resolved audience stored as the record of whom a grant reached? | [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached) | "Words only — the expression is the record." [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached). The preview still prints a resolved set before a save, and the log calls it *a rendering on a date*, not a statement of members. The middle position — a reach query — is **not adopted either**, which is the part a skimming reader gets wrong. |
+| <a id="f-25"></a>F-25 | What is this system's own name when it writes to itself? | [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | **It has no name, and none is owed.** An empty actor column is read as *this system acting on its own* and is a complete answer to *who did this* — no row, no code, no secret, because a permission for a sweep would imply a person choosing not to run it. Where the trail keeps a label column the label comes from a fixed list of five (`system:renewal-sweep`, `system:payload-reduction`, `system:bank-pull`, `migration:<id>`, `import_batch:<id>`) and bare `system` is retired; the rule is stated once, in [00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means). Zero schema. What it costs: **nothing in the database refuses an off-list label**, so a guessed one looks plausible until a person compares it against the list. |
+| <a id="f-26"></a>F-26 | When nobody who can hold `system.admin` can sign in, what happens? | [D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism) | A **report and a written procedure**, not a mechanism. Integrity check 9 already listed the holders; it now says for each whether they can sign in, and **an empty second column is the alert**. The procedure lives in [domain/02 §3](domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in): one named person written down in advance, and **the recovery performed on an account, never on a grant** — so everything after it carries `granted_by`, a channel and an audit row like anybody else's. A sealed `recovery` key, a time-boxed self-service path and a seeded minimum number of holders are all refused. Residual risk, accepted out loud: the recovery is a database edit no schema distinguishes from an intrusion, and whoever can make it can write an audit row by hand. |
 | <a id="ev-3"></a>EV-3 | What happens to outstanding payment requests when an event is cancelled? | [D-076](decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person) | Cancelling voids the event's outstanding payment requests, recording why, and money already received becomes a queue item — answered in the finance module rather than here, by [D-076](decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person). |
 | <a id="h-0"></a>H-0 | What is *the medical record*, which five files cited and none defined? | [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) | Found while starting the health-records module, and it changed what that module is: the referent was not missing, the **category** was. Everything about a person except name, gender and age is one class of data, held as fields — [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), with the shape of the layer in [D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) and the boundary in [D-085](decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity). The three options this entry offered are recorded nowhere else, which is right: they were the shape of the question, not of the answer. |
 | <a id="msg-1"></a>MSG-1 | May a volunteer message a minor directly? | [D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians) | Yes — mirror it to the minor's guardians, tell the sender, block nothing ([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)). Raised by [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel), which declined the restriction rather than forgetting it; three details were settled with it, because "mirror it to the guardians" does not by itself say who the guardians are *to this message*. |
@@ -874,7 +790,7 @@ the entry, and this index is a register, not a second copy of it.
 
 **Nothing here blocks anything.** No question on this page is marked 🔴, and none has been since round 4:
 the model is settled enough that most answers here change data rather than structure, which is what makes
-them worth a moment rather than a decision meeting. Seven are marked 🟡 and eight 🟢. The list below is
+them worth a moment rather than a decision meeting. Seven are marked 🟡 and nine 🟢. The list below is
 what to answer first — roughly half of what it was before [round 13](decisions/round-13.md) closed four of
 its nine items, which is worth saying before the list is trusted again.
 

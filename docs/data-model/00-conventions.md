@@ -304,7 +304,7 @@ Every business table carries:
 |--------|------|---------|
 | `id` | 64-bit surrogate key | Set by the database, never by the caller |
 | `created_at` | timestamp, required | Audit time of insert |
-| `created_by` | person, optional | Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations ([F-25](../open-questions.md#f-25)). An import batch is not one of them: `import_batch.created_by` is **required** there ([06a §3](06a-import.md#3-import-pipeline)), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the **key** there, and no person is inferred from it ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). |
+| `created_by` | person, optional | Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). An import batch is not one of them: `import_batch.created_by` is **required** there ([06a §3](06a-import.md#3-import-pipeline)), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the **key** there, and no person is inferred from it ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). |
 | `updated_at` | timestamp, optional | Audit time of last change |
 | `updated_by` | person, optional | Who last changed it |
 | `import_batch_id` | import batch, optional | Set on imported rows — the only way to undo a bad import |
@@ -339,6 +339,60 @@ installs one — `api_key.create` is among the codes a key may never be granted
 [D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
 Required is not inherited: the column says who performed the install and nothing else, and a key outlives
 that person with its authority untouched ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+
+---
+
+## 7a. What an empty actor column means
+
+**Stated here once, because four pages used to state it their own way and round 16 proved they would
+drift.** [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list).
+
+**An actor column left empty is read as this system acting on its own, and that is a complete answer to
+"who did this".** Not a missing answer and not a forensic gap. It applies to
+`access_log.actor_person_id` ([05c §9](05c-access-log-and-resolver.md#9-access_log)), to
+`audit_log.actor_person_id` ([06 §2](06-audit-and-import.md)), and to the standard `created_by` and
+`updated_by` above. Since round 16 a machine that calls in from outside is **not** in this reading: it is
+a row, in `api_key_id`, and an empty actor column now means the writers that have no row — the sweeps, the
+reductions, the migrations.
+
+**Two limits, because a rule about actors stated as a rule about NULLs gets misread everywhere.**
+
+- **Only where empty is legal.** `import_batch.created_by` is required
+  ([06a §3](06a-import.md#3-import-pipeline)), `api_key.created_by` is required
+  ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)),
+  and a grant's `granted_by` names a person. Those rows have no empty to interpret.
+- **Only in an actor column.** An absent `scope_id` is a check at the unit; an absent
+  `authorization_ref_id` is no grant involved; an absent `subject_person_id` is an action about nobody's
+  record. None of them is the system.
+
+**And where the trail has a label column, the label comes from this list.** It is the one place a writer's
+name is written down, so a row nobody recognizes has something to be compared against — the vocabulary is
+what turns *"the system"* from a shrug into a claim.
+
+| The label | Who wrote the row | What it was doing there |
+|---|---|---|
+| `system:renewal-sweep` | the 1 January renewal sweep | Expiring memberships whose window closed — and nothing else; a guardianship's `valid_to` is **never set by a job** ([04 §1](04-relationships.md)) |
+| `system:payload-reduction` | payload reduction | Emptying `old_values` and `new_values` once a row passes the payload window ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) |
+| `system:bank-pull` | the bank statement fetch | The `bank_transaction` and `payment` rows that answer a variable symbol ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)). **For the run with nobody in the room** — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does |
+| `migration:<id>` | a named migration | Any structural change, **and any one-off correction** — a fix that is not in a migration is a fix nobody can attribute |
+| `import_batch:<id>` | a run of the import pipeline | Not anonymous and never was: `import_batch.created_by` names the person who uploaded the file |
+
+**Bare `system` is not one of them.** It means "one of the above, and I am not saying which", which is the
+drift the vocabulary exists to stop
+([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). **A writer that is not on the
+list joins the list on this page before it writes**, and
+[06b §5](06b-redaction-and-checks.md#5-integrity-checks) reports any row whose label is not here.
+
+**What this costs, and what it does not do.** Nothing in the database refuses an off-list label: this is a
+documented vocabulary, not a table, so the enforcement is a report and a review. A row written by a
+one-off script that guessed at a label from this list will therefore look legitimate, which is the honest
+downside of choosing no column over a `system_writer` registry
+([D-125 refused that registry, and refused a secretless kind of `api_key`](../decisions/round-17.md#what-this-round-refused-and-what-it-still-declines)).
+**And the empty column carries attribution only.** Nothing in a permission check reads one, which is the
+same rule that already forbids reading a key's `last_used_at` to decide an answer
+([check 22](05d-invariants-and-seed.md#11-invariants-to-verify)) — so this is not the nullable-whose-absence-silently-means-something
+that [§2 of the authorization model](05-authorization.md) warns about, because its meaning is written down
+in one place instead of inferred in four.
 
 ---
 

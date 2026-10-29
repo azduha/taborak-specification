@@ -32,7 +32,7 @@ and the absence table below is the same list stated as columns.
 | `description` | text, optional | What the group is for, for whoever finds it in a list two years from now. |
 | `valid_from` | date, required | When the group began. |
 | `valid_to` | date, optional | NULL = open. An ended group is never deleted: its member rows still answer the historical question (§4). **Setting it is refused while a live grant, or a live audience reachable from one, names the group** (§3). |
-| `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. `created_by` is NULL for system jobs. |
+| `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns ([00-conventions §7](00-conventions.md#7-standard-columns)). An empty `created_by` is read as this system acting on its own by [§7a](00-conventions.md#7a-what-an-empty-actor-column-means) — and **this table has no routine case of one**: the import owes it no rows (§1) and the seed ships none (§7), so an empty one here is a migration or a one-off correction, which is the shape §7a's list is written to name. |
 
 **Rules**
 
