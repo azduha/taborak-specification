@@ -1626,10 +1626,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-what-the-domain-requires-from-what-you-have-said" class="md-nav__link">
+  <a href="#1-what-the-domain-requires" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. What the domain requires (from what you have said)
+        1. What the domain requires
       
     </span>
   </a>
@@ -2687,10 +2687,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-what-the-domain-requires-from-what-you-have-said" class="md-nav__link">
+  <a href="#1-what-the-domain-requires" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. What the domain requires (from what you have said)
+        1. What the domain requires
       
     </span>
   </a>
@@ -2832,7 +2832,7 @@ and because the yearly expiry and renewal window
 need somewhere to read a due date from.</p>
 </blockquote>
 <hr />
-<h2 id="1-what-the-domain-requires-from-what-you-have-said">1. What the domain requires (from what you have said)<a class="headerlink" href="#1-what-the-domain-requires-from-what-you-have-said" title="Permanent link">&para;</a></h2>
+<h2 id="1-what-the-domain-requires">1. What the domain requires<a class="headerlink" href="#1-what-the-domain-requires" title="Permanent link">&para;</a></h2>
 <p><strong>Settled:</strong></p>
 <ul>
 <li>There is a <strong>yearly fee</strong>, <strong>flat</strong>, <strong>per person</strong> — it does not vary by age, by
@@ -2849,7 +2849,7 @@ need somewhere to read a due date from.</p>
 </ul>
 <p><strong>Unspecified</strong> — the fee <em>amount</em>, proration, family discounts, who may authorize a waiver,
 whether the fee buys insurance, and currency.</p>
-<p><strong>Settled in round 6, and it was the big one</strong> — the organization <strong>collects</strong>, but not through
+<p><strong>Settled, and the big one</strong> — the organization <strong>collects</strong>, but not through
 a card gateway: money is requested by <strong>variable symbol + QR code</strong> and <strong>arrives from the bank
 API</strong> already tagged (§2a, <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>).</p>
 <hr />
@@ -2933,21 +2933,14 @@ API</strong> already tagged (§2a, <a href="../../decisions/round-06/#d-075--mon
 </tr>
 </tbody>
 </table>
-<p><strong><code>org_unit_id</code> is deleted with the units</strong>
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-and what it was for is the part worth keeping on the record. The column was optional, <code>NULL</code> meant
-organization-wide, and it existed so that one body could carry <em>a supplementary fee above the
-organization's</em>. Nobody ever asked for one:
-<a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
-had already ruled that entry below the membership carries no money — <em>"into the sub-units, there is
-no fee"</em> — so the column was a possibility no answer had taken, and round 10 deleted both the column
-and the bodies it could have pointed at. <strong>A fee is now what it has always been charged as: flat,
-per person, at the unit</strong>
+<p><strong>Nothing on a schedule is scoped to a body.</strong> A <code>fee_schedule</code> is scoped to a membership type — one row,
+so nothing in practice — and to the period during which that price was the price. <strong>A fee is what it has
+always been charged as: flat, per person, at the unit</strong>
 (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>).
-What a schedule may still vary is the membership type — one row, so nothing in practice — and the
-period during which that price was the price. If a group ever needs a charge of its own, that is a
-policy question for §5 and a new shape of obligation, not a column to keep reserved against a table
-that no longer exists.</p>
+<strong>Why nothing narrower:</strong> <a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
+had already ruled that entry below the membership carries no money — <em>into the sub-units, there is no fee</em> —
+so a supplementary fee for one body was a possibility no answer ever took. If a group ever needs a charge of
+its own, that is a policy question for §5 and a new shape of obligation, not a column to hold in reserve.</p>
 <p><strong>Rules</strong></p>
 <ul>
 <li><code>code</code> is unique. It covers all rows, not only active ones.</li>
@@ -2993,7 +2986,7 @@ that no longer exists.</p>
 <tr>
 <td><code>event_registration_id</code></td>
 <td>reference to event registration, optional</td>
-<td>One of the three target columns. The event arm is real, not a hedge: an event with a <code>fee_schedule</code> creates one obligation per registration (D-066), and payment confirms the place. It replaced the dormant <code>household_id</code> arm that D-057 removed — same shape, but with data behind it this time</td>
+<td>One of the three target columns. The event arm is real, not a hedge: an event with a <code>fee_schedule</code> creates one obligation per registration (D-066), and payment confirms the place.</td>
 </tr>
 <tr>
 <td><code>fee_schedule_id</code></td>
@@ -3104,15 +3097,14 @@ that no longer exists.</p>
 <li>Obligations within a <code>period_from</code> / <code>period_to</code> range.</li>
 </ul>
 <blockquote>
-<p><strong>The household arm is gone, and an event arm took its place — a real one.</strong> <a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>
-settled the fee as flat and per person; <a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>
-then removed the <code>household</code> table itself, so <code>household_id</code>, its CHECK arm and
-<code>ix_obligation_household</code> went with it. Events then supplied a third target that is
-genuinely used: one obligation per registration, created by the code that places the
-registration, paid to confirm the place. <strong>Nothing creates it if that code is not written</strong> — the
-obligation used to be created by a database trigger, and a trigger could not be forgotten; see
-<a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions §6a</a>. An event with a fee and
-no obligation is invisible until someone reconciles money against the roster. (<a href="../../decisions/round-05/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a>).</p>
+<p><strong>The event arm is the third target that is genuinely used.</strong> <a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>
+settled the fee as flat and per person, so an event carrying a <code>fee_schedule</code> has <strong>one obligation per
+registration</strong>, created by the code that places the registration and paid to confirm the place
+(<a href="../../decisions/round-05/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a>).
+<strong>Nothing creates it if that code is not written:</strong> no trigger writes it, and a trigger could not have been
+forgotten — the trade is stated in
+<a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions §6a</a>. An event with a fee and no
+obligation is invisible until someone reconciles money against the roster.</p>
 <p><strong>Exactly one, never zero and never two — and unlike most rules in these documents this one can
 still be stated declaratively, so a migration should state it.</strong> Three columns, exactly one set:
 count how many are present and require that count to be one, which is a condition on the row and
@@ -3122,12 +3114,9 @@ naming explicitly, because it is the counterexample to the general worry</strong
 deleted genuinely cannot be restated declaratively (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question
 F-10</a>),
 and this is not one of them.</p>
-<p>What is worth keeping from this rule's history is its <strong>shape</strong>: the previous version admitted
-<em>at most two</em> of the three, because one of the arms was a dormant <code>household_id</code> kept against a
-hypothetical. At most two with a hedge is not the same domain as exactly one over three real
-targets, and the difference
-only shows up when someone adds a fourth: <strong>if a new target appears, ask whether it is <em>used</em>
-before widening this, and expect the answer to be no.</strong></p>
+<p><strong>If a fourth target is ever proposed, ask whether it is <em>used</em>, and expect the answer to be no.</strong>
+"At most two of three," with one arm kept against a hypothetical, is not the same domain as exactly one
+over three real targets, and the difference only shows up when somebody adds the fourth.</p>
 <p><strong>If a family discount is ever wanted</strong>, the row is still the right shape — one obligation
 covering several people — but it now needs the grouping to be re-introduced first, as a
 group with a period rather than a fake person (<a href="../04-relationships/#3-there-is-no-household-table">04 §3</a>).</p>
@@ -3201,7 +3190,7 @@ group with a period rather than a fake person (<a href="../04-relationships/#3-t
 <tr>
 <td><code>status</code></td>
 <td>text, required</td>
-<td>Default <code>confirmed</code>. <strong><code>confirmed</code> or <code>reversed</code>, and nothing else.</strong> A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network; the two remaining values describe whether <em>we</em> still stand behind the row. <code>pending</code> and <code>failed</code> were deleted with the card gateway (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>)</td>
+<td>Default <code>confirmed</code>. <strong><code>confirmed</code> or <code>reversed</code>, and nothing else.</strong> A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network, so the two values describe whether <em>we</em> still stand behind the row. There is no <code>pending</code> and no <code>failed</code>: a promised transfer is not a state (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>)</td>
 </tr>
 <tr>
 <td><code>confirmed_by</code></td>
@@ -3587,11 +3576,9 @@ wrongly-chased family. A wrong number here has a human consequence.</p>
 <strong><code>confirmed</code></strong></p>
 </blockquote>
 <p><strong>Only confirmed payments count.</strong> An obligation is not settled by money that has been promised,
-intended, described in an email, or reported by a payer who believes they sent it. Under D-075
-this rule got sharper rather than weaker: <code>pending</code> is gone from <code>payment.status</code>, so there is no
-longer a state for a transfer that is on its way — either the bank has reported it and it is
-confirmed, or the system has not heard of it. <strong>A member is activated by the first, never by the
-second.</strong></p>
+intended, described in an email, or reported by a payer who believes they sent it. <strong>There is no state for
+a transfer that is on its way</strong> (D-075): either the bank has reported it and it is confirmed, or the system
+has not heard of it. <strong>A member is activated by the first, never by the second.</strong></p>
 <hr />
 <h2 id="4-how-this-connects-to-membership">4. How this connects to membership<a class="headerlink" href="#4-how-this-connects-to-membership" title="Permanent link">&para;</a></h2>
 <p><strong>The activation gate.</strong> A membership's fee is settled when <strong>no obligation attached to it has a
@@ -3600,12 +3587,11 @@ positive balance after discounts</strong> — where obligations carrying <code>w
 collect must not read as an unpaid one. "Settled" is the only thing money says about membership; it
 does not grant permissions by itself
 (<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).
-What changed in round 10 is the route from a settled fee to anything a person may do: the fee makes
+The route from a settled fee to anything a person may do goes through a set: the fee makes
 <code>is_current_member()</code> true, <code>is_current_member()</code> is what <code>MEMBERS</code> evaluates, and only a grant
 whose expression names <code>MEMBERS</code> cares
 (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
-— which is one step longer than the old resolver clause and one place less where money could quietly
-become authority.</p>
+— which is why money cannot become authority by itself.</p>
 <h3 id="the-yearly-expiry-sweep">The yearly expiry sweep<a class="headerlink" href="#the-yearly-expiry-sweep" title="Permanent link">&para;</a></h3>
 <p>Run on 1 January (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>).
 <strong>This is the one automatic membership transition in the system</strong>, and the only thing in this
@@ -3615,75 +3601,38 @@ document that changes a person's status.</p>
 <ol>
 <li>Mark it <strong>lapsed</strong>, ending it <strong>at the expiry date</strong> — not at today. The period ended on that
    date whether or not anyone noticed.</li>
-<li>~~<strong>Invalidate the permission cache per person, for every person returned</strong>~~ — not per scope
-   (<a href="../../domain/06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">domain/06 §8</a>).
-   <strong>This step has nothing left to do</strong>: <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-   deleted <code>permission_cache</code>, and with it the per-person invalidation call this step existed to make —
-   the one event that had wanted it for <strong>every member at once</strong>. A lapsed member whose gated grants still
-   resolve is a member who keeps leading, and what stops that now is the read path rather than a step in
-   this job: <code>MEMBERS</code> is evaluated live on the checked date
-   (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
-   so the two facts the predicate reads — the period ending and the <code>lapsed</code> status step 1 writes — are both
-   visible to the next check, with no job in between and nothing left to invalidate.
-   <strong>The step survives the deletion of the gate that motivated it and has now lost its mechanism twice</strong> —
-   first the resolver clause went, then the stored answer went, and the operand cache that sat beside it went
-   with the answer it served (it was keyed per person, selector kind, argument and item, which is why no
-   narrowing of a bump set could have saved it). The operand-keyed caching
-   <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-   opened the door to is therefore gone as an <em>answer</em> cache and survives only as a <strong>roster</strong> cache:
-   <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-   leaves <code>ROLE(x)</code> over <code>role_holder</code> and <code>GROUP(x)</code> over <code>person_group_member</code> cacheable across requests,
-   keyed by the very name a write touches, and <code>MEMBERS</code> is not one of those — it is a predicate over
-   <code>membership</code> evaluated on the checked date, owned by no single row's write, so a sweep needs no
-   invalidation to be seen. What the sweep still costs is stated where cost belongs: on 1 January the answer
-   moves for every member at once, and a screen opened that day computes it rather than reading it
-   (<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</li>
 <li>Open the <strong>renewal window</strong> as a date, never as a status. The resolver does not know windows exist.</li>
 </ol>
-<p><strong>The old step 2 was the root <code>unit_participation</code> row</strong> — <em>do not close it, move its <code>valid_to</code>
-forward, so that a renewal inside the window extends one continuous row rather than starting a
-second one</em>
-(<a href="../../decisions/round-04/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>,
-<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>). <strong>It is deleted rather than folded
-into the steps above</strong>
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-and this is written down so the sweep's meaning cannot drift silently: the row it edited does not
-exist, so there is nothing to extend and no second record of the person's presence to keep in step
-with the first. <strong>Nothing else in the sweep changed.</strong> Step 1 still writes the only data this job
-produces, the backdated renewal period the extension used to mirror is still produced by the payment
-rule above it, and the renewal window is still a date. Had the step simply been dropped from the
-list, the sweep would read as a job that had always had three steps, and nobody could ask what
-became of the fourth.</p>
+<p><strong>Nothing has to be told afterwards.</strong> <code>MEMBERS</code> is evaluated live on the checked date
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+so the two facts step 1 writes — the period ending and the <code>lapsed</code> status — are visible to the next check,
+with no job in between and no stored answer to invalidate
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>,
+<a href="../../domain/06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">domain/06 §8</a>).
+What the sweep costs is stated where cost belongs: on 1 January the answer moves for every member at once,
+and a screen opened that day computes it rather than reading it
+(<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</p>
 <p><strong>Note the personnel consequence, which is easy to miss and fatal to get wrong.</strong> This runs for
-everyone at once, <strong>including the person who runs it.</strong> Until round 10 the answer was
-<code>system.gate_exempt</code>
-(<a href="../../decisions/round-04/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>):
-a permission that waived the membership test for named people, so the administrator kept their
-access on 1 January. <strong>That mechanism is deleted</strong>
-(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
-— no <code>system.gate_exempt</code>, no <code>person_holds_gate_exempt</code>, no resolver clause to waive. The answer is
-now the grant text: a grant written <code>MEMBERS * ROLE(it)</code> stops applying to its holder at the sweep,
-and a grant written <code>ROLE(it)</code> keeps applying, because the set test is simply not in it.
+everyone at once, <strong>including the person who runs it</strong>, and nothing waives the membership test for a
+named person: <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+deleted <code>system.gate_exempt</code>, <code>person_holds_gate_exempt</code> and the resolver clause behind them. The answer is
+the grant text. A grant written <code>MEMBERS * ROLE(it)</code> stops applying to its holder at the sweep;
+a grant written <code>ROLE(it)</code> keeps applying, because the set test is simply not in it.
 <em>Assumption:</em> <strong>which offices are written that way is not settled by D-100</strong>, and getting it wrong
 fails in the direction that locks a person out with no permission left with which to undo it — the
 standing report of live grants naming a <code>ROLE(...)</code> operand without <code>MEMBERS</code> is what makes each
 such choice visible before 1 January rather than on it (<a href="../03-membership/#6-membership-and-the-authorization-system">03-membership.md
 §6</a>).</p>
 <blockquote>
-<p><strong>This reverses an earlier recommendation, and the reversal is worth recording.</strong> This
-document previously said "do not auto-lapse — produce the worklist and let a human act."
-The reasoning was sound: automatically removing membership from a child because a bank
-transfer was recorded late is a real harm.</p>
-<p><a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>
-resolves it differently, and the resolution is that <strong>the expiry is a date, not a
-decision.</strong> The fee covers a fixed period and the period ends. Nobody decides anything,
-and the renewal window exists to absorb exactly the late-transfer case: a payment inside
-it backdates the new period to the expiry date, so the record shows no gap and the person
-was never misclassified.</p>
-<p><strong>Where the old caution still applies</strong> is the case the window cannot absorb — a payment
-that <em>arrived</em> before the expiry but was <em>recorded</em> after it. That is a data-entry lag,
-not a non-payment, and it should be corrected with <code>membership.backdate</code> rather than left
-as a real gap. Worth a report: members who lapsed and then paid within a few days.</p>
+<p><strong>The expiry is the one automatic transition in this design, and what makes it allowable is that it is
+not a decision</strong> (<a href="../../decisions/round-01b/#d-023--nothing-is-auto-lapsed-or-auto-terminated">D-023</a>,
+<a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>):
+the fee covers a fixed period and the period ends, and the renewal window absorbs the late-transfer case,
+because a payment inside it backdates the new period to the expiry date and the record shows no gap.</p>
+<p><strong>What the window cannot absorb</strong> is a payment that <em>arrived</em> before the expiry but was <em>recorded</em>
+after it. That is a data-entry lag, not a non-payment, and it is corrected with
+<code>membership.backdate</code> rather than left as a real gap. Worth a report: members who lapsed and then paid
+within a few days.</p>
 </blockquote>
 <hr />
 <h2 id="5-open-issues--the-whole-of-this-document-essentially">5. Open issues — the whole of this document, essentially<a class="headerlink" href="#5-open-issues--the-whole-of-this-document-essentially" title="Permanent link">&para;</a></h2>
@@ -3696,35 +3645,33 @@ as a real gap. Worth a report: members who lapsed and then paid within a few day
    <code>amount_expected</code>.</li>
 <li><strong>Are there family/sibling discounts?</strong> <code>amount_discount</code> exists but the rules are
    unspecified. With a flat per-person fee (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
-   this is the only remaining fee variation, so it is worth a deliberate yes or no. Note
-   that <a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a> has now removed the
-   <code>household</code> grouping, so a <strong>per-family</strong> discount is no longer a constraint change — it
-   needs that grouping designed again first. A <strong>per-person</strong> discount is unaffected and is
-   just <code>amount_discount</code>.</li>
-<li>~~<strong>Refunds:</strong> policy, and who may authorize them. Affects the <code>payment.status</code> values.~~
-   <strong>Mostly answered by <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>:</strong>
-   a refund is a second payment in the opposite direction, not a status, so it cannot corrupt the
-   original record and there is no reversal state to authorize. <strong>Still open: who may authorize
-   initiating one</strong>, which is the part the question was actually about and which <code>fee.refund</code>
-   already flags 🔒.</li>
-<li>~~<strong>Payment methods:</strong> which does the organization actually accept? The enum is a guess.~~
-   <strong>Closed</strong> — <code>bank_transfer</code> arrives by import, <code>cash</code> is recorded by hand, and <code>card</code> plus
-   <code>direct_debit</code> are deleted (§2). <code>voucher</code> and <code>credit_note</code> stay until someone says otherwise.</li>
+   this is the only remaining fee variation, so it is worth a deliberate yes or no. A <strong>per-family</strong>
+   discount needs a grouping to be designed first — there is none
+   (<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>) — so it is not a constraint change but a
+   shape. A <strong>per-person</strong> discount is unaffected and is just <code>amount_discount</code>.</li>
+<li><strong>Who may authorize a refund.</strong> The mechanics are settled by
+   <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>:
+   a refund is a second payment in the opposite direction, not a status, so it cannot corrupt the original
+   record and there is no reversal state to authorize. <strong>The authority to initiate one is not settled</strong>, and
+   it is the part this question was always about; <code>fee.refund</code> already flags it 🔒.</li>
+<li><strong>Payment methods, settled.</strong> <code>bank_transfer</code> arrives by import and <code>cash</code> is recorded by hand;
+   <code>voucher</code> and <code>credit_note</code> are in the enum until somebody says otherwise, and there is no card and no
+   direct debit (§2). What is left here is a maintenance question, not a decision.</li>
 <li><strong>Invoicing:</strong> does the organization issue invoices (legal requirement in some
    jurisdictions)? If so, an <code>invoice</code> entity and a numbering sequence are needed. <strong>Sharper now:</strong>
    a <code>payment_request</code> looks like an invoice, prints like one, and is not one — it has no
    tax identity, no sequence required by law, and no delivery record. If invoices are legally
    required, the honest answer is a second document over the same obligation, not a renaming of
    this one.</li>
-<li>~~<strong>Is the organization collecting payments or only recording them?</strong>~~ <strong>Closed</strong> — it collects,
-   by bank API with a variable symbol and a QR code, and there is <strong>no card gateway</strong>
+<li><strong>Collecting, not recording — settled.</strong> The organization collects: money arrives by bank API with a
+   variable symbol and a QR code, and there is <strong>no card gateway</strong>
    (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>,
-   §2a). The renewal window's dependence on reliable payment dates is what made this urgent, and the
-   bank import is what resolved it.</li>
+   §2a). Reliable payment dates are what the renewal window depends on, and the bank import is what
+   supplies them.</li>
 <li><strong>Accounting integration:</strong> does anything need to be exported to an accounting system?</li>
 <li><strong>Currency and jurisdiction</strong> — currently assumed <code>EUR</code>.</li>
 <li><strong>Does the fee cover insurance?</strong> If so, "member on the date of the incident" becomes a
-   legal record with its own retention needs. This one interacts directly with the new
+   legal record with its own retention needs. This one interacts directly with the
    lapse rule (<a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>):
    if the fee buys insurance, then <strong>the date the membership lapses is the date cover
    ends</strong>, and the renewal window does <em>not</em> extend it. That is worth confirming with
@@ -3770,26 +3717,17 @@ as a real gap. Worth a report: members who lapsed and then paid within a few day
 or two.</p>
 </li>
 </ol>
-<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: activation on
-payment or on approval (on payment — <a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>);
-whether the fee is per person or per household (per person, flat and ageless —
-<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>);
-and whether the household grouping survives at all (<strong>no</strong> — removed entirely,
-<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>); and, from round 6, whether the
-organization collects or records (<strong>collects</strong>, by bank API — D-075) and what payment methods exist
-(the enum is no longer a guess — D-075 again).</p>
-<p><strong>Count honestly, because the number moved in both directions.</strong> Of the eleven above, <strong>two are
-fully closed</strong> (4, 6) and <strong>one is half closed</strong> (3: the mechanics of a refund are settled, the
-authority to initiate one is not). But <strong>a new one arrived</strong> in the same round, because D-075 fixed
-how money moves and thereby exposed what it moves <em>for</em> — question 11. And D-057 did not close
-question 2: with no grouping, a <em>per-family</em> discount needs one designed again before it can be
-priced. <strong>Nine open questions, of which one is new and one got sharper by being answered.</strong></p>
-<p><strong>The character of the list changed, and that is the real outcome.</strong> Until round 6 it held
-architectural questions — collect or record, which gateway, what statuses. It now holds only
-<strong>policy questions that require somebody in the organization to be asked</strong>: proration, discounts,
-insurance, waivers, invoices, accounting. <em>This document no longer needs a rewrite; it needs
-answers.</em></p>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p><strong>The count, honestly.</strong> Of the eleven numbered above, <strong>two are closed</strong> (4, 6) and <strong>one is half
+closed</strong> (3: the mechanics of a refund are settled, the authority to initiate one is not). <strong>Nine remain
+open.</strong></p>
+<p><strong>None of the nine is architectural.</strong> The architecture is why they can be left open: how money arrives,
+how it is requested, and what happens to money that does not match are all decided, so what remains is
+<strong>policy that requires somebody in the organization to be asked</strong> — proration, discounts, insurance,
+waivers, invoices, accounting, and the two choices question 11 names. <em>This document does not need a
+rewrite; it needs answers.</em></p>
+<p>The questions settled along the way — activation on payment, the flat per-person fee, the absence of a
+household grouping, collecting rather than recording — are registered in
+<a href="../../open-questions/">../open-questions.md</a> with the decision that settled each.</p>
 
 
 
