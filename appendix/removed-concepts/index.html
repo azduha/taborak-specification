@@ -1837,6 +1837,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1853,6 +1871,36 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-codes-that-left-the-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The codes that left the catalog
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2406,6 +2454,25 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-codes-that-left-the-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The codes that left the catalog
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2689,11 +2756,81 @@ its vocabulary.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="the-codes-that-left-the-catalog">The codes that left the catalog<a class="headerlink" href="#the-codes-that-left-the-catalog" title="Permanent link">&para;</a></h3>
+<p>A code is a stable identifier, so one leaving the catalog silently is a migration nobody decided. The
+tables in <a href="../permission-catalog-a-codes/">the catalog</a> hold only codes that can be granted today; these
+were granted, and here is where their act is performed now.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>The act</th>
+<th>Where the act is now</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~~<code>org_unit.view</code>~~</td>
+<td>the list of units, and the "which units exist" report</td>
+<td>Nowhere. The unit is a <strong>scope</strong>, not a row: there is no list to read</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>~~<code>org_unit.create</code>~~</td>
+<td>creating a unit</td>
+<td>Nowhere, and nothing needs creating — the unit arrives as a code in <code>grant_scope_type</code>, not as data</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>~~<code>org_unit.edit</code>~~, ~~<code>org_unit.rename</code>~~</td>
+<td>renaming what a body is called</td>
+<td><code>person_group.edit</code>, and it is cheap: a grant and an expression store kind + id, never a name, so a rename rewrites nothing</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a></td>
+</tr>
+<tr>
+<td>~~<code>org_unit.restructure</code>~~</td>
+<td>splitting, merging and succeeding a unit</td>
+<td>Nowhere, and the loss is stated once in D-097: a group that splits is an old group that ended and two that began, with no edge between them unless somebody writes one</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>~~<code>org_unit.close</code>~~</td>
+<td>ending a unit</td>
+<td><code>person_group.end</code> — which ends a <strong>set</strong>, and is graded accordingly</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>~~<code>position.view</code>~~, ~~<code>position.assign</code>~~</td>
+<td>seeing a body's slots; appointing somebody into one</td>
+<td><code>role.view</code> and <code>role.assign</code> (catalog §7). An elected leader is a <strong>holder of a role</strong>, and the audience rule that used to read <code>unit_leaders</code> is <code>ROLE(leaders)</code></td>
+<td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
+</tr>
+<tr>
+<td>~~<code>unit_participation.view</code>~~, ~~<code>unit_participation.manage</code>~~</td>
+<td>seeing and writing one sub-unit's participants</td>
+<td><code>membership.view</code> for the organization (one query, no depth), <code>person_group.view</code> and <code>person_group.member.manage</code> for a group. D-095's discipline transfers intact: never self-scoped, the write is somebody else's act, the report is the control</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a></td>
+</tr>
+<tr>
+<td>~~<code>membership.transfer</code>~~</td>
+<td>moving a member between units</td>
+<td><code>person_group.member.manage</code> — close one dated row, open another — and it does not touch the membership at all. Obsolete twice over: D-041 moved unit belonging into a participation row, and D-097 deleted that</td>
+<td><a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>, <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>~~<code>guardianship.permission.grant</code>~~</td>
+<td>granting a guardian individual capability codes</td>
+<td>there was no namespace to grant from: a guardian's rights are one value with three choices</td>
+<td><code>guardianship.change_right</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Two habits this page is meant to prevent.</strong> Naming a removed thing in a spec page, which is what put
 the history back into the pages this appendix exists to keep clean; and re-adding one quietly, which is
 why every row ends in a decision — a concept comes back by a decision entry, or it does not come back.</p>
 <hr />
-<p><em>Decisions behind this page: D-001, D-043, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
+<p><em>Decisions behind this page: D-001, D-041, D-043, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
 D-099, D-100, D-101, D-102, D-105, D-113, D-114.</em></p>
 
 
