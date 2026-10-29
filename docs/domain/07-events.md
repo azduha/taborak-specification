@@ -5,13 +5,13 @@ that people register for, and that somebody has to run.
 
 This module was the one the whole authorization model was built toward. `access_grant`
 shipped with `scope_type = 'event'` from the first draft
-([D-006](../decisions/decision-log.md#d-006--per-item-permissions-are-capabilities-on-the-item)),
+([D-006](../decisions/round-01a.md#d-006--per-item-permissions-are-capabilities-on-the-item)),
 `grant_scope_type` has carried a row for it since, and **audiences**
-([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals))
+([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals))
 exist partly to express *"tell everyone about this event."* Those hooks are now filled in.
 
 Round 10 changed what they hook into. **Nothing owns an event**
-([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)),
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)),
 so every sentence this module used to write about the unit that runs an event is now a
 sentence about a grant at the unit, or about a **selector that binds to the event being
 checked**. The reasoning behind the sentences is kept below, marked withdrawn, because the
@@ -27,7 +27,7 @@ An event is **a thing with a date that people sign up for**.
 
 > **A weekly meeting is not an event.** It is a **group** — a `person_group` whose dated
 > member rows already say "this child takes part in this Thursday group"
-> ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
+> ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 > A Thursday group that meets forty times a year is already recorded, and making each
 > meeting an event would create forty rows saying what one row says, with forty capacities,
 > forty organizer rosters and forty chances to be wrong. Events are the things you
@@ -50,24 +50,24 @@ tables complicated, and the thing that needed it (meetings) is already modelled 
 An event is **an item**, registered in `grant_scope_type` under the code `event`, like a
 group or a role is. It has no owner. There is no column on `event` naming a person, a
 group, or a unit, and nothing in the resolver tests one
-([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
 Two facts replace the whole of ownership:
 
 | | |
 |---|---|
-| **A grant at the unit** | reaches **every event there is**, because after [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no scope between the unit and an item, and no ownership relation to test |
+| **A grant at the unit** | reaches **every event there is**, because after [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no scope between the unit and an item, and no ownership relation to test |
 | **A grant on one event** | reaches that event and nothing else |
 
 Creating one needs `event.create`, whose `applies_to` is `unit`: anybody holding it creates
 an event, and nobody else does. Writing `event.create` **on** an event is refused when the
 grant is saved, with the reason in the message — an event cannot be created twice, and a
 creation permission attached to a thing that already exists answers no question
-([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 
-**Withdrawn: `event.org_unit_id`, and with it [D-058](../decisions/decision-log.md#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)'s
-ownership, [D-063](../decisions/decision-log.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)'s
-artifact rule, and [D-094](../decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)'s
+**Withdrawn: `event.org_unit_id`, and with it [D-058](../decisions/round-05.md#d-058--an-event-is-a-dated-occasion-owned-by-exactly-one-unit)'s
+ownership, [D-063](../decisions/round-05.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)'s
+artifact rule, and [D-094](../decisions/round-09.md#d-094--the-root-unit-owns-every-imported-event)'s
 import default.** D-058 recorded *"one owning unit"* and insisted that a joint camp is
 **Pack A's event that Pack B's children register for**, so that nobody had to arbitrate
 "whose event is this?" and one body remained the author of the record. It was not a
@@ -91,7 +91,7 @@ discovering them at the check:
 
 | Written | Result |
 |---|---|
-| `event.edit` on one event | **Allowed.** A capability on the item — [D-006](../decisions/decision-log.md#d-006--per-item-permissions-are-capabilities-on-the-item) unchanged |
+| `event.edit` on one event | **Allowed.** A capability on the item — [D-006](../decisions/round-01a.md#d-006--per-item-permissions-are-capabilities-on-the-item) unchanged |
 | `event.create` on one event | **Refused at save**, with the reason: `applies_to` is `unit` |
 | `membership.manage` on one event | **Refused at save**, for the same reason |
 | A grant naming `PLACED` at the unit | **Refused at save**, naming the operand — there is no item for it to bind to (§7) |
@@ -140,14 +140,14 @@ Registering yourself requires **one permission: `event.register_self`, held on t
 either by an allow on the event itself, or by an allow at the unit, which after D-097
 reaches the event along with every other. Nothing else.
 
-This is the answer to the question [D-006](../decisions/decision-log.md#d-006--per-item-permissions-are-capabilities-on-the-item)
+This is the answer to the question [D-006](../decisions/round-01a.md#d-006--per-item-permissions-are-capabilities-on-the-item)
 left open. D-006 said *"eligibility ... will be a separate concept when events are
 specified."* Your answer was that a person holding the capability on the item should be able
 to register — and that turns out to **dissolve** the deferral rather than satisfy it: there
 is no separate eligibility concept, because the capability already is one
-([D-060](../decisions/decision-log.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
+([D-060](../decisions/round-05.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)).
 Round 10 removed the *ladder* the answer was phrased on
-([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality));
+([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality));
 it did not touch the answer.
 
 ~~`view` may SEE · `contribute` may REGISTER · `manage` may ORGANIZE · `admin` may CONTROL~~
@@ -185,7 +185,7 @@ a camp opened to a set whose members are that age.
 
 **There is now a second way to write that sentence, and it is the same kind of thing.**
 `OLDER(n)` and `YOUNGER(n)` are seeded operands of the registry
-([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
 so the camp for 11-to-14s is also writable as `(MEMBERS * OLDER(11)) - YOUNGER(15)` —
 one grant, one expression, no roster to keep current. The group is still the better answer where
 the section is a real group with a real roster behind it, because a maintained group says who
@@ -197,9 +197,9 @@ could not state an age *ceiling* at all, and that inability was the reason a cam
 have one: a 9-year-old holding `event.register_self` on a camp for teenagers could register,
 and ~~nothing in the system objects~~ — there was nothing in the system that *could*.
 `YOUNGER(n)` is a seeded operand now
-([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
 so the ceiling is an ordinary grant: `event.register_self` on this event, aimed at
-`MEMBERS * YOUNGER(15)`. **[D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)
+`MEMBERS * YOUNGER(15)`. **[D-070](../decisions/round-05.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)
 therefore stays closed for a different reason than it was closed**, and the difference is the
 whole point of this section: it closed because the sentence was unwritable, and it stays
 closed because the organization **chooses** not to write it and keeps the judgement in the
@@ -230,7 +230,7 @@ going to be a column on `event`, and never a rule the organizer types; it was an
 **operand** — a shipped row in `selector_type`, alongside `MEMBERS`, whose predicate the
 resolver owns. That is what shipped: `OLDER(n)` and `YOUNGER(n)`, read against
 `person.birth_date` **on the date being checked**, composed by `+ - *` like every other operand
-([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 ~~It ships nothing of the kind today~~ was true when it was written and is the sentence this
 round retired.
 
@@ -245,7 +245,7 @@ registry** — and this language has no comparison operator for `AGE >= 13` to b
 of. **The guardianship channel is deliberately absent from that list, in both spellings**
 (`GUARDIANS` and `GUARDIANS(x)`) — the parenthesised one was in the enumeration immediately above until
 round 13 removed it, and this page has no table of seeded values to have carried the other
-([D-113](../decisions/decision-log.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)):
+([D-113](../decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)):
 *"True, GUARDIANS should not be selectable in the audience, guardians can perform ANY action (their
 read/write perms grant) on behalf of the child."* A check about a child asks whether a live `guardianship`
 row links the two people and reads `right_level ∈ none | view | write` off it — a lookup over a
@@ -264,21 +264,21 @@ An event has a **set of organizers** — the people running it. That list is
 ordered, attributed.
 
 > **An `event_organizer` row grants nothing.** This was the explicit choice and it stands
-> untouched ([D-062](../decisions/decision-log.md#d-062--organizers-are-appointed-on-the-event-not-granted)),
+> untouched ([D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)),
 > including through D-102. `access_grant` remains what it is good at — showing a treasurer
 > the books, opening the page to an audience, naming a parent who may register their child —
 > and organizers are a separate concept: *who is running this*. **An operand is a set, not a
 > grant** (D-102's own words), so naming `ORGANIZERS` in an expression says who is in the
 > set and confers nothing, in exactly the way that naming `ROLE(leaders)` or any audience has
 > never conferred anything
-> ([D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity),
-> [D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+> ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity),
+> [D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
 
 The consequence worth understanding: an organizer is an **appointment on the thing being
 run**. It can carry a **label** (`'lead'`, `'cook'`, `'driver'`) and an order, and it is not a
 permission bundle — it does not carry `event.edit`, it says who the organizers are.
 ~~It is the event-scoped analogue of `position_assignment`~~ — **withdrawn by
-[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),**
+[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),**
 which deleted positions along with the bodies they were held in. The comparison that still
 holds is the one D-100 left standing: like a role, an organizer is a person named against
 something, and the codes that follow from it are the live grants that aim at them.
@@ -299,7 +299,7 @@ reaches an organizer the way it reaches anybody else: through a grant that perso
 ## 6. How authority reaches an event
 
 This section is the hinge the module was built around
-([D-063](../decisions/decision-log.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)).
+([D-063](../decisions/round-05.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)).
 The hinge is gone, and the problem it solved is worth keeping in view, because the current
 answer only looks trivial against it.
 
@@ -322,12 +322,12 @@ that unit is the owner. It argued, carefully, that this was *not* inheritance do
 because an event is an artifact of its unit rather than a child of it, and that the blast
 radius was fixed at one owner.
 
-**Withdrawn by [D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it):**
+**Withdrawn by [D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it):**
 `event.org_unit_id`, `can_event()`, and the unit-authority rule are all deleted, together
 with the artifact-and-unit distinction D-063 existed to draw — there is no artifact-and-unit
 pair left to distinguish. The mismatch in the diagram cannot arise, for two reasons that
 compound: there is no `org_unit` scope to hold a role at
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
 and there is no owner column to test even if there were. The gap closed because the ladder
 between the two scopes disappeared, not because a test was added across it.
 
@@ -344,7 +344,7 @@ D-063 advertised itself as a two-way door — "deleting the second `can()` call 
 change, and it needs no data migration". The door turned out to swing the other way: removing
 the test was indeed the whole change and needed no migration, which is the same property
 D-063 claimed, spent once. Going back the other way is now
-[the narrow and expensive door D-102 names](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
+[the narrow and expensive door D-102 names](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
 — an owner column, the resolver tier that reads it, and every check this module deleted —
 though the bound selectors added in round 10 would survive it untouched, because an
 ownership grant and a bound operand answer different questions.
@@ -360,7 +360,7 @@ the event comes from grants, as it does everywhere else:
 | The person who runs the organization's camps | `event.manage_participants` **at the unit** — the grant reaches every event |
 | Somebody trusted with one camp | the same code **on that event**, as an item grant |
 | An organizer, as such | only what a grant aims at `ORGANIZERS` — today, the seeded `event.answer.view` |
-| Somebody the organization has excluded | a **deny** on the event or at the unit; deny is absolute and beats every allow ([D-013](../decisions/decision-log.md#d-013--explicit-deny-revoked-is-checked-before-everything)) |
+| Somebody the organization has excluded | a **deny** on the event or at the unit; deny is absolute and beats every allow ([D-013](../decisions/round-01a.md#d-013--explicit-deny-revoked-is-checked-before-everything)) |
 | `system.admin` | Everything — the sole exception, as everywhere |
 
 The fourth row is the one the old model could not draw, and it is worth naming: the row that
@@ -368,9 +368,9 @@ used to read *"the treasurer — nothing, not without an exposure"* was the whol
 policy in one line. There is no exposure left to withhold, so the policy is now stated
 positively — a person holds what the rows name — and negatively, by deny, when holding it is
 the thing that must be impossible
-([D-013](../decisions/decision-log.md#d-013--explicit-deny-revoked-is-checked-before-everything)).
+([D-013](../decisions/round-01a.md#d-013--explicit-deny-revoked-is-checked-before-everything)).
 What was given up is recorded once, in
-[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
 the named adult who granted access to a body's children was somebody that body chose, and
 there is no body left to choose them.
 
@@ -401,7 +401,7 @@ The four attendance sets are not four ideas; each is a definition over two colum
 ordered by containment rather than by rank — `CONFIRMED` ⊆ `PLACED`, `PLACED` and
 `ON_WAITLIST` partition `ATTENDED`, and a person who declined is in none of them — and no
 level or ladder is involved in any of them
-([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 
 **The bound form is the important half, and it kills a specific flaw.** `ATTENDED(<event
 1204>)` written on event 1204 is one grant per event with the event's own id typed into it,
@@ -417,11 +417,11 @@ takes a register, so an operand built on it would revoke a child's access to the
 photos because a volunteer forgot to tick a box. `was_present` is three-valued *on purpose*
 as a safeguarding signal — **keeping it out of the selector language is what keeps it
 meaning "a person recorded this" rather than "this is who may see things"**, and
-[D-067](../decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)'s
+[D-067](../decisions/round-05.md#d-067--presence-is-a-three-valued-fact-on-the-registration)'s
 reasoning for the third value is the reasoning for the refusal. **And this consequence is the
 whole of the refusal**, which is worth saying out loud now that the language has an operand
 that reads a column against a date: `OLDER(n)` reads `person.birth_date`
-([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
+([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)),
 so nothing structural stops anybody writing `PRESENT` — there is only ever going to be this
 argument standing in the way, and it holds on its own.
 
@@ -451,24 +451,24 @@ requirements on the editor and ~~the cache~~ **the read path**, not on the schem
   on stated grounds rather than hope:** the system is specified against a few hundred people in the
   organization, a few dozen registrants on a typical event and a big camp on the order of two hundred,
   so previewing one item evaluates a couple of hundred predicates and nobody feels it
-  ([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
+  ([D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
   That size is **stated, not measured** — nothing in these documents has measured anything here — and the
   trigger for reopening it is a few thousand people, or a thousand registrants on one event. **One dependency
   arrived since:** the nightly rebuild used to pre-pay this work off the interaction, and with the cache deleted
   the preview computes it **on open** — still affordable, now with no fallback behind it
-  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+  ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 - Where no item is in hand, the editor says what the expression *means*, not who it reaches.
 - ~~The cache key for a bound operand **includes the item**~~ — the answer cache that had that key is deleted
-  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
+  ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
   and the reason it was there is untouched: the same grant on two events has two answers
-  ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+  ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
   A compiled expression holds no item precisely because the item arrives as a parameter, so the item is now bound
   at **resolution** — nothing expanded or resolved while checking one event may be served for another, and any
   cache of a *resolution* rather than of a compilation is keyed by the item or it is wrong.
 - **A registration write is not a ruleset write, and that no longer means what this bullet said it meant.**
   ~~There is one cache policy and three triggers — rebuilt nightly in full, immediately on any write to the
   ruleset, and on explicit request — and `event_registration` is not part of the ruleset
-  ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+  ([D-111](../decisions/round-13.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
   So an answer that runs through `PLACED`, `CONFIRMED`, `ATTENDED` or `ON_WAITLIST` **may be up to one
   night behind the roster**, and this is the module where an implementer would most confidently assume
   otherwise. It is the same residual window as a birthday, and it is not the safeguarding window: every
@@ -478,7 +478,7 @@ requirements on the editor and ~~the cache~~ **the read path**, not on the schem
   the waitlist moves `ATTENDED`, `PLACED`, `CONFIRMED` and `ON_WAITLIST`, and the new state is visible **on the
   next check**, because resolution is live and there is no answer stored anywhere to be behind the roster — and
   `ORGANIZERS`, the fifth bound operand, moves on its own rows with the same immediacy
-  ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+  ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
   **This page was right to be uneasy.** A window opened by a boundary drawn in another file, over four tiers this
   module computes and that file never listed, is the exact shape that got the cache deleted — the omission that
   did it was `membership`, and the write that made it fatal was `membership.terminate` ⛔. **What is still true of
@@ -486,7 +486,7 @@ requirements on the editor and ~~the cache~~ **the read path**, not on the schem
   only sense the phrase now carries, and `ruleset_version` is bumped by `audience_operand` and `selector_type`
   alone. Being outside that set buys a compilation nothing; it buys a check nothing either. **And since this
   bullet just deleted the mechanism behind a rule, it owes the D-081 answer**
-  ([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)):
+  ([D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)):
   **nobody enforces "a registration change must reach an answer" any more, because there is nothing left to
   invalidate** — the read path does it, and unlike a bullet in a list, a read path cannot be forgotten.
 
@@ -494,17 +494,17 @@ Fail closed as everywhere else in the model, **with the direction stated rather 
 an operand that resolves to nothing contributes the empty set, which *narrows* what a `+` or a
 `*` reaches and *widens* what a `-` takes away — `EVERYONE - PERSON(x)` with a dead `x` denies
 everybody, lockout and fail-closed being the same event
-([D-106](../decisions/decision-log.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
+([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
 A person with no birth date is not that kind of failure: the operand resolves perfectly well and
 they are simply not in `OLDER(18)`, exactly as a person with no membership row is not in
 `MEMBERS`. A broken leaf is no longer silent and still stops nothing — it is listed on the **tab on the
 permissions page**, and no save is refused for it
-([D-109](../decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
+([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
 **And that tab has become nearly empty by construction, which is the point of the ruling:** nothing a rule
 names is deleted any more. A retired office, group or audience is flagged `deprecated`, `hidden` or
 `disabled` and keeps resolving — only `disabled` changes the answer, and it changes it to the empty set
 because somebody asked for exactly that. The one thing still able to break a leaf is a person, because
-[D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+[D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 lets a redaction require the row to actually go and erasure wins: **a redacted person is the corpus's only
 remaining way to produce a broken leaf.**
 
@@ -513,20 +513,20 @@ true of every age-bearing expression in the sharpest form there is: the 84 names
 are the people who qualify *today*, and a birthday moves the list with no write and no edit to the
 grant. Nothing is told about it and nothing needs to be: ~~the cache is rebuilt nightly, on any ruleset
 write, and on request, and an answer that moved without a ruleset write is simply allowed to be one
-night stale ([D-111](../decisions/decision-log.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request))~~
-— **there is nothing to be stale** ([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)):
+night stale ([D-111](../decisions/round-13.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request))~~
+— **there is nothing to be stale** ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)):
 a birthday moves the answer at the instant it happens, because every check resolves against live rows. What the
 preview is a statement about is **the date it was taken**, and that is a fact about the calendar, not a lag to be
 closed.
 **The preview is a workbench, not a record — and the record is the expression**
-([D-110](../decisions/decision-log.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)).
+([D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)).
 The audit row written when a grant is saved says *this person wrote these words, about this item, on this
 date*. What the preview printed alongside it is logged as **a rendering on a date**, never as a statement
 of who was in it: a stored list of everyone a rule happened to cover, kept after the rule was withdrawn,
 is the roster table this corpus has deleted twice. So *"whom did this grant reach in May?"* is answered,
 if at all, by evaluating the words against the data of May — and these documents do not promise the
 answer. Words-only is affordable rather than brave only because of
-[D-109](../decisions/decision-log.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report):
+[D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report):
 since nothing a rule names is deleted, the words keep resolving long after their reason is gone.
 **What that concedes, so nobody finds it later:** a shared audience holds a word, not a copy, so **an edit
 to a shared audience is a retrospective edit to every rule that names it**, and a re-evaluation for May
@@ -552,7 +552,7 @@ ordering and promotion mechanics.
 
 **And organizers may exceed capacity outright** — deliberately, because a leader who knows
 there are two spare tents should not be blocked by a number they cannot edit mid-camp
-([D-065](../decisions/decision-log.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it)).
+([D-065](../decisions/round-05.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it)).
 The overrun is permitted, attributed, and **reported**
 ([data-model/08 §10](../data-model/08-events.md#10-integrity-checks)): an event running over
 its stated capacity is a fact the organization can see, not a state it cannot reach.
@@ -562,7 +562,7 @@ never the resolver: the waitlist fires only for `source = 'self'`, and a registr
 by a person holding `event.register_other` arrives as `source = 'staff'` and is admitted.
 What changed is where that permission came from — before, the owning unit supplied it; now it
 is a grant at the unit or on the event, like every other code
-([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
 So capacity is three things at once, and all three are intentional:
 
@@ -587,7 +587,7 @@ The registration says what someone *said*. Presence says what *happened*.
 column is not sloppiness — it distinguishes *"we did not take a register"* from *"we took a
 register and they were not there"*, which are different facts and only one of them is a
 safeguarding signal
-([D-067](../decisions/decision-log.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
+([D-067](../decisions/round-05.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
 
 **Why this matters more than it looks.** For a camp, the end-of-week roster is the record
 of who was actually in the organization's care. That is the row that matters if the fee buys
@@ -626,9 +626,9 @@ enforced is whoever wrote the last `IF`.
 That has a consequence worth saying out loud, because it is the opposite of the old
 behaviour. ~~A newly created event has no grants beyond its organizers' own authority, so
 nobody else can see it~~ — under
-[D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)
+[D-064](../decisions/round-05.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)
 a draft reached exactly one audience: the owning unit's own people, whom
-[D-063](../decisions/decision-log.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)'s
+[D-063](../decisions/round-05.md#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it)'s
 rule carried across to it, and nobody else. After D-102 there is **no such narrow default**: a
 person holding `event.view` at the unit sees a half-typed event the instant it is committed,
 and there is no narrower scope a grant could have sat at instead. A genuinely private event is
@@ -687,13 +687,13 @@ The rule, stated once:
 
 The only new schema here is a **pointer**: `fee_obligation.event_registration_id`. It is one
 arm of `fee_obligation`'s exactly-one rule, restored after
-[D-057](../decisions/decision-log.md#d-057--household-is-removed) removed the household arm,
+[D-057](../decisions/round-04.md#d-057--household-is-removed) removed the household arm,
 and this time it is a *real* arm with data behind it rather than a dormant hedge.
 
 **The `is_confirmed` / deadline interaction is the one automatic transition in this module**,
 and it is worth flagging as such: the design has spent effort avoiding automatic state
-changes ([D-023](../decisions/decision-log.md#d-023--nothing-is-auto-lapsed-or-auto-terminated),
-[D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
+changes ([D-023](../decisions/round-01b.md#d-023--nothing-is-auto-lapsed-or-auto-terminated),
+[D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
 and payment-confirms-the-place reintroduces one. It is a *deadline*, not a sweep: it applies
 only to registrations at a full event with an unpaid fee, and only after the deadline the
 organizer set. [data-model/08 §6](../data-model/08-events.md#6-payments-and-confirmation)
@@ -726,7 +726,7 @@ registration, because a form that blocks sign-up is a form nobody completes.
 
 **Reusable question libraries were considered and rejected.** A shared pool of question
 definitions is structurally the requirement machinery removed in
-[D-044](../decisions/decision-log.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment),
+[D-044](../decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment),
 and it earns its keep only when the same question must mean the same thing across events.
 Tent preference does not: what one camp asks and what another needs are allowed to differ,
 and per-event definitions keep them from having to agree.
@@ -734,11 +734,11 @@ and per-event definitions keep them from having to agree.
 ### Health data, and the widening this represents
 
 You confirmed that **event answers are readable by that event's organizers, with no extra
-gate** ([D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers)),
+gate** ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)),
 and round 10 changed only *where that sentence is written down*. It is no longer prose inside
 the resolver; it is **a seeded grant** — `event.answer.view` on an event, aimed at
 `ORGANIZERS`
-([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 Two things follow, and neither weakens D-061:
 
 - **"No extra gate" is now literally true and visible.** The seeded grant *is* the whole
@@ -761,8 +761,8 @@ and it is guidance, not enforcement.
 deliberate widening.** A guardian's reach over a child is **one value on the `guardianship` row**
 — `none`, `view` or `write` — read by a channel of its own, entered only when the act is about
 someone other than the actor and never answered by a role or a grant
-([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular),
-[D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name);
+([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular),
+[D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name);
 [appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace)).
 The namespace that used to spell this out is deleted, the safeguarding property it carried is not:
 
@@ -771,7 +771,7 @@ The namespace that used to spell this out is deleted, the safeguarding property 
 
 **Corrected in round 7, because this sentence was doing work it could no longer do.** It used to read
 *"so a camp leader cannot reach a child's medical record at all"* — and after
-[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 there is no medical record to be unreachable, so the sentence is not merely out of date, it describes a
 guarantee the model never had once the category disappeared. What is actually true, in the two forms
 that matter:
@@ -783,7 +783,7 @@ that matter:
   guardianship channel answers only for the person its row names.
 - **It is now one grant away, and round 10 widened what "one grant" means.** Whoever holds
   `person.view` **at the unit** reads every child's whole record, allergy list included — and
-  after [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+  after [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
   a grant at the unit has no narrower reading available, because the unit is the only scope
   there is. Nothing in the resolver will stop that and nothing should — but a document that
   promised it was impossible would have been trusted, and a promise the model does not make is
@@ -797,13 +797,13 @@ running the camp will know**. That is a coherent and defensible configuration �
 people present, per event, and nobody outside the family holds the fact* — but it is a widening from "few
 people, via a guardianship-scoped permission" to "every organizer of any event the child
 registers for", and it is recorded as such in
-[D-061](../decisions/decision-log.md#d-061--event-answers-are-read-by-that-events-organizers),
+[D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers),
 with the reasoning, so that nobody later "fixes" the apparent duplication between the two
 stores by tightening this one.
 
 **Event answers are not the person's record.** They are operational detail for one event, read by that
 event's organizers, and they end with the event — while the same fact, recorded on the person, is
-audited, curable and erased with them. **[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+audited, curable and erased with them. **[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 made those two copies the same class of data**, which is what turns the retention question below into
 a real one, and [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code)
 into the alternative: collect the fact once, confirm it at the door. See
@@ -818,13 +818,13 @@ tracked with the rest. The ones this module raises:
 
 - ~~**The age ceiling on an open event**~~ — **settled: accepted as a risk**, the grant is
   the rule, and closing it later would mean a new operand rather than a column (§4,
-  [D-070](../decisions/decision-log.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
+  [D-070](../decisions/round-05.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
   **That prediction has come true and it changes the shape of the answer, not the answer:** the
   operand arrived as `YOUNGER(n)`, so an age ceiling is writable today as
   `event.register_self` aimed at `MEMBERS * YOUNGER(15)`. **EV-1 stays closed, now as a choice
   the organization renews rather than a limit it inherits** — nobody has to be told the ceiling
   cannot be stated, only whether it should be (§4,
-  [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+  [D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 - **What else should be seeded to `ORGANIZERS`.** D-102 seeds exactly one grant,
   `event.answer.view`. Everything else an organizer needs — editing the event, working the
   roster — now reaches them only through a unit-scope or item grant they happen to hold, and
@@ -837,7 +837,7 @@ tracked with the rest. The ones this module raises:
 - **`WHITELISTED`.** No stored state to name it, so it is not a selector (§7) — a question about
   whether the feature is wanted, and not one about whether the language could hold it: a
   predicate over a column is an ordinary operand now
-  ([D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
+  ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 - **Event answer retention** (§12). Answers end with the event — but a dietary answer naming a
   condition is data of exactly the same class as what the person record holds, held under weaker rules
   and fresher. No policy yet; see

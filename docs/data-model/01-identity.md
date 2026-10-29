@@ -39,7 +39,7 @@ a well-meaning future change.
 | `merged_into_person_id` | reference to person, optional | Tombstone. When set, this row is absorbed and queries must follow the pointer. Never deleted (§8) |
 | `merged_at` | timestamp, audit time, optional | |
 | `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names and contacts are overwritten and the person's `person_attribute` rows are deleted; the row and its id survive so historical references still resolve ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)) |
-| `notes` | text, optional | Free text about a person, and the only such text that lives outside the attribute vocabulary — see *What is deliberately not on this table* below. May contain anything, including a diagnosis sitting under a column nobody would call medical. **It is logged with its contents, like every other field on this row, and it is deliberately *not* on the redactor's list** — a column named as an exception is the field-name rule [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed, and the protection is the guard on the trail ([00-conventions §8 item 7](00-conventions.md#8-personal-data-and-erasure)). Whether the column should exist at all is argued below |
+| `notes` | text, optional | Free text about a person, and the only such text that lives outside the attribute vocabulary — see *What is deliberately not on this table* below. May contain anything, including a diagnosis sitting under a column nobody would call medical. **It is logged with its contents, like every other field on this row, and it is deliberately *not* on the redactor's list** — a column named as an exception is the field-name rule [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed, and the protection is the guard on the trail ([00-conventions §8 item 7](00-conventions.md#8-personal-data-and-erasure)). Whether the column should exist at all is argued below |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 | `updated_at` | timestamp, audit time | |
@@ -93,7 +93,7 @@ Everything the system knows about a person other than their **name, their gender
 a descriptive value in `person_attribute`, and this table carries no column for any of it — no
 allergy, no medication, no insurance number, no shoe size, no preferred contact language, no
 diagnosis ([09-attributes.md](09-attributes.md),
-[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
 That is not a gap waiting for the next module. An earlier design did put the medical facts on a shelf
 of their own, behind codes of their own, and the answer that produced D-083 refused the shelf: a drug
 dosage and a clothing size are the same kind of object — recorded by the organization, wrong in three
@@ -112,7 +112,7 @@ four working constraints into application code and been called uniformity
 ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
 Identity is closed because it was enumerated years ago and has not changed; description is open
 because nobody can enumerate it
-([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+([D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
 
 **The rule cuts both ways, and review is where it is applied.** A fact with no such rule behind it
 does not earn a column here, however reasonable it looks — that is the sentence that keeps
@@ -228,7 +228,7 @@ layer, not here.
 - An account may not reach `active` while `verified_at` is absent.
 - **An account may not reach `active` while an unresolved `identity_hypothesis` names its person** —
   a hypothesis sitting in `proposed` or `needs_review`, on either side of the pair. This is the second
-  gate on the same transition and [D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)
+  gate on the same transition and [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)
   is why it is here. It is written as a gate on a *status* rather than as a rule against creating the row,
   because the row has to exist for the claim to be attached to anything, and because the queue a claim
   lands in already exists (§8) with its signals, its ordering and its reviewer. See the collision flow
@@ -250,11 +250,11 @@ to the account it was given for.
 
 **A colliding sign-up files a claim and brings nothing into the world that a human has not approved.**
 This is the case the second gate above exists for
-([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)):
+([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)):
 someone arrives at the sign-up form through a door the system did not know they had, and their details
 strong-match a person who already exists. **The tempting answer was the convenient one** — verify the
 e-mail, see that the signals are strong, link the two accounts — and it is
-[D-004](../decisions/decision-log.md#d-004--no-automatic-merging-ever) wearing a different coat: a
+[D-004](../decisions/round-01a.md#d-004--no-automatic-merging-ever) wearing a different coat: a
 false-positive link is one human's descriptive data becoming another human's record, and a merge is the
 hard part to undo even with §9's reversal. **The other tempting answer was the permissive one** — let the
 second live account stand — which drops the uniqueness rule above and splits one person's consents,
@@ -569,7 +569,7 @@ change per scheme and a nullable-unique mess.
 - **A merge is refused when the chosen survivor resolves — by walking the chain — to the person being
   absorbed.** That includes the one-hop case just stated and the case that actually happens: absorbing B
   into A when A has already been absorbed into B.
-  [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+  [D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
   puts this check on the **merge** and not on the read, and the placement is the substance of the rule: a
   cycle refused on the way in cannot be reached, whereas a step limit on `resolve_person()` achieves
   nothing except deciding *which of two wrong answers to return* — the tombstone, or wherever the walk
@@ -597,7 +597,7 @@ the mistake is visible. See
 
 **Reversing a merge is a required operation, not an accommodation.** Those three columns exist because
 someone asked for the capability, and
-[D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+[D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
 is where it was asked for; §9 explains that this is the reason chains were kept rather than the other way
 round. Two consequences sit under it, and both are easy to lose later.
 
@@ -717,7 +717,7 @@ wrong one.
 replaces read *"Assumption: merge chains are allowed rather than flattened at merge time"*, and it argued
 for chains on the ground that flattening makes unmerge nearly impossible — a defence resting on a
 capability nobody had asked for. Someone has since asked for it, as a requirement (§8), and
-[D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+[D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
 is that request: with chains kept a reversal is a replay, with flattening it is a rebuild. So the
 direction of the argument is reversed and the trade is now asymmetric in a way it was not before —
 **flattening is closed off, not merely slower**, and "flattening is faster" no longer buys anything except
@@ -739,7 +739,7 @@ the death of a feature somebody named.
 
 **And the rule immediately above now has a check under it.** "Every place that accepts a person id from
 outside must call this" is a rule about application code, which application code can forget, and
-[D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
+[D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
 removed the database-level ways of catching the forgetting. The net is check 4 in §10 — live rows that
 reference a tombstoned person — which is the only form of this failure that is still visible after the
 fact, and the reason §9's prose is no longer the only thing standing between a foreign key and a
@@ -765,7 +765,7 @@ above can express.
 - **A merge chain longer than three hops.** Walk each tombstone's pointer and count the hops to the
   survivor; report the chains over three. **This is a report about a queue, not a finding about a row.**
   It replaces a check that counted `person_merge` rows whose `surviving_person_id` has its own merge
-  pointer set and called a non-zero result a breach — with [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+  pointer set and called a non-zero result a breach — with [D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
   deciding that chains stay, **that count is the normal shape of the data and its expected value is not
   zero**; a person absorbed twice has a survivor who was absorbed, by construction. What carries
   information is the *depth*: four merges in a row on one line of people means the matcher is producing
@@ -808,13 +808,13 @@ above can express.
   `membership`. ~~That was the ordinary condition of every imported row once a roster was held to make a
   participation and nothing else, so the check reported the entire legacy corpus as a failed batch, which
   is precisely how a check stops being read~~;
-  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+  [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
   therefore reversed it to *no participation row*. That reversal is now void twice over: the participation
   table is deleted
-  ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), and
+  ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), and
   the people export turned out to **state membership periods**, so the import writes bounded `membership`
   rows for precisely those people and nobody else
-  ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
+  ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
   What the round-9 rewrite got right and is kept: a check whose trigger condition is normal for the whole
   corpus is not a check.
 - **A redacted person with descriptive values still attached.** Stated where the rows are, as check 6
@@ -831,7 +831,7 @@ above can express.
 - Erasure policy specifics: what must be redacted vs. retained. **Smaller than it used to be, and not
   gone.** The retention *shape* is decided — the trail's payloads expire on a window, the accounting
   skeleton has no clock at all
-  ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   *named* `membership` and fee rows has a basis. See
   [00-conventions.md](00-conventions.md#8-personal-data-and-erasure) and
@@ -844,13 +844,13 @@ above can express.
 are allowed or flattened at merge time (§9): **chains stay**, because reversing a merge is a required
 operation rather than a convenience, and the two rules a permanent chain needs are now written where they
 are obeyed — the cycle refusal in §8, the length report in §10
-([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
+([D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
 [B-2](../open-questions.md#b-2--closed--merge-chains-stay-because-unmerge-is-required)). And whether a
 person may hold two live accounts simultaneously: **no**, enforced by the partial unique index in §4 —
 with the case that made the question hard answered by a gate rather than by an exception, so that a
 colliding sign-up files a claim and activates nothing instead of becoming a second account or being
 silently linked
-([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing),
+([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing),
 [B-4](../open-questions.md#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim)).
 
 All tracked in [../open-questions.md](../open-questions.md).

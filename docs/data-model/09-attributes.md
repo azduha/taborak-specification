@@ -1,9 +1,9 @@
 # Data Model — Personal Attributes
 
 The layer every fact about a person lives in, once you subtract what they are *called* and
-*counted as*. Written because [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+*counted as*. Written because [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 removed the category this file might otherwise have been built around — a privileged medical
-record — and [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)
+record — and [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)
 put an organization-maintained vocabulary in its place.
 
 **Read [domain/08-person-data.md](../domain/08-person-data.md) first** if the word "attribute"
@@ -20,7 +20,7 @@ runtime.** Not files. Not a per-domain table each with its own permission codes.
 one kind of access, one vocabulary.
 
 That sentence is a scope claim inherited almost verbatim from the answer that produced
-[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
 and it is deliberately wider than "health data". A drug dosage and a shoe size are the same kind of
 object: something the organization recorded about a person, which will be wrong in three years,
 which nobody can enumerate in advance.
@@ -63,11 +63,11 @@ their answers ([08-events](08-events.md)), authority
 | `code` | text, required | The stable handle. **Stored as typed, compared normalized** — see the rules below. |
 | `label` | text, required | What a human sees. |
 | `description` | free text, optional | *What belongs in this field and what does not.* Cheap to write, and the only defence against a code meaning four things to four people. |
-| `value_type` | text, required | One of: `text`, `long_text`, `number`, `date`, `yes_no`, `one_of`, `date_year`. Governs the input drawn and the warning given — **not** what may be saved (§4 of this file's rules, [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)). |
+| `value_type` | text, required | One of: `text`, `long_text`, `number`, `date`, `yes_no`, `one_of`, `date_year`. Governs the input drawn and the warning given — **not** what may be saved (§4 of this file's rules, [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). |
 | `value_unit` | text, optional | Display suffix — `kg`, `cm`. Rendering only. |
 | `allow_multiple` | boolean, required, default false | Whether more than one value may be current at once. Allergies: yes. Blood type: no. |
 | `status` | text, required | One of: `proposed`, `live`, `retired`. See the status rules. |
-| `category` | text, optional | Display grouping — `health`, `contact-admin`, `program`. **Grouping only: it grants nothing and restricts nothing**, and any sentence that says otherwise is reintroducing the sub-resource [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed. |
+| `category` | text, optional | Display grouping — `health`, `contact-admin`, `program`. **Grouping only: it grants nothing and restricts nothing**, and any sentence that says otherwise is reintroducing the sub-resource [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed. |
 | `sort_order` | integer, optional | |
 | `proposed_by`, `proposed_at` | person, timestamp | Set when a value arrived for a code that did not exist. |
 | `retired_at`, `retired_reason` | timestamp, free text | Retiring is an administrative act and is explained. |
@@ -129,7 +129,7 @@ permission — see §4.
 
 **There are no `valid_from` / `valid_to` columns, and that is a decision rather than an omission.**
 A row here is **the current belief**, overwritten in place; the sequence of beliefs is in
-`audit_log` ([D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)),
+`audit_log` ([D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)),
 which holds those values and is therefore the table §6 is about — this document's history is a
 permission mark away from being an empty list, and saying the two are connected is the most this
 section can honestly do about it.
@@ -141,7 +141,7 @@ not competent to record and has no rule that could use.
 
 **`value` is one text column, and there are no typed siblings.** A `value_number` and a
 `value_date` beside it would let the database do something useful with a date — and would then make
-`2019`, recorded as a year for a checkup, unsavable, which is the failure [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)
+`2019`, recorded as a year for a checkup, unsavable, which is the failure [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)
 refuses: an empty field behind a validation error is a worse record than an imprecise one. **The
 type belongs to the definition and to the form renderer; the storage stays uniform.** What that
 costs is listed in §5 rather than discovered later.
@@ -149,7 +149,7 @@ costs is listed in §5 rather than discovered later.
 **Rules**
 
 - A value may not be blank. Absence is the absence of a row
-  ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values));
+  ([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values));
   an empty string is a lie that looks like an answer.
 - **At most one current value per `(person, definition)` unless the definition allows multiple.**
   One row per pair, because there is no history — so the rule is a plain uniqueness rule *except*
@@ -174,7 +174,7 @@ is per code), and the per-`(person, definition)` rule above.
 
 **Read: `person.view`, and nothing else.** No `attribute.*` read permission exists, because there is
 nothing to gate that `person.view` does not already gate
-([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
+([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
 The three channels behave normally:
 
 - **A unit leader** holding `person.view` scoped to their own unit reads their own members'
@@ -200,7 +200,7 @@ leader types a drug name into a `notes` field at 23:00 and it is never seen by a
 
 Stated here because an open key/value layer is repeatedly described as flexible by people who have
 not yet needed any of these, and because
-[D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)
+[D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)
 was taken with them in view rather than in the abstract.
 
 | Cannot | Why | What is done instead |
@@ -209,8 +209,8 @@ was taken with them in view rather than in the abstract.
 | Type-check at the database | Values are one text column | ISO-format by convention, and §8 check 7 reports a type that is wrong for the whole definition |
 | Compare or aggregate safely | `12` and `12 kg` and `twelve` are three strings | Report on the `one_of` codes; treat free text as a list to read, not a number |
 | Express the one-value rule as a constraint | The rule reads another table ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 4 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
-| Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** — and since [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), **nothing at all** stands between it and being empty after the payload window closes (§6) |
-| Restrict one field to some readers | [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) refused a privileged subset | One scope over one record; a court-ordered exception is a decision entry, not a code |
+| Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** — and since [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), **nothing at all** stands between it and being empty after the payload window closes (§6) |
+| Restrict one field to some readers | [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) refused a privileged subset | One scope over one record; a court-ordered exception is a decision entry, not a code |
 | Trust that a code means one thing | Codes are typed by humans | Normalized uniqueness, `description` on every definition, §8 check 2, and a named curator |
 
 ---
@@ -248,7 +248,7 @@ reading them as a dependency rather than as reassurance:
   the largest being that one of the three is already built, so declining to choose is a choice nobody has
   to sign.
 
-**Those payloads now expire, which is a consequence of [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+**Those payloads now expire, which is a consequence of [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 and not a detail of it.** Audit rows live as long as the system; their `old_values`/`new_values` are
 emptied 24 months after they are written. Read that against the paragraph above and both halves are
 true at once: **the trail is the only history this table has, and it stops being a history after two
@@ -262,10 +262,10 @@ and it should be read that way rather than as a resolution: a wrongly-graded `au
 a child's descriptive values, but only for as long as they are recent. **If the long history is ever
 actually needed — by a safeguarding review, or by a dispute about what was known and when — the fix is
 temporal columns on the value, which reverses
-[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).**
+[D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).**
 It is *not* a longer payload window, because stretching the window stretches exactly the guard
-[D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
-graded, and [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+[D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
+graded, and [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 refuses to keep a second copy somewhere safer.
 
 **What is left of the redactor is small, and says so.** It scrubs the values that must never be logged
@@ -287,7 +287,7 @@ have forgotten is not a history, it is the thing they asked to be rid of, filed 
 
 The old system's columns become codes, and this is the largest single event in the life of the
 attribute layer — most of the first few hundred definitions arrive here rather than from a deliberate
-act of design, because [the corpus you have](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+act of design, because [the corpus you have](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
 is thousands of roster rows with free-text columns beside them. **That is one file arriving with the
 organization's descriptive vocabulary in it, and it changes how the mapping has to be reviewed.**
 

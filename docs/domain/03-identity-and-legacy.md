@@ -13,10 +13,10 @@ another. The design below is deliberately conservative.
 
 A 1994 row has: a name, maybe a birth date, **the period that person was a member**, and, on most
 rows, a legacy member number
-([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)),
+([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)),
 with free text — an address, remarks — in columns beside it. This opening sentence used to read
 "a unit, a year"; the corpus
-([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units))
+([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units))
 names no unit at all, which costs §7 more than it costs this section. What this section used to open
 with instead — "no unique key" — was written before the corpus had been described and was wrong in the
 useful direction. What is still true is that none of it can log in:
@@ -43,7 +43,7 @@ a match signal, and none may become one. A clothing size or a dietary habit iden
 making matching depend on one would make the reliability of a person's history depend on what the
 organization happened to collect about them
 ([08-person-data.md](08-person-data.md),
-[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
+[D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
 The line between the two halves is drawn by *what a machine may act on without a human*, not by
 how delicate a fact feels; the test is stated in
 [08-person-data.md](08-person-data.md#the-three-exceptions-and-why-they-are-exceptions).
@@ -103,7 +103,7 @@ Three entry points:
    creates a hypothesis against the candidate rows, usually with `proposed_by = 'person'`.
 3. **A sign-up that strong-matches a person who already exists** raises one by itself, without
    anyone asserting anything, and that hypothesis holds the new account out of `active`
-   (§4, [D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+   (§4, [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
    The queue is the same queue and the review is the same review; what is new is that a person
    arriving at a registration form can put a row in it.
 
@@ -120,12 +120,12 @@ so a reviewer sees *why* the system proposed a match:
 
 | Signal | Strength | Notes |
 |--------|----------|-------|
-| **Exact legacy member number** | **decisive** | The corpus carries these ([D-056](../decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)). Same number, same person — matched, not scored. |
+| **Exact legacy member number** | **decisive** | The corpus carries these ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)). Same number, same person — matched, not scored. |
 | Exact birth date + exact normalised name | strong | Still not automatic — twins with similar names exist. |
 | Birth date within ±1 day or year-only match + name | moderate | Common with hand-written records. |
 | Name match after normalisation (diacritics, case, spacing) | moderate | Necessary but weak alone; "Jan Novák" is not unique. |
 | Same unit + overlapping membership period | moderate | Corroborating, not identifying. |
-| Same postal address at the same time | moderate | Strong if the address is distinctive. Read from `person_contact` history — there is no household table ([D-057](../decisions/decision-log.md#d-057--household-is-removed)). |
+| Same postal address at the same time | moderate | Strong if the address is distinctive. Read from `person_contact` history — there is no household table ([D-057](../decisions/round-04.md#d-057--household-is-removed)). |
 | Guardian name match | weak | Useful for minors in old records. |
 | Name-only fuzzy match | **weak — never sufficient alone** | |
 
@@ -133,8 +133,8 @@ so a reviewer sees *why* the system proposed a match:
 > not "are these two the same person?" but "does this number already point somewhere?" — a
 > lookup. The scored signals below are then for the rows the number **cannot** resolve: legacy
 > records predating the numbering, records where the number is illegible, and people who were
-> never issued one. At thousands of rows ([D-056](../decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers))
-> this split is what makes [D-004](../decisions/decision-log.md#d-004--no-automatic-merging-ever)
+> never issued one. At thousands of rows ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers))
+> this split is what makes [D-004](../decisions/round-01a.md#d-004--no-automatic-merging-ever)
 > affordable: the numbered rows are the trustworthy set and the rest is a work queue.
 
 ### Normalisation
@@ -157,18 +157,18 @@ reproducible:
   worse than any amount of manual review.
 
 This paragraph used to rest the no-auto-merge rule on merges being "irreversible in practice", and
-that premise has been withdrawn: [D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
+that premise has been withdrawn: [D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)
 made unmerge a required operation (§6). The rule does not need the false premise. It rests on what
 the reversal cannot reach — the merged window stays one row's history — and on the union of
 permissions being exercised from the moment the merge commits, whatever is discovered afterwards.
 
 *Assumption, now settled:* **no automatic merging at all**, even for near-certain matches
-([D-004](../decisions/decision-log.md#d-004--no-automatic-merging-ever)). This document left an
+([D-004](../decisions/round-01a.md#d-004--no-automatic-merging-ever)). This document left an
 escape hatch open on the theory that the volume of historical data might make manual review
 infeasible, and offered an opt-in auto-merge tier for that case. The volume is now known: thousands
-of rows arriving in two exports ([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)),
+of rows arriving in two exports ([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)),
 most of the people rows carrying a number that makes the match a lookup rather than a judgement
-([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 The hatch is not needed, and it is not reserved.
 
 ### The same signals at sign-up, split at the top of the band
@@ -177,7 +177,7 @@ Until now these signals were read only by machinery working over the import. A r
 collides with them too. **A sign-up that strong-matches an existing person raises an
 `identity_hypothesis` and is then held out of `active` by it** — an account may not reach `active`
 while an unresolved hypothesis names its person
-([D-089](../decisions/decision-log.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
 The sign-up's own rows are created exactly as any sign-up creates them and stay
 `pending_verification`; what "creates nothing" rules out is the *outcome* — **nothing is merged,
 nothing is linked, nothing is activated**. The address the person typed stays on the pending account
@@ -258,8 +258,8 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 | `role_holder` | Reassigned. An office held twice by one person over overlapping periods is the same review case, with the same refusal to guess silently — and it is read out loud rather than filed quietly, because this table's rows are exactly what `ROLE(x)` reaches, so a duplicate holder row is a duplicate audience member. |
 | `guardianship` (as dependent) | Reassigned. |
 | `guardianship` (as guardian) | Reassigned. |
-| `access_grant` | Reassigned. **Union of permissions results — this is the security-critical step.** Merging two people silently merges two sets of authority, and since [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) that union is literally the rows both people leave behind: no rank resolves a collision, so a `deny` on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review. `role_assignment` is gone from this table — the office rows moved to `role_holder` above, where an overlap is already a review case |
-| `audience_operand`, where `selector_kind` is `PERSON` | **Repointed, not reassigned, and this row is newer than the rest of the table.** [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `audience_member`, so every hand-named person in the system is now a `selector_arg_id` — a column with deliberately no foreign key ([D-011](../decisions/decision-log.md#d-011--scopeid-on-accessgrant-is-polymorphic-with-no-foreign-key)), which is why this row is a requirement on the merge and not something the database notices. **The failure is asymmetric and it is the loud one:** a leaf that resolves to nobody is the empty set, so a grant reading `EVERYONE - PERSON(x)` where `x` was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed `person_group`, a deleted `role`, an `event`, a nested `audience` — because none of them has a key either |
+| `access_grant` | Reassigned. **Union of permissions results — this is the security-critical step.** Merging two people silently merges two sets of authority, and since [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) that union is literally the rows both people leave behind: no rank resolves a collision, so a `deny` on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review. `role_assignment` is gone from this table — the office rows moved to `role_holder` above, where an overlap is already a review case |
+| `audience_operand`, where `selector_kind` is `PERSON` | **Repointed, not reassigned, and this row is newer than the rest of the table.** [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `audience_member`, so every hand-named person in the system is now a `selector_arg_id` — a column with deliberately no foreign key ([D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)), which is why this row is a requirement on the merge and not something the database notices. **The failure is asymmetric and it is the loud one:** a leaf that resolves to nobody is the empty set, so a grant reading `EVERYONE - PERSON(x)` where `x` was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed `person_group`, a deleted `role`, an `event`, a nested `audience` — because none of them has a key either |
 | `person_merge` | Row inserted here. |
 | `field_conflict` | Populated for anything that could not be resolved automatically. |
 
@@ -272,8 +272,8 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
   after a merge is suspicious — it may mean the merge was wrong. It becomes
   a review item. (This bullet used to say *child* memberships, a distinction the model stopped
   making with one membership type and ageless membership
-  ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person),
-  [D-038](../decisions/decision-log.md#d-038--membership-is-ageless)); what it described — two open periods
+  ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person),
+  [D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)); what it described — two open periods
   on one person — is the same suspicious shape.)
 
 ### The cycle is refused here, not at the read
@@ -281,7 +281,7 @@ person (surviving, id=100)          person (absorbed, id=847, tombstoned)
 Chains are permanent (§6): `merged_into_person_id` is never rewritten forward, so A→B→C stays a chain
 and `resolve_person()` walks it. A chain that loops would make that walk never end, so **a merge is
 refused when the person chosen as survivor resolves — by walking the chain — to the person being
-absorbed** ([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
+absorbed** ([D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
 That subsumes the case already ruled out, nobody merges into themselves, and catches the one that
 actually happens: absorbing B into A when A has already been absorbed into B.
 
@@ -293,7 +293,7 @@ wrong answers to return, and the wrong answer it returns is a tombstoned id — 
 The other half of the same rule is softer and needs a net under it. "Every place that accepts a
 person id from outside must call `resolve_person()`" is a rule application code can forget, and the
 schema carries no way to catch it
-([D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)).
+([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)).
 What catches it is a report of live rows that reference a tombstoned person, which is the only form of
 this failure that is visible after the fact
 ([../data-model/01-identity.md §10](../data-model/01-identity.md#10-integrity-checks)).
@@ -310,7 +310,7 @@ gains the absorbed person's access. Therefore:
    cannot be attributed to either human. Hence rule 2 — an unmerge repairs the record afterwards
    and does not repair this.
 4. ~~Merges invalidate cached permissions.~~ **There are no cached permissions to invalidate** —
-   [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   [D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
    deleted the answer cache, and a person merge is one of the writes that dropped out of the surviving bump
    set with it: a merge changes which grant rows and operand leaves name the person, and both are read live now. What the merge does to
    an answer is therefore just what the next check computes, from the survivor's grant rows and the `PERSON(x)`
@@ -323,7 +323,7 @@ gains the absorbed person's access. Therefore:
 ## 6. Reversing a merge
 
 Unmerge is **a required operation**, not a courtesy for mistakes an organization hopes it will not
-make ([D-087](../decisions/decision-log.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
+make ([D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation)).
 It is also the reason merge chains exist, so it is worth being honest about which way the
 justification now runs. Chains were argued for *because* flattening would make a reversal impossible —
 an assumption resting on a capability nobody had asked for. Somebody has asked for it now, so the
@@ -366,7 +366,7 @@ making one, performed by a named human, so it is `person.merge`
 ([../appendix/permission-catalog.md §2](../appendix/permission-catalog.md#2-people-and-identity)). A
 `person.unmerge` code would grade undoing a mistake as safer than making one. Like the merge, the
 reversal splits a person's permissions back in two — and since nothing maps a person to an answer any more
-([D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
+([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)),
 there is nothing to invalidate: the split is simply visible on the next check, which is the same §5 rule
 stated on the way back.
 
@@ -377,15 +377,15 @@ stated on the way back.
 Staged, reviewed, idempotent. Never a direct write into live tables.
 
 **What is actually arriving is two exports, and neither is a roster**
-([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 This section spent two rounds describing *roster rows* — people attending units — and the whole
 pipeline hung off that word, because a roster is evidence of presence in a unit and that is not what
 the source says. It says two things:
 
 | Half | What a row says | What the batch writes |
 |---|---|---|
-| **The membership export** | a name, a birth date, and **when that person was a member of the root unit** | a `person`, and a **bounded** `membership` — both ends dated, `data_confidence = 'low'`, batch id on it — which brings its root-unit participation row with it ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
-| **The attendance export** | an event, and who came to it | an `event` owned by **the root**, and one `event_registration` per attendee at `attending` / `was_present = true` ([D-094](../decisions/decision-log.md#d-094--the-root-unit-owns-every-imported-event)) |
+| **The membership export** | a name, a birth date, and **when that person was a member of the root unit** | a `person`, and a **bounded** `membership` — both ends dated, `data_confidence = 'low'`, batch id on it — which brings its root-unit participation row with it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
+| **The attendance export** | an event, and who came to it | an `event` owned by **the root**, and one `event_registration` per attendee at `attending` / `was_present = true` ([D-094](../decisions/round-09.md#d-094--the-root-unit-owns-every-imported-event)) |
 
 **Neither names a sub-unit, and nothing is assigned to one.** The parser keeps its parsed unit code
 — an export that surprises whoever runs it with a unit column is exactly what that field and its
@@ -453,11 +453,11 @@ person to ask finds the sentence rather than the absence.
 The pipeline was drawn when a legacy column could only ever be a name, a date or a unit. Old
 rosters also carry columns about the *person* — a remarks column, a "medical" column, a list of
 shirt sizes — and each of those arrives at step [5] as a value against a **code**, not as a blob
-beside the record ([D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)).
+beside the record ([D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)).
 The corpus carries those columns alongside the identity columns, in the **membership export** — they
 are columns about a person, and the attendance export brings nothing that maps to an attribute code
-([D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
-[D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units));
+([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+[D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units));
 the map therefore belongs to the people batch, and a code-to-registration map to the events batch,
 which is what "one batch, one map" survives as once a batch states which half it carries. That makes
 the first import the single largest event in the life of this vocabulary: several hundred codes out
@@ -490,27 +490,27 @@ three consequences follow from arriving all at once.
 
 This subsection was headed "Historical rows from imports" and said that an imported **roster** row
 yields a `person`, a `unit_participation` bounded to the roster's year, and **no `membership`** — the
-rule [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+rule [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
 recorded, before there was a heading to withdraw. **That frame is superseded in its second half, one
 round later, by
-[D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units) and
-[D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)**,
+[D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units) and
+[D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)**,
 and the sequence is worth leaving visible: both rounds reasoned correctly from a file nobody had
 read. What the source states, and what arrives:
 
 | What the source says | It becomes | Why |
 |---|---|---|
-| "Jan Novák, born 1962, member 1990–1995" | a `person` with `record_origin = 'legacy_import'`, and **one `membership` per period the source states** — `valid_from` *and* `valid_to` set, `data_confidence = 'low'`, `import_batch_id` set, the renewal chain left to whoever reconstructs it | A stated period is evidence of membership and infers nothing; a closed period cannot gate anything ([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
-| the same, with the year repeated in the file | a **second `membership` only if the source states a second period**; consecutive stated years stretch to one row, a gap in the source opens another | This row used to be the *root participation row* the membership obligation required, stretched by exactly this rule and carrying exactly one cost: the lapse stopped being visible in the participation table. [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the row, and the cost with it — **a lapse is now visible in one table, which is the table that means it** ([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row), superseded) |
-| an event, and who came to it | an `event` **with no owner column at all**, one `event_registration` per attendee at `attending` with `was_present = true`, and — since [D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it) — the per-event instantiation of the seeded answers-view grant | There is no unit to own it and no rule asking for a root: an event's people are named by selectors that bind to it, which is also the import-side saving [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) counted ([D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)) |
-| a person who might have come and did not | **nothing** | An export lists who came. Writing `not_attending` from silence puts words in a source that said nothing ([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)) |
-| a sub-unit | **nothing, ever** — and there is now nothing that could be one | The corpus names none (§7), and [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the thing a name could have attached to. The row stays because it is the one a reader holding a 1998 spreadsheet will ask, and the answer has to be written down rather than inferred from absence |
+| "Jan Novák, born 1962, member 1990–1995" | a `person` with `record_origin = 'legacy_import'`, and **one `membership` per period the source states** — `valid_from` *and* `valid_to` set, `data_confidence = 'low'`, `import_batch_id` set, the renewal chain left to whoever reconstructs it | A stated period is evidence of membership and infers nothing; a closed period cannot gate anything ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
+| the same, with the year repeated in the file | a **second `membership` only if the source states a second period**; consecutive stated years stretch to one row, a gap in the source opens another | This row used to be the *root participation row* the membership obligation required, stretched by exactly this rule and carrying exactly one cost: the lapse stopped being visible in the participation table. [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the row, and the cost with it — **a lapse is now visible in one table, which is the table that means it** ([D-050](../decisions/round-04.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row), superseded) |
+| an event, and who came to it | an `event` **with no owner column at all**, one `event_registration` per attendee at `attending` with `was_present = true`, and — since [D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it) — the per-event instantiation of the seeded answers-view grant | There is no unit to own it and no rule asking for a root: an event's people are named by selectors that bind to it, which is also the import-side saving [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) counted ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)) |
+| a person who might have come and did not | **nothing** | An export lists who came. Writing `not_attending` from silence puts words in a source that said nothing ([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)) |
+| a sub-unit | **nothing, ever** — and there is now nothing that could be one | The corpus names none (§7), and [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the thing a name could have attached to. The row stays because it is the one a reader holding a 1998 spreadsheet will ask, and the answer has to be written down rather than inferred from absence |
 | money | **nothing** — and no `fee_obligation` | The corpus has no money in it (D-090) |
 
 **The ban that survives is one sentence, and it is the one that was always the point: never an
 open-ended membership, and never one inferred from an attendance row.** The reason has not moved since
 the two were split apart — `is_current_member()` and the permission gate
-([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership))
+([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership))
 both read `membership`, so a row running to no `valid_to` hands whoever signs up under that name
 authority in the present. What narrowed the ban is that it was written for a **standing** hazard — an
 import that infers, run by whoever holds the file, repeatedly, for years — and this is one reviewed
@@ -535,7 +535,7 @@ an empty set to fire on while still inviting somebody to implement it.
 - **The root-participation obligation points at the import again.** Round 8 corrected that section to
   say an ordinary import "touches neither arm of this pair"; with memberships arriving by the thousand
   it does, in the same transaction, which is what keeps *who is in unit X* one query
-  ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+  ([D-041](../decisions/round-02-03.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
 - **No obligation, no payment, no balance.** An imported membership creates **no `fee_obligation`**,
   and that has to be a rule rather than an accident: an obligation per historical year would land as
   `unpaid` and turn a decade of members into a wall of debt with a 1999 `due_date` for the lapse sweep
@@ -547,7 +547,7 @@ an empty set to fire on while still inviting somebody to implement it.
   under it. One row per period the source states, not one per calendar year, is now a rule with a
   consequence rather than a tidiness.
 - **These rows are the oldest layer of the skeleton D-088 keeps forever**
-  ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
   thousands of named people with birth dates who were never asked and never used the system, held on
   an unverified legal basis. Same judgement as before, much larger population.
 
@@ -599,10 +599,10 @@ of participation plus a membership from 2024 — "the truth of what the organiza
 a historical membership appearing only if somebody typed one. That was true of a corpus of roster
 rows. The corpus is a **membership export**, which states the period, so the twelve years arrive as a
 bounded membership row, and one row only:
-[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
 root-unit participation row it used to be written beside in one transaction, so the pair this sentence
 described is now a single row
-([D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated));
+([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated));
 what the sentence is still refusing is the *inference*, and the assertion that survives unchanged is
 the one that matters for this case: **a 1990–2010 `membership` appears only where the source states the
 period or somebody records it by hand on evidence** (`membership.backdate`, §7). Note what did not
@@ -655,32 +655,32 @@ Still open:
 - Volume and formats of historical data — thousands of rows in **two** exports, people and events,
   1990s to now, free-text columns alongside
   ([B-1](../open-questions.md#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data),
-  [D-090](../decisions/decision-log.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
-  [D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
+  [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+  [D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
   "One export" is what this bullet said until round 9; the correction is only about shape, and the
   answers it produced stand. This section used to ask the question in order to decide whether manual
   review was affordable and to hold open a high-confidence auto-merge tier; the corpus is modest and
   number-bearing, so the tier is not needed and is not reserved (§4).
 - Whether the old system issued member numbers — **it did**, on most rows: imported verbatim into
   `person_identifier` under the legacy scheme and never reissued
-  ([D-056](../decisions/decision-log.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers),
+  ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers),
   D-090). §4's strongest signal is available, and where a number is present the match is a lookup
   rather than a score.
 - **How much of an old roster becomes a membership** — this round's answer is "the periods the export
   states" (§7), and it is the reversal of the previous one, which was *none of it*: the question was
   "how much", the corpus carried no payment evidence, and so the arm of the old rule that produced
   memberships could not be reached
-  ([D-041](../decisions/decision-log.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-  [D-093](../decisions/decision-log.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
+  ([D-041](../decisions/round-02-03.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
+  [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
   reached the same conclusion by a different road — the source states a membership period directly, so
   no payment evidence was ever the only way in — and left the old rule's *purpose* intact as the ban
   described in §7. The stakes this section named are why that ban is shaped as it is: an inferred
   membership running to today would make a 2003 roster member a current member under the permission gate
-  ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)),
+  ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)),
   which is exactly what a period with both ends dated cannot do.
 - Retention — both the erasure *mechanism* (redact the person, keep the financial and membership
   skeleton) and the durations: that skeleton indefinitely as the organization's own history, audit
-  payloads emptied 24 months after writing ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+  payloads emptied 24 months after writing ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
   The half that stays open is not a design question — whether indefinite retention of named membership
   and fee rows has a legal basis, which a decision log cannot grant
   ([B-3](../open-questions.md#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).

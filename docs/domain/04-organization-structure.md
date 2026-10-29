@@ -2,11 +2,11 @@
 
 One organization, and the named sets of people inside it.
 
-**This page used to describe a hierarchy.** [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+**This page used to describe a hierarchy.** [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
 deleted it, and not by simplifying it: the module's subject stopped being a structure and became two
 things that were previously buried inside it — the organization, which is one unit and is not stored, and
 the **group**, which is a set of people and is
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 What follows says what the organization is now, what that costs, what a group is and is not, and where the
 workflows that used to end at a position now end.
 
@@ -16,8 +16,8 @@ workflows that used to end at a position now end.
 |---|---|---|
 | **unit** | the organization itself. There is exactly one. It is a **scope**, never a row | nothing — a code in `grant_scope_type` |
 | **group** | a named set of people with explicitly dated members and a lifetime. A set, not a body | `person_group` + `person_group_member` |
-| **role** | an office: a small, visible set of holders — leaders, finance, IT | `role` + `role_holder` ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) |
-| **audience** | an expression over named sets, which a grant is aimed at | `audience` ([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)) |
+| **role** | an office: a small, visible set of holders — leaders, finance, IT | `role` + `role_holder` ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) |
+| **audience** | an expression over named sets, which a grant is aimed at | `audience` ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)) |
 | **selector** | one operand of that expression: `MEMBERS`, `GROUP(x)`, `ROLE(x)`, … | `selector_type`, `audience_operand` |
 
 Roles and audiences belong to the authorization model
@@ -33,7 +33,7 @@ path, no depth, and no row. It is the non-item scope that `grant_scope_type` alr
 `unit`, `is_item_scoped = false`, and a grant written at it has no `scope_id`. Nothing in the schema
 represents it, because there is nothing to represent: a second unit cannot appear, for the same reason a
 second answer to a question cannot appear in a field that does not exist
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
 
 **Membership is unchanged and is not a group.** One membership per person, at the unit, paid for yearly.
 It used to be issued with a participation row on the root unit so that "everyone in unit X" was one
@@ -45,15 +45,15 @@ units. So now:
 
 Two shapes instead of one shape with a depth in it, and neither one borrows the other's table. Renewal
 narrows to exactly what it always claimed to be about — the `membership` row, a new row per renewal
-([D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto))
+([D-016](../decisions/round-01b.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to))
 — because the row it used to extend on a renewal is gone with the units, and
-[D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)
+[D-050](../decisions/round-04.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row)
 is reversed rather than narrowed.
 
 **A grant at the unit reaches everything**, every item of every type, because nothing stands between the
 unit and an item any more and there is no ownership relation left to test
-([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
-[D-102](../decisions/decision-log.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality),
+[D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 That is a sentence about the permission system; it is stated here only because it is what "scope" means
 now that "row" does not.
 
@@ -64,19 +64,19 @@ here rather than distributed through the page, and they are not argued away.
 
 1. **The unit is no longer a locus of accountability for a child's records.** This is the one that matters
    and it is the founding rule's.
-   [D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing)
+   [D-031](../decisions/round-02-03.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
    said ~~authority over a unit originates at that unit and cannot be claimed from outside it~~ — it
    existed so that access to a pack's children had to be granted *by that pack*, by the people who
    recruited its leader and can be asked about it. **Reversed by
-   [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)**, which
+   [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)**, which
    does not weaken the rule but deprives it of its subject: with one unit there is no "outside it" to be
    stopped from. Nothing in the remaining model reproduces the property. A permission held at the unit
    reaches every member, and `person.view` was already the widest read permission in the system
-   ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
-   [D-086](../decisions/decision-log.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)).
+   ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+   [D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)).
    What survives of the safeguarding story is the same three things D-095 left behind — a permission held
    by a named adult, an audit trail whose payloads expire after two years
-   ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
    and a report of who holds the write — **minus the part where the named adult was somebody the unit
    chose.**
 2. **The subtree question has no subject.** "Who was in the Thursday group in 2011?" stays answerable,
@@ -86,7 +86,7 @@ here rather than distributed through the page, and they are not argued away.
 3. **Restructuring stops being a recorded event.** Splits, mergers and successions were this module's
    whole history problem, and they are simply gone. A group that splits is an old group that ended and two
    that began, with no edge between them unless somebody writes one — and after
-   [D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
+   [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
    there is no table left where that edge could go (§4).
 4. **Unit-scoped reports have nothing to report on.** "A pack's roster", "a pack's events", "which units
    exist" are not hard questions any more, they are questions with no subject. The organizational-year
@@ -100,10 +100,10 @@ integrity checks this retired, are in
 [../data-model/02-organization.md §5](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
 
 **Why this was affordable now and was not affordable in round 1**:
-[D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units). The
+[D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units). The
 legacy corpus names no units — two exports, people with their membership period and events with
 attendance, no unit column anywhere. A structure that describes nothing imported and, per
-[D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
+[D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
 restricts nothing carries no information. That is the definition of the over-specification the round was
 called to remove.
 
@@ -117,7 +117,7 @@ work (`scope_exposure`, written by the unit it covered) no longer exists.
 ## 2. What a group is, and everything a group is not
 
 **A group is a `person_group`: a name, a description, its own lifetime, and explicitly dated members**
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 It is a **set of people, not a body**. Somebody names it, somebody puts people in it, somebody ends it, and
 the record of who was in it when is the roster's own (§5). A weekly meeting group, a project crew, a
 trainers' pool, `schuzka2026-1` — all the same kind of thing, and the system has no opinion about which
@@ -141,8 +141,8 @@ wrong, so it is stated flatly:
 
 **Membership of a group confers nothing, and tidier storage does not quietly change that.** A member of a
 group cannot do anything. That is
-[D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity) and
-[D-019](../decisions/decision-log.md#d-019--household-membership-grants-no-access) restated one level down:
+[D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity) and
+[D-019](../decisions/round-01b.md#d-019--household-membership-grants-no-access) restated one level down:
 participation is not authority, and it stays not-authority when it moves into a table with better
 columns. Authority arrives only through a grant that names the group, which is §4 of
 [../data-model/02-organization.md](../data-model/02-organization.md#3-a-group-is-an-item-a-grant-can-be-written-on-one).
@@ -151,14 +151,14 @@ columns. Authority arrives only through a grant that names the group, which is �
 in meaning.** The round's inversion is the load-bearing part: **a group states its members; a selector
 picks them.** A group's members are a list of people that is true whether or not any permission points at
 it; a leaf in an audience — since
-[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+[D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 that means a `PERSON(y)` row, and until then it also meant a typed list held in its own table — is an addition
 to an expression, meaningful only inside the expression it completes. A group exists to be talked about; a
 selector exists to be aimed at something. Two tables that both answer "who is in it" is exactly the shape
-[D-080](../decisions/decision-log.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
+[D-080](../decisions/round-06.md#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved)
 teaches a reader to distrust, so the difference is stated, not implied — and merging them would make the
 permission table the system's roster, which is the mistake
-[D-062](../decisions/decision-log.md#d-062--organizers-are-appointed-on-the-event-not-granted) already
+[D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted) already
 refused for events.
 
 **Where the line against a role is drawn, in one sentence, because it decides who may edit the list.** A
@@ -176,17 +176,17 @@ the grant.
 **Nobody writes themselves onto a roster.** The gate is `person_group.member.manage`, held at the unit —
 which reaches every group, because after D-097 nothing stands between a unit-scope grant and an item — or
 granted on one group as an item, which is how "these two people may work *this* roster" is said without
-inventing a scope ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority),
-[D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+inventing a scope ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority),
+[D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 There is no self-scoped variant and none will be added. Moving the roster from `unit_participation` to
 `person_group_member` changed the table and not the rule: D-095's reasoning transfers intact.
 
 **What the gate replaced is worth keeping in mind, because it is the reason the gate is trusted.**
 `org_unit_type.allows_minors` used to refuse a child's placement by consulting a flag on the unit's type.
-[D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+[D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
 removed it — *a list of eighteen ticks nobody read is not a safeguard, it is a receipt* — and replaced it
 with a permission held by named adults. Per
-[D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now),
+[D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now),
 the rule's name outlived its mechanism, so: *do not place a child where nobody is responsible for them* is
 enforced by **who may write the member row**, now in `person_group_member`, audited and naming who wrote
 it. A permission refuses every write by the wrong person regardless of the child's age; a boolean only ever
@@ -195,7 +195,7 @@ refused a placement nobody had thought about.
 **And what it still costs, once.** The system cannot say which groups are for children. Nothing on a
 `person_group` answers that question and, consistent with "no special features", nothing will: no
 `allows_minors`, no `is_children`, no type to hang it on. Combined with no recorded background checks
-([D-043](../decisions/decision-log.md#d-043--no-background-checks-are-recorded-in-this-system)) and with
+([D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system)) and with
 cost 1 above, the safeguarding story of this module is a permission held by named adults, an audit trail
 that forgets values after two years, and a report. If that turns out to be too little — after an incident,
 or an insurer's question — the route back is a rule about who may be placed where, argued once as a
@@ -204,7 +204,7 @@ implies it enforces something.
 
 **A membership request is a request for membership of the unit, and carries no group.** It used to carry a
 preferred unit; `requested_unit_id` is deleted, because which group a new member lands in is a write on
-the group and not a preference on the request ([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
+the group and not a preference on the request ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 The request flow in [05-membership-lifecycle.md](05-membership-lifecycle.md) ends at the unit; a roster is
 somebody else's decision afterwards, which is the same fact as the paragraph above stated from the other
 side.
@@ -214,11 +214,11 @@ side.
 ## 4. A name carries no identity
 
 **A group name is a label, and a label is not the group.** This is the method
-[D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)
+[D-096](../decisions/round-09.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity)
 reached for units — *"what is a unit number?"* was the answer to the question rather than the question —
 and D-097 deleted the units while leaving the reasoning intact, so it transfers to groups: **a group name
 that comes back after a decade is a new group, unless somebody records that it is not**
-([D-096](../decisions/decision-log.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity),
+([D-096](../decisions/round-09.md#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity),
 superseded as to units and standing as to method).
 
 **Why the default matters is the part that was worth deciding.** Continuity is not a property of a label;
@@ -231,7 +231,7 @@ name history, so a rename is an edit to one column and the previous name is not 
 
 **The honest half: the method outlived its recording mechanism.** D-096 put the continuity claim in
 `org_unit_relationship` as `successor_of`. That table is deleted, and
-[D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)
+[D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
 refuses group-to-group edges outright — no split, no merger, no succession — so the assertion has **no
 field to live in**. What the method still guarantees is therefore the direction of the default, which is
 the half that was ever enforceable: a returning name is a new group, and two groups that are really one
@@ -247,9 +247,9 @@ Because `ROLE(x)` and `GROUP(x)` no longer have to disambiguate, a bare `COUNSEL
 and groups together, so names are unique across the tables, case/whitespace/separators are folded on write,
 and **every `selector_type.code` is a reserved name** — a group called `MEMBERS` is refused at the save
 rather than silently rewriting every expression in the system
-([D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
+([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 `audience.code` joined the namespace when an audience became an operand that could be named
-([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience)), and the pair of rules
+([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)), and the pair of rules
 is worth holding apart: **a bare name never resolves to an audience** — the arm must be written
 `AUDIENCE(veterans)` — yet a group still may not *borrow* an audience's code, because a name that resolves
 two ways is a silent grant whatever the resolution rules say. No single constraint spans the three tables,
@@ -264,10 +264,10 @@ grant** — the storage follows the method rather than the label. Mechanics:
 **Member rows are dated, and that is what makes the roster answerable.** `person_group_member` carries
 `valid_from` and `valid_to` per person, so joining, leaving and coming back are all periods on the same
 pair, and the roster has a history of its own instead of borrowing the audit trail's
-([D-098](../decisions/decision-log.md#d-098--a-group-is-a-persongroup-explicit-members-a-lifetime-and-no-authority)).
+([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 "Who was in `schuzka2026-1` on 14 March 2026?" is a point-in-time read over those rows. It survives the
 audit trail's 24-month payload expiry
-([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
 because it does not depend on the trail — which is the entire reason the rows are dated rather than a live
 flag, and the reason a naming habit like `schuzka2026-1` is a habit an organization may or may not keep
 rather than the mechanism history rests on.
@@ -276,7 +276,7 @@ rather than the mechanism history rests on.
 because the two are otherwise easy to confuse.** An audience named as an operand evaluates live, so its
 past shape survives only in the audit trail and stops surviving when the payloads expire; a group's set is
 its dated rows, so it keeps a past the audit trail cannot take away
-([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience) states this as the cost
+([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience) states this as the cost
 of the audience arm, and it belongs to this page as the credit side of the group's). "Who could see this
 child's data in 2024?" is answerable when the grant pointed at a group and is not answerable when it
 pointed at a nested audience. That asymmetry is a fact about which of the two is a roster, and it is the
@@ -288,15 +288,15 @@ answers the historical question perfectly well, and an ended group's rows are no
 group is no longer an edit anyone makes on their own, though:** setting that end date is refused while a live
 grant, or a live audience reachable from one, names the group, because an empty set inside a subtraction
 widens a deny that the person ending the group did not write and would not look at again
-([D-103](../decisions/decision-log.md#d-103--an-audience-may-name-another-audience); the write path and the
+([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience); the write path and the
 check that watch it are
 [../data-model/02-organization.md §3](../data-model/02-organization.md#3-a-group-is-an-item-a-grant-can-be-written-on-one)).
 
 **A person who left in 2020 and came back in 2024 is two rows.** Never one row edited in place, because
 the edit destroys the answer to "was she in the group in 2019?", which is the same argument
-[D-016](../decisions/decision-log.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-validto)
+[D-016](../decisions/round-01b.md#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to)
 makes about renewals and this system makes about every temporal fact
-([D-002](../decisions/decision-log.md#d-002--everything-temporal-is-a-period-never-a-boolean)).
+([D-002](../decisions/round-01a.md#d-002--everything-temporal-is-a-period-never-a-boolean)).
 
 **Moving from one group to another closes one row and opens another.** The transfer discipline of
 `03-membership.md` §5.2 transfers to groups unchanged, and so does the design rule that used to sit under
@@ -308,10 +308,10 @@ dimension the module no longer has. Mechanics:
 [../data-model/02-organization.md §4](../data-model/02-organization.md#4-joins-leaves-and-transfers-close-one-row-open-another).
 
 **No member row is ever inferred.** The corpus names no groups any more than it names units
-([D-092](../decisions/decision-log.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)), so
+([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)), so
 the one-off import owes no group rows and no member rows at all: **every `person_group_member` row in this
 system is typed by a person**, which is also the only way one could be true
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
 
 ---
 
@@ -321,7 +321,7 @@ system is typed by a person**, which is also the only way one could be true
 filled it, `is_leadership` marked the slots that counted as leading, `max_holders` said how many people
 could fill one at once, and the screen offered "appoint as scoutmaster" as one action that could create a
 slot-filling and a role assignment together. **All of it is deleted by
-[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)**,
+[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)**,
 and the reason is not austerity but that the one thing a position recorded and a role does not — the *body*
 someone is a leader **of** — stopped existing when the bodies did.
 
@@ -350,14 +350,14 @@ expression: the registry of seeded operands had been written from the evaluator'
 D-101's grammar, and the arm nobody had implemented yet is exactly the kind of thing such a copy loses. The
 registry carries **fourteen** rows today and `PERSON` is one of them — takes an argument, that argument is a
 person, binds to no item. Twelve of those fourteen is what the table held between
-[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-and [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded), which is the kind of arithmetic this corpus keeps having to spell out, and it is spelled out
+[D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+and [D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded), which is the kind of arithmetic this corpus keeps having to spell out, and it is spelled out
 here because a reader who joined at row fourteen cannot reconstruct it from the row count. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
 the class of defect it belongs to, a registry prose contradicts, is what
-[D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
+[D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
 answers. **Twelve that round, fourteen today, and not the thirteen this page printed two rounds ago:**
-[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-deleted `LIST`, [D-107](../decisions/decision-log.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added two, and the count moved both times for the reason it always moves — a row was
+[D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+deleted `LIST`, [D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) added two, and the count moved both times for the reason it always moves — a row was
 added or removed, and **every page that recites it has to notice**. This page had to be told twice, six lines
 apart, in two consecutive rounds, which is the strongest argument this corpus has produced for stopping the
 recital: **a page that repeats a registry's row count is a fourth copy of the registry**, and the fix is not
@@ -369,7 +369,7 @@ rather than how it has always been.** Until last round there were two: `PERSON(y
 `LIST` named the audience's own typed set, which moved as one unit — `+ LIST` added everyone on it, `- LIST`
 took all of them back, and nothing on that list could be excepted on its own. For one round the two coexisted
 and several pages, this one included, argued that the difference was load-bearing;
-[D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+[D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 settled it the other way, because a set of named people is written `PERSON(a) + PERSON(b)` and the table that
 held the other way had outlived the reason it was kept. **What the old argument was right about survives:** a
 person who must be excepted is subtracted as themselves, and the exemption belongs `+ PERSON(y)` inside the
@@ -381,7 +381,7 @@ The posture flips from **default-on** to **opt-in per grant**, so a grant writte
 with no `MEMBERS` authorizes a lapsed member silently and forever. The controls are a standing report of
 live grants that name a `ROLE(...)` operand without `MEMBERS`, seeded grants that carry `MEMBERS`, and an
 import count — not the resolver. Nothing forces a holder row to end either, which is
-[D-071](../decisions/decision-log.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+[D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
 posture transferred intact: the report is the control. All of that belongs to the authorization model and
 is named here only because these were this module's workflows:
 [06-authorization-model.md](06-authorization-model.md),

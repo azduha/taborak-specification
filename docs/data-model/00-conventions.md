@@ -4,7 +4,7 @@ Read this before reading any other document in this folder. Every entity in this
 described using the patterns here, and the patterns are load-bearing — deviating from them in
 one table creates bugs that only appear across decades of history.
 
-**What this file is, since [D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).**
+**What this file is, since [D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).**
 It used to be the preamble to a set of `CREATE TABLE` statements. Those statements are gone —
 the schema is the ORM's job — and what remains is the part that was never about SQL: the rules
 about time, identity, deletion and rank that a generated schema will happily violate without
@@ -56,7 +56,7 @@ an accepted decision, not discovered as an outage.** Tracked in
 | Boolean | `is_` / `has_` / `requires_` prefix | `is_system`, `binds_to_item` |
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
-| Junction table | `<a>_<b>` in alphabetical order | `guardianship_permission`, not `permission_guardianship`. *(The example here was `audience_member` for ten rounds, which was a better illustration because its two halves are further apart alphabetically; the table is deleted by [D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), and a naming convention should not be taught with a table that does not exist.)* |
+| Junction table | `<a>_<b>` in alphabetical order | `guardianship_permission`, not `permission_guardianship`. *(The example here was `audience_member` for ten rounds, which was a better illustration because its two halves are further apart alphabetically; the table is deleted by [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), and a naming convention should not be taught with a table that does not exist.)* |
 | Lookup table | singular of the vocabulary it *is* | `selector_type`, `reason_code` |
 | Index | names the table and what it answers | "the open rows for one person", not `idx_3` |
 
@@ -127,7 +127,7 @@ thing that has no row worth keeping: **the row *is* the value** — there is no 
 assignment that ended, no id another table cites. Blanking the value instead would leave the shape of
 a person's erased life behind as a permanent record of it: which codes they had, how many of each,
 and the dates they were first recorded. Retiring the *code* is not the answer either, and
-[D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) is
+[D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) is
 explicit that retirement must never destroy values — retirement is an act about the vocabulary,
 erasure is an act about the person, and the two point in opposite directions on purpose
 ([09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)).
@@ -171,17 +171,17 @@ next ordered column you add, not about the one that used to sit here.
 
 **The ladder that used to be the example is gone.** `revoked`(0) / `view`(10) / `contribute`(20) /
 `manage`(30) / `admin`(40) was deleted by
-[D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality):
+[D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality):
 a grant names one permission code and its effect is `allow` or `deny`, so there is no ladder to rank and
 the mistake this section existed to prevent — `'admin' < 'contribute'` alphabetically, which ranked *full
 control including granting access* **below** *read and add* with no error, no failed test and no log line
-([D-012](../decisions/decision-log.md#d-012--status-strings-compare-by-rank-never-lexicographically)) — is
+([D-012](../decisions/round-01a.md#d-012--status-strings-compare-by-rank-never-lexicographically)) — is
 **no longer constructible**. That is a better fix than the guard was, and the guard stays in this file
 because the next ordered vocabulary will need it.
 
 **And the survivor is the dangerous shape, not the safe one.** One ordered vocabulary is left: a
 guardian's right over a child is `none`, `view`, or `write`
-([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
 Those three words happen to sort alphabetically in exactly the intended order — `none` < `view` < `write` —
 so a string comparison here **passes every test you can write today**, and breaks silently the first time
 somebody adds a fourth value in the middle of the scale. The old bug at least announced itself on the
@@ -358,7 +358,7 @@ Requirements the design must satisfy:
    membership periods, unit participations, fee obligations, payments and position assignments are
    organizational history rather than personal data, and removing them would falsify records that the
    organization is often obliged to keep. Until
-   [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+   [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
    this item was a carve-out nobody had had to defend; it is now the permanent half of a pair of clocks,
    and those rows carry **no retention period at all**. That is what gives
    `redaction_log.retained_reason` a judgement worth recording instead of a formality
@@ -371,14 +371,14 @@ Requirements the design must satisfy:
 4. **Whatever keeps its own retention policy must be able to see `person.redacted_at`, and erasure
    reaching it is a rule that store has to implement.** This item used to read "health and
    safeguarding records have separate retention rules and are out of scope for this document", which
-   pointed at a body of data that [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+   pointed at a body of data that [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
    has since dissolved: a diagnosis is an attribute value now, with the same access, protection and
    retention as a shoe size ([09-attributes.md](09-attributes.md)), so there is no health store left
    for the sentence to have pointed at. What survives is the other half, and it is worth keeping
    precisely because it is easy to wave through: `audit_log` is the store this system has. Its retention
    used to be an entirely open question and now has half an answer — **the rows are kept for the life of
    the system and their payloads are emptied 24 months after they are written**
-   ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
+   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
    [06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues) keeps the legal half that remains) —
    and a redaction that stops at the business tables while the trail keeps the erased values is a
    redaction that failed in the one place a regulator looks. **The window is a ceiling on how long a value
@@ -401,7 +401,7 @@ Requirements the design must satisfy:
 7. **The trail is a second copy of the person record and has to be guarded like one.** For a
    person's descriptive data the trail holds the **value** — the before and after image, exactly as
    it does for a contact point or a note — because
-   [D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+   [D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
    chose overwrite-in-place on the strength of the trail being the history there is, and a trail that
    records *a value existed* without recording which one answers neither of the two questions an
    audit entry is built for (*who said this* and *what did they say*). The consequence is therefore
@@ -418,7 +418,7 @@ Requirements the design must satisfy:
    [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) is where the
    trade is stated next to the values. **The same section carries the fact that this copy expires**: the
    values this item names are emptied out of payloads 24 months after they were written
-   ([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
    which shortens the exposure this item is complaining about and settles nothing about the guard it
    demands — so the sentence opening this item, *the trail is a second copy of the person record*, is true
    for two years and untrue afterwards, and the mark on the permission has to be right for the years in
@@ -443,7 +443,7 @@ loud.** The redactor used to be described as the
 thing that kept personal data out of the audit trail, and it worked by holding a list of sensitive
 *key names* — `notes`, `custody_arrangement`, and the rest — and stripping any image that carried
 one. That design presupposed a sensitive *subset* of the person record, because a list of names is a
-way of pointing at some fields and not others. [D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+way of pointing at some fields and not others. [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
 removed the subset, and a list that was standing in for a rule about a category is now a list of
 arbitrary fields. **It fails on the first value stored under a name nobody predicted**, and an
 attribute layer whose whole purpose is that nobody can enumerate its names guarantees one such name
@@ -483,14 +483,14 @@ review is the kind of thing an organization discovers from a regulator.
 | References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). *(This row used to read "nothing cascades" and then "no cascading deletes anywhere", both of which were false while the design shipped that cascade; the correction is the point, not the wording.)* |
 | Cascade delete is refused everywhere else | It is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one**, and read the exception above before you "fix" the one row that is allowed to cascade. |
 | Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
-| There are exactly **two** reference-less keys, and both are polymorphic on purpose | `access_grant.scope_id` and `audience_operand.selector_arg_id`, the second documented in [05-authorization.md §8](05-authorization.md#8-audience--grants-that-target-a-set-of-people). Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, [Invariants to verify](05-authorization.md#11-invariants-to-verify), carries both scans and the nightly report that replaces the missing foreign key. *(This row used to read "`access_grant.scope_id` is the **one** reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened `selector_arg_id` from three tables to five got written down. It is the same defect [D-104](../decisions/decision-log.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) was entered for, in a conventions page rather than a registry.)* |
+| There are exactly **two** reference-less keys, and both are polymorphic on purpose | `access_grant.scope_id` and `audience_operand.selector_arg_id`, the second documented in [05-authorization.md §8](05-authorization.md#8-audience--grants-that-target-a-set-of-people). Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, [Invariants to verify](05-authorization.md#11-invariants-to-verify), carries both scans and the nightly report that replaces the missing foreign key. *(This row used to read "`access_grant.scope_id` is the **one** reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened `selector_arg_id` from three tables to five got written down. It is the same defect [D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) was entered for, in a conventions page rather than a registry.)* |
 | Circular references are broken with an optional column, not a deferred constraint | `membership_request` ↔ `membership` is the one instance; the two-step insert is documented where it lives. |
 
 The polymorphic `access_grant.scope_id` deserves its warning again now that the schema is
 generated: **an ORM will want to make this a real relation, and making it one is a design
 change.** It points at **the unit**, or at exactly one item — an `event`, a `person_group`, a `role`, or
 the deferred `document` — depending on the sibling `scope_type` column
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
 unit family from that list, so "a unit" and "an organization" are now the same answer rather than two of
 them). No foreign key can express that, and every query that joins it must filter on
 `scope_type` first. If the ORM maps it as a relation to one table, the others become silent
@@ -509,7 +509,7 @@ wrong answers rather than errors.
   does not roll back a schema change and vice versa.
 - **Seed data for vocabularies** (`permission`, `reason_code`, `grant_scope_type`, and
   `selector_type` — the last of these being the language an audience expression is written in,
-  [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree))
+  [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree))
   lives in migrations, not in application startup code, so the vocabulary is versioned with the
   data it describes. Application-startup seeding produces environments that disagree about what
   `event.answer.view` reaches. It is also the reason `selector_type` is read-only to an
@@ -530,20 +530,20 @@ states the fields, rules, invariants and open issues for its part of the model.
 | Document | Entities |
 |----------|----------|
 | [01-identity.md](01-identity.md) | `person`, `person_name`, `account`, `account_credential`, `person_contact`, `person_identifier`, `identity_hypothesis`, `person_merge` |
-| [02-organization.md](02-organization.md) | `person_group`, `person_group_member` — and nothing else, because there is no unit table: the unit is a scope ([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)) |
+| [02-organization.md](02-organization.md) | `person_group`, `person_group_member` — and nothing else, because there is no unit table: the unit is a scope ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)) |
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request` |
 | [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
-| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log` — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/decision-log.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
+| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log` — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
-| [09-attributes.md](09-attributes.md) | `attribute_definition`, `attribute_option`, `person_attribute` — **everything the system knows about a person other than their name, their gender and their age** ([D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime)). It is last in this table because it is last in every other document's account of a person: it references `person` and nothing references it |
+| [09-attributes.md](09-attributes.md) | `attribute_definition`, `attribute_option`, `person_attribute` — **everything the system knows about a person other than their name, their gender and their age** ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). It is last in this table because it is last in every other document's account of a person: it references `person` and nothing references it |
 
 Each document presents its entities in **dependency order**: one appears only after everything it
 references. That ordering was needed to make a schema file execute; it is kept because it is also
 the order in which the model is understandable.
 
 **Messaging is not in this table.** `message` and `message_recipient` are decided at
-[D-077](../decisions/decision-log.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+[D-077](../decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
 and not yet designed; they will need their own document. The absence is tracked in
 [../open-questions.md](../open-questions.md#h-not-yet-designed).

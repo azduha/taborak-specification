@@ -5,7 +5,7 @@
 Domain rationale: [../domain/02-actors.md](../domain/02-actors.md#5-acting-on-behalf).
 
 This document describes **requirements**. It contains no DDL
-([D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job));
+([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job));
 the ORM decides how each rule is enforced.
 
 ---
@@ -20,14 +20,14 @@ the ORM decides how each rule is enforced.
 | `guardian_person_id` | reference to person, required | One side of the relationship |
 | `dependent_person_id` | reference to person, required | The other side. **Must not equal the guardian** |
 | `relationship` | enum: `parent` / `legal_guardian` / `foster_parent` / `step_parent` / `grandparent` / `sibling` / `other`, required | `sibling` and `other` exist because the organization will meet cases that do not fit, and forcing them into `parent` corrupts the data. A 19-year-old legal guardian of a 12-year-old sibling is real |
-| `right_level` | enum: `none` / `view` / `write` | **The whole of the guardian's authority** ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)). Current value, denormalised for the read that happens on every authorization check; history in `guardianship_permission` (§2) |
+| `right_level` | enum: `none` / `view` / `write` | **The whole of the guardian's authority** ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)). Current value, denormalised for the read that happens on every authorization check; history in `guardianship_permission` (§2) |
 | `valid_from` | date, required | |
-| `valid_to` | date, optional | NULL = current. **Set by a person** — a party to the row (§1 "Guardianship ends"), or a staff member asked to record it. **Never by a job**: the system takes no position on majority ([D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)) |
+| `valid_to` | date, optional | NULL = current. **Set by a person** — a party to the row (§1 "Guardianship ends"), or a staff member asked to record it. **Never by a job**: the system takes no position on majority ([D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)) |
 | `is_primary_contact` | boolean, required, default false | Who the organization calls in an emergency. **Independent of `right_level`** — a grandparent with no system access at all can still be the emergency contact. See [../domain/02-actors.md §6](../domain/02-actors.md#6-effective-contact-for-a-minor) |
 | `is_legal_decision_maker` | boolean, required, default false | Distinguishes who may make legal decisions — consent for medical treatment, travel — from who provides day-to-day care. Often different people |
 | `lives_with` | boolean, optional | Deliberately optional: *false* means guardianship without cohabitation (shared custody, a guardian in another city), which is a different fact from *unknown*. Relevant to contact routing, never to authority |
 | `custody_arrangement` | free text | A description, not a computable fact, and kept that way on purpose (§7) |
-| `source` | enum: `self` / `staff` / `import` / `court_order` | **Decides the starting `right_level`** (§2 defaults, [D-046](../decisions/decision-log.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created)) |
+| `source` | enum: `self` / `staff` / `import` / `court_order` | **Decides the starting `right_level`** (§2 defaults, [D-046](../decisions/round-02-03.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created)) |
 | `verified_at` | timestamp, optional | |
 | `verified_by` | reference to person, optional | |
 | `evidence_reference` | free text | Where the proof of guardianship is filed. For legal guardianship this matters: the organization must be able to show that it checked |
@@ -73,7 +73,7 @@ Authority is **per `guardianship` row**, never per person. A parent can hold `wr
 child and `view` for another — a realistic shared-custody arrangement, and one the model must
 represent without inventing a second parent identity.
 
-What changed with [D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
+What changed with [D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
 is the *grain*, not the *location*. Per row it used to be a set of capability codes; per row it
 is now one of three values. See §2 for what that costs.
 
@@ -82,10 +82,10 @@ is now one of three values. See §2 for what that costs.
 `valid_to` is set when:
 
 - **a party to the row ends it.** The guardian, or the adult who is the subject of it
-  ([D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff));
+  ([D-073](../decisions/round-06.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff));
 - a court order changes the arrangement, which staff record;
 - the guardian dies — and note the organization does not record death
-  ([D-034](../decisions/decision-log.md#d-034--the-person-record-holds-no-deceased-flag)), so this
+  ([D-034](../decisions/round-02-03.md#d-034--the-person-record-holds-no-deceased-flag)), so this
   too arrives as a person ending a row, with whatever reason the organization uses.
 
 Staff may always do it when asked. **Staff may never be the only way it happens.**
@@ -96,9 +96,9 @@ them*, and both hold it.
 
 **This claim used to borrow its justification from a rule that no longer exists.** It was written as
 *scope authority* — ~~the rule that authority over a nested thing originates at that thing~~
-([D-031](../decisions/decision-log.md#d-031--no-downward-inheritance-of-authority-scopeexposure-is-the-only-crossing)),
+([D-031](../decisions/round-02-03.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)),
 "applied to a household instead of a unit" — which was a good analogy right up until
-[D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted
 the nesting it was borrowed from, along with the crossing mechanism that made it a rule rather than a
 sentiment. The claim does not need the borrowing. **A relationship row belongs to the people in it** is a
 statement about this channel and stands on its own, and it is the reason neither party needs a grant to act
@@ -112,7 +112,7 @@ relationship you are one half of. Mechanically this is the **guardianship channe
 direction**: it already asks "may guardian G act on D's records?", and it now also answers "may a
 party act on the guardianship row itself?", for exactly three acts — ending it, adding another
 guardian, and changing the right level. The resolver still has four channels
-([D-010](../decisions/decision-log.md#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver), and the channels' dispatch changed in D-079).
+([D-010](../decisions/round-01a.md#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver), and the channels' dispatch changed in D-079).
 
 **The three acts a party may take, and no others:**
 
@@ -131,7 +131,7 @@ The level ranks *what you may do to the child's records*, which is the fifth row
 it is not a general competence over the relationship, and reading it as one would mean that
 lowering someone's access to a medical file also locked them out of leaving the arrangement.
 **The party direction follows the same rule as the record direction: it can only say yes**
-([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
+([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
 Being a party grants the act; not being one leaves the actor's own `guardianship.*` role
 permissions to be tried, which is how staff in the table above get their ✅s. An explicit deny still
 runs first and beats both.
@@ -144,7 +144,7 @@ party is notified. That is a deterrent and an evidence trail, not a wall. See
 [E-6](../open-questions.md#e-6--a-guardian-may-appoint-a-guardian).
 
 **The system does not notice birthdays in this connection.** No job, no review queue, no computed
-candidate date ([D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority),
+candidate date ([D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority),
 reversing D-024 and closing E-2).
 
 **Why not, including why the gentler version was also refused.** The legal reasoning is unchanged
@@ -183,7 +183,7 @@ child can have two primary contacts and one decision maker.
 
 **A guardian either cannot see the child's records, can see them, or can change them.** That is
 the entire vocabulary
-([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
+([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)).
 
 **`guardianship_permission`** survives as the **history of that value**, not as a capability
 list. One row per change, exactly one row open at a time, so "what was this guardian allowed to
@@ -204,7 +204,7 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
 - Exactly one row per `guardianship` may be open at a time.
 - Every change is a row; the value on `guardianship.right_level` is always the open row's value.
   If the two disagree, the row is authoritative and the copy is wrong.
-- **Scoping to the guardianship row and not to the person pair is deliberate** ([D-020](../decisions/decision-log.md#d-020--guardian-permissions-are-scoped-to-the-guardianship-row)):
+- **Scoping to the guardianship row and not to the person pair is deliberate** ([D-020](../decisions/round-01b.md#d-020--guardian-permissions-are-scoped-to-the-guardianship-row)):
   when a guardianship ends and a new one begins — a renewed court order, a lapse and
   re-establishment — the rights must not silently carry over. A new relationship is a new row and
   a new, deliberate level.
@@ -214,7 +214,7 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
 **This section used to argue that the guardian rights were not a second authorization model by mapping
 them onto the shared level ladder** — `none` → 0, `view` → 10, `write` → 20, so the resolver would never
 need to know which ladder it was standing on. **The ladder is deleted**
-([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
+([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
 so that argument is gone and the requirement underneath it is still met, by a different mechanism: the
 level is compared against a column on the permission, **`permission.right_kind ∈ read | write`** —
 **`none` covers nothing, `view` covers the codes marked `read`, `write` covers both.** There is nothing to
@@ -225,7 +225,7 @@ column exists for exactly this comparison and for no other customer in the syste
 **What the ladder was really buying survives, and it never was the numbers.** A guardian was never a staff
 member, and that was expressed by `write` landing on `contribute` rather than `manage`. It is now expressed
 by the shape of the request: **the guardianship channel is entered only when the check is about somebody
-other than the actor** ([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)),
+other than the actor** ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)),
 so the widest guardian right in the system reaches the child's record and cannot reach a roster, a fee
 schedule or another family — not because its rank was too low, but **because those checks are not about the
 child and the channel is never asked**. Losing the ladder costs the comparison; the boundary moved into the
@@ -246,11 +246,11 @@ the medical file too.
 
 What still holds:
 
-- `write` is not `manage`, and since [D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) there is no `manage` to be short of: the ceiling on a guardian is the **channel**, which answers only for checks about this child. A guardian cannot do organization-wide things because those checks are not about the child, not because a rank was too low.
+- `write` is not `manage`, and since [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) there is no `manage` to be short of: the ceiling on a guardian is the **channel**, which answers only for checks about this child. A guardian cannot do organization-wide things because those checks are not about the child, not because a rank was too low.
 - Authority is per row, so a guardian of one child sees nothing of another's.
 - The **organization-wide deny channel is untouched**: a `guardianship` row granting `write` can
   still be refused by a deny, because deny is absolute and scope-independent
-  ([D-032](../decisions/decision-log.md#d-032--deny-is-absolute-locality-orders-allows-only)). What
+  ([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)). What
   was lost is a *narrow* deny — "not medical" — not the ability to say *no*.
 
 **If the split turns out to matter in operation it is a new decision, not a permission to be
@@ -258,7 +258,7 @@ re-added quietly** ([E-7](../open-questions.md#e-7--closed--one-level-cannot-sep
 
 ### Defaults still depend on how the guardianship arose
 
-[D-046](../decisions/decision-log.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created)
+[D-046](../decisions/round-02-03.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created)
 survives, with one value where it used to have a set:
 
 | `source` | Starting `right_level` | Why |
@@ -290,7 +290,7 @@ the domain language and must not be in the data.
 
 ## 3. There is no `household` table
 
-**Removed** ([D-057](../decisions/decision-log.md#d-057--household-is-removed)). An address
+**Removed** ([D-057](../decisions/round-04.md#d-057--household-is-removed)). An address
 is a `person_contact` row of type `postal`
 ([01-identity.md §6](01-identity.md#6-person_contact)), which already exists, already keeps
 history (`valid_from` / `valid_to`), and already carries a `purpose` — `'billing'` for the
@@ -305,7 +305,7 @@ denormalised *from* the billing contact's postal contact, with nothing keeping t
 > A grandparent at the address has no access. This is deliberate and it is a safeguarding
 > property, not an oversight.
 
-This was true when `household` existed ([D-019](../decisions/decision-log.md#d-019--household-membership-grants-no-access))
+This was true when `household` existed ([D-019](../decisions/round-01b.md#d-019--household-membership-grants-no-access))
 and it is true now, for a simple reason worth stating so nobody re-derives it: **the access
 never came from the household tables.** All authority over a child's records comes from
 `guardianship` (§1–2). Removing a table that granted nothing cannot grant anything.
@@ -316,7 +316,7 @@ never came from the household tables.** All authority over a child's records com
 |---|---|
 | Billing address | `person_contact` of type `postal` with purpose `billing` |
 | "Which children lived at this address in 2003?" | A query over the temporal `person_contact` history ([domain/03 §4](../domain/03-identity-and-legacy.md#4-match-signals)) |
-| One invoice for three siblings | The fee is flat and per person ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)); there is no family price to invoice |
+| One invoice for three siblings | The fee is flat and per person ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)); there is no family price to invoice |
 | `fee_obligation.household_id` | Column and its index removed ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)) |
 
 **What was genuinely lost, recorded rather than glossed:** a household was a *group* with a
@@ -356,10 +356,10 @@ outcomes: **an allow, or no answer at all.** It never answers "no".
 1. **Is there a current guardianship row** between this actor and this subject, at the date being
    asked about? **If not, this step is not the channel's business and says nothing** — the
    resolver continues to the actor's own roles and grants. Silence, not refusal
-   ([D-079](../decisions/decision-log.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
+   ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)).
 2. **Is there an explicit deny** covering this check? Deny wins here as everywhere else, and
    independently of how broad the underlying grant is
-   ([D-032](../decisions/decision-log.md#d-032--deny-is-absolute-locality-orders-allows-only)) —
+   ([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)) —
    but note that this deny is found by **channel 0 of the resolver, before this step runs**, so
    nothing in this list can override it. It is listed second only because it is the other reason a
    guardian with a sufficient `right_level` still gets nothing.
@@ -429,7 +429,7 @@ to something.
 ## 6. Invariants to verify
 
 These were executable queries. They are now requirements stated in prose, and nothing runs them
-([D-072](../decisions/decision-log.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)).
+([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)).
 
 1. **Adults still listed under a guardian.** Every open guardianship whose subject is past
    majority by `person.birth_date`. **Expected in the ordinary case and not an error** — this is
@@ -445,12 +445,12 @@ These were executable queries. They are now requirements stated in prose, and no
    they are the same gap arriving by different routes: **no guardianship row at all**, and **a full
    set of guardians with every one of them at `right_level = none`**. Age comes from
    `person.birth_date` — there is no membership category to read it from, because membership is
-   ageless ([D-038](../decisions/decision-log.md#d-038--membership-is-ageless)). **This is a
+   ageless ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)). **This is a
    safeguarding gap, not a data-quality nit**: the organization holds a member it cannot contact in
    an emergency and cannot obtain consent from. It should alert, not log. This check is one of the
    reasons `guardianship` is a required part of the model rather than an optional convenience.
 
-   **The second half was added by [D-082](../decisions/decision-log.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
+   **The second half was added by [D-082](../decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
    and it is not a hypothetical refinement.** A direct message to a minor is mirrored to the
    guardians at `view` or `write` — deliberately *not* to a guardian at `none`, because `none` means
    the organization already decided that party sees nothing about the child. Without this half of the
@@ -466,12 +466,12 @@ These were executable queries. They are now requirements stated in prose, and no
 
 *Deleted with the model that needed it:* "a guardian permission outside the `dependent.*`
 namespace" — there is no `dependent.*` namespace any more. "Households with no address" went with
-[D-057](../decisions/decision-log.md#d-057--household-is-removed); the nearest surviving signal is
+[D-057](../decisions/round-04.md#d-057--household-is-removed); the nearest surviving signal is
 a live billing purpose with no postal address behind it, which is a finance problem.
 
 Note what changed when membership became ageless. Check 4 used to read
 `membership_type.category = 'child'`; with one membership type
-([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person))
+([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person))
 that column does not exist, and the question is now answered from `person.birth_date`. The signal
 is arguably better than it was: "this person is under 18 today" rather than "this person's
 membership row was categorised as a child when it was opened", which could be years out of date.
@@ -482,26 +482,26 @@ membership row was categorised as a child when it was opened", which could be ye
 
 - ~~Whether guardianship should auto-expire at majority, or always require review.~~
   **Neither** — the system takes no position on majority, and the review queue this file
-  recommended was withdrawn with it (§1, [D-069](../decisions/decision-log.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
+  recommended was withdrawn with it (§1, [D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
 - ~~How does an adult end a guardianship over themselves?~~ **They end it, themselves, as a party
-  to the row** — [D-073](../decisions/decision-log.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff).
+  to the row** — [D-073](../decisions/round-06.md#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff).
 - **New:** a guardian may appoint a guardian, with no approval from the organization. Attributed
   and notified, not prevented. [E-6](../open-questions.md#e-6--a-guardian-may-appoint-a-guardian).
 - **New:** one right level cannot separate the medical record from the profile, which is the case
   the deleted capability codes existed for.
   [E-7](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to).
 - **Resolved: `household` is removed entirely** — answered "drop household entirely", now
-  [D-057](../decisions/decision-log.md#d-057--household-is-removed) (§3). Addresses live on
+  [D-057](../decisions/round-04.md#d-057--household-is-removed) (§3). Addresses live on
   `person_contact`.
 - Whether a guardian may act for a dependent who is also a member in their own right — e.g.
   can a parent register their adult child for an event, if the child consents? Recommend an
   explicit consent-based delegation rather than a guardianship, since the legal basis
   differs. The *group* version of this is now answered by audiences
-  ([D-042](../decisions/decision-log.md#d-042--grants-may-target-audiences-not-only-individuals)).
+  ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
 - Whether `custody_arrangement` free text should be structured. Recommend not — custody
   orders vary too much to model, and a wrong model is worse than honest prose.
 - **Confirm that the membership gate's guardianship carve-out is intended.** A lapsed parent keeps
-  their `right_level` ([D-039](../decisions/decision-log.md#d-039--member-permissions-require-a-current-paid-membership)),
+  their `right_level` ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)),
   which means an unpaid parent and a paid one are indistinguishable inside that namespace. It is
   almost certainly right — guardianship comes from a legal relationship, not a membership — but it
   should be a stated choice, not a side effect of where the gate was placed.

@@ -2,9 +2,9 @@
 
 What the system knows about a person, why it is all one kind of thing, and what that choice costs.
 The tables are in [../data-model/09-attributes.md](../data-model/09-attributes.md); the reasoning is
-[D-083](../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
-[D-084](../decisions/decision-log.md#d-084--descriptive-data-is-organization-defined-at-runtime) and
-[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+[D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) and
+[D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
 
 This module began as "design the health records module". It ended as this, because the first
 question — what is a health record here — turned out to have a much larger answer than the one the
@@ -78,8 +78,8 @@ queue is the same information loss arriving slowly instead of all at once
 
 | Who | What they need | What the design gives them |
 |---|---|---|
-| **A leader** | The allergies and instructions for the children they lead, tonight, without asking permission | **Whatever the organization has granted them, and nothing more** — and read that with the cost attached: after [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no scope smaller than *the whole organization* except a single item, so "the children in their unit" has no scope to be granted *as such*. A `person.view` at unit scope hands over **every member's entire record, allergy lists included**; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but **not** a read over the person record. See the paragraph below the table |
-| **A guardian** | Everything about their child, or nothing, depending on what the organization decided | The guardian right level — `none`, `view`, `write` — over the whole record ([D-074](../decisions/decision-log.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) |
+| **A leader** | The allergies and instructions for the children they lead, tonight, without asking permission | **Whatever the organization has granted them, and nothing more** — and read that with the cost attached: after [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) there is no scope smaller than *the whole organization* except a single item, so "the children in their unit" has no scope to be granted *as such*. A `person.view` at unit scope hands over **every member's entire record, allergy lists included**; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but **not** a read over the person record. See the paragraph below the table |
+| **A guardian** | Everything about their child, or nothing, depending on what the organization decided | The guardian right level — `none`, `view`, `write` — over the whole record ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) |
 | **The person themselves** | Their own data | Their own record, which is not a special case in the resolver — "about you" is already a channel |
 | **An event organizer** | What matters on the day, for the people who registered | The registration, and the event form that asks. Where the organization already recorded a fact, [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code) asks whether the form should prefill from it rather than re-asking every camper every season |
 | **A first aider at a camp** | The short list: what is this child allergic to, what do they take, what should we do | The values are fields, so a list can be produced. This is the argument for fields over documents, and it is the reason "files" was rejected in the answer that started this module |
@@ -90,7 +90,7 @@ argued from a namespace that no longer exists, then from the absence of an `even
 simply not a property of the model: **there is no privileged subset to be kept away from anybody.**
 What remains is the same decision wearing its honest clothes — **the starting grants do not give
 leadership a read over the record, because leadership is not guardianship** — and since
-[D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
+[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
 that sentence has no alternative: an office confers nothing at all, so the only thing that could give a
 leader a read is a grant, written somewhere, naming them — plus the fact that the
 organization may hand it over deliberately, in one grant, and see exactly what that exposes. That is
@@ -134,15 +134,15 @@ keeps history in business tables when the question "what was it on that date?" i
 is the standing example. Here it is not routine; it is what someone asks during an incident. So the
 history of a child's allergy list lives in the one control these documents elsewhere admit is now
 discipline rather than guarantee
-([D-081](../decisions/decision-log.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)),
+([D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)),
 **and it lives there in two dependencies, not one: somebody has to write the audit row, on every path
 including the ones nobody thinks of, and somebody has to keep the trail guarded as the copy of the whole
 person record that it is.**
 That is a real risk, accepted in the open rather than discovered later, and
-[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+[D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
 is the entry to reverse if it ever bites.
 
-**And since [D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
+**And since [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
 a third thing about it: the trail's values are emptied after 24 months, though the rows remain.** So the
 honest name for this refusal is not *no history on the row* but **no long history anywhere**. Two years
 of a child's changing facts are recoverable, which is long enough to answer most of what is asked and
@@ -179,7 +179,7 @@ name of every field that would matter, and this organization invents those names
 interim draft of these documents responded by refusing to log descriptive values at all, and that was
 withdrawn**: it put medical-shaped fields in a stricter class than a change of address, which is the
 privileged corner this module exists to have deleted, and it left the history empty, which is the thing
-[D-085](../decisions/decision-log.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
+[D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
 was chosen for. The protection is the guard. It is one line in one table of one appendix, and the
 documents say so where they describe it ([../data-model/09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload)).
 
@@ -189,7 +189,7 @@ about them.
 
 **A third way values leave the trail, and it is a policy rather than a right.** Every two years' worth
 of audit rows have their contents emptied whether anybody asked or not
-([D-088](../decisions/decision-log.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
 The distinction from erasure is worth holding onto, because the two are easy to conflate and only one of
 them is a person's entitlement: erasure is *requested* and *verifiable* — the check is that nothing
 survives — while expiry is neither requested nor satisfied by nothing surviving, since the row itself

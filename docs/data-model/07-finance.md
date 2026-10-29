@@ -4,9 +4,9 @@
 >
 > **How money moves is now decided.** Money arrives from a **bank API** and is requested by a
 > **variable symbol and a QR code**
-> ([D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code));
+> ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code));
 > money that cannot be matched **waits for a person**
-> ([D-076](../decisions/decision-log.md#d-076--money-that-cannot-be-matched-waits-for-a-person)).
+> ([D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person)).
 > There is no card gateway, no checkout and no dispute handling, and §2a is the consequence.
 >
 > **What the money is for is still open.** Amount, proration, discounts, whether the fee buys
@@ -16,7 +16,7 @@
 > This document exists because membership activation depends on payment
 > ([../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described)),
 > and because the yearly expiry and renewal window
-> ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status))
+> ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status))
 > need somewhere to read a due date from.
 
 ---
@@ -27,9 +27,9 @@
 
 - There is a **yearly fee**, **flat**, **per person** — it does not vary by age, by
   household, or by membership type, because there is one membership type
-  ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+  ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
 - Becoming a member requires **paying** it; the membership activates on payment
-  ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)).
+  ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)).
 - The fee **expires on a fixed organizational date**, typically January. At that date the
   membership **lapses** — the person is not a member — and a **renewal window** follows
   during which they may renew without re-applying. A payment inside the window **opens the
@@ -42,7 +42,7 @@ whether the fee buys insurance, and currency.
 
 **Settled in round 6, and it was the big one** — the organization **collects**, but not through
 a card gateway: money is requested by **variable symbol + QR code** and **arrives from the bank
-API** already tagged (§2a, [D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)).
+API** already tagged (§2a, [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)).
 
 ---
 
@@ -71,16 +71,16 @@ Four tables, deliberately small and easy to replace.
 | `created_by` | reference to person, optional | |
 
 **`org_unit_id` is deleted with the units**
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
 and what it was for is the part worth keeping on the record. The column was optional, `NULL` meant
 organization-wide, and it existed so that one body could carry *a supplementary fee above the
 organization's*. Nobody ever asked for one:
-[D-095](../decisions/decision-log.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
+[D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
 had already ruled that entry below the membership carries no money — *"into the sub-units, there is
 no fee"* — so the column was a possibility no answer had taken, and round 10 deleted both the column
 and the bodies it could have pointed at. **A fee is now what it has always been charged as: flat,
 per person, at the unit**
-([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
 What a schedule may still vary is the membership type — one row, so nothing in practice — and the
 period during which that price was the price. If a group ever needs a charge of its own, that is a
 policy question for §5 and a new shape of obligation, not a column to keep reserved against a table
@@ -147,15 +147,15 @@ that no longer exists.
   restricted to the rows where that column is set.
 - Obligations within a `period_from` / `period_to` range.
 
-> **The household arm is gone, and an event arm took its place — a real one.** [D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
-> settled the fee as flat and per person; [D-057](../decisions/decision-log.md#d-057--household-is-removed)
+> **The household arm is gone, and an event arm took its place — a real one.** [D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)
+> settled the fee as flat and per person; [D-057](../decisions/round-04.md#d-057--household-is-removed)
 > then removed the `household` table itself, so `household_id`, its CHECK arm and
 > `ix_obligation_household` went with it. Events then supplied a third target that is
 > genuinely used: one obligation per registration, created by the code that places the
 > registration, paid to confirm the place. **Nothing creates it if that code is not written** — the
 > obligation used to be created by a database trigger, and a trigger could not be forgotten; see
 > [00-conventions §6a](00-conventions.md#6a-who-enforces-an-invariant-now). An event with a fee and
-> no obligation is invisible until someone reconciles money against the roster. ([D-066](../decisions/decision-log.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition)).
+> no obligation is invisible until someone reconciles money against the roster. ([D-066](../decisions/round-05.md#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition)).
 >
 > **Exactly one, never zero and never two — and unlike most rules in these documents this one can
 > still be stated declaratively, so a migration should state it.** Three columns, exactly one set:
@@ -190,12 +190,12 @@ that no longer exists.
 | `currency` | three-letter currency code, required | |
 | `paid_at` | timestamp, required | When the payment occurred, which may differ from when it was recorded — a bank transfer recorded a week later. Both matter |
 | `recorded_at` | timestamp, audit time | Default: now |
-| `method` | text, required | One of: `bank_transfer`, `cash`, `voucher`, `credit_note`, `other`. **`card` and `direct_debit` removed** — there is no card gateway and no mandate system ([D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
+| `method` | text, required | One of: `bank_transfer`, `cash`, `voucher`, `credit_note`, `other`. **`card` and `direct_debit` removed** — there is no card gateway and no mandate system ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
 | `variable_symbol` | text, optional | The symbol the money arrived under, copied verbatim from the bank statement. Set on every row the import created; the join back to `payment_request`. **Never typed by hand** |
 | `reference` | text, optional | Bank reference, transaction id, receipt number |
 | `paid_by_person_id` | reference to person, optional | Who actually paid. May differ from the person the fee is for — a parent paying for a child, a grandparent paying for a grandchild, a sponsor. This is the act-on-behalf record for money |
 | `on_behalf_of` | reference to person, optional | |
-| `status` | text, required | Default `confirmed`. **`confirmed` or `reversed`, and nothing else.** A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network; the two remaining values describe whether *we* still stand behind the row. `pending` and `failed` were deleted with the card gateway ([D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
+| `status` | text, required | Default `confirmed`. **`confirmed` or `reversed`, and nothing else.** A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network; the two remaining values describe whether *we* still stand behind the row. `pending` and `failed` were deleted with the card gateway ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
 | `confirmed_by` | reference to person, optional | |
 | `notes` | text, optional | |
 | `import_batch_id` | reference to import batch, optional | Set on imported rows |
@@ -248,7 +248,7 @@ is the common case in this organization, not an edge case.
 
 ## 2a. How money actually arrives
 
-[D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code).
+[D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code).
 The system **requests** a payment and then **reads** one. It never touches the money.
 
 The flow, in order:
@@ -320,7 +320,7 @@ The flow, in order:
   edit — this is the organization's copy of somebody else's ledger, and the only version of it
   that will ever agree with the bank.
 
-**The renewal window stops being a promise.** [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
+**The renewal window stops being a promise.** [D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
 backdates a renewal to the expiry date when payment lands inside the window, and its own note
 said that rule was only as good as the reliability of payment dates. Until now they arrived when
 somebody noticed a transfer. **They now arrive from the bank**, dated by the bank. The sweep in §4
@@ -336,11 +336,11 @@ reported is confirmed on arrival, and there is no in-between state to model. Wha
 
 ## 2b. Money that cannot be matched
 
-[D-076](../decisions/decision-log.md#d-076--money-that-cannot-be-matched-waits-for-a-person).
+[D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person).
 
 **An unmatched transaction is a fact with no subject, so the absence gets stored rather than
 guessed at** — the same discipline as "unanswered is the absence of a row"
-([D-059](../decisions/decision-log.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
+([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)).
 `matched_payment_request_id IS NULL` *is* the queue; there is no separate worklist table to fall
 out of sync with the rows it describes.
 
@@ -358,7 +358,7 @@ field.
 | **Attach** it to a different request | The symbol was mistyped; the real obligation is obvious from the payer |
 | **Split** it across requests | One transfer, three siblings — the ordinary shape of family payment here |
 | **Record as a donation** | Money with no obligation behind it, which is not the same as money that is missing one |
-| **Refund** it, by hand | Nothing was meant to be owed. A second payment in the opposite direction ([D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
+| **Refund** it, by hand | Nothing was meant to be owed. A second payment in the opposite direction ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
 
 **Why the tempting shortcut is refused.** Falling back to the payer's identity when the symbol
 fails looks like it removes most of the queue. It removes most of the queue's *accuracy* instead:
@@ -373,7 +373,7 @@ as inbound, which is a second integration with its own authorization; and it ret
 grandparent's attempt at a camp contribution.
 
 **Cancellation is where most of the volume comes from, and it is decided now rather than later.**
-[D-064](../decisions/decision-log.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)
+[D-064](../decisions/round-05.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)
 made cancellation a recorded fact rather than a state, so the event survives, the registrations
 survive — and so would an outstanding request against an occasion that is not going to happen.
 So:
@@ -429,17 +429,17 @@ positive balance after discounts** — where obligations carrying `waived`, `wri
 `refunded` are excluded from the question entirely, because a waived fee that nobody is going to
 collect must not read as an unpaid one. "Settled" is the only thing money says about membership; it
 does not grant permissions by itself
-([D-005](../decisions/decision-log.md#d-005--permissions-are-grants-never-derived-from-identity)).
+([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
 What changed in round 10 is the route from a settled fee to anything a person may do: the fee makes
 `is_current_member()` true, `is_current_member()` is what `MEMBERS` evaluates, and only a grant
 whose expression names `MEMBERS` cares
-([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
 — which is one step longer than the old resolver clause and one place less where money could quietly
 become authority.
 
 ### The yearly expiry sweep
 
-Run on 1 January ([D-047](../decisions/decision-log.md#d-047--the-fee-expires-on-1-january)).
+Run on 1 January ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)).
 **This is the one automatic membership transition in the system**, and the only thing in this
 document that changes a person's status.
 
@@ -450,36 +450,36 @@ For every membership that is **active**, has an obligation with a **positive bal
    date whether or not anyone noticed.
 2. ~~**Invalidate the permission cache per person, for every person returned**~~ — not per scope
    ([domain/06 §8](../domain/06-authorization-model.md#8-there-is-no-permission-cache-and-what-replaces-it)).
-   **This step has nothing left to do**: [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   **This step has nothing left to do**: [D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
    deleted `permission_cache`, and with it the per-person invalidation call this step existed to make —
    the one event that had wanted it for **every member at once**. A lapsed member whose gated grants still
    resolve is a member who keeps leading, and what stops that now is the read path rather than a step in
    this job: `MEMBERS` is evaluated live on the checked date
-   ([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
+   ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
    so the two facts the predicate reads — the period ending and the `lapsed` status step 1 writes — are both
    visible to the next check, with no job in between and nothing left to invalidate.
    **The step survives the deletion of the gate that motivated it and has now lost its mechanism twice** —
    first the resolver clause went, then the stored answer went, and the operand cache that sat beside it went
    with the answer it served (it was keyed per person, selector kind, argument and item, which is why no
    narrowing of a bump set could have saved it). The operand-keyed caching
-   [D-101](../decisions/decision-log.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
+   [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
    opened the door to is therefore gone as an *answer* cache and survives only as a **roster** cache:
-   [D-114](../decisions/decision-log.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
+   [D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)
    leaves `ROLE(x)` over `role_holder` and `GROUP(x)` over `person_group_member` cacheable across requests,
    keyed by the very name a write touches, and `MEMBERS` is not one of those — it is a predicate over
    `membership` evaluated on the checked date, owned by no single row's write, so a sweep needs no
    invalidation to be seen. What the sweep still costs is stated where cost belongs: on 1 January the answer
    moves for every member at once, and a screen opened that day computes it rather than reading it
-   ([D-112](../decisions/decision-log.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
+   ([D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
 3. Open the **renewal window** as a date, never as a status. The resolver does not know windows exist.
 
 **The old step 2 was the root `unit_participation` row** — *do not close it, move its `valid_to`
 forward, so that a renewal inside the window extends one continuous row rather than starting a
 second one*
-([D-050](../decisions/decision-log.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row),
+([D-050](../decisions/round-04.md#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row),
 [03-membership.md §5](03-membership.md#5-unit_participation--deleted-by-d-097)). **It is deleted rather than folded
 into the steps above**
-([D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
 and this is written down so the sweep's meaning cannot drift silently: the row it edited does not
 exist, so there is nothing to extend and no second record of the person's presence to keep in step
 with the first. **Nothing else in the sweep changed.** Step 1 still writes the only data this job
@@ -491,10 +491,10 @@ became of the fourth.
 **Note the personnel consequence, which is easy to miss and fatal to get wrong.** This runs for
 everyone at once, **including the person who runs it.** Until round 10 the answer was
 `system.gate_exempt`
-([D-051](../decisions/decision-log.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)):
+([D-051](../decisions/round-04.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)):
 a permission that waived the membership test for named people, so the administrator kept their
 access on 1 January. **That mechanism is deleted**
-([D-100](../decisions/decision-log.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
 — no `system.gate_exempt`, no `person_holds_gate_exempt`, no resolver clause to waive. The answer is
 now the grant text: a grant written `MEMBERS * ROLE(it)` stops applying to its holder at the sweep,
 and a grant written `ROLE(it)` keeps applying, because the set test is simply not in it.
@@ -509,7 +509,7 @@ such choice visible before 1 January rather than on it ([03-membership.md
 > The reasoning was sound: automatically removing membership from a child because a bank
 > transfer was recorded late is a real harm.
 >
-> [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
+> [D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)
 > resolves it differently, and the resolution is that **the expiry is a date, not a
 > decision.** The fee covers a fixed period and the period ends. Nobody decides anything,
 > and the renewal window exists to absorb exactly the late-transfer case: a payment inside
@@ -526,20 +526,20 @@ such choice visible before 1 January rather than on it ([03-membership.md
 ## 5. Open issues — the whole of this document, essentially
 
 1. **Is the fee prorated** for mid-year joins? Note this is a sharper question than it was:
-   with the expiry on a fixed date ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
+   with the expiry on a fixed date ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
    someone joining in October pays for three months of a twelve-month fee unless the
    organization prorates — and the *renewal* twelve months later is a full year. Whether
    that is fair is a policy question; whether the data model supports it is `amount_due` vs
    `amount_expected`.
 2. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
-   unspecified. With a flat per-person fee ([D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
+   unspecified. With a flat per-person fee ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
    this is the only remaining fee variation, so it is worth a deliberate yes or no. Note
-   that [D-057](../decisions/decision-log.md#d-057--household-is-removed) has now removed the
+   that [D-057](../decisions/round-04.md#d-057--household-is-removed) has now removed the
    `household` grouping, so a **per-family** discount is no longer a constraint change — it
    needs that grouping designed again first. A **per-person** discount is unaffected and is
    just `amount_discount`.
 3. ~~**Refunds:** policy, and who may authorize them. Affects the `payment.status` values.~~
-   **Mostly answered by [D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code):**
+   **Mostly answered by [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code):**
    a refund is a second payment in the opposite direction, not a status, so it cannot corrupt the
    original record and there is no reversal state to authorize. **Still open: who may authorize
    initiating one**, which is the part the question was actually about and which `fee.refund`
@@ -555,14 +555,14 @@ such choice visible before 1 January rather than on it ([03-membership.md
    this one.
 6. ~~**Is the organization collecting payments or only recording them?**~~ **Closed** — it collects,
    by bank API with a variable symbol and a QR code, and there is **no card gateway**
-   ([D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code),
+   ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code),
    §2a). The renewal window's dependence on reliable payment dates is what made this urgent, and the
    bank import is what resolved it.
 7. **Accounting integration:** does anything need to be exported to an accounting system?
 8. **Currency and jurisdiction** — currently assumed `EUR`.
 9. **Does the fee cover insurance?** If so, "member on the date of the incident" becomes a
    legal record with its own retention needs. This one interacts directly with the new
-   lapse rule ([D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)):
+   lapse rule ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)):
    if the fee buys insurance, then **the date the membership lapses is the date cover
    ends**, and the renewal window does *not* extend it. That is worth confirming with
    whoever handles the policy, because the softer "still covered during grace" reading was
@@ -572,17 +572,17 @@ such choice visible before 1 January rather than on it ([03-membership.md
     youth organization this is often a sensitive, need-to-know process that must not be visible to
     every adult who runs a group. **This got harder in round 10 rather than easier, and it is the
     finance module's share of
-    [D-097](../decisions/decision-log.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
+    [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
     first loss.** With no units there is no smaller scope a waiver can live inside: a `fee.view`
     held at the unit reaches every person's money, because after D-097 there is nothing between the
     unit and an item except the items themselves. What separates a hardship waiver from general
     visibility is now only **which codes exist and who holds them** — `fee.view` against
     `fee.waive`, plus the deny effect
-    ([D-099](../decisions/decision-log.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
+    ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
     which can exclude a named person from a unit grant but cannot carve a private subset out of one.
     Worth a deliberate answer rather than a shrug.
 11. **What gets a variable symbol, and one per what?** — **new, and raised by
-    [D-075](../decisions/decision-log.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)
+    [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)
     rather than left over.** That decision fixed *how* money arrives and named the `payment_request`
     that carries it, but not the two choices the module is actually built from.
 
@@ -606,11 +606,11 @@ such choice visible before 1 January rather than on it ([03-membership.md
     or two.
 
 **Resolved and no longer open**, kept visible so the reasoning survives: activation on
-payment or on approval (on payment — [D-040](../decisions/decision-log.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status));
+payment or on approval (on payment — [D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status));
 whether the fee is per person or per household (per person, flat and ageless —
-[D-037](../decisions/decision-log.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person));
+[D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person));
 and whether the household grouping survives at all (**no** — removed entirely,
-[D-057](../decisions/decision-log.md#d-057--household-is-removed)); and, from round 6, whether the
+[D-057](../decisions/round-04.md#d-057--household-is-removed)); and, from round 6, whether the
 organization collects or records (**collects**, by bank API — D-075) and what payment methods exist
 (the enum is no longer a guess — D-075 again).
 

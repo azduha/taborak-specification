@@ -93,7 +93,21 @@ nav:
   - Reference:
       - ERD: appendix/erd.md
       - Permission Catalog: appendix/permission-catalog.md
-      - Decision Log: decisions/decision-log.md
+      - Decision Log:
+          - decisions/index.md
+          - Rounds 1: decisions/round-01a.md
+          - Rounds 1 continued: decisions/round-01b.md
+          - Rounds 2-3: decisions/round-02-03.md
+          - Round 4: decisions/round-04.md
+          - Round 5: decisions/round-05.md
+          - Round 6: decisions/round-06.md
+          - Rounds 7-8: decisions/round-07-08.md
+          - Round 9: decisions/round-09.md
+          - Round 10: decisions/round-10a.md
+          - Round 10 continued: decisions/round-10b.md
+          - Rounds 11-12: decisions/round-11-12.md
+          - Round 13: decisions/round-13.md
+          - Round 14: decisions/round-14.md
       - Open Questions: open-questions.md
 
 site_url: https://azduha.github.io/taborak-specification/
