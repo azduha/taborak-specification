@@ -104,6 +104,8 @@ nav:
           - Guards and Integrity Checks: data-model/08a-event-guards-and-checks.md
   - Reference:
       - ERD: appendix/erd.md
+      - 'ERD: authorization': appendix/erd-a-authorization.md
+      - 'ERD: inventory': appendix/erd-b-inventory.md
       - Permission Catalog: appendix/permission-catalog.md
       - 'Permission Catalog: the codes': appendix/permission-catalog-a-codes.md
       - Permission Catalog continued: appendix/permission-catalog-b-roles-and-open-issues.md
