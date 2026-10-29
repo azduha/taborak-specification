@@ -1642,10 +1642,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#what-a-grant-is-and-what-it-used-to-carry" class="md-nav__link">
+  <a href="#what-a-grant-is" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What a grant is, and what it used to carry
+        What a grant is
       
     </span>
   </a>
@@ -2525,10 +2525,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#what-a-grant-is-and-what-it-used-to-carry" class="md-nav__link">
+  <a href="#what-a-grant-is" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What a grant is, and what it used to carry
+        What a grant is
       
     </span>
   </a>
@@ -2832,21 +2832,11 @@
 <p>This is the <strong>proposed</strong> catalog, seeded in
 <a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05d-invariants-and-seed.md</a>.</p>
 <blockquote>
-<p><strong>Round 10 rewrote this page.</strong>
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
-deleted the unit hierarchy,
+<p><strong>What a row here is.</strong> A capability, and nothing more. There is no level paired with a code —
 <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
-the level ladder,
-<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-positions, <code>role_permission</code> and the membership gate,
-<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-the audience's rule/list/inclusion arms, and
-<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-event ownership. Thirteen codes here lost their subject, and five arrived for the two new tables.
-What changed shape is not only the list: a code is no longer paired with a level, so a row in this
-catalog is a capability and nothing more. <strong>Whoever grants it says how far it reaches, for how
+deleted the ladder that paired them — so <strong>whoever grants it says how far it reaches, for how
 long, and to whom</strong> — in one row, whose grantee is an expression
-(<a href="#what-a-grant-is-and-what-it-used-to-carry">§1</a>). <strong>And §1's two naming shapes are rules now</strong>, not
+(<a href="#what-a-grant-is">§1</a>). <strong>And §1's two naming shapes are rules now</strong>, not
 descriptions of the rows below: the last segment names the action, a middle segment names something
 the schema stores, no grade words and no prefix — with <code>system.admin</code> named as the single exception
 (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).</p>
@@ -2920,54 +2910,35 @@ round failed on had never existed anywhere but in prose (§12). <strong>Nothing 
 notice a code drifting from its row</strong> — the check D-104 adopts is a person remembering to run a report
 over the seeded registries in both directions, which this repository can only ever do by hand
 (<a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>).</p>
-<h3 id="what-a-grant-is-and-what-it-used-to-carry">What a grant is, and what it used to carry<a class="headerlink" href="#what-a-grant-is-and-what-it-used-to-carry" title="Permanent link">&para;</a></h3>
+<h3 id="what-a-grant-is">What a grant is<a class="headerlink" href="#what-a-grant-is" title="Permanent link">&para;</a></h3>
 <p><strong>A grant is five things: a grantee (a person or an audience expression) + a scope (the unit, or
 exactly one item) + one permission code + <code>effect ∈ allow, deny</code> + a period.</strong> The answer it feeds:</p>
 <blockquote>
 <p><strong>allowed</strong> when some live allow applies <strong>and no</strong> live deny applies.
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>)</p>
 </blockquote>
-<p>That is the whole of the precedence rule, and this catalog carries no column beside a code because
-of it. What the level column used to promise, and what covers it now:</p>
-<table>
-<thead>
-<tr>
-<th>~~<code>access_level</code> used to~~</th>
-<th>Now</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>~~bundle several codes under one word — "<code>manage</code> on this event"~~</td>
-<td>One grant row per code. A bundle is a <strong>role</strong> or an <strong>audience</strong>, which is what <a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a> already said: <em>roles are the bundle</em></td>
-</tr>
-<tr>
-<td>~~grade one act at two strengths — <code>view</code> against <code>edit</code>~~</td>
-<td>Two codes, plus <code>permission.right_kind ∈ read \| write</code> saying which side each sits on</td>
-</tr>
-<tr>
-<td>~~decide whether a grant was enough for the code being checked~~</td>
-<td>Nothing to decide. A grant names exactly one code, and the answer is yes or no</td>
-</tr>
-<tr>
-<td>~~order two grants that both apply — locality, <a href="../../decisions/round-02-03/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>~~</td>
-<td>Nothing to order: two allows that apply produce one answer. <strong>Deny is absolute, and that half of D-032 survives untouched</strong></td>
-</tr>
-<tr>
-<td>~~carry <code>revoked</code> as the bottom rung~~</td>
-<td><code>effect = deny</code> on a grant row, and it is still asked first</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Withdrawn by
-<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>.</strong>
-The rank integer it rested on went with it
-(<a href="../../decisions/round-01a/#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>),
-and so did <code>permission_level</code>, the table that mapped levels onto codes: the famous bug it guarded —
-<code>'admin' &lt; 'contribute'</code> comparing alphabetically and inverting the model — cannot occur in a system
-with no levels, which is a better fix than the guard. The question that dies with the column is
-<em>"what does <code>manage</code> give me on this event?"</em>: there is no such word, so there is no such lookup.
-The question it buys is <em>"what exactly does this person have?"</em>, answered by reading grant rows.</p>
+<p>That is the whole of the precedence rule, and it is why nothing in this catalog carries a rank beside a
+code. Four things a rank used to promise, and what does each of them now:</p>
+<ul>
+<li><strong>Bundle several codes under one word</strong> — one grant row per code, and the bundle is a <strong>role</strong> or an
+  <strong>audience</strong> (<a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>),
+  which is what <em>roles are the bundle</em> already said.</li>
+<li><strong>Grade one act at two strengths</strong> — two codes, with
+  <code>permission.right_kind ∈ read | write</code> saying which side each sits on (§6).</li>
+<li><strong>Decide whether a grant is enough for the code being checked</strong> — nothing to decide: a grant names
+  exactly one code and the answer is yes or no.</li>
+<li><strong>Order two grants that both apply</strong> — two allows produce one answer. <strong>Deny is absolute and is asked
+  first</strong> (<code>effect = deny</code> on a grant row), which is
+  <a href="../../decisions/round-02-03/#d-032--deny-is-absolute-locality-orders-allows-only">D-032</a>'s surviving half and the
+  whole of it.</li>
+</ul>
+<p>So there is no word <code>manage</code> standing over a set of codes, and <em>"what does <code>manage</code> give me on this
+event?"</em> has no lookup to answer it; <em>"what exactly does this person have?"</em> is answered by reading their
+grant rows. The rank integer that ladder rested on is gone
+(<a href="../../decisions/round-01a/#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>), along with the
+table that mapped levels onto codes — and the bug that table's guard existed for, <code>'admin' &lt; 'contribute'</code>
+comparing alphabetically and inverting the model, cannot occur where there are no levels, which is a better
+fix than the guard was.</p>
 <p><strong>Two columns moved onto <code>permission</code> itself, and only one of them is comfortable.</strong></p>
 <ul>
 <li><strong><code>right_kind ∈ read | write</code></strong> survives <strong>only</strong> so that
@@ -4422,85 +4393,50 @@ It rests entirely on whoever writes the form — a convention, not a guard, and 
 sentence is the right way to read that.</p>
 </blockquote>
 <h2 id="9-there-is-no-dependent-namespace">9. There is no <code>dependent.*</code> namespace<a class="headerlink" href="#9-there-is-no-dependent-namespace" title="Permanent link">&para;</a></h2>
-<p><strong>Eighteen codes deleted by <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>.</strong>
-A guardian's rights are <code>none</code>, <code>view</code>, or <code>write</code> — one value on the guardianship row, not a
-capability list. <strong>Nothing in this namespace may be reinstated by pattern-matching the old names;
-there is no set of codes left for a name to stand for.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Old code</th>
-<th>Became</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>dependent.profile.view</code>, <code>dependent.contact.view</code>, <code>dependent.membership.view</code>, <code>dependent.event.view</code>, <code>dependent.fee.view</code>, <code>dependent.medical.view</code>, <code>dependent.achievement.view</code>, <code>dependent.document.view</code></td>
-<td><strong><code>view</code></strong> — all of them, together. They can no longer be separated</td>
-</tr>
-<tr>
-<td><code>dependent.profile.admin</code>, <code>dependent.contact.manage</code>, <code>dependent.medical.admin</code>, <code>dependent.consent.admin</code></td>
-<td><strong><code>write</code></strong></td>
-</tr>
-<tr>
-<td><code>dependent.membership.request</code>, <code>dependent.event.register</code>, <code>dependent.event.answer</code>, <code>dependent.fee.pay</code>, <code>dependent.consent.give</code></td>
-<td><strong><code>write</code></strong> — an act is not a narrower category than an edit</td>
-</tr>
-<tr>
-<td><code>dependent.admin</code></td>
-<td>Nothing. There is no set left to be a shorthand for</td>
-</tr>
-</tbody>
-</table>
-<p><strong>What is lost, stated as plainly as it should be.</strong> A court order restricting one parent's access
-to a child's medical record while leaving everything else in place <strong>cannot be expressed</strong>.
-"Read-only, but not the medical file" cannot be expressed. A grandmother granted roster visibility
-and nothing else is now a <code>view</code> guardian, which reaches the fee history and everything else the
-system holds about that child. The old namespace existed for exactly these cases, and D-074 traded
-them for a vocabulary a volunteer treasurer can hold in their head.</p>
-<p><strong>The separation was then declined, not merely left unimplemented — and the difference matters to
-anyone reading this table as a to-do list.</strong>
-<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-put the court-order story to the organization directly and it was refused on the merits
-(<em>"medical data is not different in any way"</em>), and the same answer removed the referent: there is
-no medical record inside the person record to be shut out of, because everything other than name,
-gender and age is one class of data reached by <code>person.view</code> and governed by the guardian's right
-level whole (<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>). So <em>"read everything
-except the diagnoses"</em> is not a sentence waiting on a mechanism somebody has yet to build; it is a
-sentence the organization declined to want, which is why
+<p><strong>A guardian has no permission codes.</strong> Their rights are one value on the guardianship row — <code>none</code>,
+<code>view</code> or <code>write</code> (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>,
+§6) — and the eighteen codes that used to sit in this namespace, <code>dependent.profile.view</code>,
+<code>dependent.medical.admin</code> and their siblings, are indexed with the other dead names in
+<a href="../removed-concepts/">removed-concepts</a>. <strong>Nothing here may be reinstated by pattern-matching one of those
+names</strong>: there is no set left for a name to stand for. If the finer split turns out to matter in operation,
+it is a new decision argued from the current documents — one grant scope over a defined set of data — and
+not a restoration.</p>
+<p><strong>What cannot be expressed, and was declined rather than left unbuilt.</strong> A court order giving one parent
+access to everything about their child except the medical file <strong>cannot be expressed</strong>: <code>view</code> is one level
+over the whole of a child's record, so a grandmother granted roster visibility gets the fee history with
+it. <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+put that story to the organization directly and it was refused on the merits — <em>"medical data is not
+different in any way"</em> — and the same answer removed the referent: there is no medical record inside the
+person record to be shut out of, because everything other than name, gender and age is one class of data
+reached by <code>person.view</code> and governed by the guardian's level whole
+(<a href="../../domain/08-person-data/">../domain/08-person-data.md</a>). <em>"Read everything except the diagnoses"</em> is
+therefore not a sentence waiting on a mechanism; it is one the organization declined to want, which is why
 <a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 closed</a>
-as a dissolved question rather than an answered one. <strong>Read the inexpressibility above as settled,
-not as pending work.</strong></p>
+as a dissolved question rather than an answered one. <strong>Read the inexpressibility as settled, not as pending
+work.</strong> Reopening it means producing the case that was declined, not finding the code that was deleted.</p>
 <p><strong>What still holds:</strong></p>
 <ul>
-<li>~~<code>write</code> ranks at <code>contribute</code> (20), <strong>not</strong> <code>manage</code>.~~ <strong>Withdrawn by
-  <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>:</strong>
-  there is no ladder for it to rank on, and the bullet's real content was never its rung. What it was
-  guarding is untouched by D-099 — <strong>a guardian cannot do organization-wide things, and cannot reach a
-  different dependent's records: authority is per guardianship row</strong>, because the channel is entered by
-  whose record the act touches and answers only about that row
-  (<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>).
-  What <code>write</code> now means is <em>this row's dependent, both kinds</em>: it covers the <code>write</code> codes and the
-  <code>read</code> ones, where <code>view</code> covers only <code>read</code> and <code>none</code> covers nothing — compared against
-  <code>permission.right_kind</code>, not against a level (§6).</li>
-<li>The <strong>deny is untouched.</strong> A live deny beats every allow that applies, at any scope, in any channel
-  (D-032's first half, now its entire content, restated by
+<li><strong>A guardian's authority is per guardianship row.</strong> The channel is entered by whose record the act
+  touches and answers only about that row
+  (<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>),
+  so a guardian cannot do organization-wide things and cannot reach a different dependent's records. What
+  <code>write</code> means is <em>this row's dependent, both kinds</em>: it covers the <code>write</code> codes and the <code>read</code> ones,
+  where <code>view</code> covers only <code>read</code> and <code>none</code> covers nothing — compared against <code>permission.right_kind</code>, not
+  against a level (§6).</li>
+<li><strong>A deny still reaches the channel.</strong> A live deny beats every allow that applies, at any scope and in
+  any channel (D-032's first half, now its entire content, restated by
   <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
-  so "this guardian, nothing" remains expressible — a <code>deny</code> at the unit aimed at the person,
-  <code>PERSON(x)</code>. There is no "that child's guardians" operand to aim one at, and round 13 settled that there
-  never was one to have: the channel resolves no sets, so the name an expression can carry here is the
-  person's (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
-  What was lost is a <em>narrow</em> deny, not the ability to refuse.</li>
-<li>A guardianship at <code>none</code> grants literally nothing, so <strong>being a guardian still grants nothing by
+  so <em>"this guardian, nothing"</em> remains expressible: a <code>deny</code> at the unit aimed at the person, <code>PERSON(x)</code>.
+  There is no <em>narrow</em> deny — no operand names one child's guardians to aim one at, because the channel
+  resolves no sets and the name an expression can carry here is the person's
+  (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
+  What was lost is the narrowness, not the refusal.</li>
+<li><strong>A guardianship at <code>none</code> grants literally nothing</strong>, so <strong>being a guardian still grants nothing by
   itself</strong> — the safeguarding property that motivated the eighteen codes survives without them.</li>
-<li>Answers to an event's questions are still read through <code>event.answer.view</code>, which is a permission on
-  the grant side, carried by the seeded grant to <code>ORGANIZERS</code> (§8a), and never was a guardian one
+<li><strong>An event's answers are not guardian data.</strong> They are read through <code>event.answer.view</code>, a permission on
+  the grant side, carried by the seeded grant to <code>ORGANIZERS</code> (§8a), and never were a guardian's
   (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).</li>
 </ul>
-<p><strong>If the split turns out to matter in operation it is still a new decision</strong> — one grant scope over
-a defined set of data, argued from the current documents — and not a restoration from this table.
-<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7 is closed</a>,
-so reopening it means producing the case that was declined, not finding the code that was deleted.</p>
 <p>See <a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">../data-model/04-relationships.md §2</a>
 for the value, its defaults by <code>source</code>, and the three-value ordering it is a range of — <code>none</code> &lt; <code>view</code>
 &lt; <code>write</code>, which is D-074's own ordering over one column and <strong>not</strong> the access-level ladder
