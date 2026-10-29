@@ -1477,6 +1477,8 @@
       
         
       
+        
+      
     
     
     
@@ -1585,6 +1587,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../appendix/permission-catalog-b-roles-and-open-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../appendix/removed-concepts/" class="md-nav__link">
         
   
@@ -1657,7 +1687,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1679,14 +1709,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4396,7 +4426,7 @@ modules</strong> (<a href="../decisions/round-04/#d-055--the-permission-catalog-
 <p>It is a <strong>menu</strong>, not a checklist. Administrators assign people only the permissions they
 actually need, and that is only possible if the capabilities exist as separate rows to assign.
 The parts of the question that remain — the exact contents — are tracked in
-<a href="../appendix/permission-catalog/#12-open-issues">appendix/permission-catalog.md §12</a> and will
+<a href="../appendix/permission-catalog-b-roles-and-open-issues/#12-open-issues">appendix/permission-catalog.md §12</a> and will
 move as events, documents, communication and reporting land.</p>
 <p><strong>Note the asymmetry with roles, because it looks like an inconsistency and is not.</strong> Roles
 are <em>runtime data</em> the organization invents (<a href="../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>);
@@ -4453,7 +4483,7 @@ role editor where the bundling could hide, because there is no such editor — y
 role is meant to have <code>person.merge</code>/<code>person.redact</code> bundled with routine <code>person.edit</code>, and
 <code>identity_reviewer</code> is the one that deliberately holds <code>person.merge</code>. A role that <em>does</em> gather a resource
 including its irreversible codes should be named for it.</p>
-<p><strong>See:</strong> <a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">appendix/permission-catalog.md §11</a></p>
+<p><strong>See:</strong> <a href="../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">appendix/permission-catalog.md §11</a></p>
 <h3 id="f-4a--closed--the-catalog-is-the-only-list-now">F-4a ✅ <strong>Closed</strong> — the catalog is the only list now<a class="headerlink" href="#f-4a--closed--the-catalog-is-the-only-list-now" title="Permanent link">&para;</a></h3>
 <p><strong>Surfaced by D-068, not created by it.</strong> When the two were reconciled during that work,
 <strong>22 documented permissions had no <code>INSERT</code> row</strong> — including <code>unit_participation.view</code>, which
@@ -6480,7 +6510,7 @@ which made <code>attribute.define</code> a permission instead of a release.</str
 particular. Two halves:</p>
 <ul>
 <li><strong>Who holds <code>attribute.define</code>.</strong> The starting role set
-  (<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11</a>) is the place
+  (<a href="../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">permission-catalog §11</a>) is the place
   this gets answered, and the honest answer is that a volunteer organization has one or two people who
   will do this and not a committee. Too narrow and the proposal queue is a bottleneck that teaches
   people to file facts into notes instead; too wide and it is not a curation.</li>
@@ -6517,7 +6547,7 @@ none is recorded as taken:</p>
 <li><strong>The guard is enough</strong> (current documents). One permission, marked honestly, and a rule that whoever
   holds it is reading person data. Simple, and it makes the auditor role — which has <code>audit.view</code> and
   not <code>person.view</code> — a reader of the entire person record
-  (<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</li>
+  (<a href="../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</li>
 <li><strong>Per-entry filtering in the history view:</strong> show an audit row's values only where the reader could
   also see the live field. Consistent with everything §9 of
   <a href="../data-model/05c-access-log-and-resolver/#9-access_log">data-model/05c-access-log-and-resolver.md</a> says about channels, and
@@ -6623,7 +6653,7 @@ across five files discuss who may read <em>the medical record</em> as though it 
 <td>"a guardian either sees everything about the child or nothing"</td>
 </tr>
 <tr>
-<td><a href="../appendix/permission-catalog/#9-there-is-no-dependent-namespace">permission-catalog §9</a></td>
+<td><a href="../appendix/permission-catalog-b-roles-and-open-issues/#9-there-is-no-dependent-namespace">permission-catalog §9</a></td>
 <td>a <code>view</code> guardian "reaches the fee history and the health record"</td>
 </tr>
 <tr>
@@ -6745,7 +6775,7 @@ model does not establish, and the organization records no background checks
 property the safeguarding argument actually needs — <strong>no private conversation about a child is
 secretly unread</strong> — without putting an age into the resolver.</p>
 <p><strong>See:</strong> <a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>,
-<a href="../appendix/permission-catalog/#10-deferred-namespaces">permission-catalog's <code>message</code> row</a>,
+<a href="../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">permission-catalog's <code>message</code> row</a>,
 <a href="../glossary/#communication">glossary — Mirroring</a>.</p>
 <hr />
 <h2 id="r-resolved--moved-to-the-decision-log">R. Resolved — moved to the decision log<a class="headerlink" href="#r-resolved--moved-to-the-decision-log" title="Permanent link">&para;</a></h2>
