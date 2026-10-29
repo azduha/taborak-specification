@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-115 of them and lists the reversals. Read the round you are curious about — each one says what was
+124 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -155,6 +155,15 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-113](round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector) | The guardianship channel has no expression: GUARDIANS is not a selector | decided (found while closing F-5) | round 13 |
 | [D-114](round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation) | There is no permission cache: a check resolves, a request memoizes, and the only cached thing is a compilation | decided (from your answer) | round 14 |
 | [D-115](round-15.md#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal) | A guardianship does not know about membership: `right_level` outlives a lapse and survives a renewal | decided (from your answer) | round 15 |
+| [D-116](round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind) | A caller that is not a person is a registered key, and a key is a third grantee kind | decided (from your answer) | round 16 |
+| [D-117](round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one) | A key is never inside an expression: thirteen selectors, and none of them can name one | decided (from your answer) | round 16 |
+| [D-118](round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down) | The two channels that compare people cannot fire for a key, and a deny on a person does not slow a key down | decided (as a consequence of D-116) | round 16 |
+| [D-119](round-16.md#d-119--a-key-is-one-row-holding-one-live-secret-and-it-rotates-in-place) | A key is one row holding one live secret, and it rotates in place | decided (from your answer) | round 16 |
+| [D-120](round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control) | A key outlives whoever created it, and the report is the control | decided (from your answer) | round 16 |
+| [D-121](round-16.md#d-121--a-key-never-carries-a-persons-authority) | A key never carries a person's authority | decided (from your answer) | round 16 |
+| [D-122](round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined) | What a key owes the catalog: four codes at the unit, and the fourth owed thing declined | decided (from your answer) | round 16 |
+| [D-123](round-16.md#d-123--invariant-19-reads-a-caller-not-a-person) | Invariant 19 reads "a caller", not "a person" | decided (found by writing this round) | round 16 |
+| [D-124](round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row) | Two defects: `system.admin` satisfies every code, and one prose code named no row | decided (defect fix, not a design change) | round 16 |
 
 ## Reversed decisions
 

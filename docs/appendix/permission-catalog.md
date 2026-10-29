@@ -8,8 +8,8 @@ This is the **proposed** catalog, seeded in
 > **What a row here is.** A capability, and nothing more. There is no level paired with a code —
 > [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
 > deleted the ladder that paired them — so **whoever grants it says how far it reaches, for how
-> long, and to whom** — in one row, whose grantee is an expression
-> ([§1](#what-a-grant-is)). **And §1's two naming shapes are rules now**, not
+> long, and to whom** — in one row, whose grantee is one person, one registered key, or a set written
+> as an expression ([§1](#what-a-grant-is)). **And §1's two naming shapes are rules now**, not
 > descriptions of the rows below: the last segment names the action, a middle segment names something
 > the schema stores, no grade words and no prefix — with `system.admin` named as the single exception
 > ([D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
@@ -32,7 +32,8 @@ This is the **proposed** catalog, seeded in
 > ([§1](#code-shape)). What is *not* yet settled is the exact contents — tracked in §12.
 
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8a, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
+
 ---
 
 ## 1. Conventions
@@ -87,9 +88,14 @@ than read off its name, and because D-068 exempted it in so many words rather th
 is the only code in this system allowed to be a noun, and the exemption sets no precedent**:
 `<resource>.admin` is precisely what rule 3 refuses and precisely what was deleted.
 
-**The three rules were run against the sixty-six live codes in the tables below and corrected
-nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. That null result is
-the reason this section changed voice rather than its contents: **a convention that is followed and
+**The three rules were run against the sixty-six live codes the tables below held when D-104 ran them,
+and corrected nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. Four
+codes have arrived since that count — the `api_key.*` rows of
+[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody) — and they satisfy the three rules
+rather than testing them
+([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+That null result is the reason this section changed voice rather than its contents: **a convention that is
+followed and
 not stated fails exactly once, on the first thing nobody thought to compare**, and the thing this
 round failed on had never existed anywhere but in prose (§12). **Nothing in the schema will ever
 notice a code drifting from its row** — the check D-104 adopts is a person remembering to run a report
@@ -104,8 +110,9 @@ on, in the same round; a decision entry that removes one leaves a row in
 
 ### What a grant is
 
-**A grant is five things: a grantee (a person or an audience expression) + a scope (the unit, or
-exactly one item) + one permission code + `effect ∈ allow, deny` + a period.** The answer it feeds:
+**A grant is five things: a grantee (one person, one audience expression, or one registered key) +
+a scope (the unit, or exactly one item) + one permission code + `effect ∈ allow, deny` + a period.**
+The answer it feeds:
 
 > **allowed** when some live allow applies **and no** live deny applies.
 > ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality))
@@ -158,9 +165,13 @@ and which is a scope and never a row
 reaches **every item of every type**. A grant on one item reaches that item and nothing else. There
 is no tier between them and no relation on the item to test: no owner, no parent, no covering body.
 
-### A grantee is an expression
+### A grantee is a person, a key, or a set
 
-Wherever this catalog writes a grantee, it is a legal expression in the selector language of
+**A grant names exactly one grantee, and two of the three kinds are a single reference rather than an
+expression:** one person, or one registered key (§8b,
+[D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind))
+— each read exactly as written, with no set behind it and nothing to evaluate. **The third kind is a set,
+and a set is always written as an expression**, in the selector language of
 [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree): the
 leaves `EVERYONE`, `MEMBERS`, `OLDER(n)`, `YOUNGER(n)`, `PERSON(person)`, `ROLE(name)`, `GROUP(name)`,
 `AUDIENCE(name)`, and the five event-bound sets `ATTENDED`, `PLACED`, `CONFIRMED`, `ON_WAITLIST`,
@@ -303,10 +314,13 @@ the thing it was a value *of* did.
 
 | Namespace | Resolved against | Channel |
 |-----------|------------------|---------|
-| *(absent)* | `access_grant` — aimed at a person or at an audience — and ownership | 1, 3 |
+| *(absent)* | `access_grant` — aimed at a person, at an audience expression, or at a registered key — and ownership | 1, 3 |
 | `system` | `access_grant` **at the unit only** — `applies_to = unit`, so **never** on an item | 1 |
 
-Two prefixes, because only two things are dispatched by a name. The channel numbers are the three in
+Two namespaces, because only two things are dispatched by a name — and the four `api_key.*` codes of
+[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody) are ordinary codes in the row above,
+not a third one: their first segment already names a stored table, so a prefix would be a second, drifting
+copy of a name the code carries. The channel numbers are the three in
 [../domain/06-authorization-model.md §1](../domain/06-authorization-model.md#1-the-three-channels-of-authority):
 grants, guardianship, ownership. **Every code in this catalog — `system.admin` included — arrives through the
 one grant channel**, because an office confers nothing by being held

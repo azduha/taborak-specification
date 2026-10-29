@@ -359,7 +359,11 @@ is not allowed to be wrong on the common path.
 
 Auto-refunding is refused for two reasons: it needs the bank integration to work outbound as well
 as inbound, which is a second integration with its own authorization; and it returns the
-grandparent's attempt at a camp contribution.
+grandparent's attempt at a camp contribution. **The first of those has changed kind while the refusal
+stands.** Calls coming *in* are a designed thing now — a registered key, granted like any other caller
+([05e](05e-keys-and-callers.md)) — so "outbound is a second integration with its own authorization" is no
+longer an absence but a decision with a shape to copy, and the outbound direction itself is
+[F-27](../open-questions.md#f-27). The second reason was never a mechanism, and stands alone.
 
 **Cancellation is where most of the volume comes from, and it is decided now rather than later.**
 [D-064](../decisions/round-05.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)
@@ -504,7 +508,9 @@ such choice visible before 1 January rather than on it ([03-membership.md
    ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code),
    §2a). Reliable payment dates are what the renewal window depends on, and the bank import is what
    supplies them.
-7. **Accounting integration:** does anything need to be exported to an accounting system?
+7. **Accounting integration:** does anything need to be exported to an accounting system? **What is
+   open here is the direction.** Who may call this system is designed ([05e](05e-keys-and-callers.md));
+   this system calling anyone else is [F-27](../open-questions.md#f-27).
 8. **Currency and jurisdiction** — currently assumed `EUR`.
 9. **Does the fee cover insurance?** If so, "member on the date of the incident" becomes a
    legal record with its own retention needs. This one interacts directly with the

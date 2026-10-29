@@ -1,8 +1,8 @@
 # Appendix — Permission Catalog: the codes
 
-Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, and events — each with the grant that carries it.
+Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8a, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
 
 ---
 
@@ -163,13 +163,17 @@ trail that still reads out an erased value has preserved it rather than missed i
 > A group has no fee, so unlike a *membership* there is no gate in front of it besides this permission
 > ([../domain/05-membership-lifecycle.md §1](../domain/05-membership-lifecycle.md#1-the-flow-you-described)).
 
-> **Nothing about a code says whether it requires a paid-up holder**, so this table has nothing to hide and
-> nothing to warn about. **The grantee expression performs the membership test:** it says
-> `MEMBERS * ROLE(x)` when the fee is meant to matter and omits it when it is not, evaluated live on the
-> checked date (§11,
+> **Nothing about a code says whether it requires a paid-up holder**, so this table has nothing to hide
+> and nothing to warn about. **Where a grantee is a set, the grantee's expression performs the membership
+> test:** it says `MEMBERS * ROLE(x)` when the fee is meant to matter and omits it when it is not,
+> evaluated live on the checked date (§11,
 > [../domain/06-authorization-model.md §6.1](../domain/06-authorization-model.md#61-members--the-membership-test-moved-into-the-expression)),
 > which is where the gate went when [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
-> deleted it along with the code that waived it.
+> deleted it along with the code that waived it. **The two grantees that are not sets carry no such test**:
+> a grant written to one named person, or to one registered key (§8b,
+> [D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)),
+> has no expression to evaluate, so the fee is nobody's question there and the grantee's own standing is
+> the whole of what was chosen.
 
 ## 5. Organization and positions
 
@@ -326,7 +330,7 @@ difference is the whole reason there are two tables — and the office codes are
 | `permission.edit` | `system` | 🔒🔒 | Change the permission catalog |
 | `access_grant.create` | — | ⚠ | Create a grant — the act that turns a code into someone's authority |
 | `access_grant.revoke` | — | ⚠ | End a grant early, or write a `deny` |
-| `system.admin` | `system` | 🔒🔒 | **Everything.** Single top-level capability, `applies_to = unit` |
+| `system.admin` | `system` | 🔒🔒 | **Everything.** Single top-level capability, `applies_to = unit`. **Never grantable to a registered key** (§8b) |
 
 > **A role confers nothing**, and that is the sentence to read before this table. **The codes an office
 > carries are the live grants whose expression names `ROLE(x)`**
@@ -518,6 +522,10 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 > land when the grant is saved: a **bound** (argument-less) operand is legal only on an item-scope
 > grant, and only where `selector_type.argument_type` matches the item — `PLACED` on a group grant is
 > refused because that item is not an event. And `PRESENT(<event>)` is refused outright (§1).
+> **A grantee is not always one of these sets**, and the other two kinds are named rather than implied: a
+> grant written to one named person, or to one registered key (§8b), has no operand in it and no set behind
+> it, because no selector names a key and a key is in nobody's set — including the set of every person
+> ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
 > The definitions, and the reason `PLACED` rather than `ATTENDED` is the capacity set, are in
 > [../data-model/08a-event-guards-and-checks.md §8](../data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event).
 
@@ -615,3 +623,108 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 > a database
 > ([../data-model/08-events.md §7](../data-model/08-events.md#health-facts-and-the-discipline-this-requires)).
 > It rests entirely on whoever writes the form.
+
+## 8b. Keys — a caller that is nobody
+
+**A registered key is the third thing a permission is held *by*.** An integration that calls this
+system over its API is one row in `api_key`, installed by a named person, holding one secret that is
+shown once and kept only as a hash — and it is a **grantee**, in the same sense a person is, reached
+through the same single grant channel and no other
+([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+It is not an account, which is a way for a person to log in, and it is not a selector: **no expression
+names a key**, so a key holds the grants that name it and nothing besides
+([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
+The table itself, what its secret may and may not do, and the resolver entry point a call is checked
+through are in [../data-model/05e-keys-and-callers.md](../data-model/05e-keys-and-callers.md); what
+the catalog owes is four rows, typed.
+
+| Code | Namespace | Sens. | Grants |
+|------|-----------|-------|--------|
+| `api_key.view` | — | | Which keys exist, what each of them is granted, and when each was last used |
+| `api_key.create` | — | 🔒 | Register a key — mints its secret and shows it once, and never again |
+| `api_key.rotate` | — | 🔒 | Replace a live key's secret, showing the new one once — **no window in which both secrets work** |
+| `api_key.end` | — | 🔒 | Set a key's `valid_to`, or revoke it now with a reason |
+
+**Where each of these may be granted, and what kind of right it is** (§1) — nothing else rides on top:
+
+| Code | `applies_to` | `right_kind` |
+|---|---|---|
+| `api_key.view` | `unit` | `read` |
+| `api_key.create`, `api_key.rotate`, `api_key.end` | `unit` | `write` |
+
+**The marking changes no answer, and is filled in because the column is required.** `right_kind` has
+one customer, the guardianship channel (§6), and that channel asks about one child's record — while
+these four codes live at the unit
+([../data-model/05-authorization.md §2](../data-model/05-authorization.md#right_kind-a-column-with-exactly-one-customer)).
+`api_key.view` is `read` because it is the read of a list, and the three writes are `write` because
+each lets its bearer install or unmake a caller. **`api_key.view` carries no sensitivity mark**, on the
+precedent of `role.view` and `permission.view` two sections away: reading the register of integrations
+exposes nobody's personal data, and the secret the row holds never leaves the row — not on this screen,
+not in an export, not in a log line. *Why the mark follows what a grant exposes and not the table a
+code names:
+[D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads).*
+
+> **None of these four is `system.*`, and that is a difference rather than a spelling.** The `system`
+> namespace holds the codes that administer *this system's own machinery* — the catalog, the offices,
+> the grant rows (§7) — and it is the one place where the rule that `permission.resource` equals the
+> code's first segment is waived: in a `system.` code those two disagree on purpose
+> ([../data-model/05-authorization.md §2](../data-model/05-authorization.md#2-permission)). These four
+> act on a table that exists, exactly as `event.*` and `person_group.*` do, so the first segment
+> already *is* the resource and a prefix would be a second, drifting copy of a name the code carries.
+> **And a prefix would buy nothing**, because a namespace routes nothing: the resolver stopped
+> branching on the prefix, and
+> [D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)
+> deleted the last reading under which one routed something. The unit-only reach is carried by
+> `applies_to` above, where the save checks it; what a reader needs is the 🔒. The precedent is in §7
+> and is stronger than anything here: `access_grant.create`, the act that turns a code into somebody's
+> authority, carries **no** namespace at all.
+
+> **What a key may never be granted is five named codes, not a set derived by rule: `system.admin` and
+> the four above.** The grant is refused when it is saved
+> ([../data-model/05-authorization.md §6](../data-model/05-authorization.md#what-is-refused-when-a-grant-is-saved)),
+> and **integrity check 20 is the entire net**, because no database rule spans `permission` and
+> `access_grant`
+> ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+> One sentence covers both halves — **a key may not change what a key can do, and may not become
+> everything.** A bearer secret holding *everything* is the whole organization in a request header; a
+> key holding `api_key.create` mints its own replacements, so rotating a stolen key means looking for
+> the rows a thief installed rather than the rows a person installed. Like check 17's `.admin`
+> assertion this is **an equality against named rows**, and not `*.api_key` and not "any code about
+> keys": an allow-list is where a wildcard comes back to life, which is exactly why the refused set is
+> spelled out code by code.
+>
+> **No seeded office holds any of the four**, and none should: whoever holds `system.admin` already
+> satisfies every one of these checks, because `system.admin` satisfies every code
+> ([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)).
+> **The capability to install a permanent outside authority is the capability to escalate**, and the
+> 🔒 on the three writes is that sentence — it arrives through `access_grant.create` like every other
+> code, so there is no second route to it and no seeded office that quietly holds it. The fourth thing
+> a new resource owes this catalog, a row in `grant_scope_type`, is **declined for a key on purpose**
+> ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)):
+> a key is not a grantable item, so none of these codes can be written *on* one and **"rotate the
+> accounting key and no other" is not writable** — anyone who may issue a key may issue any key. That
+> is accepted at this scale, and it is recorded here as an unpaid debt rather than as a design feature.
+
+> **A key's authority is its grants, in full and only.** Two of the three channels of authority compare
+> a person against a row — ownership and guardianship — and for a key neither is refused by a fresh
+> rule so much as unreachable, because there is no person for either to compare
+> ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+> The consequence worth reading twice: **a deny written against the person who installed a key does
+> not touch the key.** Deny is absolute, but it defeats the allows of the grantee it names, and these
+> are two grantees. What covers that is a list rather than a guard: the **Unusual section of the tab on
+> the permissions page** lists live keys beside people, with what each holds, when it was last used and
+> whether its contact still has an account, so a review reads one grant list and not two
+> ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report),
+> [D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+> **A grant to a key is never a delegation**, on the reasoning that already refuses it for an audience:
+> lending is one person's act towards another, and there is no person here to lend
+> ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+
+**§1's naming rules hold here with no exception taken:** every last segment is an act, and the first
+segment names stored state — a table that now exists. **`rotate` is a last segment this corpus has
+deleted before**, as `event.qr.rotate` in [removed-concepts.md](removed-concepts.md) — a code that never
+existed in any registry and was deleted for being prose only
+([D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
+These rows are not its revival. The lesson of that deletion is *a name must have a row behind it*, and
+here the row exists before the prose does
+([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).

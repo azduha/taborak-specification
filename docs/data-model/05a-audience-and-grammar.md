@@ -3,14 +3,18 @@
 What an audience is as a row, how an expression is written and rendered, and
 which operands the language has.
 
-**Section numbers are shared across the five parts** and never renumbered, because other
-pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
+**Section numbers are shared across the six parts** and never renumbered, because other
+pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues), and [05e](05e-keys-and-callers.md) §14–§17 (a key, and what it may hold).
 
 ---
 
 ## 8. `audience` — grants that target a set of people
 
-A grant can name a **person** or an **audience** (D-042). **An audience is an expression over
+A grant can name a **person**, an **audience** or a **registered key** (D-042, widened by
+[D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+**This section is the language of the middle one**: a person is a reference and so is a key
+([05e §14](05e-keys-and-callers.md)), while an audience is a set, and a set needs a language. **An
+audience is an expression over
 named sets, stored as a tree**
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)):
 `MEMBERS * ROLE(treasurers) - GROUP(schuzka2026-1)` is one grant's grantee. One grant composes a

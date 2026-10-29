@@ -3,8 +3,8 @@
 The invariants a correct implementation must hold, the rows the platform ships
 with, and what is still open on this part of the model.
 
-**Section numbers are shared across the five parts** and never renumbered, because other
-pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
+**Section numbers are shared across the six parts** and never renumbered, because other
+pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues), and [05e](05e-keys-and-callers.md) §14–§17 (a key, and what it may hold).
 
 ---
 
@@ -119,7 +119,9 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   (§8, *What audiences do not do*).
 - **9. Holders of `system.admin`.** Everyone with a live allow of it, however they came by it —
   through a personal grant or through an expression naming an office. This should be a very short
-  list, and it should alert on change.
+  list, and it should alert on change. **A key never appears on it and cannot**: that grant is refused when
+  it is saved and counted by check 20, so a list containing only people is also the evidence that the
+  refusal held.
 - **10. Expression trees that are not trees.** Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose `audience_id` differs from its parent's; a row whose
   `parent_id` names no row; an audience with zero or several root rows. **Zero expected, and every
@@ -272,12 +274,21 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   A `deprecated` row that stops granting is therefore a bug in one function, and a `disabled` row that
   does not is visible in the same place. **Nothing else in §11 can see this one**, because the flag is a
   legitimate value in a legitimate column and every row is well-formed on its own.
-- **19. TIME-BOMB: no row, table or field anywhere may map a person — or a person and a code, or a person
-  and an item — to a permission answer.** This is the reason a permission cache cannot come back later as
+- **19. TIME-BOMB: no row, table or field anywhere may map a caller — or a caller and a code, or a caller
+  and an item — to a permission answer.** **A caller is a person or a registered key, and the widening is
+  deliberate rather than a tidy-up**: as written over persons only, a table keyed by `api_key_id` and
+  `permission_code` holding a boolean would not have been forbidden by this invariant
+  ([D-123](../decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)), and *"the
+  integration's permissions"* is the most natural table in this system to write — it reads like
+  configuration, not like a cache. This is the reason a permission cache cannot come back later as
   an optimization ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
-  Assert it the way a schema review asserts things: **no column pairing a person with a boolean that could
-  only have come from a check, no table whose key contains `person_id` together with `permission_code` or a
-  `selector_kind` / `selector_arg_id` or an item, and no `computed_at` sitting beside an answer.** Three
+  Assert it the way a schema review asserts things: **no column pairing a caller with a boolean that could
+  only have come from a check, no table whose key contains `person_id` or `api_key_id` together with
+  `permission_code` or a `selector_kind` / `selector_arg_id` or an item, and no `computed_at` sitting beside
+  an answer.** **`api_key.last_used_at` is named here and cleared, but it is not a fourth shape:** a
+  timestamp of when something happened answers no permission question and nothing reads it to decide one,
+  while `api_key.last_checked_permission` would be exactly the row this check exists to catch, and is the
+  name a review should search for. Three
   shapes survive the sweep and each is legal for a reason worth repeating: **`ruleset_version`**, an integer
   about a *ruleset* that names no person and keys a compilation; **D-110's record of whom a grant reached**,
   deliberately stale because it is a historical record — a rule naming a person who has since left must
@@ -292,6 +303,33 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   vocabulary the residue is a named convention, not a guard: **nothing stops a team from adding a
   `permission_cache` table again in a year, under load, at 2 a.m., because it is the obvious move and this
   invariant is a paragraph.** **Read D-114 before writing that migration.**
+
+- **20. A refused code granted to a key.** A live grant naming `api_key_id` whose permission is
+  `system.admin` or one of the four `api_key.*` codes
+  ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+  **This check is the entire net**, and saying so is the point: the refused set is an equality against five
+  named codes, `permission` and `access_grant` share no column, and so no database rule can span them —
+  unlike check 3, which reads one column of the permission row and can therefore always see the shape it
+  counts. A row here means the save path was skipped, not that a constraint was disabled. **The refused set
+  is written out code by code and never derived**, for the reason check 17 states for `.admin`: an
+  allow-list is where a wildcard comes back to life.
+- **21. A grant naming a key that cannot be used.** A live, unrevoked grant naming an `api_key` row that is
+  revoked or past its `valid_to`. The grant is inert — an expired secret cannot authenticate, so nothing is
+  being reached — and that is precisely why the check exists: **dead weight of this kind reads as an active
+  integration to the next person reviewing who can do what**, which is the same failure check 5 reports for
+  a deny that denies nothing and check 13 for a code nothing grants. Closing the grant is a person's act
+  with a reason, and §14's revocation triple is where the reason is written.
+- **22. TIME-BOMB: nothing may read a key's own columns to decide an answer.** An assertion, not a report:
+  no code path reaches for `last_used_at`, `owner_person_id` or `created_by` when it resolves a permission,
+  and no check consults the person who installed an integration at all
+  ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control),
+  [D-123](../decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)). **The reason this needs
+  its own numbered assertion is that every one of those columns is right there on the row the check has
+  already loaded**, which makes creator-derived authority the cheapest wrong turn available: a suspended
+  account, a lapsed membership or a `deny` written against whoever installed a key would otherwise change
+  what the key may do, and D-005's *"a permission is never derived from an identity"* forbids exactly that —
+  including when the identity belongs to somebody else. 15 and 16 are CI assertions too, and this belongs
+  beside them for the same reason: **a prohibition nobody runs is a convention, not a guard.**
 
 **Checks 3, 4, 5, 6 and 9 are the ones to wire to alerts, plus one half of 7.**
 
@@ -320,10 +358,18 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
   **`Broken`** holds the rules that name something deprecated, hidden or disabled or that resolve to nobody
   — checks **1, 2, 3, 7's empty half, 12, 13, 14 and 18's second half** all land there — and **`Unusual`**
-  holds rules that resolve correctly and look odd, which is where **6** lives. **Check 7's wide
+  holds rules that resolve correctly and look odd, which is where **6** lives. **`Unusual` also gains a line
+  of keys** — each live `api_key` with what it is granted, when it was last used, and whether the person in
+  its `owner_person_id` still has an account — because a permanent outside authority is exactly the kind of
+  correctly-configured oddity a tab is for
+  ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+  **There is no age threshold on that line**: a bound somebody might want to change belongs in a column, and
+  inventing one is not this page's call. **Check 7's wide
   half and check 9 go to a person rather than to a screen**, because both describe authority getting bigger
-  while nobody edited a grant, and a tab nobody opened is not an alert. **Check 19 goes to neither tab**: it
-  is a fact about the schema, not about a rule, and the place it can be enforced is a migration review. The
+  while nobody edited a grant, and a tab nobody opened is not an alert. **Checks 20 and 21 land in `Broken`
+  beside 3, 4 and 13** — one is a save-path refusal that got through, the other is authority that reads as
+  live and is not. **Checks 19 and 22 go to neither tab**: they are facts about the schema and about the
+  resolver, not about a rule, and the place either can be enforced is a migration review or a CI assertion. The
   tab is not a guard in
   [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)'s
   sense — nothing is blocked — but **it is where the person writing the rule already is**, which a report on
@@ -380,6 +426,14 @@ only what a grant naming `ROLE(counselors)` says
 as correct as that roster, so the import reconciliation of D-090 counts people marked as counselors in
 the corpus against `role_holder` rows written.
 
+**No seeded office holds any of the four `api_key.*` codes, and none should.** Whoever holds
+`system.admin` already satisfies those checks because `system.admin` satisfies every code
+([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)),
+so seeding one would move the capability to install a permanent outside authority into a row nobody chose,
+on an office whose purpose is something else
+([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+**It arrives by an ordinary grant or it does not arrive.**
+
 **Everything else is starter material the organization edits** — including the `system_admin` office
 the catalog sketches, whose reason for existing is that someone has to hold `system.admin` before
 anything can be granted. **What §12 must fix, and does, is the *shape* rather than the list**: a
@@ -392,7 +446,8 @@ branch (§2).
 
 - **The permission vocabulary** — each code marked `is_system` so it cannot be deleted or renamed —
   spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
-  legacy import, reporting, the thirteen `event.*` codes, and messaging. **The one complete list is
+  legacy import, reporting, the thirteen `event.*` codes, messaging, and the four `api_key.*` codes of [05e §15](05e-keys-and-callers.md) —
+  `api_key.view`, `api_key.create`, `api_key.rotate`, `api_key.end`, every one `applies_to = unit`. **The one complete list is
   [../appendix/permission-catalog.md](../appendix/permission-catalog.md)**; this document keeps no second
   copy of it, because two copies drift for exactly the reason above.
 - **`grant_scope_type`**: `unit` (the only row that is not item-scoped), `event`, `person_group`,
@@ -528,6 +583,14 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 
 ## 13. Open issues
 
+- **Three questions about callers that are not people, registered rather than guessed at.** Round 16
+  designed the arriving integration and deliberately stopped there: this system's **own** writers are still
+  a NULL plus an `actor_label` ([F-25](../open-questions.md#f-25)), the case where nobody who could hold
+  `system.admin` can reach a screen has no mechanism ([F-26](../open-questions.md#f-26)), and calls going
+  *out* have no design at all ([F-27](../open-questions.md#f-27)).
+  [05e §17](05e-keys-and-callers.md) states each from this module's side; none of the three is answered by
+  adding a column to `api_key`, and a key is a poor fit for the first of them — **a sweep is not a caller
+  and should not have to authenticate.**
 - The complete permission catalog and real role definitions (§12) — needs your input. The question is
   **which starter grants are written with `MEMBERS` in the expression and which are not**: `role` has no
   `requires_membership` switch to carry the answer
@@ -539,7 +602,11 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   *grant* cannot exist — but a *caller* that asks `can(person, 'event.create', 'event', 1204, …)`
   gets the unit's answer rather than an error. **Assumption, not a ruling:** the honest answer is a
   refusal at the API layer naming the code and the scope, because a caller that asks that question has
-  a bug worth surfacing. Nothing in D-097..D-103 settles it.
+  a bug worth surfacing. Nothing in D-097..D-103 settles it. **Round 16 gave that word a second sense
+  and changed this answer not at all:** a call made with a key asks `can_key(api_key, 'event.create',
+  'event', 1204, …)` and is refused the same way, by the same layer, for the same reason
+  ([05e §16](05e-keys-and-callers.md#16-how-a-call-made-with-a-key-is-checked),
+  [D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
 - **`selector_depth_limit` (§8): moot — there is no such parameter to give a default**
   ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
   What the question was reaching for is live: **a bound on *height* does not bound what an expression

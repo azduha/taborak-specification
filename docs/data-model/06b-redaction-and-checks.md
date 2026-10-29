@@ -116,8 +116,28 @@ what the record said.
 - **Batches left in a non-terminal state for a long time.** Count `import_batch` rows whose
   status is none of `applied`, `reverted`, `failed` and which were created more than 30 days
   ago; non-zero means a run somebody stopped steering.
-- **Audit rows with no actor at all.** Count `audit_log` rows with neither an
-  `actor_person_id` nor an `actor_label`; any non-zero count is a forensic gap.
+- **Audit rows with no actor at all.** Count `audit_log` rows with none of an `actor_person_id`, an
+  `api_key_id` or an `actor_label`; any non-zero count is a forensic gap — a row that answers *who did
+  this* with nothing. The count runs over three columns because the trail has three ways to name an
+  actor: a person, a registered integration ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)),
+  and the free text still left for this system's own writers, which have no name yet
+  ([F-25](../open-questions.md#f-25)). **The third column is what keeps the report readable rather than
+  loud.** A row naming a key and nothing else is a complete answer to *who did this*, and a count that
+  looked only at `actor_person_id` and `actor_label` would report every integration write as a gap until
+  whoever reads it stopped reading; a row naming a label and nothing else stays the legal shape F-25
+  leaves open; a row naming none of the three is the gap, and is still one.
+  **What this check cannot catch, said because two rows a reader would want are not among them.** A row
+  naming a key *and* a person — the row a forensic reader most wants flagged — is never reported here.
+  It is illegal, and the rule carried by the two columns is what refuses it
+  ([05e-keys-and-callers.md §16](05e-keys-and-callers.md),
+  [D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)); a count over empty
+  columns cannot see a row whose columns are full. A row naming a key that no longer exists is stopped
+  before any count runs: `audit_log.api_key_id` is an ordinary reference and not one of the two
+  reference-less keys, and no key row is hard-deleted
+  ([00-conventions §4](00-conventions.md#4-deletion-policy)). What stays uncounted, and uncounted
+  everywhere in this section, is the pair no rule compares — a write audited against a key whose
+  `valid_to` or `revoked_at` fell *before* the row's `occurred_at`, which leaves every column filled and
+  this check, which reads emptiness rather than dates, silent.
 - **Tables whose write path does not audit.** Compare the business tables this system has —
   staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
   writing history that is never recorded. **Read this one carefully, because its meaning got worse

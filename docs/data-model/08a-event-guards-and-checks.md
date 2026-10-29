@@ -10,7 +10,10 @@ How authority reaches an event, what the module may assume, the three questions 
 
 ### The unit-authority rule, and `can_event()` — both deleted
 
-**Every event check goes through the ordinary `can()` and nothing else.** There is no
+**Every event check goes through the ordinary `can()` and nothing else** — or through `can_key()`, which is
+that same function's other door and takes no person
+([05c §10](05c-access-log-and-resolver.md#10-the-resolver)); an integration's call at `('event', 42)` is
+matched exactly the same way, by an allow at the unit or on that event. There is no
 `can_event(person, permission_code, event, at)` wrapper and no unit-authority rule for events:
 an event is an item like any other, and the resolver matches scope exactly. The person whose
 job is to run the organization's camps passes a check at `('event', 42)` because their allow is

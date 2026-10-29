@@ -23,8 +23,9 @@ The authorization model as one diagram, the tables behind it, and the expression
                                     ▼
  ╔═══════════════════════════════════════════════════════════════╗
  ║                         access_grant                          ║  THE ONLY TABLE THAT
- ║  person_id   ─┐  exactly ONE names the grantee: both is       ║  GRANTS (D-005). A grant at
- ║  audience_id ─┘  ambiguous, neither is meaningless            ║  the unit reaches EVERY item
+ ║  person_id   ─┐  exactly ONE of the three names the grantee:  ║  GRANTS (D-005). A grant at
+ ║  audience_id ─┤  two is ambiguous, none is meaningless; a key ║  the unit reaches EVERY item
+ ║  api_key_id  ─┘  is in no set, so it is read, never evaluated ║
  ║  scope_type ────►  grant_scope_type                           ║  of every type; a grant on
  ║               unit | event | person_group | role | document   ║  one item reaches that item
  ║  scope_id  ⇒ (polymorphic, NO foreign key; ABSENT exactly at  ║  and nothing else (D-099).
@@ -92,6 +93,7 @@ The authorization model as one diagram, the tables behind it, and the expression
    guardianship channel grants outright (D-113).                                   │
                                                                                    │
    can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
+   can_key(api_key, permission_code, scope_type, scope_id, at) ── same resolver, no person
    ──────────────────────────────────────────────────────────────────────────────
     0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
        item of every type; a personal deny beats an audience allow, because this step has
@@ -105,6 +107,11 @@ The authorization model as one diagram, the tables behind it, and the expression
        name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
        — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
     5  default DENY.
+   A KEY reaches steps 0, 1, 2 and 5 and no others: steps 3 and 4 each compare a person
+   against a row, and a key is not a person — so neither channel is refused by a rule of its
+   own, neither is reachable (D-118). can_key therefore takes no owner and no person of any
+   kind: that parameter would be the impersonation hole, because a claimed person is exactly
+   that — claimed (D-121).
    The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
    the audit names, never what the answer is. There is **no locality rule**: locality could
    only ever order allows against each other, and a boolean has nothing to order (D-099).
@@ -161,8 +168,10 @@ The authorization model as one diagram, the tables behind it, and the expression
   to be granted **by that body** — by the people who recruited its leader and can be asked. What
   remains is a permission held by a named adult, an audit trail whose payloads expire after two years,
   and a report of who holds the write, minus the part where the adult was somebody the body chose.*
-- **A grantee may be an audience.** `access_grant.person_id` and `audience_id` are mutually exclusive —
-  never both, never neither. An audience is **an expression over named sets**
+- **A grantee may be an audience, or a key.** `access_grant.person_id`, `audience_id` and `api_key_id`
+  carry exactly one value between them — never two, never none
+  ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+  An audience is **an expression over named sets**
   ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)):
   every operand is evaluated live and nothing is stored as a roster, a hand-written set is written
   `PERSON(a) + PERSON(b)` like any other set
@@ -183,6 +192,15 @@ The authorization model as one diagram, the tables behind it, and the expression
   Nothing else a rule names is deleted any more, and the empty set a `disabled` operand yields is
   somebody's deliberate act, not a failure. A person with no birth date is not such a failure either:
   that operand resolves perfectly well, and they are simply not in the set.
+- **A key is the third grantee, and it holds no expression.** The seeded `selector_type` registry keeps
+  its **thirteen** rows and none of them names a key, so there is nothing to compile for one and no set it
+  could join — `EVERYONE` is every *person*, so a key is not even in the widest operand
+  ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
+  What that keeps is this diagram's largest machinery unchanged: a grant naming a key is read as written,
+  `ruleset_version` keeps the two tables that bump it, and `api_key_id` is a **real foreign key**, so the
+  reference-less polymorphic keys stay the two they were. What it costs is that **"grant this to the
+  integrations" is not one sentence**: twelve integrations need twelve grants, and the thirteenth is a
+  write somebody performs.
 - **Nothing owns an event** ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
   The people connected to an event are named by operands that bind to it — `ORGANIZERS`, `PLACED`,
   `CONFIRMED`, `ATTENDED`, `ON_WAITLIST` — each a set the item itself defines. An operand is a set, not
@@ -243,6 +261,7 @@ erDiagram
     ACCESS_GRANT {
         uuid person_id FK
         integer audience_id FK
+        integer api_key_id FK
         string scope_type FK
         integer scope_id
         integer permission_id FK
@@ -260,6 +279,20 @@ erDiagram
         boolean is_system
         date valid_from
         date valid_to
+    }
+    API_KEY {
+        integer id PK
+        string code
+        string name
+        string secret_hash
+        date valid_from
+        date valid_to
+        timestamp last_used_at
+        uuid owner_person_id FK
+        uuid created_by FK
+        timestamp revoked_at
+        uuid revoked_by FK
+        string revoke_reason
     }
     PERSON_GROUP {
         uuid id PK
@@ -279,16 +312,23 @@ erDiagram
     PERSON ||--o{ ACCESS_GRANT : "is granted to"
     PERSON ||--o{ ACCESS_GRANT : "delegated by"
     AUDIENCE ||--o{ ACCESS_GRANT : "is granted to"
+    API_KEY ||--o{ ACCESS_GRANT : "is granted to"
     PERMISSION ||--o{ ACCESS_GRANT : "is its one code"
     GRANT_SCOPE_TYPE ||--o{ ACCESS_GRANT : "types the scope"
 ```
 
 **Key point:** `access_grant` is a pentagon of references and grants exactly one thing — a grantee
-(person **or** audience), a scope, **one** permission, an **effect**, a period
+(person **or** audience **or** key), a scope, **one** permission, an **effect**, a period
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
-Uniqueness follows the shape: at most one live **allow** per grantee, scope **and permission**, with
-denies deliberately outside the rule so a deny can sit beside an allow on the same item — that pair is
-the only way to say *"this person has the unit's events, except this one"*.
+Uniqueness follows the shape: at most one live **allow** per grantee, scope **and permission** — and
+because a unique index does not constrain a row whose grantee column is `NULL`, that one rule is
+**three** unique indexes, one counted over the rows naming a person, one over the rows naming an
+audience, one over the rows naming a key
+([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+Denies sit deliberately outside all three so a deny can sit beside an allow on the same item — that pair is
+the only way to say *"this person has the unit's events, except this one"*. A person, a set and a key are
+three grantees, so the same code on the same item may live once for each of them, and no row there is
+another one's duplicate.
 
 **No line leaves `scope_id`, and that is the diagram telling the truth.** The edge that exists runs to
 `grant_scope_type`, the seeded registry (`unit` — the only row with `is_item_scoped = false`, `event`,
@@ -312,7 +352,12 @@ The second arrow into `person` is `granted_by`, and it is drawn to a person beca
 The **act** of appointing is what `audit_log` holds, with its actor taken from the request context rather
 than from the row ([../data-model/06-audit-and-import.md §2](../data-model/06-audit-and-import.md#2-audit_log));
 the two are not one column's job, and every other actor column here (`access_grant.granted_by`,
-`person_group_member.added_by`) points the same way for the same reason.
+`person_group_member.added_by`) points the same way for the same reason. **The first actor column in this
+appendix that does not point at a person is on a trail, not in this diagram:** `access_log.api_key_id` and
+`audit_log.api_key_id` name the registered caller a request authenticated as, mutually exclusive with each
+trail's `actor_person_id` — a request is made by a person or by a key, never by both at once, so there is
+no actor column to disagree about and `on_behalf` is never set on a row whose actor is a key
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 
 **Names are one namespace.** `role.code`, `person_group.name` and a set `audience.code` are unique
 **together**, case- and separator-folded, and every `selector_type.code` is reserved — so a group called
@@ -417,7 +462,10 @@ registry row and nothing more: they are ordinary named operands, composed by `+ 
 the set they name changes with no write at all.
 
 **No leaf resolves to anything but people, and that is why there is no `GRANTS(…)`.** An operand resolves
-to a **set of people**, because a set of people is what a grantee is; a set of *grants* is a filter over
+to a **set of people**, because a set of people is what a grantee that is a set is — the two grantees that
+are not sets, one named person and one registered key, name a single bearer and are reached without this
+tree at all ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one));
+a set of *grants* is a filter over
 the grant list, and "these twenty rows, now also for that office" is something an editor does while
 finding the rows to act on, not something a stored grantee could ever be evaluated against. The bulk
 operation stays an affordance over the list, and the registry refuses the kind rather than leaving it

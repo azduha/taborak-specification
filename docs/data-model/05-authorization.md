@@ -4,8 +4,8 @@
 the shape of the check they add up to. Design rationale, in plain language:
 [../domain/06-authorization-model.md](../domain/06-authorization-model.md).
 
-**Section numbers are shared across the five parts** and never renumbered, because other
-pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
+**Section numbers are shared across the six parts** and never renumbered, because other
+pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues), and [05e](05e-keys-and-callers.md) §14–§17 (a key, and what it may hold).
 
 ---
 
@@ -16,7 +16,7 @@ permission ─────────────── the atomic capability. 
                             + where it may be granted:  applies_to  unit | unit_and_item
                             + read or write:            right_kind
 
-access_grant ───────────── THE ONE TABLE THAT GRANTS.   grantee (person | audience),
+access_grant ───────────── THE ONE TABLE THAT GRANTS.   grantee (person | audience | api_key),
                                                        scope ('unit' | exactly one item),
                                                        one code, effect (allow | deny),
                                                        period
@@ -36,6 +36,7 @@ audience_operand ───────── one node of that expression        
                           the reference edge to another tree)  edge to another audience)
 
 guardianship ───────────── authority over one PERSON: right_level   (04-relationships.md)
+api_key ────────────────── a caller that is nobody: a third grantee   (05e-keys-and-callers.md §14)
 access_log ─────────────── what was decided, and by what authority.
 ```
 
@@ -71,6 +72,7 @@ have in common is the temporal pattern every dated row in this system uses:
 | | `role_holder` | `access_grant` |
 |---|---|---|
 | Says | *this person holds this office in this period* | *this grantee may, or may not, do this one thing here* |
+| Who the row can name | **A person, always** | A person, a set of people, or a registered integration (§14) |
 | Carries authority | **No** — confers nothing (§3) | Yes; it is the only thing that does |
 | Scope | None. A role is held at the unit, because there is nowhere else | The unit, or exactly one item |
 | Decides | Whom a grant naming `ROLE(x)` reaches | Everything, for one code |
@@ -79,9 +81,16 @@ have in common is the temporal pattern every dated row in this system uses:
 
 **The row count is the price, and it was paid deliberately**
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
-One grant per code is what buys *"what exactly does this person have?"* answered by reading rows,
-and it costs the question *"what does `manage` give me on this event?"*, which has no answer because
-there is no such word.
+One grant per code is what buys *"what exactly does this person have?"* answered by reading rows —
+the same answer for a set of people, and the same answer for an integration (§15) — and it costs the
+question *"what does `manage` give me on this event?"*, which has no answer because there is no such word.
+
+**The grantee column grew a third kind in the same table and `role_holder` did not**, and the asymmetry is
+the model rather than an oversight: an office is held by a person because holding one is a thing a human
+does, and an office confers nothing anyway (§3). **A key holds no office, appears in no `role_holder` row,
+and is in no set that `ROLE(x)` could reach.** Its whole authority is the grant rows naming it, which is
+why auditing an integration means reading one list rather than reconstructing one
+([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
 
 ---
 
@@ -126,13 +135,17 @@ row constrains where a grant may sit.
 
 ### There is no wildcard permission
 
-A check for `X.y` is satisfied by **an exact allow of `X.y`**, or by `system.admin`, which is
-checked outright and is the only permission meaning *everything*.
+A check for `X.y` is satisfied by **an exact allow of `X.y`**, or by `system.admin`, which is checked
+outright and is the only permission meaning *everything* — **every code, whatever its `namespace`**, the
+`system` namespace's own nine rows included. What keeps it off an item is not a branch in the resolver
+but the value it is seeded with: `applies_to = unit`, refused at the save (*What `namespace` does*, and
+integrity check 3). A rule that qualified this one by namespace would be a rule about a namespace, which
+the section below forbids for every namespace ([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)).
 
 ```
 A check for permission 'X.y' is satisfied by:
     - an exact allow of 'X.y', OR
-    - an allow of 'system.admin'   (NULL-namespace permissions only)
+    - an allow of 'system.admin'
 ```
 
 **There are no `<resource>.admin` codes** — no prefix matching in the resolver, and none to come by
@@ -198,12 +211,19 @@ D-074's fail-closed posture rather than a ruling in D-099, and §11 has no check
 mis-marked `read` is visible to a human reading the catalog and invisible to the database, which is
 worth knowing before trusting it.
 
+**Of round 16's four new codes, `api_key.view` is the one marked `read`** — it is the read of a list. The
+three writes are `write`, as any code that lets its bearer mint a caller is. **The marking changes no
+answer**, in either direction: this column is consulted only by the guardianship channel, which asks about
+one child's record, and these four codes exist only at the unit — so a key never reaches the column, and
+neither does anything else. It is filled in because the column is required of every code, two values
+above (§2, *Rules*).
+
 ### What `namespace` does
 
 | `namespace` | What it means | Example |
 |-------------|---------------|---------|
 | absent | An ordinary code. | `membership.request.approve` |
-| `system` | A code about the system itself. It is **seeded `applies_to = unit`**, so no grant on an item can carry it, and the resolver no longer branches on the prefix. | `system.permission.edit` |
+| `system` | A code about the system itself. It is **seeded `applies_to = unit`**, so no grant on an item can carry it, and the resolver no longer branches on the prefix. | `permission.edit` |
 
 **The namespace selects no channel, for any namespace — and the guardianship channel is chosen by what
 a prefix could never express: whether the action is about a different person from the one performing it.**
@@ -520,6 +540,7 @@ D-099's lists of what is seeded, and §13 records it as one.
 | `id` | integer identity | Surrogate key. |
 | `person_id` | reference to person, optional | The grantee, when the grant names one person. |
 | `audience_id` | reference to `audience`, optional | The grantee, when the grant names a set (§8). Evaluated against the person being checked, per person, as a predicate — never as a list of ids. |
+| `api_key_id` | reference to `api_key`, optional | The grantee, when the grant names a caller that is nobody (§14). A key is in no set, so this row is read as written and never evaluated ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)). |
 | `scope_type` | reference to `grant_scope_type`, required | `unit`, or an item type. |
 | `scope_id` | integer, optional | The concrete item id. **Absent exactly when the scope type is not item-scoped** — that is, exactly at `unit`. **No foreign key: polymorphic by design.** See the note below. |
 | `permission_id` | reference to `permission`, required | **One code, not a bundle** ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)). What `level` used to stand in for, without the ladder. |
@@ -540,8 +561,12 @@ D-099's lists of what is seeded, and §13 records it as one.
 
 **Rules**
 
-- Exactly one of `person_id` and `audience_id` is set. A grant to neither is meaningless; a
-  grant to both would be ambiguous — any person in the audience, or only this one?
+- **Exactly one of `person_id`, `audience_id` and `api_key_id` is set.** A grant to none of them is
+  meaningless; a grant to two would be ambiguous — any person in the audience, or only this one? A grant
+  to both a person and a key would be a grant to a caller and a different caller at once, and there is no
+  reading of it. The three are named *together* because a rule with an unnamed third case is how a model
+  acquires an answer that depends on which column an implementation happened to look at first
+  ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
 - `valid_to` is either absent or strictly after `valid_from`.
 - `scope_id` is absent exactly at `unit` scope — and that is the whole of what the rule says. It
   constrains the absent case alone; `grant_scope_type.item_table` is what states which table an id
@@ -563,6 +588,15 @@ D-099's lists of what is seeded, and §13 records it as one.
 - **An audience grant cannot be delegated.** `is_delegated` requires `delegated_from`, which is a
   person, and delegating "everyone" is not a coherent act: if `audience_id` is set, `is_delegated`
   is false.
+- **A grant to an API key cannot be delegated either**, on the same reasoning and with the same test:
+  if `api_key_id` is set, `is_delegated` is false. Lending is one person's act towards another; a grant
+  to an integration carries the authority of whoever installed it rather than anybody's, so the rule
+  borrowed from the bullet above is not an extra burden here but the absence of a thing that was never
+  present. **The mandatory expiry is refused for a key too**, for the same reason: that expiry exists to
+  stop a loan outliving its reason, and there is no loan to expire
+  ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+  **One rule over three grantees, not a third rule for the third grantee**
+  ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
 
 ### Inheritance, stated once
 
@@ -589,7 +623,7 @@ a special clause for that ("`system.admin` qualifies whatever the checked scope 
 because organization scope and unit scope were different tiers. With one unit scope and plain
 inheritance, the clause has nothing to fix.
 
-### The uniqueness rule has to be careful with audiences
+### The uniqueness rule has to be careful with grantees
 
 The obvious index — one live grant per (grantee, scope) — never worked, because a person can
 legitimately hold a **personal** grant *and* be covered by an **audience** grant on the same item,
@@ -606,20 +640,27 @@ the second of them.
   person and are open, unrevoked, and `effect = allow`.
 - **At most one live allow per (audience, scope, permission)**, counted the same way over the rows
   that name an audience.
-- A person and an audience are **different grantees**, so the same code on the same item may exist
-  once for the person and once for a set they are in. It grants nothing extra and it is not an
-  error; it is two people's decisions about the same capability, which is what the grantee pair has
-  always meant.
+- **At most one live allow per (key, scope, permission)**, counted the same way over the rows that name
+  an API key.
+- A person, an audience and a key are **three different grantees**, so the same code on the same item may
+  exist once for the person, once for a set they are in, and once for an integration. It grants nothing
+  extra and it is not an error; it is a decision about the same capability written more than once, which is
+  what the grantee column has always meant. **A key's row is not a second copy of a person's**, and no row
+  here is read as another one's duplicate
+  ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
 
 **Indexes**
 
-- person, audience and scope lookups, each restricted to open rows;
+- person, audience, key and scope lookups, each restricted to open rows;
 - **a deny-only index over open rows with `effect = deny`, keyed by grantee, scope and permission** —
   the deny lookup runs on every check, at every scope, and it is the first thing the resolver does.
 
-**Denies are excluded from both unique indexes**, so a deny may coexist with an allow on the same
+**Denies are excluded from all three unique indexes**, so a deny may coexist with an allow on the same
 grantee, scope and code — which is exactly what makes an explicit deny meaningful. A **personal deny
-beats an audience allow**, because the deny check runs first and is scope-independent (§10).
+beats an audience allow**, because the deny check runs first and is scope-independent (§10). **A deny
+aimed at a key defeats that key's allows and nobody else's**, and a deny aimed at the person who installed
+a key does not touch the key at all: deny is absolute over the grantee it names, and these are different
+grantees ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
 
 ### `effect`, and why a `-` in an expression is not a deny
 
@@ -665,7 +706,7 @@ they should be able to.
 
 ### What is refused when a grant is saved
 
-**Five checks, one transaction, each with the layer named** — because none of them is a database
+**Six checks, one transaction, each with the layer named** — because none of them is a database
 rule, and D-081 forbids writing them as if one were:
 
 1. **The code may be granted at this scope.** `permission.applies_to` permits the scope shape
@@ -691,8 +732,15 @@ rule, and D-081 forbids writing them as if one were:
    of §11 item 2, and the null-code case is that item's neighbour in item 12. **A leaf pointing at an
    unnamed audience is refused rather than resolved-at-read**, because resolving it later would make a
    grant's reach depend on whether somebody had typed a code into a different screen.
+6. **A code that a key may never hold is not granted to a key.** `system.admin` and the four
+   `api_key.*` codes are refused when `api_key_id` is set ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined),
+   [§15](05e-keys-and-callers.md)). **This is the sharpest of the six, and the reason it is here rather
+   than in a constraint is worth stating:** the other five read columns — this one reads a list of five
+   codes that is a column of nothing at all, an equality written against named rows precisely so that no
+   rule can derive it and widen it. No database rule can span it, so **integrity check 20 (§11) is the
+   entire net** for rows that were written before the rule existed or by a path that skipped the save.
 
-**Why the save path and not the check path, said once for all five.** A grant that cannot mean
+**Why the save path and not the check path, said once for all six.** A grant that cannot mean
 anything is a data-entry mistake, and a data-entry mistake is refused where the person making it is
 standing. The resolver's job in the same situation is the opposite and is already fixed: an operand
 that does not resolve is the empty set, so anything that slips past these checks denies rather
@@ -700,7 +748,7 @@ than widens (§8, *Evaluation*) — **except through `-`, where an empty operand
 these are refusals and not warnings.** Checks 3 and 4 (§11) report what got through, and a row there
 means the write path was skipped — there is no constraint to have disabled.
 
-**A sixth refusal lives on the other screen.** Ending or deleting an *audience* is refused while a live
+**A seventh refusal lives on the other screen.** Ending or deleting an *audience* is refused while a live
 grant, or a live audience reachable from one, names it (§8, *Rules*). It is listed here only so that a
 reader of this section does not conclude the grant save is the whole write path.
 

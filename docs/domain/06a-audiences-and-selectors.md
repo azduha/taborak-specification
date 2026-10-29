@@ -1,15 +1,19 @@
 # Audiences and Selectors
 
-The language a grant is aimed at a set of people in: the expression grammar, the seeded selector
-registry, the rules that keep the tree safe, and what a grant's reach is recorded in. This is the
-audience half of [06-authorization-model.md](06-authorization-model.md) and continues its numbering at
-§6.2 — read that page first for scopes, channels, grants, the resolver and precedence.
+The language a grant is aimed at a set of **people** in: the expression grammar, the seeded selector
+registry, the rules that keep the tree safe, and what a grant's reach is recorded in. Every set this
+language names is a set of people, and a grant may instead name one person or one registered key — and
+a key is inside no set this language can name
+([06 §10a](06-authorization-model.md#10a-a-key--a-caller-that-is-not-a-person)). This is the audience half
+of [06-authorization-model.md](06-authorization-model.md) and continues its numbering at §6.2 — read that
+page first for scopes, channels, grants, the resolver and precedence.
 
 ### 6.2 Audiences — an expression over named sets
 
-A grant names a **person or an audience, never both**
-([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)). An
-audience is **an expression over named sets of people**, stored as a tree of binary nodes and aimed at
+A grant names a **person, an audience or a registered key — exactly one of the three, never two**
+([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals),
+[D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+An audience is **an expression over named sets of people**, stored as a tree of binary nodes and aimed at
 by a grant
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 Fields, storage rules and the write-path checks are in
@@ -187,6 +191,17 @@ fourteenth is a decision entry plus a seed row
 ([F-5](../open-questions.md#f-5)).
 A count printed in prose is a count somebody has to reprint when the table changes, and no check prints
 it, so the registry row set is the number.
+
+**A key can never be one of them.** No selector names a registered caller, no operand may hold one in
+either of its reference arms, and a fourteenth row for "the integrations" was offered and refused: **a
+caller is one row and never a set**, for the same reason an office is one person and never a rule — a set
+is the wrong grain for a thing that must be individually revocable. So a grant aimed at integrations is
+one grant per caller, and there is no set they are all in, `EVERYONE` included, since that operand reads
+*any person*. **The registry stays at thirteen**, and the module's largest machinery is untouched: nothing
+about a key is compiled, and `ruleset_version` still bumps on `audience_operand` plus `selector_type` and
+on nothing else
+([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one),
+[06 §10a](06-authorization-model.md#10a-a-key--a-caller-that-is-not-a-person)).
 
 **Bound operands — the argument-less forms — are the important half, and they exist to kill a specific
 flaw.** `ATTENDED(<event 1204>)` written on event 1204 is one grant per event with the event's own id
@@ -419,4 +434,4 @@ This page promises no other answer and stores no list that would be one.
   trigger is a materialized table **on its own merits** — a performance structure with a per-person
   invalidation handle and a stated staleness window, not a way back into the past ([06 §8](06-authorization-model.md#8-there-is-no-permission-cache-and-what-replaces-it)).
 
-*Decisions behind this page: D-011, D-042, D-060, D-061, D-062, D-067, D-074, D-081, D-088, D-091, D-098, D-100, D-101, D-102, D-103, D-104, D-105, D-107, D-109, D-110, D-111, D-112, D-113.*
+*Decisions behind this page: D-011, D-042, D-060, D-061, D-062, D-067, D-074, D-081, D-088, D-091, D-098, D-100, D-101, D-102, D-103, D-104, D-105, D-107, D-109, D-110, D-111, D-112, D-113, D-116, D-117.*

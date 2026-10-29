@@ -3,8 +3,8 @@
 The storage half of §8: the `audience_operand` tree itself, the namespace rule,
 what each operand costs, and how a tree is evaluated.
 
-**Section numbers are shared across the five parts** and never renumbered, because other
-pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
+**Section numbers are shared across the six parts** and never renumbered, because other
+pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues), and [05e](05e-keys-and-callers.md) §14–§17 (a key, and what it may hold).
 
 ---
 
@@ -346,7 +346,9 @@ predicate, not a set** (§*Author in sets*).
 A grant applies when **one** grant row satisfies all of these. These are conditions on a single row,
 tested together — their order carries no meaning:
 
-1. The grant names an audience; a personal grant is not this question's business.
+1. The grant names an audience; a grant naming one person, or one registered key, is not this question's
+   business — neither is a set, so neither is evaluated here at all
+   ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
 2. Its `scope_type` is the scope type being checked, and its `scope_id` matches the scope id being
    checked, with an absent id counting as equal to an absent checked id.
 3. Its `effect` is `allow` — denies belong to the channel that runs first (§10).

@@ -9,8 +9,8 @@ The permission system end to end. This is the document to read if you read only 
 > A grant at the unit reaches every item of every type; a grant on an item reaches that item and
 > nothing else. There is no tier between them and nothing to test.
 >
-> **A grant** is: a grantee (a person or an audience) + a scope + **one permission code** + an
-> effect of **allow** or **deny** + a period.
+> **A grant** is: a grantee (a person, an audience **or** a registered key — exactly one of the
+> three) + a scope + **one permission code** + an effect of **allow** or **deny** + a period.
 >
 > **The answer.** Allowed when some live allow applies **and** no live deny applies. There is no
 > level, nothing is inherited downward, and no nearer grant beats a further one — because once the
@@ -18,18 +18,23 @@ The permission system end to end. This is the document to read if you read only 
 >
 > **Roles and groups are not sources of authority.** They are named sets of people that a grant aims
 > at.
+>
+> **A caller is a person or a registered key.** A key is one row naming one integration that calls this
+> system from outside it, installed by a named person. It is a third kind of **grantee**, reached by the
+> grant channel and by nothing else, and it is in none of the sets above (§10a).
 
 ---
 
 ## 1. The three channels of authority
 
-Every question of the form "may person P do X?" is answered by consulting three mechanisms. They
-are separate because they have different lifetimes, different granters, and different revocation
-semantics.
+Every question of the form "may this caller do X?" — a person, or a registered key — is answered by
+consulting three mechanisms. They are separate because they have different lifetimes, different
+granters, and different revocation semantics. **Only the first of the three reaches a key**
+([§10a](#10a-a-key--a-caller-that-is-not-a-person)).
 
 | # | Channel | Question it answers | Where the answer comes from | Reaches |
 |---|---------|--------------------|-----------------------|---------|
-| 1 | **Grants** | What has this person, **or this set of people**, been given? | `access_grant`, aimed at a person or an `audience` | The unit, or one item |
+| 1 | **Grants** | What has this person, **this set of people**, or **this registered key** been given? | `access_grant`, aimed at a person, an `audience` or an `api_key` | The unit, or one item |
 | 2 | **Guardianship** | What may this person do *regarding this child*? | `guardianship.right_level` compared with `permission.right_kind` | One dependent |
 | 3 | **Resource ownership** | Is this *their own* data? | (derived) | The row's owner |
 
@@ -56,7 +61,9 @@ matter:
   claim it cannot support
   ([D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)).
 - **Channel 1 is the only channel that can name a set** rather than a person
-  ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
+  ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)) —
+  **and it is the only channel that reaches a key**, which is neither a set nor a person (§10a,
+  [D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
   A guardianship is between two named people and an owner is one person. **That is a boundary, not an
   oversight** — it is why an office can be *aimed at* but never *held by* a rule (§4,
   [F-12](../open-questions.md#f-12)).
@@ -197,9 +204,11 @@ name ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entere
 `system.admin`. There is no `<resource>.admin` wildcard and no prefix match in the resolver
 ([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
 
-**An office is a stack of rows, not one word.** The catalog holds 66 codes, and a broad office is a
-couple of dozen rows
-([appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
+**An office is a stack of rows, not one word.** The catalog holds seventy codes — the sixty-six this page
+counted, plus the four `api_key.*` rows
+([catalog §8b](../appendix/permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody)) — and a broad
+office is a couple of dozen rows
+([catalog §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
 *Why:* that is the price of *"what exactly does this person have?"* being answerable by reading rows,
 and the reason there is no word like `manage` whose contents a reader would have to look up. Roles
 and audiences are the bundle, and nothing else is
@@ -309,15 +318,18 @@ A grant is the whole of channel 1, and its shape is the whole of this section:
 
 > **grantee + scope + one `permission_id` + effect + period.**
 >
-> **Grantee:** a person **or** an audience, never both and never neither. **Scope:** the unit, or
-> exactly one item. **Effect:** `allow` or `deny`. **Period:** `valid_from`, `valid_to`, live on the
-> checked date.
+> **Grantee:** a person, an audience **or** a registered key — exactly one of the three, never two and
+> never none. **Scope:** the unit, or exactly one item. **Effect:** `allow` or `deny`. **Period:**
+> `valid_from`, `valid_to`, live on the checked date.
 
 Plus provenance: `granted_by`, `granted_at`, `grant_reason`, and for a lent authority `is_delegated`
 with `delegated_from` naming who it came from (§9).
 
 **One code per grant, not a set.** That is what makes the answer readable: *"what exactly does this
 person have?"* is a list of rows, and *"who else can do this?"* is the same list read the other way.
+**The list is the same shape for every grantee** — what a set of people holds and what a key holds are
+read off these same rows, which is why auditing an integration is reading one list rather than
+reconstructing a second one (§10a).
 
 **Writing a grant is itself an authorized act:** creating one requires `access_grant.create` at the
 matching scope. Composing an expression grants nothing (§6.2).
@@ -331,8 +343,8 @@ is elaboration.
 serve: *"exclude her from what the unit grants everyone."*
 
 **`-` in an expression is not a deny, and the two are not interchangeable.** Subtracting a set narrows
-**one grant's reach**. A deny defeats **every grant** that applies to that person, including ones
-written elsewhere, later, or by somebody else. The first cannot express *"she must not have this,
+**one grant's reach**. A deny defeats **every grant** that applies to the grantee it names — a person, a
+set, or a key — including ones written elsewhere, later, or by somebody else. The first cannot express *"she must not have this,
 whatever else she is given"*, which is
 [D-013](../decisions/round-01a.md#d-013--explicit-deny-revoked-is-checked-before-everything)'s whole
 reason for existing: a court-ordered restriction must not be beatable by a broader grant someone
@@ -375,6 +387,20 @@ touched has an owner, the caller passes the owner too, because one step below ne
 record this is. The answer is allowed or denied; the function has no other output, and no part of it
 is stored. (Field names and the exact signature are in
 [data-model/05 §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).)
+
+**Two doors, and the same function behind both.** That call is
+`can(person, permission_code, scope_type, scope_id, at, owner_person_id)`. A caller that is not a person
+enters through `can_key(api_key, permission_code, scope_type, scope_id, at)`, **which takes one fewer
+argument, and the missing parameter is the design**
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)): no owner, and no
+person of any kind, so nothing can be passed in that claims to be somebody. It is not an omission to be
+filled in later. A claimed person would turn the trail's word for *who acted* into an input, and
+`on_behalf` is defined against inference precisely because the relationships it records can be
+*derived* from a channel — which a key has none of. So there is no request "made by the accounting
+system, acting as the treasurer", and a copied secret cannot reach a child's record by typing that
+child's id into a field while the trail says a person did it. **A request authenticates as a person or
+as a key, never as both**, and in both audit trails `actor_person_id` and `api_key_id` are mutually
+exclusive.
 
 The steps run in this order:
 
@@ -430,6 +456,18 @@ ones, and step 2's "says nothing" fall-through — and neither order is load-bea
 What is ordered, and must stay so, is step 0: the deny is asked first and can defeat every allow below
 it ([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)).
 
+**A key walks these same five steps, and two of them can never answer.** Step 0 counts only when the deny
+names *this key*; a deny aimed at a person, or at a set a person is in, is not consulted at all, because
+a key is in no set and is not that person (§10a). Step 3 reads the live rows naming the key instead of
+the rows naming a person or a set containing them, and step 4 is the answer for an integration holding
+nothing — the same default deny everyone else gets, and the whole reason a key's authority is its grants
+in full and only. **Steps 1 and 2 are not reached rather than refused:** ownership asks whether the owner
+*is* the actor and guardianship asks whether the actor is a party to a `guardianship` row, and neither
+question can be evaluated with a key in the actor's place. Nothing was added to refuse them. And a check
+for a key that does reach yes records `unit_grant` or `item_grant` exactly as a person's does, with the
+grant row for its reference — **what the trail gains is *who*, not *how***, and there is no seventh
+channel ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+
 Points worth stressing:
 
 - **Default deny.** Step 4. Any new resource starts with nobody able to touch it.
@@ -440,8 +478,9 @@ Points worth stressing:
   allow and **widens** a deny, so fail-closed arithmetic is what the expression says, not what safety
   wants — which is why the answer to a failing operand is a report and not a refusal
   ([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
-- **A grant may name an audience instead of a person.** The grantee is resolved by the expression in
-  §6.2; the scope and the code are resolved exactly as for a personal grant.
+- **A grant may name an audience instead of a person, or a key instead of either.** An audience is
+  resolved by the expression in §6.2; a key names itself, so there is nothing to resolve. Either way the
+  scope and the code are resolved exactly as for a personal grant.
 - **Effective permissions are never stored.** They are computed per request. A stored permission
   snapshot *will* drift from the grants that produced it — the only question is how long before anyone
   notices. There is a second reason to keep that question open: the snapshot is also the only artefact
@@ -466,7 +505,7 @@ The four things a writer needs to be able to say:
 | gate an office on a current membership | `MEMBERS * ROLE(x)` |
 | leave a whole office ungated | `ROLE(x)` — the same expression without `MEMBERS` |
 | waive it for one named person inside a gated rule | `MEMBERS * ROLE(x) + PERSON(y)` |
-| apply it to nobody: ownership, guardianship, and any grant aimed at a person | nothing — a channel has no expression, and a personal grant has none (§5) |
+| apply it to nobody: ownership, guardianship, and any grant aimed at a person or a key | nothing — a channel has no expression, and a grant aimed at one person or one key has none (§5) |
 
 The third row is also writable without a selector: "and also him" is a second grant aimed at that
 person, which is how the waiver looks when the writer would rather not touch the expression everyone
@@ -544,6 +583,15 @@ local enough to override a suspension
 [D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)'s first half,
 which is the whole of its surviving content).
 
+**Absolute over the grantee it names, and over no other.** A deny on a person leaves a key standing, and
+a deny on a key leaves the person who installed it standing, because a key is a different grantee and a
+deny defeats the allows of the grantee it names (§10a,
+[D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+Absoluteness is undiminished, and the reach of one deny row is **per grantee**: **the instrument this
+design reaches for first when somebody must stop reading children's records reaches one grantee and not
+the others.** Safeguarding review therefore reads one grant list holding three kinds of grantee, which is
+why the permissions page lists keys beside people (§10a).
+
 **A deny is also never subject to the membership test, in either direction.** A deny blocks someone
 who is not a member, which is obvious. What is worth stating: a deny **to an audience** blocks the
 people in that audience whether or not they are current members, because the deny is evaluated against
@@ -608,9 +656,15 @@ so a cache keyed by it would be a stored answer to "who was at this event", whic
 declined to make permanent.
 
 **What may never be stored again is invariant 19** (§11 of
-[data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)): **no row,
-table or field may map a person — or a person and a code, or a person and an item — to a permission
-answer.** Its enforcement is structural, which is the best kind this corpus has: **the schema has
+[data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)):
+**no row, table or field may map a caller — a person, or a key — or a caller and a code, or a caller and
+an item, to a permission answer**
+([D-123](../decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)). The subject is a
+caller rather than a person because *"the integration's permissions"* is the most natural such table in
+this system to write, it reads like configuration rather than like a cache, and a table keyed by
+`api_key_id` and `permission_code` holding a boolean is precisely a current answer.
+`api_key.last_used_at` is not one — it says an event happened, and nothing reads it to decide whether to
+allow something now. Its enforcement is structural, which is the best kind this corpus has: **the schema has
 nowhere to put one.** The residue is named rather than glossed — an implementer who wants a cache back is
 stopped by this page and by review, not by a constraint, so for them it is **a convention, not a guard**
 ([D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)),
@@ -719,10 +773,116 @@ Stated explicitly, because each is a common and expensive mistake:
 | **Treating an organization-scoped role as universal "so the registrar can work"** | Everything is unit data; there is no second side of that distinction | If a permission is missing, add the permission — §2.1 |
 | Role → permission mapping hardcoded in the app | Cannot be reviewed by the organization, cannot change without deployment | Grant rows naming `ROLE(x)` — readable, and the answer to "what may a treasurer do?" |
 | Deriving access from guardianship without a right | Authorization by identity is unauditable and unsafe | The explicit right level on the `guardianship` row, compared against `right_kind` |
+| **A key acting as a person — "the accounting system, acting as the treasurer"** | It turns the trail's word for *who acted* into an input, and a copied secret would read any child's record while the trail named a person who did nothing | `can_key` takes no person — §6, §10a; a system acting *for* a person carries that person's own credential. D-121 |
+| **A synthetic `person` row for an integration, or an office for "the integrations"** | It lands inside `EVERYONE`, shows up in every safeguarding report as a person who may read children's records, and makes a stolen key a set rather than one revocable row | One registered key, one set of grants per caller — §10a, D-117 |
 | Deleting a grant to revoke it | Loses the record of what was revoked when | `valid_to`, and a `deny` when the *fact* of the restriction matters |
 | A live deny that matches no allow | A deny that denies nothing is how a stale restriction survives its reason | The dead-weight-deny report — §5 |
 | Two authorization implementations | They diverge; the weaker one becomes the exploit | One resolver, §6 |
 | Unit leader sees all member data by default | Fails safeguarding review | Scoped grants, resolved per operation — and §2 on the protection that is not in the model |
+
+---
+
+## 10a. A key — a caller that is not a person
+
+An integration that calls this system from outside it is **not a person with an account**. It is a
+**registered key**: one row naming one caller, carrying a stable code so that a grant and an audit row
+name the same integration years later, and holding **one live secret** that is shown once and kept only as
+a hash. Rotating replaces that hash on the same row, so **there is no window in which two secrets work**,
+and rotating is therefore a coordinated act with whoever holds the secret
+([D-119](../decisions/round-16.md#d-119--a-key-is-one-row-holding-one-live-secret-and-it-rotates-in-place)).
+It is the third kind of grantee (§5), it rides the grant channel (§1, channel 1) and no other, and it is
+in none of the sets of people the language names (§6.2).
+
+**Registered, by a named person.** Installing a permanent outside authority is the most sensitive write
+this module offers, so the act has to be somebody's. Nothing else about a key is a new kind of thing: it
+holds grants the way a person holds grants, it is checked by the same resolver, and a check answered for
+it records the same channels
+([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+
+> **What a key is not.** Not a **channel** — there are still three, and a key's allowed check names
+> `unit_grant` or `item_grant`. Not a **scope**: a key is not a grantable item, so no grant is ever written
+> *on* one, only *by* one. Not a **set's member** — nothing in §6.2 can name one, `EVERYONE` least of all.
+> And not a **person**, which is what the four consequences below repeat from four directions.
+
+Four consequences carry the design, and each of them refuses something that would have been cheaper:
+
+1. **A key is never inside an expression.** No selector names one and the registry keeps its thirteen
+   rows; `EVERYONE` is *any person, including those with no account and no membership*, so a key is in
+   nobody's set, its own included. A key has no expression, so there is nothing to compile and nothing to
+   memoize about one, and §8's compilation — keyed by an expression root and `ruleset_version`, whose
+   trigger stays `audience_operand` plus `selector_type` — is untouched by everything in this section
+   ([D-117](../decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
+   What that costs is that *"grant this to the integrations"* is not writable in one sentence: twelve
+   integrations are twelve grants, and a thirteenth is a write somebody performs rather than an edit to
+   one rule. There is no *"take integrations out of everything `MEMBERS` touches"* lever either, and a
+   grant to a key cannot carry `MEMBERS`, because it has no expression to carry it in (§6.1).
+2. **Two of the three channels cannot fire for a key.** Ownership compares a person's id against a row;
+   guardianship needs an actor who is a party to a `guardianship` row. Neither is refused by a rule —
+   neither is reachable, because each is a comparison against a person. **A key's authority is its
+   grants, in full and only** ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+3. **A deny is absolute over the grantee it names, and over no other** (§7.1): a deny on a person leaves
+   a key standing, and a deny on a key leaves the person who installed it standing.
+4. **A key never carries a person's authority** (§6). `can_key` has no person parameter, so impersonation
+   is refused by the shape of the call rather than by a check inside it, and in both trails
+   `actor_person_id` and `api_key_id` are mutually exclusive
+   ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). A grant to a key is
+   never a delegation either — `is_delegated` needs `delegated_from`, which is a person, and there is no
+   person here to lend anything (§9).
+
+**What a key may be granted, and the five codes it may never be granted.** Four codes exist to
+administer keys, all unit-scoped and none of them under a `system.` prefix: `api_key.view` (`read`), and
+`api_key.create`, `api_key.rotate`, `api_key.end` (`write`, each 🔒) — the rows and their reasoning are in
+[the catalog](../appendix/permission-catalog-a-codes.md). No seeded office holds any of the four, and
+whoever holds `system.admin` already satisfies every one of these checks, because `system.admin`
+satisfies every code
+([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)):
+**the capability to install a permanent outside authority is the capability to escalate**, and it arrives
+through the one grant channel like every other code — there is no second route and no office that quietly
+has it. **Five codes may never be granted to a key: `system.admin` and those four**, refused when the
+grant is saved and counted by integrity check 20 afterwards, since no database rule spans a permission
+and a grant. A bearer secret holding *everything* is the whole organization in a request header, and a key
+holding `api_key.create` mints its own replacements, so rotating a stolen key means looking for the rows a
+thief installed. One sentence covers both halves — **a key may not change what a key can do, and may not
+become everything** — and, like every other list of refused codes in this design, it is an equality
+against named codes rather than a rule that generates a set
+([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+A key is not itself a grantable item, so *"rotate the accounting key and no other"* is not writable:
+anyone who may issue a key may issue any key, which is the accepted shape at this scale and is recorded as
+an unpaid debt rather than as a feature.
+
+**A key outlives whoever installed it, and a report is the control.** `created_by` is required and is
+attribution for an act, not a dependency of the authority: the installer's account being suspended, their
+membership lapsing, a deny written against them and their leaving all change nothing about the row
+([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+`owner_person_id` is optional and is **a contact, not a channel** — *who do we telephone when this stops* —
+and nothing reads it to decide an answer. `valid_to` is optional and absent means current: **a mandatory
+expiry was offered and refused**, because a key is not a delegation (§9) and an expiry would buy a
+stopped integration on a date, with the failure surfacing wherever that integration writes. The control is
+a line on the permissions page's `Unusual` tab — every live key, what it holds, when it was last used, and
+whether its owner still has an account, keys listed beside people so a safeguarding review reads one list
+— and **there is deliberately no age threshold**: the report prints an age and a person decides whether it
+is old. What that costs is stated as plainly as it should be: a forgotten key is live forever unless
+somebody reads a list, and a copied secret cannot be recalled.
+
+**What is deliberately not designed here.**
+
+- **What this system does to itself is still a NULL.** The 1 January sweep, payload reduction,
+  migrations and the bank statement pull still name themselves in a free-text label while a key names
+  itself as a row. The asymmetry is known and covered by the forensic-gap check; naming those writers is
+  [F-25](../open-questions.md#f-25), and a key is a poor fit for them, because a sweep is not a caller and
+  should not have to authenticate.
+- **A way in when nobody who could hold `system.admin` can log in** is break-glass, and this is not it: a
+  key is not a person, carries nobody's authority, and cannot hold the corpus's break-glass code
+  ([F-26](../open-questions.md#f-26)).
+- **The outbound direction.** Everything above is a caller arriving. An export, a refund, anything this
+  system pushes rather than is asked for has no design
+  ([F-27](../open-questions.md#f-27)).
+- **Nothing about the wire** — how a secret is presented, what it looks like, how a session survives a
+  login. [D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
+  is the standing division, and what is decided here is only what may be stored: a hash, and nothing else.
+- **No rate limiting, no IP allowlist.** Either would be a second, weaker authorization implementation,
+  which §10 rejects because *they diverge; the weaker one becomes the exploit*. A rate limit is an
+  availability measure and earns no permission code.
 
 ---
 
@@ -750,9 +910,19 @@ Stated explicitly, because each is a common and expensive mistake:
   ([06a](06a-audiences-and-selectors.md#what-a-grants-reach-is-recorded-in),
   [F-7](../open-questions.md#f-7),
   [F-17](../open-questions.md#f-17)).
+- **What is this system's own name when it writes to itself?** An outside caller is a row; the 1 January
+  sweep, payload reduction, migrations and the bank statement pull still sign themselves with free text in
+  a label, and a key is the wrong shape for them — a sweep is not a caller and should not have to
+  authenticate ([F-25](../open-questions.md#f-25)).
+- **A way in when nobody who could hold `system.admin` can log in.** Break-glass has no design, and a key
+  is no stand-in for it: a key is not a person, carries nobody's authority, and may never hold that code
+  ([F-26](../open-questions.md#f-26)).
+- **The integration this system calls.** Everything §10a designs is a caller arriving; who authorizes an
+  export, a refund or a pull — and whether a permission code and an actor are even the right shape for what
+  is a job — is open ([F-27](../open-questions.md#f-27)).
 
 All tracked in [../open-questions.md](../open-questions.md).
 
 ---
 
-*Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114.*
+*Decisions behind this page: D-005, D-011, D-013, D-019, D-031, D-032, D-042, D-045, D-052, D-053, D-068, D-069, D-070, D-071, D-072, D-074, D-077, D-079, D-080, D-081, D-083, D-086, D-088, D-090, D-097, D-098, D-099, D-100, D-102, D-103, D-105, D-106, D-107, D-109, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123, D-124.*

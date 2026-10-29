@@ -100,6 +100,7 @@ nav:
           - The Expression Tree: data-model/05b-expression-tree.md
           - Access Log and Resolver: data-model/05c-access-log-and-resolver.md
           - Invariants and Seed Data: data-model/05d-invariants-and-seed.md
+          - Keys and Machine Callers: data-model/05e-keys-and-callers.md
       - Audit and Import:
           - data-model/06-audit-and-import.md
           - The Import Pipeline: data-model/06a-import.md
@@ -132,6 +133,7 @@ nav:
           - Round 13: decisions/round-13.md
           - Round 14: decisions/round-14.md
           - Round 15: decisions/round-15.md
+          - Round 16: decisions/round-16.md
       - Open Questions: open-questions.md
 
 site_url: https://azduha.github.io/taborak-specification/

@@ -3,8 +3,8 @@
 What a check writes down, and the one place in the system that computes an
 answer.
 
-**Section numbers are shared across the five parts** and never renumbered, because other
-pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
+**Section numbers are shared across the six parts** and never renumbered, because other
+pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues), and [05e](05e-keys-and-callers.md) §14–§17 (a key, and what it may hold).
 
 ---
 
@@ -18,9 +18,10 @@ The audit trail. Append-only; no updates, no deletes.
 |---|---|---|
 | `id` | integer identity | Surrogate key. |
 | `occurred_at` | timestamp, audit time | Default now. |
-| `actor_person_id` | reference to person, optional | Who performed the action. Absent for system actions. |
+| `actor_person_id` | reference to person, optional | Who performed the action, when a person did it. **Set together with `api_key_id` never; with neither never** — a row naming neither is this system writing to itself, which has no name yet ([05e §17](05e-keys-and-callers.md), [F-25](../open-questions.md#f-25)). |
+| `api_key_id` | reference to `api_key`, optional | Which registered integration performed the action, when one did. **This is the trail's answer for a caller that is nobody**: the row names a row rather than a free-text label, and nothing about the person who installed that key is implied by it ([05e §14](05e-keys-and-callers.md)). |
 | `subject_person_id` | reference to person, optional | Whose data was affected. Differs from the actor when acting on behalf. |
-| `on_behalf` | boolean | Default false. True when the actor and the subject differ and the action was performed **for** the subject — guardianship, delegation. See [04-relationships.md](04-relationships.md) §6. |
+| `on_behalf` | boolean | Default false. True when the actor and the subject differ and the action was performed **for** the subject — guardianship, delegation. See [04-relationships.md](04-relationships.md) §6. **A key's row never sets it, because a key has no subject it acts for**: an integration writing a person's row acted as itself, and `subject_person_id` alone says whose record moved ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). |
 | `authorization_channel` | enum: `deny`, `ownership`, `guardianship`, `unit_grant`, `item_grant`, `none`, or absent | Which channel answered this. Makes the audit answerable: "by what authority did this person do that?" `deny` records that a deny row defeated the allows; `none` records that nothing answered at all. **Six values, and `role` is not one of them**: there is no role channel to name ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)), and `system` was never a channel rather than a namespace. **An answer of `role` in an old row is now unreadable by the model that reads this table**, which is the honest state of a historical value: the audit trail keeps the word that was written, and nothing can keep a channel that no longer exists. |
 | `authorization_ref_id` | integer, optional | No foreign key: it names a row in one of several tables — `access_grant.id` or `guardianship_permission.id`. Lets an auditor go directly to the grant that permitted the action. |
 | `permission_code` | text, optional | The permission checked, as its code. Absent for pure read events that are logged for access-trail purposes rather than permission decisions. |
@@ -41,16 +42,25 @@ The audit trail. Append-only; no updates, no deletes.
 **Rules**
 
 - A `denied` result carries a `denial_reason`. There is no unexplained denial in this table.
+- **`actor_person_id` and `api_key_id` are mutually exclusive**, and the reason is not tidiness: a row
+  naming both would be a row whose answer to *who did this* depends on which column a reader, or a report,
+  happened to look at first. The refusal exists precisely because a request could otherwise arrive carrying
+  a key *and* a claimed person, which is the impersonation this model refuses at the resolver instead
+  ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 
 **Indexes**
 
 - the subject lookup covers only rows that name a subject;
 - one index over denied rows only, newest first;
-- one over acting-on-behalf rows only, newest first.
+- one over acting-on-behalf rows only, newest first;
+- **one over rows naming a key, newest first** — "what did this integration do, and when" is the question an
+  incident asks, and it is asked of one key at a time.
 
 **`authorization_channel` and `authorization_ref_id` are what make this an audit trail
 rather than a log.** A record saying "person 100 changed person 200's address" answers
-*what* and *who*. A record that also names the `guardianship_permission` row that
+*what* and *who*. A record saying "the `accounting` key changed payment 4110's status" answers the same two
+questions for a caller that is nobody — and because `api_key_id` is a reference, *who* is a row with grants,
+an owner to telephone and a `created_by`, not a word somebody typed. A record that also names the `guardianship_permission` row that
 authorized it answers *why they were allowed to* — and whether that authority was valid at
 the time. When a custody dispute arises eighteen months later, that is the question asked.
 
@@ -214,12 +224,21 @@ is denied by the rule that was supposed to exempt them, with no error message, o
 it would hurt most. Nothing in this function asks the question, so nothing can be mis-routed — membership
 is `MEMBERS`, an operand in an expression, evaluated where expressions are evaluated (§8).
 
-The single authorization entry point. One implementation, used everywhere. Algorithm:
+The single authorization entry point. One implementation, used everywhere — including by a caller that is
+not a person. Algorithm:
 [../domain/06-authorization-model.md](../domain/06-authorization-model.md#6-the-resolver).
 
 **`can(person, permission_code, scope_type, scope_id, at, owner_person_id)`** returns allowed
 or denied. `scope_type` and `scope_id` are optional, `at` defaults to today, and
 `owner_person_id` is supplied only where the ownership or guardianship channel is in play.
+
+**`can_key(api_key, permission_code, scope_type, scope_id, at)`** is the same function's other door and it
+takes **one fewer argument, which is the entire design**
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). There is no person
+parameter and no owner parameter: a claimed person would make the trail's word for *who acted* an input, and
+this design's `on_behalf` exists precisely to be set explicitly rather than inferred. A key's authority is
+its grants, so the arguments are the ones a grant answers to — which key, which code, which scope, which
+date ([05e §16](05e-keys-and-callers.md)).
 
 **The order of these steps is a rule for one reason and not the other.** Each step either returns or
 falls through, so a step never gets to contradict an earlier one. **The deny step must run first, and
@@ -304,6 +323,25 @@ function.
    refused it through the permission list.
 8. **Default deny. Return false.**
 
+**A key walks the same eight steps, and three of them are not reachable rather than refused.**
+`can_key` enters at step 1 and leaves at step 8 like any other check, and what differs is which steps can
+answer at all:
+
+| Step | For a key |
+|---|---|
+| 1 look up the code | unchanged — an unknown code is a deny for an integration too |
+| 2 resolve merge chains | **nothing to do.** A key is never merged, never tombstoned and never renumbered; `code` is its stable name |
+| 3 explicit deny | counts when the deny **names this key** and sits at the unit or on the exact item — the same scope test, unchanged. What changes is the grantee test: a deny naming a person, or naming a set a person is in, is never consulted here, because a key is in no set and is not that person ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)) |
+| 4 a grant at the unit, 5 a grant on this item | unchanged — `grant_satisfies` reads the live rows naming this key instead of the rows naming a person or a set containing them |
+| 6 ownership, 7 guardianship | **unreachable.** Each is a comparison against a person: ownership asks whether the owner *is* the actor, guardianship asks whether the actor is a party to a `guardianship` row. No new rule refuses them; neither expression can be evaluated with a key in the actor's place ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)) |
+| 8 default deny | unchanged, and therefore the answer for an integration holding no grant |
+
+**The audit is written the same way and records no new channel.** A key's allowed check names `unit_grant`
+or `item_grant`, and `authorization_ref_id` still names an `access_grant.id` — so this adds *who* to the
+trail, not *how*, and it does not add a third reference-less polymorphic column to the model
+([05e §16](05e-keys-and-callers.md)). **There is no `machine` channel value and no seventh channel**, just
+as there is no `role` one: a channel is a kind of authority, and a key is a holder of the ordinary kind.
+
 > **There is no membership gate anywhere in this function.** `MEMBERS` is an operand a writer types into an
 > expression, and no channel of the resolver consults membership: a check is about grants, not about whether
 > the actor is a paid-up member
@@ -330,7 +368,8 @@ function.
 ### The cache is deleted: nothing in this schema holds a permission answer
 
 **Nothing in this schema holds the answer to a permission question.** No row, table or field anywhere maps a
-person — or a person and a code, or a person and an item — to an answer. That is
+**caller** — or a caller and a code, or a caller and an item — to an answer, a caller being a person or a
+registered key. That is
 [§11's invariant 19](05d-invariants-and-seed.md#11-invariants-to-verify), and it is why no later optimization
 can reintroduce such a table rather than merely disliking it. **A check resolves, a request memoizes, and the
 only thing ever cached is a compilation**
@@ -338,6 +377,15 @@ only thing ever cached is a compilation**
 The rule is unconditional on purpose: the expansion of an audience is a predicate and not a set
 (§*Author in sets. Evaluate per person.*, §*Evaluation*), and a design that forbids a materialized answer in
 one path and permits it in another spends the rest of its prose explaining the difference.
+
+**The subject of that sentence used to be a person, and round 16 widened it deliberately**
+([D-123](../decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)). **`api_key` is exactly
+the table this invariant is aimed at**: *"the integration's permissions*" is the most natural thing in this
+system to store as a set of rows, it looks like configuration rather than like a cache, and every one of those
+rows would be a current answer. The wording is what had to change — the shape stays forbidden for a key for
+every reason it was forbidden for a person, and one more: a bearer secret's authority is read by a process
+that never re-authenticates a human, so a stale row is not a stale screen, it is a key that still does
+something nobody chose.
 
 **What the checks use instead, and what may be held in memory:**
 
@@ -347,7 +395,7 @@ one path and permits it in another spends the rest of its prose explaining the d
    `ruleset_version` bumps on **`audience_operand`** — a subtree changed, so every compilation embedding it is
    stale — and on **`selector_type`**, because the vocabulary changed. On nothing else, and the absences are the
    design:
-   - `access_grant` is absent because **grants are not compiled**: a check reads the person's live grant rows, so
+   - `access_grant` is absent because **grants are not compiled**: a check reads the checked caller's live grant rows, so
      adding, editing or revoking one changes what that read returns and leaves nothing stale to drop. Where a
      grant is created together with a new audience, the write that matters is the one on `audience_operand`,
      which *is* in the set;
@@ -357,8 +405,9 @@ one path and permits it in another spends the rest of its prose explaining the d
    - `role_holder`, `person_group_member`, `guardianship_permission`, `event_registration`, a membership
      transition and a person merge are absent because **there is no answer to invalidate**. That is also what
      [03-membership.md §6](03-membership.md#6-membership-and-the-authorization-system) asks of the yearly sweep.
-2. **A request-scoped memo.** The checked person's live grant rows, read once; within the same request, a named
-   operand that recurs. **Lifetime is the request.** It is worth stating in a data model precisely because it is
+2. **A request-scoped memo.** The checked caller's live grant rows — a person's own rows plus the rows naming a
+   set they are in, or the rows naming one key — read once; within the same request, a named operand that recurs.
+   A key's memo is the smaller of the two shapes, because a key holds grants and nothing else. **Lifetime is the request.** It is worth stating in a data model precisely because it is
    *not* one: it needs no section, no index and no invalidation list, because it is shorter-lived than any
    question about consistency.
 3. **Two batch reads**, `can_many(person, codes[], item?)` and `which_of(people[], code, item)`, so a screen is
@@ -414,7 +463,9 @@ and must say whose"*, both properties of resolution.
 3. **There is no wildcard except `system.admin`.** No prefix match, no implied capability.
    If a holder can do a thing, a row says so (D-068), and the row says **which** thing: no level
    stands in for a set of them.
-4. **`resolve_person` is called on entry**, so a tombstoned person's id still resolves.
+4. **`resolve_person` is called on entry**, so a tombstoned person's id still resolves. **There is no
+   analogue on the key door and there must not be one:** a key is never merged, never tombstoned, and its
+   `id` is never renumbered, so a lookup that tried to resolve one would be inventing a lifecycle.
 5. **A deny is scope-independent.** Channel 0 matches a unit deny and an exact-item deny and does
    **not** walk ancestors — so a deny at the unit blocks every item, which is what makes a
    suspension absolute.
@@ -424,9 +475,12 @@ and must say whose"*, both properties of resolution.
    ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
    **The time-bomb in this function is a different one** — no permission path may materialize a set of
    people — and it is check 16 (§11).
-7. **Audience grants are evaluated through the same channels as personal ones**, via
-   `grant_satisfies()`. A grant to `EVERYONE` and a grant to a named person differ only in how
-   *grantee* is satisfied, never in how the scope or the code is resolved.
+7. **All three grantee kinds are evaluated through the same channels**, via `grant_satisfies()`. A grant to
+   `EVERYONE`, a grant to a named person and a grant to the `accounting` key differ only in how *grantee* is
+   satisfied — never in how the scope or the code is resolved, and never in what a deny does
+   ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+   **A key is the limit case of this property rather than an exception to it**: its grantee is satisfied by
+   reading one column, so it is the only kind that needs no evaluation at all.
 8. **Expression evaluation is a walk over a forest that fails closed.** An unresolvable operand is the
    empty set, and an expression that cannot be assembled reaches nobody (§8, *Evaluation* item 5).
    **The failure this property forbids is a helpful implementation**: a walk that returns what it
@@ -449,6 +503,13 @@ and must say whose"*, both properties of resolution.
     today answers *"was she in it?"* with *is she in it*, which is the exact substitution property 2
     exists to forbid, one level down and invisible in every test that checks only one audience.
 
+12. **A key's check never enters a channel that compares people**, and the way to review this is not to look
+    for a refusal but to look for a comparison: ownership asks whether the owner *is* the actor and
+    guardianship asks whether the actor is a party to a `guardianship` row, and neither question has a subject
+    when the actor is a row in `api_key`. **A second implementation that "handles machines" would have to
+    answer those two questions somehow, and whatever it answers is an authority nobody granted**
+    ([D-118](../decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+
 **A caveat on an unscoped check.** "Can this person do X anywhere?" returns true if *any* grant
 grants it. That is correct for UI decisions like "show the admin menu?" but **wrong for enforcement**.
 Every enforcing call must pass a scope. Enforce this in the calling convention — make scope mandatory
@@ -460,6 +521,10 @@ part of a check's contract: **the question was never only where to keep answers,
 
 The person-merge case remains the easiest to forget —
 see [01b-merges-views-and-checks.md §8](01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge).
+**The key case is the opposite kind of mistake to forget:** not a stale id but a fresh one, since a request
+that authenticated a secret has already decided *who* before the resolver is asked anything, and the only
+thing standing between that decision and the audit row is the rule that `api_key_id` and `actor_person_id`
+are never both set.
 
 ---
 

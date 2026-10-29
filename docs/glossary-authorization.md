@@ -37,14 +37,51 @@ nothing else
 
 **Grant** — The whole of the grants channel, and its shape is the whole definition:
 **grantee + scope + one `permission_id` + effect + period**, in `access_grant`. The
-grantee is a person **or** an audience, never both and never neither; the scope is the
-unit or one item; the effect is `allow` or `deny`; the period is `valid_from` /
-`valid_to`, live on the checked date. Plus provenance — `granted_by`, `granted_at`,
-`grant_reason`, and for lent authority `is_delegated` with `delegated_from`. **One code
-per grant, not a set and not a level**, which is what makes *"what exactly does this
-person have?"* a list of rows and *"who else can do this?"* the same list read the other
-way. Nothing adds a membership test to a grant — see **Selector** below. See
+grantee is a person, an audience **or** an API key — **exactly one of the three, never
+two and never none** ([D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind));
+the scope is the unit or one item; the effect is `allow` or `deny`; the period is
+`valid_from` / `valid_to`, live on the checked date. Plus provenance — `granted_by`,
+`granted_at`, `grant_reason`, and for lent authority `is_delegated` with
+`delegated_from`. **One code per grant, not a set and not a level**, which is what makes
+*"what exactly does this person have?"* a list of rows — a key's list is the same list of
+the same kind — and *"who else can do this?"* the same list read the other way. Nothing
+adds a membership test to a grant — see **Selector** below. See
 [domain/06 §5](domain/06-authorization-model.md#5-the-grant--one-permission-one-effect).
+
+**API key** — `api_key`: **one registered integration that calls this system over an
+API**, installed in the system by a named person, and **a grantee** in the same sense a
+person is — the third kind named in **Grant** above
+([D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+One row is one caller and holds one live secret, which **rotates in place**: replacing the
+secret moves no grant and no audit reference, and the row carries a `code` so a grant and
+an audit row name the same integration across years. `valid_to` is optional and absent
+means current, and **nothing about a key is derived from whoever installed it** —
+`created_by` is attribution for an act, and `owner_person_id` is a contact, not a channel
+([D-119](decisions/round-16.md#d-119--a-key-is-one-row-holding-one-live-secret-and-it-rotates-in-place),
+[D-120](decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
+What a key is **not**: not an **account**, which is a way for a person to log in; not an
+**office**, which a person holds and which confers nothing; not a **selector**, since no
+expression may name one and no set contains one, `EVERYONE` included
+([D-117](decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one));
+and not a grantable item, because `api_key` is not in `grant_scope_type`. **A key may never
+be granted `system.admin`, nor any of `api_key.view`, `api_key.create`, `api_key.rotate`,
+`api_key.end`** — *a key may not change what a key can do, and may not become everything* —
+refused when the grant is saved, with integrity check 20 the whole net for rows that skipped
+the save ([D-122](decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+Specified in [data-model/05e](data-model/05e-keys-and-callers.md).
+
+**Caller** — **Whoever a permission check is answered about: a person, or a key.** The word
+is invariant 19's subject: written about a person alone, that invariant would not have
+forbidden a table keyed by `api_key_id` and `permission_code` and holding a boolean, and
+*"the integration's permissions"* is the most natural such table in this system to write
+([D-123](decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)). **A
+request authenticates as a person or as a key, never as both**, and in both audit trails
+`actor_person_id` and `api_key_id` are mutually exclusive. One resolver, and one entry point
+per kind of caller — **`can(person, permission_code, scope_type, scope_id, at,
+owner_person_id)`** and **`can_key(api_key, permission_code, scope_type, scope_id, at)`** —
+and the second **takes no person of any kind**: a claimed person would make the trail's word
+for who acted an input
+([D-121](decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 
 **Allow / deny, and the decision rule** — **Allowed when some live allow applies and no
 live deny applies.** That is the whole of precedence, and everything else in the model is
@@ -53,11 +90,15 @@ absolute**: it is checked before anything else, at any scope, so no item is loca
 to override a suspension. A deny is legal at the unit as well as on an item, and is never
 conditioned on membership in either direction. **`-` inside an expression is not a deny
 and the two are not interchangeable**: subtracting a set narrows *one grant's reach*, while
-a deny defeats *every grant* that applies to the person, written anywhere by anyone — "she
-must not have this, whatever else she is given" is only ever a deny. The hygiene rule that
-comes with it is a report, not a constraint: **a live deny whose grantee, scope and code
-match no live allow is dead weight**, and a deny that denies nothing is how a stale
-restriction survives its reason.
+a deny defeats *every grant* that applies to the grantee it names, written anywhere by
+anyone — "she must not have this, whatever else she is given" is only ever a deny.
+**Absolute over the grantee it names, and over no other**: a deny on a person leaves a key
+standing, and a deny on a key leaves the person who installed it standing
+([D-118](decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
+The hygiene rule that comes with it is a
+report, not a constraint: **a live deny whose grantee, scope and code match no live allow
+is dead weight**, and a deny that denies nothing is how a stale restriction survives its
+reason.
 
 **Channel** — **There are three, and one absolute deny in front of them**: grants,
 guardianship, and resource ownership. Guardianship is reached **when the person the act is
@@ -70,7 +111,13 @@ When there is no guardianship, or the right is too low, it says nothing and the 
 grants are still tried — otherwise a parent who is also the event registrar would be
 blocked from the roster by their own `view` over their child. Prohibitions are not made
 here; they are explicit denies. Roles and groups are not channels: they are sets that
-grants point at.
+grants point at, and a key is not a fourth one. **Two of these three cannot fire for a key
+at all**, because ownership compares a person's id against a row and guardianship needs a
+party to a `guardianship` row — neither is refused by a new rule, each is simply
+unreachable, so **a key's authority is its grants, in full and only**. A check answered for
+a key records `unit_grant` or `item_grant` exactly as one for a person does: **what the
+trail adds is *who*, not *how***
+([D-118](decisions/round-16.md#d-118--the-two-channels-that-compare-people-cannot-fire-for-a-key-and-a-deny-on-a-person-does-not-slow-a-key-down)).
 
 **Audience** — **The organization's word is *permission group*; the table is `audience`;
 both mean one thing.** An audience is **an expression over named sets of people, stored as
@@ -312,9 +359,12 @@ conditions: **the key is the thing the write touches**, so invalidation is local
 that changed and never global, and the cache holds **the dated rows, or the set with its
 validity ranges**, never *the set as of today*, so the checked date is still applied at
 check time and a period ending at midnight needs no job to be seen. **An answer may never
-be stored:** invariant 19, TIME-BOMB — **no row, table or field may map a person, or a
-person-and-code, or a person-and-item, to a permission answer**
-([D-114](decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
+be stored:** invariant 19, TIME-BOMB — **no row, table or field may map a caller, or a
+caller-and-code, or a caller-and-item, to a permission answer**, a caller being a person or
+a key. `api_key.last_used_at` is not such a row — it says an event happened, and nothing
+reads it to decide an answer now
+([D-114](decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation),
+[D-123](decisions/round-16.md#d-123--invariant-19-reads-a-caller-not-a-person)).
 Half of that guard is structural — **the schema has nowhere to put one** — and the residue
 is honest: anyone who wants a cache back must arrive with a decision entry carrying a
 per-person invalidation handle and a stated list of watched tables **derived from the
@@ -322,7 +372,7 @@ operand registry** rather than from a list of ideas; until then it is **a conven
 guard**.
 
 **The request memo** — **In-process only, and confined to one request.** One indexed read
-fetches the checked person's live grant rows; every code, item and date that request asks
+fetches the checked caller's live grant rows; every code, item and date that request asks
 about is evaluated against them in memory, and a named operand that recurs —
 `ROLE(leader)`, `GROUP(cubs)` — is resolved once per request instead of once per check. The
 `deprecated | hidden | disabled` flag is read the same way: once per request, memoized for
@@ -389,4 +439,4 @@ is said on the grant, not on the role** (*an assumption; see the index in
 
 ---
 
-*Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114.*
+*Decisions behind this page: D-052, D-060, D-068, D-079, D-081, D-086, D-100, D-101, D-103, D-107, D-109, D-110, D-112, D-113, D-114, D-116, D-117, D-118, D-119, D-120, D-121, D-122, D-123.*

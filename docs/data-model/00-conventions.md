@@ -304,7 +304,7 @@ Every business table carries:
 |--------|------|---------|
 | `id` | 64-bit surrogate key | Set by the database, never by the caller |
 | `created_at` | timestamp, required | Audit time of insert |
-| `created_by` | person, optional | Who inserted. Absent for system and import jobs. |
+| `created_by` | person, optional | Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations ([F-25](../open-questions.md#f-25)). An import batch is not one of them: `import_batch.created_by` is **required** there ([06a §3](06a-import.md#3-import-pipeline)), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the **key** there, and no person is inferred from it ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). |
 | `updated_at` | timestamp, optional | Audit time of last change |
 | `updated_by` | person, optional | Who last changed it |
 | `import_batch_id` | import batch, optional | Set on imported rows — the only way to undo a bad import |
@@ -329,6 +329,16 @@ application happens to take gives you an audit trail that is silently incomplete
 maintain them at the database level or accept that `updated_at` means "last changed through the
 app". Do not leave it undecided; an audit column nobody thinks about is worse than no audit
 column, because people rely on it.
+
+**`api_key.created_by` is required, and it is the one column of this shape in the authorization module
+that is never blank.** Installing a permanent outside authority is the most sensitive write that module
+offers, and a key nobody is answerable for is exactly what this file's posture refuses. The line above
+about jobs does not reach it, because no job installs a key: a person installs a key, and a key never
+installs one — `api_key.create` is among the codes a key may never be granted
+([05e-keys-and-callers.md §15](05e-keys-and-callers.md),
+[D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+Required is not inherited: the column says who performed the install and nothing else, and a key outlives
+that person with its authority untouched ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
 
 ---
 
@@ -517,7 +527,7 @@ states the fields, rules, invariants and open issues for its part of the model.
 | [02-organization.md](02-organization.md) | `person_group`, `person_group_member` — and nothing else, because there is no unit table: the unit is a scope ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)) |
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request` |
 | [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
-| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log` — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
+| [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log`, `api_key` (a caller that is not a person: [05e-keys-and-callers.md](05e-keys-and-callers.md) §14–§17) — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |

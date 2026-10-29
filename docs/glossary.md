@@ -374,6 +374,13 @@ So the right level is `none`, `view` or `write`, applied to the record **whole**
 was given up is not a half-built feature but an arrangement the organization decided not
 to want.
 
+**A key is a grantee, and never an operand.** Where a guardian holds a channel and no grant,
+an integration holds grants and belongs to no set, `EVERYONE` included — and it is not an
+**account**, which is a way for a person to log in
+([API key](glossary-authorization.md#authorization),
+[D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind),
+[D-117](decisions/round-16.md#d-117--a-key-is-never-inside-an-expression-thirteen-selectors-and-none-of-them-can-name-one)).
+
 **Acting on behalf** — Performing an operation as another person, under that guardianship
 row's right level (`view` to read it, `write` to change it). Every such operation records
 both the acting person and the subject person
@@ -384,8 +391,9 @@ both the acting person and the subject person
 ## Authorization
 
 The authorization vocabulary — **permission, scope, grant, allow and deny, channel, audience,
-selector, the expression grammar, the compilation, and the states a named thing gets instead of
-deletion** — is defined on its own page: [glossary-authorization.md](glossary-authorization.md).
+selector, the expression grammar, the compilation, a key and the caller a check is answered
+about, and the states a named thing gets instead of deletion** — is defined on its own page:
+[glossary-authorization.md](glossary-authorization.md).
 
 ---
 
@@ -565,7 +573,7 @@ The words you and the organization will naturally use, and what they map to:
 | "ex-member" | person with a `membership` whose `valid_to` has passed |
 | "lapsed but can still renew" | `valid_to` passed, within the renewal window |
 | "registered but not a member" | person with an `account` and no open `membership` — they may sign in and see their own data, but hold no member permissions |
-| "they're allowed to attend" | a live **allow** grant naming `event.register_self`, aimed at them or at a set they belong to, **and no live deny anywhere** naming them — not a level, and nothing inherited from a unit that owns the event |
+| "they're allowed to attend" | a live **allow** grant naming `event.register_self`, aimed at them or at a set they belong to (a grant aimed at an **integration** is the third kind of grantee and answers for that integration alone, never for a person attending), **and no live deny anywhere** naming them — not a level, and nothing inherited from a unit that owns the event |
 | "open to everyone" | a grant naming the seeded audience `everyone`, whose expression is the operand `EVERYONE` — or `all_members`, whose expression is `MEMBERS`. A bare name in an expression is **not** a reference to either: audiences are named only as `AUDIENCE(code)` |
 | "the treasurer" | `role_holder` of `treasurer`, held **for the unit** — there is no narrower place to hold it, and holding it answers no permission question on its own |
 | "put me in the Thursday group" | a `person_group_member` row **somebody else writes** under `person_group.member.manage`, which has **no self-scoped variant** — there is no self-service path and no permission with which to build one |
@@ -576,4 +584,4 @@ The words you and the organization will naturally use, and what they map to:
 
 ---
 
-*Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113.*
+*Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113, D-116, D-117.*

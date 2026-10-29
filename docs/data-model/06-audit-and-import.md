@@ -49,8 +49,9 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 | `id` | surrogate id | |
 | `occurred_at` | timestamp, audit time | Default: now |
 | `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. |
-| `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs |
-| `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — for changes with no person actor. Otherwise a forensic gap |
+| `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs, and `NULL` when an integration made the call — `api_key_id` below carries the actor then |
+| `api_key_id` | reference to `api_key`, optional | Which registered integration made the call, when the request authenticated as a caller rather than as a person ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)). **Set together with `actor_person_id` never**: a request is made by a person or by a key, and a row naming both answers *who did this* twice, which is the impersonation this design refuses at the resolver instead ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). It names the caller and nothing beside it — not the person who installed that key, whose column is attribution for an act and never an actor here |
+| `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — free text, and only for the writers that have no row to name themselves by — this system's own writes to itself, the 1 January membership sweep, payload reduction, migrations and the bank statement pull, whose name is [F-25](../open-questions.md#f-25). A caller that is not a person is a row in `api_key_id`, not a label, so an integration's write never arrives here. Otherwise a forensic gap — the count of rows naming none of the three is check 4 of [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks) |
 | `operation` | text, required | One of: `insert`, `update`, `delete` |
 | `table_name` | text, required | |
 | `record_id` | surrogate id, required | The row that changed. No reference: the table is named per row, so it points at any table in the database |
@@ -65,7 +66,9 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 **Indexes**
 
 - One row's history: table name and `record_id`, newest `occurred_at` first.
-- One actor's actions, newest first.
+- One actor's actions, newest first — **two of these, not one**, because an actor is a person in one
+  column and a key in another: rows naming a person, and rows naming a key. The review that asks what an
+  integration wrote is asked by key.
 - Everything in one transaction, by `transaction_id`.
 - By time alone, newest first.
 - Rows by a *member of* `changed_fields`. The targeted history queries ask "which rows
@@ -80,17 +83,20 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 its audit row stand or fail together.** "The audit trail usually has it" is not a version of this rule — the
 trail is how the organization answers "who changed this child's address, and when?", and an answer that
 depends on which code path made the change is not an answer. **The layer that owes it is the write itself,
-on every path**: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, and a row
-somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
+on every path**: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, a call
+made with a key, and a row somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
 never at risk; check 5 in §5 is the net under the rest, and it is a report, not a guard.
 
 The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
 detail: the redaction step has to run before the write, and the "nothing changed" test has to run
 before anything is spent on a row that would log noise.
 
-1. Read the acting person and the on-behalf-of person from the request context
-   (`app.current_person_id`, `app.on_behalf_of`); an unset or empty value means no actor,
-   not an error.
+1. Read the acting person, the acting key where the request authenticated as one, and the
+   on-behalf-of person from the request context (`app.current_person_id`, `app.on_behalf_of`);
+   an unset or empty value means no *person* actor, not an error. A context naming a key has an
+   actor and is not that case: the key goes in `api_key_id`, and a row whose actor is a key never
+   sets `on_behalf_of`, because a key acts for itself
+   ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 2. On an **insert**, take the new row as the after-image.
 3. On an **update**, take both the old and the new row, and work out the changed fields:
    the keys present in both images whose values differ, named in key order.
@@ -101,10 +107,10 @@ before anything is spent on a row that would log noise.
    where the row belongs to a redacted person — the personal data erasure has already removed
    from the business tables. Everything else is stored as it stands, including a person's
    descriptive values, which are guarded by §8 item 7 rather than stripped here.
-7. Write one audit row carrying: the actor and the on-behalf-of persons, the operation as
-   lower-cased `insert`, `update` or `delete`, the table name, the record id taken from the
-   new row and falling back to the old one, the changed fields, both redacted images, and
-   the session id, ip address and request id from the request context.
+7. Write one audit row carrying: the actor — `actor_person_id` or `api_key_id`, never both — and the
+   on-behalf-of person, the operation as lower-cased `insert`, `update` or `delete`, the table name,
+   the record id taken from the new row and falling back to the old one, the changed fields, both
+   redacted images, and the session id, ip address and request id from the request context.
 8. Change nothing about the row being written. The audit row describes the change and never
    amends it — and it commits in the same transaction as the change. That togetherness is what a
    trigger gave for free and what a logging step written beside the write must supply deliberately:
@@ -307,9 +313,9 @@ set two clocks for this system and they point in opposite directions. The accoun
 clock at all** (§4, and [00-conventions §8 item 3](00-conventions.md#8-personal-data-and-erasure)). This
 table has two clocks in one row: **the rows live as long as the system does, and the payloads live 24
 months.** After the window a row is *reduced* — `old_values` and `new_values` emptied, everything else
-left untouched: actor, on-behalf-of, operation, table name, record id, changed fields, transaction,
-session, channel. The trail goes on answering *"who changed this row, when, and were they allowed to"*
-for the life of the system, and stops answering *"and to what"* after two years. Twelve months is the
+left untouched: actor person, actor key, on-behalf-of, operation, table name, record id, changed
+fields, transaction, session, channel. The trail goes on answering *"who changed this row, when, and
+were they allowed to"* for the life of the system, and stops answering *"and to what"* after two years. Twelve months is the
 **floor** a window may be set to, not a stylistic preference: anything shorter stops covering a full
 year of a child's activities, and a year is the unit an incident is asked in.
 
@@ -411,9 +417,12 @@ than only to whoever next opens the record, and the open question is argued ther
 ### 2.3 History query
 
 The full change history of one row is found by taking the `audit_log` rows for its table
-name and record id, newest `occurred_at` first, and reading out when it happened, the
-operation, which fields changed, the old and new values, and who did it — the actor's
-person name where there is an actor, and `actor_label` where there is not.
+name and record id, newest `occurred_at` first, and reading out when it happened, the operation,
+which fields changed, the old and new values, and who did it. That last one has three answers, not
+two: the actor's person name where the row names a person, the integration's `code` where it names a
+key — never anything derived from its secret, which this table does not hold in the first place —
+and `actor_label` where it names neither
+([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 
 **For a `person_attribute` row this query *is* the history, not a shadow of it.** Values are
 overwritten in place
@@ -425,8 +434,9 @@ kind of answer**: who, when, which row, which field, and no value (§2.2, mechan
 degradation to be smoothed over on the screen. An entry with a reduced payload and an entry that
 genuinely recorded no value are two different facts, and a history view that renders both as an empty
 cell tells a reader the organization never knew something it has since stopped holding — so the reduced
-state has to be *said*, the way `actor_label` is said when there is no actor person. The date the row
-crossed the window is not stored anywhere and should not be: it is the row's own `occurred_at` plus the
+state has to be *said*, the way a key's `code` or an `actor_label` is said when the row names no person.
+The date the row crossed the window is not stored anywhere and should not be: it is the row's own
+`occurred_at` plus the
 window, which is configuration a reader of the screen may not have, so the honest label is that the
 values are no longer retained rather than a date of when they went.
 
