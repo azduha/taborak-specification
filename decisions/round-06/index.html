@@ -1,0 +1,2619 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/decisions/round-06/">
+      
+      
+        <link rel="prev" href="../round-05/">
+      
+      
+        <link rel="next" href="../round-07-08/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Round 6 - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#decision-log--refinement-round-6--the-no-sql-round-d-072--d-081" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Round 6
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-072 — The documentation carries no SQL; the schema is the ORM's job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-073 — Guardianship is administered by its own parties, not by staff
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-074 — A guardian's rights are none, view, or write. Nothing more granular
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-075 — Money arrives from a bank API; a payment is requested by variable symbol and QR code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-076--money-that-cannot-be-matched-waits-for-a-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-076 — Money that cannot be matched waits for a person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-077 — Messaging is direct by default, broadcast is an ordinary scoped permission, and the recipient chooses the channel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-078--an-exposure-extends-an-assignment-never-a-direct-grant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-078 — An exposure extends an assignment, never a direct grant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-079 — The guardianship channel is entered by shape, not by permission name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-080 — Five contradictions the translation surfaced, and how each was resolved
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-072 — The documentation carries no SQL; the schema is the ORM's job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-073 — Guardianship is administered by its own parties, not by staff
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-074 — A guardian's rights are none, view, or write. Nothing more granular
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-075 — Money arrives from a bank API; a payment is requested by variable symbol and QR code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-076--money-that-cannot-be-matched-waits-for-a-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-076 — Money that cannot be matched waits for a person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-077 — Messaging is direct by default, broadcast is an ordinary scoped permission, and the recipient chooses the channel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-078--an-exposure-extends-an-assignment-never-a-direct-grant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-078 — An exposure extends an assignment, never a direct grant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-079 — The guardianship channel is entered by shape, not by permission name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-080 — Five contradictions the translation surfaced, and how each was resolved
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/decisions/round-06.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/decisions/round-06.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="decision-log--refinement-round-6--the-no-sql-round-d-072--d-081">Decision Log — Refinement round 6 — the no-SQL round (D-072 … D-081)<a class="headerlink" href="#decision-log--refinement-round-6--the-no-sql-round-d-072--d-081" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>4,689 lines of DDL deleted and every rule it carried restated as a requirement. The round that made the prose the specification.</p>
+</blockquote>
+<p><a href="../round-05/">Refinement round 5 — the events module (D-058 … D-071) ←</a> | <a href="../">All decisions</a> | <a href="../round-07-08/">Refinement rounds 7 and 8 (D-082 … D-090) →</a></p>
+<hr />
+<h2 id="d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072 — The documentation carries no SQL; the schema is the ORM's job<a class="headerlink" href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>closes F-4a</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Your answer.</strong> Asked whether the permission catalog should be <em>generated from</em> the seed data
+rather than maintained beside it, you answered <strong>"Delete the schema, I will use ORM anyway."</strong></p>
+<p><strong>The question was a symptom.</strong> F-4a was about two lists disagreeing. The real cause is that the
+documentation was asserting a deployment. It carried <strong>4,689 lines of PostgreSQL across 19
+files — 31% of the repository</strong>: every <code>CREATE TABLE</code>, a <code>can()</code> function, trigger bodies,
+91 <code>INSERT INTO permission</code> rows whose only purpose was to make a list executable, and one
+integrity check whose entire job was to read <code>pg_proc</code> and grep a function definition for a
+string. Under an ORM, not one of those lines would ever be run as written. Hand-written
+migrations and ORM-generated migrations disagree about who owns the schema, and the docs
+asserting DDL was the losing side of that argument before it started.</p>
+<p><strong>Decision.</strong> No SQL in the documentation. Field lists, types at the level of <em>what kind of
+thing this is</em> (a period, an amount, an identifier), nullability, uniqueness, no-overlap rules,
+temporality, indexes that exist for a reason, and derived facts are all stated as
+<strong>requirements</strong>, in the document that owns the entity.</p>
+<p><strong>The deletion is a translation, and this is the part that matters.</strong> The DDL was not
+illustration; in most places it was the only <em>precise</em> statement of a rule, and prose beside it
+was the argument. Deleting the block and keeping the argument would silently drop the rule.
+What must survive as written requirements, at minimum:</p>
+<ul>
+<li>the <strong>no-overlap</strong> rules — one open participation per person per unit, one open
+  guardianship per pair, one open role assignment per person-role-scope, no two overlapping
+  current contact points of one purpose. The <em>rule</em> is the design; the GiST index that
+  PostgreSQL happens to use for it is not</li>
+<li><strong>the resolver's channels and their order</strong> (<a href="../round-01a/#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver">D-010</a>)</li>
+<li><strong>three-valued <code>was_present</code></strong>, where <code>NULL</code> means "no register was taken" and not "absent"
+  (<a href="../round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>)</li>
+<li><strong><code>birth_date_precision</code></strong>, because an imported <code>1990-01-01</code> often means <em>year 1990</em></li>
+<li><strong>tombstone and redaction both survive on <code>person</code></strong>, with the two partial indexes that
+  exist because every ordinary listing excludes both</li>
+<li>a person may not be merged into themselves, and <code>merged_into</code> / <code>merged_at</code> are set together
+  or not at all</li>
+</ul>
+<p><strong>A rule for writing the docs from here.</strong> Where a rule can only be stated precisely enough to
+be checked, state it that precisely. <em>"A guardianship may not overlap another guardianship for
+the same pair"</em> is a requirement. <code>EXCLUDE USING gist (guardian_id WITH =, dependent_id WITH =,
+period WITH &amp;&amp;)</code> was that same requirement wearing an implementation's clothes.</p>
+<p><strong>What got genuinely weaker, which should not be written as though it were free.</strong> The 19
+integrity checks were executable. They are now <strong>invariants to be verified by something</strong> —
+listed in the document that owns them, with no query attached. The one that suffers most is the
+time-bomb added in the last round, which failed the build if <code>.admin</code> prefix-matching ever
+reappeared in the resolver
+(<a href="../round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>). It is now
+a sentence in a Markdown file. <strong>A prohibition nobody runs is a convention, not a guard.</strong> It
+stays, because the alternative is silently forgetting it existed; it should not be described as
+equivalent.</p>
+<p><strong>Seed data goes with it.</strong> There is no seed <code>INSERT</code> set, so there is no seeded role list and
+no seeded permission list in the docs. This is what
+<a href="../round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a> already argued —
+roles are runtime data and the seed set is not a specification — and D-072 removes the one
+place the docs kept pretending otherwise. Starter roles and starter permissions are described
+as <em>what the organization begins with</em>, not as rows.</p>
+<p><strong>F-4a closes by dissolution.</strong> With no seed block there is exactly one list of permissions,
+which is the catalog. Two artifacts cannot drift when only one of them exists.</p>
+<p><strong>Two-way door?</strong> No. Re-deriving 4,689 lines of DDL from prose is a redesign, not a
+restoration — the constraints encode decisions the prose does not always restate. Git has them.</p>
+<p><strong>See:</strong> <a href="../../data-model/00-conventions/">../data-model/00-conventions.md</a>,
+<a href="../../open-questions/#f-4--closed--the-question-was-answered-by-deleting-the-premise">../open-questions.md F-4a</a>.</p>
+<hr />
+<h2 id="d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073 — Guardianship is administered by its own parties, not by staff<a class="headerlink" href="#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>closes E-5</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Your answer.</strong> <em>"The guardian has the same rights as the user, so they can modify their own
+guardians as well as the guardians with the write permissions. There is no need to take this
+through the management team."</em> and, when asked how far that reaches, <em>"Guardian can be assigned
+by other guardian."</em></p>
+<p><strong>Decision.</strong> <strong>The parties to a guardianship are principals on that row, not third parties
+holding a grant on it.</strong> A guardian may end the arrangement, may add another guardian to the
+same child, and may change the permission level of the row they are a party to. The adult who is
+the <em>subject</em> of a guardianship may end it over themselves. <strong>None of these routes through
+staff.</strong> A staff member remains <em>a</em> way for it to happen and is never <em>the</em> way.</p>
+<p><strong>This is the founding principle, applied one level down.</strong> The rule this system was built on is
+that authority over a nested thing originates at that thing and cannot be claimed from outside
+it; the organization itself may not decide permissions over a sub-unit, and only the system
+administrator is exempt. <a href="../round-02-03/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
+applied that to units. <strong>A guardianship is a nested thing, and its "unit" is the people in it.</strong>
+A staff role reaching in to decide who is responsible for a child is exactly the move the
+authorization model refuses everywhere else.</p>
+<p><strong>E-5 closes, and it closes differently from every option on offer.</strong> E-5 asked how an adult
+ends a guardianship over themselves and offered three shapes — support request, ownership
+channel, request object — all of which assumed the answer must come from <em>somewhere other than
+the people involved</em>. It does not. Note also that the answer is not the <strong>ownership</strong> channel:
+ownership is <em>your own record</em>, and a guardianship row is not the subject's record any more than
+it is the guardian's. It is a record <strong>of a relationship between them</strong>, and both parties hold it.</p>
+<p><strong>Mechanically this is a direction, not a fifth channel.</strong> The resolver has four channels and
+<a href="../round-01a/#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver">D-010</a> keeps them
+at four. The guardianship channel already asks <em>"may guardian G act on D's records?"</em>; D-073 gives
+it a second question, <em>"may a party act on the guardianship row itself?"</em>, answered for exactly
+three acts — end the row, add another guardian, change the permission level. Adding a channel
+would have been the same capability at the price of touching every document that enumerates them,
+and enumeration is how the order stays a rule.</p>
+<p><strong>Read D-069 and D-073 as one decision in two halves.</strong> D-069 refused to let a birthday end a
+guardianship and deleted the review queue, on the grounds that a person decides. It left the
+question of <em>which person, using what</em> open — the exit it assumed had no door. D-073 is the
+door. Without it D-069 was a refusal with no alternative; with it the pair says something quite
+coherent: <strong>a legal relationship between two people ends when one of those people says so, and
+the organization's job is to be told, not to permit it.</strong></p>
+<p><strong>The asymmetry, stated plainly, because it is real.</strong> A guardian may appoint a guardian. So
+anyone with authority over a child can give a second person that same authority with no
+approval from the organization — the ordinary case being a mother adding the father, and the
+case that is not being everything else. The design accepts this and holds one line instead:
+<strong>the act is attributed.</strong> Who added whom, when, from which account, is audited, and the other
+party is notified. That is a deterrent and an evidence trail, not a prevention.</p>
+<p><strong>Not decided:</strong> whether adding a guardian over a <strong>minor</strong> should notify anyone at the
+organization beyond the audit log, and whether a subject may refuse a guardian appointed over
+them. See <strong>E-6</strong>.</p>
+<p><strong>See:</strong> <a href="../../data-model/04-relationships/">../data-model/04-relationships.md</a>,
+<a href="../../open-questions/#e-5--closed--the-parties-administer-their-own-row">../open-questions.md E-5</a>.</p>
+<hr />
+<h2 id="d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074 — A guardian's rights are <code>none</code>, <code>view</code>, or <code>write</code>. Nothing more granular<a class="headerlink" href="#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>supersedes the mechanism of D-020; deletes <code>dependent.*</code></strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Your answer.</strong> <em>"Guardian rights should be only 'none', 'view', or 'write', nothing more
+granular."</em></p>
+<p><strong>The docs had it the other way round, deliberately.</strong> <code>guardianship_permission</code> was a table of
+per-capability grants — <code>dependent.profile.view</code>, <code>dependent.medical.admin</code>,
+<code>dependent.consent.admin</code>, <code>dependent.event.register</code>, <code>dependent.fee.pay</code> — and the glossary
+asserted <em>"Being a guardian grants nothing by itself. Every capability is a separate, revocable,
+audited row."</em> That was drawn as a consequence of the standing instruction that both read and
+write permissions be explicit. <strong>It went further than that instruction said: explicit and
+granular are not the same property.</strong> Explicit means <em>nothing is implied by identity</em>. That is
+fully preserved here — a <code>guardianship</code> row with level <code>none</code> grants nothing at all.</p>
+<p><strong>Decision.</strong> <strong>One value per guardianship row, from exactly three: <code>none</code>, <code>view</code>, <code>write</code>.</strong>
+Not a capability list. A guardian either cannot see the child's records, can see them, or can
+change them.</p>
+<p><strong>It is the same ladder, not a new one — which is the part that keeps the model honest.</strong> The
+design already ranks authority as <code>revoked</code>(0) &lt; <code>view</code>(10) &lt; <code>contribute</code>(20) &lt; <code>manage</code>(30) &lt;
+<code>admin</code>(40) and compares by integer, never by string
+(<a href="../round-01a/#d-012--status-strings-compare-by-rank-never-lexicographically">D-012</a>).
+The three guardian rights map onto it: <code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20. <strong>Guardian
+authority is therefore a range of an existing ladder, not a parallel enum</strong>, and the resolver
+compares it with the machinery it already uses for grants. A fourth guardian value would have
+been the beginning of a second authorization model.</p>
+<blockquote>
+<p><strong>Amended by <a href="../round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,
+which deleted the ladder this paragraph leans on.</strong> The three values and everything they mean stand — the
+decision was never the numbers — but there is no rank left to map onto. The comparison now runs against a
+column on the permission: <strong><code>permission.right_kind ∈ read | write</code></strong>, where <code>none</code> covers nothing, <code>view</code>
+covers the codes marked <code>read</code>, and <code>write</code> covers both
+(<a href="../../data-model/05-authorization/#right_kind-a-column-with-exactly-one-customer">data-model/05-authorization.md §1</a>).
+That column has exactly one customer, and this entry is who it was added for. <strong>The paragraph's real work
+was never the shared arithmetic:</strong> a guardian not being staff is carried by the channel's shape test
+(<a href="#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>) — a check that is
+not about this child never reaches the guardianship channel, whatever its right level. And the closing
+warning survives intact, only cheaper to honour: a fourth value would still be the start of a second
+authorization model, and three values against two kinds is a lookup rather than a scale to keep in step.</p>
+</blockquote>
+<p><strong>What this deletes.</strong> Every <code>dependent.*</code> permission code, including <code>dependent.admin</code> and the
+three sub-resource <code>.admin</code> codes that D-068 deliberately exempted. The consequence is worth
+noticing: <strong>after D-068 deleted <code>admin</code> as a wildcard and D-074 deletes it as an action, the
+only things in the entire system still spelled <code>admin</code> are <code>access_level.admin</code> (a rank) and
+<code>system.admin</code> (the one wildcard permission).</strong> The word is no longer ambiguous three ways; it
+is ambiguous two ways, and the third is recorded as deleted.</p>
+<blockquote>
+<p><strong>And since <a href="../round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+deleted the ladder, it is ambiguous one way.</strong> <code>access_level.admin</code> was a rank in a table that no longer
+exists; <strong><code>system.admin</code> is now the only live permission code in the system whose last segment is not an
+action</strong>, and it is allowed to be one for the two reasons D-104 records: its meaning is defined by the
+resolver rather than read off the name, and D-068 exempted it explicitly rather than by silence.</p>
+</blockquote>
+<p><strong>What it gives up, written down rather than discovered later.</strong> It is no longer expressible
+that <em>this</em> guardian may register the child for events but may not read the medical record, or
+that a grandmother may see the roster but nothing else. Under D-074 she either can see
+everything about her grandchild or nothing. The rescue is that <code>write</code> is not <code>manage</code>: a
+guardian at <code>write</code> still cannot do organization-wide things, cannot see a <em>different</em>
+dependent's records, and cannot reach beyond the records the dependent's own record contains.
+<strong>If the split turns out to be needed in real operation it is a new decision (E-7), and it
+should not be reintroduced as a permission nobody argued for.</strong></p>
+<p><strong>D-046 survives, simplified.</strong> Defaults still differ by how the guardianship came into being —
+a parent recorded at creation starts at <code>write</code>; a court-appointed guardian and a
+grandmother-added emergency contact start elsewhere. What differs is now one value instead of a
+set.</p>
+<p><strong>See:</strong> <a href="../../data-model/04-relationships/">../data-model/04-relationships.md</a>,
+<a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a>,
+<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">../open-questions.md E-7</a>.</p>
+<hr />
+<h2 id="d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075 — Money arrives from a bank API; a payment is requested by variable symbol and QR code<a class="headerlink" href="#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>closes finance questions 3, 5 and 6</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Your answer.</strong> <em>"Collection via gateway is the closest. It will be collected from the bank API
+and payments will be requested through variable symbol + a QR code."</em></p>
+<p><strong>This is not the gateway the finance document was braced for.</strong> Its question 6 anticipated a
+<em>card</em> gateway and listed what that drags in: checkout, webhooks, disputes, chargebacks,
+reconciliation, PCI. What you describe is the <strong>bank-account</strong> model, and it is a different
+animal: nobody pays by card through this system. The system issues a <strong>payment request</strong>
+carrying a <strong>variable symbol</strong>; the payer is shown that symbol and a <strong>QR code</strong> containing it;
+their own bank moves the money; the <strong>bank API reports the incoming transfer with the symbol
+still attached</strong>. The system never touches the payment — it reads a statement.</p>
+<p><strong>Four consequences, in descending order of how much they change the schema.</strong></p>
+<ol>
+<li><strong>The variable symbol is the design, so it must be unique forever.</strong> It is the only
+   correlation key between <em>"we expect money for this membership"</em> and <em>"money arrived at this
+   account"</em>, which makes the payment request — not the payment — the entity the finance module
+   is built around. Uniqueness is not per year, not per membership, not per unit: <strong>a symbol
+   issued in 2019 must never resolve to a 2026 obligation</strong>, because bank statements are
+   replayed and late payments are the entire reason the renewal window exists.</li>
+<li><strong>A symbol is a sequence, never a derivation.</strong> Anyone can type eleven digits into a payment
+   form. A symbol derived from a birth date, a membership id or a member number is guessable,
+   and guessing one redirects a stranger's money into a child's financial record — a wrong fee
+   balance, a membership that appears paid, a child recorded as covered who is not. Unguessable
+   is not a privacy preference here; it is the integrity of the ledger.</li>
+<li><strong>There are no reversals, so there is almost no status column.</strong> Bank transfers do not
+   bounce, are not disputed by the payer's bank and do not expire. <code>payment.status</code> needs
+   nothing resembling <code>pending</code>, <code>failed</code>, <code>declined</code> or <code>disputed</code>. <strong>A refund is a second
+   payment in the opposite direction, not a transition of the first.</strong> The status enum that
+   question 3 asked about collapses, and refunds — a policy question with no answer for six
+   rounds — mostly answer themselves.</li>
+<li><strong>A QR code is a rendering, not data.</strong> It encodes the symbol, amount and recipient that
+   already exist. No stored image, no re-generation job, nothing to invalidate.</li>
+</ol>
+<p><strong>The consequence for D-040 is the one that matters operationally.</strong> The renewal window opens a
+new membership period <em>at</em> the expiry date when payment lands inside the window, and D-040's
+own note said the reliability of that rule depended on payment dates arriving reliably. Until
+now they arrived when somebody noticed a transfer. <strong>They now arrive from the bank.</strong> The
+backdating rule stops being a promise about someone's February and becomes a property of the
+import.</p>
+<p><strong>What is not decided, and is now the interesting part of the module.</strong> Whether event fees get
+a symbol as well as membership fees; whether a symbol is issued per person, per membership
+period, or per individual liability (a camp is a separate payable from a fee); and what the
+amount mismatch means when a payer enters 500 for a 550 request. See <strong>F-10</strong>.</p>
+<p><strong>See:</strong> <a href="../../data-model/07-finance/">../data-model/07-finance.md</a>,
+<a href="../round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>.</p>
+<hr />
+<h2 id="d-076--money-that-cannot-be-matched-waits-for-a-person">D-076 — Money that cannot be matched waits for a person<a class="headerlink" href="#d-076--money-that-cannot-be-matched-waits-for-a-person" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>closes EV-3 and finance question 1's sibling</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Decision.</strong> A bank transfer that resolves to no live payment request — unknown symbol, the
+symbol of a cancelled event, an already-satisfied request, an amount that does not match, more
+than the request asked for — is recorded as an incoming transaction and <strong>enters a queue</strong>. The
+system neither applies it nor returns it.</p>
+<p><strong>The queue's outcomes, all chosen by a human:</strong> attach it to a different request; split it
+across several; record it as a donation with no obligation behind it; or refund it by hand.</p>
+<p><strong>Why not auto-apply by payer identity, which is the tempting answer.</strong> Because the case it gets
+wrong is not the edge case. <em>A parent with two children pays one amount against one symbol</em> is
+the ordinary shape of family payment in a youth organization, and an identity-based fallback
+resolves it to whichever child the query reaches first. A fee recorded against the wrong child
+is simultaneously a finance error, a membership that appears paid when it is not, and — where the
+fee buys insurance — a coverage record that is untrue. <strong>The fallback would be wrong on the
+common path, which is the one place a fallback is never allowed to be wrong.</strong></p>
+<p><strong>Why not auto-refund.</strong> It requires the bank integration to work outbound as well as inbound —
+a second integration, with its own authorization. And it returns the grandparent's attempt at a
+camp contribution.</p>
+<p><strong>Where most of the queue's volume will actually come from: cancellation.</strong> <a href="../round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
+made cancellation a recorded fact rather than a state, which means the event survives, the
+registrations survive, and <strong>so does an outstanding payment request against an occasion that is
+not going to happen.</strong> So: cancelling voids the outstanding requests, and money that had already
+arrived becomes a queue item for a person to refund or carry forward. <strong>This is EV-3's answer</strong>,
+which is why EV-3 is closed rather than deferred to finance.</p>
+<p><strong>The pattern, third occurrence.</strong> Across six rounds the design has permitted exactly two
+automatic state changes — the fee sweep (<a href="../round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>)
+and the waitlist release
+(<a href="../round-05/#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition">D-066</a>)
+— and refused every other offer to act on a person's behalf. D-076 is the third refusal, and
+the first in the opposite direction: <strong>the earlier two released a person from something they
+owed; this one declines to release money from the person it belongs to.</strong> Unmatched money is a
+fact with no subject, and per
+<a href="../round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>'s discipline
+the absence gets stored rather than inferred.</p>
+<p><strong>See:</strong> <a href="../../data-model/07-finance/">../data-model/07-finance.md</a>,
+<a href="../../open-questions/#ev-3--closed--cancelling-voids-the-request-and-paid-money-queues">../open-questions.md EV-3</a>.</p>
+<hr />
+<h2 id="d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077 — Messaging is direct by default, <code>broadcast</code> is an ordinary scoped permission, and the recipient chooses the channel<a class="headerlink" href="#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — <strong>first decision of the communication module</strong> <em>(amended by
+<a href="../round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>, which supplied the
+thing this entry declined and left unprovided: a rule for the private message to a child)</em></p>
+<p><strong>Date:</strong> refinement round 6</p>
+<p><strong>Your answer.</strong> <em>"There will be internal messaging through the system. Personnel with
+'broadcast' permissions are able to send messages to everyone, other users only to direct
+persons. The messages get then directed to email, push notifications or IM depending on the
+user's choices."</em> — and, asked about the unit leader left out by that split, you chose a
+<strong>scoped</strong> permission.</p>
+<p><strong>Three decisions in one sentence, and the first is structural.</strong></p>
+<ol>
+<li><strong>The system is the medium; email, push and IM are delivery.</strong> A message is written once,
+   internally, and then <em>distributed</em>. This is the load-bearing choice, because the alternative
+   — the system as a mail relay — has no record of what anyone was told.</li>
+<li><strong>Two sender tiers.</strong> Everyone may write <strong>direct</strong> messages. <strong>Broadcast</strong> is a permission.</li>
+<li><strong>The recipient chooses the channel.</strong> The sender chooses who; the recipient chooses how it
+   reaches them.</li>
+</ol>
+<p><strong>Therefore: one message, one recipient row each, and the medium resolved at delivery.</strong>
+A <code>message</code> plus a <code>message_recipient</code> per addressee carrying read state; the channel is
+selected per recipient against their own contact points. A bounced email is a failed delivery on
+one channel, not a lost message. <code>person_contact.purpose</code> gains a messaging purpose and each
+contact point carries its own opt-in, which is the existing contact-point model doing work rather
+than a new subsystem beside it.</p>
+<p><strong><code>broadcast</code> is granted at a scope, which is the whole authorization model speaking again.</strong>
+Granted organization-wide it reaches everyone; granted on a unit it reaches that unit's people.
+No new mechanism — role assignments already carry a scope. <strong>A single global <code>broadcast</code> flag
+would have made a pack leader announcing a 9 a.m. start either the holder of an
+organization-wide power or the author of twelve identical messages, and the first of those is
+precisely the arrangement every other part of this design exists to prevent.</strong> Note that this
+lands on scope authority rather than on audiences: <em>who may address</em> a set is authority over that
+set, and authority over a set originates inside it.</p>
+<p><strong>Age is not a sender concept, and that is a decision, not an omission.</strong> The question asked
+whether staff may address a child directly or only their guardians; the answer replaced it with a
+sender-tier model that has no age in it. Consistent with
+<a href="../round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>, there is no age branch in the
+resolver. <strong>The residue is stated rather than hidden: any account in the system may send a direct
+message to any other account, including a child's.</strong> The rule the communication section had
+promised — <em>"a rule against contacting minors directly"</em> — is <strong>not</strong> implemented as a
+restriction on senders. See <strong>MSG-1</strong> for the recommendation, which is to restrict <em>visibility</em>
+rather than permission: direct messages reaching a minor mirrored to their guardians, so nothing
+is blocked, nothing is secretly unread, and the resolver still has no age branch.</p>
+<p><strong>Two-way door?</strong> The delivery half yes — adding a channel is a new contact purpose. The sender
+tiers no: once people can message each other, retracting that is a feature removal, and any
+later safeguarding rule has to be written as surveillance over a channel that already exists.</p>
+<p><strong>See:</strong> <a href="../../domain/02-actors/">../domain/02-actors.md</a>,
+<a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a>,
+<a href="../../open-questions/#h-not-yet-designed">../open-questions.md § Communication</a>.</p>
+<hr />
+<h2 id="d-078--an-exposure-extends-an-assignment-never-a-direct-grant">D-078 — An exposure extends an assignment, never a direct grant<a class="headerlink" href="#d-078--an-exposure-extends-an-assignment-never-a-direct-grant" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided — <strong>found by deleting the SQL, not by running it</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Superseded by <a href="../round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> with the exposure table itself.</strong> Its distinction, that widening an
+inherited reach is a different act from writing a grant, has no subject after <a href="../round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>: a grant has exactly
+one shape, and there is nothing to extend it.</p>
+<p><strong>What happened.</strong> Translating the resolver out of SQL for
+<a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a> meant reading each
+branch for what it <em>decides</em> rather than what it says. The unit-grant tier had two branches, and
+the second one consulted <code>scope_exposure</code>. It joined the direct grant to <code>se.org_unit_id</code> while
+also requiring <code>se.org_unit_id =</code> the unit being checked. Both conditions pin the grant to the
+checked unit — which the first branch had already tested. <strong>The branch could never succeed where
+the first one failed.</strong></p>
+<p><strong>It was not a vulnerability.</strong> A branch that can only ever return true where another branch
+already returned true grants nothing. The damage is to the reader: a tier that appears to widen
+direct grants through exposures is a tier that will be trusted, reviewed and extended on that
+basis. It survived every review of the SQL precisely because it reads correctly.</p>
+<p><strong>The rule, now stated.</strong> <code>scope_exposure.role_assignment_id</code> points at a <strong>specific person's
+assignment</strong>. The unit is agreeing that <em>this person, in this role, for this period</em> may act here
+— which is what makes the exposure legible as an act of the unit rather than a grant to a
+whoever-holds. A direct <code>access_grant</code> contains no assignment for an exposure to attach to, and
+a grant already at the checked unit needs no extension to work there. <strong>So the role channel is
+the table's only consumer, and the unit-grant tier matches exactly.</strong></p>
+<p><strong>Why the tempting repair must be refused.</strong> "Exposures don't extend my direct grant — that looks
+like an oversight, let's add it back" produces a system where a unit that exposed <em>a treasurer
+role assignment</em> has also, silently, exposed itself to every direct grant held by every person
+who happens to hold some other assignment there. The repair would widen an exposure to cover
+people the exposing unit never approved, in the one direction the founding principle forbids.
+Anyone reaching for it should read this entry first, which is why it is a decision and not a
+comment.</p>
+<p><strong>What this says about D-072's trade.</strong> The deleted SQL contained a bug and the prose cannot
+contain it, because the prose does not have a dead branch. This is the one case where removing
+the schema was an unambiguous improvement, and it is worth recording beside the cases where the
+removal cost something real.</p>
+<p><strong>Two-way door?</strong> No, in the sense that matters: adding a second route back is a widening. In
+every other sense yes — nothing here constrains a future mechanism that names a grant in an
+exposure row deliberately, which would need a new column and a new argument.</p>
+<p><strong>See:</strong> <a href="../../data-model/05-authorization/#5-scope_exposure--deleted-by-d-097">../data-model/05-authorization.md §5</a>.</p>
+<hr />
+<h2 id="d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079 — The guardianship channel is entered by shape, not by permission name<a class="headerlink" href="#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided — consequence of <a href="#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Before.</strong> The resolver picked a channel by string: a permission code beginning <code>dependent.</code> went
+down the guardianship channel, everything else went down the ordinary path. This was elegant, and
+it had a hole nobody noticed while it was true.</p>
+<p><strong>The hole.</strong> A parent correcting their child's address is performing <code>person.address.edit</code>. That
+code has no <code>dependent.</code> prefix — it is the same code a person uses to correct their own address.
+<strong>So the act did not route through guardianship at all.</strong> It resolved against the parent's own
+roles and item grants, which say nothing about this child, and the answer was deny — correct by
+accident, for a reason that had nothing to do with the relationship that made the act legitimate.
+Any future <code>person.*</code> act a guardian needed would have inherited the same dead end, and the fix
+each time would have been a new <code>dependent.*</code> code, which is how the namespace grew to eighteen.</p>
+<p><strong>Now: the channel is entered when the subject of the act is not the actor.</strong> The resolver is
+already handed both — the actor, and the owner of the thing being touched. Compare them; if they
+are different people, ask the guardianship question. <strong>That question may answer only "yes".</strong> If
+the answer is yes the check is finished and the act is allowed; in every other case the channel
+falls silent and the resolver carries on to the actor's own roles and grants. <strong>It is not the last
+word, and the paragraph below explains why that had to change as well</strong> — the first draft of this
+decision kept the old finality, and the two halves are inconsistent within one page, which is
+itself instructive about how a rule outlives the reason it had.</p>
+<p><strong>Three things this buys.</strong> <em>(a)</em> Nothing escapes by naming: a permission added next year for a
+field a guardian must edit is covered the day the field exists, because dispatch reads the shape
+of the request rather than a list maintained beside it. <em>(b)</em> It is one comparison instead of a
+prefix match against a namespace that has to be kept in step with the catalog by hand. <em>(c)</em> The
+rule is stated in the resolver, where a reader looking for "how does a guardian get authority"
+will find it, rather than in a column's comment.</p>
+<p><strong>What it costs.</strong> Dispatch is now invisible in the data. Under the prefix rule you could look at
+a permission code and know which channel would answer for it; now you have to know whether the
+check is being made about somebody else, which is a property of the call site, not of the
+permission. <strong>This is the price of every shape-based rule and it is worth paying here</strong>: the
+alternative was a rule that was legible and wrong. The audit side of it is unchanged — an act
+performed on behalf of a minor is recorded as such regardless of which code was checked
+(<a href="../../data-model/04-relationships/#5-acting-on-behalf--recording-it">04-relationships §5</a>).</p>
+<p><strong>Where the boundary sits, because <code>subject ≠ actor</code> is far broader than guardianship.</strong> A
+treasurer entering a payment for a child, a leader marking a roster, a registrar correcting a name
+they imported: all of these are subject≠actor checks, and none of them is a guardian acting on a
+ward. If the channel answered for all of them, the treasurer would be asked whether they are the
+child's guardian, told no, and <strong>denied an act their role plainly authorises.</strong> So the channel
+speaks only when there is something to ask: <strong>a live guardianship row joining this actor to this
+subject, at this date.</strong> No row, no answer, and the resolver falls through to the allow tiers
+exactly as it always did. There is no age test in that guard, which is deliberate — the
+guardianship row <em>is</em> the relationship, and adults who file one for themselves
+(<a href="#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>) are covered by the
+same two words as minors are. An age branch would also contradict
+<a href="../round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a> and
+<a href="#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>,
+both of which insist the resolver has no age in it.</p>
+<p><strong>The consequence is a real weakening of the channel, and it should be read as such.</strong> Under the
+prefix rule the guardianship channel gave the <strong>final</strong> answer: <code>dependent.medical.view</code> was a
+guardian-only code, no role held it, so "the guardian's right is <code>view</code>, this is a write" could
+safely end the check. Now that the channel carries ordinary codes a role might also grant,
+finality turns into a trap — <strong>the parent who is also the event registrar, holding <code>view</code> over
+their own child, denied the right to do their job.</strong> So the guardianship channel now returns
+<strong>allows only</strong>: sufficient right → true; insufficient, or <code>none</code>, or no row → silence, and the
+actor's own roles and grants are still tried. What is <em>not</em> lost:</p>
+<ul>
+<li><strong><code>none</code> still grants nothing</strong>, which is what D-074 actually promised. It was never a promise
+  to block unrelated authority.</li>
+<li><strong>A genuine prohibition is still available and still absolute</strong> — an explicit deny in channel 0,
+  which runs before everything and does not care about scope. That is where "this person must not
+  touch this child's record" belongs, and it is stronger than what a guardianship level could do.</li>
+<li>Nothing an actor reaches by falling through is authority the guardianship row was hiding: their
+  role already gave it to them, guardianship row or not.</li>
+</ul>
+<p><strong>What is lost is the ability to say "not even your role".</strong> No guardian's <code>view</code> can ever be
+that sentence again. In a safeguarding system that sentence has to exist, and D-032 already put it
+in the deny channel rather than distributed across capability levels — so the loss is of a
+convenient place to write it, not of the mechanism.</p>
+<p><strong>Two-way door?</strong> Yes in principle, no in practice — the old dispatch can only be restored by
+re-inventing the namespace D-074 deleted.</p>
+<p><strong>See:</strong> <a href="../../data-model/05-authorization/#10-the-resolver">../data-model/05-authorization.md §10</a>,
+<a href="../../data-model/04-relationships/#4-how-the-resolver-uses-these-tables">../data-model/04-relationships.md §4</a>,
+<a href="../../appendix/permission-catalog/#9-there-is-no-dependent-namespace">../appendix/permission-catalog.md §9</a>.</p>
+<hr />
+<h2 id="d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved">D-080 — Five contradictions the translation surfaced, and how each was resolved<a class="headerlink" href="#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided — <strong>each resolution is a correction, not a choice between options</strong>
+<strong>Date:</strong> refinement round 6</p>
+<p><strong>Why this entry exists.</strong> <a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
+required every SQL block to be read for what it <em>decides</em> before it was deleted. That reading is
+the first time these documents were checked against themselves line by line, and it found five
+places where a document said two contradictory things — in three cases three things, one of them
+executable. <strong>They had been invisible precisely because one of them worked.</strong> A query that returns
+the wrong rows is not visibly wrong. Each is resolved here rather than left as a note, because
+with the SQL gone there is nothing left to disagree with the prose: <strong>the prose is now the only
+place the rule lives, so it has to be right.</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>The contradiction</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>identifier_scheme.is_unique</code> said a school id may repeat; the uniqueness rule applied to every scheme and never read the flag</td>
+<td><strong>The flag decides.</strong> A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. <a href="../../data-model/01-identity/#7-person_identifier">01-identity §7</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>§9 of the identity document opened by saying its views encode "always exclude merged <strong>and redacted</strong>"; <code>v_person</code> excluded merged only, while §1 and §2 both required both</td>
+<td><strong>Both exclusions.</strong> A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. <a href="../../data-model/01-identity/#9-views">01-identity §9</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>The audit redactor kept an <em>always-redacted</em> list of free-text fields — and nothing read it</td>
+<td><strong>Kept, and labelled as intent.</strong> It is the clearest illustration in the whole repository of what a declarative list nobody consults is worth. <a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">06-audit §2.2</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>The unit-grant tier appeared to widen direct grants through <code>scope_exposure</code>, and did not</td>
+<td>Dead branch. <strong>The rule is now stated once, in the direction that is true:</strong> an exposure extends an assignment and never a grant. <a href="#d-078--an-exposure-extends-an-assignment-never-a-direct-grant">D-078</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>is_leadership</code> lives on <code>position</code>, and the audience rule for <code>unit_leaders</code> read it as though it lived on <code>role</code></td>
+<td><strong>Fixed where it is read.</strong> The audience is "holds a live assignment to a leadership <em>position</em> at that unit", which is what everyone had been assuming it meant. <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">05-authorization §8</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>One pattern, four instances.</strong> Every one of these is a <strong>second statement of a rule that the
+first statement did not consult</strong>: a flag beside a constraint, a view beside a section heading, a
+list beside a loop, a column on the wrong table. Two copies of a rule diverge — the reason this log
+exists at all — and the divergence is only found by someone reading both. That is also why the
+permission catalog is now the catalog's alone, why §11 of the conventions points at Rules blocks
+instead of restating them, and why the count in that sentence is not a coincidence.</p>
+<p><strong>What was <em>not</em> resolved, in the same spirit.</strong> Item 3's fix is a label, not an enforcement;
+item 5's check still cannot run automatically; and a correction nobody re-tests is exactly how
+item 2 got into the documents. <strong>The five resolutions are therefore themselves invariants</strong> — if
+someone regenerates a schema from these documents and produces a per-table identifier constraint
+or a redacted-inclusive listing, this entry is the thing that was violated.</p>
+<p><strong>Two-way door?</strong> No, and deliberately: each of these was a bug whose "fix" is indistinguishable
+from a regression. If one returns, it returns as a bug report, not as a reversal.</p>
+<hr />
+<h2 id="d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081 — Rule names survive the deletion of their mechanisms; a renamed rule must say who enforces it now<a class="headerlink" href="#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (editorial ruling, ratified this round)
+<strong>Date:</strong> refinement round 6
+<strong>Follows:</strong> <a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>, <a href="#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved">D-080</a></p>
+<p><strong>What was found.</strong> With the DDL gone, roughly sixty sentences still credited a database object
+with acting: "the trigger in §3 enforces it", "the schema cannot express", "<code>ck_request_rejection_reason</code>
+requires a reason code", "refused by trigger (§8)". None was false when it was written. Each became
+a <strong>false claim about the present</strong> the moment D-072 removed the thing it named, and a reader who
+trusts the sentence does the one thing this corpus cannot afford — assuming a guarantee exists and
+not writing it.</p>
+<p><strong>Ruling 1 — the identifiers stay; the agency goes.</strong> <code>ck_org_unit_closed</code>,
+<code>uq_org_unit_single_root</code>, <code>uq_access_grant_live</code> and the rest are kept <strong>as names of rules</strong>, not
+as claims about objects:</p>
+<table>
+<thead>
+<tr>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"<code>ck_org_unit_closed</code> states the invariant explicitly"</td>
+<td>"<strong>A unit cannot be closed without an end date</strong> (<code>ck_org_unit_closed</code> is this rule's name)" + which layer carries it</td>
+</tr>
+<tr>
+<td>"the trigger refuses deletion"</td>
+<td>"Guard 2 is the rule, the no-cascade reference is what refuses it, and <code>event.delete</code> only decides who may ask"</td>
+</tr>
+</tbody>
+</table>
+<p>Deleting the names would be a repository-wide rename touching every cross-reference, and a rule with
+a stable handle is worth more than a purer vocabulary. <strong>The line is agency, not vocabulary:</strong> an
+identifier may survive its table as long as no sentence asks it to do anything.</p>
+<p><strong>Ruling 2 — renaming the mechanism is never the fix.</strong> Where a rule loses its enforcement, the
+sentence must state what is now required <strong>and which layer owes it</strong>, in the register of
+<a href="../../data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00 §6a</a>. "The trigger
+guarantees X" and "X is validated in the model" are not adjacent statements; the first is a
+guarantee on every path and the second is a friendly message on the intended one. Softening one
+into the other without saying so is how a deleted schema turns into a silently weaker system. Where
+the honest answer is "no layer enforces this and none can", the text now says that — <em>a convention,
+not a guard</em> — rather than letting the reader infer it.</p>
+<p><strong>Ruling 3 — a rule that lost both its guard and its report gets a report.</strong> Three had neither,
+which is worse than losing the guard alone, because a missing guard is at least visible to whoever
+writes the migration:</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Where the guard went</th>
+<th>Net added</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>position.max_holders</code></td>
+<td>no constraint can state a count over other rows (F-10 shape 3)</td>
+<td><a href="../../data-model/02-organization/#6-integrity-checks">02-organization §9 check 9</a> — over-limit means <em>bypassed</em>, unlike event capacity, which may be exceeded deliberately</td>
+</tr>
+<tr>
+<td>Registration outside its window</td>
+<td>Guard 1, inside the writing transaction</td>
+<td><a href="../../data-model/08-events/#10-integrity-checks">08-events §10 check 9</a> — a row here is evidence about the code, not the data</td>
+</tr>
+<tr>
+<td><code>fee_obligation</code>, created by the code that places a registration</td>
+<td>nothing ever enforced it</td>
+<td><a href="../../data-model/08-events/#10-integrity-checks">08-events §10 check 10</a> — a confirmed place with no bill leaves every row individually correct</td>
+</tr>
+</tbody>
+</table>
+<p>One rule keeps <strong>no</strong> net, deliberately, with the absence named instead of smoothed over:
+<code>org_unit.parent_unit_id</code> immutability (<a href="../round-02-03/#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit">D-036</a>).
+A reparent leaves nothing malformed to count, so it became F-10's fourth shape rather than a check.</p>
+<p><strong>One contradiction of D-080's class, found and settled.</strong> §2.1 of
+<a href="../../data-model/06-audit-and-import/#21-the-trigger">data-model/06</a> said <code>DELETE</code> is outside the
+audited operations "because nothing in this data model is hard-deleted", while §3's import revert
+removes the <code>person</code>, <code>membership</code> and <code>unit_participation</code> rows a batch created. Written together
+they meant <strong>a rollback could erase live rows without a trace</strong> — the one event someone is most
+certain to ask about later. Settled in favour of the audit log: <strong>a revert writes one audited entry
+per deleted row, naming the batch</strong>, and <code>DELETE</code> stays outside the audited operations only because
+no other path reaches a business row with a delete.</p>
+<p><strong>The residual that could not be closed.</strong> Audit <em>completeness</em> used to be answerable from the
+database's own catalog — ask which tables carry triggers, compare against the business tables. There
+is no catalog to ask now: a table is audited because the code writing it remembers to, so the
+nightly comparison runs between two hand-maintained lists, and <strong>both can go stale together and
+still report zero.</strong> The replacement is an assertion over the paths that may write or delete a
+business row; until that exists this is recorded as a known hole rather than as a solved problem.</p>
+<p><strong>Ruling 4 — the decision log may quote SQL; nothing else may, and a quotation must say where the
+rule lives now.</strong> Five fences survived in this log, and deleting them would be the wrong
+correction: an entry that says "the exclusion constraint drops <code>membership_type_id</code>" is <em>about</em> that
+constraint, and rewriting it into prose would quietly revise a record of what was decided in order
+to keep the vocabulary clean — the same mistake D-080 catalogued, arriving from the opposite
+direction. So the fences stay, each followed by one italic line naming <strong>the requirement as it is now
+stated, the document that owns it, and the layer that owes it</strong>. The header of this log says the same
+thing once, so that no fence is read as a specification by someone who arrived at it directly.
+That is the whole distinction: <strong>the documentation describes a system; this log records how the
+description got here, and a record is allowed to quote things it no longer endorses.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00 §6a</a>,
+<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">open question F-10</a>
+(now four shapes), <a href="#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../round-05/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 5">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Round 5
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../round-07-08/" class="md-footer__link md-footer__link--next" aria-label="Next: Rounds 7-8">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Rounds 7-8
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>
