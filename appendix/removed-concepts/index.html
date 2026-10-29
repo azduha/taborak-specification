@@ -2701,11 +2701,11 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a></td>
 </tr>
 <tr>
-<td><code>is_member</code>, <code>member_type</code>, <code>is_child</code></td>
-<td>flags on the person row saying what kind of human this row was</td>
-<td>personhood is not a type, and one person can be a member twice with a gap between</td>
-<td><code>membership</code> rows, and <code>is_current_member()</code> on the date asked about</td>
-<td><a href="../../decisions/round-01a/#d-001--person-account-and-membership-are-three-separate-things">D-001</a></td>
+<td><code>is_member</code>, <code>member_type</code>, <code>is_child</code>, <code>current_member_category()</code></td>
+<td>flags on the person row saying what kind of human this row was, and the function asking which category a member was in right now</td>
+<td>personhood is not a type, membership is ageless, and one person can be a member twice with a gap between</td>
+<td><code>membership</code> rows, and <code>is_current_member()</code> on the date asked about; <code>is_minor(person, as_of)</code> reads the person</td>
+<td><a href="../../decisions/round-01a/#d-001--person-account-and-membership-are-three-separate-things">D-001</a>, <a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a></td>
 </tr>
 <tr>
 <td><code>LIST</code></td>
@@ -2743,8 +2743,8 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a></td>
 </tr>
 <tr>
-<td>the membership gate, <code>requires_membership</code>, <code>system.gate_exempt</code></td>
-<td>a resolver clause honouring an office only while its holder was a paid-up member, with a waiver list</td>
+<td>the membership gate, <code>role.requires_membership</code>, <code>system.gate_exempt</code>, <code>person_holds_gate_exempt</code></td>
+<td>a resolver clause honouring an office only while its holder was a paid-up member, the per-office switch waiving it, and the waiver list with its reader function</td>
 <td>the test is now an operand the grant's writer puts in, so the posture is opt-in per grant</td>
 <td><code>MEMBERS * ROLE(x)</code>; the exemption is <code>+ PERSON(y)</code> in the same grant</td>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
@@ -2855,11 +2855,39 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
 </tr>
 <tr>
-<td><code>unit_participation</code>, with its <code>is_primary</code> and <code>role_in_unit</code></td>
-<td>the period a person took part in one sub-unit, and the root row every membership owed</td>
-<td>no sub-units; membership is one query and a group roster is another</td>
-<td><code>membership</code> for the membership, <code>person_group_member</code> for the roster</td>
+<td><code>unit_participation</code>, with its <code>is_primary</code>, <code>role_in_unit</code>, <code>data_confidence</code> and its <code>join_reason_code</code> / <code>leave_reason_code</code> vocabulary (<code>transfer</code>, <code>promotion</code>, <code>reorganisation</code>, <code>unit_closed</code>)</td>
+<td>the period a person took part in one sub-unit, the root row every membership owed, and the reason vocabulary and display labels those rows carried</td>
+<td>no sub-units; membership is one query and a group roster is another, and the reason a row was written is in the audit trail that already names who wrote it</td>
+<td><code>membership</code> for the membership, <code>person_group_member</code> for the roster, <code>audit_log</code> for why a row moved</td>
 <td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td>the root participation row a renewal extended, and the integrity check 1b that watched the pairing</td>
+<td>the second row holding the same period as every membership, and the report that found the writers who skipped pairing them</td>
+<td>one of the two rows is deleted, so the pairing is not a rule running without a guard but a redundancy removed; <code>membership</code> cannot disagree with a copy of itself</td>
+<td><code>membership</code> alone — and a renewal inside the window still backdates the period there</td>
+<td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, <a href="../../decisions/round-04/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a></td>
+</tr>
+<tr>
+<td><code>unit_membership</code></td>
+<td>the name that table carried before D-041 renamed it to participation</td>
+<td>the name asserted a second species of membership, which raised whether the fee was owed twice; the thing it named is now deleted outright</td>
+<td><code>membership</code> for the membership, <code>person_group_member</code> for belonging to a group</td>
+<td><a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a></td>
+</tr>
+<tr>
+<td><code>requirement_code</code>, <code>membership_request_requirement</code>, and its seeded items <code>guardian_consent</code>, <code>background_check</code>, <code>medical_form</code>, <code>references</code>, <code>previous_unit_transfer</code>, <code>photo_consent</code></td>
+<td>the checklist a membership request had to satisfy before it could be accepted, one row per item, seeded with six of them</td>
+<td>nothing gates a request but identity and payment, and keeping the mechanism as empty infrastructure was offered and not taken</td>
+<td>the request as it stands — a person, a submitted timestamp, a reviewer, a decision, a payment</td>
+<td><a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a></td>
+</tr>
+<tr>
+<td><code>membership_type.category</code>, <code>min_age</code>, <code>max_age</code>, <code>requires_background_check</code>, <code>requires_references</code>, <code>requires_guardian_consent</code>, <code>allows_concurrent</code>, <code>grace_period_days</code>, <code>fee_schedule_id</code>, <code>ck_membership_type_ages</code></td>
+<td>the columns on a membership type saying which kind of person it was for, who was eligible, what a request had to carry, whether two memberships could overlap, how long the grace ran, and what it cost</td>
+<td>one type with a flat fee makes every one of them inert, and each put an eligibility rule on what is only a vocabulary row</td>
+<td>ages are facts about the <code>person</code>; nothing gates a request but identity and payment; the grace is <code>renewal_grace_days</code>, a window read from the row; the fee attaches to the <code>fee_obligation</code></td>
+<td><a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>, <a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>, <a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>, <a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a></td>
 </tr>
 <tr>
 <td><code>delegation_of</code> on <code>access_grant</code></td>
@@ -2951,7 +2979,7 @@ were granted, and here is where their act is performed now.</p>
 the history back into the pages this appendix exists to keep clean; and re-adding one quietly, which is
 why every row ends in a decision — a concept comes back by a decision entry, or it does not come back.</p>
 <hr />
-<p><em>Decisions behind this page: D-001, D-041, D-043, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
+<p><em>Decisions behind this page: D-001, D-037, D-038, D-040, D-041, D-043, D-044, D-050, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
 D-099, D-100, D-101, D-102, D-105, D-113, D-114.</em></p>
 
 
