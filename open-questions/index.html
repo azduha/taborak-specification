@@ -286,9 +286,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -302,7 +324,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -315,6 +409,8 @@
   
     
     
+      
+        
       
         
       
@@ -560,6 +656,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -3480,7 +3604,7 @@ material — their events, their rosters, their local leadership — requires on
 organization scope and <strong>cannot</strong> read a pack roster. Scope is an exact match; it reads the
 root participation rows, which mirror membership
 (<a href="../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
-See <a href="../domain/06-authorization-model/#23-systemadmin">domain/06 §2.4</a>.
+See <a href="../domain/06-authorization-model/#21-systemadmin">domain/06 §2.1</a>.
 <strong>D-094 gave this the same shape in the other direction</strong>: imported events belong to the root, so a
 unit-scoped "our events" report sees historical camps it did not run — a date filter, not a unit filter,
 is what makes either list mean what it looks like it means.</p>
@@ -4029,7 +4153,7 @@ ended a bug this entry described without anybody deciding to end it. <strong>The
 untouched</strong>, and <code>PERSON(x)</code> is now the operand that would be misread, since it went from a curiosity to the
 only way to name a set of people by hand.</p>
 <p><strong>Round 11 found the same defect again, this time in prose.</strong>
-<a href="../domain/06-authorization-model/#the-selectors">domain/06 §4.2</a> keeps its own copy of this table for readers
+<a href="../domain/06a-audiences-and-selectors/#the-selectors">domain/06a</a> keeps its own copy of this table for readers
 who never open the data model, and that copy had never grown a <code>PERSON</code> row or an <code>AUDIENCE</code> row while still
 carrying the <code>LIST</code> row D-105 deleted — so the page that teaches this language to everybody who is not
 implementing it taught a language in which two of the twelve operands could not be written, and taught one
@@ -6671,7 +6795,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>21</td>
 <td>No downward inheritance; ~~exposures are written by the unit~~ (D-031) † — <strong>deprived of its subject, not weakened</strong> (<a href="../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>): the rule was always about a hierarchy that no longer exists, and what survives is the ordinary reading of a scope — <strong>a grant reaches its scope and nothing beside it</strong></td>
-<td><a href="../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">domain/06</a></td>
+<td><a href="../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">domain/06 §2</a></td>
 </tr>
 <tr>
 <td>22</td>

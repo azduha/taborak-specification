@@ -5,6 +5,10 @@
          <lastmod>2026-10-29</lastmod>
     </url>
     <url>
+         <loc>https://azduha.github.io/taborak-specification/glossary-authorization/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
          <loc>https://azduha.github.io/taborak-specification/glossary/</loc>
          <lastmod>2026-10-29</lastmod>
     </url>
@@ -138,6 +142,10 @@
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/06-authorization-model/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
+         <loc>https://azduha.github.io/taborak-specification/domain/06a-audiences-and-selectors/</loc>
          <lastmod>2026-10-29</lastmod>
     </url>
     <url>

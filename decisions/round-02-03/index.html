@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -317,6 +411,8 @@
   
     
     
+      
+        
       
         
       
@@ -562,6 +658,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -2075,7 +2199,7 @@ single row written anywhere above a unit would silently decide authority inside 
 therefore outside this rule. It is scoped to the whole system, not to a unit, so it is not
 a counterexample to "authority originates at the unit" — but it is all-or-nothing and
 should be rare.</p>
-<p><strong>See:</strong> <a href="../../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">../domain/06-authorization-model.md</a>,
+<p><strong>See:</strong> <a href="../../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">../domain/06-authorization-model.md</a>,
 <a href="../../data-model/05-authorization/#5-scope_exposure--deleted-by-d-097">../data-model/05-authorization.md</a>.</p>
 <hr />
 <h2 id="d-032--deny-is-absolute-locality-orders-allows-only">D-032 — Deny is absolute; locality orders allows only<a class="headerlink" href="#d-032--deny-is-absolute-locality-orders-allows-only" title="Permanent link">&para;</a></h2>
@@ -2120,7 +2244,7 @@ the rule.</p>
 Holding a position grants nothing by itself; <code>is_leadership</code> only <em>suggests</em> a
 <code>role_assignment</code>.</p>
 <p><strong>See:</strong> <a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">../data-model/02-organization.md</a>,
-<a href="../../domain/04-organization-structure/#6-appointments-which-no-longer-end-at-a-position">../domain/04-organization-structure.md</a>.</p>
+<a href="../../domain/04-organization-structure/#6-appointments">../domain/04-organization-structure.md</a>.</p>
 <hr />
 <h2 id="d-034--the-person-record-holds-no-deceased-flag">D-034 — The person record holds no deceased flag<a class="headerlink" href="#d-034--the-person-record-holds-no-deceased-flag" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided
@@ -2469,7 +2593,7 @@ case, the question was put again and your answer was: <em>"Not needed if audienc
 <p><strong>Consequence — the rule is now absolute.</strong> There is no sanctioned bypass, no marker prefix,
 no exception to explain. <code>scope.expose</code> held <strong>at the covered unit</strong> is the only way a row is
 created, and it is enforced by the same predicate at three layers
-(<a href="../../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">domain/06 §2.5</a>).</p>
+(<a href="../../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">domain/06 §2</a>).</p>
 <p><strong>This is a genuine simplification</strong>, and it removes the design's most uncomfortable
 paragraph — the one arguing that the rule had to bend for scale.</p>
 <hr />

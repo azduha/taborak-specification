@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -319,6 +413,8 @@
   
     
     
+      
+        
       
         
       
@@ -632,10 +728,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-appointments-which-no-longer-end-at-a-position" class="md-nav__link">
+  <a href="#6-appointments" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Appointments, which no longer end at a position
+        6. Appointments
       
     </span>
   </a>
@@ -716,6 +812,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -1839,10 +1963,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-appointments-which-no-longer-end-at-a-position" class="md-nav__link">
+  <a href="#6-appointments" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Appointments, which no longer end at a position
+        6. Appointments
       
     </span>
   </a>
@@ -1906,13 +2030,6 @@
 
 <h1 id="groups">Groups<a class="headerlink" href="#groups" title="Permanent link">&para;</a></h1>
 <p>One organization, and the named sets of people inside it.</p>
-<p><strong>This page used to describe a hierarchy.</strong> <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
-deleted it, and not by simplifying it: the module's subject stopped being a structure and became two
-things that were previously buried inside it — the organization, which is one unit and is not stored, and
-the <strong>group</strong>, which is a set of people and is
-(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
-What follows says what the organization is now, what that costs, what a group is and is not, and where the
-workflows that used to end at a position now end.</p>
 <p><strong>The vocabulary, first, because everything here leans on it.</strong></p>
 <table>
 <thead>
@@ -1936,12 +2053,12 @@ workflows that used to end at a position now end.</p>
 <tr>
 <td><strong>role</strong></td>
 <td>an office: a small, visible set of holders — leaders, finance, IT</td>
-<td><code>role</code> + <code>role_holder</code> (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)</td>
+<td><code>role</code> + <code>role_holder</code></td>
 </tr>
 <tr>
 <td><strong>audience</strong></td>
 <td>an expression over named sets, which a grant is aimed at</td>
-<td><code>audience</code> (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>)</td>
+<td><code>audience</code></td>
 </tr>
 <tr>
 <td><strong>selector</strong></td>
@@ -1957,91 +2074,65 @@ and are not re-specified here. This page owns the unit and the group.</p>
 <h2 id="1-the-organization-is-one-unit-and-the-unit-is-a-scope">1. The organization is one unit, and the unit is a scope<a class="headerlink" href="#1-the-organization-is-one-unit-and-the-unit-is-a-scope" title="Permanent link">&para;</a></h2>
 <p><strong>There is one unit and it is the organization.</strong> It has no parent, no children, no type, no code, no
 path, no depth, and no row. It is the non-item scope that <code>grant_scope_type</code> already carries — code
-<code>unit</code>, <code>is_item_scoped = false</code>, and a grant written at it has no <code>scope_id</code>. Nothing in the schema
+<code>unit</code>, <code>is_item_scoped = false</code> — and a grant written at it has no <code>scope_id</code>. Nothing in the schema
 represents it, because there is nothing to represent: a second unit cannot appear, for the same reason a
-second answer to a question cannot appear in a field that does not exist
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).</p>
-<p><strong>Membership is unchanged and is not a group.</strong> One membership per person, at the unit, paid for yearly.
-It used to be issued with a participation row on the root unit so that "everyone in unit X" was one
-uniform query whether X was the organization or a Thursday-evening pack; that row is deleted with the
-units. So now:</p>
+second answer to a question cannot appear in a field that does not exist.</p>
+<p><strong>Membership is unchanged and is not a group.</strong> One membership per person, at the unit, paid for yearly:</p>
 <ul>
 <li><strong>"everyone in the organization"</strong> is one query against <code>membership</code>;</li>
 <li><strong>"everyone in the Thursday group"</strong> is one query against <code>person_group_member</code>.</li>
 </ul>
-<p>Two shapes instead of one shape with a depth in it, and neither one borrows the other's table. Renewal
-narrows to exactly what it always claimed to be about — the <code>membership</code> row, a new row per renewal
-(<a href="../../decisions/round-01b/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>)
-— because the row it used to extend on a renewal is gone with the units, and
-<a href="../../decisions/round-04/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>
-is reversed rather than narrowed.</p>
-<p><strong>A grant at the unit reaches everything</strong>, every item of every type, because nothing stands between the
-unit and an item any more and there is no ownership relation left to test
-(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,
-<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
-That is a sentence about the permission system; it is stated here only because it is what "scope" means
-now that "row" does not.</p>
+<p>Two shapes, and neither one borrows the other's table. Renewal opens a new <code>membership</code> row rather than
+extending the old one
+(<a href="../../decisions/round-01b/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>).</p>
+<p><strong>A grant at the unit reaches everything</strong> — every item of every type — because nothing stands between
+the unit and an item and there is no ownership relation to test. That is a sentence about the permission
+system; it is stated here only because it is what "scope" means now that "row" does not.</p>
+<p>Why the design carries no hierarchy: the legacy corpus names no units at all — two exports, people with
+their membership period and events with attendance, no unit column anywhere
+(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>) — and a
+structure that describes nothing imported and restricts nothing carries no information
+(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).</p>
 <h3 id="what-that-costs-said-once">What that costs, said once<a class="headerlink" href="#what-that-costs-said-once" title="Permanent link">&para;</a></h3>
-<p>The hierarchy was not free-standing decoration, and deleting it spent real properties. They are listed
-here rather than distributed through the page, and they are not argued away.</p>
+<p>These are properties the hierarchy was carrying, listed here rather than distributed through the page.
+They are not argued away.</p>
 <ol>
-<li><strong>The unit is no longer a locus of accountability for a child's records.</strong> This is the one that matters
-   and it is the founding rule's.
-   <a href="../../decisions/round-02-03/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>
-   said ~~authority over a unit originates at that unit and cannot be claimed from outside it~~ — it
-   existed so that access to a pack's children had to be granted <em>by that pack</em>, by the people who
-   recruited its leader and can be asked about it. <strong>Reversed by
-   <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong>, which
-   does not weaken the rule but deprives it of its subject: with one unit there is no "outside it" to be
-   stopped from. Nothing in the remaining model reproduces the property. A permission held at the unit
-   reaches every member, and <code>person.view</code> was already the widest read permission in the system
+<li><strong>The unit is not a locus of accountability for a child's records.</strong> This is the one that matters.
+   <strong>Nothing in the model reproduces "access to a body's children was granted by that body"</strong> — by the
+   people who know them, who recruited its leader, and who can be asked. With one unit there is no
+   "outside it" to be stopped from, so the rule has no subject rather than a weaker form. A permission
+   held at the unit reaches every member, and <code>person.view</code> is the widest read permission in the system
    (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
    <a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>).
-   What survives of the safeguarding story is the same three things D-095 left behind — a permission held
-   by a named adult, an audit trail whose payloads expire after two years
+   What stands between a child and a stranger's read is a permission held by a named adult, an audit
+   trail whose payloads expire after two years
    (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
-   and a report of who holds the write — <strong>minus the part where the named adult was somebody the unit
-   chose.</strong></li>
-<li><strong>The subtree question has no subject.</strong> "Who was in the Thursday group in 2011?" stays answerable,
-   because group member rows are dated (§5). What is gone is "and everything nested under it", which was
-   the only question the materialized path existed to answer. A set of people has no sub-sets stored
-   inside it.</li>
-<li><strong>Restructuring stops being a recorded event.</strong> Splits, mergers and successions were this module's
-   whole history problem, and they are simply gone. A group that splits is an old group that ended and two
-   that began, with no edge between them unless somebody writes one — and after
-   <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-   there is no table left where that edge could go (§4).</li>
+   and a report of who holds the write.</li>
+<li><strong>There is no subtree question.</strong> "Who was in the Thursday group in 2011?" stays answerable, because
+   group member rows are dated (§5). "And everything nested under it" has no subject: a set of people has
+   no sub-sets stored inside it.</li>
+<li><strong>Restructuring is not a recorded event.</strong> A group that splits is an old group that ended and two that
+   began, with no edge between them — and no table where such an edge could go (§4).</li>
 <li><strong>Unit-scoped reports have nothing to report on.</strong> "A pack's roster", "a pack's events", "which units
-   exist" are not hard questions any more, they are questions with no subject. The organizational-year
-   reports that actually mattered — membership and fees — live at the unit and are untouched.</li>
+   exist" are not hard questions, they are questions with no subject. The organizational-year reports that
+   matter — membership and fees — live at the unit and are untouched.</li>
 </ol>
-<p><strong>One thing gets easier, and nobody counted it.</strong> The invariant class with no report at all —
-<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a> shape 4, a
-column that may not change once set, whose violation leaves every row individually valid — had exactly one
-instance in the entire design, <code>org_unit.parent_unit_id</code>. It has none now. The details, including the ten
-integrity checks this retired, are in
-<a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">../data-model/02-organization.md §5</a>.</p>
-<p><strong>Why this was affordable now and was not affordable in round 1</strong>:
-<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>. The
-legacy corpus names no units — two exports, people with their membership period and events with
-attendance, no unit column anywhere. A structure that describes nothing imported and, per
-<a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>,
-restricts nothing carries no information. That is the definition of the over-specification the round was
-called to remove.</p>
-<p><strong>It is not a two-way door.</strong> This is the deletion of a dimension, not a flag. The route back is a
+<p><strong>One invariant class now has no instance at all:</strong> shape 4 of
+<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>, a column
+that may not change once set, whose violation leaves every row individually valid.</p>
+<p><strong>It is not a two-way door.</strong> This is the deletion of a dimension, not a flag. Adding structure back is a
 decision with a reason attached — most plausibly "the organization has outgrown one center's visibility" —
-and it would have to re-argue D-031 from its own premises, because the mechanism that made that decision
-work (<code>scope_exposure</code>, written by the unit it covered) no longer exists.</p>
+and it would have to argue the accountability rule from its own premises, because the mechanism that made
+it work — a scope written by the body it covered — does not exist.</p>
 <hr />
 <h2 id="2-what-a-group-is-and-everything-a-group-is-not">2. What a group is, and everything a group is not<a class="headerlink" href="#2-what-a-group-is-and-everything-a-group-is-not" title="Permanent link">&para;</a></h2>
-<p><strong>A group is a <code>person_group</code>: a name, a description, its own lifetime, and explicitly dated members</strong>
-(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+<p><strong>A group is a <code>person_group</code>: a name, a description, its own lifetime, and explicitly dated members.</strong>
 It is a <strong>set of people, not a body</strong>. Somebody names it, somebody puts people in it, somebody ends it, and
 the record of who was in it when is the roster's own (§5). A weekly meeting group, a project crew, a
 trainers' pool, <code>schuzka2026-1</code> — all the same kind of thing, and the system has no opinion about which
-ones deserve to exist.</p>
-<p><strong>Everything a body would have had, a group does not have.</strong> This is the list the previous design got
-wrong, so it is stated flatly:</p>
+ones deserve to exist. A person may be on several rosters at once; none of them is marked as the one to
+show first.</p>
+<p><strong>Everything a body would have had, a group does not have.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2052,11 +2143,11 @@ wrong, so it is stated flatly:</p>
 <tbody>
 <tr>
 <td>no parent and no children</td>
-<td>there are no sub-units, and groups do not nest (D-097, D-098)</td>
+<td>there are no sub-units, and groups do not nest</td>
 </tr>
 <tr>
 <td>no type, and no vocabulary of types</td>
-<td>the runtime unit vocabulary is deleted with <code>org_unit_type</code> (D-097); a group needs no word for what kind of set it is</td>
+<td>a group needs no word for what kind of set it is</td>
 </tr>
 <tr>
 <td>no <code>code</code>, no path, no depth</td>
@@ -2072,15 +2163,15 @@ wrong, so it is stated flatly:</p>
 </tr>
 <tr>
 <td>no split, merger or succession edge</td>
-<td>restructuring is no longer an event (§1, cost 3)</td>
+<td>restructuring is not an event (§1, cost 3)</td>
 </tr>
 <tr>
 <td>no leadership of its own</td>
-<td>positions are deleted (D-100); see §6</td>
+<td>see §6</td>
 </tr>
 <tr>
 <td><strong>no roles</strong></td>
-<td>an office is a role and a role is held at the unit; a group has none of its own, and no leadership column will be added to make one look derivable (D-098, D-100)</td>
+<td>an office is a role and a role is held at the unit; a group has none of its own, and no leadership column will be added to make one look derivable</td>
 </tr>
 <tr>
 <td>no fee</td>
@@ -2093,250 +2184,184 @@ wrong, so it is stated flatly:</p>
 </tbody>
 </table>
 <p><strong>Membership of a group confers nothing, and tidier storage does not quietly change that.</strong> A member of a
-group cannot do anything. That is
-<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> and
-<a href="../../decisions/round-01b/#d-019--household-membership-grants-no-access">D-019</a> restated one level down:
-participation is not authority, and it stays not-authority when it moves into a table with better
-columns. Authority arrives only through a grant that names the group, which is §4 of
+group cannot do anything: participation is not authority, and it stays not-authority when it moves into a
+table with better columns. Authority arrives only through a grant that names the group, which is §4 of
 <a href="../../data-model/02-organization/#3-a-group-is-an-item-a-grant-can-be-written-on-one">../data-model/02-organization.md</a>.</p>
-<p><strong>Where the line against an audience is drawn, because the two are one row apart in shape and a mile apart
-in meaning.</strong> The round's inversion is the load-bearing part: <strong>a group states its members; a selector
-picks them.</strong> A group's members are a list of people that is true whether or not any permission points at
-it; a leaf in an audience — since
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-that means a <code>PERSON(y)</code> row, and until then it also meant a typed list held in its own table — is an addition
-to an expression, meaningful only inside the expression it completes. A group exists to be talked about; a
-selector exists to be aimed at something. Two tables that both answer "who is in it" is exactly the shape
-<a href="../../decisions/round-06/#d-080--five-contradictions-the-translation-surfaced-and-how-each-was-resolved">D-080</a>
-teaches a reader to distrust, so the difference is stated, not implied — and merging them would make the
-permission table the system's roster, which is the mistake
-<a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a> already
-refused for events.</p>
+<p><strong>Where the line against an audience is drawn — the two are one row apart in shape and a mile apart in
+meaning: a group states its members, a selector picks them.</strong> A group's members are a list of people that
+is true whether or not any permission points at it. A leaf in an audience — a <code>PERSON(y)</code> row
+(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>) —
+is an addition to an expression, meaningful only inside the expression it completes. A group exists to be
+talked about; a selector exists to be aimed at something. Merging them would make the permission table the
+system's roster.</p>
 <p><strong>Where the line against a role is drawn, in one sentence, because it decides who may edit the list.</strong> A
 role is an office with a small, visible set of holders and is written by the most sensitive code family in
 the catalog (<code>role.*</code>, 🔒🔒); a group is company, and its roster is written by <code>person_group.member.manage</code>
 (⚠). One table with a <code>kind</code> column would give a single permission that both adds a child to the Thursday
-group and puts the holder into the administrators — that is the merge to refuse, and D-100 refuses it.
+group and puts the holder among the administrators
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
 <code>GROUP(x)</code> and <code>ROLE(x)</code> stay distinct in the grant text so the distinction is visible to whoever reads
 the grant.</p>
 <hr />
 <h2 id="3-joining-a-group-is-somebody-elses-act">3. Joining a group is somebody else's act<a class="headerlink" href="#3-joining-a-group-is-somebody-elses-act" title="Permanent link">&para;</a></h2>
 <p><strong>Nobody writes themselves onto a roster.</strong> The gate is <code>person_group.member.manage</code>, held at the unit —
-which reaches every group, because after D-097 nothing stands between a unit-scope grant and an item — or
-granted on one group as an item, which is how "these two people may work <em>this</em> roster" is said without
-inventing a scope (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
+which reaches every group, because nothing stands between a unit-scope grant and an item — or granted on
+one group as an item, which is how "these two people may work <em>this</em> roster" is said without inventing a
+scope
+(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>,
 <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
-There is no self-scoped variant and none will be added. Moving the roster from <code>unit_participation</code> to
-<code>person_group_member</code> changed the table and not the rule: D-095's reasoning transfers intact.</p>
-<p><strong>What the gate replaced is worth keeping in mind, because it is the reason the gate is trusted.</strong>
-<code>org_unit_type.allows_minors</code> used to refuse a child's placement by consulting a flag on the unit's type.
-<a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
-removed it — <em>a list of eighteen ticks nobody read is not a safeguard, it is a receipt</em> — and replaced it
-with a permission held by named adults. Per
-<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>,
-the rule's name outlived its mechanism, so: <em>do not place a child where nobody is responsible for them</em> is
-enforced by <strong>who may write the member row</strong>, now in <code>person_group_member</code>, audited and naming who wrote
-it. A permission refuses every write by the wrong person regardless of the child's age; a boolean only ever
-refused a placement nobody had thought about.</p>
-<p><strong>And what it still costs, once.</strong> The system cannot say which groups are for children. Nothing on a
-<code>person_group</code> answers that question and, consistent with "no special features", nothing will: no
-<code>allows_minors</code>, no <code>is_children</code>, no type to hang it on. Combined with no recorded background checks
+There is no self-scoped variant and none will be added.</p>
+<p><strong>Who enforces "do not place a child where nobody is responsible for them":</strong> whoever may write the member
+row in <code>person_group_member</code>, audited and naming who wrote it. A permission refuses every write by the
+wrong person regardless of the child's age
+(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).</p>
+<p><strong>What that costs.</strong> The system cannot say which groups are for children. Nothing on a <code>person_group</code>
+answers that question and, consistent with "no special features", nothing will: no <code>allows_minors</code>, no
+<code>is_children</code>, no type to hang it on. Combined with no recorded background checks
 (<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>) and with
 cost 1 above, the safeguarding story of this module is a permission held by named adults, an audit trail
 that forgets values after two years, and a report. If that turns out to be too little — after an incident,
 or an insurer's question — the route back is a rule about who may be placed where, argued once as a
 decision with its enforcement layer named in D-081's terms, and <strong>not</strong> a resurrected column whose name
 implies it enforces something.</p>
-<p><strong>A membership request is a request for membership of the unit, and carries no group.</strong> It used to carry a
-preferred unit; <code>requested_unit_id</code> is deleted, because which group a new member lands in is a write on
-the group and not a preference on the request (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
-The request flow in <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a> ends at the unit; a roster is
-somebody else's decision afterwards, which is the same fact as the paragraph above stated from the other
-side.</p>
+<p><strong>A membership request is a request for membership of the unit, and carries no group.</strong> There is no
+<code>requested_unit_id</code> on a request: which group a new member lands in is a write on the group, not a
+preference on the request. The request flow in <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a>
+ends at the unit; a roster is somebody else's decision afterwards.</p>
 <hr />
 <h2 id="4-a-name-carries-no-identity">4. A name carries no identity<a class="headerlink" href="#4-a-name-carries-no-identity" title="Permanent link">&para;</a></h2>
-<p><strong>A group name is a label, and a label is not the group.</strong> This is the method
-<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>
-reached for units — <em>"what is a unit number?"</em> was the answer to the question rather than the question —
-and D-097 deleted the units while leaving the reasoning intact, so it transfers to groups: <strong>a group name
-that comes back after a decade is a new group, unless somebody records that it is not</strong>
-(<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>,
-superseded as to units and standing as to method).</p>
-<p><strong>Why the default matters is the part that was worth deciding.</strong> Continuity is not a property of a label;
-it is a claim about the world, and only a human knows whether the crew refounded in 2026 <em>is</em> the crew of
-2016 or a second crew with the same tasteful name. Left unstated, the question is answered anyway — by
-whoever writes the matching screen, who will match on name, and will let a thirty-year gap sit inside one
-group's life. So the default is stated and it points at <strong>a new <code>person_group</code> row</strong>. The old case the
-corpus separates and keeps — <em>a renumber is one unit with two name rows</em> — has no survivor: a group has no
-name history, so a rename is an edit to one column and the previous name is not kept (§2).</p>
-<p><strong>The honest half: the method outlived its recording mechanism.</strong> D-096 put the continuity claim in
-<code>org_unit_relationship</code> as <code>successor_of</code>. That table is deleted, and
-<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-refuses group-to-group edges outright — no split, no merger, no succession — so the assertion has <strong>no
-field to live in</strong>. What the method still guarantees is therefore the direction of the default, which is
-the half that was ever enforceable: a returning name is a new group, and two groups that are really one
-look like two unless a person writes that down somewhere. <em>Where that sentence goes is not decided.</em> The
-cheapest true answer available today is a <code>note</code> on the second group's member rows and on the group's
-<code>description</code>, which nothing reads and nothing links; the honest alternative is to accept that the
-organization's memory of its own continuity is prose.
+<p><strong>A group name is a label, and a label is not the group: a group name that comes back after a decade is a
+new group, unless somebody records that it is not.</strong></p>
+<p>Why the default matters: continuity is not a property of a label, it is a claim about the world, and only a
+human knows whether the crew refounded in 2026 <em>is</em> the crew of 2016. Left unstated, the question is
+answered anyway — by whoever writes the matching screen, who will match on name and let a thirty-year gap
+sit inside one group's life. So the default points at <strong>a new <code>person_group</code> row</strong>. A rename is an edit to
+one column and the previous name is not kept (§2).</p>
+<p><strong>The continuity claim has nowhere to live.</strong> Groups keep no group-to-group edges — no split, no merger, no
+succession — so an assertion of continuity has <strong>no field to hold it</strong>
+(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+What the method guarantees is therefore the direction of the default, which is the half that was ever
+enforceable: a returning name is a new group, and two groups that are really one look like two unless a
+person writes that down somewhere. <em>Where that sentence goes is not decided.</em> The cheapest true answer
+available today is a <code>note</code> on the second group's member rows and on the group's <code>description</code>, which
+nothing reads and nothing links; the honest alternative is to accept that the organization's memory of its
+own continuity is prose.
 <strong>Status:</strong> assumption — this page does not choose, and the question is recorded in
 <a href="../../open-questions/">../open-questions.md</a>.</p>
-<p><strong>Names are one namespace with roles and audiences, and that is a new dependency of the naming method.</strong>
-Because <code>ROLE(x)</code> and <code>GROUP(x)</code> no longer have to disambiguate, a bare <code>COUNSELORS</code> resolves against roles
-and groups together, so names are unique across the tables, case/whitespace/separators are folded on write,
-and <strong>every <code>selector_type.code</code> is a reserved name</strong> — a group called <code>MEMBERS</code> is refused at the save
-rather than silently rewriting every expression in the system
+<p><strong>Names are one namespace with roles and audiences.</strong> Because <code>ROLE(x)</code> and <code>GROUP(x)</code> do not have to
+disambiguate, a bare <code>COUNSELORS</code> resolves against roles and groups together, so names are unique across the
+tables, case/whitespace/separators are folded on write, and <strong>every <code>selector_type.code</code> is a reserved
+name</strong> — a group called <code>MEMBERS</code> is refused at the save rather than silently rewriting every expression in
+the system
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
-<code>audience.code</code> joined the namespace when an audience became an operand that could be named
-(<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>), and the pair of rules
-is worth holding apart: <strong>a bare name never resolves to an audience</strong> — the arm must be written
+<code>audience.code</code> is in the namespace too
+(<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>), and the pair of rules is
+worth holding apart: <strong>a bare name never resolves to an audience</strong> — the arm must be written
 <code>AUDIENCE(veterans)</code> — yet a group still may not <em>borrow</em> an audience's code, because a name that resolves
 two ways is a silent grant whatever the resolution rules say. No single constraint spans the three tables,
-so the write path carries the rule and an integrity check asserts that it does. What a grant stores is kind + id, never a name, so <strong>renaming a group never rewrites a
-grant</strong> — the storage follows the method rather than the label. Mechanics:
+so the write path carries the rule and an integrity check asserts that it does. What a grant stores is kind
++ id, never a name, so <strong>renaming a group never rewrites a grant</strong>. Mechanics:
 <a href="../../data-model/02-organization/#1-person_group">../data-model/02-organization.md §1</a>.</p>
 <hr />
 <h2 id="5-a-roster-is-history">5. A roster is history<a class="headerlink" href="#5-a-roster-is-history" title="Permanent link">&para;</a></h2>
 <p><strong>Member rows are dated, and that is what makes the roster answerable.</strong> <code>person_group_member</code> carries
 <code>valid_from</code> and <code>valid_to</code> per person, so joining, leaving and coming back are all periods on the same
-pair, and the roster has a history of its own instead of borrowing the audit trail's
-(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
-"Who was in <code>schuzka2026-1</code> on 14 March 2026?" is a point-in-time read over those rows. It survives the
-audit trail's 24-month payload expiry
+pair, and the roster has a history of its own instead of borrowing the audit trail's. "Who was in
+<code>schuzka2026-1</code> on 14 March 2026?" is a point-in-time read over those rows. It survives the audit trail's
+24-month payload expiry
 (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
 because it does not depend on the trail — which is the entire reason the rows are dated rather than a live
 flag, and the reason a naming habit like <code>schuzka2026-1</code> is a habit an organization may or may not keep
 rather than the mechanism history rests on.</p>
-<p><strong>This is the one place the module is ahead of the operand that looks most like it, and it is worth naming
-because the two are otherwise easy to confuse.</strong> An audience named as an operand evaluates live, so its
-past shape survives only in the audit trail and stops surviving when the payloads expire; a group's set is
-its dated rows, so it keeps a past the audit trail cannot take away
-(<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a> states this as the cost
-of the audience arm, and it belongs to this page as the credit side of the group's). "Who could see this
-child's data in 2024?" is answerable when the grant pointed at a group and is not answerable when it
-pointed at a nested audience. That asymmetry is a fact about which of the two is a roster, and it is the
-strongest reason the pair stays two tables.</p>
+<p><strong>This is where a group is ahead of the operand that looks most like it.</strong> An audience named as an operand
+evaluates live, so its past shape survives only in the audit trail and stops surviving when the payloads
+expire; a group's set is its dated rows, so it keeps a past the audit trail cannot take away. "Who could
+see this child's data in 2024?" is answerable when the grant pointed at a group and is not answerable when
+it pointed at a nested audience
+(<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). That asymmetry is a fact
+about which of the two is a roster, and it is the strongest reason the pair stays two tables.</p>
 <p><strong>Two facts, both kept, and not to be conflated.</strong> The group's <code>valid_from</code>/<code>valid_to</code> says the group
 existed over that span; the member rows' periods say who was in it. An open group with dated members
 answers the historical question perfectly well, and an ended group's rows are not tidied up. <strong>Ending the
-group is no longer an edit anyone makes on their own, though:</strong> setting that end date is refused while a live
-grant, or a live audience reachable from one, names the group, because an empty set inside a subtraction
-widens a deny that the person ending the group did not write and would not look at again
-(<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>; the write path and the
-check that watch it are
+group is not an edit anyone makes on their own:</strong> setting that end date is refused while a live grant, or a
+live audience reachable from one, names the group, because an empty set inside a subtraction widens a deny
+that the person ending the group did not write and would not look at again (the write path and the checks
+that watch it are
 <a href="../../data-model/02-organization/#3-a-group-is-an-item-a-grant-can-be-written-on-one">../data-model/02-organization.md §3</a>).</p>
-<p><strong>A person who left in 2020 and came back in 2024 is two rows.</strong> Never one row edited in place, because
-the edit destroys the answer to "was she in the group in 2019?", which is the same argument
-<a href="../../decisions/round-01b/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>
-makes about renewals and this system makes about every temporal fact
-(<a href="../../decisions/round-01a/#d-002--everything-temporal-is-a-period-never-a-boolean">D-002</a>).</p>
-<p><strong>Moving from one group to another closes one row and opens another.</strong> The transfer discipline of
-<code>03-membership.md</code> §5.2 transfers to groups unchanged, and so does the design rule that used to sit under
-participation: <strong>never rewrite a member row to point at a different group.</strong> Close it and open a new one.
-Rewriting destroys "where was this child in 2003?", and unlike most tempting edits this one leaves no
-evidence that anything happened. A group moving <em>into</em> a different parent has no meaning now, because
-there is no parent (§2); the old page's answer — the unit closes and a new one is created — was about a
-dimension the module no longer has. Mechanics:
+<p><strong>A person who left in 2020 and came back in 2024 is two rows</strong>, never one row edited in place, because the
+edit destroys the answer to "was she in the group in 2019?"
+(<a href="../../decisions/round-01b/#d-016--renewal-opens-a-new-membership-row-not-an-extended-valid_to">D-016</a>,
+<a href="../../decisions/round-01a/#d-002--everything-temporal-is-a-period-never-a-boolean">D-002</a>).</p>
+<p><strong>Moving from one group to another closes one row and opens another: never rewrite a member row to point at
+a different group.</strong> Rewriting destroys "where was this child in 2003?", and unlike most tempting edits
+this one leaves no evidence that anything happened. Mechanics:
 <a href="../../data-model/02-organization/#4-joins-leaves-and-transfers-close-one-row-open-another">../data-model/02-organization.md §4</a>.</p>
 <p><strong>No member row is ever inferred.</strong> The corpus names no groups any more than it names units
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>), so
-the one-off import owes no group rows and no member rows at all: <strong>every <code>person_group_member</code> row in this
-system is typed by a person</strong>, which is also the only way one could be true
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).</p>
+(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>), so the
+one-off import owes no group rows and no member rows at all: <strong>every <code>person_group_member</code> row in this
+system is typed by a person</strong>, which is also the only way one could be true.</p>
 <hr />
-<h2 id="6-appointments-which-no-longer-end-at-a-position">6. Appointments, which no longer end at a position<a class="headerlink" href="#6-appointments-which-no-longer-end-at-a-position" title="Permanent link">&para;</a></h2>
-<p><strong>This section used to describe an appointment.</strong> A position was a slot in a unit, a position assignment
-filled it, <code>is_leadership</code> marked the slots that counted as leading, <code>max_holders</code> said how many people
-could fill one at once, and the screen offered "appoint as scoutmaster" as one action that could create a
-slot-filling and a role assignment together. <strong>All of it is deleted by
-<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></strong>,
-and the reason is not austerity but that the one thing a position recorded and a role does not — the <em>body</em>
-someone is a leader <strong>of</strong> — stopped existing when the bodies did.</p>
-<p><strong>What an appointment is now.</strong> A <code>role_holder</code> row: a role, a person, a period, who granted it, a note.
-Written by <code>role.assign</code> and removed by <code>role.unassign</code>, always held at the unit, because D-097 left one
-scope and there is nowhere else to hold an office. It confers nothing by itself: the codes an office
-carries are the live grants whose expression names <code>ROLE(x)</code>
+<h2 id="6-appointments">6. Appointments<a class="headerlink" href="#6-appointments" title="Permanent link">&para;</a></h2>
+<p><strong>An appointment is a <code>role_holder</code> row:</strong> a role, a person, a period, who granted it, a note. Written by
+<code>role.assign</code> and removed by <code>role.unassign</code>, always held at the unit, because there is one scope and
+nowhere else to hold an office. It confers nothing by itself: the codes an office carries are the live
+grants whose expression names <code>ROLE(x)</code>
 (<a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3–§4</a>).
-"That these two may manage the counselors roster" is a grant on the <em>role</em>, the same move a group gets.</p>
-<p><strong>The gate moved from the resolver into the expression, and the posture reversed.</strong> This module no longer
-holds an eligibility rule of any kind: <code>requires_membership</code> and <code>min_age</code> were columns on positions and
-they are gone with them. Where the membership test went:</p>
-<p>The expression that replaces each, in the form D-101's canonical rendering stores it — every <strong>compound</strong>
+"That these two may manage the counselors roster" is a grant on the <em>role</em>, the same move a group gets.
+There is no position, no slot, no <code>max_holders</code>, and no <code>is_leadership</code> flag: nothing in the system records
+a seat that exists unfilled.</p>
+<p><strong>This module holds no eligibility rule of any kind.</strong> There is no <code>requires_membership</code> and no <code>min_age</code> on
+an office, and no gate in the resolver: membership is an operand, written into the grant.</p>
+<p>The expression that says each thing, in the form D-101's canonical rendering stores it — every <strong>compound</strong>
 operand bracketed, a leaf left bare:</p>
 <table>
 <thead>
 <tr>
-<th>The old mechanism</th>
-<th>The expression that replaces it</th>
+<th>The rule to express</th>
+<th>The expression</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>a role gated on current membership (<code>requires_membership</code>)</td>
+<td>the office applies only to current members</td>
 <td><code>(MEMBERS * ROLE(x))</code></td>
 </tr>
 <tr>
-<td>a role exempt from the gate</td>
+<td>the office applies whether or not the holder is a member</td>
 <td><code>ROLE(x)</code>, written without <code>MEMBERS</code></td>
 </tr>
 <tr>
-<td>one named person exempt (<code>system.gate_exempt</code>)</td>
+<td>one named person is exempt from the membership requirement</td>
 <td><code>(MEMBERS * ROLE(x)) + PERSON(y)</code></td>
 </tr>
 </tbody>
 </table>
-<p><strong><code>PERSON</code> is a seeded selector, so that third row parses.</strong> It did not when this page first printed the
-expression: the registry of seeded operands had been written from the evaluator's arm list rather than from
-D-101's grammar, and the arm nobody had implemented yet is exactly the kind of thing such a copy loses. The
-registry carries <strong>fourteen</strong> rows today and <code>PERSON</code> is one of them — takes an argument, that argument is a
-person, binds to no item. Twelve of those fourteen is what the table held between
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-and <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>, which is the kind of arithmetic this corpus keeps having to spell out, and it is spelled out
-here because a reader who joined at row fourteen cannot reconstruct it from the row count. The omission is recorded as an amendment in D-101 rather than fixed quietly, and
-the class of defect it belongs to, a registry prose contradicts, is what
-<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-answers. <strong>Twelve that round, fourteen today, and not the thirteen this page printed two rounds ago:</strong>
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-deleted <code>LIST</code>, <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a> added two, and the count moved both times for the reason it always moves — a row was
-added or removed, and <strong>every page that recites it has to notice</strong>. This page had to be told twice, six lines
-apart, in two consecutive rounds, which is the strongest argument this corpus has produced for stopping the
-recital: <strong>a page that repeats a registry's row count is a fourth copy of the registry</strong>, and the fix is not
-better attention, it is pointing at <a href="../../data-model/05-authorization/#the-selector-registry">the table</a> and
-quoting it only where the number is the argument.</p>
-<p><strong><code>PERSON(y)</code> is now the only way to name a human being in an expression, and that is a recent decision
-rather than how it has always been.</strong> Until last round there were two: <code>PERSON(y)</code> named one person, and
-<code>LIST</code> named the audience's own typed set, which moved as one unit — <code>+ LIST</code> added everyone on it, <code>- LIST</code>
-took all of them back, and nothing on that list could be excepted on its own. For one round the two coexisted
-and several pages, this one included, argued that the difference was load-bearing;
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-settled it the other way, because a set of named people is written <code>PERSON(a) + PERSON(b)</code> and the table that
-held the other way had outlived the reason it was kept. <strong>What the old argument was right about survives:</strong> a
-person who must be excepted is subtracted as themselves, and the exemption belongs <code>+ PERSON(y)</code> inside the
-very grant that carries the rule, so the exception is read next to the thing it exempts (D-100's placement).
-What it got wrong is that a real semantic difference between two spellings obliges the model to keep both
-spellings; it does not, and one of them was a table.</p>
-<p>The posture flips from <strong>default-on</strong> to <strong>opt-in per grant</strong>, so a grant written as <code>ROLE(TREASURERS)</code>
-with no <code>MEMBERS</code> authorizes a lapsed member silently and forever. The controls are a standing report of
-live grants that name a <code>ROLE(...)</code> operand without <code>MEMBERS</code>, seeded grants that carry <code>MEMBERS</code>, and an
-import count — not the resolver. Nothing forces a holder row to end either, which is
-<a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>'s
-posture transferred intact: the report is the control. All of that belongs to the authorization model and
-is named here only because these were this module's workflows:
-<a href="../06-authorization-model/">06-authorization-model.md</a>,
-<a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3–§4</a>.</p>
+<p><strong><code>PERSON(y)</code> is the only way to name a human being in an expression.</strong> A set of named people is written
+<code>PERSON(a) + PERSON(b)</code>, and there is no second spelling of it
+(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
+A person who must be excepted is subtracted as themselves, and the exemption belongs <code>+ PERSON(y)</code> inside
+the very grant that carries the rule, so the exception is read next to the thing it exempts. The registry of
+named operands lives in one table —
+<a href="../../data-model/05-authorization/#the-selector-registry">the selector registry</a> — and this page does not
+recite its row count.</p>
+<p>The posture is <strong>opt-in per grant</strong>, so a grant written as <code>ROLE(TREASURERS)</code> with no <code>MEMBERS</code> authorizes a
+lapsed member silently and forever. The controls are a standing report of live grants that name a
+<code>ROLE(...)</code> operand without <code>MEMBERS</code>, seeded grants that carry <code>MEMBERS</code>, and an import count — not the
+resolver. Nothing forces a holder row to end either; the report is the control
+(<a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>).
+All of that belongs to the authorization model and is named here only because these were this module's
+workflows: <a href="../06-authorization-model/">06-authorization-model.md</a>.</p>
 <p><strong>Three consequences, stated plainly.</strong></p>
 <ul>
 <li><strong>"The leader of the Thursday group" has no referent.</strong> A group has no leadership and no roles (§2), so
   the sentence means <em>a person on that roster who also holds some office</em>, and nothing links the two. The
-  old derived group <code>unit_leaders</code>, which round 6 had to be corrected for silently matching nobody, is now
-  <code>ROLE(leaders)</code> and means what its name says.</li>
-<li><strong>Elected versus appointed is no longer stored data.</strong> It survives only as roles the organization
-  invents (<code>elected_council</code> beside <code>appointed_it</code>) — or not at all.</li>
-<li><strong>A vacancy is no longer a reportable state.</strong> "This seat has been empty since March" needed a slot that
-  exists unfilled, which is what <code>max_holders</code> and a position were for. An empty office is now the absence
-  of rows in <code>role_holder</code>, and absence has no start date on the office. A rule-filled role stays refused:
-  <strong>F-12 is closed and its answer is no</strong>, <code>role_holder</code> names one person, because an office record that
-  cannot answer "who was treasurer in 2023" is not an office record
+  office is <code>ROLE(leaders)</code> and means what its name says.</li>
+<li><strong>Elected versus appointed is not stored data.</strong> It survives only as roles the organization invents
+  (<code>elected_council</code> beside <code>appointed_it</code>) — or not at all.</li>
+<li><strong>A vacancy is not a reportable state.</strong> "This seat has been empty since March" needs a slot that exists
+  unfilled. An empty office is the absence of rows in <code>role_holder</code>, and absence has no start date on the
+  office. A rule-filled role stays refused: <strong>F-12's answer is no</strong>, <code>role_holder</code> names one person, because
+  an office record that cannot answer "who was treasurer in 2023" is not an office record
   (<a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a>).</li>
 </ul>
 <hr />
@@ -2395,37 +2420,27 @@ is named here only because these were this module's workflows:
 </tr>
 </tbody>
 </table>
-<p><strong>There is no ancestor walk, because there is no tree.</strong> <code>unit_ancestors()</code> and <code>unit_descendants()</code> are
-deleted, along with the path-consistency check and the CI assertion that the resolver never calls them —
-an assertion about a function that does not exist is not a guard. The permission check matches scope
-exactly: the unit, or the item.</p>
+<p><strong>There is no ancestor walk, because there is no tree</strong>: no <code>unit_ancestors()</code>, no <code>unit_descendants()</code>, no
+path-consistency check. The permission check matches scope exactly — the unit, or the item.</p>
 <hr />
 <h2 id="8-open-issues">8. Open issues<a class="headerlink" href="#8-open-issues" title="Permanent link">&para;</a></h2>
 <p>Open, and tracked in <a href="../../open-questions/">../open-questions.md</a>:</p>
 <ul>
-<li><strong>Where a claimed group continuity is recorded.</strong> The method says continuity is asserted, never
-  matched (§4); no table accepts the assertion any more. Until somebody rules, the default is the whole
-  rule: a returning name is a new group.</li>
-<li><strong>Whether a group's previous name should be kept at all.</strong> It is not, and D-098 chose that deliberately
-  as part of "no special features". If the organization turns out to rename groups the way units used to
-  be renamed, the answer is a decision and not a column someone adds quietly.</li>
-<li><strong>Whether an ended group should be hidden from pickers.</strong> Closed units were excluded from pickers by
-  default and included in historical reports always; a <code>person_group</code> with <code>valid_to</code> set has no stated
-  behaviour either way yet.</li>
+<li><strong>Where a claimed group continuity is recorded.</strong> The method says continuity is asserted, never matched
+  (§4); no table accepts the assertion. Until somebody rules, the default is the whole rule: a returning
+  name is a new group.</li>
+<li><strong>Whether a group's previous name should be kept at all.</strong> It is not, deliberately, as part of "no
+  special features". If the organization turns out to rename groups often, the answer is a decision and not
+  a column someone adds quietly.</li>
+<li><strong>Whether an ended group should be hidden from pickers.</strong> A <code>person_group</code> with <code>valid_to</code> set has no
+  stated behaviour either way yet.</li>
 <li><strong>F-10</strong>, which layer writes the no-overlap invariant on member rows. It is named in
-  <a href="../../data-model/02-organization/#2-person_group_member">../data-model/02-organization.md §2</a> and
-  remains unanswered.</li>
+  <a href="../../data-model/02-organization/#2-person_group_member">../data-model/02-organization.md §2</a> and remains
+  unanswered.</li>
 </ul>
-<p><strong>Resolved, and no longer open — kept visible so the reasoning survives.</strong> The organizational structure
-itself, the sub-unit vocabulary and the nesting rules (there is no structure to name or nest — D-097);
-reparenting (the dimension is gone, so the question is not prohibited, it is unaskable); participation
-versus membership (participation is deleted; membership at the unit and group rosters are the two shapes —
-§1); whether a person may belong to several groups at once (yes, and there is no <code>is_primary</code> saying which
-to show first); whether the unit may read into what these docs used to call its sub-units (moot after
-D-097 — there is one scope and its people are the only people there are); whether a role may be
-filled by a rule (<strong>F-12</strong>, closed: no); whether appointing a leader should create a role assignment
-(positions are deleted — §6).</p>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<hr />
+<p><em>Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-071.</em></p>
 
 
 

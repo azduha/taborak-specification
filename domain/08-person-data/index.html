@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -319,6 +413,8 @@
   
     
     
+      
+        
       
         
       
@@ -694,6 +790,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -1866,46 +1990,39 @@ The tables are in <a href="../../data-model/09-attributes/">../data-model/09-att
 <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
 <a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> and
 <a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>.</p>
-<p>This module began as "design the health records module". It ended as this, because the first
-question — what is a health record here — turned out to have a much larger answer than the one the
-question was expecting.</p>
 <hr />
 <h2 id="1-one-class-of-data-and-no-privileged-corner">1. One class of data, and no privileged corner<a class="headerlink" href="#1-one-class-of-data-and-no-privileged-corner" title="Permanent link">&para;</a></h2>
-<p>Asked how to protect medical data, the answer given was that <strong>everything about a person apart from
-their name, their gender and their age is medical data, stored in fields rather than files — and
-that medical data is not different in any way.</strong></p>
-<p>Read as a scoping decision it removes the category the module was supposed to be about. There is no
-special shelf inside the person record, no code list whose names begin with something clinical, no
-access path that exists only for the sensitive part. A drug dosage, a preferred contact language and
-a shoe size are the same kind of fact: something the organization wrote down about somebody, which
-will be out of date in three years, which nobody could have enumerated when the schema was designed.</p>
-<p><strong>The consequence is uncomfortable and intended: the permission that reads a person's record now
-reads everything in it.</strong> A volunteer with that permission sees the allergy list and the insurance
-number and the note about who in the family the child actually lives with. That is not an accident
-of implementation, it is what "not different in any way" means, and it is why the catalog marks
-reading a person as one of the serious permissions in the system rather than an ordinary one.</p>
+<p><strong>Everything about a person apart from their name, their gender and their age is personal data, stored
+in fields rather than files — and it is not different in any way.</strong></p>
+<p>There is no special shelf inside the person record, no code list whose names begin with something
+clinical, no access path that exists only for the sensitive part. A drug dosage, a preferred contact
+language and a shoe size are the same kind of fact: something the organization wrote down about
+somebody, which will be out of date in three years, which nobody could have enumerated when the schema
+was designed.</p>
+<p><strong>The consequence is uncomfortable and intended: the permission that reads a person's record now reads
+everything in it.</strong> A volunteer with that permission sees the allergy list and the insurance number and
+the note about who in the family the child actually lives with. That is what "not different in any way"
+means, and it is why the catalog marks reading a person as one of the serious permissions in the system
+rather than an ordinary one.</p>
 <h3 id="the-three-exceptions-and-why-they-are-exceptions">The three exceptions, and why they are exceptions<a class="headerlink" href="#the-three-exceptions-and-why-they-are-exceptions" title="Permanent link">&para;</a></h3>
 <p>Name, gender and age stay structured, in the identity model
-(<a href="../03-identity-and-legacy/">../domain/03-identity-and-legacy.md</a>). Not because they are less
-sensitive — a name is the most persistent piece of data here — but because <strong>they answer a different
-question</strong>. They are what a person is called and counted as; everything else is what the organization
-happens to have noticed. The three are also the only descriptive facts that have been stable across
-every system this organization has used, which is the practical test for whether something earns a
-column.</p>
+(<a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a>). Not because they are less sensitive — a name
+is the most persistent piece of data here — but because <strong>they answer a different question</strong>. They are
+what a person is called and counted as; everything else is what the organization happens to have
+noticed. The three are also the only descriptive facts that have been stable across every system this
+organization has used, which is the practical test for whether something earns a column.</p>
 <p>The boundary between "identity machinery" and "descriptive data" is drawn by a harsher test than
-sensitivity, and it is worth stating plainly because it is the test a reviewer will want to argue
-with: <strong>a fact keeps its own table when there is a rule about it that an open layer cannot express.</strong>
-"Exactly one primary postal contact", "a school id may repeat but a birth number may not", "one
-current name" — those rules need a known set of columns, and an open layer's whole value is that it
+sensitivity: <strong>a fact keeps its own table when there is a rule about it that an open layer cannot
+express.</strong> "Exactly one primary postal contact", "a school id may repeat but a birth number may not",
+"one current name" — those rules need a known set of columns, and an open layer's whole value is that it
 has none.</p>
 <hr />
 <h2 id="2-the-vocabulary-is-the-system">2. The vocabulary is the system<a class="headerlink" href="#2-the-vocabulary-is-the-system" title="Permanent link">&para;</a></h2>
 <p>If the organization decides at runtime what it collects, then the <em>list of things it collects</em> is the
 part of the design that matters. The tables are trivial; the vocabulary is not.</p>
 <p>An open vocabulary left open decays the same way every open vocabulary does. Within months there will
-be <code>allergy</code>, <code>Allergy</code>, <code>alergie</code>, and <code>allergies (2)</code>, each with some of the values, and after that
-the layer still stores everything and answers nothing — which is the single thing an attribute layer
-exists to avoid. Three defences, none clever:</p>
+be <code>allergy</code>, <code>Allergy</code>, <code>alergie</code>, and <code>allergies (2)</code>, each with some of the values, and after that the
+layer still stores everything and answers nothing. Three defences, none clever:</p>
 <ul>
 <li><strong>Codes are compared in normalized form</strong>, so the obvious duplicates are refused rather than filed.</li>
 <li><strong>Recording a value is open; naming a thing is not.</strong> Anyone who can edit a person can write down
@@ -1933,7 +2050,7 @@ queue is the same information loss arriving slowly instead of all at once
 <tr>
 <td><strong>A leader</strong></td>
 <td>The allergies and instructions for the children they lead, tonight, without asking permission</td>
-<td><strong>Whatever the organization has granted them, and nothing more</strong> — and read that with the cost attached: after <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> there is no scope smaller than <em>the whole organization</em> except a single item, so "the children in their unit" has no scope to be granted <em>as such</em>. A <code>person.view</code> at unit scope hands over <strong>every member's entire record, allergy lists included</strong>; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but <strong>not</strong> a read over the person record. See the paragraph below the table</td>
+<td><strong>Whatever the organization has granted them, and nothing more</strong> — with the cost attached: there is no scope smaller than <em>the whole organization</em> except a single item, so "the children in their unit" has no scope to be granted <em>as such</em>. A <code>person.view</code> at unit scope hands over <strong>every member's entire record, allergy lists included</strong>; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but <strong>not</strong> a read over the person record</td>
 </tr>
 <tr>
 <td><strong>A guardian</strong></td>
@@ -1953,101 +2070,77 @@ queue is the same information loss arriving slowly instead of all at once
 <tr>
 <td><strong>A first aider at a camp</strong></td>
 <td>The short list: what is this child allergic to, what do they take, what should we do</td>
-<td>The values are fields, so a list can be produced. This is the argument for fields over documents, and it is the reason "files" was rejected in the answer that started this module</td>
+<td>The values are fields, so a list can be produced — which is the argument for fields over documents</td>
 </tr>
 </tbody>
 </table>
-<p><strong>The leader row carries the sharpest edge in this module, and it should be read twice.</strong> Before
-round 7 the corpus asserted that a leader <em>cannot</em> reach a child's medical information — which was
-argued from a namespace that no longer exists, then from the absence of an <code>event.*</code> code, and is now
-simply not a property of the model: <strong>there is no privileged subset to be kept away from anybody.</strong>
-What remains is the same decision wearing its honest clothes — <strong>the starting grants do not give
-leadership a read over the record, because leadership is not guardianship</strong> — and since
-<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-that sentence has no alternative: an office confers nothing at all, so the only thing that could give a
-leader a read is a grant, written somewhere, naming them — plus the fact that the
-organization may hand it over deliberately, in one grant, and see exactly what that exposes. That is
-a better position than a guarantee nobody could have configured away, and a worse one than the
-documents used to claim
-(<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</p>
+<p><strong>Read the leader row twice: it is the sharpest edge in this module.</strong> There is no privileged subset of
+the record to be kept away from anybody, so nothing in the model can promise that a leader cannot read a
+child's data. What carries the protection is that <strong>the starting grants do not give leadership a read
+over the record, because leadership is not guardianship</strong> — and an office confers nothing at all
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+so the only thing that could give a leader that read is a grant, written somewhere, naming them. The
+organization may hand it over deliberately, in one grant, and see exactly what that exposes.
+(<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>)</p>
 <p>The last row is the one that justifies the whole shape. A scanned form in a drawer is a legally tidy
-answer and a useless one at 23:00 in a tent; the fact has to be something a screen can show somebody
-who is not thinking clearly.</p>
+answer and a useless one at 23:00 in a tent; the fact has to be something a screen can show somebody who
+is not thinking clearly.</p>
 <hr />
 <h2 id="4-what-was-refused-and-what-it-cost">4. What was refused, and what it cost<a class="headerlink" href="#4-what-was-refused-and-what-it-cost" title="Permanent link">&para;</a></h2>
-<p><strong>The granular medical file, refused on the merits.</strong> Every previous design of this system carried a
-way to restrict one person's access to the medical part of a child's record while leaving the rest.
-Its justification was always a story about a court order. That story was put to you directly and
-declined: <em>a guardian's rights are what the guardian's permission says; medical data is not different</em>
-(<a href="../../open-questions/#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to">E-7, closed</a>).</p>
-<p><strong>What is genuinely lost.</strong> A system that cannot say <em>"everything except the diagnoses"</em> cannot
-express an arrangement a court might actually order. It will instead express it as a guardian who
-either has the record or does not, and somebody will have to explain the difference to a parent. The
-trade made is that the current model <strong>fails visibly</strong> — one decision, in one place, audited — while
-the granular model fails quietly, because a list of eighteen ticks nobody read is not a safeguard, it
-is a receipt. If the case ever arrives in reality, the route back is <strong>one new grant scope over a
-defined set of data, argued once as a decision</strong>, and not a fresh namespace of suggestive permission
-names.</p>
-<p><strong>The per-field type wall, refused deliberately.</strong> A field declared as a date warns when someone
-types <code>2019</code>, and lets them save it. The wall is the wrong tool precisely in the cases that matter
-most to health data, where the true value is imprecise and the imprecise answer is better than no
-answer: <em>probably allergic to wasp stings, mother thinks it was only once</em> is a fact worth keeping, and
-a validation error would discard it in favor of an empty field.</p>
-<p><strong>The narrow one: no history on the row.</strong> Values are overwritten and the audit trail holds the
-sequence — holds the values themselves, not a note that something changed, since a trail that will not
-say what changed cannot serve as a history and the trade below would be a lie. Elsewhere the model
-keeps history in business tables when the question "what was it on that date?" is routine — guardianship
-is the standing example. Here it is not routine; it is what someone asks during an incident. So the
-history of a child's allergy list lives in the one control these documents elsewhere admit is now
-discipline rather than guarantee
+<p><strong>One level cannot separate the medical record from the profile.</strong> The design therefore cannot say
+<em>"everything except the diagnoses"</em>, which is the shape an arrangement a court might order takes. It
+expresses such a case as a guardian who either has the record or does not, and somebody will have to
+explain the difference to a parent. The model <strong>fails visibly</strong> — one decision, in one place, audited —
+where a capability list fails quietly, because a list of eighteen ticks nobody read is not a safeguard,
+it is a receipt. If the case arrives in reality, the route back is <strong>one new grant scope over a defined
+set of data, argued once as a decision</strong>, and not a fresh namespace of suggestive permission names.
+Why: <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>,
+<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>.</p>
+<p><strong>There is no per-field type wall.</strong> A field declared as a date warns when someone types <code>2019</code>, and
+lets them save it. A wall is the wrong tool precisely where the true value is imprecise and the
+imprecise answer beats none: <em>probably allergic to wasp stings, mother thinks it was only once</em> is a fact
+worth keeping, and a validation error would discard it in favor of an empty field.</p>
+<p><strong>No history on the row, and no long history anywhere.</strong> Values are overwritten and the audit trail holds
+the sequence — the values themselves, not a note that something changed, since a trail that will not say
+<em>what</em> changed cannot serve as a history. Elsewhere the model keeps history in business tables when "what
+was it on that date?" is routine; guardianship is the standing example. Here it is not routine, it is what
+someone asks during an incident. So the history of a child's allergy list lives in the one control these
+documents elsewhere admit is discipline rather than guarantee
 (<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
-<strong>and it lives there in two dependencies, not one: somebody has to write the audit row, on every path
-including the ones nobody thinks of, and somebody has to keep the trail guarded as the copy of the whole
-person record that it is.</strong>
-That is a real risk, accepted in the open rather than discovered later, and
-<a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
-is the entry to reverse if it ever bites.</p>
-<p><strong>And since <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>,
-a third thing about it: the trail's values are emptied after 24 months, though the rows remain.</strong> So the
-honest name for this refusal is not <em>no history on the row</em> but <strong>no long history anywhere</strong>. Two years
-of a child's changing facts are recoverable, which is long enough to answer most of what is asked and
-short enough to be a control rather than an archive; what
-the organization believed in 2019 is not recoverable at all, because the values were never kept in the
-business rows and the copy of them has expired. Nobody should discover that in the middle of a case
-where it matters, which is why it is written here as well as in the data model — and why the entry to
-reverse, if the long version is ever genuinely needed, is still D-085 and not a longer trail.</p>
+<strong>in two dependencies, not one: somebody has to write the audit row, on every path including the ones
+nobody thinks of, and somebody has to keep the trail guarded as the copy of the whole person record that
+it is.</strong> On top of that, the trail's values are emptied 24 months after they were written, though the
+rows remain
+(<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
+two years of a child's changing facts are recoverable, and what the organization believed in 2019 is not
+recoverable at all. That is a real risk, accepted in the open; the entry to reverse if the long version is
+ever genuinely needed is <a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+not a longer trail.</p>
 <hr />
 <h2 id="5-forgetting">5. Forgetting<a class="headerlink" href="#5-forgetting" title="Permanent link">&para;</a></h2>
 <p>Two operations that look alike and must not be confused.</p>
 <ul>
 <li><strong>Retiring a thing the organization collects</strong> keeps what was collected. The label leaves the form;
-  the values stay readable and reportable, and the label can come back. Deleting a name must not
-  delete nine years of facts, or nobody will ever retire a badly-named thing and the list will only
-  ever grow.</li>
-<li><strong>Erasing a person</strong> deletes what was collected, everywhere, including in the trail's payloads.
-  The organization keeps that it held a record and that it was removed — and not what the record
-  said.</li>
+  the values stay readable and reportable, and the label can come back. Deleting a name must not delete
+  nine years of facts, or nobody will ever retire a badly-named thing and the list will only ever grow.</li>
+<li><strong>Erasing a person</strong> deletes what was collected, everywhere, including in the trail's payloads. The
+  organization keeps that it held a record and that it was removed — and not what the record said.</li>
 </ul>
-<p>Between them sits the rule that changed twice in one round, and the second change is the one to keep.</p>
 <p><strong>The audit trail carries these values, in the clear, because it is the only place they have a
 history.</strong> What changed is not what the trail holds but who may read it: an entry about a person is as
 sensitive as the person data it quotes, so the permission that opens the trail sits with the serious
 permissions rather than among the administrative ones
-(<a href="../../appendix/permission-catalog/#8-audit-and-system">permission-catalog §8</a>). The trail used to
-scrub a list of sensitive <em>field names</em>, which made sense while there was a sensitive subset and became
-incoherent the moment there was not — a list of names is only as good as somebody having predicted the
-name of every field that would matter, and this organization invents those names at runtime. <strong>An
-interim draft of these documents responded by refusing to log descriptive values at all, and that was
-withdrawn</strong>: it put medical-shaped fields in a stricter class than a change of address, which is the
-privileged corner this module exists to have deleted, and it left the history empty, which is the thing
-<a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
-was chosen for. The protection is the guard. It is one line in one table of one appendix, and the
-documents say so where they describe it (<a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">../data-model/09-attributes.md §6</a>).</p>
+(<a href="../../appendix/permission-catalog/#8-audit-and-system">permission-catalog §8</a>). There is no list of
+sensitive <em>field names</em> the trail scrubs, and there must not be one: such a list is only as good as
+somebody having predicted the name of every field that would matter, and this organization invents those
+names at runtime. <strong>The protection is the guard</strong> — one line in one table of one appendix, and the
+documents say so where they describe it
+(<a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">../data-model/09-attributes.md §6</a>).</p>
 <p><strong>What erasure does is absolute in a way the guard is not.</strong> It deletes the values and reaches into the
 trail to delete them again from copies written years earlier, lawfully, when nobody was asking questions
 about them.</p>
-<p><strong>A third way values leave the trail, and it is a policy rather than a right.</strong> Every two years' worth
-of audit rows have their contents emptied whether anybody asked or not
+<p><strong>A third way values leave the trail, and it is a policy rather than a right.</strong> Every two years' worth of
+audit rows have their contents emptied whether anybody asked or not
 (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
 The distinction from erasure is worth holding onto, because the two are easy to conflate and only one of
 them is a person's entitlement: erasure is <em>requested</em> and <em>verifiable</em> — the check is that nothing
@@ -2056,10 +2149,9 @@ remains and only its values go. <strong>So its failure mode is the opposite one:
 That is why it is a scheduled job with a check that alerts on an over-age row still holding content, and
 not a line in a policy document
 (<a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">data-model/06 §2.2</a> keeps that apart
-from redaction, which must never be deferred). It is also the reason the sentence <em>the trail is a second
-copy of the person record</em> — the sentence that decides who may read it — is true for two years and untrue
-afterwards, which is the whole of what this module got cheap from the same decision that made the
-history expire.</p>
+from redaction, which must never be deferred). It is also why the sentence <em>the trail is a second copy of
+the person record</em> — the sentence that decides who may read it — is true for two years and untrue
+afterwards.</p>
 <hr />
 <h2 id="6-where-each-part-is-described">6. Where each part is described<a class="headerlink" href="#6-where-each-part-is-described" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2078,6 +2170,8 @@ history expire.</p>
   legacy import
   (<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">../data-model/09-attributes.md §7</a>).</li>
 </ul>
+<hr />
+<p><em>Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100.</em></p>
 
 
 

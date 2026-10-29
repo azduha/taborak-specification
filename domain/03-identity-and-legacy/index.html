@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -319,6 +413,8 @@
   
     
     
+      
+        
       
         
       
@@ -872,6 +968,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -2227,15 +2351,9 @@ another. The design below is deliberately conservative.</p>
 <p>A 1994 row has: a name, maybe a birth date, <strong>the period that person was a member</strong>, and, on most
 rows, a legacy member number
 (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>),
-with free text — an address, remarks — in columns beside it. This opening sentence used to read
-"a unit, a year"; the corpus
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>)
-names no unit at all, which costs §7 more than it costs this section. What this section used to open
-with instead — "no unique key" — was written before the corpus had been described and was wrong in the
-useful direction. What is still true is that none of it can log in:
-the number keys the organization's paper, not a session, and it is missing from precisely the rows
-that most need the heuristics below — those predating the numbering, and those where it was written
-illegibly. Meanwhile:</p>
+with free text — an address, remarks — in columns beside it. None of it can log in: the number keys
+the organization's paper, not a session, and it is missing from precisely the rows that most need the
+heuristics below — those predating the numbering, and those where it was written illegibly. Meanwhile:</p>
 <ul>
 <li>Names change (marriage, adoption, correction of a misspelling).</li>
 <li>Names repeat. In a youth organization spanning decades, "Jan Novák" is many people.</li>
@@ -2292,8 +2410,8 @@ how delicate a fact feels; the test is stated in
 </tr>
 </tbody>
 </table>
-<p>Legacy-imported people are <strong>provisional</strong>. They are fully queryable — "who was in
-Troop 12 in 1998" must work — but they are marked as unverified, they cannot be logged
+<p>Legacy-imported people are <strong>provisional</strong>. They are fully queryable — a member who left in 1998 is
+findable by name and birth date — but they are marked as unverified, they cannot be logged
 into, and they are the only rows eligible to be absorbed by a merge.</p>
 <p><strong>Rule: a merge always absorbs the lower-confidence row into the higher-confidence one.</strong>
 An import can never overwrite a self-registered person's data.</p>
@@ -2309,9 +2427,9 @@ rather than two.</p>
 agreed and how strongly, which is what a reviewer reads to see <em>why</em> it was proposed. <code>status</code>
 is one of <code>proposed</code>, <code>needs_review</code>, <code>confirmed</code>, <code>rejected</code>, <code>superseded</code>. <code>proposed_by</code>
 says where the proposal came from — <code>import_job</code>, <code>match_job</code> (the nightly batch matcher),
-<code>person</code> or <code>staff</code> — and <code>proposed_at</code> when. <code>reviewed_by</code>, <code>reviewed_at</code> and <code>review_note</code> are the human part, and a
-hypothesis may not reach <code>confirmed</code> or <code>rejected</code> without a <code>reviewed_at</code>. At most one live
-hypothesis exists per pair — live means <code>proposed</code>, <code>needs_review</code> or <code>confirmed</code>.</p>
+<code>person</code> or <code>staff</code> — and <code>proposed_at</code> when. <code>reviewed_by</code>, <code>reviewed_at</code> and <code>review_note</code> are the
+human part, and a hypothesis may not reach <code>confirmed</code> or <code>rejected</code> without a <code>reviewed_at</code>. At most
+one live hypothesis exists per pair — live means <code>proposed</code>, <code>needs_review</code> or <code>confirmed</code>.</p>
 <h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>  matcher proposes ──&gt; proposed ──┬── staff confirms ──&gt; confirmed ──&gt; [merge executed]
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                  ├── staff rejects  ──&gt; rejected (the pair becomes
@@ -2325,9 +2443,10 @@ hypothesis exists per pair — live means <code>proposed</code>, <code>needs_rev
    creates a hypothesis against the candidate rows, usually with <code>proposed_by = 'person'</code>.</li>
 <li><strong>A sign-up that strong-matches a person who already exists</strong> raises one by itself, without
    anyone asserting anything, and that hypothesis holds the new account out of <code>active</code>
-   (§4, <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
-   The queue is the same queue and the review is the same review; what is new is that a person
-   arriving at a registration form can put a row in it.</li>
+   (§4,
+   <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+   The queue is the same queue and the review is the same review; what a person at a registration
+   form adds is the ability to put a row in it.</li>
 </ol>
 <p>A person's own assertion is <em>evidence</em>, not proof. It must still be reviewed, because
 claiming someone else's history is the obvious attack on an import-based system — and the
@@ -2366,11 +2485,6 @@ so a reviewer sees <em>why</em> the system proposed a match:</p>
 <td>Necessary but weak alone; "Jan Novák" is not unique.</td>
 </tr>
 <tr>
-<td>Same unit + overlapping membership period</td>
-<td>moderate</td>
-<td>Corroborating, not identifying.</td>
-</tr>
-<tr>
 <td>Same postal address at the same time</td>
 <td>moderate</td>
 <td>Strong if the address is distinctive. Read from <code>person_contact</code> history — there is no household table (<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>).</td>
@@ -2392,9 +2506,11 @@ so a reviewer sees <em>why</em> the system proposed a match:</p>
 not "are these two the same person?" but "does this number already point somewhere?" — a
 lookup. The scored signals below are then for the rows the number <strong>cannot</strong> resolve: legacy
 records predating the numbering, records where the number is illegible, and people who were
-never issued one. At thousands of rows (<a href="../../decisions/round-04/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>)
-this split is what makes <a href="../../decisions/round-01a/#d-004--no-automatic-merging-ever">D-004</a>
-affordable: the numbered rows are the trustworthy set and the rest is a work queue.</p>
+never issued one. At thousands of rows
+(<a href="../../decisions/round-04/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>)
+this split is what makes
+<a href="../../decisions/round-01a/#d-004--no-automatic-merging-ever">D-004</a> affordable: the numbered rows
+are the trustworthy set and the rest is a work queue.</p>
 </blockquote>
 <h3 id="normalisation">Normalisation<a class="headerlink" href="#normalisation" title="Permanent link">&para;</a></h3>
 <p>Applied before comparison, and the normalised form is stored so matching is
@@ -2411,27 +2527,21 @@ reproducible:</p>
 <li><strong><code>confidence &lt; 0.60</code></strong> — not surfaced. Stored only for diagnostics.</li>
 <li><strong><code>0.60 ≤ confidence &lt; 0.90</code></strong> — proposed, queued for human review.</li>
 <li><strong><code>confidence ≥ 0.90</code></strong> — still requires human confirmation, but flagged as high
-  priority. <em>There is no auto-merge threshold.</em> A privacy incident from a bad merge is
-  worse than any amount of manual review.</li>
+  priority. <em>There is no auto-merge threshold.</em></li>
 </ul>
-<p>This paragraph used to rest the no-auto-merge rule on merges being "irreversible in practice", and
-that premise has been withdrawn: <a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>
-made unmerge a required operation (§6). The rule does not need the false premise. It rests on what
-the reversal cannot reach — the merged window stays one row's history — and on the union of
-permissions being exercised from the moment the merge commits, whatever is discovered afterwards.</p>
-<p><em>Assumption, now settled:</em> <strong>no automatic merging at all</strong>, even for near-certain matches
-(<a href="../../decisions/round-01a/#d-004--no-automatic-merging-ever">D-004</a>). This document left an
-escape hatch open on the theory that the volume of historical data might make manual review
-infeasible, and offered an opt-in auto-merge tier for that case. The volume is now known: thousands
-of rows arriving in two exports (<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>),
-most of the people rows carrying a number that makes the match a lookup rather than a judgement
-(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
-The hatch is not needed, and it is not reserved.</p>
+<p><strong>No automatic merging at all, even for a near-certain match</strong>
+(<a href="../../decisions/round-01a/#d-004--no-automatic-merging-ever">D-004</a>), and the rule does not need the
+premise that a merge cannot be undone — it can (§6). It rests on what the reversal cannot reach: the
+merged window stays one row's history, and the union of permissions is exercised from the moment the
+merge commits, whatever is discovered afterwards. A privacy incident from a bad merge is worse than any
+amount of manual review. The volume of the corpus — thousands of rows in two exports
+(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>), most
+people rows carrying a number that makes the match a lookup rather than a judgement — is known, so no
+auto-merge tier is needed and none is reserved.</p>
 <h3 id="the-same-signals-at-sign-up-split-at-the-top-of-the-band">The same signals at sign-up, split at the top of the band<a class="headerlink" href="#the-same-signals-at-sign-up-split-at-the-top-of-the-band" title="Permanent link">&para;</a></h3>
-<p>Until now these signals were read only by machinery working over the import. A registration form
-collides with them too. <strong>A sign-up that strong-matches an existing person raises an
-<code>identity_hypothesis</code> and is then held out of <code>active</code> by it</strong> — an account may not reach <code>active</code>
-while an unresolved hypothesis names its person
+<p>A registration form collides with these signals too. <strong>A sign-up that strong-matches an existing
+person raises an <code>identity_hypothesis</code> and is then held out of <code>active</code> by it</strong> — an account may not
+reach <code>active</code> while an unresolved hypothesis names its person
 (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
 The sign-up's own rows are created exactly as any sign-up creates them and stay
 <code>pending_verification</code>; what "creates nothing" rules out is the <em>outcome</em> — <strong>nothing is merged,
@@ -2466,26 +2576,23 @@ top, and only the top reaches the gate:</p>
 <td>no</td>
 </tr>
 <tr>
-<td>Name-only fuzzy match, shared unit, shared address, guardian name</td>
+<td>Name-only fuzzy match, shared address, guardian name</td>
 <td>no</td>
 </tr>
 </tbody>
 </table>
-<p>The soft band raises nothing at sign-up. It keeps doing what it always did — the nightly matcher may
-propose the pair for review, at a confidence that queues it rather than blocking anybody. The
-tempting rule, "raise one whenever the score is high", produces the failure this design would most
-deserve: a stranger's registration blocked by a fuzzy score. The cost of the version chosen is
-bounded and self-correcting (a true duplicate slips through, is matched nightly, and is reviewed);
-the cost of the tempting version is a child who cannot sign up for a camp on the day the form closes,
-which is not self-correcting at all.</p>
+<p>The soft band raises nothing at sign-up; the nightly matcher may still propose the pair for review, at
+a confidence that queues it rather than blocking anybody. The tempting rule, "raise one whenever the
+score is high", produces the failure this design would most deserve: a stranger's registration blocked
+by a fuzzy score. The cost of the version chosen is bounded and self-correcting (a true duplicate slips
+through, is matched nightly, and is reviewed); the cost of the tempting version is a child who cannot
+sign up for a camp on the day the form closes, which is not self-correcting at all.</p>
 <p>Two obligations come with the gate, and neither is a queue-management nicety:</p>
 <ul>
-<li><strong>A hypothesis that is blocking an account gets an age check, and it alerts.</strong> A stalled identity
-  queue used to be a data-quality problem with no victim you could name. Now its victim is a specific
-  person who cannot log in and whose only remaining channel is to telephone someone. The check is
-  shaped like <code>field_conflict</code>'s thirty days
-  (<a href="../../data-model/01-identity/#10-integrity-checks">01-identity.md §10</a>); the alerting is the part
-  that changed.</li>
+<li><strong>A hypothesis that is blocking an account gets an age check, and it alerts.</strong> Its victim is a
+  specific person who cannot log in and whose only remaining channel is to telephone someone. The check
+  is shaped like <code>field_conflict</code>'s thirty days
+  (<a href="../../data-model/01-identity/#10-integrity-checks">01-identity.md §10</a>); the alerting is the point.</li>
 <li><strong>The holding message confirms nothing.</strong> It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -2540,7 +2647,7 @@ name.</p>
 </tr>
 <tr>
 <td><code>membership</code></td>
-<td>Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level no-overlap rule, an overlap here means a bad merge. <strong>That used to be the only way to make one; since D-093 an imported period can produce it too</strong>, because the source states its own periods and nothing in the file knows that one human appears on two rows. Two imported periods covering the same date are outside the exclusion constraint — it watches the live statuses only — so the merge review is where they surface, and the honest reading of a pair is "the source said this", not "somebody decided this".</td>
+<td>Reassigned. Overlapping periods flagged for review — with one type (D-037) and a person-level no-overlap rule, an overlap here means a bad merge. An imported period can produce one too: the source states its own periods and nothing in the file knows that one human appears on two rows. Two imported periods covering the same date are outside the exclusion constraint — it watches the live statuses only — so the merge review is where they surface, and the honest reading of a pair is "the source said this", not "somebody decided this".</td>
 </tr>
 <tr>
 <td><code>person_group_member</code></td>
@@ -2560,11 +2667,11 @@ name.</p>
 </tr>
 <tr>
 <td><code>access_grant</code></td>
-<td>Reassigned. <strong>Union of permissions results — this is the security-critical step.</strong> Merging two people silently merges two sets of authority, and since <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> that union is literally the rows both people leave behind: no rank resolves a collision, so a <code>deny</code> on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review. <code>role_assignment</code> is gone from this table — the office rows moved to <code>role_holder</code> above, where an overlap is already a review case</td>
+<td>Reassigned. <strong>Union of permissions results — this is the security-critical step.</strong> Merging two people silently merges two sets of authority, and since <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> that union is literally the rows both people leave behind: no rank resolves a collision, so a <code>deny</code> on the absorbed row survives alongside the survivor's allows rather than being deduplicated away, which is the outcome to read out loud at review.</td>
 </tr>
 <tr>
 <td><code>audience_operand</code>, where <code>selector_kind</code> is <code>PERSON</code></td>
-<td><strong>Repointed, not reassigned, and this row is newer than the rest of the table.</strong> <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> deleted <code>audience_member</code>, so every hand-named person in the system is now a <code>selector_arg_id</code> — a column with deliberately no foreign key (<a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>), which is why this row is a requirement on the merge and not something the database notices. <strong>The failure is asymmetric and it is the loud one:</strong> a leaf that resolves to nobody is the empty set, so a grant reading <code>EVERYONE - PERSON(x)</code> where <code>x</code> was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed <code>person_group</code>, a deleted <code>role</code>, an <code>event</code>, a nested <code>audience</code> — because none of them has a key either</td>
+<td><strong>Repointed, not reassigned.</strong> Every hand-named person in the system is a <code>selector_arg_id</code> — a column with deliberately no foreign key (<a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>), which is why this row is a requirement on the merge and not something the database notices (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>). <strong>The failure is asymmetric and it is the loud one:</strong> a leaf that resolves to nobody is the empty set, so a grant reading <code>EVERYONE - PERSON(x)</code> where <code>x</code> was merged away stops subtracting anybody and denies everybody. An orphan scan is the backstop; the merge is the mechanism. The same walk covers the other four argument kinds — an absorbed <code>person_group</code>, a deleted <code>role</code>, an <code>event</code>, a nested <code>audience</code> — because none of them has a key either</td>
 </tr>
 <tr>
 <td><code>person_merge</code></td>
@@ -2579,21 +2686,17 @@ name.</p>
 <h3 id="what-does-not-happen">What does <em>not</em> happen<a class="headerlink" href="#what-does-not-happen" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Nothing is deleted. The absorbed <code>person</code> row keeps its id and gains
-  <code>merged_into_person_id</code>. All historical foreign keys pointing at it still resolve,
-  so "who was in Troop 12 in 1998" keeps working.</li>
+  <code>merged_into_person_id</code>. All historical foreign keys pointing at it still resolve, so a
+  question about who belonged to something in 1998 keeps working.</li>
 <li>Overlapping memberships are <strong>never silently deduplicated</strong>. Two overlapping memberships
-  after a merge is suspicious — it may mean the merge was wrong. It becomes
-  a review item. (This bullet used to say <em>child</em> memberships, a distinction the model stopped
-  making with one membership type and ageless membership
-  (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>,
-  <a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>); what it described — two open periods
-  on one person — is the same suspicious shape.)</li>
+  after a merge is suspicious — it may mean the merge was wrong. It becomes a review item.</li>
 </ul>
 <h3 id="the-cycle-is-refused-here-not-at-the-read">The cycle is refused here, not at the read<a class="headerlink" href="#the-cycle-is-refused-here-not-at-the-read" title="Permanent link">&para;</a></h3>
 <p>Chains are permanent (§6): <code>merged_into_person_id</code> is never rewritten forward, so A→B→C stays a chain
 and <code>resolve_person()</code> walks it. A chain that loops would make that walk never end, so <strong>a merge is
 refused when the person chosen as survivor resolves — by walking the chain — to the person being
-absorbed</strong> (<a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
+absorbed</strong>
+(<a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
 That subsumes the case already ruled out, nobody merges into themselves, and catches the one that
 actually happens: absorbing B into A when A has already been absorbed into B.</p>
 <p>Checking on the way in is the whole guard, and a read-side step limit is not an acceptable
@@ -2617,34 +2720,32 @@ gains the absorbed person's access. Therefore:</p>
 <li>A merge can be undone (§6). The merged period cannot: <code>access_grant</code> rows created during it
    cannot be attributed to either human. Hence rule 2 — an unmerge repairs the record afterwards
    and does not repair this.</li>
-<li>~~Merges invalidate cached permissions.~~ <strong>There are no cached permissions to invalidate</strong> —
-   <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-   deleted the answer cache, and a person merge is one of the writes that dropped out of the surviving bump
-   set with it: a merge changes which grant rows and operand leaves name the person, and both are read live now. What the merge does to
-   an answer is therefore just what the next check computes, from the survivor's grant rows and the <code>PERSON(x)</code>
-   leaves the merge repointed. <strong>That is the same fact that makes rule 2 load-bearing rather than courteous</strong>: with nothing stored,
-   the re-displayed effective permissions are the only place the merged answer is computed <em>before</em> the merge
-   commits. See <a href="../06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">06-authorization-model.md</a>.</li>
+<li>Nothing is invalidated by a merge, because nothing is stored that a merge could invalidate: no row
+   maps a person to an answer
+   (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
+   and a merge is not a write that bumps the ruleset version. What the merge does to an answer is what
+   the next check computes, from the survivor's grant rows and the <code>PERSON(x)</code> leaves the merge
+   repointed. <strong>That is the same fact that makes rule 2 load-bearing rather than courteous</strong>: with
+   nothing stored, the re-displayed effective permissions are the only place the merged answer is
+   computed <em>before</em> the merge commits. See
+   <a href="../06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">06-authorization-model.md §8</a>.</li>
 </ol>
 <hr />
 <h2 id="6-reversing-a-merge">6. Reversing a merge<a class="headerlink" href="#6-reversing-a-merge" title="Permanent link">&para;</a></h2>
 <p>Unmerge is <strong>a required operation</strong>, not a courtesy for mistakes an organization hopes it will not
-make (<a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
-It is also the reason merge chains exist, so it is worth being honest about which way the
-justification now runs. Chains were argued for <em>because</em> flattening would make a reversal impossible —
-an assumption resting on a capability nobody had asked for. Somebody has asked for it now, so the
-capability is the requirement and the chain is its consequence. Over a chain a reversal is a replay of
-pointers; over a flattened pointer it would be a reconstruction of facts nobody recorded.
-<strong>Flattening is therefore closed off, not merely slower</strong>, and "flattening is faster" is no longer a
-trade against tidiness — it is a trade against a feature someone named.</p>
+make
+(<a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>).
+It is also why merge chains exist: over a chain a reversal is a replay of pointers, while over a
+flattened pointer it would be a reconstruction of facts nobody recorded. <strong>Flattening is therefore
+closed off, not merely slower</strong> — it is a trade against a named feature, not against tidiness.</p>
 <p>A permanent chain needs two rules, and neither is enforced on the read:</p>
 <ul>
 <li><strong>No cycle, checked at the merge</strong> (§5). Resolution deliberately has no hop limit.</li>
 <li><strong>Chain length is a signal, not an error.</strong> Resolution is unbounded; a chain longer than <strong>three
   hops is reported</strong>. Four merges in a row on one line of people does not mean the row is odd — it
   means the matcher is producing duplicates faster than a human can settle them, which is a statement
-  about the queue and not about the row. With chains decided, a survivor that has itself been absorbed
-  is <em>normal</em>; only the length means anything
+  about the queue and not about the row. A survivor that has itself been absorbed is <em>normal</em>; only
+  the length means anything
   (<a href="../../data-model/01-identity/#10-integrity-checks">../data-model/01-identity.md §10</a>).</li>
 </ul>
 <p>The reversal is four steps, and they restore the row split:</p>
@@ -2668,18 +2769,15 @@ not made redundant by the existence of a reversal.</p>
 making one, performed by a named human, so it is <code>person.merge</code>
 (<a href="../../appendix/permission-catalog/#2-people-and-identity">../appendix/permission-catalog.md §2</a>). A
 <code>person.unmerge</code> code would grade undoing a mistake as safer than making one. Like the merge, the
-reversal splits a person's permissions back in two — and since nothing maps a person to an answer any more
-(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
-there is nothing to invalidate: the split is simply visible on the next check, which is the same §5 rule
-stated on the way back.</p>
+reversal splits a person's permissions back in two, and there is nothing to invalidate: the split is
+simply visible on the next check.</p>
 <hr />
 <h2 id="7-legacy-import-pipeline">7. Legacy import pipeline<a class="headerlink" href="#7-legacy-import-pipeline" title="Permanent link">&para;</a></h2>
 <p>Staged, reviewed, idempotent. Never a direct write into live tables.</p>
-<p><strong>What is actually arriving is two exports, and neither is a roster</strong>
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).
-This section spent two rounds describing <em>roster rows</em> — people attending units — and the whole
-pipeline hung off that word, because a roster is evidence of presence in a unit and that is not what
-the source says. It says two things:</p>
+<p><strong>What is arriving is two exports, and neither is a roster</strong>
+(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>). A
+roster is evidence of presence in a unit, which is not what the source says. The source says two
+things:</p>
 <table>
 <thead>
 <tr>
@@ -2691,28 +2789,27 @@ the source says. It says two things:</p>
 <tbody>
 <tr>
 <td><strong>The membership export</strong></td>
-<td>a name, a birth date, and <strong>when that person was a member of the root unit</strong></td>
-<td>a <code>person</code>, and a <strong>bounded</strong> <code>membership</code> — both ends dated, <code>data_confidence = 'low'</code>, batch id on it — which brings its root-unit participation row with it (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>)</td>
+<td>a name, a birth date, and <strong>when that person was a member of the organization</strong></td>
+<td>a <code>person</code>, and a <strong>bounded</strong> <code>membership</code> — both ends dated, <code>data_confidence = 'low'</code>, batch id on it (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>)</td>
 </tr>
 <tr>
 <td><strong>The attendance export</strong></td>
 <td>an event, and who came to it</td>
-<td>an <code>event</code> owned by <strong>the root</strong>, and one <code>event_registration</code> per attendee at <code>attending</code> / <code>was_present = true</code> (<a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a>)</td>
+<td>an <code>event</code>, and one <code>event_registration</code> per attendee at <code>attending</code> / <code>was_present = true</code> (<a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a>)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Neither names a sub-unit, and nothing is assigned to one.</strong> The parser keeps its parsed unit code
-— an export that surprises whoever runs it with a unit column is exactly what that field and its
+<p><strong>Neither names a sub-unit, and nothing is assigned to one.</strong> The parser keeps its parsed unit code —
+an export that surprises whoever runs it with a unit column is exactly what that field and its
 <code>unit_not_found</code> warning are for, and keeping them costs nothing — but <strong>nothing reads them, no
-<code>org_unit</code> is created by any batch, and no sub-unit <code>unit_participation</code> row is ever imported</strong>. Two
-halves also means two shapes of batch on one <code>import_batch</code>: a people batch and an events batch, each
-carrying the field map and the checks that fit its half, rather than one batch holding two mappers
-that can never both apply.</p>
+<code>org_unit</code> is created by any batch, and no sub-unit participation row is ever imported</strong>. Two halves
+also means two shapes of batch on one <code>import_batch</code>: a people batch and an events batch, each carrying
+the field map and the checks that fit its half, rather than one batch holding two mappers that can never
+both apply.</p>
 <p><strong>Say where it hurts, because somebody will ask this question.</strong> The historical record this import
 leaves behind <strong>contains no sub-units</strong>. "Who was in Pack 12 in 2011?" has no answer at go-live — not
 a wrong one, none — and the first answer anyone reads will be a roster somebody typed in by hand.
-Nothing in the model is missing: participation rows, historical units and unit relationships have
-always been able to hold it. It is what the source can say, and it is written here so that the first
+Nothing in the model is missing: it is what the source can say, and it is written here so that the first
 person to ask finds the sentence rather than the absence.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  source file(s)
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>       │
@@ -2729,14 +2826,13 @@ person to ask finds the sentence rather than the absence.</p>
 <a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  [4] review queue            ── human confirms: link to existing | create new | discard
 <a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>       │
 <a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>       ▼
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  [5] apply                   ── a people batch writes person + bounded membership (+ its
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>       │                          root participation row); an events batch writes event
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>       │                          (owned by the root) + event_registration. Never an
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>       │                          org_unit, never a sub-unit participation row, never an
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>       │                          open-ended membership
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>       │
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>       ▼
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>  [6] import_log              ── what was applied, by whom, when; reversal instructions
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  [5] apply                   ── a people batch writes person + bounded membership; an events
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>       │                          batch writes event + event_registration. Never an org_unit,
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>       │                          never a sub-unit participation row, never an open-ended
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>       │                          membership
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>       │
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>       ▼
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>  [6] import_log              ── what was applied, by whom, when; reversal instructions
 </code></pre></div>
 <h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2746,11 +2842,11 @@ person to ask finds the sentence rather than the absence.</p>
   so a bad batch can be rolled back without touching other data.</li>
 <li><strong>Never overwrites self-registered data.</strong> If a legacy row matches a <code>self_registered</code>
   person, the import may <em>add</em> what the export evidences — a bounded historical membership
-  period and its root participation row, a registration on an imported event — but never alters
-  names, contacts, identifiers, or descriptive values the person maintains themselves. The
-  distinction is that an added closed period contradicts nothing the person typed: it is a dated
-  claim about the past, sitting beside their live row rather than over it. An <em>open-ended</em> period
-  would be a different thing entirely, which is why D-093's surviving ban is exactly that one.</li>
+  period, a registration on an imported event — but never alters names, contacts, identifiers,
+  or descriptive values the person maintains themselves. An added closed period contradicts
+  nothing the person typed: it is a dated claim about the past, sitting beside their live row
+  rather than over it. An <em>open-ended</em> period would be a different thing entirely, which is why
+  the surviving ban is exactly that one.</li>
 <li><strong>Preserves provenance.</strong> Every imported row records <code>import_batch_id</code> and
   <code>source_reference</code> (file + line), so any value can be traced back to the paper it came
   from. When someone disputes a historical record, you can show them where it came from.</li>
@@ -2759,52 +2855,39 @@ person to ask finds the sentence rather than the absence.</p>
   written as if it were fact.</li>
 </ul>
 <h3 id="raw-columns-become-codes">Raw columns become codes<a class="headerlink" href="#raw-columns-become-codes" title="Permanent link">&para;</a></h3>
-<p>The pipeline was drawn when a legacy column could only ever be a name, a date or a unit. Old
-rosters also carry columns about the <em>person</em> — a remarks column, a "medical" column, a list of
-shirt sizes — and each of those arrives at step [5] as a value against a <strong>code</strong>, not as a blob
-beside the record (<a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>).
-The corpus carries those columns alongside the identity columns, in the <strong>membership export</strong> — they
-are columns about a person, and the attendance export brings nothing that maps to an attribute code
-(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
-<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>);
-the map therefore belongs to the people batch, and a code-to-registration map to the events batch,
-which is what "one batch, one map" survives as once a batch states which half it carries. That makes
-the first import the single largest event in the life of this vocabulary: several hundred codes out
-of one file. The rest of the rules for this live in staging
+<p>Old rosters carry columns about the <em>person</em> — a remarks column, a "medical" column, a list of shirt
+sizes — and each of those arrives at step [5] as a value against a <strong>code</strong>, not as a blob beside the
+record
+(<a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>).
+Those columns are in the <strong>membership export</strong>; the attendance export brings nothing that maps to an
+attribute code
+(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
+The map therefore belongs to the people batch and a code-to-registration map to the events batch: one
+batch, one map. That makes the first import the single largest event in the life of this vocabulary —
+several hundred codes out of one file. The rest of the rules live in staging
 (<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">../data-model/09-attributes.md §7</a>);
 three consequences follow from arriving all at once.</p>
 <ul>
-<li><strong>The map is authored and read before the batch applies, not after.</strong> That is precisely why the
-  mapping is recorded on the batch as one object rather than per staged row: it is one artefact a
-  person reads once, top to bottom, and the reading is what makes the codes it names trustworthy.
-  Reading it afterwards would put the live vocabulary at the mercy of whatever the batch had already
-  written. Changing an applied map is curation with an audit entry, not a migration.</li>
+<li><strong>The map is authored and read before the batch applies, not after.</strong> The mapping is recorded on the
+  batch as one object rather than per staged row because it is one artefact a person reads once, top to
+  bottom, and the reading is what makes the codes it names trustworthy. Reading it afterwards would put
+  the live vocabulary at the mercy of whatever the batch had already written. Changing an applied map is
+  curation with an audit entry, not a migration.</li>
 <li><strong>A raw column that maps to no code stops the batch</strong>, unless someone maps it or marks it
   <code>discarded</code> with a reason. An unmapped column is a decade of something the organization used to
-  collect vanishing quietly, which is the class of failure the rest of this document exists to
-  prevent on the identity side.</li>
+  collect vanishing quietly.</li>
 <li><strong>A column nobody recognises becomes a code named from the column</strong>, never a guess at an existing
   code: an import-time merge is invisible and unreviewable, and the review queue above is for people,
-  not for vocabulary. <strong>The codes the map names arrive <code>live</code>.</strong> This document said they arrived
-  <code>proposed</code>, and the error is worth keeping in view because it costs more than the word: a curator
-  has just read every name in the map, which is exactly the endorsement <code>proposed</code> withholds.
-  <code>proposed</code> keeps its meaning of <em>improvised later by a person at a desk</em> — a fact with no code yet —
-  and not "whatever the import did not understand". Several hundred codes landing <code>proposed</code> on day
-  one would open the curation queue full, make its age signal meaningless before it had ever meant
-  anything, and teach the organization that the attribute layer's warning queue is noise. Who holds
-  <code>attribute.define</code> day to day, and how long a runtime proposal may sit, is a different question and
-  stays open (<a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">AT-2</a>).</li>
+  not for vocabulary. <strong>The codes the map names arrive <code>live</code>.</strong> A curator has just read every name in
+  the map, which is exactly the endorsement <code>proposed</code> withholds. <code>proposed</code> keeps its meaning of
+  <em>improvised later by a person at a desk</em> — a fact with no code yet — and not "whatever the import did
+  not understand". Several hundred codes landing <code>proposed</code> on day one would open the curation queue
+  full, make its age signal meaningless before it had ever meant anything, and teach the organization
+  that the attribute layer's warning queue is noise. Who holds <code>attribute.define</code> day to day, and how
+  long a runtime proposal may sit, stays open
+  (<a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">AT-2</a>).</li>
 </ul>
 <h3 id="what-each-source-row-lands-on">What each source row lands on<a class="headerlink" href="#what-each-source-row-lands-on" title="Permanent link">&para;</a></h3>
-<p>This subsection was headed "Historical rows from imports" and said that an imported <strong>roster</strong> row
-yields a <code>person</code>, a <code>unit_participation</code> bounded to the roster's year, and <strong>no <code>membership</code></strong> — the
-rule <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-recorded, before there was a heading to withdraw. <strong>That frame is superseded in its second half, one
-round later, by
-<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a> and
-<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a></strong>,
-and the sequence is worth leaving visible: both rounds reasoned correctly from a file nobody had
-read. What the source states, and what arrives:</p>
 <table>
 <thead>
 <tr>
@@ -2822,12 +2905,12 @@ read. What the source states, and what arrives:</p>
 <tr>
 <td>the same, with the year repeated in the file</td>
 <td>a <strong>second <code>membership</code> only if the source states a second period</strong>; consecutive stated years stretch to one row, a gap in the source opens another</td>
-<td>This row used to be the <em>root participation row</em> the membership obligation required, stretched by exactly this rule and carrying exactly one cost: the lapse stopped being visible in the participation table. <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted the row, and the cost with it — <strong>a lapse is now visible in one table, which is the table that means it</strong> (<a href="../../decisions/round-04/#d-050--a-renewal-inside-the-window-extends-the-existing-root-participation-row">D-050</a>, superseded)</td>
+<td>One row per stated period keeps one row per membership, and a lapse stays visible in the one table that means it</td>
 </tr>
 <tr>
 <td>an event, and who came to it</td>
-<td>an <code>event</code> <strong>with no owner column at all</strong>, one <code>event_registration</code> per attendee at <code>attending</code> with <code>was_present = true</code>, and — since <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a> — the per-event instantiation of the seeded answers-view grant</td>
-<td>There is no unit to own it and no rule asking for a root: an event's people are named by selectors that bind to it, which is also the import-side saving <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> counted (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)</td>
+<td>an <code>event</code> <strong>with no owner column at all</strong>, one <code>event_registration</code> per attendee at <code>attending</code> with <code>was_present = true</code>, and the per-event instantiation of the seeded answers-view grant</td>
+<td>Nothing owns an event: its people are named by selectors that bind to it (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)</td>
 </tr>
 <tr>
 <td>a person who might have come and did not</td>
@@ -2837,7 +2920,7 @@ read. What the source states, and what arrives:</p>
 <tr>
 <td>a sub-unit</td>
 <td><strong>nothing, ever</strong> — and there is now nothing that could be one</td>
-<td>The corpus names none (§7), and <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted the thing a name could have attached to. The row stays because it is the one a reader holding a 1998 spreadsheet will ask, and the answer has to be written down rather than inferred from absence</td>
+<td>The corpus names none (§7) and there is no structure to attach a name to. The row stays because it is the one a reader holding a 1998 spreadsheet will ask, and the answer has to be written down rather than inferred from absence</td>
 </tr>
 <tr>
 <td>money</td>
@@ -2846,174 +2929,107 @@ read. What the source states, and what arrives:</p>
 </tr>
 </tbody>
 </table>
-<p><strong>The ban that survives is one sentence, and it is the one that was always the point: never an
-open-ended membership, and never one inferred from an attendance row.</strong> The reason has not moved since
-the two were split apart — <code>is_current_member()</code> and the permission gate
-(<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>)
-both read <code>membership</code>, so a row running to no <code>valid_to</code> hands whoever signs up under that name
-authority in the present. What narrowed the ban is that it was written for a <strong>standing</strong> hazard — an
-import that infers, run by whoever holds the file, repeatedly, for years — and this is one reviewed
-batch whose map is read before it applies, on a corpus that will never arrive twice. A rule sized for
-a recurring process is too strict for a one-time one; the safety that mattered was the review, not the
-prohibition.</p>
-<p><strong>What the withdrawn rule got right, kept in view because it is the part that still binds.</strong> The
-section was written against a real temptation — generate a membership for every historical row because
-that is what the old data model implied, then mark it inferred — and that refusal stands. The line the
-whole exchange turns on is <strong>evidence against inference</strong>: a row that says <em>member 1990–1995</em> is
-evidence of a membership, and a row that says <em>in Pack 12 in 1998</em> is evidence of presence and nothing
-more. D-093 moved only the first half, because it turned out the file states periods; the reading that
-<em>"a 1998 roster row is participation, not membership"</em> remains exactly true of a roster row, and there
-simply are no roster rows. Note too the observation that outlived the rule it justified: <strong>a
-conditional with one live arm is not a safe default</strong> — the old wording read "participation unless
-there is payment evidence", and since the corpus carries no payment data at all, the exception arm had
-an empty set to fire on while still inviting somebody to implement it.</p>
+<p><strong>The ban is one sentence, and it is the whole point: never an open-ended membership, and never one
+inferred from an attendance row.</strong> <code>is_current_member()</code> and the permission gate
+(<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>) both
+read <code>membership</code>, so a row running to no <code>valid_to</code> hands whoever signs up under that name authority in
+the present. The ban is sized for what it now guards: one reviewed batch whose map is read before it
+applies, on a corpus that will never arrive twice.</p>
+<p><strong>The line the whole design turns on is evidence against inference.</strong> A row that says <em>member
+1990–1995</em> is evidence of a membership; a row that says <em>in Pack 12 in 1998</em> is evidence of presence and
+nothing more. Generating a membership for every historical row because the old data model implied it,
+and then marking it inferred, is the refusal that stands. A related observation worth keeping in front of
+anybody implementing this: <strong>a conditional with one live arm is not a safe default</strong> — wording of the
+form "X unless there is payment evidence", on a corpus that carries no payment data at all, leaves an arm
+with an empty set to fire on while still inviting somebody to build it.</p>
 <p><strong>Four consequences that arrive with the memberships.</strong></p>
 <ul>
-<li><strong>The root-participation obligation points at the import again.</strong> Round 8 corrected that section to
-  say an ordinary import "touches neither arm of this pair"; with memberships arriving by the thousand
-  it does, in the same transaction, which is what keeps <em>who is in unit X</em> one query
-  (<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).</li>
-<li><strong>No obligation, no payment, no balance.</strong> An imported membership creates <strong>no <code>fee_obligation</code></strong>,
-  and that has to be a rule rather than an accident: an obligation per historical year would land as
-  <code>unpaid</code> and turn a decade of members into a wall of debt with a 1999 <code>due_date</code> for the lapse sweep
-  to choke on. Related, and now load-bearing rather than incidental: <code>outstanding_balance</code> is <strong>null</strong>
-  on these rows — a zero would be a claim of <em>settled</em> that no export supports.</li>
-<li><strong>The person-level no-overlap rule is back in the import's path.</strong> Round 8's tidy sentence — "with no
-  imported membership there is nothing for it to violate"
-  (<a href="../05-membership-lifecycle/#3-membership">05-membership-lifecycle.md §3</a>) — is gone with the premise
-  under it. One row per period the source states, not one per calendar year, is now a rule with a
-  consequence rather than a tidiness.</li>
+<li><strong>No obligation, no payment, no balance.</strong> An imported membership creates <strong>no <code>fee_obligation</code></strong>, and
+  that has to be a rule rather than an accident: an obligation per historical year would land as
+  <code>unpaid</code> and turn a decade of members into a wall of debt with a 1999 <code>due_date</code> for the lapse sweep to
+  choke on. Related, and load-bearing rather than incidental: <code>outstanding_balance</code> is <strong>null</strong> on these
+  rows — a zero would be a claim of <em>settled</em> that no export supports.</li>
+<li><strong>The person-level no-overlap rule is in the import's path.</strong> One row per period the source states,
+  not one per calendar year, is a rule with a consequence: two stated periods covering one date violate
+  it and reach the review queue (§5).</li>
 <li><strong>These rows are the oldest layer of the skeleton D-088 keeps forever</strong>
   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
-  thousands of named people with birth dates who were never asked and never used the system, held on
-  an unverified legal basis. Same judgement as before, much larger population.</li>
+  thousands of named people with birth dates who were never asked and never used the system, held on an
+  unverified legal basis. Same judgement as for live rows, much larger population.</li>
+<li><strong>Every cross-decade member count is a mixture</strong> of an export and a register, distinguished only by
+  <code>data_confidence</code> and <code>import_batch_id</code>. A membership-rate chart spanning the import boundary compares
+  a source that <em>states</em> membership with a system that <em>records</em> it, and nothing in the query knows the
+  difference.</li>
 </ul>
-<p><strong>What this makes true about reports.</strong> Every cross-decade member count is now a mixture of an export
-and a register, distinguished only by <code>data_confidence</code> and <code>import_batch_id</code>. A membership-rate chart
-spanning the import boundary compares a source that <em>states</em> membership with a system that <em>records</em>
-it, and nothing in the query knows the difference.</p>
-<p><strong>A historical membership is also obtainable as a human act, and that route did not go away — it
-changed what it is for.</strong> Where the organization has a period the export does not state (a ledger
-found later, a written confirmation, a person who was a member in a year the file lost), the period is
-entered by hand under <code>membership.backdate</code>
-(<a href="../../appendix/permission-catalog/#4-membership">../appendix/permission-catalog.md §4</a>). Under the old
-rule this was the <em>only</em> way to get a historical membership at all; under D-093 the pipeline carries
-the stated ones and this remains the route for the unstated, still deliberate, still attributed, still
-outside the batch.</p>
-<p><strong>End dates are still often unknown, and this is now the sharpest case of it.</strong> A period the export
-leaves open — someone last seen in a 2003 row with no end stated — cannot be written open: that is the
-one shape D-093 refuses outright, and an unbounded historical record is the same hazard wearing a
-different name. Convention, unchanged from before the corpus was known: <strong>end it at the end of the
-school/organizational year of the last row they appear in, marked as inferred.</strong> That remains the <em>only</em>
-date the import infers — the periods themselves are now stated rather than inferred — and it is
+<p><strong>A historical membership is also obtainable as a human act.</strong> Where the organization has a period the
+export does not state — a ledger found later, a written confirmation, a person who was a member in a year
+the file lost — the period is entered by hand under <code>membership.backdate</code>
+(<a href="../../appendix/permission-catalog/#4-membership">../appendix/permission-catalog.md §4</a>). The pipeline
+carries the stated ones; this is the route for the unstated: deliberate, attributed, outside the batch.</p>
+<p><strong>End dates are still often unknown, and this is the sharpest case of it.</strong> A period the export leaves
+open — someone last seen in a 2003 row with no end stated — cannot be written open: that is the one shape
+refused outright, and an unbounded historical record is the same hazard wearing a different name.
+Convention: <strong>end it at the end of the school/organizational year of the last row they appear in, marked
+as inferred.</strong> That is the <em>only</em> date the import infers — the periods themselves are stated — and it is
 precisely what the organizational year boundary is needed for, which is still open
-(<a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4</a>) and, with attendance and no
-money in the corpus, is the sharpest remaining import question. Document the rule you choose; it will
-be questioned.</p>
+(<a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4</a>). With attendance and no money in
+the corpus, it is the sharpest remaining import question. Document the rule you choose; it will be
+questioned.</p>
 <hr />
 <h2 id="8-the-returning-member-case">8. The returning-member case<a class="headerlink" href="#8-the-returning-member-case" title="Permanent link">&para;</a></h2>
-<p>The scenario you described — member 1990–2010, returns 2024 — should be the <em>smooth</em> path,
-because it is a common and important one (returning alumni become adult leaders and donors).</p>
+<p>The scenario member 1990–2010, returns 2024, should be the <em>smooth</em> path, because it is a common and
+important one (returning alumni become adult leaders and donors).</p>
 <p>Flow:</p>
 <ol>
 <li>Person registers in 2024, self-asserting past membership.</li>
 <li>The system matches them against legacy rows and proposes hypotheses.</li>
 <li>A registrar reviews and confirms.</li>
 <li>The historical membership (1990–2010) and the current membership (2024–present) now sit
-   under one <code>person</code> row.</li>
+   under one <code>person</code> row, as <strong>two <code>membership</code> rows</strong>.</li>
 <li>Their profile shows their full history; the gap is explicit data.</li>
 <li>Any seniority or "years of service" calculation reads across both.</li>
 </ol>
-<p><strong>Step 4 is two <code>membership</code> rows, and one round ago this document said the opposite.</strong> It then held
-that what the import holds for 1990–2010 is <code>unit_participation</code>, so the profile read as twelve years
-of participation plus a membership from 2024 — "the truth of what the organization can evidence", with
-a historical membership appearing only if somebody typed one. That was true of a corpus of roster
-rows. The corpus is a <strong>membership export</strong>, which states the period, so the twelve years arrive as a
-bounded membership row, and one row only:
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted the
-root-unit participation row it used to be written beside in one transaction, so the pair this sentence
-described is now a single row
-(<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>);
-what the sentence is still refusing is the <em>inference</em>, and the assertion that survives unchanged is
-the one that matters for this case: <strong>a 1990–2010 <code>membership</code> appears only where the source states the
-period or somebody records it by hand on evidence</strong> (<code>membership.backdate</code>, §7). Note what did not
-survive, because it is the part a reader will otherwise rely on: the smooth path now restores a
-person's member history without a human typing it, which is what round 8's rule existed to prevent.
-What makes it safe now, and only now, is that the source <strong>states</strong> the period instead of the import
+<p><strong>A 1990–2010 <code>membership</code> appears only where the source states the period or somebody records it by hand
+on evidence</strong> (<code>membership.backdate</code>, §7). The smooth path restores a person's member history without a
+human typing it, and what makes that safe is that the source <strong>states</strong> the period rather than the import
 guessing one.</p>
 <p>Steps 2–3 can be streamlined when the match is strong (exact old membership number), but
 the confirmation step remains, for the reason in §3.</p>
-<p><strong>One thing D-089 changed about this path, and it is a cost rather than a clarification.</strong> The
-activation gate does not distinguish why a hypothesis exists: an account may not reach <code>active</code> while
-an unresolved hypothesis <em>names its person</em>, and a self-asserted claim names that person exactly as a
-collision does. So the smooth path now has a human between registration and login, where before the
-review happened after the person was already using the system. The mitigation is the same one the
-collision case gets — the age check that alerts (§4) — plus the fact that with a legacy number in hand
-step 2 is a lookup a registrar settles in seconds. What is <em>not</em> settled is whether a hypothesis the
-person raised about themselves should hold their account out of <code>active</code> at all, as against a
-hypothesis the system raised about a stranger who happened to match. Recorded in §9.</p>
+<p><strong>What the activation gate costs this path.</strong> The gate does not distinguish why a hypothesis exists: an
+account may not reach <code>active</code> while an unresolved hypothesis <em>names its person</em>, and a self-asserted
+claim names that person exactly as a collision does. So the smooth path has a human between registration
+and login, where the review could otherwise happen after the person was already using the system. The
+mitigation is the age check that alerts (§4), plus the fact that with a legacy number in hand step 2 is a
+lookup a registrar settles in seconds. What is <em>not</em> settled is whether a hypothesis the person raised
+about themselves should hold their account out of <code>active</code> at all, as against a hypothesis the system
+raised about a stranger who happened to match. Recorded in §9.</p>
 <h3 id="self-service-without-weakening-the-guarantee">Self-service without weakening the guarantee<a class="headerlink" href="#self-service-without-weakening-the-guarantee" title="Permanent link">&para;</a></h3>
 <p>Rather than auto-linking, give the person a <strong>claim</strong> flow: they assert a past membership,
 staff confirm. Record the assertion on the hypothesis row, so that if the claim later
 proves false, you can see it was self-asserted rather than discovered.</p>
 <hr />
 <h2 id="9-open-issues">9. Open issues<a class="headerlink" href="#9-open-issues" title="Permanent link">&para;</a></h2>
-<p>Still open:</p>
+<p>Still open, and tracked in <a href="../../open-questions/">../open-questions.md</a>:</p>
 <ul>
 <li>Whether twins/siblings with similar names and the same birth date need a documented
-  disambiguation procedure (recommend: yes, and never merge them automatically). The sign-up gate in
-  §4 sharpens this rather than softening it: same birth date plus a normalised name is exactly the
-  collision pair, and a collision now stops a registration instead of merely queueing a card for
-  somebody else to settle later.</li>
+  disambiguation procedure (recommend: yes, and never merge them automatically). The sign-up gate in §4
+  sharpens this: same birth date plus a normalised name is exactly the collision pair, and a collision
+  now stops a registration instead of merely queueing a card.</li>
 <li>Whether a hypothesis a person raised about <em>themselves</em> should hold their account out of <code>active</code>,
-  as against one the system raised because a stranger's sign-up strong-matched them (§8). D-089
-  decided the second case, and its wording covers both.</li>
+  as against one the system raised because a stranger's sign-up strong-matched them (§8).</li>
 <li>The organizational year boundary that historical end dates get inferred from
   (<a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4</a>). With stated membership
-  periods, attendance, and no money (§7) this is load-bearing by itself rather than one of several open
-  import questions — and since D-093 the inferred date now closes a <code>membership</code> row rather than only a
-  participation row, so the number of rows it touches went up, not down.</li>
+  periods, attendance, and no money (§7) it is load-bearing by itself, and the inferred date closes a
+  <code>membership</code> row, so the number of rows it touches is large.</li>
+<li>Whether indefinite retention of named membership and fee rows has a legal basis. The design keeps that
+  skeleton indefinitely as the organization's own history while audit payloads are emptied after 24
+  months
+  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>);
+  a decision log cannot grant the basis, so it is recorded as an assumption awaiting review.</li>
 </ul>
-<p><strong>Resolved, kept visible so the reasoning survives:</strong></p>
-<ul>
-<li>Volume and formats of historical data — thousands of rows in <strong>two</strong> exports, people and events,
-  1990s to now, free-text columns alongside
-  (<a href="../../open-questions/#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data">B-1</a>,
-  <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
-  <a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).
-  "One export" is what this bullet said until round 9; the correction is only about shape, and the
-  answers it produced stand. This section used to ask the question in order to decide whether manual
-  review was affordable and to hold open a high-confidence auto-merge tier; the corpus is modest and
-  number-bearing, so the tier is not needed and is not reserved (§4).</li>
-<li>Whether the old system issued member numbers — <strong>it did</strong>, on most rows: imported verbatim into
-  <code>person_identifier</code> under the legacy scheme and never reissued
-  (<a href="../../decisions/round-04/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>,
-  D-090). §4's strongest signal is available, and where a number is present the match is a lookup
-  rather than a score.</li>
-<li><strong>How much of an old roster becomes a membership</strong> — this round's answer is "the periods the export
-  states" (§7), and it is the reversal of the previous one, which was <em>none of it</em>: the question was
-  "how much", the corpus carried no payment evidence, and so the arm of the old rule that produced
-  memberships could not be reached
-  (<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>).
-  <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-  reached the same conclusion by a different road — the source states a membership period directly, so
-  no payment evidence was ever the only way in — and left the old rule's <em>purpose</em> intact as the ban
-  described in §7. The stakes this section named are why that ban is shaped as it is: an inferred
-  membership running to today would make a 2003 roster member a current member under the permission gate
-  (<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),
-  which is exactly what a period with both ends dated cannot do.</li>
-<li>Retention — both the erasure <em>mechanism</em> (redact the person, keep the financial and membership
-  skeleton) and the durations: that skeleton indefinitely as the organization's own history, audit
-  payloads emptied 24 months after writing (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
-  The half that stays open is not a design question — whether indefinite retention of named membership
-  and fee rows has a legal basis, which a decision log cannot grant
-  (<a href="../../open-questions/#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">B-3</a>).</li>
-</ul>
-<p>Section B of the register — identity and history — is closed in full. §7's shape is registered in the
-organization section rather than here: <a href="../../open-questions/#c-5--closed--the-corpus-names-no-units-and-none-are-assigned">C-5</a>
-closed the question of whether the corpus names units, and what it closed leaves the unit-level question
-in §7's "where it hurts" column with no system answer to give. All tracked in
-<a href="../../open-questions/">../open-questions.md</a>.</p>
+<hr />
+<p><em>Decisions behind this page: D-004, D-011, D-037, D-038, D-039, D-056, D-057, D-059, D-072, D-084, D-085,
+D-087, D-088, D-089, D-090, D-092, D-093, D-094, D-097, D-099, D-102, D-105, D-114.</em></p>
 
 
 

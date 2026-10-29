@@ -343,10 +343,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#domain-what-the-organization-actually-is" class="md-nav__link">
+  <a href="#domain--what-the-organization-actually-is" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain (what the organization actually is)
+        Domain — what the organization actually is
       
     </span>
   </a>
@@ -354,10 +354,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-model-tables" class="md-nav__link">
+  <a href="#data-model--the-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data model (tables)
+        Data model — the tables
       
     </span>
   </a>
@@ -416,9 +416,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -432,7 +454,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -445,6 +539,8 @@
   
     
     
+      
+        
       
         
       
@@ -690,6 +786,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -1764,10 +1888,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#domain-what-the-organization-actually-is" class="md-nav__link">
+  <a href="#domain--what-the-organization-actually-is" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain (what the organization actually is)
+        Domain — what the organization actually is
       
     </span>
   </a>
@@ -1775,10 +1899,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-model-tables" class="md-nav__link">
+  <a href="#data-model--the-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data model (tables)
+        Data model — the tables
       
     </span>
   </a>
@@ -1857,55 +1981,46 @@
 
 
 <h1 id="information-system--design-documentation">Information System — Design Documentation<a class="headerlink" href="#information-system--design-documentation" title="Permanent link">&para;</a></h1>
-<p>Design documentation for the organization's information system: people, accounts,
-membership over time, organizational structure, and permissions.</p>
+<p>Design documentation for the organization's information system: people, accounts, membership
+over time, the groups and offices people belong to, and permissions.</p>
 <blockquote>
 <p><strong>Status:</strong> draft, actively being specified. Nothing here is frozen.
-See <a href="decisions/">decisions/decision-log.md</a> for what is settled and
-<a href="open-questions/">open-questions.md</a> for what is not.</p>
+<a href="decisions/">Decisions</a> holds what is settled and why;
+<a href="open-questions/">open questions</a> holds what is not.</p>
 </blockquote>
+<p>These documents <strong>are</strong> the specification. There is no schema file and no code to disagree with, so
+a rule that is not written down here does not exist. Every page states the design as it is now;
+what a page used to say, and the argument that changed it, lives in the
+<a href="decisions/">decision log</a> — nowhere else.</p>
 <hr />
 <h2 id="the-one-idea-this-whole-design-rests-on">The one idea this whole design rests on<a class="headerlink" href="#the-one-idea-this-whole-design-rests-on" title="Permanent link">&para;</a></h2>
 <p><strong>A person is not a type. A person is a person.</strong></p>
-<p>Nothing about being a child, an adult, a counselor, a parent, or a member is a
-property of a human being. Each of those is either</p>
+<p>Nothing about being a child, an adult, a counselor, a parent, or a member is a property of a human
+being. Each of those is either</p>
 <ul>
 <li>an <strong>event or period</strong> — membership, guardianship, holding an office, being in a group; or</li>
-<li>a <strong>derived</strong> fact — "child" means "a person whose recorded birth date makes them a minor <em>today</em>",
-  "parent" means "is one side of an active <code>guardianship</code> row".</li>
+<li>a <strong>derived</strong> fact — <em>a person whose recorded birth date makes them a minor on the date being
+  asked about</em>, or <em>one side of an active <code>guardianship</code> row</em>.</li>
 </ul>
-<p><strong>There is no membership of type <code>child</code>, and there never was more than one membership type at all</strong>
-(<a href="decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
-and membership is <strong>ageless</strong> — no floor, no ceiling, no age-out, no child→adult transition
-(<a href="decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>). This list used to define "child" as
-<em>an open membership of type <code>child</code></em>, which was wrong twice over: it named a type that does not exist and
-it made an age into an enrollment. Age is a fact about the person, and it matters where the law says it
-matters — guardianship, and whatever rule an organizer writes for one event — never in the
-membership row, and <strong>no longer in anything an organization unit carries</strong>: <code>org_unit_type.allows_minors</code>
-went with D-095 and the unit itself went with
-<a href="decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, so <strong>no
-column anywhere says which bodies are for children</strong> — the control that replaced the flag is that a named
-adult holds the write, and nobody joins anything themself
-(<a href="decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>).</p>
-<p>This matters because of a case you named explicitly: someone who was a member from
-September 1990 to June 2010, and again from October 2024 to the present. They were a
-<em>child member</em>, then nothing, then an <em>adult counselor</em>. That is one <code>person</code> row and
-<strong>two <code>membership</code> rows</strong>. A model that puts <code>is_member</code> or <code>member_type</code> on the person
-cannot express it, and cannot answer "who was in Pack 12 in 1998?" six years from now.
-(The 1990–2010 membership is now the <em>reachable</em> half of that sentence rather than the optimistic one.
-The legacy corpus is <strong>two exports</strong> — people, with the period each was a member of the organization, and
-events, with who attended — and the people export <strong>states membership periods</strong>, so the import writes
-bounded <code>membership</code> rows, both ends dated and marked <code>data_confidence = 'low'</code>
-(<a href="decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
-<a href="decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
-A period the export does not state still exists only where somebody recorded it on evidence, and an
-imported period never runs open-ended and is never inferred from attendance.
-<strong>"Who was in Pack 12 in 1998?" is not answered either way</strong>, and round 10 made the question doubly
-unanswerable: neither export named a sub-unit, and there are no sub-units to name now
-(<a href="decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
-<a href="decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). A group's
-roster before go-live is a thing a person types in, never a thing the import inferred.)</p>
-<p>So there are five rules the data model obeys throughout:</p>
+<p>There is one membership type, and it is <strong>ageless</strong>: no floor, no ceiling, no age-out, no
+child→adult transition. Age is a fact about the person, recorded once as <code>person.birth_date</code>, and it
+matters where the law says it matters — guardianship, and whatever rule an organizer writes for one
+event. It never matters in a membership row. No column anywhere says which bodies are for children;
+the control that does that job is that a named adult holds the write, and nobody joins anything by
+their own act.</p>
+<p>The case that forced this: a person who was a member from September 1990 to June 2010, and again
+from October 2024 to the present. They were a child member, then nothing, then an adult counselor.
+That is one <code>person</code> row and <strong>two <code>membership</code> rows</strong>. A model with <code>is_member</code> or <code>member_type</code> on
+the person cannot express it.</p>
+<p>The legacy corpus arrives as <strong>two exports</strong> — people, with the period each was a member of the
+organization, and events, with who attended. Because the people export states membership periods,
+the import writes bounded <code>membership</code> rows: both ends dated, <code>data_confidence = 'low'</code>, one row per
+stated period, never open-ended and never inferred from attendance — an open membership satisfies
+<code>is_current_member()</code>, so an inferred one would make every 1998 roster a current member today. The
+import writes no sub-unit history, because the corpus names no sub-units and there are no sub-units
+to name; a group's roster before go-live is a thing a person types in. <strong>"Who was in Pack 12 in
+1998?" has no answer</strong>, and that is a property of the design rather than a gap in the data.</p>
+<p>Five rules the data model obeys throughout:</p>
 <table>
 <thead>
 <tr>
@@ -1928,7 +2043,7 @@ roster before go-live is a thing a person types in, never a thing the import inf
 <tr>
 <td>3</td>
 <td>Access is granted, never implied by identity</td>
-<td>Being a parent does not by itself grant access to the child's data — the <code>guardianship</code> row's <code>right_level</code> does, and <code>none</code> is a value it is allowed to hold (<a href="decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</td>
+<td>Being a parent does not by itself reach the child's data — the <code>guardianship</code> row's <code>right_level</code> does, and <code>none</code> is a value it is allowed to hold.</td>
 </tr>
 <tr>
 <td>4</td>
@@ -1942,29 +2057,29 @@ roster before go-live is a thing a person types in, never a thing the import inf
 </tr>
 </tbody>
 </table>
-<p>Rule 4 is load-bearing, and it is now carried by two tables instead of one:
-<a href="decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-for groups, <a href="decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-for offices, both standing on
-<a href="decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>.
-"Am I a paid-up member?" is one row, one status, one date — regardless of how many
-Thursday-evening groups the person turns up to, and regardless of whether they run any of them.</p>
-<p>Rule 5 replaced the organization's old constitutional principle rather than inheriting it. What used to
-sit here was <em>"authority does not flow down the hierarchy: a unit is covered only if it exposes its
-scope"</em>, and it died with the hierarchy
-(<a href="decisions/round-02-03/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>,
-<a href="decisions/round-04/#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing">D-049</a>,
-both deleted by <a href="decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
-<strong>The property it bought is gone and this page says so plainly:</strong> access to a body's children used to have
-to be granted <em>by that body</em>, by people who recruited the leader and can be asked. With one unit there is
-no such body, a unit-scope grant reaches every member, and what remains of the safeguarding story is a
-named adult holding the write, an audit trail whose payloads expire after two years, and a report — minus
-the part where the adult was somebody the body chose. What the round did <strong>not</strong> lose is the half of the
-rule that still has a subject: nothing is implied by who somebody is, and a deny cannot be outvoted
-(<a href="decisions/round-01a/#d-013--explicit-deny-revoked-is-checked-before-everything">D-013</a>).</p>
+<p>Rule 4 has two subjects and they are kept apart on purpose. A <code>person_group</code> is <strong>a set of people</strong> —
+a lifetime, a dated roster, no authority, joinable only by somebody else's act. A <code>role</code> is <strong>an
+office</strong>: a named thing like <em>chair</em> or <em>treasurer</em>, with dated holders and no permissions inside it.
+An office confers nothing at all; what a chair may do is a grant written somewhere that names
+<code>ROLE(chair)</code>. "Am I a paid-up member?" is one row, one status, one date, however many
+Thursday-evening groups the person turns up to and however many of them they run.</p>
+<p><strong>Why the two are never merged:</strong> a group's roster is materialized and dated, while an office is
+held by a rule that is re-evaluated on the date being asked about. One of them has a reconstructable
+past and the other does not, and a grant's reach must be readable from the grant.</p>
+<p>Rule 5 replaced an older principle rather than inheriting it. Where this page states a boolean
+answer, an earlier design stated <em>"authority does not flow down the hierarchy: a unit is covered only
+if it exposes its scope"</em>. That died with the hierarchy — <strong>the unit is a scope, not a row</strong>, and
+there is exactly one of it, so there is nothing above or below to flow between.</p>
+<p><strong>A safeguarding property went with the hierarchy and nothing here reproduces it.</strong> Access to a
+body's children used to have to be granted <em>by that body</em>, by the people who know them, who
+recruited the leader, and who can be asked. With one unit, a <code>person.view</code> grant at unit scope
+reaches every member's entire record — the widest read permission in the system. What stands between
+a person and that read is a named adult holding the write, an audit trail whose payloads expire after
+two years, and a report of who holds the write. What did not go with it is the half of the rule that
+still has a subject: nothing is implied by who somebody is, and a deny cannot be outvoted.</p>
 <hr />
 <h2 id="reading-order">Reading order<a class="headerlink" href="#reading-order" title="Permanent link">&para;</a></h2>
-<h3 id="domain-what-the-organization-actually-is">Domain (what the organization actually is)<a class="headerlink" href="#domain-what-the-organization-actually-is" title="Permanent link">&para;</a></h3>
+<h3 id="domain--what-the-organization-actually-is">Domain — what the organization actually is<a class="headerlink" href="#domain--what-the-organization-actually-is" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1978,8 +2093,12 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 <td>Ubiquitous language. Read this first.</td>
 </tr>
 <tr>
+<td><a href="glossary-authorization/">glossary-authorization.md</a></td>
+<td>The words the permission system is made of: grants, scopes, operands, expressions.</td>
+</tr>
+<tr>
 <td><a href="domain/01-overview/">domain/01-overview.md</a></td>
-<td>The model in plain language, actors, lifecycles.</td>
+<td>The model in plain language: actors, lifecycles, how a person's history reads.</td>
 </tr>
 <tr>
 <td><a href="domain/02-actors/">domain/02-actors.md</a></td>
@@ -1987,7 +2106,7 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="domain/03-identity-and-legacy/">domain/03-identity-and-legacy.md</a></td>
-<td>Historical records, matching, merging people.</td>
+<td>Historical records, matching, merging and unmerging people.</td>
 </tr>
 <tr>
 <td><a href="domain/08-person-data/">domain/08-person-data.md</a></td>
@@ -1995,7 +2114,7 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="domain/04-organization-structure/">domain/04-organization-structure.md</a></td>
-<td>Units, nesting, restructuring over decades.</td>
+<td>The unit as a scope, groups, offices, and what joining one means.</td>
 </tr>
 <tr>
 <td><a href="domain/05-membership-lifecycle/">domain/05-membership-lifecycle.md</a></td>
@@ -2003,7 +2122,11 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="domain/06-authorization-model/">domain/06-authorization-model.md</a></td>
-<td>The permission model end to end.</td>
+<td>The permission model end to end. The one to read if you read only one.</td>
+</tr>
+<tr>
+<td><a href="domain/06a-audiences-and-selectors/">domain/06a-audiences-and-selectors.md</a></td>
+<td>Who a grant is aimed at: the expression grammar, the selector registry, and the rules that keep a tree safe.</td>
 </tr>
 <tr>
 <td><a href="domain/07-events/">domain/07-events.md</a></td>
@@ -2011,7 +2134,7 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 </tbody>
 </table>
-<h3 id="data-model-tables">Data model (tables)<a class="headerlink" href="#data-model-tables" title="Permanent link">&para;</a></h3>
+<h3 id="data-model--the-tables">Data model — the tables<a class="headerlink" href="#data-model--the-tables" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2038,15 +2161,15 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="data-model/03-membership/">data-model/03-membership.md</a></td>
-<td><code>membership</code>, <code>membership_request</code> — the period, the renewal window, the sweep. (<code>unit_participation</code> is deleted by D-097; §5 of that page is the tombstone.)</td>
+<td><code>membership_type</code>, <code>membership_request</code>, <code>membership</code> — the period, the renewal window, the sweep.</td>
 </tr>
 <tr>
 <td><a href="data-model/04-relationships/">data-model/04-relationships.md</a></td>
-<td><code>guardianship</code>, <code>guardianship_permission</code>.</td>
+<td><code>guardianship</code>, and the history of its right level.</td>
 </tr>
 <tr>
 <td><a href="data-model/05-authorization/">data-model/05-authorization.md</a></td>
-<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code> (one code, allow or deny), <code>audience</code> + <code>audience_operand</code> + <code>selector_type</code> (the grantee expression).</td>
+<td><code>permission</code>, <code>role</code>, <code>role_holder</code>, <code>access_grant</code>, and the grantee expression: <code>audience</code>, <code>audience_operand</code>, <code>selector_type</code>.</td>
 </tr>
 <tr>
 <td><a href="data-model/06-audit-and-import/">data-model/06-audit-and-import.md</a></td>
@@ -2058,7 +2181,7 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="data-model/08-events/">data-model/08-events.md</a></td>
-<td><code>event</code>, registration, capacity, presence, questions.</td>
+<td><code>event</code>, organizers, registrations, questions, answers.</td>
 </tr>
 </tbody>
 </table>
@@ -2077,57 +2200,66 @@ rule that still has a subject: nothing is implied by who somebody is, and a deny
 </tr>
 <tr>
 <td><a href="appendix/permission-catalog/">appendix/permission-catalog.md</a></td>
-<td>Every permission code.</td>
+<td>Every permission code, and the offices the organization starts with.</td>
 </tr>
 <tr>
-<td><a href="decisions/">decisions/decision-log.md</a></td>
-<td>Decisions taken, with rationale.</td>
+<td><a href="decisions/">decisions/index.md</a></td>
+<td>Every decision, its reasoning, and the round that took it.</td>
 </tr>
 <tr>
 <td><a href="open-questions/">open-questions.md</a></td>
-<td>Unresolved items, each with a schema impact. Sections are closed as they are answered and the reasoning is kept: <strong>section B, identity and history, is closed in full</strong> — merge chains and unmerge, the two retention clocks, the second account, and the shape of the legacy corpus (<a href="decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>–<a href="decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>) — and <strong>section C, organization, is closed with it</strong> — the root's read into a sub-unit, a reused unit number, what a permission group is and what appointing writes, what the corpus names, and who may place a person in a unit (<a href="decisions/round-09/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>–<a href="decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>). <strong>Round 10 then deleted the subject of several of those answers</strong> by removing the hierarchy they were all about (<a href="decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>); they stay where they are, readable, marked. <strong>Closed sections are not empty ones</strong>: what they closed stays readable, and the questions that moved out of them are elsewhere — F-12 for a rule-filled role, A-4 for the organizational year, and the composition power over a group in the catalog's §12.</td>
+<td>What is unresolved, each with its schema impact, plus the assumption index.</td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h2 id="scope-boundaries">Scope boundaries<a class="headerlink" href="#scope-boundaries" title="Permanent link">&para;</a></h2>
 <p><strong>In scope now:</strong> identity, everything else the organization records about a person, accounts,
-membership over time, organizational units, guardianship, events, and the authorization system.</p>
-<p><strong>Deliberately deferred</strong> (referenced so the data model does not block them, not designed):
-fees and payment processing beyond the provisional shape in
-<a href="data-model/07-finance/">data-model/07-finance.md</a>, documents,
-reporting, notifications, and the API/UI layer. Each is listed in
-<a href="open-questions/">open-questions.md</a> with the hooks already left for it.</p>
+membership over time, groups and offices, guardianship, events, and the authorization system.</p>
+<p><strong>Deliberately deferred</strong> — referenced so the data model does not block them, not designed: fee and
+payment processing beyond the provisional shape in
+<a href="data-model/07-finance/">data-model/07-finance.md</a>, documents, reporting, notifications, and the
+API and UI layers. Each is listed in <a href="open-questions/">open-questions.md</a> with the hooks already
+left for it.</p>
 <p><strong>Communication sits between the two lists, and the line is worth drawing rather than guessing.</strong>
-This list used to name it flatly as undesigned, which stopped being true when its <strong>shape</strong> was decided:
-internal first, external channels are delivery rather than a product, everyone may send a direct message,
-<code>broadcast</code> is one ordinary scoped permission, and <strong>the recipient chooses the channel</strong>
-(<a href="decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>),
-with a direct message to a minor mirrored to its guardians and no sender-side age check anywhere
-(<a href="decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>).
-Its codes are in <a href="appendix/permission-catalog/">appendix/permission-catalog.md</a>. <strong>What is still
-undesigned is the module</strong>: templates, opt-out granularity, retention, moderation — the Communication row
-of <a href="open-questions/">open-questions.md</a>'s section H. <strong>Notifications stay genuinely undesigned</strong> — the
-renewal window made them dated rather than status-driven, which is a design note, not a design.</p>
-<p><strong>Off this list, because the module it named does not exist:</strong> <em>health records</em>. There is no health
-module waiting to be designed. <a href="decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-decided that everything the organization knows about a person beyond a name, a gender and an age is
-<strong>one class of data</strong>, held in fields the organization defines while it runs — so the health file
-this list used to promise is ordinary descriptive data, specified in
-<a href="domain/08-person-data/">domain/08-person-data.md</a> and
-<a href="data-model/09-attributes/">data-model/09-attributes.md</a>. Events also came off this list, for the
-opposite reason — they were designed: <a href="domain/07-events/">domain/07-events.md</a> and
-<a href="data-model/08-events/">data-model/08-events.md</a>.</p>
+Its <strong>shape</strong> is decided: internal first, external channels are delivery rather than a product,
+anyone may send a direct message, <code>broadcast</code> is one ordinary scoped permission, the recipient
+chooses the channel, and a direct message to a minor is mirrored to that minor's guardians. Its
+codes are in the catalog. <strong>What is undesigned is the module</strong> — templates, opt-out granularity,
+retention, moderation. Notifications stay genuinely undesigned: the renewal window made them dated
+rather than status-driven, which is a design note, not a design.</p>
+<p><strong>There is no health module, and none is waiting to be designed.</strong> Everything the organization knows
+about a person beyond a name, a gender and an age is <strong>one class of data</strong>, held in fields the
+organization defines while it runs — <a href="domain/08-person-data/">domain/08-person-data.md</a> and
+<a href="data-model/09-attributes/">data-model/09-attributes.md</a>. Sensitivity is graded by <strong>what a grant
+exposes</strong>, never by which table a permission code names.</p>
 <hr />
 <h2 id="how-to-change-this-documentation">How to change this documentation<a class="headerlink" href="#how-to-change-this-documentation" title="Permanent link">&para;</a></h2>
 <p>You are expected to iterate. When refining:</p>
 <ol>
-<li>Update the affected document(s) — data model files carry the rules and the fields they bind, domain files carry the reasoning. No data model file carries SQL: since <a href="decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a> a rule is written as a requirement, and <a href="data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00-conventions.md §6a</a> names the layer that must carry it.</li>
-<li>Record anything non-obvious that you overrule in <a href="decisions/">decisions/decision-log.md</a>.</li>
-<li>Move resolved items out of <a href="open-questions/">open-questions.md</a> rather than deleting them, so the reasoning survives.</li>
+<li><strong>State what is.</strong> A page carries the current design and no history. When you overrule
+   something, delete the old statement from the page and let the decision entry own the exchange.
+   Where a reader would plausibly reach for the thing you removed, leave one line naming it, saying
+   it is not there, and saying what to use instead — that is a guardrail, not a memory.</li>
+<li>Update the affected documents. Domain files carry the model in plain language; data-model files
+   carry the rules and the fields they bind. No file carries SQL: a rule is written as a numbered
+   requirement, and
+   <a href="data-model/00-conventions/#6a-who-enforces-an-invariant-now">data-model/00-conventions.md §6a</a>
+   names the layer that must carry it. Where no layer can enforce a rule, the text says <em>a
+   convention, not a guard</em> rather than letting a reader assume a guarantee.</li>
+<li>Record anything non-obvious that you overrule in the <a href="decisions/">decision log</a>, in the
+   round that took it, and add it to that page's index.</li>
+<li>Move a resolved item out of <a href="open-questions/">open-questions.md</a> rather than deleting it, so
+   the reasoning survives.</li>
+<li>A name that leaves the model gets one row in the removed-concepts appendix and an entry in the
+   log. The organization may still be using the word, so it is not deleted from its vocabulary —
+   only from the model.</li>
 </ol>
-<p>Where this documentation states an assumption you did not make, it is written as
-<em>Assumption:</em> in italics so you can find and kill it with a search.</p>
+<p>Where this documentation states an assumption you did not make, it is written as <em>Assumption:</em> in
+italics, so you can find and kill it with a search.</p>
+<hr />
+<p><em>Decisions behind this page: D-001, D-005, D-037, D-038, D-083, D-086, D-088, D-090, D-092, D-093,
+D-097, D-098, D-099, D-100.</em></p>
 
 
 
@@ -2164,13 +2296,13 @@ opposite reason — they were designed: <a href="domain/07-events/">domain/07-ev
         
         
           
-          <a href="glossary/" class="md-footer__link md-footer__link--next" aria-label="Next: Glossary">
+          <a href="glossary/" class="md-footer__link md-footer__link--next" aria-label="Next: Glossary — Ubiquitous Language">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Glossary
+                Glossary — Ubiquitous Language
               </div>
             </div>
             <div class="md-footer__button md-icon">

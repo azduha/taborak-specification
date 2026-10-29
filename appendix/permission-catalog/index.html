@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -317,6 +411,8 @@
   
     
     
+      
+        
       
         
       
@@ -562,6 +658,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -3131,7 +3255,7 @@ named person under <code>role.assign</code>, and the only thing that turns it in
 <code>ROLE(x)</code>. <em>What is genuinely lost is the elected-versus-appointed distinction as stored data</em>
 (D-100): it survives only as offices the organization invents — <code>elected_council</code> beside
 <code>appointed_it</code> — or not at all
-(<a href="../../domain/04-organization-structure/#6-appointments-which-no-longer-end-at-a-position">../domain/04-organization-structure.md §6</a>).</p>
+(<a href="../../domain/04-organization-structure/#6-appointments">../domain/04-organization-structure.md §6</a>).</p>
 <blockquote>
 <p><code>org_unit.restructure</code> was separated from routine editing because a split rewrites the answer to
 historical questions. <strong>Reparenting had already been taken out of it</strong> — a unit could not change
@@ -3222,7 +3346,7 @@ They are kept here struck because the question they answered — <em>may the cen
 inside a body it does not run?</em> — <strong>no longer has a subject</strong>, and someone who remembers the answer
 "no, unless the body says so" should find that fact rather than a silent gap. The same reasoning is
 worked through in
-<a href="../../domain/06-authorization-model/#21-the-founding-rule-and-what-is-left-of-it">../domain/06-authorization-model.md §2.1</a>.</p>
+<a href="../../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">../domain/06-authorization-model.md §2</a>.</p>
 <p><strong><code>person_group.member.manage</code> is a ⚠ next to a 🔒🔒 two rows away, and the gap is the design.</strong>
 <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
 refuses to merge <code>person_group</code> and <code>role</code> into one table with a <code>kind</code> column precisely because one

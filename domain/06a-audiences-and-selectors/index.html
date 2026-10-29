@@ -1,0 +1,2556 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/06a-audiences-and-selectors/">
+      
+      
+        <link rel="prev" href="../06-authorization-model/">
+      
+      
+        <link rel="next" href="../07-events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Audiences and Selectors - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#audiences-and-selectors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Audiences and Selectors
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#62-audiences--an-expression-over-named-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Audiences — an expression over named sets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grammar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-selectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The selectors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-example-worked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The example, worked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-sets-and-the-two-sets-that-are-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event sets, and the two sets that are refused
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rules-that-make-the-tree-safe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rules that make the tree safe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-grants-reach-is-recorded-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a grant's reach is recorded in
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../decisions/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#62-audiences--an-expression-over-named-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Audiences — an expression over named sets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grammar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-selectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The selectors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-example-worked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The example, worked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-sets-and-the-two-sets-that-are-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event sets, and the two sets that are refused
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rules-that-make-the-tree-safe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rules that make the tree safe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-grants-reach-is-recorded-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a grant's reach is recorded in
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/domain/06a-audiences-and-selectors.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/domain/06a-audiences-and-selectors.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="audiences-and-selectors">Audiences and Selectors<a class="headerlink" href="#audiences-and-selectors" title="Permanent link">&para;</a></h1>
+<p>The language a grant is aimed at a set of people in: the expression grammar, the seeded selector
+registry, the rules that keep the tree safe, and what a grant's reach is recorded in. This is the
+audience half of <a href="../06-authorization-model/">06-authorization-model.md</a> and continues its numbering at
+§6.2 — read that page first for scopes, channels, grants, the resolver and precedence.</p>
+<h3 id="62-audiences--an-expression-over-named-sets">6.2 Audiences — an expression over named sets<a class="headerlink" href="#62-audiences--an-expression-over-named-sets" title="Permanent link">&para;</a></h3>
+<p>A grant names a <strong>person or an audience, never both</strong>
+(<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>). An
+audience is <strong>an expression over named sets of people</strong>, stored as a tree of binary nodes and aimed at
+by a grant
+(<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
+Fields, storage rules and the write-path checks are in
+<a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>;
+what belongs here is the language, and why it is shaped like this.</p>
+<blockquote>
+<p><strong>Author in sets. Evaluate per person.</strong></p>
+</blockquote>
+<p>A check asks about one person, so the resolver compiles the expression down to a predicate and
+<strong>never materializes a set</strong>. An implementation that evaluates <code>MEMBERS</code> as a list of ids and then tests
+for containment pays <strong>a row per member, per request</strong> — at the size
+<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>
+states, a few hundred rows, and every one of them is a row the answer never needed. That is the one way
+to get this wrong, which is why it is a requirement rather than an implementation note, and <strong>it has no
+exception</strong>: nothing in this design expands a set in order to warm a store, because no store of answers
+exists (<a href="../06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">06 §8</a>).</p>
+<p><strong>What the rule does not forbid, because the batch API would otherwise violate it:</strong> <code>which_of(people[],
+code, item)</code> evaluates the predicate for <strong>the people already in hand</strong> — the rows of the page being
+drawn — and is therefore a batched predicate, not an expansion. <strong>What stays forbidden is deriving a set
+in order to answer a question about one person</strong>, which is the direction that costs a row per member and
+returns an answer about one of them. The test is which side you started from: the person, or the set.</p>
+<p>The two notations this language could have used — set algebra, and a per-person boolean formula —
+describe the same function: <code>p ∈ (A ∩ B) ∪ C</code> <strong>is by definition</strong> <code>(p ∈ A ∧ p ∈ B) ∨ p ∈ C</code>. The choice
+therefore never decided what the machine computes; it decided <strong>what gets stored and what a writer is
+allowed to say</strong>. The set form won, and <a href="../../decisions/round-05/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>
+is the reason: a per-person boolean language is the door to a rule engine, because once <code>&amp;</code>, <code>|</code> and <code>!</code>
+exist, the next operand anybody wants is <code>AGE &gt;= 15</code> or <code>FEE_PAID</code>, and there is a parser standing there
+to accept it.</p>
+<p><em>Why a set language closes that by rule instead of by discipline:</em> <strong>an operand must be a named operand
+— a row of the registry</strong>
+(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+<code>OLDER(18)</code> is a row, and it denotes a set: the people who are eighteen or older on the date being
+checked. <code>AGE &gt;= 15</code> is not a row and cannot be one, because <strong>the language has nowhere to put <code>&gt;=</code></strong>.
+<strong>Every operand in the registry is a test with a set on the other side of it</strong>, so reading one column
+against one date (<code>MEMBERS</code>) is not a different kind of thing from joining one table against one period
+(<code>GROUP(x)</code>) — nothing in the model stores the list of members either. That is what keeps the rule
+engine out, and it does not depend on which predicates a reader happens to grant the status of "set".</p>
+<p><strong>So: the vocabulary is open and the grammar is closed.</strong> More attribute operands will arrive, as rows
+and by decision; the three operators stay the three operators; and
+<a href="../../decisions/round-05/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>'s
+decision stands untouched: no eligibility rule table, no prerequisite system, nothing evaluated anywhere
+but in <code>can()</code>. A person may write an age gate out of the vocabulary; <strong>the system applies none of its
+own accord.</strong> The premise behind opening the vocabulary is quoted in
+<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>:
+<em>the people writing these rules know what they are writing</em> — a claim about the authors and not about
+the people a rule reaches, so the two limits drawn there are this page's business too.</p>
+<h3 id="grammar">Grammar<a class="headerlink" href="#grammar" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>expr     := term ( '+' term )*
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>term     := operand ( ( '*' | '-' ) operand )*
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>operand  := EVERYONE | MEMBERS
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>          | ROLE '(' name ')' | GROUP '(' name ')' | name
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>          | PERSON '(' person ')'
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>          | AUDIENCE '(' code ')'
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>          | OLDER '(' n ')' | YOUNGER '(' n ')'
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>          | ATTENDED | PLACED | CONFIRMED | ON_WAITLIST | ORGANIZERS
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          | ATTENDED '(' event ')' | PLACED '(' event ')' | CONFIRMED '(' event ')'
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>          | ON_WAITLIST '(' event ')' | ORGANIZERS '(' event ')'
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>          | PRESENT '(' event ')'   ← considered and refused; never in the registry. See §Event sets
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>          | '(' expr ')'
+</code></pre></div>
+<p><code>OLDER(n)</code> and <code>YOUNGER(n)</code> are <strong>ordinary named operands</strong> — <code>n</code> a whole number of years, read against
+the birth date <strong>on the date being checked</strong>, which is why they sit in the column of the table below
+headed "the set, on the checked date" rather than anywhere in a section about conditions.
+<code>MEMBERS * OLDER(13) * YOUNGER(19)</code> — thirteen to eighteen, a band from two operands — is a set
+expression in exactly the sense <code>MEMBERS * GROUP(cubs) * PERSON(a)</code> is, and it parses under the rules
+below with nothing added to them.</p>
+<p><strong>This block and §<em>The selectors</em> are copies of the registry</strong> in
+<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a>, <strong>which is the registry</strong> —
+the seeded rows, not the prose. An operand that is not a seeded row does not exist however natural it
+looks in a grammar, and copies of a table drift from it
+(<a href="../../open-questions/#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it">F-5</a>);
+nothing checks a copy, so treat the registry as the source and re-copy rather than re-derive.</p>
+<p><strong>Boolean spellings are offered for this language and declined.</strong> <code>p ∈ (A ∩ B) ∪ C</code> <strong>is</strong>
+<code>(p ∈ A ∧ p ∈ B) ∨ p ∈ C</code>, so <code>&amp;</code>, <code>|</code> and <code>!</code> would name three operators this grammar already has, and
+<code>!A</code> is already written <code>EVERYONE - A</code> at the same cost once brackets are printed the way the canonical
+form requires. <strong>A notation that expresses nothing new is not free:</strong> two spellings of one operator means
+the canonical rendering has to pick one, the editor has to accept both, the write-path checks have to
+reason about both, and two people's identical rules stop being textually comparable — which is the
+property the canonical rendering exists to buy. <strong><code>+ - *</code> are the only operators</strong>, and negation is a
+subtraction from <code>EVERYONE</code>, which has the extra merit of printing the universe it negates against
+instead of hiding it behind one character.</p>
+<p><strong>There is no comparison operator, and that is where the safety of this language lives.</strong> No <code>&gt;=</code>, no
+<code>&lt;</code>, no bare <code>AGE</code>, no <code>FEE_PAID</code> unless <code>FEE_PAID</code> is a row of the registry with an evaluator behind it.
+A writer composes named operands; <strong>the vocabulary grows by decision, not by typing.</strong></p>
+<p><strong>A hand-written set of people is a sum, not an arm</strong>: <code>PERSON(a) + PERSON(b)</code>. There is no operand for
+"the names somebody typed into this audience" and no table behind one
+(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>);
+a set of one is a set, and a set of three is the same thing three times.</p>
+<p><strong>Merging the hand-written names into <code>GROUP(x)</code> is refused, and the refusal is why the replacement is a
+sum of <code>PERSON()</code> leaves rather than a group.</strong> Naming three people in one grant would create a row in the
+group browser that is not a group anybody talks about, and <strong>a group's members are the organization's
+record of who is in it, true when no grant points at it</strong>
+(<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>)
+— so editing a roster to move one grant's reach edits a fact that other grants read. <code>PERSON(a)</code> is the
+answer that respects that rule, and <code>GROUP(kitchen) += Honza</code> is not. <strong><code>person_group_member</code> is the only
+dated set of people the system stores.</strong></p>
+<p><strong>Widening everything a named set is used for is not a single edit.</strong> <em>"add the kitchen crew to everything
+the troop-staff group is used in"</em> is one edit per rule that names it. Named sets are the composition
+mechanism: <code>GROUP(kitchen) + ROLE(troop_staff)</code> composes as much as a naming edge ever did, in one grant,
+and a composite used more than once is named once as a saved audience and aimed at (D-091). The language has
+intersection and difference as well as union, which is why the counselor example below is writable at all.</p>
+<p>Operators: <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection.</strong></p>
+<p><strong>Precedence: <code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; brackets
+override.</strong></p>
+<p><strong>The canonical stored rendering prints every bracket, always.</strong> The alternative is a grant whose
+meaning is recoverable only by someone who memorized that table, and the reason this is a requirement
+rather than a courtesy is the worked example below: the same string means different things under
+different precedence, and a stored grant is read by people years later who did not write it. Because
+canonicalization happens on save, <strong>changing the precedence rule later changes nothing already
+stored</strong> — a nice property, and the second reason the rendering is a requirement.</p>
+<p><em>Assumption:</em> a bare <code>name</code> operand is legal. It is not in D-101's printed grammar and is required by
+its prose twice over — without it, <code>MEMBERS * COUNSELORS</code>, which D-100 writes as an import control, does
+not parse. Recorded in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p><strong>Names are one namespace, and that is a dependency.</strong> A bare name resolves against <code>role</code> and
+<code>person_group</code> together, since <code>ROLE()</code> and <code>GROUP()</code> do not have to disambiguate. So names are unique
+across both tables — and <strong>no single constraint spans two tables</strong>, so the write path carries the rule
+and an integrity check asserts that it does
+(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>)
+— with case, whitespace and separators folded on write. <strong>Every <code>selector_type.code</code> is a reserved
+name</strong>, so a group called <code>MEMBERS</code> is refused at the save rather than silently rewriting every
+expression in the system. What is stored is always kind + id, so <strong>a rename never rewrites a grant</strong>.</p>
+<h3 id="the-selectors">The selectors<a class="headerlink" href="#the-selectors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Selector</th>
+<th>The set, on the checked date</th>
+<th>Argument</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EVERYONE</code></td>
+<td>Any person, including non-members and the public</td>
+<td>none</td>
+<td>Legal — and the reason the editor must show its reach (§<em>The cost lands on the editor</em>)</td>
+</tr>
+<tr>
+<td><code>MEMBERS</code></td>
+<td>Anyone who passes <code>is_current_member</code>, on the checked date</td>
+<td>none</td>
+<td>Evaluated live. <a href="../06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">06 §6.1</a></td>
+</tr>
+<tr>
+<td><code>OLDER(n)</code></td>
+<td>Anyone whose birth date makes them <code>n</code> or more years old <strong>on the checked date</strong></td>
+<td>a whole number of years</td>
+<td><a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>. The only operand in the registry whose argument is <strong>not a thing</strong> — an integer, so it references nothing: nothing to repoint on a merge, nothing for a cascade</td>
+</tr>
+<tr>
+<td><code>YOUNGER(n)</code></td>
+<td>Anyone strictly under <code>n</code> years old <strong>on the checked date</strong></td>
+<td>a whole number of years</td>
+<td>The pair exists so the complement is not written <code>EVERYONE - OLDER(n)</code>, which is correct and unreadable. The two partition the population <strong>among people who have a birth date</strong>: someone without one is in neither, and that is not a failure — see §<em>The rules that make the tree safe</em></td>
+</tr>
+<tr>
+<td><code>PERSON(p)</code></td>
+<td>Just that person</td>
+<td>a person</td>
+<td>How a named individual's exception lives inside the expression that granted the rule; since <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> also how several named people are written — summed</td>
+</tr>
+<tr>
+<td><code>ROLE(x)</code> / <code>x</code></td>
+<td>Holders of role <code>x</code> (<code>role_holder</code>)</td>
+<td>a role name</td>
+<td></td>
+</tr>
+<tr>
+<td><code>GROUP(x)</code> / <code>x</code></td>
+<td>Members of group <code>x</code> (<code>person_group_member</code>)</td>
+<td>a group name</td>
+<td></td>
+</tr>
+<tr>
+<td><code>AUDIENCE(code)</code></td>
+<td>Another saved audience's set, evaluated live</td>
+<td>an audience code</td>
+<td><a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>; the one operand whose argument is a decision about access rather than a roster, so the one that can name another audience (§6.2)</td>
+</tr>
+<tr>
+<td><code>ATTENDED</code> / <code>ATTENDED(e)</code></td>
+<td>Said yes to this event / to <code>e</code></td>
+<td>optional event</td>
+<td><code>response = attending</code></td>
+</tr>
+<tr>
+<td><code>PLACED</code> / <code>PLACED(e)</code></td>
+<td>Said yes and is not waitlisted — <strong>the capacity set</strong></td>
+<td>optional event</td>
+<td>The set the events module counts</td>
+</tr>
+<tr>
+<td><code>CONFIRMED</code> / <code>CONFIRMED(e)</code></td>
+<td>Holds a paid place: <code>PLACED</code> and <code>is_confirmed</code></td>
+<td>optional event</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ON_WAITLIST</code> / <code>ON_WAITLIST(e)</code></td>
+<td>Attending and waitlisted</td>
+<td>optional event</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ORGANIZERS</code> / <code>ORGANIZERS(e)</code></td>
+<td>Runs this event</td>
+<td>optional event</td>
+<td>Appointed on the event, and still grants nothing by itself (§<em>Event sets</em>)</td>
+</tr>
+<tr>
+<td><code>PRESENT(e)</code></td>
+<td>—</td>
+<td><strong>not seeded</strong></td>
+<td>§<em>Event sets</em>. Refused <strong>by decision</strong> — nothing in the language could refuse it as a kind, so the refusal is a rule about the failure direction</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Guardianship is not a selector, in either spelling</strong> — <code>GUARDIANS</code> and <code>GUARDIANS(p)</code> are not rows of
+the registry and were never seeded
+(<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
+Guardianship is a <strong>channel</strong> carrying a <code>right_level</code> of <code>none</code>/<code>view</code>/<code>write</code> on the live
+<code>guardianship</code> row, reaching <strong>any action about that child</strong> — wider than any grant an operand could
+have assembled, and narrower in the only way that matters (<a href="../06-authorization-model/#1-the-three-channels-of-authority">06 §1</a>,
+<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+An operand aimed at a child's guardians would therefore offer, one code at a time, a subset of what
+those people already hold. A kept list of a child's contact adults is a <code>person_group</code>.</p>
+<p><strong>Thirteen selectors, and this table is a copy of
+<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md §8</a>, which is the
+registry.</strong> Which selectors ship is settled: these thirteen, seeded, organization-read-only, and a
+fourteenth is a decision entry plus a seed row
+(<a href="../../open-questions/#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it">F-5</a>).
+A count printed in prose is a count somebody has to reprint when the table changes, and no check prints
+it, so the registry row set is the number.</p>
+<p><strong>Bound operands — the argument-less forms — are the important half, and they exist to kill a specific
+flaw.</strong> <code>ATTENDED(&lt;event 1204&gt;)</code> written on event 1204 is one grant per event with the event's own id
+typed into it, so "every participant may see the other participants" is a thing you do 400 times and
+forget on the 401st. Bound, it is one expression written the same way every time. Two rules make that
+safe, and <strong>both are enforced when the grant is saved</strong>, refused with the operand named in the
+message:</p>
+<ul>
+<li><strong>A bound operand is legal only on an item-scope grant.</strong> At the unit there is nothing to bind it
+  to.</li>
+<li><strong>A bound operand is legal only on a matching item type.</strong> <code>PLACED</code> on a group grant is refused,
+  because that item is not an event. This is <code>selector_type.argument_type</code> checked against
+  <code>grant_scope_type</code>.</li>
+</ul>
+<p><strong><code>selector_type</code> is a seeded registry, not an enum</strong> — <code>code</code>, <code>takes_argument</code>, <code>binds_to_item</code>,
+<code>argument_type</code>. Which operands take an argument, which may bind to the item, and what type their
+argument is are <strong>columns of this table, not lists in code</strong>: the parser reads its reserved words from
+it, the editor builds its dropdown from it, and the write path checks arity against it. <strong>The language
+is data.</strong></p>
+<h3 id="the-example-worked">The example, worked<a class="headerlink" href="#the-example-worked" title="Permanent link">&para;</a></h3>
+<p>The organization wrote:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>MEMBERS - GROUP(schuzka2026-1) * COUNSELORS
+</code></pre></div>
+<p>meaning <em>"all counselors that are not part of the group <code>schuzka2026-1</code>"</em>. Under the fixed precedence
+— <code>-</code> and <code>*</code> equal, <strong>left to right</strong> — it parses as:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>(MEMBERS - GROUP(schuzka2026-1)) * COUNSELORS
+</code></pre></div>
+<p>which is what its author meant, and <strong>that is the string that gets stored</strong>, brackets and all: the
+canonical rendering of what was typed.</p>
+<p><strong>The hazard is real even though this string lands safely, and that is exactly why the rendering is a
+requirement.</strong> Read with <code>*</code> taking the tighter binding — the other natural choice, and the one a
+writer who thinks of <code>-</code> as "everything except" will assume — the identical text means:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>MEMBERS - (GROUP(schuzka2026-1) * COUNSELORS)
+</code></pre></div>
+<p><em>"everyone except the counselors in that group"</em>: a different set of people, and a <strong>far wider</strong>
+grant — nearly the whole membership instead of a handful of counselors. The corrected bracketed form is
+<code>(MEMBERS - GROUP(schuzka2026-1)) * COUNSELORS</code>, and that is what the editor writes to storage
+whichever way the typed string parses, so <strong>no stored expression is ever ambiguous and none is ever read
+bare.</strong> What canonicalization does <em>not</em> do is tell the writer, after the fact, that the expression they
+typed meant the wide thing. That is the editor's preview, and it is the same requirement as §<em>The cost
+lands on the editor</em>. The bare form does not <em>mean</em> the wide thing under this design; a parser with the
+wrong table would <em>compute</em> it, and then the stored brackets would disagree with the answer.</p>
+<h3 id="event-sets-and-the-two-sets-that-are-refused">Event sets, and the two sets that are refused<a class="headerlink" href="#event-sets-and-the-two-sets-that-are-refused" title="Permanent link">&para;</a></h3>
+<p><strong>Nothing owns an event.</strong> There is no <code>event.org_unit_id</code> and no unit-authority test standing behind an
+event permission: an event is an item like any other, <code>event.create</code> is held at the unit and creates
+one, and a unit grant reaches every event because there is no tier between the unit and the item and no
+owner to test
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+The people connected to an event are named by selectors that bind to it.</p>
+<p><strong><code>ORGANIZERS</code> is how the people running an event are named</strong>, and it is not a
+contradiction of
+<a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>: <em>an
+<code>event_organizer</code> row grants nothing</em> stands, because <strong>an operand is a set, not a grant.</strong> An
+appointment is <em>aimed at</em> by grants; it is not special-cased inside the resolver. So the rule that
+answers are read by that event's organizers
+(<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>) is <em>said</em>
+where permissions are said: <strong>a seeded grant of <code>event.answer.view</code> on an event, aimed at
+<code>ORGANIZERS</code>.</strong></p>
+<p><strong>Presence is refused, and saying so here is the point.</strong> <code>PRESENT(&lt;event&gt;)</code> over <code>was_present</code> is not
+a selector, and the reason is the failure direction: <code>was_present</code> is <code>NULL</code> until someone takes a
+register, so an operand built on it would revoke a child's access to their own camp photos because a
+volunteer forgot to tick a box. That column is a safeguarding signal, <strong>three-valued on purpose</strong>
+(<a href="../../decisions/round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>),
+and keeping it out of this language is what keeps it meaning <em>"a person recorded this"</em> rather than
+<em>"this is who may see things."</em> Wherever presence tempts a reader, that is the answer.</p>
+<p><strong><code>WHITELISTED</code> does not exist — there is no stored state to name.</strong> The nearest facts are
+<code>source = staff</code> (an organizer entered them) and promotion off the waitlist. Either it means one of
+those or it is a new column on <code>event_registration</code>, which is an events decision and not a selector
+decision, so it stays unseeded and the question lives in
+<a href="../../open-questions/">../open-questions.md</a> (F-20) <strong>rather than being implied by a word in a
+grammar.</strong></p>
+<h3 id="the-rules-that-make-the-tree-safe">The rules that make the tree safe<a class="headerlink" href="#the-rules-that-make-the-tree-safe" title="Permanent link">&para;</a></h3>
+<p>The expression is stored as a tree: one row per node, a node being <code>operator</code> + <code>left_id</code> +
+<code>right_id</code>, a leaf being <code>selector_kind</code> + <code>selector_arg_id</code>, with <code>audience_id</code> denormalized onto
+every row so the read path is one indexed fetch and never walks a parent chain. <strong>Nothing bounds how
+tall or how wide an expression may get</strong>: there is no depth or width limit on an expression, in the
+column or in the code, and nothing stands in for one
+(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
+<em>"A check costs a bounded amount"</em> is therefore <strong>not</strong> a property of this system: an expansion is
+bounded only by acyclicity. <strong>The tree is stored exactly as the writer wrote it</strong> — one row per node,
+two operands and one operator, left to right, no rebalancing — because a rebalanced tree is a different
+expression from the one a person wrote, and storing <em>that</em> expression rather than a normalized
+equivalent is the entire reason the tree exists.</p>
+<ul>
+<li><strong>Exactly one shape per row.</strong> A node has an operator and children and no selector; a leaf has a
+  selector and neither. Expressible, so it stays a constraint.</li>
+<li><strong>One parent, never a DAG.</strong> A side table letting two expressions share a node is refused: editing
+  the shared node would silently widen every grant using it. Structure, plus a CI check that no such
+  table exists.</li>
+<li><strong>Cycles are refused when the row is saved, and the two walks that look for them are the only
+  structural guard this module has.</strong> Structurally hard to build, refused rather than trusted, for the
+  reason D-091 gives for its own guard: <em>a hand-fixed row, a restore from before the guard existed.</em>
+  <strong>1. Inside one tree:</strong> walk the parent chain from the row upward and refuse a revisit.
+  <strong>2. Across audiences:</strong> follow every <code>AUDIENCE</code> leaf and refuse a cycle through them at any distance
+  (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). A single tree
+  cannot cycle; <strong>a forest of audiences naming each other is not a tree</strong>, so the walk over a graph is
+  not dead code, and it must never be relaxed — an expansion that never terminates is the failure
+  nothing else here is standing against.
+  <strong>The read path gets neither a hop counter nor a cycle check,</strong> which is the whole design: a cap on
+  the read path <em>becomes the thing that decides who a grant reaches</em>, in exactly the case where the
+  data is already wrong.
+  <strong>The listing of what a rule names is a tab on the permissions page</strong>, with a <code>Broken</code> and an
+  <code>Unusual</code> section, computed when opened, with no cadence to record because nothing runs; it lists the
+  rules that name something deprecated, hidden or disabled, or that fail to resolve at all
+  (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
+  <strong>It is not a guard in D-081's sense</strong> — nothing is blocked, no write is refused — but a report has to
+  be remembered and a tab is where the person already is, which is the difference between a convention
+  and a decoration. Unbounded cost is accepted at the stated size, and nobody is expected to go looking
+  for a report (F-21).</li>
+<li><strong><code>selector_arg_id</code> has no foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or
+  <code>audience</code>, <strong>five kinds of entity</strong>, depending on kind, <strong>or at nothing at all</strong>, since <code>OLDER(n)</code> and
+  <code>YOUNGER(n)</code> write their integer into the same column and an <code>18</code> is not a reference
+  (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+  It is
+  <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s
+  already-accepted trade-off, with its compensating orphan check.
+  <strong>Every hand-named person in the system is a value in this keyless column</strong>, so <strong>a person merge and a
+  redaction must repoint every leaf naming the absorbed or erased person, in all five entity kinds.</strong>
+  Retiring a role, a group or an audience is not part of that duty: it is one write to that row, never N
+  writes to N expressions
+  (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>),
+  so a leaf that names a retired thing is not possible. <strong><code>PERSON(x)</code> names a <em>person</em>, and
+  <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+  lets a redaction require the row to actually go. Erasure wins.</strong> The reason the duty cannot be
+  expressed anywhere better is
+  <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s —
+  <strong>the ORM has no key to follow.</strong> And the failure is not tidiness: a leaf naming nobody is the empty
+  set, which is quiet on the allow side and loud on the deny side, so <strong><code>EVERYONE - PERSON(x)</code> with an
+  un-repointed <code>x</code> stops subtracting anybody and denies everybody.</strong></li>
+<li><strong>An operand that does not resolve is the empty set</strong>, and an expression that cannot be evaluated
+  reaches nobody. Fail closed, in every direction. <strong>In a lawful database this has exactly one cause — a
+  redacted person — because nothing else a leaf can name is deletable any more.</strong> <strong>A hand-edited row can
+  still produce one</strong>, and <code>disabled</code> deliberately produces the same answer by design (below), so the
+  evaluator's behaviour must not change: the empty set, narrowing an allow and widening a deny, listed in
+  the tab above.</li>
+<li><strong>Nothing a rule can name is deleted. It is given a state instead</strong> — and the three states must stay
+  three different things or one of them will quietly become another
+  (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Still resolves?</th>
+<th>Offered when writing a rule?</th>
+<th>Flagged?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>deprecated</code></strong></td>
+<td><strong>yes, unchanged</strong></td>
+<td>no — not addable to a new rule, not introduceable by editing one</td>
+<td><strong>yes</strong>, highlighted wherever the editor shows it</td>
+</tr>
+<tr>
+<td><strong><code>hidden</code></strong></td>
+<td><strong>yes, unchanged</strong></td>
+<td>no</td>
+<td>no — it is not obsolete, it is not everybody's business</td>
+</tr>
+<tr>
+<td><strong><code>disabled</code></strong></td>
+<td><strong>no — the empty set</strong></td>
+<td>no</td>
+<td>yes, <strong>and it is the only state that changes an answer</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The invariant that stops <code>deprecated</code> drifting into <code>disabled</code> is checkable and cheap: deprecating or
+  hiding what an expression names must not change the set the expression resolves to.</strong> That is the
+  precise failure this whole design exists to make impossible — a rule that quietly stops granting
+  because somebody tidied a list — so it belongs beside the two cycle walks as something a reviewer
+  checks, not as a convention
+  (<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
+  <strong><code>disabled</code> is the loudest switch in this system:</strong> it stops every rule naming that role, group or
+  audience, in every scope, at once, and re-enabling restores all of them — a widening in which nobody
+  edited a grant. So <strong>the flag is an audited write that prints the rules it touches</strong>, resolved before
+  and after, which is the report shape D-104 and D-105 adopted for their own migrations, and it is a
+  ruleset write (D-111); it is also the answer to <em>how do I turn off that whole naming without editing
+  forty grants?</em>, which otherwise has no answer except a deny per grant. A deprecated or disabled name
+  <strong>stays reserved</strong> (D-101), so nothing new can claim the word and split its meaning in two.</p>
+<p><strong>The cost lands on the editor, not the resolver.</strong> A grant's reach is not visible in the row that grants
+it, and seeing it is a requirement on the screen rather than a nicety: the person saving the grant must
+see <strong>the people</strong>, not the audience's name, because nothing in the grammar stops an expression from
+containing <code>EVERYONE</code>, and because <code>PLACED</code> means different people on different events (D-091, D-102).
+So the preview is computed <strong>for an item</strong> and says so on screen. That is a real amount of work for the
+editor, and it is the only thing standing between a writer and a grant that reaches <strong>everybody the
+organization has</strong>. At the sizes stated in
+<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>
+that is a few hundred people, which is not reassuring — it is the same warning with a number under it,
+and the number says the preview will not be slow (F-15, F-16).</p>
+<h3 id="what-a-grants-reach-is-recorded-in">What a grant's reach is recorded in<a class="headerlink" href="#what-a-grants-reach-is-recorded-in" title="Permanent link">&para;</a></h3>
+<p><strong>"Who could read this in 2023?" is answered by the words, and that is the whole of the answer</strong> —
+<em>"Words only — the expression is the record"</em>
+(<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).
+This page promises no other answer and stores no list that would be one.</p>
+<ul>
+<li><strong>The expression is the record of a grant's reach.</strong> The preview still prints a resolved set before a
+  save, and the audit row logs that printing as <em>a rendering on a date</em>, not as a statement of who was in
+  it. A row saying <em>this grant reached these 214 people</em> starts decaying the night somebody's birthday
+  falls; a row saying <em>this person wrote these words on this date about this item</em> cannot go stale.</li>
+<li><strong>What is refused beside it:</strong> keeping the preview's list alongside the audit row. That is a roster
+  table, and it would store — indefinitely, against
+  <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>'s
+  window — a per-person record of people who were <strong>never granted anything</strong>, only covered. This module
+  refuses that trade whenever it is offered in another shape.</li>
+<li><em>Why words-only is sound:</em> <strong>nothing a rule can name is deleted</strong> (§ above), so the nouns survive. A
+  retired office still resolves; a deprecated group still resolves; a name stays reserved. Refuse to
+  delete the nouns and keeping only the words is not an amputation: without that ruling this answer would
+  mean <em>"the past is usually unanswerable"</em>; with it, the past is usually computable and what is left is
+  honestly bounded
+  (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>).</li>
+<li><strong>Answerable for <code>ROLE</code>, <code>GROUP</code> and <code>MEMBERS</code></strong> (all periods, all dated), <strong>unanswerable for bound
+  event operands</strong> (<code>event_registration</code> records the current fact), and <strong>lost for the hand-typed names
+  once their audit payloads expire</strong> — which is what
+  <a href="../../open-questions/#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised">F-17</a>
+  states rather than solves.</li>
+<li><strong>The conceded part, named so nobody finds it later:</strong> editing a shared audience changes what <strong>every
+  grant naming it</strong> has meant all along, because those grants hold a word and not a copy. <strong>An edit to a
+  shared audience is a retrospective edit to every rule that names it</strong>, and a recomputation for May will
+  use today's inner expression. D-103 accepted this as the price of reuse; D-110 records that it is also
+  the reason a past-date answer can be <em>wrong</em> rather than merely missing. The control is D-103's — <strong>the
+  editor prints the resolved set before an edit to a shared expression saves</strong>, so the person editing sees
+  at least once the thing they are changing backwards in time. What is <em>not</em> kept is a history of inner
+  expressions: <strong>the audit trail records the edit, not the meaning that existed before it.</strong></li>
+<li><strong>There is no snapshot, and no route to one.</strong> A materialized table of whom a rule reached is the
+  roster just refused, and
+  <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>
+  is dissolved. What returns at
+  <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s
+  trigger is a materialized table <strong>on its own merits</strong> — a performance structure with a per-person
+  invalidation handle and a stated staleness window, not a way back into the past (<a href="../06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">06 §8</a>).</li>
+</ul>
+<p><em>Decisions behind this page: D-011, D-042, D-060, D-061, D-062, D-067, D-074, D-081, D-088, D-091, D-098, D-100, D-101, D-102, D-103, D-104, D-105, D-107, D-109, D-110, D-111, D-112, D-113.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../06-authorization-model/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Authorization Model">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Authorization Model
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../07-events/" class="md-footer__link md-footer__link--next" aria-label="Next: Events">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Events
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>

@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/01-overview/">
       
       
-        <link rel="prev" href="../../glossary/">
+        <link rel="prev" href="../../glossary-authorization/">
       
       
         <link rel="next" href="../02-actors/">
@@ -288,9 +288,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../glossary/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
   
   
   <span class="md-ellipsis">
@@ -304,7 +326,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -319,6 +413,8 @@
   
     
     
+      
+        
       
         
       
@@ -532,10 +628,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-counselor-who-is-also-a-parent-case" class="md-nav__link">
+  <a href="#the-counselor-who-is-also-a-parent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The counselor-who-is-also-a-parent case
+        The counselor who is also a parent
       
     </span>
   </a>
@@ -570,10 +666,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-what-this-design-deliberately-does-not-decide-yet" class="md-nav__link">
+  <a href="#7-what-this-design-does-not-decide-yet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. What this design deliberately does not decide yet
+        7. What this design does not decide yet
       
     </span>
   </a>
@@ -755,6 +851,34 @@
     
   
     Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
   
 
     
@@ -1890,10 +2014,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-counselor-who-is-also-a-parent-case" class="md-nav__link">
+  <a href="#the-counselor-who-is-also-a-parent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The counselor-who-is-also-a-parent case
+        The counselor who is also a parent
       
     </span>
   </a>
@@ -1928,10 +2052,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-what-this-design-deliberately-does-not-decide-yet" class="md-nav__link">
+  <a href="#7-what-this-design-does-not-decide-yet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. What this design deliberately does not decide yet
+        7. What this design does not decide yet
       
     </span>
   </a>
@@ -1983,39 +2107,38 @@
 
 
 <h1 id="domain-overview">Domain Overview<a class="headerlink" href="#domain-overview" title="Permanent link">&para;</a></h1>
-<p>What the organization is, who interacts with the system, and how the core lifecycles
-flow. Read <a href="../../glossary/">../glossary.md</a> first — this document uses its terms
-strictly.</p>
+<p>What the organization is, who interacts with the system, and how the core lifecycles flow.
+Read <a href="../../glossary/">../glossary.md</a> first — this document uses its terms strictly.</p>
 <hr />
 <h2 id="1-the-organization">1. The organization<a class="headerlink" href="#1-the-organization" title="Permanent link">&para;</a></h2>
-<p>A youth organization (Scout-like: uniformed groups, trained adult leadership, camps
-and weekly meetings) with:</p>
+<p>A youth organization (Scout-like: uniformed groups, trained adult leadership, camps and weekly
+meetings) with:</p>
 <ul>
 <li><strong>Child members</strong> — youth participants, who join one another in <strong>groups</strong>.</li>
-<li><strong>Adult members</strong> — counselors/leaders who run the programs, hold <strong>offices</strong>, and put people into
-  groups.</li>
+<li><strong>Adult members</strong> — counselors and leaders who run the programs, hold <strong>offices</strong>, and put people
+  into groups.</li>
+<li><strong>Caretakers</strong> — parents and legal guardians of child members. They may or may not be members
+  themselves.</li>
+<li><strong>Non-member supporters</strong> — people who interact with the organization (donors, volunteers, alumni)
+  without holding a membership.</li>
 </ul>
-<p><em>(These two are how the organization talks about people. They are <strong>not</strong> two kinds of membership: there
-is one membership type and it is ageless, so the sentence "is this person a child?" is a question about
-<code>person.birth_date</code> and today's date — see <a href="#2-actors">§2</a> and
-<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>. Nothing downstream keys off the
-difference except guardianship, position eligibility, and the mirroring rule for messages.)</em>
-- <strong>Caretakers</strong> — parents and legal guardians of child members. They may or may not
-  be members themselves.
-- <strong>Non-member supporters</strong> — people who interact with the organization (donors,
-  volunteers, alumni) without holding a membership.</p>
-<p>The organization has <strong>been reorganized repeatedly over four decades</strong>, and <strong>this system models none of
-it</strong>: there is one unit, it is a scope rather than a row, and the internal structure that got reorganized
-was deleted in round 10 (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
-What remains of "the inside of the organization" is <strong>groups</strong> — named sets of people with a lifetime —
-in <a href="../04-organization-structure/">04-organization-structure.md</a>. The reorganizations are a fact the system
-knows nothing about, and saying that here, on the first page, is the point: a reader who arrives expecting
-a hierarchy should learn at once that the absence is a decision, not an omission, and what it cost is
-written down in the entry that made it.</p>
+<p>"Child" and "adult" are how the organization talks about people. They are <strong>not</strong> two kinds of
+membership: there is one membership type and it is ageless, so <em>"is this person a child?"</em> is a
+question about <code>person.birth_date</code> and the date being asked about (§2). Only three things downstream
+key off the difference: guardianship, eligibility an organizer writes for one event, and the
+mirroring rule for messages.</p>
+<p><strong>The system models no internal structure of the organization.</strong> There is one unit, it is a <strong>scope</strong>
+rather than a row, and the nested bodies the organization has been reorganized into over four
+decades are not stored, not versioned and not imported — an absence decided on purpose, whose cost is
+written down in <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>.
+What remains of "the inside of the organization" is <strong>groups</strong>: named sets of people with a lifetime,
+in <a href="../04-organization-structure/">04-organization-structure.md</a>. A reader arriving expecting a
+hierarchy should learn that here, on the first page, because the absence changes every later answer
+about scope.</p>
 <hr />
 <h2 id="2-actors">2. Actors<a class="headerlink" href="#2-actors" title="Permanent link">&para;</a></h2>
-<p>The system distinguishes actors by <em>what they can do</em>, not by <em>what they are</em>. The full
-treatment is in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
+<p>The system distinguishes actors by <em>what they can do</em>, not by <em>what they are</em>. The full treatment is
+in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
 <table>
 <thead>
 <tr>
@@ -2042,13 +2165,13 @@ treatment is in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
 <td>Member</td>
 <td>yes</td>
 <td>yes</td>
-<td>own profile, unit participation, event signups, own history — <strong>the same actor whether or not <code>birth_date</code> makes them a minor today</strong></td>
+<td>own profile, event signups, own history</td>
 </tr>
 <tr>
 <td>Caretaker</td>
 <td>yes</td>
 <td>maybe</td>
-<td>view/act on their dependents — <strong>only</strong> as explicitly granted</td>
+<td>view and act on their dependents — <strong>only</strong> as the guardianship row allows</td>
 </tr>
 <tr>
 <td>Staff / registrar</td>
@@ -2064,31 +2187,24 @@ treatment is in <a href="../02-actors/">02-actors.md</a>; the summary:</p>
 </tr>
 </tbody>
 </table>
-<p><strong>The two member rows this table used to carry — "Member (child)" and "Member (adult)" — were one row
-wearing two hats.</strong> There is one membership type (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>)
-and it is ageless (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>), so the difference
-between them was always <code>person.birth_date</code> against today's date, which changes on its own and is a fact
-about a person rather than a kind of account. What a minor genuinely cannot do on their own is a
-guardianship question, not an actor type
+<p><strong>A minor is not an actor row.</strong> One row above is a member, and whether that member is a minor today
+is <code>person.birth_date</code> against the date of the check — a fact about a person that changes on its own,
+never a kind of account. What a minor genuinely cannot do alone is a guardianship question
 (<a href="../02-actors/">02-actors.md</a>).</p>
-<p>The last row matters twice, and its answer changed in round 9. Imported rows create <code>person</code> rows with
-<strong>no account</strong>, and must never be blocked from import by a "users must have email addresses" rule. They
-also create <strong><code>membership</code> rows now</strong> — bounded ones, both ends dated, only for the periods the people
-export states, <code>data_confidence = 'low'</code> and marked with the batch that wrote them
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
-<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
-<strong>What the earlier answer got right and still binds</strong>: it refused to make a membership out of an
-attendance row, and that refusal survives as the rule that an imported period is never open-ended and
-never inferred from presence
-(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>);
-and no sub-unit row is ever imported, because neither export names a sub-unit, so "who was in Pack 12 in
-1998?" has no system answer at go-live
+<p>Imported rows create <code>person</code> rows with <strong>no account</strong>, and import must never be blocked by a "users
+must have email addresses" rule. They also create <strong><code>membership</code> rows</strong>: bounded ones, both ends
+dated, only for the periods the people export states, <code>data_confidence = 'low'</code>, marked with the
+batch that wrote them
+(<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+An imported period is never open-ended and never inferred from presence — an open membership
+satisfies <code>is_current_member()</code>, so inferring one would make every 1998 attendee a current member
+today. No sub-unit row is ever imported, because neither export names a sub-unit
 (<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">03-identity-and-legacy.md §7</a>).</p>
 <hr />
 <h2 id="3-the-three-lifecycles">3. The three lifecycles<a class="headerlink" href="#3-the-three-lifecycles" title="Permanent link">&para;</a></h2>
-<p>Almost everything in the system is one of three multi-step processes. They are separate
-because they succeed and fail independently: you can register without applying, apply
-without being accepted, be accepted without paying, and pay without ever joining a unit.</p>
+<p>Almost everything in the system is one of three multi-step processes. They are separate because they
+succeed and fail independently: you can register without applying, apply without being accepted, be
+accepted without paying, and pay without ever joining a group.</p>
 <h3 id="31-account-lifecycle">3.1 Account lifecycle<a class="headerlink" href="#31-account-lifecycle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                  ┌─────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                  │                                             │
@@ -2096,15 +2212,16 @@ without being accepted, be accepted without paying, and pay without ever joining
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                                            │              │
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                                            └──&gt; closed &lt;──┘
 </code></pre></div>
-<p>An account is about <strong>authentication only</strong>. It says "this person can log in". It says
-nothing about membership. A person can hold a verified, active account for years and
-never become a member — a parent who only ever manages their child is exactly this case.</p>
+<p>An account is about <strong>authentication only</strong>. It says "this person can log in". It says nothing about
+membership. A person can hold a verified, active account for years and never become a member — a
+parent who only ever manages their child is exactly this case.</p>
 <p><strong>One gate the arrows do not draw:</strong> an account may not reach <code>active</code> while an unresolved
 <code>identity_hypothesis</code> names its person, which is what a sign-up that strong-matches someone who
-already exists runs into (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
-Verification is necessary and not sufficient; a human decision is the second condition, and because
-that makes a stalled queue a person who cannot log in, the blocking hypothesis is age-checked and
-alerts. One live account per person is the rule doing the underlying work
+already exists runs into
+(<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+Verification is necessary and not sufficient; a human decision is the second condition. Because that
+makes a stalled queue a person who cannot log in, a hypothesis that blocks activation is age-checked
+and alerts. One live account per person is the rule doing the underlying work
 (<a href="../02-actors/#3-account-state-machine">02-actors.md §3</a>).</p>
 <h3 id="32-membership-lifecycle">3.2 Membership lifecycle<a class="headerlink" href="#32-membership-lifecycle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> (none)
@@ -2114,43 +2231,38 @@ alerts. One live account per person is the rule doing the underlying work
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   │                             └──reject──&gt; rejected                                 │
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>   │                                                                                   │
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>   │                                     ┌─────────────────────────────────────────────┤
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>   │                                     │                                             │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>   │                                     ├──&gt; lapsed (fee expired at the yearly date)  │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>   │                                     ├──&gt; terminated (cause, with reason)          │
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>   │                                     └──&gt; suspended (temporary hold)               │
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>   │                                                                                   │
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>   │      ┌──────────────── renewal (no new application) ────────────────────────────┘
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>   │      │        inside the renewal window → the new period opens at the expiry date
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>   │      │        after it                  → the new period opens at the payment date
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>   │      ▼
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>   │   active member again
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>   │
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>   └──────────────────────── re-apply ─────────────────────────────────────────────────┘
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>   │                                     ├──&gt; lapsed (fee expired at the yearly date)   │
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>   │                                     ├──&gt; terminated (cause, with reason)          │
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>   │                                     └──&gt; suspended (temporary hold)               │
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>   │                                                                                   │
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>   │      ┌──────────────── renewal (no new application) ────────────────────────────┘
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>   │      │        inside the renewal window → the new period opens at the expiry date
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>   │      │        after it                  → the new period opens at the payment date
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>   │      ▼
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>   │   active member again
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>   │
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>   └──────────────────────── re-apply ─────────────────────────────────────────────────┘
 </code></pre></div>
-<p>Every transition creates or closes a row; nothing is overwritten. A person who was a
-member 1990–2010 and again from 2024 has two <code>membership</code> rows and the gap is visible
-as data, not inferred from a date.</p>
-<p><strong>Note the shape of the lapse.</strong> There is no <code>completed</code> state: it existed only for ageing
-out, and membership is ageless (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>).
-And <strong>the lapse happens on a date, to everyone at once</strong> — the yearly expiry — which is why
-the renewal path matters more here than the word "grace" suggests
+<p>Every transition creates or closes a row; nothing is overwritten. A person who was a member
+1990–2010 and again from 2024 has two <code>membership</code> rows, and the gap is visible as data rather than
+inferred from a date.</p>
+<p>Two properties of the lapse are worth naming before the detail. <strong>There is no <code>completed</code> status:</strong>
+nothing ages out of a membership, so there is no state for having finished one. And <strong>the lapse
+happens to everyone at once, on a fixed date</strong> — the yearly expiry — which is why the renewal path
+matters more than the word "grace" suggests
 (<a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>).</p>
 <p>Detailed in <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a>.</p>
 <h3 id="33-authorization-lifecycle">3.3 Authorization lifecycle<a class="headerlink" href="#33-authorization-lifecycle" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a> (none) ──grant──&gt; active ──expire/revoke──&gt; inactive
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a> (none) ──grant──&gt; active ──end date reached / period closed──&gt; inactive
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                     │
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>                     └──delegate──&gt; delegated grant (with end date, provenance recorded)
 </code></pre></div>
-<p>Every grant has a start, an end, a granter, and a reason. Nothing is permanent by
-default and nothing is revoked by deletion. Detailed in
+<p>Every grant has a start, an end, a granter, and a reason. Nothing is permanent by default and
+nothing is revoked by deletion — closing a period is the act, and the row stays. Detailed in
 <a href="../06-authorization-model/">06-authorization-model.md</a>.</p>
 <hr />
 <h2 id="4-the-relationships-between-people">4. The relationships between people<a class="headerlink" href="#4-the-relationships-between-people" title="Permanent link">&para;</a></h2>
-<p>Four relationships, deliberately not merged — and <strong>the two that used to be here are gone</strong>, because
-between them they described the hierarchy this system no longer has: <em>participation in a sub-unit</em> and
-<em>position held in a sub-unit</em> (<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>,
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
-Their replacements are the two same-shaped tables of round 10:</p>
+<p>Four relationships, deliberately not merged:</p>
 <table>
 <thead>
 <tr>
@@ -2165,7 +2277,7 @@ Their replacements are the two same-shaped tables of round 10:</p>
 <td><strong>Guardianship</strong></td>
 <td>guardian → dependent</td>
 <td>parent → child</td>
-<td><strong>No</strong> by itself — only the <code>right_level</code> (<code>none</code> / <code>view</code> / <code>write</code>) carried on the live <code>guardianship</code> row. Since D-074 that value is the whole authority; <code>guardianship_permission</code> keeps only its history.</td>
+<td><strong>No</strong> by itself — only the <code>right_level</code> (<code>none</code> / <code>view</code> / <code>write</code>) carried on the live <code>guardianship</code> row is authority, and that row is the whole of it (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</td>
 </tr>
 <tr>
 <td><strong>Membership</strong></td>
@@ -2177,136 +2289,132 @@ Their replacements are the two same-shaped tables of round 10:</p>
 <td><strong>Being in a group</strong></td>
 <td>person → group</td>
 <td>child → the Thursday group</td>
-<td><strong>No</strong> — a <code>person_group_member</code> row is a dated roster entry (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</td>
+<td><strong>No</strong> — a <code>person_group_member</code> row is a dated roster entry.</td>
 </tr>
 <tr>
 <td><strong>Holding an office</strong></td>
 <td>person → role</td>
-<td>adult → a leader</td>
-<td><strong>No</strong> — a <code>role_holder</code> row says who holds it, and an office confers nothing by being held (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</td>
+<td>adult → <em>counselors</em></td>
+<td><strong>No</strong> — a <code>role_holder</code> row says who holds it, and an office confers nothing by being held.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Being a member and being in a group are two rows, not one</strong> — the distinction D-041 drew between
-membership and participation, which survives its subject (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
-A person is a <strong>member of the organization</strong> and <strong>on a group's roster</strong>: different facts, different
-lifetimes, different guards on who may change them, which is why someone who stops attending on Thursdays
-is still a paid-up member, and someone who is paid up may turn up to nothing. The old sentence named a
-pack on the right-hand side; the new one names a group, and the reason the distinction was worth two
-tables all along is that the two rows are edited by different people for different reasons.</p>
-<p>The recurring theme: <strong>participation is not authority.</strong> A person can be deeply involved
-— a parent of three members, a 20-year veteran, a pack's founder — and still have no
-administrative access. Access comes only from an explicit grant. This separation is what
-makes the permission system auditable and what prevents the classic failure where a
-relationship ends (custody changes, a leader steps down) but access silently persists.</p>
-<h3 id="the-counselor-who-is-also-a-parent-case">The counselor-who-is-also-a-parent case<a class="headerlink" href="#the-counselor-who-is-also-a-parent-case" title="Permanent link">&para;</a></h3>
-<p>You named this case explicitly. It is not special:</p>
+<p><strong>Being a member and being in a group are two rows, not one.</strong> A person is a <em>member of the
+organization</em> and <em>on a group's roster</em>: different facts, different lifetimes, and different guards on
+who may change them — which is why someone who stops attending on Thursdays is still a paid-up member,
+and someone who is paid up may turn up to nothing. The two rows are edited by different people for
+different reasons, which is the whole case for keeping them apart.</p>
+<p>The recurring theme: <strong>participation is not authority.</strong> A person can be deeply involved — a parent of
+three members, a twenty-year veteran, the founder of a group — and still have no administrative
+access. Access comes only from an explicit grant. This separation is what makes the permission system
+auditable, and what prevents the classic failure where a relationship ends (custody changes, a leader
+steps down) and access silently persists.</p>
+<h3 id="the-counselor-who-is-also-a-parent">The counselor who is also a parent<a class="headerlink" href="#the-counselor-who-is-also-a-parent" title="Permanent link">&para;</a></h3>
+<p>This case is not special:</p>
 <ul>
 <li>One <code>person</code> row.</li>
-<li>One open <code>membership</code>, of the one membership type, <code>member</code> — the same shape as the child they lead
-  (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>).</li>
-<li>One <code>role_holder</code> row: they hold the office <code>counselors</code>, over a dated period. The office itself is a
-  <code>role</code> row (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</li>
-<li>A <code>person_group_member</code> row or two, dated, for the companies they actually turn up to
-  (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</li>
-<li>Two <code>guardianship</code> rows (to their own children), each carrying its own right.</li>
+<li>One open <code>membership</code>, of the one membership type, <code>member</code> — the same shape as the child they lead.</li>
+<li>One <code>role_holder</code> row: they hold the office <code>counselors</code> over a dated period.</li>
+<li>A <code>person_group_member</code> row or two, dated, for the groups they actually turn up to.</li>
+<li>Two <code>guardianship</code> rows (to their own children), each carrying its own right level.</li>
 <li>Whatever <code>access_grant</code> rows somebody wrote whose grantee names them — as <code>ROLE(counselors)</code>, or
-  <code>MEMBERS * ROLE(counselors)</code> where the membership gate applies
-  (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>,
-  <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).</li>
-<li>No row of its own for "is a counselor". That is the <code>role_holder</code> row above, and nothing more.</li>
+  <code>MEMBERS * ROLE(counselors)</code> where membership is required of the holder.</li>
+<li>No row of its own for "is a counselor". The <code>role_holder</code> row is all of it.</li>
 </ul>
-<p>Note there is no <code>counselor</code> membership type. Being a counselor is an <strong>office held for a period</strong>, not a
-kind of membership (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
-and since <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-not even a <em>position</em> — the word went, along with the table that stored it, because a position implied
-authority and an office confers nothing until a grant names it. This person's membership is identical to
-that of the child they lead, which is exactly the point.</p>
-<p>Their grants reach <strong>the unit's members</strong>, which after
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> is the whole
-organization rather than one pack: there is no smaller body to scope inside, so a unit-scope grant is the
-broadest thing a person can hold, and the round says that plainly instead of pretending the pack is still
-a fence. Their guardianship reaches <strong>their own children</strong>, through a different channel entirely — entered
-by the shape of the request rather than by any permission they were given
+<p>There is no <code>counselor</code> membership type, and being a counselor is an <strong>office held for a period</strong> —
+not a kind of membership, and not a grade of person. This person's membership is identical to that of
+the child they lead, which is exactly the point.</p>
+<p>Their grants reach <strong>the unit's members</strong>, which is the whole organization: there is no smaller body
+to scope inside, so a unit-scope grant is the broadest thing a person can hold. Their guardianship
+reaches <strong>their own children</strong> through a different channel entirely — entered by the <em>shape</em> of the
+request (subject ≠ actor) rather than by any permission they were given
 (<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>),
-and capped by the right that row records. Being a leader does <em>not</em> give them access to other people's
-children's records, and now the reason is mechanical: there is no rule that could have implied it, so the
-access exists only as rows, or not at all.</p>
+and capped by the right level that row records. Being a leader does not give them access to other
+people's children's records, and the reason is mechanical: <strong>no rule could imply it</strong>, so the access
+exists as rows or not at all.</p>
 <blockquote>
-<p>This last point is a safety property, not a convenience. Child-protection rules generally require that a
-leader's access to minors' personal data be bounded by their function. Two things carry that boundary
-now, and it is worth naming which: <strong><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-deletes the implication</strong> — an office, a roster, a membership and a guardianship each confer nothing by
-being what they are — <strong>and <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
-makes what remains readable</strong> — one code, one scope, one effect per row, so <em>"what exactly does this
-person have over minors?"</em> is answered by reading rows rather than by evaluating a rank. What the round
-lost is stated in <a href="../../#the-one-idea-this-whole-design-rests-on">the overview's own rule 5</a>: it is
-no longer true that a leader's reach had to be written by the body that chose the leader. The boundary is
-enforceable and reportable; who is obliged to look at the report is a convention, not a guard.</p>
+<p>That is a safety property, not a convenience. Child-protection practice requires that a leader's
+access to minors' personal data be bounded by their function, and two properties carry it here: an
+office, a roster, a membership and a guardianship each <strong>confer nothing by being what they are</strong>
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
+and a grant is <strong>one code, one scope, one effect per row</strong>
+(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
+so <em>"what exactly does this person have over minors?"</em> is answered by reading rows rather than by
+evaluating a rank. What the design does not do is guarantee that the reach was written by the body
+it governs — see <a href="../../#the-one-idea-this-whole-design-rests-on">rule 5 in the overview</a>.
+The boundary is enforceable and reportable; who is obliged to read the report is a convention, not
+a guard.</p>
 </blockquote>
 <hr />
 <h2 id="5-multiplicity-in-both-directions">5. Multiplicity, in both directions<a class="headerlink" href="#5-multiplicity-in-both-directions" title="Permanent link">&para;</a></h2>
-<p>You specified: <em>one parent can manage multiple children; multiple children can be managed
-by the same parent.</em> The model generalizes both:</p>
+<p>Specified directly: <em>one parent can manage multiple children; multiple children can be managed by the
+same parent.</em> The model generalizes both:</p>
 <ul>
 <li>One guardian → many dependents (many <code>guardianship</code> rows).</li>
-<li>Many guardians → one dependent (both parents, stepparents, legal guardians — the
-  schema makes no assumption that a child has exactly two, or exactly one).</li>
-<li>A guardian's authority over each dependent is <strong>per-dependent</strong>, so a parent can hold
-  full permissions for one child and only read access for another (a realistic custody
-  arrangement).</li>
+<li>Many guardians → one dependent (both parents, stepparents, legal guardians — no assumption that a
+  child has exactly two, or exactly one).</li>
+<li>A guardian's authority is <strong>per-dependent</strong>, so a parent can hold write for one child and view only
+  for another — a realistic custody arrangement.</li>
 </ul>
-<p>The same person can also be a guardian <em>of</em> someone and a dependent of someone else — the
-relation is a general graph, not a two-level hierarchy. This costs nothing to allow and
-avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
+<p>The same person can be a guardian <em>of</em> someone and a dependent <em>of</em> someone else: the relation is a
+general graph, not a two-level hierarchy. This costs nothing to allow and avoids a rewrite when a
+member's sibling needs a guardian and the member is the one who has them.</p>
 <hr />
 <h2 id="6-the-four-decades-of-history">6. The four decades of history<a class="headerlink" href="#6-the-four-decades-of-history" title="Permanent link">&para;</a></h2>
-<p>This is the constraint that most shapes the schema, so it is worth stating plainly.</p>
+<p>This is the constraint that most shapes the schema.</p>
 <p>The system must answer, correctly and indefinitely:</p>
 <ul>
-<li>"Who was in Pack 12 on 1 June 1998?"</li>
 <li>"Was this person a member when they attended that camp in 2003?"</li>
 <li>"This person registered in 2026 claiming they were a member in the 90s — is that true?"</li>
-<li>"What was this unit called in 2001, and what is its successor unit today?"</li>
+<li>"Who was on this group's roster on 1 June 1998?" — if somebody recorded the roster; the import
+  supplies no group history.</li>
 </ul>
-<p>Consequences, all of which the data model implements:</p>
+<p>It must not answer, and does not try to:</p>
+<ul>
+<li>"Who was in Pack 12 on 1 June 1998?" and "what was that unit called in 2001, and what is its
+  successor today?" There are no units, no nesting and no successor relations to traverse.</li>
+</ul>
+<p>Consequences, which the data model implements:</p>
 <ol>
 <li><strong>Everything temporal is a period</strong>, never a boolean or a single date.</li>
-<li><strong>Nothing is hard-deleted</strong>, except by three named acts, each of which is somebody's decision
-   rather than a cleanup job. Merges leave tombstones and units that closed keep their rows. Against
-   that: <strong>erasing a person</strong> redacts their values wherever they were copied, including in the audit
-   payload, immediately and at any age; <strong>payload reduction</strong> empties an audit row's values 24 months
-   after they were written and leaves the row standing, so the trail keeps answering <em>who changed this,
-   when, and were they allowed to</em> indefinitely and stops answering <em>and to what</em>
-   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>);
-   and <strong>reverting an import batch</strong> removes the rows that batch created. Reduction is not redaction —
-   one answers to a person and is absolute, the other answers to a calendar and is bounded — and the
-   accounting skeleton (<code>membership</code>, fees, payments) is deliberately outside all three: it is kept
-   indefinitely as the organization's own history. <em>Assumption:</em> that "forever" has a legal basis is
-   exactly the thing this document cannot establish for itself; the claim is recorded as an assumption
-   awaiting review, not as settled law.</li>
-<li><strong>Names change.</strong> Units get renamed and renumbered; people change names. Names live in
-   child tables with validity periods, not as columns that get overwritten.</li>
-<li><strong>Imported data is low-confidence.</strong> A 1994 roster has names, dates, and on most rows a legacy
-   member number — which keys the organization's paper, not a session, and is exactly what is missing
-   from the records that most need matching. This bullet used to say "no reliable unique key", written
-   before the corpus had been described. Import still therefore <em>proposes</em> identities and a human
-   confirms them, and where a number is present the proposal is a lookup rather than a guess.
-   See <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a>.</li>
+<li><strong>Nothing is hard-deleted</strong>, except by three named acts, each somebody's decision rather than a
+   cleanup job. <strong>Erasing a person</strong> redacts their values wherever they were copied, including in the
+   audit payload, immediately and at any age. <strong>Payload reduction</strong> empties an audit row's values 24
+   months after they were written and leaves the row standing, so the trail keeps answering <em>who
+   changed this, when, and were they allowed to</em> and stops answering <em>and to what</em>
+   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+   <strong>Reverting an import batch</strong> removes the rows that batch created. Reduction is not redaction: one
+   answers to a person and is absolute, the other answers to a calendar and is bounded. The accounting
+   skeleton — <code>membership</code>, fees, payments — is deliberately outside all three and kept indefinitely
+   as the organization's own history. <em>Assumption:</em> that this "forever" has a legal basis is exactly
+   what this document cannot establish for itself; the claim is recorded as an assumption awaiting
+   review, not as settled law.</li>
+<li><strong>People's names change</strong>, so a name is a child-table row with a validity period and never a
+   column that gets overwritten. A <strong>group's</strong> name is a column, and nothing replaces the deleted
+   name-history table: a rename edits it and the old name is gone. What survives a rename is the
+   identity beneath it, because grants and expressions store a kind and an id, never a name.</li>
+<li><strong>Imported data is low-confidence.</strong> The people export carries a name, a birth date, and the
+   period each person was a member of the organization. Where an export also carries the
+   organization's <strong>legacy member number</strong> — the number its paper records are keyed on — that number
+   is imported verbatim into <code>person_identifier</code> under the legacy scheme, is never reissued, and makes
+   a match <strong>exact rather than probable</strong>: same number, same person. Every other identity claim the
+   import makes is a <em>proposal</em> a human confirms. See
+   <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a>.</li>
 </ol>
 <hr />
-<h2 id="7-what-this-design-deliberately-does-not-decide-yet">7. What this design deliberately does not decide yet<a class="headerlink" href="#7-what-this-design-deliberately-does-not-decide-yet" title="Permanent link">&para;</a></h2>
-<p>These are referenced by the schema but not designed, pending your specification:</p>
-<p><em>(Events came off this list: they were specified, in <a href="../07-events/">07-events.md</a> and
-<a href="../../data-model/08-events/">data-model/08-events.md</a>, along with the thirteen codes in the catalog.)</em></p>
+<h2 id="7-what-this-design-does-not-decide-yet">7. What this design does not decide yet<a class="headerlink" href="#7-what-this-design-does-not-decide-yet" title="Permanent link">&para;</a></h2>
+<p>Referenced by the schema but not designed, pending your specification:</p>
 <ul>
 <li><strong>Fees and payments</strong> — a provisional shape exists in
-  <a href="../../data-model/07-finance/">../data-model/07-finance.md</a> because membership
-  activation depends on it. Expect to rewrite it.</li>
-<li><strong>Notifications, documents, reporting, API/UI.</strong> <em>(Health records went off this list in round 7 —
-  there is no health module, because <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-  found no category to build one around; the facts live in the personal-attribute layer,
-  <a href="../08-person-data/">domain/08</a>.)</em></li>
+  <a href="../../data-model/07-finance/">../data-model/07-finance.md</a> because membership activation depends on
+  it. Expect to rewrite it.</li>
+<li><strong>Communication</strong> — its shape is decided (direct by default, <code>broadcast</code> an ordinary scoped
+  permission, the recipient chooses the channel, a minor's guardians get a mirror of a direct
+  message), and its codes are in the catalog. There is no <code>message</code> or <code>message_recipient</code> table yet,
+  and no design for templates, opt-out granularity, retention or moderation.</li>
+<li><strong>Notifications</strong> — the renewal window made them dated rather than status-driven, which is a design
+  note, not a design.</li>
+<li><strong>Documents, reporting, API and UI.</strong></li>
 </ul>
 <hr />
 <h2 id="8-next">8. Next<a class="headerlink" href="#8-next" title="Permanent link">&para;</a></h2>
@@ -2314,10 +2422,15 @@ avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
 <li>Terminology → <a href="../../glossary/">../glossary.md</a></li>
 <li>Accounts and registration → <a href="../02-actors/">02-actors.md</a></li>
 <li>Historical data → <a href="../03-identity-and-legacy/">03-identity-and-legacy.md</a></li>
-<li>Units → <a href="../04-organization-structure/">04-organization-structure.md</a></li>
+<li>What the system knows about a person → <a href="../08-person-data/">08-person-data.md</a></li>
+<li>Groups, offices and the unit → <a href="../04-organization-structure/">04-organization-structure.md</a></li>
 <li>Membership → <a href="../05-membership-lifecycle/">05-membership-lifecycle.md</a></li>
 <li>Permissions → <a href="../06-authorization-model/">06-authorization-model.md</a></li>
+<li>Events → <a href="../07-events/">07-events.md</a></li>
 </ul>
+<hr />
+<p><em>Decisions behind this page: D-037, D-038, D-040, D-041, D-074, D-079, D-088, D-089, D-093, D-097,
+D-098, D-099, D-100, D-114.</em></p>
 
 
 
@@ -2353,7 +2466,7 @@ avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../glossary/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Glossary">
+          <a href="../../glossary-authorization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Authorization terms">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2363,7 +2476,7 @@ avoids a rewrite when a member turns 18 and becomes guardian to a sibling.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Glossary
+                Authorization terms
               </div>
             </div>
           </a>
