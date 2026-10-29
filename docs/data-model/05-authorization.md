@@ -1,20 +1,11 @@
 # Data Model — Authorization: permissions, offices, grants
 
-`permission`, `role`, `role_holder` and `access_grant`: the four tables a permission
-is made of, plus the numbers of the two that no longer exist.
+`permission`, `role`, `role_holder` and `access_grant` — the four tables an answer is made of — and
+the shape of the check they add up to. Design rationale, in plain language:
+[../domain/06-authorization-model.md](../domain/06-authorization-model.md).
 
 **Section numbers are shared across the five parts** and never renumbered, because other
 pages cite them by number and their anchors are built from them: [05-authorization.md](05-authorization.md) holds §1–§7, [05a](05a-audience-and-grammar.md) §8 (the `audience` table, the grammar, the selector registry), [05b](05b-expression-tree.md) §8 continued (the tree and what each operand costs), [05c](05c-access-log-and-resolver.md) §9–§10 (`access_log` and the resolver), and [05d](05d-invariants-and-seed.md) §11–§13 (invariants, seed data, open issues).
-
----
-
-# Data Model — Authorization
-
-`permission`, `role`, `role_holder`, `selector_type`, `audience`, `audience_operand`,
-`access_grant`, `access_log`.
-
-This is the direct answer to your question about system-wide and per-item permissions.
-Design rationale: [../domain/06-authorization-model.md](../domain/06-authorization-model.md).
 
 ---
 
@@ -44,20 +35,18 @@ audience_operand ───────── one node of that expression        
                           — an AUDIENCE leaf doubles as       AUDIENCE leaf is also the
                           the reference edge to another tree)  edge to another audience)
 
-guardianship_permission ── authority over a PERSON.     (04-relationships.md)
+guardianship ───────────── authority over one PERSON: right_level   (04-relationships.md)
 access_log ─────────────── what was decided, and by what authority.
 ```
 
 **One table grants.** `access_grant` is the only place authority is written ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)),
-plus one table over a single person: `guardianship_permission` (§10, channel guardianship).
-**Everything else on this page decides *whom a grant reaches*, which has never been the same
-thing** — a role holder, a group member and an audience operand are all sets of people, and being
-in one is worth exactly what the grant aimed at it says. That sentence was already true of
-audiences before this round; round 10 made it true of roles too, which is the whole of
-[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape).
-**One of these tables is gone**: the hand-typed names that used to sit in `audience_member` are
-written in the expression, as `PERSON(a) + PERSON(b)`, in the place every other set is written
-([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
+plus the guardianship channel over one person, whose authority is `guardianship.right_level`
+([data-model/04](04-relationships.md), §10). **Everything else here decides *whom a grant reaches*,
+which is not the same question** — a role holder, a group member and an audience operand are all sets
+of people, and being in one is worth exactly what the grant aimed at it says
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+A hand-written set of people is written in the expression too, as `PERSON(a) + PERSON(b)`, where every
+other set is written ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
 
 **And the rule that answers every check** ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)):
 
@@ -65,34 +54,19 @@ written in the expression, as `PERSON(a) + PERSON(b)`, in the place every other 
 
 That is the entire precedence rule. "Live" means the row has started as of the checked date, has
 not ended on it, and has not been revoked; "applies" is decided per channel in §10. There is no
-level to reach, no rank to compare, and no nearer grant that beats a further one — the ladder and
-locality were deleted in the same breath, because locality only ever ordered *allows* against each
-other and a boolean answer has nothing to order. What survives of the old ordering is deny's
-absoluteness, which was [D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)'s
-first half and is now its entire content.
+level to reach, no rank to compare, and no nearer grant that beats a further one; **a deny is
+absolute** ([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only),
+[D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+*Why there is no ordering:* an ordering could only ever rank one allow against another, and a boolean
+answer has nothing to rank.
 
-> **The rule that used to govern all of these tables, and where it went.** This section opened
-> with *"authority over a unit originates **at that unit** and cannot be claimed from outside it —
-> not by a parent unit, and not by the organization"*, and named `scope_exposure` as the only
-> crossing. **Withdrawn by [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
-> and the withdrawal is precise: [D-031](../decisions/round-02-03.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
-> was not weakened, it was deprived of its subject.** There is one unit, it is the organization,
-> and it is not a row — so there is no "outside it" to be stopped from, and every permission is
-> held either at the unit or on an item. The sentence is kept here, struck through in spirit,
-> because a reader who arrives from an older draft will look for the rule and should find the reason
-> it is gone rather than an empty space. **What of its reasoning still holds is carried by two
-> things that were never about units: deny is absolute (§10), and the ownership and guardianship
-> channels answer for a person rather than for a body.** What is lost is stated once in §5 and in
-> D-097, and is not argued away there or here.
+Authority is written at exactly two sizes — the unit, or one item — because there is one unit and it
+is not a row ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
+and the widest read permission in the system reaches every member from the unit. What that costs is
+stated once, in [domain/04 §1](../domain/04-organization-structure.md#1-the-organization-is-one-unit-and-the-unit-is-a-scope).
 
-**The two tables that used to be one idea at two granularities, and what they are now.**
-[D-010](../decisions/round-01a.md#d-010--role-assignments-and-access-grants-share-a-scope-model-and-a-resolver)
-read `role_assignment` and `access_grant` as the same mechanism at different sizes and gave them a
-shared scope model and a shared resolver. **Both halves are reversed** — the scope model because
-[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
-left one scope and `role_holder` therefore has no scope columns at all, and the shared resolver
-because there is no role channel to share (§10). What they have in common now is the temporal
-pattern, like every dated row in this system:
+**`role_holder` and `access_grant` are different mechanisms, and only one of them grants.** What they
+have in common is the temporal pattern every dated row in this system uses:
 
 | | `role_holder` | `access_grant` |
 |---|---|---|
@@ -121,22 +95,18 @@ there is no such word.
 | `code` | text, required, unique | The stable identifier — `membership.request.approve`. The **code never changes**; `display_name` can. |
 | `resource` | text, required | What the permission is about — `membership_request`. |
 | `action` | text, required | What may be done to it — `approve`. |
-| `applies_to` | enum: `unit`, `unit_and_item` | **New, [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality).** Where this code may be granted at all: at the unit only, or at the unit *and* on an item. Checked **when the grant is saved**, never at check time — see *`applies_to`* below. |
-| `right_kind` | enum: `read`, `write` | **New, [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality).** Exists for exactly one customer: the guardianship channel's `none` / `view` / `write` ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)). Say the one customer out loud — see *`right_kind`* below. |
-| `namespace` | text, optional | `system`, or absent. What it still does, and what it stopped doing, is its own subsection below. |
+| `applies_to` | enum: `unit`, `unit_and_item` | Where this code may be granted at all: at the unit only, or at the unit *and* on an item. Checked **when the grant is saved**, never at check time — see *`applies_to`* below. |
+| `right_kind` | enum: `read`, `write` | Exists for exactly one customer: the guardianship channel's `none` / `view` / `write` ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)). Say the one customer out loud — see *`right_kind`* below. |
+| `namespace` | text, optional | `system`, or absent. What the column does is its own subsection below. |
 | `description` | text, required | What it means, for whoever has to read it. |
 | `display_name` | text, required | Human label for the permission editor. |
 | `is_system` | boolean | Default false. True: seeded by the platform, cannot be deleted or have its `code` changed. |
-| `is_assignable` | boolean | Default true. False: a permission **no grant may name directly** — a deprecated code kept only so historical audit rows still resolve to something readable. Before [D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle) this also flagged wildcard `.admin` codes; there are none now. |
+| `is_assignable` | boolean | Default true. False: a permission **no grant may name directly** — a deprecated code kept only so historical audit rows still resolve to something readable. |
 | `created_at` | timestamp, audit time | |
 
-**Deleted from this table by round 10:** `requires_scope`. Its job — "a unit-level permission
-cannot be granted organization-wide by mistake" — was about *which unit* a permission was held at,
-and [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
-left one unit and a handful of item types. The question it asked ("may this code be granted on an
-event at all?") is real and is answered by `applies_to`, which is the same idea with the hierarchy
-taken out of it. **Nobody enforces `requires_scope` now, because nothing enforces it: `applies_to`
-does its job and does it at a different moment, on the save rather than in the resolver.**
+**The one question this table does not answer is "may this code be granted on an event at all?"** —
+that is `applies_to`, and it is answered on the save rather than in the resolver. Nothing else in the
+row constrains where a grant may sit.
 
 **Rules**
 
@@ -144,18 +114,15 @@ does its job and does it at a different moment, on the save rather than in the r
   underscores.
 - `resource` equals the first dot-separated segment of `code`, so the code's prefix is never a
   second, drifting copy of the resource column. **One exemption**, deliberate: codes beginning
-  `system.`, whose resource is the thing being administered rather than the word `system`. There
-  used to be a second exemption for the `dependent` namespace, whose codes had two meaningful
-  segments (`dependent.medical.view`); those codes are deleted
-  ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular))
-  and the exemption went with them, so nothing may be added under a namespace prefix again
-  without reopening this rule.
+  `system.`, whose resource is the thing being administered rather than the word `system`. It is the
+  only one, and a code under any other namespace prefix with two meaningful segments
+  (`dependent.medical.view` is the shape) means reopening this rule.
 - `code` is unique.
 - `applies_to` and `right_kind` are both required. A required enum with two values is cheap; a
   nullable one whose null-ness silently means something is how the guardianship channel would have
   acquired an answer that depends on a value nobody typed.
 - **A code seeded as `system.` is seeded `applies_to = unit`.** This is not decoration; see
-  *What `namespace` does now*.
+  *What `namespace` does*.
 
 ### There is no wildcard permission
 
@@ -168,25 +135,24 @@ A check for permission 'X.y' is satisfied by:
     - an allow of 'system.admin'   (NULL-namespace permissions only)
 ```
 
-**There are no `<resource>.admin` codes.** The convention that every resource should expose
-one, matched by prefix in the resolver, was **reversed by
-[D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)**,
-which also removed the resolver branch that implemented it. "Can do everything about events" is an
+**There are no `<resource>.admin` codes** — no prefix matching in the resolver, and none to come by
+([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
+"Can do everything about events" is an
 **office** composed from the thirteen `event.*` codes — which is to say, a role some grants name,
 each grant naming one code (D-052) — because that composition is runtime data the organization
 edits, and a wildcard was the code guessing at it instead.
 
-**The cost is the one D-007 existed to prevent, and it is accepted:** a new narrow permission
-is not automatically covered by the offices that should imply it. Integrity check **13**
-(permissions no live grant names) is the net the wildcard used to be. It fails closed.
+**The cost is accepted:** a new narrow permission is not automatically covered by the offices that
+should imply it. Integrity check **13** (permissions no live grant names) is the net, and it fails
+closed ([D-007](../decisions/round-01a.md#d-007--every-resource-has-an-admin-level-that-subsumes-narrower-ones--reversed), reversed by [D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
 
 `is_assignable = false` exists for permissions that only make sense as part of a bundle —
-a deprecated narrow permission kept for historical audit readability, for instance. With levels
-gone, "part of a bundle" means *part of a role's set of grants*, and nothing else bundles.
+a deprecated narrow permission kept for historical audit readability, for instance. **A bundle is a
+role's set of grants**, and nothing else bundles.
 
 ### `applies_to`: where a code may be granted, and when that is asked
 
-**This column is your own observation written as data:** `event.create` and `membership.manage` are
+**What the column encodes:** `event.create` and `membership.manage` are
 nonsense *on* an event. `unit` means the code may be granted at the unit and nowhere else;
 `unit_and_item` means it may be granted at the unit or on one item of a registered type.
 
@@ -210,9 +176,9 @@ API should refuse it out loud.
 **Saying so is cheaper than discovering it later**
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 [D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
-fixes a guardian's rights at three values — `none`, `view`, `write` — and with the level ladder gone
-the guardianship channel had nothing left to compare a checked permission against. This column is
-that thing, and it has no other consumer anywhere in the design:
+fixes a guardian's rights at three values — `none`, `view`, `write` — and the guardianship channel
+has to compare a checked permission against something. This column is that thing, and it has no other
+consumer anywhere in the design:
 
 | Guardian's `right_level` | Covers |
 |---|---|
@@ -232,7 +198,7 @@ D-074's fail-closed posture rather than a ruling in D-099, and §11 has no check
 mis-marked `read` is visible to a human reading the catalog and invisible to the database, which is
 worth knowing before trusting it.
 
-### What `namespace` does now, and what it no longer does
+### What `namespace` does
 
 | `namespace` | What it means | Example |
 |-------------|---------------|---------|
@@ -287,9 +253,9 @@ tenant and no routing left.
 
 | Gone | With it | Who answers the question now |
 |---|---|---|
-| `scope_required` | "is this office held org-wide or at a unit?" | Nobody — the question has no subject. [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) left one scope, so a role is always held at the unit (§4 has no scope columns). |
-| `requires_membership` | the membership gate, default-on, enforced in the resolver ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)) | **The expression**, per grant: `MEMBERS * ROLE(x)` gates on a current membership, `ROLE(x)` alone does not (§8, §10). The posture reversed from default-on to opt-in, and §11's report is the control. |
-| `max_term_months` | the prefilled term, and with it the "expiry is the default" nudge | Nothing. Nothing forces a holder row to end and the report is the control (§4, [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)); the prefilled date was doing a job the report also does, and it went with the scope columns it was calibrated against. |
+| `scope_required` | "is this office held org-wide or at a unit?" | Nobody — the question has no subject. There is one scope ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), so a role is always held at the unit (§4 has no scope columns). |
+| `requires_membership` | the membership gate, default-on, enforced in the resolver ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)) | **The expression**, per grant: `MEMBERS * ROLE(x)` gates on a current membership, `ROLE(x)` alone does not (§8, §10). The posture is opt-in, and §11's report is the control. |
+| `max_term_months` | the prefilled term, and with it the "expiry is the default" nudge | Nothing. Nothing forces a holder row to end, and §11's report of offices held past their end date is the control (§4, [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)). |
 | `is_delegatable` | the refusal to let an office's authority be delegated ([domain/06 §9](../domain/06-authorization-model.md#9-delegation)) | Nothing about roles. Delegation of *authority* survives only on a grant row (`is_delegated` + `delegated_from`), where the grant's own expiry is the control (§6). |
 
 **`role` is runtime data, not a fixed vocabulary.** The organization creates offices, names them,
@@ -308,59 +274,51 @@ starter material.
 > person holds this office from March until December" lives (§4). The distinction is between *what
 > the office is* and *who holds it*: the first is not a historical fact, the second is.
 >
-> This removes the whole retirement mechanism. There is no `role.retire` permission, no resolver
-> check on the role's period, and no report of roles expiring while still held. A role the
-> organization no longer uses is one nobody holds any more.
+> **There is no retirement mechanism.** No `role.retire` permission, no resolver check on a role's
+> period. A role the organization no longer uses is one nobody holds any more, and §11 reports the
+> offices still held past their holder row's end date.
 
-### `role_permission` is deleted, and the office confers nothing
+### An office confers nothing
 
 **The codes an office carries are the live grants whose audience names `ROLE(x)`**
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
-That is not a relabelling; it moves the definition of an office's power out of a bundle table and
-into grant rows that are individually visible, individually dated, individually auditable, and
-individually revocable. What it buys is the question the old design could not answer cleanly —
-*"what may a treasurer do?"* — which is now a query over rows a screen can show rather than a walk
-through a table nobody reads. This is where
-[D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
-was already going — *roles are the bundle*, said of `<resource>.admin` — and it went the rest of
-the way: **roles and audiences are the bundle, and nothing else is.**
+That is not a relabelling: an office's power lives in grant rows that are individually visible,
+individually dated, individually auditable and individually revocable. *"What may a treasurer do?"*
+is therefore a query over rows a screen can show. **Roles and audiences are the bundle, and nothing
+else is**
+([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
+[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 
-**Three things the old section argued, and where each stands:**
+**Three rules this table has to get right:**
 
-- ~~**"Editing a role's permissions takes effect immediately, and that is the sharpest edge in the
-  whole authorization system."**~~ **Withdrawn by D-100, and the de-escalation is worth naming
-  rather than skipping.** `role.edit` used to be a bulk privilege change wearing the clothes of a
-  configuration screen, defended only by the audit trail because there was nothing to check before
-  the fact. It now edits a name, a description and a sort order. **The sharp edge moved to
-  `role.assign`**: adding one person to `treasurers` inherits *every* grant that names
-  `ROLE(treasurers)`, including ones written later, by other people, for reasons the person doing
-  the assigning has never seen. That is the same invisibility §8 records for composition, arriving
-  through the office door instead of the expression door, and it is why `role.*` stays the most
-  sensitive code family in the catalog (🔒🔒) and why §11's report of `ROLE(...)` grants written
-  without `MEMBERS` is worth reading.
-- ~~**"A role that has ever been assigned cannot be deleted."**~~ **Same rule, new table, same three
-  reasons** — `role_holder.role_id` is a foreign key and D-003 forbids taking the history with the
-  row; "what authority did this person have in 2019?" must survive the office being abolished, which
-  is exactly when someone asks; and an `is_system` role must survive regardless, because deleting the
-  row some grants name would silently widen or narrow whatever they aim at. The guard runs row by
-  row, in this order, and both refusals are absolute:
+- **`role.edit` edits a name, a description and a sort order. The sharp edge is `role.assign`.**
+  Adding one person to `treasurers` inherits *every* grant that names `ROLE(treasurers)`, including
+  ones written later, by other people, for reasons whoever is doing the assigning has never seen.
+  That is the invisibility §8 records for composition, arriving through the office door instead of
+  the expression door — which is why `role.*` is the most sensitive code family in the catalog (🔒🔒)
+  and why §11's report of `ROLE(...)` grants written without `MEMBERS` is worth reading.
+- **A role that has ever been held cannot be deleted**, for three reasons: `role_holder.role_id` is
+  a foreign key and D-003 forbids taking the history with the row; *"what authority did this person
+  have in 2019?"* must survive the office being abolished, which is exactly when someone asks; and an
+  `is_system` role must survive regardless, because deleting a row some grants name would silently
+  widen or narrow whatever they aim at. The guard runs row by row, in this order, and both refusals
+  are absolute:
   1. any `role_holder` row references the role — refuse, with a message in terms the operator can act
      on: this office has holders, end the holder rows instead, so the history survives;
   2. otherwise, `is_system` — refuse outright.
   A role that clears both was created by mistake and never held, and deleting it is legitimate.
-- ~~**"No permission inheritance between roles."**~~ **Kept, because the reason was never about
-  bundles.** A `unit_leader` does not get the `assistant_leader` permissions by being implicitly
-  senior: inheritance chains produce authorization answers nobody can predict by reading the
-  configuration, which is what makes such systems undebuggable. Composition is available and is
-  visible instead — an expression says `ROLE(x) + ROLE(y)`, in the grant, where whoever reads the
-  grant sees it (§8).
+- **There is no permission inheritance between roles.** A `unit_leader` does not get the
+  `assistant_leader` permissions by being implicitly senior: inheritance chains produce
+  authorization answers nobody can predict by reading the configuration, which is what makes such
+  systems undebuggable. Composition is available and visible instead — an expression says
+  `ROLE(x) + ROLE(y)`, in the grant, where whoever reads the grant sees it (§8).
 
 **`role` is registered in `grant_scope_type`, so an office is an item**
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)):
 *"these two people may manage the counselors roster"* is a grant of `role.assign` on one role, which
 is [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)'s
-move applied symmetrically. Without it the only way to say that is a grant at the unit, which
-reaches every office — the exact over-reach this table's sensitivity exists to avoid.
+move applied to an office as well as a group. Without it the only way to say that is a grant at the
+unit, which reaches every office — the exact over-reach this table's sensitivity exists to avoid.
 
 **Why a role and a group are two tables when they are technically the same shape** is answered where
 the difference bites — [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
@@ -376,10 +334,10 @@ that reads them.
 
 ## 4. `role_holder` — who holds an office
 
-`role_assignment` **becomes `role_holder`**
+A `role_holder` row is **an office, a person, and a period**
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
-The rename is the small half; the deletion of its scope columns and of the resolver's role channel
-is the half that changes how an authorization question gets answered (§10).
+It carries no scope columns and no resolver channel: a holder row grants nothing by existing, and
+what it changes is whom a grant naming `ROLE(x)` reaches (§10).
 
 **Fields**
 
@@ -397,21 +355,14 @@ is the half that changes how an authorization question gets answered (§10).
 | `updated_at` | timestamp, audit time | |
 | `updated_by` | reference to person | |
 
-**Gone with the table's rename:** `scope_type` and `scope_id`
-([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) —
-"a role is always held at the unit; there is nothing else to hold it at"), `delegation_of` and the
-re-validation of a delegation's source (§10), and the `ended_by` / `ended_at` /
-`ended_reason_code` / `ended_note` quartet. **The last of those needs its "who answers now",**
-because it is history, not configuration: the audit trail records who closed a holder row and when,
-which is the same question the columns answered, and `note` carries the *why* on the row that opens.
-What is genuinely lost is the typed reason code — a `ended_reason_code` vocabulary that could be
-counted. Nothing counted it, and D-098 refused the same shape one table over for the same reason:
-eighteen ticks without a receipt.
+**This table has no scope columns** ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
+a role is always held at the unit, and there is nothing else to hold it at), and no columns recording
+who ended a row. **Who ended one, and when, is the audit trail's answer; the *why* is `note`, on the
+row that opens.** The one thing with no answer is a typed, countable reason code for ending a holding
+— refused for the same reason D-098 refused it one table over: ticks nobody counts.
 
-**What `granted_by` records, and what `audit_log` records — the distinction that keeps one column and
-deletes four.** The two look like duplicates and are answers to different questions, and this section
-initially got it wrong in the direction of deleting too much, so the line is worth drawing properly.
-`audit_log` records **an act**: that a particular person, in a particular session, from a particular
+**What `granted_by` records, and what `audit_log` records.** The two look like duplicates and answer
+different questions, so the line is worth drawing properly. `audit_log` records **an act**: that a particular person, in a particular session, from a particular
 address, asked to appoint someone, and whether they were allowed to. It is the record of the *writing*.
 `granted_by` records **a fact about the row**: who appointed this person, which is a property of the
 office holding in the same way `valid_from` is. *Who is entitled to say* is the audit's question;
@@ -430,19 +381,14 @@ office holding in the same way `valid_from` is. *Who is entitled to say* is the 
   graded that deliberately. Making the ordinary screen reach into the audit trail to show an ordinary
   field either widens `audit.view` or leaves the field blank, and neither is acceptable.
 
-**The same argument already decides `access_grant.granted_by` the same way, and nobody proposes
-reconstructing that one from the trail** — which is the tell that this is a pattern rather than a
-local call, and the reason `ended_by` / `ended_at` / `ended_reason_code` / `ended_note` can be deleted
-while `granted_by` cannot. **What separates them is not "an actor column" versus "a provenance column";
-it is whether the value is a property of the row that still exists.** An ending describes a row that
-nobody is looking at any more, and the question "who closed this" is a question about an act, which is
-the trail's subject. An appointment describes a holding somebody is looking at right now. **Consistency
-here is about which question is being asked, not about how many actor columns a table has.**
+**The same argument decides `access_grant.granted_by`,** and what separates the columns that stay from
+the ones that go is **whether the value is a property of the row that still exists**. An ending
+describes a row nobody is looking at, and "who closed this" is a question about an act — the trail's
+subject. An appointment describes a holding somebody is looking at now.
 
-**And one consequence for the diagram, because it was got wrong once.** The relationship drawn from
-`granted_by` points at `person`. There is no edge from `role_holder` to `audit_log` and there must never
-be one: the trail is written *about* the act, by the same transaction, and it is not something the
-holder row refers to or depends on.
+**One diagram rule follows from it.** The relationship drawn from `granted_by` points at `person`.
+There is no edge from `role_holder` to `audit_log` and there must never be one: the trail is written
+*about* the act, by the same transaction, and the holder row neither refers to it nor depends on it.
 
 **Rules**
 
@@ -472,88 +418,61 @@ holder row refers to or depends on.
 ### Nothing forces a holder row to end, and the report is the control
 
 This is [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
-posture, transferred intact to `role_holder`, and the transfer is honest only because the gate it
-used to lean on is gone. The old argument ran: nothing forces an assignment to end, **but the
-membership gate means a lapse silently withholds it anyway**, so the leaver-with-access report was
-tidying rather than defending. **That second half no longer exists.** A holder row that nobody
-closes now authorizes for as long as a grant naming the office lives, and the only thing between an
-overdue treasurer and a written authority is:
+posture, and it is now load-bearing rather than backstopped: a membership lapse no longer silently
+withholds anything from a holder row. **A holder row that nobody closes authorizes for as long as a
+grant naming the office lives,** and the only things between an overdue treasurer and a written
+authority are:
 
-- **the report** — open holder rows, oldest first, with the grants each office is named by, which is
-  the same reading that used to be "assignments that should have been closed and were not";
+- **the report** — open holder rows, oldest first, with the grants each office is named by;
 - **`role_holder.valid_to` where a human typed one**, and §13 keeps the question of whether it
   should be mandatory for high-authority offices; and
 - **the audience expression**, which is where a lapse now matters: `MEMBERS * ROLE(x)` stops
   reaching a lapsed member the day the membership ends, and `ROLE(x)` never noticed.
 
-**The second failure mode is the one D-100 named rather than buried, and it is the mirror image of
-the first.** A holder row that outlives the person is a person with authority they should not have;
-a **grant** written as `ROLE(x)` with no `MEMBERS` authorizes a lapsed member silently, forever, and
-fails closed-looking so nobody notices. Integrity check 6 (§11) is the standing report of exactly
-that shape, and the seeded grants carry `MEMBERS` so that the path of least repetition is the safe
-path.
+**The mirror-image failure is the more likely one.** A holder row that outlives the person gives that
+person authority they should not have; a grant written as `ROLE(x)` with no `MEMBERS` authorizes a
+lapsed member silently, forever, and looks fail-closed so nobody notices. Integrity check 6 (§11) is
+the standing report of that shape, and the seeded grants carry `MEMBERS` so the path of least
+repetition is the safe path ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 
 ---
 
 ## 5. `scope_exposure` — deleted by D-097
 
-**This section is deleted.** Its number is kept so that §6 and onward keep the anchors other pages
-link to, and its content is not replaced by anything: this is the one place in this document where
-the honest summary is *lost, not replaced*.
-
-**What the table was.** `scope_exposure` was the only mechanism by which authority crossed a unit
-boundary downward, and it existed to implement
+**There is no such table, and this section exists because four pages link to its number.**
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+left one unit, and a unit is a scope rather than a row, so there is no boundary for authority to
+cross and nothing for an exposure row to sit on.
 [D-031](../decisions/round-02-03.md#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing)
-— *authority over a unit originates at that unit and cannot be claimed from outside it*. The row was
-keyed on the **covered** unit, which made the covered unit the grantor, and pointed at a specific
-**assignment** rather than a role, so a unit approved a person-in-a-role rather than a role that any
-future holder would inherit. `scope.expose` was deliberately a narrow code with no wildcard above
-it, because "may administer this unit" silently including "may hand a parent unit authority over
-this unit's records" was, in the words of the section that shipped it, the single most consequential
-act available at unit scope carried as an implication.
+was not weakened; it was deprived of its subject.
 
-**What it protected, in the one sentence worth keeping.** Access to a pack's children had to be
-granted **by that pack** — by people who recruited the leader, who can be asked, and who chose the
-person being let in. **That property is gone and nothing in the remaining model reproduces it**
-([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
-A permission held at the unit reaches every member, and `person.view` was already the widest read
-permission in the system
-([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
-[D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)).
-What is left of the safeguarding story is the same three things D-095 was left with — a permission
-held by a named adult, an audit trail whose payloads expire after two years
+**What is lost, stated once.** Access to a body's children used to have to be granted **by that
+body** — by the people who recruited its leader, who can be asked, and who chose the person being let
+in. Nothing in this model reproduces that, and what stands instead — a permission held by a named
+adult, an audit trail whose payloads expire after two years
 ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
-and a report of who holds the write — **minus the part where the named adult was somebody the body
-chose.**
+and a report of who holds the write — is missing exactly the half where the named adult was somebody
+the body chose. [domain/04 §1](../domain/04-organization-structure.md#1-the-organization-is-one-unit-and-the-unit-is-a-scope)
+states the same cost where the unit is defined, and this document does not repeat the argument.
 
-**Why there is no replacement, rather than an unfinished one.** With one unit there is no "outside
-it" to be stopped from: every permission is held either at the unit or on an item, and the unit's
-people are the only people there are. A mechanism that lets a subordinate grant access to itself has
-no subordinate to run it. The route back is a decision with a reason attached — most plausibly "the
-organization has grown past one center's visibility" — and that decision would have to re-argue D-031
-from its own premises, because the table that made it work no longer exists.
+**Who answers each deleted question now.** `scope.expose` and `scope.exposure.review` are not in the
+[catalog](../appendix/permission-catalog.md). The direction-of-authority check has no enforcer and
+needs none: a row has no direction when there is one unit. `org_unit`, `unit_participation`,
+`unit_ancestors()` and `unit_descendants()` are gone with the hierarchy, and with them every rule
+about paths, depths, nesting and reparenting — [02-organization.md](02-organization.md) describes
+groups. [D-078](../decisions/round-06.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant)'s
+rule, that an exposure extends an assignment and never a grant, has no subject: a holder row has no
+scope to extend.
 
-**Deleted along with the table, each with who answers it now.** `scope.expose` and
-`scope.exposure.review` leave the catalog; the direction-of-authority check leaves the write path,
-and nothing replaces it because there is no direction left for a row to have; the nightly exposure
-alert leaves the schedule, and it was that check's **only** detector — which is worth remembering as
-a shape rather than this table's fate: a write-path rule with a report as its only guard, and a
-report that stops running, is a rule that quietly stops existing. `org_unit`, `unit_participation`,
-`unit_ancestors()` and `unit_descendants()` are gone with the hierarchy, and so is every rule about
-paths, depths, nesting, and reparenting (the whole of [data-model/02-organization.md](02-organization.md)
-now describes groups).
+**A caution that outlives the table.** A write-path rule whose only guard is a report, and a report
+that stops running, is a rule that quietly stops existing: the nightly exposure alert was that
+check's only detector. Every rule in this document that has no enforcer says so, and §11 is where
+those reports are listed.
 
-**One lesson outlives its subject, and it is kept here because it is the corpus's best argument for
-reviewing prose rather than code.** Until D-072 deleted the SQL, the unit-grant tier carried a
-*second* branch that looked like it consulted exposures. It did not: it pinned the grant to the unit
-being checked, which the branch above had just tested, so it could never succeed where the first
-branch failed. **It was dead code, and it had survived every review because it read correctly.**
-Nothing here changes what the system decided — a dead branch decides nothing — but the reason the
-prose said two routes when one existed, and the fact that removing the SQL is what surfaced it, is
-the reason this document states one route for everything it describes and says why a tempting second
-one is absent. See [D-078](../decisions/round-06.md#d-078--an-exposure-extends-an-assignment-never-a-direct-grant),
-whose rule — an exposure extends an assignment, never a grant — now has no subject: nothing extends
-a holder row at all, because a holder row has no scope to extend.
+**The way back is a decision, not a migration.** The plausible reason is that the organization has
+outgrown one center's visibility, and taking it would mean re-arguing D-031 from its own premises —
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
+deleted the table that made the old rule work, so there is nothing to switch back on.
 
 ---
 
@@ -772,11 +691,10 @@ rule, and D-081 forbids writing them as if one were:
    the expanded tree, so this check follows the `AUDIENCE` leaves into the audiences this one names**
    ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). Saving a grant
    is not where a cycle is *created*, but it is where a person is standing to be told about one, and a
-   grant must never be saved pointing at an expression that cannot be evaluated. **There is no longer
-   a depth limit to check here:** the height bound was deleted along with its parameter
-   ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)),
-   so this check carries no size rule at all and the cycle walk is the only structural refusal left
-   in it.
+   grant must never be saved pointing at an expression that cannot be evaluated. **There is no depth
+   bound to check here** — [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+   left the tree unbounded — so this check carries no size rule at all, and the cycle walk is its only
+   structural refusal.
 5. **Every `AUDIENCE` leaf names an audience that exists and that has a `code`** (D-103). Both halves
    read a second table, so neither is a constraint on this row: the dangling case is the orphan check
    of §11 item 2, and the null-code case is that item's neighbour in item 12. **A leaf pointing at an
@@ -829,54 +747,47 @@ decision.
 
 An item grant is typically for one event, so an open-ended item grant is nearly always a mistake.
 **Application validation should require `valid_to` for item-scoped grants**, with
-`access_grant.grant_reason` explaining any exception — and the sentence has to stay an application
-rule, because [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
-posture applies here too: nothing in the schema forces a grant to end, and the report of
-long-lived open grants is the control. **What changed in round 10 is that the nudge lost its
-machinery.** The prefilled term (`role.max_term_months`) is deleted, and the membership gate that
-used to make a forgotten row harmless is deleted; a forgotten grant is now simply live.
+`access_grant.grant_reason` explaining any exception. The sentence stays an application rule, because
+[D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s
+posture applies here too: nothing in the schema forces a grant to end, and the report of long-lived
+open grants is the control. **Nothing backstops a forgotten grant.** There is no prefilled term and no
+membership gate between a forgotten row and an answer, so a forgotten grant is simply live.
 
 ---
 
 ## 7. `permission_level` — deleted by D-099
 
-**This section, and the table it described, are deleted**
+**There is no such table, and this section exists because one page links to its number**
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
-The number is kept so §8 onward keep their anchors.
+`permission_level` mapped (permission, scope kind) → the level a grant had to reach, so that one
+`access_grant.level` could serve many codes without a mapping hidden in application code. Its two
+surviving jobs sit on `permission` itself: **`applies_to`** (§2) says which scope kinds a code means
+anything at, checked on save, and **`right_kind`** (§2) is compared by exactly one channel —
+guardianship (§10). The third job, *"how much of this permission does this grant carry"*, has no
+answer: a grant **is** one permission, and the row exists or it does not.
 
-**What the table was, and the one job it actually did.** `permission_level` mapped
-(permission, scope type) → the level a grant had to reach for that permission at that scope kind. It
-existed so that **one** `access_grant.level` could serve many codes without a hardcoded mapping in
-application code, and its virtue was reviewability: without it, every permission check would need to
-know its own level — a mapping in code, invisible to the organization, and impossible to review.
-**"What does `manage` on an event actually let someone do?" was a query, and now there is no such
-question to ask**, because there is no such word.
-
-**Its two jobs moved to two columns on `permission` itself**, which is D-099's exact accounting:
-
-| The table's job | Now |
+| The table's job | Where it is now |
 |---|---|
 | Which scope kinds this permission means anything at | `permission.applies_to` (§2), checked on save |
-| How much of this permission a given grant carries | Nothing — a grant **is** one permission. Either the row exists or it does not |
-| (and the comparison the level made possible) | `permission.right_kind`, used by exactly one channel: guardianship (§10) |
+| How much of this permission a given grant carries | Nowhere — a grant **is** one permission |
+| The comparison the level made possible | `permission.right_kind`, used by the guardianship channel alone (§10) |
 
-**What is genuinely lost, said once.** The ladder was a *bundle with a name*, and a bundle is
-something you can ask a question about: `contribute` on this event, for this person, meant a
-computable set of codes and the audit trail could say "she held `contribute`". Now the answer to
-"what did she have in 2024?" is the set of grant rows that were live then, which is more precise and
-less quotable. **A broad office is a couple of dozen rows, and that is the price of the question
-*"what exactly does this person have?"*** — D-099 paid it deliberately, and
+**What is lost, said once.** A level was a bundle with a name, and a named bundle is something you can
+ask about: the audit trail could say *"she held `contribute`"*. The answer to *"what did she have in
+2024?"* is now the set of grant rows that were live then — more precise, less quotable, and a broad
+office is a couple of dozen rows. That price was paid deliberately, and
 [D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
-had already refused the same idea once when it deleted `<resource>.admin` and said *roles are the
-bundle*. Round 9 was half the thought: **roles and audiences are the bundle, and nothing else is.**
+had already refused the same idea once. **Roles and audiences are the bundle, and nothing else is.**
 
-**Levels can come back as names for sets of codes with no comparison defined** — which is what a
-role already is, so no new mechanism would be needed to approximate one. A real ordering coming back
-means re-importing this table, the rank rule
-([D-012](../decisions/round-01a.md#d-012--status-strings-compare-by-rank-never-lexicographically)),
+**How an ordering could come back, and what it would cost.** Names for sets of codes cost nothing —
+that is what a role already is. A real *ordering* means re-importing this table, the rank-comparison
+rule
+([D-012](../decisions/round-01a.md#d-012--status-strings-compare-by-rank-never-lexicographically))
 and locality's tie-break
-([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)'s deleted
-half), all of which were deleted with their only consumers. **That is the two-way door, and it is
-narrow on the ordering side and wide on the naming side.**
+([D-032](../decisions/round-02-03.md#d-032--deny-is-absolute-locality-orders-allows-only)'s other
+half), all deleted with their only consumers. **The door is wide on the naming side and narrow on the
+ordering side.**
 
 ---
+
+*Decisions behind this page: D-002, D-003, D-005, D-006, D-007, D-012, D-013, D-031, D-032, D-039, D-052, D-053, D-068, D-071, D-072, D-074, D-078, D-081, D-086, D-088, D-097, D-098, D-099, D-100, D-101, D-102, D-103, D-105.*
