@@ -293,7 +293,7 @@ re-grant, one code at a time, what that channel grants whole
   means one of those or it is a new column on `event_registration`, which is an events decision and
   not a selector decision, so it stays [an open question](../open-questions.md) rather than being
   implied by a word in a grammar. **An operand that reads no state is not a vocabulary item but a
-  syntax error wearing one's clothes.** [F-20](../open-questions.md#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway)
+  syntax error wearing one's clothes.** [F-20](../open-questions.md#f-20)
   is a question about whether the *feature* is wanted, not about whether the language could hold
   the word.
 

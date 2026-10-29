@@ -52,7 +52,7 @@ the requirement is written here rather than left to whoever builds it.
   expanded, in front of a human** — D-091 made that a requirement on the screen, not a nicety, and a
   predicate can only report `true`, while a set *is* the answer. "What may a treasurer do?" (D-100) needs
   the person→set index, and `role_holder` and `person_group_member` **are** it; an expression is
-  unindexable. ~~Caching ([F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request)) can
+  unindexable. ~~Caching ([F-6](../open-questions.md#f-6)) can
   key on an operand and be reused across every grant, and `role_holder` changes are the invalidation.~~ **This
   third workload was argued on a cache that [D-114](round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation) deleted, and it survives the deletion for a different
   reason: what a named operand makes reusable is a *compilation*, which is keyed by the expression and the ruleset
@@ -131,7 +131,7 @@ carries **thirteen** rows and `PERSON` is one of them: `takes_argument` true, `a
 argument, so it composes and can be subtracted on its own, while `LIST` is one set of several people
 belonging to one audience and subtracting it removes everybody on it. D-103's kitchen example needs both,
 which is the proof that they are not the same operand wearing two names. The class of defect is
-[F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
+[F-19](../open-questions.md#f-19),
 it arrived here in a second registry inside the same round, and
 [D-104](#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
 is the answer to it.
@@ -391,7 +391,7 @@ question rather than being implied by a word in a grammar.
 people — *"the person saving the grant is looking at one row that mentions no person at all"* — can no
 longer be answered from the grant alone: `PLACED` means different people on different events. So the
 preview is computed **for an item** and says so on screen, and the cache key for a bound operand must
-include the item ([F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request) amended).
+include the item ([F-6](../open-questions.md#f-6) amended).
 **Import consequence:** the one-off import owes `event` rows and `event_registration` rows
 ([D-090](round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
 D-093's shape), and it owes **no owner column**, which is the import-side saving D-097 already counted.
@@ -510,7 +510,7 @@ an answer.
 | **The code joins the shared namespace** of D-101 — `role`, `person_group`, `audience`, and every reserved `selector_type.code`. Still no single constraint spans three tables: the write path carries it and an integrity check asserts the write path exists, per D-081. | A name that resolves two ways is a silent grant. |
 | **Bare names do *not* resolve to audiences.** `MEMBERS * COUNSELORS` stays a role or a group; the audience arm must be written `AUDIENCE(veterans)`. | Adding a third table to bare resolution would change what existing stored expressions mean, and the explicit form costs four characters at the one place where being careful is the point. |
 | **Cycles are refused across audiences, at save.** | See below. |
-| ~~**Depth is bounded over the expanded tree, not the local one** — the bound is the same `selector_depth_limit`, counted after references are followed.~~ **Deleted by [D-105](round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other).** The reasoning here was sound and is now moot: a bound measured per-audience *is* a bound on nothing, and this round's answer was to measure it across the closure, which D-105 then refused to keep at all. **What survives is the walk this row needed in order to count anything** — the reachability walk over the closure, refusing a cycle rather than a length | Was the write path; now nothing, and the widest-audience report is a convention ([F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)) |
+| ~~**Depth is bounded over the expanded tree, not the local one** — the bound is the same `selector_depth_limit`, counted after references are followed.~~ **Deleted by [D-105](round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other).** The reasoning here was sound and is now moot: a bound measured per-audience *is* a bound on nothing, and this round's answer was to measure it across the closure, which D-105 then refused to keep at all. **What survives is the walk this row needed in order to count anything** — the reachability walk over the closure, refusing a cycle rather than a length | Was the write path; now nothing, and the widest-audience report is a convention ([F-21](../open-questions.md#f-21)) |
 | **An audience may not be ended or deleted while a live grant, or a live audience reachable from a live grant, names it.** Refused at save; the reverse lookup is a query over `audience_operand` rows whose `selector_kind = 'AUDIENCE'`. | Without this, "ended" would be a way to silently empty an expression, and under `-` an empty operand makes the result **wider**. |
 | **The same refusal extends to `person_group` — ruled here, in the round after the row above — and it has to be ruled in both directions, which the audience row above does not say loudly enough.** Ending a group that something live names is refused; **so is writing a grant whose expression contains `GROUP(x)` onto a group that is already ended**, or naming an ended group from an audience. Two causes put a row on the report and only one of them is a broken write path: a rule that constrains *ending* leaves the second cause untouched, and the hazard is identical either way. | The group module found it by writing the opposite as the safe direction: a live grant on an ended group *is* safe on the allow side and **widens a deny** on the `-` side, which is the same asymmetry wearing a different table's clothes. The argument is identical, so the check is: refused at save in both directions, over `audience_operand` rows whose `selector_kind = 'GROUP'`. |
 | **`ROLE(x)` needs no such rule, and the difference is worth naming.** An office has no way to be emptied quietly: there is no `role.retire`, no status, and deletion is already refused while holder rows exist. | A group has a lifetime, so ending it is one click that empties a set. A role's members are ended one row at a time, on a screen that shows each person. **The hazard is a property of the shape, not of the idea**, which is why this row is an exception list rather than a third copy of the check. |
@@ -547,7 +547,7 @@ the door closes quietly rather than loudly, which is the reason the reference li
 than a suggestion. **The depth bound used to be named beside it in this sentence, and
 [D-105](round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted it**, so the
 listing is alone now and the thing that replaced the bound is a report with no named reader
-([F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)).
+([F-21](../open-questions.md#f-21)).
 
 **See:** [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) for the language
 this adds one arm to, [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
@@ -563,7 +563,7 @@ Reversible, and cheap to reverse today; the day the first grant row exists it be
 the only reason it is written as a decision rather than fixed as a typo.
 **Date:** refinement round 10
 
-**Resolves:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two).
+**Resolves:** [F-19](../open-questions.md#f-19).
 
 **Follows:** [D-055](round-04.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular),
 [D-068](round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle),
@@ -586,7 +586,7 @@ What happened, stated plainly: **a capability entered this round as prose, was h
 arguing about its name, and left as prose** — swept away by the same parallel rewriting that introduced it,
 with no entry in this log involved at either end. Presence is what
 [D-067](round-05.md#d-067--presence-is-a-three-valued-fact-on-the-registration) and
-[EV-5](../open-questions.md#ev-5--closed--it-split-and-the-new-permission-sits-a-level-lower) left it: somebody
+[EV-5](../open-questions.md#ev-5) left it: somebody
 holding `event.presence.mark` records who came, with a clipboard if necessary. The only QR code in this system
 belongs to a payment, and [D-075](round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)
 already rules that **a QR code is a rendering, not data** — it encodes three stored facts and is worth keeping
@@ -675,7 +675,7 @@ Until then the registry and the prose are two copies of one thing
 ([F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s general
 shape, in its cheapest instance), and the report is the check that they still agree.
 
-**See:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
+**See:** [F-19](../open-questions.md#f-19),
 which this closes, [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
 for the registry (**thirteen rows today** — back to thirteen, which is the number this sentence started with
 and not the set it counted: twelve for the one round

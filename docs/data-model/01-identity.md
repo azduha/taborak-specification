@@ -845,12 +845,12 @@ are allowed or flattened at merge time (§9): **chains stay**, because reversing
 operation rather than a convenience, and the two rules a permanent chain needs are now written where they
 are obeyed — the cycle refusal in §8, the length report in §10
 ([D-087](../decisions/round-07-08.md#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation),
-[B-2](../open-questions.md#b-2--closed--merge-chains-stay-because-unmerge-is-required)). And whether a
+[B-2](../open-questions.md#b-2)). And whether a
 person may hold two live accounts simultaneously: **no**, enforced by the partial unique index in §4 —
 with the case that made the question hard answered by a gate rather than by an exception, so that a
 colliding sign-up files a claim and activates nothing instead of becoming a second account or being
 silently linked
 ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing),
-[B-4](../open-questions.md#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim)).
+[B-4](../open-questions.md#b-4)).
 
 All tracked in [../open-questions.md](../open-questions.md).

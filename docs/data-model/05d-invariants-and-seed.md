@@ -102,7 +102,7 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   one:** a widening is not a noise, it is a direction, and **a wide failure is only better than a narrow
   one when somebody is reading**
   ([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
-  **The permissions page's tab ([F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size))
+  **The permissions page's tab ([F-21](../open-questions.md#f-21))
   therefore carries a second column naming *which* leaf failed, not merely that one did, aimed at the
   audience's owner** — a listing with somebody's name beside the row. **So the control here is *report,
   twice over*, and not a refusal:** nothing stops an audience whose leaf is broken from being saved
@@ -184,7 +184,7 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
      save, nothing that fails if the report is not read, which is
      [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)'s
      case: a rule's name outliving its mechanism.
-     [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+     [F-21](../open-questions.md#f-21)
      is the open question about who reads it. Half 3 is therefore the whole structural story: acyclicity
      at save, and nothing else.
   3. **No sharing table may exist, and the read path must grow neither a depth cap nor a cycle
@@ -545,7 +545,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   What the question was reaching for is live: **a bound on *height* does not bound what an expression
   actually costs**, which is how many *audiences* it reaches — a depth limit of 3 still permits a wide flat
   sum of twenty `AUDIENCE()` leaves and prices each one at a fetch. **Neither shape is bounded.**
-  [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+  [F-21](../open-questions.md#f-21)
   is closed on exactly that point — *nothing bounds what an expression costs, and at the stated size that
   is accepted rather than merely unaddressed* — so what remains open is *what would make somebody wish
   there were a limit*.
@@ -555,7 +555,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   default number nobody asked for is not this page's call; naming the size at which the answer would change
   is. The standing report of §8 and §11's half 2 is what a real number would eventually be argued from.
 - **Nothing computes an expression's *fingerprint* (§8): refused, not deferred**
-  ([F-14](../open-questions.md#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will),
+  ([F-14](../open-questions.md#f-14),
   [D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)).
   Two expressions with the same meaning are two different row sets, and *"you already granted exactly this
   set on that item"* does not fall out of storage — **that is accepted, not mitigated.** A watered-down
@@ -572,7 +572,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   not contain. Which item the editor picks by default — the grant's item, an event the writer chooses, the
   next event with registrants — is not decided anywhere.
 - **`WHITELISTED` (§8) is not seeded, and no selector will be: there is no stored state to evaluate**
-  ([F-20](../open-questions.md#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway)).
+  ([F-20](../open-questions.md#f-20)).
   The candidate readings — `source = staff`, promotion off the waitlist, a new column on
   `event_registration` — are not narrowed, and that is the answer rather than an evasion: **an operand with
   no state to read resolves to nothing**, and picking a meaning in order to seed a row would invent an
@@ -628,7 +628,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 - **A nested audience's past reach is not reconstructable, and that is the answer (§8, *Three named
   sets*):** the record of whom a grant reached **is the expression**
   ([D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached),
-  closing [F-17](../open-questions.md#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised)).
+  closing [F-17](../open-questions.md#f-17)).
   `GROUP(x)` answers *"was she in it on 1 June 2024?"* from its dated rows and `AUDIENCE(x)` does not, and
   **that is not a gap, because the system never promised the answer** — what it keeps is the words, and
   D-109's rule that nothing a rule names is deleted is what keeps them evaluable. **What is logged as
@@ -646,13 +646,13 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   **No TTL is being asked about, because there is no row to put one on:** `expires_at` is not a column of
   §10 and `ruleset_version` is, as a compilation key bumped by writes to `audience_operand` and
   `selector_type`
-  ([F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request),
+  ([F-6](../open-questions.md#f-6),
   [D-111](../decisions/round-13.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
   **Nothing is open here.** The affordability question F-6 ended on is answered by
   [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s
   stated size and trigger, and there is no rebuild job to afford.
 - **Cache vs a materialized effective-permission table (§8, §10): dissolved, not decided** —
-  [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job).
+  [F-7](../open-questions.md#f-7).
   A rebuild of cached answers and a materialized `effective_permission` table are **the same job with two
   names**, which is why the pair is recorded as dissolved rather than answered — and **a dissolved question
   is the kind that comes back if nobody writes down that it dissolved**, with "history, not performance"
@@ -664,7 +664,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 - Whether `access_log` needs human annotation (recommend a separate table if so).
 
 **Settled, stated as answers.** A role may **not** be held by a rule
-([F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is), D-100). An
+([F-12](../open-questions.md#f-12), D-100). An
 audience composes other sets through an expression whose leaves name other sets, and `AUDIENCE()` is the
 form that settled it (D-101, D-103); there is no inclusion edge table in this model — the edges are leaves
 (D-091). A saved rule is reusable by name **only if it has a `code`** (D-103). Permissions do not depend on

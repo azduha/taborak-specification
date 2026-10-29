@@ -72,7 +72,7 @@ a **role** is still held by one named person, because `role_assignment` is the r
 office and it is read to answer "who was treasurer in 2023". A derived holder list cannot answer that,
 and an office record that cannot answer it is not an office record. So a rule-filled role is **not**
 decided here: it is registered as
-[F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) — the change is one
+[F-12](../open-questions.md#f-12) — the change is one
 grantee pair on `role_assignment`, exactly the shape D-042 already put on `access_grant`, and it wants
 an answer about the historical question before it wants an implementation.
 
@@ -91,7 +91,7 @@ and memberships as they are today. Two consequences follow, and the second is th
   that made it true, and [D-088](round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
   empties those payloads after 24 months; the derived membership was never stored at all. So after two
   years the question is answered by re-running rules against state that has itself moved on. **The route
-  back is [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)** — a
+  back is [F-7](../open-questions.md#f-7)** — a
   materialized effective-permission snapshot, kept as history rather than as a cache — which until now
   looked like a performance question and is now also the only thing that could make this answerable.
 
@@ -102,7 +102,7 @@ the word for a fragment of it is worse than one that renames neither. The glossa
 What does change is that **`group` no longer names a kind of anything**: there is one thing, and it has
 arms.
 
-**Closes:** [C-4](../open-questions.md#c-4--closed--a-group-is-filled-by-a-rule-and-a-list-and-appointing-creates-nothing).
+**Closes:** [C-4](../open-questions.md#c-4).
 
 **See:** [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people),
 [domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item),
@@ -164,7 +164,7 @@ batch carries two mappers that can never both apply.** The first is the smaller 
 these documents now assume; it is recorded as a design consequence here rather than as a new question,
 because the answer that decided the shape also decided this about it.
 
-**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned).
+**Closes:** [C-5](../open-questions.md#c-5).
 
 **See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
 [data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline).
@@ -230,7 +230,7 @@ register, distinguished only by `data_confidence` and `import_batch_id`. A membe
 spans the import boundary is comparing a source that states membership with a system that records it,
 and nothing in the query knows the difference.
 
-**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned)
+**Closes:** [C-5](../open-questions.md#c-5)
 (together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
 **See:** [data-model/06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences),
@@ -288,7 +288,7 @@ attendance figures these documents will be asked for are *arrived*, not *registe
   ([D-088](round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) while the event itself
   is kept indefinitely.
 
-**Closes:** [C-5](../open-questions.md#c-5--closed--the-corpus-names-no-units-and-none-are-assigned)
+**Closes:** [C-5](../open-questions.md#c-5)
 (together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
 **See:** [data-model/08-events.md §2–§4](../data-model/08-events.md#2-event),
@@ -354,7 +354,7 @@ resurrected column whose name implies it enforces something.
 stays a real eligibility constraint about the *position* (a scoutmaster must be an adult), and the
 guardianship channel is untouched.
 
-**Closes:** [C-6](../open-questions.md#c-6--closed--units-carry-no-restrictions-joining-one-is-somebody-elses-act).
+**Closes:** [C-6](../open-questions.md#c-6).
 
 **See:** [domain/04-organization-structure.md §1, §4](../domain/04-organization-structure.md#1-the-organization-is-one-unit-and-the-unit-is-a-scope),
 [data-model/02-organization.md §1](../data-model/02-organization.md#5-what-this-page-held-before-round-10),
@@ -397,7 +397,7 @@ guessing from an overlapping name. Refusing to default either way was considered
 direction the record goes in when nobody records anything, because a default that is unstated is a
 default that gets implemented by whoever writes the matching screen.
 
-**Closes:** [C-3](../open-questions.md#c-3--closed--a-reused-unit-number-is-a-new-unit).
+**Closes:** [C-3](../open-questions.md#c-3).
 
 **See:** [domain/04-organization-structure.md §3, §6](../domain/04-organization-structure.md#4-a-name-carries-no-identity),
 [data-model/02-organization.md §4–§5](../data-model/02-organization.md#5-what-this-page-held-before-round-10).

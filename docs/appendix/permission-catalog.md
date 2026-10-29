@@ -94,7 +94,7 @@ not stated fails exactly once, on the first thing nobody thought to compare**, a
 round failed on had never existed anywhere but in prose (§12). **Nothing in the schema will ever
 notice a code drifting from its row** — the check D-104 adopts is a person remembering to run a report
 over the seeded registries in both directions, which this repository can only ever do by hand
-([F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two)).
+([F-19](../open-questions.md#f-19)).
 
 ### What a grant is
 
@@ -228,7 +228,7 @@ out of the registry for what it is**, so every refusal here is an argument about
   and nowhere in this file is it a set anyone may be granted over. Nothing in the grammar would stop anybody
   adding it, which is exactly why the consequence has to be the thing that says no.
 - **`WHITELISTED` is not seeded because there is nothing stored to evaluate**
-  ([F-20](../open-questions.md#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway)):
+  ([F-20](../open-questions.md#f-20)):
   an operand with no argument, nothing bound to the checked item and no column behind it is a word pointing at
   a state this system does not keep. The feature it was wanted for arrives as grants anyway; whether it is
   wanted at all is an events question, which is where it now lives.

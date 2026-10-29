@@ -150,7 +150,7 @@ The authorization model as one diagram, the tables behind it, and the expression
   silently and forever, failing closed-looking so nobody notices — the control is the **Unusual section of
   the tab on the permissions page**, which lists exactly that shape and refuses nothing, plus seeded grants
   that always carry `MEMBERS` ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report),
-  [F-13](../open-questions.md#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken)). Ownership and guardianship
+  [F-13](../open-questions.md#f-13)). Ownership and guardianship
   were never gated and are untouched.
 - **The guardianship channel is entered by shape, not by permission name** ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)):
   the check is about someone other than the actor, and the channel answers with **allows only**. A
@@ -312,7 +312,7 @@ is a scope, not a row".
 [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape):
 the codes an office carries are the live grant rows whose audience names `ROLE(x)`, so *"what may a
 treasurer do?"* is a query over rows a screen can show. `role_holder` is a dated holder row — person,
-role, period, who granted it, note — and **names one person, never a rule** ([F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)
+role, period, who granted it, note — and **names one person, never a rule** ([F-12](../open-questions.md#f-12)
 is closed with the answer *no*, because an office that cannot answer "who was treasurer in 2023" is not
 an office record). `role` itself has no period: it is a definition, valid always, and the period lives on
 the holder row ([D-053](../decisions/round-04.md#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)).

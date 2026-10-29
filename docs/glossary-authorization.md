@@ -199,7 +199,7 @@ with the two rules that must survive any growth being *a check compiles its expr
 predicate and never materializes the set* and *a listing is paginated*. **Nothing lists the
 widest or deepest audiences** — the permissions tab lists only what is broken and what looks
 odd — and that is **a convention and not a guard** either way. See
-[F-21](open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size).
+[F-21](open-questions.md#f-21).
 
 **`AUDIENCE(code)`** — The operand that names **another saved audience's expression**,
 evaluated live. It is what makes a **rule namable**: `GROUP()` and `ROLE()` name rosters,
@@ -297,7 +297,7 @@ that may be kept are a *Compiled expression*, *The request memo* and *The batch 
 The *historical* question points at no table either, because **the record of whom a grant
 reached is the expression**, not a snapshot of people; a materialized `effective_permission`
 table would have to arrive on its own merits, when the stated size says it must, and be named
-for what it is ([F-7](open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)).
+for what it is ([F-7](open-questions.md#f-7)).
 
 **Compiled expression** — **The only thing in this system that may be cached across
 requests, and it is not an answer.** Parse the stored tree once, resolve operand kinds
@@ -337,7 +337,7 @@ was the N+1 across a screen. The per-item preview and the permissions tab are wr
 against these, not against a loop of single checks, and they therefore do their work **on
 open**; at the size stated above that is affordable, and it is recorded as **a dependency,
 not a measurement**
-([F-15](open-questions.md#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it)).
+([F-15](open-questions.md#f-15)).
 
 **Deprecated / hidden / disabled** — **The three states a named thing gets instead of being
 deleted**, and the rule that keeps them three different things: **only `disabled` changes

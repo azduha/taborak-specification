@@ -89,7 +89,7 @@ below with nothing added to them.
 [data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), **which is the registry** —
 the seeded rows, not the prose. An operand that is not a seeded row does not exist however natural it
 looks in a grammar, and copies of a table drift from it
-([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it));
+([F-5](../open-questions.md#f-5));
 nothing checks a copy, so treat the registry as the source and re-copy rather than re-derive.
 
 **Boolean spellings are offered for this language and declined.** `p ∈ (A ∩ B) ∪ C` **is**
@@ -184,7 +184,7 @@ those people already hold. A kept list of a child's contact adults is a `person_
 [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), which is the
 registry.** Which selectors ship is settled: these thirteen, seeded, organization-read-only, and a
 fourteenth is a decision entry plus a seed row
-([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)).
+([F-5](../open-questions.md#f-5)).
 A count printed in prose is a count somebody has to reprint when the table changes, and no check prints
 it, so the registry row set is the number.
 
@@ -401,7 +401,7 @@ This page promises no other answer and stores no list that would be one.
 - **Answerable for `ROLE`, `GROUP` and `MEMBERS`** (all periods, all dated), **unanswerable for bound
   event operands** (`event_registration` records the current fact), and **lost for the hand-typed names
   once their audit payloads expire** — which is what
-  [F-17](../open-questions.md#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised)
+  [F-17](../open-questions.md#f-17)
   states rather than solves.
 - **The conceded part, named so nobody finds it later:** editing a shared audience changes what **every
   grant naming it** has meant all along, because those grants hold a word and not a copy. **An edit to a
@@ -413,7 +413,7 @@ This page promises no other answer and stores no list that would be one.
   expressions: **the audit trail records the edit, not the meaning that existed before it.**
 - **There is no snapshot, and no route to one.** A materialized table of whom a rule reached is the
   roster just refused, and
-  [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)
+  [F-7](../open-questions.md#f-7)
   is dissolved. What returns at
   [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s
   trigger is a materialized table **on its own merits** — a performance structure with a per-person

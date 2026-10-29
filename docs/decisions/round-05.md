@@ -112,7 +112,7 @@ is already mapped to `contribute` in `permission_level`.
 > *"an attribute is not a set of people … age is not."*
 > `OLDER(n)` and `YOUNGER(n)` are seeded operands now, so `event.register_self` may be granted to
 > `MEMBERS * YOUNGER(15)`, and the age ceiling this entry explicitly declined to enforce — the one
-> [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule) went on to record as
+> [EV-1](../open-questions.md#ev-1) went on to record as
 > unenforced — is **statable**. **What has not moved is who decides.** A gate is a grant somebody wrote, shown
 > by the preview, attributed in the audit trail; it is not a conclusion the system draws from a birth date.
 > This entry's real subject was always that, and it is why the entry is amended rather than superseded.
@@ -793,6 +793,6 @@ authority ends only when somebody ends it, and the only defence left is that som
 The report is not a nice-to-have here; it is the entire control.
 
 **See:** [../data-model/05-authorization.md §4](../data-model/05-authorization.md#4-role_holder--who-holds-an-office),
-[../open-questions.md F-3](../open-questions.md#f-3--closed--nothing-forces-an-assignment-to-end).
+[F-3](../open-questions.md#f-3).
 
 ---

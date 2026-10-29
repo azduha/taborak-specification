@@ -75,7 +75,7 @@ before it is designed**, which is the point of taking this decision early: a mes
 ships private delivery to minors with neither restriction nor mirroring would have to be reopened
 after the fact, when the storage of message bodies and the retention policy are already fixed.
 
-**See:** [MSG-1, closed](../open-questions.md#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians),
+**See:** [MSG-1, closed](../open-questions.md#msg-1),
 [permission-catalog](../appendix/permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces),
 [glossary — Mirroring](../glossary.md#communication).
 
@@ -401,7 +401,7 @@ record. Two further things follow and are stated where they belong:
   database-level ways of catching it; the net is a report for live rows that reference a tombstoned
   person, which is the only form of this failure that is visible afterwards.
 
-**Closes:** [B-2](../open-questions.md#b-2--closed--merge-chains-stay-because-unmerge-is-required).
+**Closes:** [B-2](../open-questions.md#b-2).
 
 **See:** [data-model/01-identity.md §9–§10](../data-model/01-identity.md#9-views),
 [domain/03-identity-and-legacy.md §6](../domain/03-identity-and-legacy.md#6-reversing-a-merge).
@@ -482,7 +482,7 @@ default (**F-8**, which needs your confirmation, and which is a weaker question 
 [05-authorization §9](../data-model/05c-access-log-and-resolver.md#9-access_log) keeps the payloads of *reads*
 out of that table to begin with).
 
-**Closes:** [B-3](../open-questions.md#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short).
+**Closes:** [B-3](../open-questions.md#b-3).
 
 **See:** [data-model/06-audit-and-import.md §2.2, §4, §6](../data-model/06-audit-and-import.md),
 [data-model/00-conventions.md §8](../data-model/00-conventions.md#8-personal-data-and-erasure),
@@ -552,7 +552,7 @@ queue, and it is registered as
 [F-11](../open-questions.md#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim)
 rather than settled here.
 
-**Closes:** [B-4](../open-questions.md#b-4--closed--one-live-account-a-colliding-sign-up-files-a-claim).
+**Closes:** [B-4](../open-questions.md#b-4).
 
 **See:** [data-model/01-identity.md §4–§5, §8](../data-model/01-identity.md#4-account),
 [domain/03-identity-and-legacy.md §4](../domain/03-identity-and-legacy.md#4-match-signals).
@@ -603,7 +603,7 @@ life of that vocabulary — hundreds of codes from one file. Two things follow:
 `scheme = 'legacy'`, imported verbatim and never reissued; where it is present the match is exact and
 the heuristics are for backfilling it, not for deciding identity (D-056). At thousands of rows the
 review is a work queue with a trustworthy set at the top of it, which
-[B-1](../open-questions.md#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data) already
+[B-1](../open-questions.md#b-1) already
 called a strengthening of D-004 rather than a relaxation.
 
 **What this makes sharper rather than smaller.** With attendance and no money,
@@ -616,7 +616,7 @@ remaining import question, because it is what an end date gets inferred from.
 batch carries; neither changes a table. B-1 is closed on the design and these two numbers are recorded
 as the import's own inputs.
 
-**Closes:** [B-1](../open-questions.md#b-1--closed--thousands-of-roster-rows-numbers-present-no-payment-data).
+**Closes:** [B-1](../open-questions.md#b-1).
 
 **See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
 [data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline),

@@ -200,8 +200,8 @@ slightly more. It is written into that bullet rather than softened here.
 this keeps and what it retires), [D-107](round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)
 (the ruling whose mechanism this removes), [D-110](round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)
 (why nothing here needed a stored answer for the record's sake),
-[F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request)
-and [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)
+[F-6](../open-questions.md#f-6)
+and [F-7](../open-questions.md#f-7)
 (both amended, neither reopened),
 [D-102](round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it) and
 [D-103](round-10b.md#d-103--an-audience-may-name-another-audience) (the binding the roster exception respects, and the walk

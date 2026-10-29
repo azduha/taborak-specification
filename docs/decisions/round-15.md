@@ -10,7 +10,7 @@
 
 **Status:** decided (from your answer)
 **Date:** refinement round 15
-**Closes:** [E-4](../open-questions.md#e-4--closed--guardianship-lifetime-a-guardianship-does-not-know-about-membership),
+**Closes:** [E-4](../open-questions.md#e-4),
 which had been asking whether the behaviour was intended or merely inherited. It is intended.
 **Amends rather than reverses:** [D-039](round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)'s
 gate was deleted by [D-100](round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),

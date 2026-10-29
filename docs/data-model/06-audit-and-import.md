@@ -393,7 +393,7 @@ second copy D-083 refuses to keep.
 `membership` and fee rows is a claim that needs a legal basis and a decision log cannot grant one. What
 the corpus now states, as an **assumption pending review** rather than as settled law, is organizational
 history plus accounting obligations, held up by a redacted person row that keeps the skeleton
-non-identifying — and the review is the one [B-3](../open-questions.md#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+non-identifying — and the review is the one [B-3](../open-questions.md#b-3)
 already asked for, now with a concrete policy in front of it instead of a blank (§6).
 
 **The neighbouring trail takes the same window, as a proposal rather than a decision.** `access_log` is

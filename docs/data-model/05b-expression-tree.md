@@ -82,7 +82,7 @@ brackets instead of silently rewriting them ([D-101](../decisions/round-10b.md#d
   stands in place of the check is a **standing report of the widest and deepest audiences, their
   closure size and their cost per check**, kept running rather than computed once at save, and its home
   is the tab on the permissions page
-  ([F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)).
+  ([F-21](../open-questions.md#f-21)).
   **Nothing refuses a save on size, no CI job fails, and the report stops being a control the moment
   nobody reads it** — [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)'s
   convention rather than a guard, and the third control of that shape this module depends on. **The
@@ -106,7 +106,7 @@ brackets instead of silently rewriting them ([D-101](../decisions/round-10b.md#d
   one breath. **Why** the answer stays the empty set: a silent widening is discovered in an audit two
   years late, so the visibility goes on a page instead — **an audience carrying a leaf that does not
   resolve is listed for its owner**, in a second column of the report
-  [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+  [F-21](../open-questions.md#f-21)
   already asks for. **No save is refused because a leaf is broken, and no expression is pinned to the
   set it resolved to when it was saved** — pinning would make the stored expression a ceiling on truth,
   and a grant would freeze at the shape it had on the day somebody typed it. **The report is a query
@@ -147,7 +147,7 @@ writer's brackets behind their back. The tree needs one fifteen-line evaluator a
 granted exactly this set on that row"* does not fall out of storage — **and that is accepted, not
 mitigated: nothing computes the semantic equality of two expressions**, so no warning fires when a
 second audience means what a first one means
-([F-14](../open-questions.md#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will),
+([F-14](../open-questions.md#f-14),
 [D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)). The
 same reasoning is why *"this selector reaches nobody"* belongs to the editor preview that has to exist
 anyway (§*The cost of composition*) rather than to a syntactic check the tree cannot perform — a tree
@@ -201,7 +201,7 @@ reach cannot be reconstructed is still the right tool for a rule — `MEMBERS` i
 by a roster of everyone — but the gap gets closed by a report, not by pretending the question has an
 answer. The report is the save-time listing in §*The cost of composition*, kept over time rather than
 shown once; whether that is worth building is registered in §13 and is the same question as
-[F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job),
+[F-7](../open-questions.md#f-7),
 which is **dissolved** (§*The cost of composition*). **A saved snapshot of whom a grant reached is the
 only thing that could answer about 2011, and the system keeps none** — the expression is the record, and
 it is a rule, not a snapshot
@@ -462,7 +462,7 @@ rather than special-cased inside the resolver.
   without even pretending to compose it carefully. The mitigation is the editor's expanded set below,
   not a rule about which operands may appear where.
 - **A role cannot be held by a rule.** `role_holder` names one person, and
-  [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) **is closed by
+  [F-12](../open-questions.md#f-12) **is closed by
   [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
   and its answer is no** — a derived holder list cannot answer "who was treasurer in 2023", and an
   office record that cannot answer that is not an office record. Grants aim **at** roles; roles are not
@@ -520,7 +520,7 @@ sharper.
   empties those payloads after 24 months, and derived membership is not stored at all. After two years
   the question is answered by re-running expressions against state that has itself moved on, and it is
   answered with today's confidence. **That is the flat statement of the limitation: a historical check
-  is re-running today's expressions over whatever state survives.** [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)
+  is re-running today's expressions over whatever state survives.** [F-7](../open-questions.md#f-7)
   is **dissolved, not answered**: a nightly rebuild of cached answers and a nightly materialized
   `effective_permission` table turned out to be one job with two names, and neither would have made
   history answerable — a table of *today's* answers, rebuilt nightly, is as blind to 2011 as no table
@@ -534,7 +534,7 @@ sharper.
   ([D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now));
   the failure mode of a report nobody reads is that it stops being read and nothing else happens. **Who
   reads it is answered with the cheapest object available: not a report and not a job, a
-  [tab](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+  [tab](../open-questions.md#f-21)
   on the permissions page.** The answer to *who reads it* is therefore *nobody, necessarily* — a tab is
   read by whoever opens it — and that is a decision rather than an oversight, with
   [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s

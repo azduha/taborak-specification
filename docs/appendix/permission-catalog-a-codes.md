@@ -415,7 +415,7 @@ difference is the whole reason there are two tables — and the office codes are
 > ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
 > `role.view` used to read "see roles and their permissions", and what it shows now is the holder
 > register, which is the question the table can still answer and the one
-> [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) was closed to keep
+> [F-12](../open-questions.md#f-12) was closed to keep
 > answerable: *who was treasurer in 2023?*
 
 > **`role.assign` is the permission to escalate privilege.** Whoever holds it can write themselves a
@@ -709,7 +709,7 @@ reason the column exists.
 > authority belongs to the guardians (§9). That is a deliberate widening and it is recorded as one.
 > The catalog's registered spelling is **`event.answer.view`**, singular — the arbiter for a spelling the
 > round briefly had two of, and the reason §12 says a code is a row and prose is only prose (§12,
-> [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two)).
+> [F-19](../open-questions.md#f-19)).
 >
 > **Its premise has since been narrowed, and not by reversing it**
 > ([D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).

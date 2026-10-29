@@ -59,7 +59,7 @@ matter:
   ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
   A guardianship is between two named people and an owner is one person. **That is a boundary, not an
   oversight** — it is why an office can be *aimed at* but never *held by* a rule (§4,
-  [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)).
+  [F-12](../open-questions.md#f-12)).
 - **A deny lives in channel 1 and defeats all three** (§7.1). Nowhere else can one be written, and
   nowhere else can one be argued with.
 
@@ -286,7 +286,7 @@ Where the appointment workflows end is
 **A role is held by exactly one person per row.** A role cannot be held by a rule the way a group is:
 an office record that cannot answer "who was treasurer in 2023" is not an office record, and a derived
 holder list cannot answer that
-([F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)).
+([F-12](../open-questions.md#f-12)).
 Grants aim at roles rather than roles being filled by grants, which is the same fact seen from the
 other side.
 
@@ -447,7 +447,7 @@ Points worth stressing:
   notices. There is a second reason to keep that question open: the snapshot is also the only artefact
   that could ever answer *who could read this in 2023*, since set membership is recomputed from state
   that keeps moving and the audit payload that recorded the change expires (§6.2,
-  [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job)).
+  [F-7](../open-questions.md#f-7)).
 - **Time is a parameter.** `at` defaults to now, but the resolver accepts a historical time. This
   enables "could this person have done this on that date?" — needed for auditing past actions, and
   free if built in from the start. The dated rows behind `MEMBERS`, `GROUP(x)`, `ROLE(x)` and the
@@ -732,8 +732,8 @@ Stated explicitly, because each is a common and expensive mistake:
   answer is decided while its threshold is not — *every* `ROLE(...)` operand without `MEMBERS`, or only
   the offices marked sensitive? It lands in the tab's `Unusual` section either way, so what is still
   undecided is only how wide that section is
-  ([F-13](../open-questions.md#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken),
-  [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)).
+  ([F-13](../open-questions.md#f-13),
+  [F-21](../open-questions.md#f-21)).
 - **The holder period.** Nothing forces a `role_holder` row to end, and the report stands alone (§4,
   [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)).
 - **Who may compose an expression?** `audience.manage` covers creating and editing a set, and the
@@ -748,8 +748,8 @@ Stated explicitly, because each is a common and expensive mistake:
   answered by the same evaluator running over history as it is written, which is not a promise for the
   operands whose set is a current fact
   ([06a](06a-audiences-and-selectors.md#what-a-grants-reach-is-recorded-in),
-  [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job),
-  [F-17](../open-questions.md#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised)).
+  [F-7](../open-questions.md#f-7),
+  [F-17](../open-questions.md#f-17)).
 
 All tracked in [../open-questions.md](../open-questions.md).
 

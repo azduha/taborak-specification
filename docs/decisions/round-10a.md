@@ -354,7 +354,7 @@ rule, and locality's tie-break, all of which were deleted with their only consum
 [D-033](round-02-03.md#d-033--multiple-people-may-occupy-the-same-position) and the position module,
 [D-009](round-01a.md#d-009--unit-membership-links-to-person-not-to-membership)'s remaining subject.
 
-**Closes:** [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is).
+**Closes:** [F-12](../open-questions.md#f-12).
 
 **Your words.** *"A `role_assignment` is no longer necessary, as it can be supplemented by a `ROLE`
 selector in the audience string."* Then, when asked whether roles go too: **"Role and group are technically

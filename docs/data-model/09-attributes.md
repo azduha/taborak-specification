@@ -186,7 +186,7 @@ The three channels behave normally:
 accordingly rather than leaving it at the level it had when the record was smaller than the person.
 Any future narrowing — *"read everything except…"* — is a decision entry about a second grant
 scope, not a new code with a suggestive name
-([E-7 is closed for exactly this reason](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to)).
+([E-7 is closed for exactly this reason](../open-questions.md#e-7)).
 
 **Write: `person.edit` for values, `attribute.define` for the vocabulary.** That split is the design:
 data entry is open to anyone who can already edit the person, because the alternative is the fact

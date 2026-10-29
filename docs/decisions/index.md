@@ -352,7 +352,7 @@ drawn through the unit hierarchy, the authority ladder, the membership gate and 
   [D-100](round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape), which also
   deletes `role_permission`: a role confers nothing by itself, and the codes an office carries are the
   grants whose audience names `ROLE(x)`. The elected-versus-appointed distinction survives only as a role
-  the organization invents. [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)
+  the organization invents. [F-12](../open-questions.md#f-12)
   is closed, and the answer is no.
 - **The audience's three arms, and the inclusion edge.** `audience.resolver_key`, `scope_parameter`,
   `audience_include` and `include_depth_limit` are deleted by

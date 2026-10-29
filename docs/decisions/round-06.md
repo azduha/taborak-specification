@@ -75,7 +75,7 @@ which is the catalog. Two artifacts cannot drift when only one of them exists.
 restoration — the constraints encode decisions the prose does not always restate. Git has them.
 
 **See:** [../data-model/00-conventions.md](../data-model/00-conventions.md),
-[../open-questions.md F-4a](../open-questions.md#f-4--closed--the-question-was-answered-by-deleting-the-premise).
+[F-4a](../open-questions.md#f-4a).
 
 ---
 
@@ -137,7 +137,7 @@ organization beyond the audit log, and whether a subject may refuse a guardian a
 them. See **E-6**.
 
 **See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),
-[../open-questions.md E-5](../open-questions.md#e-5--closed--the-parties-administer-their-own-row).
+[E-5](../open-questions.md#e-5).
 
 ---
 
@@ -213,7 +213,7 @@ set.
 
 **See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),
 [../appendix/permission-catalog.md](../appendix/permission-catalog.md),
-[../open-questions.md E-7](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to).
+[E-7](../open-questions.md#e-7).
 
 ---
 
@@ -316,7 +316,7 @@ fact with no subject, and per
 the absence gets stored rather than inferred.
 
 **See:** [../data-model/07-finance.md](../data-model/07-finance.md),
-[../open-questions.md EV-3](../open-questions.md#ev-3--closed--cancelling-voids-the-request-and-paid-money-queues).
+[EV-3](../open-questions.md#ev-3).
 
 ---
 

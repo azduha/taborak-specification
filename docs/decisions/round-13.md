@@ -70,7 +70,7 @@ nothing new can quietly claim the word and split its meaning in two.
 **See:** [D-106](round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal) (whose
 semantics now apply to redacted people only), [D-105](round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
 (the repoint duty, halved), [D-088](round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short) (why
-erasure wins), and [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size),
+erasure wins), and [F-21](../open-questions.md#f-21),
 closed as "no report; a tab; nothing bounds a check, deliberately".
 
 ---
@@ -119,7 +119,7 @@ reached these 214 people*, which starts decaying the night somebody's birthday f
 
 **See:** [D-107](round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded) for why
 a set now moves on its own, [D-109](#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)
-for why the words keep resolving, and [F-17](../open-questions.md#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised),
+for why the words keep resolving, and [F-17](../open-questions.md#f-17),
 whose premise about materializing this removes.
 
 ---
@@ -206,7 +206,7 @@ said plainly that nothing in these documents had measured anything. It is in the
 size, so nothing computed here changes — but a load-bearing number in a decision entry has to be one somebody
 counted, and this one was not.
 
-**See:** [F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request) and its
+**See:** [F-6](../open-questions.md#f-6) and its
 invalidation table, which this replaces, and [data-model/05 §10's cache section](../data-model/05c-access-log-and-resolver.md#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer).
 
 ---

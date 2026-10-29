@@ -85,7 +85,7 @@ recomputation over audit payloads, and those payloads expire after 24 months
 ([D-088](round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)). So the question stops being
 answerable in 2028. This is not new exposure of a kind the model had avoided: D-091 already turned *"who
 could read this in 2023"* into a recomputation, and
-[F-17](../open-questions.md#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised)
+[F-17](../open-questions.md#f-17)
 already states it for the nested kind of audience. It is the same hole, one table wider, and it is accepted
 rather than papered over.
 
@@ -123,7 +123,7 @@ form before saving, so what is stored is a **canonical rendering of the writer's
 still the writer's. **The distinction has one customer, and it is the one that matters here**: adding brackets
 changes no expression, while reassociating one — or sorting children into a canonical order to compare two
 audiences for equality, which
-[F-14](../open-questions.md#f-14--closed--nothing-computes-semantic-equality-of-two-expressions-and-nothing-will) floats —
+[F-14](../open-questions.md#f-14) floats —
 changes exactly the thing this paragraph refuses to change. **This entry therefore does not settle F-14; it
 draws the line F-14 has to be decided on one side of**, and says so rather than letting "as written" be read
 as an answer to a question it was not asked.
@@ -161,7 +161,7 @@ audience's expansion is now bounded only by acyclicity**, and:
   hand-typed sum prints as nineteen nested pairs of brackets.** Storage and display both say what was
   written, which is what was asked for. If that turns out unreadable, the answer is that a set of people big
   enough to be unreadable is a `person_group`, and
-  [F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)'s neighbourhood is
+  [F-5](../open-questions.md#f-5)'s neighbourhood is
   where that judgement gets registered — not a flattening rule invented in advance.
 
 ### 4. The thing this change makes load-bearing, which no page required before
@@ -197,7 +197,7 @@ subtraction that subtracts nobody is visible on that screen as a subtraction tha
 screen and no new check are added here** — the point is that the preview, bought as a control over *reach*, is
 now also the only control over whether a hand-typed name resolves, and whoever builds the editor should know
 that a preview they may be tempted to make lazy, cached or skippable is carrying a second duty it was never
-argued for. **[F-15](../open-questions.md#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it)
+argued for. **[F-15](../open-questions.md#f-15)
 is where that tension is registered**, and this entry names it rather than resolving it.
 
 ### 5. What got simpler, counted
@@ -236,7 +236,7 @@ adopted as its remedy, run once, on the rows this migration puts at risk.
 person, a renamed role, a merged-away id — **is the empty set**, and `EVERYONE - PERSON(x)` with a dead
 `x` therefore still denies everybody. What is added is not a rule but a page: **an audience with a leaf
 that does not resolve is listed**, for the audience's owner, on the same report
-[F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+[F-21](../open-questions.md#f-21)
 already asked for, in a second column. No save is refused because a leaf is broken. No expression is
 pinned. The failure stays fail-closed and stops being silent.
 
@@ -279,7 +279,7 @@ who know what they say.
 
 **See:** [domain/06 §6.4](../domain/06-authorization-model.md) for the rules that make the tree safe,
 [data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry) for where the empty-set rule is
-stated, and [F-15](../open-questions.md#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it),
+stated, and [F-15](../open-questions.md#f-15),
 which this does not answer — a report is not a preview and neither is free.
 
 ---
@@ -351,7 +351,7 @@ still a set of people."* It is, and once that is seen, boolean notation has no w
 and a second spelling is not free even when it is pure sugar: the canonical rendering has to pick one, the
 editor has to accept both, every write-path check has to reason over both, and two people's identical rules
 stop being textually comparable — which is the property the canonical rendering exists to buy, and the reason
-[F-22](../open-questions.md#f-22--closed--the-editor-may-fold-and-flatten-for-display-the-stored-canonical-string-never-changes)
+[F-22](../open-questions.md#f-22)
 exists at all. **The case for them was genuine**: a person writing an eligibility rule is thinking in
 conditions, not in algebra. But that is an **editor's** case, and it is answered in the editor — what a writer
 types is a rendering, what is stored is a set expression, and if the editor ever wants to accept `!` it can
@@ -377,7 +377,7 @@ rules resolve and IT IS FINE."* Recorded as accepted rather than as an open risk
 so that nobody rediscovers them as a bug:
 
 - A derived set can gain or lose a member with **no write at all**, at midnight, one person at a time.
-  This is the first exception to [F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request)'s
+  This is the first exception to [F-6](../open-questions.md#f-6)'s
   model in which invalidation is caused by a write; the answer is not a new invalidation path but the
   observation that a cached decision is already keyed to a date and already expires.
 - **Nothing is stored, so there is nothing to invalidate.** No table changes when a person turns eighteen;
@@ -392,7 +392,7 @@ but *the decision taken yesterday* — "this grant reaches these people", printe
 into audit at the moment of the write
 ([D-104](round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)) — was a snapshot
 of a set that has since moved. That is not a cache problem and it is not raised again as one; it is carried
-as [F-23](../open-questions.md#f-23--closed--words-only-the-expression-is-the-record-and-the-preview-is-a-rendering-on-a-date).
+as [F-23](../open-questions.md#f-23).
 
 **Authors: the premise, and the two things it does not buy.** Your standing answer, quoted because several
 entries in this round argue against something it already settled: *"The people writing the rules WILL know,
@@ -448,7 +448,7 @@ by what it *is*. Both stay out, on their own merits, which were always the real 
   revokes a leader's access to their own camp when somebody forgets to tick it. That is an argument about
   consequences and it survives intact; what is withdrawn is the claim that the language could not express it.
 - **`WHITELISTED` — still not seeded**, because there is no state to evaluate
-  ([F-20](../open-questions.md#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway)),
+  ([F-20](../open-questions.md#f-20)),
   and an operand that reads nothing is **a word with nothing behind it** — a row whose evaluator would answer
   the same for every person on every date, which is not what a registry row is for. F-20 stays open as a
   question about whether the *feature* is wanted, and is no longer a question about whether the type system
@@ -469,8 +469,8 @@ things to scan, not the count of values a column may hold.
 **See:** [domain/06 §6 and §6.1](../domain/06-authorization-model.md) for the language and the corrected
 argument, [data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry) for the fourteen-row
 registry, [permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the leaf list,
-[F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it), which closes on its
-age half, and [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule),
+[F-5](../open-questions.md#f-5), which closes on its
+age half, and [EV-1](../open-questions.md#ev-1),
 which stays closed for a different reason than it was.
 
 ---
@@ -504,7 +504,7 @@ membership is a fact the system owns.
 
 - **the import starts carrying a school column** for a meaningful part of the people — at which point school is
   stored, `SCHOOL(x)` becomes computable, and the operand is one decision entry and one seed row
-  ([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)'s cost model for a new
+  ([F-5](../open-questions.md#f-5)'s cost model for a new
   operand, which has now been paid once and came to two rows and a reserved word);
 - **a fee, a subsidy or an eligibility rule turns out to depend on school** — at which point the question is no
   longer about a selector at all, because the dependency is a fact with consequences outside authorization, and
@@ -513,7 +513,7 @@ membership is a fact the system owns.
 **Worth saying about how this entry came to exist.** It was prompted by a finding this round filed against
 another page and then retracted: the "`all_in_school` audience the prose names but the registry cannot express"
 was never in the corpus
-([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it) carries that retraction,
+([F-5](../open-questions.md#f-5) carries that retraction,
 with the grep that kills it). **The invented defect asked one true question**, and this entry is the answer to
 it, which is the best outcome available from a fabricated citation and the reason the retraction is kept in
 print rather than edited out.

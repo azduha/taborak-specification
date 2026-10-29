@@ -344,7 +344,7 @@ what it changes is whom a grant naming `ROLE(x)` reaches (§10).
 | Field | Kind | Notes |
 |---|---|---|
 | `id` | integer identity | Surrogate key. |
-| `person_id` | reference to person, required | Who holds the office. **One person, never a rule** — [F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) is closed by D-100 and its answer is no, for the reason the register always gave: a derived holder list cannot answer "who was treasurer in 2023", and an office record that cannot answer that is not an office record. |
+| `person_id` | reference to person, required | Who holds the office. **One person, never a rule** — [F-12](../open-questions.md#f-12) is closed by D-100 and its answer is no, for the reason the register always gave: a derived holder list cannot answer "who was treasurer in 2023", and an office record that cannot answer that is not an office record. |
 | `role_id` | reference to `role`, required | |
 | `valid_from` | date, required | Default today. |
 | `valid_to` | date, optional | Absent = open-ended. **Nothing forces it to end** — see below. |

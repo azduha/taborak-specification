@@ -298,7 +298,7 @@ workflows: [06-authorization-model.md](06-authorization-model.md).
   unfilled. An empty office is the absence of rows in `role_holder`, and absence has no start date on the
   office. A rule-filled role stays refused: **F-12's answer is no**, `role_holder` names one person, because
   an office record that cannot answer "who was treasurer in 2023" is not an office record
-  ([F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)).
+  ([F-12](../open-questions.md#f-12)).
 
 ---
 

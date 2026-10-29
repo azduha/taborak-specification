@@ -27,7 +27,7 @@ person record to be shut out of, because everything other than name, gender and 
 reached by `person.view` and governed by the guardian's level whole
 ([../domain/08-person-data.md](../domain/08-person-data.md)). *"Read everything except the diagnoses"* is
 therefore not a sentence waiting on a mechanism; it is one the organization declined to want, which is why
-[E-7 closed](../open-questions.md#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to)
+[E-7 closed](../open-questions.md#e-7)
 as a dissolved question rather than an answered one. **Read the inexpressibility as settled, not as pending
 work.** Reopening it means producing the case that was declined, not finding the code that was deleted.
 
@@ -100,7 +100,7 @@ each with its own scope and its own period. `MEMBERS * ROLE(treasurers)` on `fee
 row, and it — not the office, and not a bundle table nobody read — is what lets a treasurer issue a
 fee. What a role *is* now is two things: a name a grant can be aimed at, and the register that answers
 *who held this in 2023* (`role_holder` — which is exactly why
-[F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) is closed, with the
+[F-12](../open-questions.md#f-12) is closed, with the
 answer *no*: a holder row names one person). Roles stay runtime data — the organization creates them,
 names them, writes and closes their holders, and deletes the unused ones
 ([§7](../data-model/05-authorization.md#3-role--an-office)). **What is no longer runtime data
@@ -191,7 +191,7 @@ be written today**, and its row count is a wish rather than a migration. `safegu
 the same thing. The counts above therefore say what an office would hold once finance ships; the live
 half of each list is what a seed migration could insert now. Nothing in the schema stops a grant row
 naming a code that does not exist, so this paragraph is
-[F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two)
+[F-19](../open-questions.md#f-19)
 one section further along: the catalog names the office, the office names the code, and no row agrees.
 
 **Read `event.*` above as a count, not as a wildcard.** Since
@@ -264,7 +264,7 @@ member, silently, for as long as the grant lives. Three controls, none of which 
   here, and all three are on it *because someone chose them*, which is the whole point. It is a section of
   a tab rather than a report, because a report has to be remembered and the writer is already standing on
   that page; and it says *unusual*, never *broken*, because such a grant resolves exactly as written
-  ([F-13](../open-questions.md#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken),
+  ([F-13](../open-questions.md#f-13),
   [D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
 - **Seeded grants and any grant template carry `MEMBERS`**, so the path of least repetition is the
   safe path. *In this seed that control has nothing to work on: the seed's one grant must not carry
@@ -418,7 +418,7 @@ round 10 created them:**
   was F-13, and it closed on the weaker half on purpose — nothing is refused and nothing is warned at the
   save, because that test fires on the intended case as often as on the mistake, and a prompt that cries
   wolf teaches the writer to route around it
-  ([F-13](../open-questions.md#f-13--closed--a-rule-that-resolves-correctly-but-looks-odd-is-listed-as-unusual-never-as-broken),
+  ([F-13](../open-questions.md#f-13),
   [D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
   What is still owed is the thing F-13 itself nominates: whether those `MEMBERS`-less office grants turn out
   to be mistakes or choices.
@@ -451,7 +451,7 @@ round 10 created them:**
   ([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
   What arrived is the report — **an audience carrying a leaf that does not resolve is listed, for the
   audience's owner, in a second column of the page
-  [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)
+  [F-21](../open-questions.md#f-21)
   already asks for** — and it is the thing that separates the two rows this bullet is about: a deny over a
   set that is genuinely empty, and a deny whose operand has quietly stopped resolving. **The direction is
   the fact worth carrying, not a volume**: a failed operand on the `+` or `*` side *narrows* the set, and a
@@ -538,7 +538,7 @@ round 10 created them:**
   and
   [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
   deleted it, so an age-bearing expression is one more set to expand and it is bounded by nothing; that is
-  [F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size),
+  [F-21](../open-questions.md#f-21),
   whose shape this round did not change and whose width it did, and the catalog mints nothing against it:
   **no code, no column, no number, no threshold.** **Closed, and deliberately not a finding here: whom a
   derived set reached.** The preview a writer looked at is a workbench, never a record, and **the record is
@@ -610,7 +610,7 @@ round 10 created them:**
   a `person_group` — `audience_admin` is proposed, and it is an office rather than a unit leader's extra
   code now that there are no units
   ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals),
-  [F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)).
+  [F-5](../open-questions.md#f-5)).
   This bullet used to say *"named groups"* as a kind, opposed to *"built-in audiences"*;
   [D-091](../decisions/round-09.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group)
   deleted the kinds and D-101 deleted the filling rules, so what is left is genuinely two questions:
@@ -652,7 +652,7 @@ round 10 created them:**
   `membership.terminate` is the exact fit, a fact about a person at the unit that no event owns — or the
   code is registered here first, and then it owes what every registered code owes: a `right_kind`, an
   `applies_to`, a ⛔ mark, and a row in §4. **This was one instance of the gap D-104 closes as
-  [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two):
+  [F-19](../open-questions.md#f-19):
   a code is a seeded row, this catalog is prose about rows, and the check adopted is a two-way report
   over the seeded registries, run by hand.** D-104 supplied the grammar and the report; **it did not
   re-point these five sentences**, and that repair still belongs to whoever owns each of those pages.
@@ -726,7 +726,7 @@ root needed a gate of its own (it did not — and there is no root-or-below any 
 unit type carried no restriction, and D-100 deleted the resolver's membership clause, D-095, D-097);
 whether an appointment should also write a role assignment (~~it should not — the derivation belongs on
 a group's filling rule, D-091~~ — positions are deleted, filling rules are deleted, and
-[F-12](../open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is) is **closed with the
+[F-12](../open-questions.md#f-12) is **closed with the
 answer no**: a holder row names one person, which is the only way an office can answer *who held this
 in 2023*, D-100); and whether group membership needs a rule against nesting now that groups nest
 (~~it does not — a cycle is refused when the edge is saved~~ — the edge table is deleted and nesting

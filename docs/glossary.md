@@ -265,7 +265,7 @@ difference decides **who may edit the membership**: `role.assign` / `role.unassi
 `person_group.member.manage` at ⚠. `role` keeps `code`, `name`, `description`,
 `is_system`, `sort_order`; **`role_holder`**(role, person, `valid_from`, `valid_to`,
 `granted_by`, `note`) is the holder row and names **exactly one person** — one grantee
-per row, always, because [F-12](open-questions.md#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is)
+per row, always, because [F-12](open-questions.md#f-12)
 is closed and the answer is no. **A role confers nothing**: the codes an office carries
 are **the live grants whose expression names `ROLE(x)`**, which is what makes *"what may a
 treasurer do?"* a query over rows a person wrote
