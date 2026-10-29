@@ -105,7 +105,7 @@ two conclusions, and they point in opposite directions from the obvious one:
   original" is a requirement on `audit.view`'s sensitivity mark** — the top tier, beside `person.view` —
   and not a rule about which keys may appear in a jsonb column. Written as a requirement in
   [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and demanded of the
-  catalog in [../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system);
+  catalog in [appendix/permission-catalog-a-codes.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system);
   erasure reaching those payloads stays absolute
   ([06-audit-and-import.md §4](06b-redaction-and-checks.md#4-redaction-log)).
 

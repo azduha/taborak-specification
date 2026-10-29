@@ -406,7 +406,7 @@ Requirements the design must satisfy:
    a less-guarded place and describes this table better than it knows: the trail *is* such a copy,
    holding the whole person record in its payloads while historically being graded below it. Nothing
    here makes that guard true; the catalog does, or does not
-   ([../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)).
+   ([appendix/permission-catalog-a-codes.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)).
    The mechanism that implements erasure against this table is in
    [06-audit-and-import.md §2.2](06-audit-and-import.md#22-redaction-before-logging) and its §4, and
    [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) is where the
