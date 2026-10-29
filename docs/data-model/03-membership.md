@@ -695,7 +695,7 @@ and a reference, a form or a photograph has never been a condition of joining.
   `person_group_member` and `is_minor()`, which is a question about the data rather than a rule in the
   model. Left as a question for [../open-questions.md](../open-questions.md) rather than answered here.
 
-**What this page used to leave open is answered where the rule lives**, not here. Whether a person may
+**Settled, and stated where the rule lives rather than here.** Whether a person may
 hold several open memberships, when a membership activates, whether permissions follow membership
 state, the age questions, the grace period and the requirement mechanism are settled and stated — in
 §1, §3, §4 and §6. Whether the legacy import may create a membership is
