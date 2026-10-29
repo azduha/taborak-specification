@@ -2780,17 +2780,15 @@
 
 
 <h1 id="data-model--groups">Data Model — Groups<a class="headerlink" href="#data-model--groups" title="Permanent link">&para;</a></h1>
-<p><code>person_group</code> and <code>person_group_member</code>: named sets of people with dated members, a group as an item a
-grant can be written on, and an honest ledger of what this page held before
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted
-its subject.</p>
-<p><strong>What is not on this page, and where it went.</strong> <code>org_unit</code>, <code>org_unit_type</code>, <code>org_unit_type_rule</code>,
-<code>org_unit_name</code>, <code>org_unit_relationship</code>, <code>unit_participation</code>, <code>scope_exposure</code>, the hierarchy traversal
-and the position module are all deleted, not moved — §5 is the ledger, with what each took with it. The
-unit itself has no table here, because it is a scope: <code>grant_scope_type</code> carries a code <code>unit</code> with
-<code>is_item_scoped = false</code>, and there is exactly one of it. Membership of it is in
-<a href="../03-membership/">03-membership.md</a>. Roles and <code>role_holder</code> are in
-<a href="../05-authorization/#3-role--an-office">05-authorization.md §3–§4</a>.</p>
+<p><code>person_group</code> and <code>person_group_member</code>: named sets of people with dated members, and a group as an item a
+grant can be written on.</p>
+<p><strong>The unit has no table on this page, because it is a scope:</strong> <code>grant_scope_type</code> carries a code <code>unit</code> with
+<code>is_item_scoped = false</code>, and there is exactly one of it
+(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). Membership
+of the unit is in <a href="../03-membership/">03-membership.md</a>; roles and <code>role_holder</code> are in
+<a href="../05-authorization/#3-role--an-office">05-authorization.md §3–§4</a>. A reader who came from an old report and
+is looking for one of the tables that used to be on this page will find §5; every one of those names is also
+indexed in <a href="../../appendix/removed-concepts/">../appendix/removed-concepts.md</a>.</p>
 <p>Domain rationale: <a href="../../domain/04-organization-structure/">../domain/04-organization-structure.md</a>.</p>
 <hr />
 <h2 id="1-person_group">1. <code>person_group</code><a class="headerlink" href="#1-person_group" title="Permanent link">&para;</a></h2>
@@ -2850,11 +2848,10 @@ and the absence table below is the same list stated as columns.</p>
 <li>Where both ends of the period are set, <code>valid_to</code> is later than <code>valid_from</code>. Either end may be absent
   on <code>valid_to</code>, and no comparison is attempted when it is.</li>
 <li><strong><code>name</code> is unique across <code>person_group</code>, <code>role</code> and <code>audience</code> together</strong>, compared after folding case,
-  whitespace and separators on write. Bare <code>COUNSELORS</code> resolves against roles and groups at once, since
-  <code>ROLE()</code> and <code>GROUP()</code> no longer have to disambiguate, so one namespace is what makes an expression mean
-  one thing
+  whitespace and separators on write. Bare <code>COUNSELORS</code> resolves against roles and groups at once, so one
+  namespace is what makes an expression mean one thing
   (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>);
-  <code>audience.code</code> joined it when audiences became nameable operands, since a name that resolves two ways is
+  <code>audience.code</code> is in the same namespace, since a name that resolves two ways is
   a silent grant (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). Note
   the asymmetry: <code>audience.code</code> is optional and unique-where-set, so an unnamed audience is simply not
   composable, while a group's <code>name</code> is required — a group that cannot be named cannot be talked about
@@ -2873,13 +2870,13 @@ and the absence table below is the same list stated as columns.</p>
   no row here can ever have been produced by the batch. A column that is always NULL, on the one table
   whose whole content is a human decision, would advertise a capability the module does not have.</li>
 </ul>
-<p><strong>Columns a body would have had, and are not here.</strong> Each is absent by a decision, not by omission, and
-the list is worth keeping next to the table because "no special features" was the instruction:</p>
+<p><strong>Columns a body would have had, and are not here.</strong> Each absence is a decision rather than an omission, so
+the list is worth keeping next to the table:</p>
 <table>
 <thead>
 <tr>
 <th>Not present</th>
-<th>Gone with</th>
+<th>Why it is absent</th>
 </tr>
 </thead>
 <tbody>
@@ -2905,11 +2902,11 @@ the list is worth keeping next to the table because "no special features" was th
 </tr>
 <tr>
 <td>name history rows</td>
-<td><code>org_unit_name</code> is deleted and nothing replaces it — a rename edits <code>name</code> and the old name is gone</td>
+<td>a rename edits <code>name</code>, and the previous name is gone — the cost §1's naming rules state</td>
 </tr>
 <tr>
 <td>any split / merger / <code>successor_of</code> edge</td>
-<td><code>org_unit_relationship</code> is deleted, and D-098 refuses group-to-group edges outright</td>
+<td>D-098 refuses group-to-group edges outright: a split is one group that ended and two that began, with no edge between them</td>
 </tr>
 <tr>
 <td><code>join_reason_code</code>, <code>leave_reason_code</code>, <code>is_primary</code>, <code>role_in_unit</code></td>
@@ -2925,18 +2922,18 @@ the list is worth keeping next to the table because "no special features" was th
 </tr>
 <tr>
 <td>any role, office or leadership column</td>
-<td>D-098: the groups have no roles; D-100: positions are deleted</td>
+<td>D-098: nothing on a group says who leads it; an office is a <code>role</code> and its holder a <code>role_holder</code> row (<a href="../05-authorization/#4-role_holder--who-holds-an-office">05-authorization.md §4</a>, D-100)</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Naming, and the rule that a name does not carry.</strong> A name that comes back after a decade is a <strong>new
 <code>person_group</code> row</strong>, unless somebody records the continuity
 (<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>,
-whose subject was units and whose <em>method</em> — continuity is asserted, never matched — transfers intact).
+whose method is that continuity is <strong>asserted, never matched</strong>).
 The default is stated because an unstated one gets implemented by whoever writes the matching screen, and
-that screen matches on name. <strong>Where the assertion would be recorded is not decided</strong>: the field it used
-to live in (<code>org_unit_relationship.successor_of</code>) is deleted and no group table replaces it, so the
-enforceable half of the rule is the default and the rest is prose. The domain page states the cost:
+that screen matches on name. <strong>Where the assertion would be recorded is not decided</strong>: no group column
+carries it, so the enforceable half of the rule is the default and the rest is prose. The domain page states
+the cost:
 <a href="../../domain/04-organization-structure/#4-a-name-carries-no-identity">../domain/04-organization-structure.md §4</a>.
 What <em>is</em> settled is that a rename is cheap and safe: a grant and an expression store <strong>kind + id</strong>, never
 a name, so renaming a group never rewrites a grant (D-101).</p>
@@ -3015,8 +3012,8 @@ and which must not become the history of record for anything
   assumed here and nowhere decided. <strong>Status:</strong> assumption — see integrity check 2, and
   <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>.</li>
 </ul>
-<p><strong>Who enforces the overlap rule now.</strong> <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
-does not let a rule keep a mechanism it no longer has, so the answer is specific. <strong>The migration layer</strong>,
+<p><strong>Who enforces the overlap rule.</strong> <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
+makes a rule name its enforcement, so the answer is specific. <strong>The migration layer</strong>,
 by the standing rule of <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>: a
 correctness property of the data belongs in the database, <em>even when the ORM cannot generate it and the
 migration must be written by hand</em>. Application validation still belongs on the write path, because it
@@ -3144,8 +3141,9 @@ to any other, because a deny that denies nothing is how a stale restriction surv
 <hr />
 <h2 id="4-joins-leaves-and-transfers-close-one-row-open-another">4. Joins, leaves and transfers: close one row, open another<a class="headerlink" href="#4-joins-leaves-and-transfers-close-one-row-open-another" title="Permanent link">&para;</a></h2>
 <p><strong>Every change to a roster is a period ending and a period beginning. Nothing on a member row is edited to
-move a person anywhere.</strong> The discipline is <code>03-membership.md</code> §5.2's, retargeted at groups and otherwise
-unchanged, and it carries the same design rule the deleted participation section carried:</p>
+move a person anywhere.</strong> This is the discipline
+<a href="../03-membership/#moving-between-groups-closes-one-row-and-opens-another">03-membership.md</a> states for a
+membership, restated here because this is the table it is exercised on:</p>
 <blockquote>
 <p><strong>Never rewrite a member row to point at a different person or a different group.</strong> Close it and open a
 new one. Rewriting destroys the answer to "where was this child in 2003?" — and unlike most tempting
@@ -3195,162 +3193,51 @@ edits, this one leaves no bad row behind, only a history that quietly stopped be
 <p><strong>Half-open is what makes the transfer row land on one day.</strong> A row ending on 1 June and a row beginning
 on 1 June do not overlap, so a handover has no gap and no double-count, and no one has to invent a
 midnight.</p>
-<p><strong>A row is written by a person, and that is the whole of how the roster gets populated.</strong> The import owes
-no member rows and nothing is inferred from attendance, from an event, or from a unit that no longer
-exists (<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). The gate
-is <code>person_group.member.manage</code>, at the unit or on one group (§3), the write is audited, and the row names
-who wrote it — which is D-095's answer to <em>do not place a child where nobody is responsible for them</em>,
-retold with the table changed and the reasoning untouched
-(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).</p>
-<p><strong>Two things the deleted table could say that this one cannot, on purpose.</strong> No <code>join_reason_code</code> /
-<code>leave_reason_code</code> — so no <code>transfer</code>, <code>promotion</code>, <code>reorganisation</code>, <code>unit_closed</code> vocabulary to
-maintain, get wrong, or pretend is a safeguard (the eighteen-ticks-without-a-receipt shape D-095 removed).
-No <code>role_in_unit</code> display label, because a label like that always becomes an authorization check the
-moment somebody asks "can she edit the roster?". The <code>note</code> column is where any of that reasoning goes, as
-prose, unread by the resolver
+<p><strong>A row is written by a person, and that is the whole of how the roster gets populated.</strong> The import owes no
+member rows, and nothing is inferred from attendance, from an event, or from anything else the schema holds
+(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>,
+<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). The gate is
+<code>person_group.member.manage</code>, at the unit or on one group (§3), the write is audited, and the row names who
+wrote it — which is D-095's answer to <em>do not place a child where nobody is responsible for them</em>.</p>
+<p><strong>No reason codes, and no role label, on purpose.</strong> No <code>join_reason_code</code> / <code>leave_reason_code</code>, so there is
+no <code>transfer</code>, <code>promotion</code>, <code>reorganisation</code>, <code>unit_closed</code> vocabulary to maintain, get wrong, or pretend is
+a safeguard — the eighteen-ticks-without-a-receipt shape D-095 refused. And no label saying what a member
+is, because such a label becomes an authorization check the moment somebody asks "can they edit the
+roster?". The <code>note</code> column is where any of that reasoning goes, as prose, unread by the resolver
 (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
-<p><strong>There used to be a second dated set of people beside this one, and the argument for keeping them apart is
-worth keeping even though one of them is gone.</strong> <code>audience_member</code> held the names somebody typed into one
-audience; it was the same shape D-080 teaches a reader to distrust, and this page argued at length that the
-two must never be merged, because <strong>merging them would make the permission table the system's roster</strong>.
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-deleted that table and its <code>LIST</code> operand — a hand-named person is now a <code>PERSON(x)</code> leaf inside the
-expression itself — so <strong>the duplication is gone rather than reconciled</strong>, and one of the two tables D-080
-would have flagged no longer exists to be flagged.</p>
-<p><strong>What did not go is the hazard, and it is the reason this paragraph survives its subject.</strong> The temptation
-when a grant needs one more person is to add that person to a group, because a group is the thing with a
-roster editor. That is still refused, and for the same reason
-<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-gave: <strong>a group's rows are true when no grant points at them</strong>, so editing one to move one grant's reach
-edits a roster that other grants read, and it invents a group nobody talks about. Since D-105 the refusal has
-a clean alternative next to it instead of a competing table: write <code>PERSON(honza)</code> in the expression that
-needed him, where it is visible, dated by the grant that carries it, and meaningless outside it
+<p><strong>A grant that needs one more person does not get it by editing a roster.</strong> The temptation is real, because a
+group is the thing with a roster editor. It is refused because <strong>a group's rows are true when no grant points
+at them</strong> (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>):
+editing one to move one grant's reach edits a roster that other grants read, and invents a group nobody talks
+about. The alternative is in the expression, where D-105 put it — write <code>PERSON(honza)</code> in the expression
+that needed them, where it is visible, dated by the grant that carries it, and meaningless outside it
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).</p>
 <hr />
 <h2 id="5-what-this-page-held-before-round-10">5. What this page held before round 10<a class="headerlink" href="#5-what-this-page-held-before-round-10" title="Permanent link">&para;</a></h2>
-<p><strong>The ledger, so that a reader who arrives from an old link or an old report knows what happened.</strong> Every
-row is a deletion, not a move, unless the last column says otherwise.</p>
-<table>
-<thead>
-<tr>
-<th>Deleted</th>
-<th>With it goes</th>
-<th>Who enforces the surviving rule now</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>org_unit</code></td>
-<td>the root row, the single-root conditional uniqueness, <code>path</code>, <code>depth</code>, <code>status</code>, <code>code</code>, <code>data_confidence</code>, the closed-without-end-date check</td>
-<td>nothing enforces "there is one unit" — there is no row to violate it with. That is the replacement, not a gap</td>
-</tr>
-<tr>
-<td><code>org_unit_type</code>, <code>org_unit_type_rule</code></td>
-<td>the runtime vocabulary, <code>is_leaf</code>, <code>max_depth</code>, the seven-step ordered nesting check, <code>allows_minors</code>' last context</td>
-<td>no nesting to check. <em>Do not place a child where nobody is responsible</em> is <code>person_group.member.manage</code> (§4)</td>
-</tr>
-<tr>
-<td><code>org_unit_name</code></td>
-<td>rename and renumber history, <code>change_reason</code>, the denormalised <code>org_unit.name</code> and the write rule that paired them</td>
-<td>nothing. A group rename edits one column and the previous name is gone (§1)</td>
-</tr>
-<tr>
-<td><code>org_unit_relationship</code></td>
-<td><code>split_from</code>, <code>merged_into</code>, <code>successor_of</code>, <code>renamed_to</code>, and D-096's only home</td>
-<td>nobody. A split is an ended group and two begun groups, with no edge (§4); where a claimed continuity goes is undecided (§8)</td>
-</tr>
-<tr>
-<td><code>unit_participation</code></td>
-<td>sub-unit rosters, the root participation row every membership owed, <code>is_primary</code>, <code>role_in_unit</code>, the reason codes, and the transfers between units</td>
-<td><code>person_group_member</code> (§2) is the roster; the membership row in <a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md</a> is the membership. <strong>Moved, not deleted</strong> — the only row in this table that is</td>
-</tr>
-<tr>
-<td><code>scope_exposure</code>, <code>scope.expose</code>, <code>scope.exposure.review</code></td>
-<td>the only downward crossing, the direction-of-authority check, and the nightly alert that was its sole detector</td>
-<td>nobody. There is no "outside it" to be stopped from (D-097); what D-031's reasoning still supports is carried by deny-is-absolute and by the ownership and guardianship channels</td>
-</tr>
-<tr>
-<td><code>unit_ancestors()</code>, <code>unit_descendants()</code>, the materialized path</td>
-<td>the recursive walk, the path-consistency check, and the CI assertion that the resolver never calls the function</td>
-<td>nothing, and an assertion about a function that does not exist is not a guard</td>
-</tr>
-<tr>
-<td>the reparenting guard on <code>parent_unit_id</code></td>
-<td><strong>F-10 shape 4, and with it the whole class</strong> — see below</td>
-<td>nothing, because there is nothing to guard</td>
-</tr>
-<tr>
-<td><code>position</code>, <code>position_assignment</code></td>
-<td><code>is_leadership</code>, <code>max_holders</code>, <code>min_age</code>, <code>requires_membership</code>, <code>appointment_reference</code>, the holder-count check, and the appointment workflows (D-100)</td>
-<td><code>role_holder</code> in <a href="../05-authorization/#4-role_holder--who-holds-an-office">05-authorization.md §4</a>; the membership test is an operand, not a resolver clause; the last stored eligibility rule in this module is gone, so eligibility is capability and age is nobody's check (D-060)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Shape 4 has no instance, and the sentence is worth its weight.</strong>
-<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a> shape 4 —
-a column that may not change once set — is the only shape in that list with <strong>no report at all</strong>, because
-a violation leaves every row individually valid and satisfies every constraint; nothing can be compared
-afterwards, so the guard in the write path is the entire enforcement and the test that attempts the update
-is the only remaining evidence it was meant to stay. Its one instance in the whole design was
-<code>org_unit.parent_unit_id</code>. <strong>It has none now.</strong> Two consequences, in both directions: this document no
-longer contains a rule that nothing can enforce, which is a real gain nobody counted (D-097 calls it the
-one thing that got easier); and F-10 loses its sharpest example, so the question stays open on the
-strength of shapes 1–3 alone — of which shape 1 has a fresh occupant, §2.</p>
-<p><strong>Checks 1–10 of the old §9, and where each went.</strong> The numbering restarts in <a href="#6-integrity-checks">§6</a>
-because almost none of them has a subject:</p>
-<table>
-<thead>
-<tr>
-<th>Old check</th>
-<th>Fate</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1 stored path vs. actual tree</td>
-<td>dead — no path, no tree</td>
-</tr>
-<tr>
-<td>2 live unit under a closed parent</td>
-<td>dead — no nesting</td>
-</tr>
-<tr>
-<td>3 live unit with no current name row</td>
-<td>dead — no name table, no denormalised copy</td>
-</tr>
-<tr>
-<td>4 <code>org_unit.name</code> disagreeing with the open name row</td>
-<td>dead — same reason. This pair was "the one to read every morning"; there is nothing left to drift</td>
-</tr>
-<tr>
-<td>5 a live unit type with no nesting rules</td>
-<td>dead — no types</td>
-</tr>
-<tr>
-<td>6 a position assignment pairing a position with a unit of another type</td>
-<td>dead — positions are deleted (D-100)</td>
-</tr>
-<tr>
-<td>7 a unit with exactly one live child</td>
-<td>dead — no children</td>
-</tr>
-<tr>
-<td>9 a position holding more people than its own limit</td>
-<td>dead with <code>max_holders</code>. Note what this retires: it was the report that was supposed to be the second half of F-10 shape 3's remedy, and the document's own sharpest admission of a rule that might not be enforced at all</td>
-</tr>
-<tr>
-<td>10 the single-root constraint really exists in the schema</td>
-<td>dead with the constraint — the check whose peculiar job was asserting that a <strong>migration had emitted a guarantee</strong> rather than that any row was clean</td>
-</tr>
-</tbody>
-</table>
-<p><em>(There was no old check 8; the numbering had a hole in it from an earlier round. The list below is
-numbered from 1 and is contiguous, which is the point of this note.)</em></p>
-<p><strong>Check 10's pattern survives even though check 10 does not.</strong> A CI assertion that a guarantee exists,
-rather than that the data looks fine, has a new occupant: names unique across <code>person_group</code> and <code>role</code>
-cannot be carried by any constraint, so the write path carries them and something has to assert that the
-write path still does (D-081's rule, D-101's requirement). That is check 4 below.</p>
+<p><strong>What was here was a different module.</strong> Until round 10 this page described the organization's
+<em>structure</em>: units nested in units, typed, with nesting rules deciding what a unit of one type may contain;
+name rows carrying rename history; split, merger and succession edges; a roster per unit; positions people
+were appointed into; and <code>scope_exposure</code> rows letting one unit reach into another.
+<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted the
+hierarchy, <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+took its smallest body and made it a <code>person_group</code>, and
+<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+deleted the positions. What that machinery was for is done now by things that are not structure: belonging
+to the organization is a <code>membership</code> (<a href="../03-membership/">03-membership.md</a>), a set of people is §1–§2, an
+elected leader is a <code>role_holder</code> row (<a href="../05-authorization/#4-role_holder--who-holds-an-office">05-authorization.md §4</a>),
+and <em>do not place a child where nobody is responsible for them</em> is <code>person_group.member.manage</code> held by a
+named adult (§4).</p>
+<p><strong>Every one of those names has a row in <a href="../../appendix/removed-concepts/">../appendix/removed-concepts.md</a></strong>,
+with what went beside it, why, and what enforces whatever survived: the <code>org_unit</code> family with its type
+rules, name rows and relationship edges; <code>unit_participation</code> with its join and leave reason vocabularies;
+<code>position</code> and <code>position_assignment</code> with their occupancy columns; <code>scope_exposure</code> and the <code>scope.expose</code>
+codes; and the <code>unit_ancestors()</code> / <code>unit_descendants()</code> traversal. Integrity checks 1–10 of the old §9 went
+with their subjects, which <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+records along with the job of the one check whose whole duty was asserting that a <strong>migration had emitted a
+guarantee</strong> rather than that any row was clean — a pattern that survives as check 4 below. Nothing survived
+as data except the rosters, which became <code>person_group_member</code> (§2); membership of the unit is the
+<code>membership</code> row, and it owes no second row to anything
+(<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>).</p>
 <hr />
 <h2 id="6-integrity-checks">6. Integrity checks<a class="headerlink" href="#6-integrity-checks" title="Permanent link">&para;</a></h2>
 <p><strong>Invariants to verify</strong></p>
@@ -3369,12 +3256,11 @@ write path still does (D-081's rule, D-101's requirement). That is check 4 below
    client is a question of when.</li>
 <li><strong>The cross-table name rule is still carried by the write path</strong> (§1). Not a data report: an automated
    test that attempts to save a duplicate name, and a second that attempts <code>MEMBERS</code>, and expects both
-   refusals. No constraint can hold this rule, so if the code loses it, nothing else notices — the same
-   job the retired check 10 did for the single-root constraint, and the reason it is numbered here rather
-   than left to the test suite's own memory.</li>
+   refusals. No constraint can hold this rule, so if the code loses it, nothing else notices: this is an
+   assertion that a guarantee still exists rather than that the data looks fine, which is why it is numbered
+   here rather than left to the test suite's own memory.</li>
 <li><strong>A live grant whose scope is a group that has ended, or a live expression with a <code>GROUP(x)</code> leaf on one.</strong>
-   <strong>The same number, and a different kind of check: this one used to watch a rule nobody had made and now
-   watches one that has been made.</strong>
+   <strong>A save-time refusal, and a report that watches whether the refusal is still there.</strong>
    <a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a> refuses the end date at
    save while a live grant, or a live audience reachable from a live grant, names the group; §3 states the
    rule, the query behind it, and why an empty operand on the <code>-</code> side is dangerous rather than merely inert.
@@ -3386,15 +3272,12 @@ write path still does (D-081's rule, D-101's requirement). That is check 4 below
    (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a> refuses both). That
    second cause is why the question about hiding ended groups from pickers (§8) is not cosmetic. Read the leaves sitting inside a subtraction first: <code>EVERYONE - GROUP(ended)</code> denies
    everybody, where the same ended group as a plain scope denies nobody.</li>
-<li><strong>An open group with no open member rows for a long period.</strong> A data-quality list in the family the old
-   check 7 was: often legitimate (a project group between seasons), sometimes a group that ended and nobody
-   set <code>valid_to</code>. Nothing should reject it; somebody should be able to see it.</li>
+<li><strong>An open group with no open member rows for a long period.</strong> A data-quality list: often legitimate (a
+   project group between seasons), sometimes a group that ended and nobody set <code>valid_to</code>. Nothing should
+   reject it; somebody should be able to see it.</li>
 </ol>
 <p><strong>Checks 1 and 4 fail on different things and must not be read alike.</strong> Check 1 finds bad rows; check 4
 finds a missing guarantee while every row is still clean. Only check 4 belongs in CI.</p>
-<p><strong>What this section no longer contains, and why that is not an oversight:</strong> path consistency, nesting
-legality, name denormalisation drift, holder-limit overrun and the single-root constraint assertion — the
-five subjects are gone, and §5 says which decision took each.</p>
 <hr />
 <h2 id="7-seed-data">7. Seed data<a class="headerlink" href="#7-seed-data" title="Permanent link">&para;</a></h2>
 <p><strong>No group is seeded, and that is the decision rather than a gap.</strong> The seed ships zero <code>person_group</code>
@@ -3411,52 +3294,28 @@ a permanent, organization-wide population is the opposite of what a group is. Th
 <code>event.answer.view</code> on an event to <code>ORGANIZERS</code> is likewise not here (§3 explains why a group is an item;
 <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
 owns that row).</p>
-<p><strong>What the old seed said, for the record.</strong> Two rows and nothing else: one unit type for the organization
-itself, and the single root unit carrying it. <strong>Neither exists.</strong> There is no root row to create and no
-type to give it; the unit arrives as a code in <code>grant_scope_type</code>, which is a lookup row in the
-authorization module and not data this page seeds. The old §10's long note about the root type's
-<code>allows_minors = false</code> asserting the opposite of what the membership flow does — the correction D-095 made
-by deleting the column — is retired with the column, and the paragraph's real lesson survives where it was
-written: a seed that contradicts the runtime behaviour is worse than no seed.</p>
+<p><strong>Nothing about the unit is seeded on this page.</strong> The unit arrives as a code in <code>grant_scope_type</code>, a
+lookup row in the authorization module, so there is no root row to create and no type to give it. Nothing is
+seeded that could contradict the runtime behaviour, which is the property D-054 was protecting above.</p>
 <hr />
 <h2 id="8-open-issues">8. Open issues<a class="headerlink" href="#8-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Where a claimed group continuity is recorded.</strong> §1 states the default (a returning name is a new
-  group) and D-096's method says the continuity is asserted, never matched — but the table that accepted
-  the assertion is deleted and D-098 refuses group-to-group edges. Tracked in
-  <a href="../../open-questions/">../open-questions.md</a>.</li>
+  group) and D-096's method says the continuity is asserted, never matched — but no row on this page can
+  hold the assertion, and D-098 refuses group-to-group edges.</li>
 <li><strong>Whether a member row must lie inside its group's period.</strong> Assumed in §2, reported in §6 check 2, and
   nowhere ruled. A one-sentence decision either way; left open rather than decided by a document.</li>
 <li><strong>Which layer writes the no-overlap constraint.</strong> That is <strong>F-10</strong>, still open, and §2 spells out the
   three ways this particular instance of shape 1 gets written wrong if nobody answers it
   (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">../open-questions.md</a>).</li>
-<li><strong>Whether an ended group is hidden from pickers, and whether it may be reopened.</strong> Closed units had a
-  stated behaviour; <code>person_group</code> has a period and no rule about which screens read it. Reopening an ended
+<li><strong>Whether an ended group is hidden from pickers, and whether it may be reopened.</strong> An ended group has a
+  behaviour; <code>person_group</code> has a period and no rule about which screens read it. Reopening an ended
   group by clearing <code>valid_to</code> would also collide with §1's rule that a returning name is a new group, so
   the two questions are one question.</li>
 </ul>
-<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: the sub-unit vocabulary and the
-nesting rules (there is no structure — D-097, closing the question D-054 had left open); retroactive
-reparenting (the dimension is gone, so the question cannot be asked, let alone answered — D-036);
-organization-wide operational roles (the unit is the only scope, so there is no "wider" to be
-organization-wide against); whether the unit may read into what these docs used to call its sub-units
-(<strong>moot</strong> after D-097 — the question presumed two scopes and there is one, and it used to be this page's
-largest open item); whether <code>allows_minors</code> should also constrain positions (both columns are deleted —
-D-095, D-100); whether <code>is_leadership</code> should create a role assignment (positions are deleted, and a role
-now confers nothing at all — D-100); background checks (none are recorded — D-043); whether a group may be
-ended while a live grant, or a live audience reachable from one, names it (<strong>refused at save</strong> — D-103 wrote
-its audience row first and extended it to <code>person_group</code> in the round after, on the <code>-</code>-widens reasoning;
-§3 and §6 check 5); whether a <code>PERSON</code> selector should exist so that D-100's one-person exemption is
-writable (it is one of the <strong>fourteen</strong> seeded rows — thirteen until
-<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-removed <code>LIST</code>, twelve until <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a> added <code>OLDER</code> and <code>YOUNGER</code> — and it arrived late by
-<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>'s
-amendment, because the registry had been copied from the evaluator's arm list and lost the arm, which
-<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-is the answer to); and whether a hand-typed set of people needs a table of its own (<strong>no</strong> — D-105 deleted
-<code>audience_member</code>, and the round that added <code>PERSON(x)</code> had already removed the only reason it had for
-existing).</p>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p>The questions this page once wondered about, open and settled alike, are registered in
+<a href="../../open-questions/">../open-questions.md</a>; a settled one is listed there with the decision that settled
+it.</p>
 
 
 
