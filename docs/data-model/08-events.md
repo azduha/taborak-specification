@@ -198,7 +198,7 @@ at the unit, which reaches this event, or on this event — and never from a rol
 appointment conferring anything by itself
 ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
 
-What this table **is aimed at**: it is the extension of the selector `ORGANIZERS`, so a grant
+**What this table is aimed at.** It is the extension of the selector `ORGANIZERS`, so a grant
 can name the people running an event without any of them being granted anything by being listed
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 **An operand is a set, not a grant** — the same sentence
@@ -270,7 +270,7 @@ corpus large and number-bearing
 ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)),
 linking registration rows to `membership` would make those rows unrepresentable.
 [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
-applies the same reasoning to `person_group_member`, and here it is stronger.
+applies the same reasoning to `person_group_member`; the argument is stronger here.
 
 **An inferred open-ended membership is the dangerous object.** `MEMBERS` is evaluated live on the
 checked date, so one open-ended row makes a 1998 camper a member today, and every live grant whose
@@ -399,13 +399,13 @@ created before the registration it belongs to exists, and the registration's
 `fee_obligation` and is stated there in full
 ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)): exactly one of
 `membership_id`, `membership_request_id` and `event_registration_id` is set on every
-obligation — exactly one, not "at most three". Every obligation is for exactly one
-thing: a membership period, a membership request, or one person's place at one event, and an
-event fee uses the third arm. The
-per-person choice is deliberate, because the fee is flat and per person (D-037) and a family
-price would need people grouped into households first, and the model has no such grouping
-([D-057](../decisions/round-04.md#d-057--household-is-removed)). Obligations carrying the event
-arm are indexed on `event_registration_id`, restricted to the rows where it is set.
+obligation — exactly one, not "at most three". Every obligation is for exactly one thing: a
+membership period, a membership request, or one person's place at one event, and an event fee
+uses the third arm. The per-person choice is deliberate, because the fee is flat and per person
+(D-037) and a family price would need people grouped into households first, and the model has no
+such grouping ([D-057](../decisions/round-04.md#d-057--household-is-removed)). Obligations
+carrying the event arm are indexed on `event_registration_id`, restricted to the rows where it
+is set.
 
 ### Confirming on payment
 
