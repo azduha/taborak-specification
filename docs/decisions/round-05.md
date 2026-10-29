@@ -399,7 +399,7 @@ only when `source = 'self'`. A staff registration is admitted regardless. So:
 | Capacity change | An `UPDATE` — visible and attributed |
 
 **Capacity is therefore three things at once, on purpose:** a rule for self-service, a number
-organizers can exceed, and a report. [data-model/08 §10 check 5](../data-model/01-identity.md#10-integrity-checks)
+organizers can exceed, and a report. [data-model/08 §10 check 5](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)
 produces rows and **that is not a failure** — an event that overruns every year has a wrong
 capacity number, and the fix is the number, not refusing people.
 
@@ -494,7 +494,7 @@ the row that cannot be reconstructed afterwards from registrations.
 
 **Presence is not registration**, and the distinction is enforced: a `not_attending`
 registration with `was_present` set is contradictory and reported
-([data-model/08 §10 check 8](../data-model/01-identity.md#10-integrity-checks)).
+([data-model/08 §10 check 8](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)).
 
 **A walk-in is not representable, deliberately.** A sibling who turns up on the day was not
 in the organization's care — no guardian recorded, no name on the roster — and must not

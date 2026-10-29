@@ -30,9 +30,9 @@ which nobody can enumerate in advance.
 | Stays structured, in its own table | Becomes an attribute |
 |---|---|
 | `person_name` history, `gender`, `birth_date` + `birth_date_precision` — [01-identity §2–3](01-identity.md#2-person) | Health: allergies, medication, conditions, instructions, checkups |
-| `person_contact` — purpose, primary flag, validity — [01-identity §6](01-identity.md#6-person_contact) | Education, occupations, qualifications, languages |
-| `person_identifier` — per-scheme uniqueness — [01-identity §7](01-identity.md#7-person_identifier) | Insurance numbers, membership numbers of other bodies, measurements, clothing sizes |
-| `account`, `account_credential` — [01-identity §4–5](01-identity.md#4-account) | Dietary habits, transport preferences, notes, anything collected this season |
+| `person_contact` — purpose, primary flag, validity — [01a §6](01a-accounts-and-contacts.md#6-person_contact) | Education, occupations, qualifications, languages |
+| `person_identifier` — per-scheme uniqueness — [01a §7](01a-accounts-and-contacts.md#7-person_identifier) | Insurance numbers, membership numbers of other bodies, measurements, clothing sizes |
+| `account`, `account_credential` — [01a §4–5](01a-accounts-and-contacts.md#4-account) | Dietary habits, transport preferences, notes, anything collected this season |
 
 **The test for the left column: does a rule exist that this layer physically cannot hold?**
 *"Exactly one primary postal contact among the open rows"*, *"a school id may repeat, a birth

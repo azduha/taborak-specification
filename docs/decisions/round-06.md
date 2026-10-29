@@ -533,8 +533,8 @@ place the rule lives, so it has to be right.**
 
 | # | The contradiction | Resolution |
 |---|---|---|
-| 1 | `identifier_scheme.is_unique` said a school id may repeat; the uniqueness rule applied to every scheme and never read the flag | **The flag decides.** A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. [01-identity §7](../data-model/01-identity.md#7-person_identifier) |
-| 2 | §9 of the identity document opened by saying its views encode "always exclude merged **and redacted**"; `v_person` excluded merged only, while §1 and §2 both required both | **Both exclusions.** A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. [01-identity §9](../data-model/01-identity.md#9-views) |
+| 1 | `identifier_scheme.is_unique` said a school id may repeat; the uniqueness rule applied to every scheme and never read the flag | **The flag decides.** A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. [01a §7](../data-model/01a-accounts-and-contacts.md#7-person_identifier) |
+| 2 | §9 of the identity document opened by saying its views encode "always exclude merged **and redacted**"; `v_person` excluded merged only, while §1 and §2 both required both | **Both exclusions.** A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. [01b §9](../data-model/01b-merges-views-and-checks.md#9-views) |
 | 3 | The audit redactor kept an *always-redacted* list of free-text fields — and nothing read it | **Kept, and labelled as intent.** It is the clearest illustration in the whole repository of what a declarative list nobody consults is worth. [06-audit §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging) |
 | 4 | The unit-grant tier appeared to widen direct grants through `scope_exposure`, and did not | Dead branch. **The rule is now stated once, in the direction that is true:** an exposure extends an assignment and never a grant. [D-078](#d-078--an-exposure-extends-an-assignment-never-a-direct-grant) |
 | 5 | `is_leadership` lives on `position`, and the audience rule for `unit_leaders` read it as though it lived on `role` | **Fixed where it is read.** The audience is "holds a live assignment to a leadership *position* at that unit", which is what everyone had been assuming it meant. [05-authorization §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) |
@@ -599,8 +599,8 @@ writes the migration:
 | Rule | Where the guard went | Net added |
 |---|---|---|
 | `position.max_holders` | no constraint can state a count over other rows (F-10 shape 3) | [02-organization §9 check 9](../data-model/02-organization.md#6-integrity-checks) — over-limit means *bypassed*, unlike event capacity, which may be exceeded deliberately |
-| Registration outside its window | Guard 1, inside the writing transaction | [08-events §10 check 9](../data-model/01-identity.md#10-integrity-checks) — a row here is evidence about the code, not the data |
-| `fee_obligation`, created by the code that places a registration | nothing ever enforced it | [08-events §10 check 10](../data-model/01-identity.md#10-integrity-checks) — a confirmed place with no bill leaves every row individually correct |
+| Registration outside its window | Guard 1, inside the writing transaction | [08-events §10 check 9](../data-model/08a-event-guards-and-checks.md#10-integrity-checks) — a row here is evidence about the code, not the data |
+| `fee_obligation`, created by the code that places a registration | nothing ever enforced it | [08-events §10 check 10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks) — a confirmed place with no bill leaves every row individually correct |
 
 One rule keeps **no** net, deliberately, with the absence named instead of smoothed over:
 `org_unit.parent_unit_id` immutability ([D-036](round-02-03.md#d-036--units-cannot-be-reparented-a-unit-that-moves-is-a-new-unit)).

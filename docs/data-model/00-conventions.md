@@ -289,7 +289,7 @@ Three consequences that are easy to get wrong:
    closed row, which history requires.
 3. **Uniqueness decided by data cannot live in an index at all.** `identifier_scheme.is_unique`
    says per scheme whether a value may repeat
-   ([01-identity.md §7](01-identity.md#7-person_identifier)); no index can consult a row of a
+   ([01a-accounts-and-contacts.md §7](01a-accounts-and-contacts.md#7-person_identifier)); no index can consult a row of a
    different table. This one is genuinely application-level plus a report, and it is documented as
    such rather than being pretended away. **The earlier version of that document had the opposite
    bug — an index that applied to every scheme, ignoring the flag and making `school_id`
@@ -396,7 +396,7 @@ Requirements the design must satisfy:
    Erasing what was recorded is item 2, and only item 2.
 6. **Redaction is invisible in listings and visible in the database.** A redacted person must not
    appear where people are listed, and must still resolve wherever an old record points at them
-   ([01-identity.md §9](01-identity.md#9-views)). These two requirements are one rule with two
+   ([01b-merges-views-and-checks.md §9](01b-merges-views-and-checks.md#9-views)). These two requirements are one rule with two
    halves and the first version of that document had only one of them.
 7. **The trail is a second copy of the person record and has to be guarded like one.** For a
    person's descriptive data the trail holds the **value** — the before and after image, exactly as

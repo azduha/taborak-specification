@@ -292,7 +292,7 @@ the domain language and must not be in the data.
 
 **Removed** ([D-057](../decisions/round-04.md#d-057--household-is-removed)). An address
 is a `person_contact` row of type `postal`
-([01-identity.md §6](01-identity.md#6-person_contact)), which already exists, already keeps
+([01a-accounts-and-contacts.md §6](01a-accounts-and-contacts.md#6-person_contact)), which already exists, already keeps
 history (`valid_from` / `valid_to`), and already carries a `purpose` — `'billing'` for the
 address an invoice goes to. A separate household table was duplicating it under a different
 key, and the duplication had gone stale: its `postal_address` column was documented as

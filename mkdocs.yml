@@ -86,7 +86,10 @@ nav:
           - Capacity, Presence, Forms: domain/07a-capacity-presence-and-forms.md
   - Data Model:
       - Conventions: data-model/00-conventions.md
-      - Identity: data-model/01-identity.md
+      - Identity:
+          - data-model/01-identity.md
+          - Accounts, Contacts, Identifiers: data-model/01a-accounts-and-contacts.md
+          - Merges, Views, Checks: data-model/01b-merges-views-and-checks.md
       - Attributes: data-model/09-attributes.md
       - Groups: data-model/02-organization.md
       - Membership: data-model/03-membership.md

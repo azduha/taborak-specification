@@ -468,7 +468,7 @@ would be a state with no meaning.
 | `id` | surrogate id | Internal only |
 | `question_id` | reference to event question, required | |
 | `person_id` | reference to person, required | Who ANSWERED — for a child, the child. The person who submitted on their behalf is in `access_log` and in `registered_by`, not here. Answers are about the person the question concerns |
-| `value` | free-form jsonb, required | Typed by `question.data_type`. One loose value rather than a column per type: the alternative is eight nullable columns only one of which is ever set, which is the shape 01-identity.md §6 rejected for `person_contact` |
+| `value` | free-form jsonb, required | Typed by `question.data_type`. One loose value rather than a column per type: the alternative is eight nullable columns only one of which is ever set, which is the shape 01a-accounts-and-contacts.md §6 rejected for `person_contact` |
 | `answered_at` | timestamp, audit time | Default now |
 | `answered_by` | reference to person, optional | |
 

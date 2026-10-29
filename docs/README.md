@@ -106,7 +106,9 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | Document | Covers |
 |----------|--------|
 | [data-model/00-conventions.md](data-model/00-conventions.md) | Naming, keys, temporal patterns, enums. **Read before reviewing any data-model document — §6a says who enforces what.** |
-| [data-model/01-identity.md](data-model/01-identity.md) | `person`, `account`, contact points, identifiers. |
+| [data-model/01-identity.md](data-model/01-identity.md) | `person` — what the organization knows about a human, no status, no role, no type — what is deliberately not on it, and `person_name`. §1–§3. |
+| [01a](data-model/01a-accounts-and-contacts.md) | `account`, `account_credential`, `person_contact`, `person_identifier` — signing in, being reached, and being named by other systems. §4–§7. |
+| [01b](data-model/01b-merges-views-and-checks.md) | `identity_hypothesis`, `person_merge`, the views that exclude merged and redacted rows, the nightly checks, open issues. §8–§11. The three parts share one section numbering. |
 | [data-model/09-attributes.md](data-model/09-attributes.md) | `attribute_definition`, `person_attribute`, `attribute_option` — everything about a person that is not a name, a gender or an age. |
 | [data-model/02-organization.md](data-model/02-organization.md) | `person_group`, `person_group_member` — named sets of people, their lifetimes, their dated rosters. There is no unit table; the unit is a scope. |
 | [data-model/03-membership.md](data-model/03-membership.md) | `membership_type`, `membership_request`, `membership` — the period, the renewal window, the sweep. |

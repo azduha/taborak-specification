@@ -459,7 +459,7 @@ part of a check's contract: **the question was never only where to keep answers,
 ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 
 The person-merge case remains the easiest to forget —
-see [01-identity.md](01-identity.md#8-identity_hypothesis-and-person_merge).
+see [01b-merges-views-and-checks.md §8](01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge).
 
 ---
 

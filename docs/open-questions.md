@@ -671,7 +671,7 @@ the entry, and this index is a register, not a second copy of it.
 | 8 | Renewal opens a new row, not an extended `valid_to` (D-016) † | [domain/05](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee) |
 | ~~9~~ | ~~Guardianship reviewed at majority, not auto-expired~~ — **superseded**: neither, the system takes no position (D-069) | [data-model/04](data-model/04-relationships.md#1-guardianship) |
 | 10 | Display name uses `preferred_name` if set | [data-model/01](data-model/01-identity.md#3-person_name--name-history) |
-| 11 | Merge chains are allowed, because reversing a merge has to stay possible (D-087) † | [data-model/01](data-model/01-identity.md#9-views) |
+| 11 | Merge chains are allowed, because reversing a merge has to stay possible (D-087) † | [data-model/01](data-model/01b-merges-views-and-checks.md#9-views) |
 | 12 | Only confirmed payments count toward a balance | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
 | ~~13~~ | ~~No sub-unit types are seeded; nesting is permissive by default~~ (D-054) — **deleted, not reversed**: `org_unit_type` and `org_unit_type_rule` went with the hierarchy ([D-097](decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), so there is nothing left to seed and no nesting to be permissive about. A-1's closure is the decision of record | [data-model/02](data-model/02-organization.md#5-what-this-page-held-before-round-10) |
 | 14 | `membership_type` is seeded with exactly one row (D-037) † | [data-model/03](data-model/03-membership.md#8-seed-data) |

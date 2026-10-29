@@ -355,7 +355,7 @@ a rebuild — you chose **chains, and an explicit unmerge**.
 
 **Decision.** `person.merged_into_person_id` stays a pointer that is *not* rewritten forward when the
 survivor is itself later absorbed. A→B→C remains a chain and `resolve_person()` keeps walking it
-([01-identity.md §9](../data-model/01-identity.md#9-views)). Flattening is now **closed off**, not
+([01b-merges-views-and-checks.md §9](../data-model/01b-merges-views-and-checks.md#9-views)). Flattening is now **closed off**, not
 merely slower.
 
 **What this decision actually changes is the direction of the argument.** These documents have argued
@@ -385,7 +385,7 @@ tidiness — it is a trade against a feature someone named.
 **What was already built, and is confirmed rather than changed.** `person_merge` exists and is
 append-only with `reversed_at`/`reversed_by`/`reversal_note`, so an unmerge records that a merge was
 undone instead of erasing the record of the mistake
-([01-identity.md §8](../data-model/01-identity.md#8-identity_hypothesis-and-person_merge)); and the
+([01b-merges-views-and-checks.md §8](../data-model/01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge)); and the
 reversal procedure is written in four steps
 ([domain/03-identity-and-legacy.md §6](../domain/03-identity-and-legacy.md#6-reversing-a-merge))
 — tombstone off, rows created *before* the merge go back, rows created *inside* the merged window are
@@ -405,7 +405,7 @@ record. Two further things follow and are stated where they belong:
 
 **Closes:** [B-2](../open-questions.md#b-2).
 
-**See:** [data-model/01-identity.md §9–§10](../data-model/01-identity.md#9-views),
+**See:** [data-model/01b-merges-views-and-checks.md §9–§10](../data-model/01b-merges-views-and-checks.md#9-views),
 [domain/03-identity-and-legacy.md §6](../domain/03-identity-and-legacy.md#6-reversing-a-merge).
 
 ---
@@ -503,7 +503,7 @@ out of that table to begin with).
 different e-mail: **refuse, and queue a claim** — not an automatic link, and not a second account.
 
 **Decision, stated as the gate that enforces it.** One live account per person stands
-([01-identity.md §4](../data-model/01-identity.md#4-account)) and is joined by a second rule: **an
+([01a-accounts-and-contacts.md §4](../data-model/01a-accounts-and-contacts.md#4-account)) and is joined by a second rule: **an
 account may not reach `active` while an unresolved `identity_hypothesis` names its person.** That is the
 whole mechanism — there is no new table and no new queue, because the identity review queue already
 exists, already records its signals, and already has the reviewer role for it. A sign-up that
@@ -556,7 +556,7 @@ rather than settled here.
 
 **Closes:** [B-4](../open-questions.md#b-4).
 
-**See:** [data-model/01-identity.md §4–§5, §8](../data-model/01-identity.md#4-account),
+**See:** [data-model/01a-accounts-and-contacts.md §4–§5](../data-model/01a-accounts-and-contacts.md#4-account) and [§8](../data-model/01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge),
 [domain/03-identity-and-legacy.md §4](../domain/03-identity-and-legacy.md#4-match-signals).
 
 ---

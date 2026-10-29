@@ -480,7 +480,7 @@ what is still being decided.
 **Decision.** The import is designed for a **substantial** historical corpus — thousands of
 records, not hundreds — and the old records **carry a legacy member number**. That number is
 imported into `person_identifier` with `scheme = 'legacy'`
-([data-model/01 §7](../data-model/01-identity.md#7-person_identifier)).
+([data-model/01a §7](../data-model/01a-accounts-and-contacts.md#7-person_identifier)).
 
 **Why.** Your answer: *"Large, with legacy member numbers."*
 
@@ -538,7 +538,7 @@ is gone, but the principle it stated is not, and that is deliberate*. **Amends:*
 **Decision.** The `household` and `household_member` tables are **removed**, along with
 `fee_obligation.household_id`, its CHECK arm, and `ix_obligation_household`. A person's
 address is a `person_contact` row of type `postal` —
-[data-model/01 §6](../data-model/01-identity.md#6-person_contact) — which already exists,
+[data-model/01a §6](../data-model/01a-accounts-and-contacts.md#6-person_contact) — which already exists,
 already keeps history, and already carries a `purpose` (`'billing'`) that the permission
 model can distinguish. Same-address matching for the legacy import becomes a **query over
 `person_contact`**, not a maintained table.

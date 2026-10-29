@@ -173,7 +173,7 @@ nothing is linked, nothing is activated**. The address the person typed stays on
 as the credential it was offered as, which matters because the reviewer's other answer is "this is a
 different person", and that answer should leave the applicant finishing the sign-up they started
 rather than starting it again
-([01-identity.md §4](../data-model/01-identity.md#4-account),
+([01a-accounts-and-contacts.md §4](../data-model/01a-accounts-and-contacts.md#4-account),
 [02-actors.md §3](02-actors.md#3-account-state-machine)). Confirming the hypothesis merges the two
 rows under §5 and the pending account goes with the row that was absorbed; rejecting it lifts the gate
 and the account activates.
