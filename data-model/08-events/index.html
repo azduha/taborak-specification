@@ -16,7 +16,7 @@
         <link rel="prev" href="../07-finance/">
       
       
-        <link rel="next" href="../../appendix/erd/">
+        <link rel="next" href="../08a-event-guards-and-checks/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Events - Information System — Design Documentation</title>
+        <title>Data Model — Events - Information System — Design Documentation</title>
       
     
     
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Events
+              Data Model — Events
             
           </span>
         </div>
@@ -705,6 +705,61 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../domain/07-events/" class="md-nav__link">
         
@@ -722,6 +777,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1251,6 +1342,63 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -1266,7 +1414,7 @@
   <span class="md-ellipsis">
     
   
-    Events
+    Data Model — Events
   
 
     
@@ -1284,7 +1432,7 @@
   <span class="md-ellipsis">
     
   
-    Events
+    Data Model — Events
   
 
     
@@ -1308,6 +1456,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-numbers-are-shared-across-the-two-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-08-eventsmd-holds-17-08a-811-projections-and-guards-the-three-queries-that-matter-integrity-checks-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section numbers are shared across the two parts and never renumbered, because other pages cite them by number and their anchors are built from them: 08-events.md holds §1–§7, 08a §8–§11 (projections and guards, the three queries that matter, integrity checks, open issues).
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#1-why-these-five-tables-and-no-event_series" class="md-nav__link">
@@ -1543,131 +1702,45 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#8-projections-and-guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Projections and guards
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Projections and guards">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-unit-authority-rule-and-can_event--both-deleted" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The unit-authority rule, and can_event() — both deleted
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#selectors-that-bind-to-an-event" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Selectors that bind to an event
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Guards
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-the-three-queries-that-matter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        9. The three queries that matter
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="9. The three queries that matter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#who-has-not-replied-yet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who has not replied yet?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#who-is-actually-coming" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who is actually coming?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#who-was-actually-there" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who was actually there?
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#10-integrity-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        10. Integrity checks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#11-open-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        11. Open issues
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -2353,6 +2426,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#section-numbers-are-shared-across-the-two-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-08-eventsmd-holds-17-08a-811-projections-and-guards-the-three-queries-that-matter-integrity-checks-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section numbers are shared across the two parts and never renumbered, because other pages cite them by number and their anchors are built from them: 08-events.md holds §1–§7, 08a §8–§11 (projections and guards, the three queries that matter, integrity checks, open issues).
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#1-why-these-five-tables-and-no-event_series" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2586,128 +2670,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#8-projections-and-guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Projections and guards
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Projections and guards">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-unit-authority-rule-and-can_event--both-deleted" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The unit-authority rule, and can_event() — both deleted
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#selectors-that-bind-to-an-event" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Selectors that bind to an event
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#guards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Guards
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-the-three-queries-that-matter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        9. The three queries that matter
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="9. The three queries that matter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#who-has-not-replied-yet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who has not replied yet?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#who-is-actually-coming" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who is actually coming?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#who-was-actually-there" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who was actually there?
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#10-integrity-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        10. Integrity checks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#11-open-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        11. Open issues
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2753,7 +2715,7 @@ tables below fill those hooks; they do not extend the model.</p>
 <code>event.org_unit_id</code> is gone, <code>can_event()</code> is gone, and the unit-authority rule that every
 event permission used to be reached through is gone. What the module uses instead is a set
 of <strong>selectors that bind to the event being checked</strong>, specified in §8.</p>
-<hr />
+<h2 id="section-numbers-are-shared-across-the-two-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-08-eventsmd-holds-17-08a-811-projections-and-guards-the-three-queries-that-matter-integrity-checks-open-issues"><strong>Section numbers are shared across the two parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">08-events.md</a> holds §1–§7, <a href="../08a-event-guards-and-checks/">08a</a> §8–§11 (projections and guards, the three queries that matter, integrity checks, open issues).<a class="headerlink" href="#section-numbers-are-shared-across-the-two-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-08-eventsmd-holds-17-08a-811-projections-and-guards-the-three-queries-that-matter-integrity-checks-open-issues" title="Permanent link">&para;</a></h2>
 <h2 id="1-why-these-five-tables-and-no-event_series">1. Why these five tables, and no <code>event_series</code><a class="headerlink" href="#1-why-these-five-tables-and-no-event_series" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2793,7 +2755,7 @@ Adding <code>event_series</code> would mean every downstream table — registrat
 organizers, questions — needs a second possible home, and the feature that needed recurrence
 is already modelled.</p>
 <p><strong>No <code>event_status</code> column.</strong> Visibility is the permission model; cancellation is a fact
-(<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>).</p>
+(<a href="../../domain/07a-capacity-presence-and-forms/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>).</p>
 <hr />
 <h2 id="2-event">2. <code>event</code><a class="headerlink" href="#2-event" title="Permanent link">&para;</a></h2>
 <p><strong>Fields</strong></p>
@@ -2859,7 +2821,7 @@ is already modelled.</p>
 <tr>
 <td><code>registration_opens_at</code></td>
 <td>instant in time, optional</td>
-<td><code>NULL</code> = open as soon as the event is visible. The event is visible to whoever holds <code>event.view</code>, which after D-102 normally includes everyone holding it at the unit — see <a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a> for what that does to the private-by-default draft. So <code>NULL</code> is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed</td>
+<td><code>NULL</code> = open as soon as the event is visible. The event is visible to whoever holds <code>event.view</code>, which after D-102 normally includes everyone holding it at the unit — see <a href="../../domain/07a-capacity-presence-and-forms/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a> for what that does to the private-by-default draft. So <code>NULL</code> is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed</td>
 </tr>
 <tr>
 <td><code>registration_closes_at</code></td>
@@ -2869,7 +2831,7 @@ is already modelled.</p>
 <tr>
 <td><code>capacity</code></td>
 <td>integer, optional</td>
-<td><code>NULL</code> = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>)</td>
+<td><code>NULL</code> = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it (<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>)</td>
 </tr>
 <tr>
 <td><code>waitlist_deadline</code></td>
@@ -2984,7 +2946,7 @@ see this?" will eventually disagree, and the one that gets enforced is whoever w
 its organizers, so nobody else can see it~~ — with no owner, a fresh event is visible to
 everybody already holding <code>event.view</code> at the unit, which is the normal case. Privacy is
 therefore an act rather than a default; see
-<a href="../../domain/07-events/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>.</p>
+<a href="../../domain/07a-capacity-presence-and-forms/#10-cancellation-and-why-there-is-no-status-column">../domain/07-events.md §10</a>.</p>
 <h3 id="why-fee_schedule_id-and-not-an-event_fee-table">Why <code>fee_schedule_id</code> and not an <code>event_fee</code> table<a class="headerlink" href="#why-fee_schedule_id-and-not-an-event_fee-table" title="Permanent link">&para;</a></h3>
 <p>The fee amount, currency and validity already live in <code>fee_schedule</code>
 (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), which is temporal — so a
@@ -3282,7 +3244,7 @@ is decided, because confirmation is a property of the place the earlier steps ga
    <code>is_waitlisted</code> false and <code>waitlist_position</code> absent. A staff registration is admitted
    even past capacity: the organizer who knows there are two spare tents is not to be blocked
    by a number they cannot edit mid-camp
-   (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>,
+   (<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>,
    <a href="../../decisions/round-05/#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it">D-065</a>).
    The overrun is permitted, attributed, and REPORTED (§10, check 5).</li>
 <li>Confirmation: immediate when there is no fee to wait for. If the event has no
@@ -3557,7 +3519,7 @@ ended that, and the guidance below is still worth reading as a warning rather th
 anything a form asks is read by whoever runs that event, and the number of such people is decided
 by whoever creates the event
 (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
-<a href="../../domain/07-events/#12-the-forms-questions-and-answers">../domain/07-events.md §12</a>).</p>
+<a href="../../domain/07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">../domain/07-events.md §12</a>).</p>
 <p><strong>Round 10 moved that sentence from the resolver into a row.</strong> "Read by whoever runs that
 event" is now a seeded grant — <code>event.answer.view</code> on the event, aimed at <code>ORGANIZERS</code> (§8).
 That makes the warning <em>checkable</em> in a way it was not before: the number of people who can
@@ -3623,393 +3585,6 @@ there is no policy for how long answers survive their event. See
 <strong><a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a></strong>, which notes that until it is
 answered the weakest-protected copy of a health fact is the freshest one.</p>
 <hr />
-<h2 id="8-projections-and-guards">8. Projections and guards<a class="headerlink" href="#8-projections-and-guards" title="Permanent link">&para;</a></h2>
-<h3 id="the-unit-authority-rule-and-can_event--both-deleted">The unit-authority rule, and <code>can_event()</code> — both deleted<a class="headerlink" href="#the-unit-authority-rule-and-can_event--both-deleted" title="Permanent link">&para;</a></h3>
-<p>~~A permission is satisfied at <code>('event', E)</code> if it is satisfied at the event's owning unit
-<code>('org_unit', E.org_unit_id)</code> AND the event's owner is that same unit.~~ <strong>Withdrawn by
-<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,</strong>
-which deleted <code>event.org_unit_id</code> (§2) and with it the whole rule, together with
-<a href="../../decisions/round-05/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a>'s
-artifact-and-child distinction. <code>can_event(person, permission_code, event, at)</code> is deleted;
-<strong>every event check goes through the ordinary <code>can()</code> and nothing else.</strong></p>
-<p><strong>Who enforces it now — <code>can()</code>, with no event-shaped clause in it.</strong> The resolver matches
-scope exactly, exactly as before, and the gap D-063 was written to close cannot open: the
-only non-item scope is the unit, and a grant at the unit reaches every item of every type
-(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
-The person whose job is to run the organization's camps passes a check at <code>('event', 42)</code>
-because their allow is at the unit, not because anything tested the event.</p>
-<p><strong>D-063's reasoning, kept because the problem it named is still a problem.</strong> The old design
-refused to let authority inherit from a body down to that body's events, and bought a narrow
-rule instead of a wide one, on the grounds that inheritance's blast radius grows with every
-restructure while an owner column's does not. Both halves of that pair are gone: there are no
-bodies and no restructures
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-so there is nothing left to keep narrow. What replaced the distinction is not inheritance and
-not a test — it is the <strong>absence of an intermediate scope</strong>. Between the unit and an event
-there is now nothing to inherit through, which is the same outcome D-063 was reaching for by
-way of a rule.</p>
-<p><strong>D-063's two-way door, spent.</strong> It promised that "deleting the second <code>can()</code> call is the
-whole change, and it needs no data migration", because nothing had been written to
-<code>access_grant</code> to make the rule work. Round 10 collected on that: deleting the rule is the
-whole change and needed no migration. The door back is narrower now — an owner column, a
-resolver tier that reads it, and the checks this section deletes — and the bound selectors
-below would survive it unchanged, because an ownership grant and a bound operand answer
-different questions.</p>
-<h3 id="selectors-that-bind-to-an-event">Selectors that bind to an event<a class="headerlink" href="#selectors-that-bind-to-an-event" title="Permanent link">&para;</a></h3>
-<p>Six sets describe the people connected to an event, and each is a <strong>selector that binds to
-the item being checked</strong> — written with no argument inside an item-scope grant, and with an
-explicit event in every other context. They are seeded rows of <code>selector_type</code>, the registry
-of <a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>, and
-that registry is what makes the two write-path rules below checkable rather than a matter of
-tact
-(<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>,
-<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
-<p><strong>The four attendance tiers, defined over <code>event_registration</code> columns and nothing else:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Operand</th>
-<th>Definition</th>
-<th>Read it as</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>ATTENDED</code></td>
-<td><code>response</code> is <code>attending</code></td>
-<td>said yes to this event</td>
-</tr>
-<tr>
-<td><code>PLACED</code></td>
-<td><code>response</code> is <code>attending</code> <strong>and</strong> <code>is_waitlisted</code> is false</td>
-<td>holds a place — <strong>the capacity set</strong> (§5)</td>
-</tr>
-<tr>
-<td><code>CONFIRMED</code></td>
-<td><code>PLACED</code> <strong>and</strong> <code>is_confirmed</code> is true</td>
-<td>the place is paid for, or the event was free</td>
-</tr>
-<tr>
-<td><code>ON_WAITLIST</code></td>
-<td><code>response</code> is <code>attending</code> <strong>and</strong> <code>is_waitlisted</code> is true</td>
-<td>waiting for a place</td>
-</tr>
-</tbody>
-</table>
-<p>These are definitions, not four new ideas, and their shape is arithmetic on two existing
-columns: <code>CONFIRMED ⊆ PLACED</code>, <code>PLACED</code> and <code>ON_WAITLIST</code> partition <code>ATTENDED</code>, and a <code>not_attending</code>
-row is in none of them. Nothing is a level and nothing orders anything else; <code>CONFIRMED</code> is
-not "more" than <code>ON_WAITLIST</code>, it is a different conjunction. <strong>The extension of <code>PLACED</code> is
-the set §5 counts against <code>capacity</code></strong>, and the same partial index serves both (§4).</p>
-<p><code>ORGANIZERS</code> is the fifth, and its definition is the roster in §3 — the labelled, ordered,
-domain answer to "who runs this", evaluated over <code>event_organizer</code> rows for the event
-checked. <strong>There is no sixth, and this page printed one until round 13.</strong> The <code>GUARDIANS</code> that sat in
-that sentence was never an operand at all, in either spelling: a guardian's authority is a
-<code>right_level ∈ none | view | write</code> held <strong>over a child</strong>, read off the <code>guardianship</code> row when the check
-is about someone other than the actor, and it is not a set that the expression language resolves
-(<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>,
-<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
-Counting it alongside these five was the error, not a narrower way of stating the channel — which is why
-the paragraph below already called <code>PRESENT</code> the obvious sixth.</p>
-<p><strong><code>PRESENT(&lt;event&gt;)</code> is refused.</strong> An operand over <code>was_present</code> is the obvious sixth
-attendance tier and it is not available, and the reason is the failure direction:
-<code>was_present</code> is <code>NULL</code> until somebody takes a register, so a grant aimed at <code>PRESENT</code> would
-revoke a child's access to their own camp photos because a volunteer forgot to tick a box.
-The column is a safeguarding signal and is three-valued on purpose
-(<a href="../../decisions/round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>);
-keeping it out of the selector language is what keeps it meaning "a person recorded this"
-rather than "this is who may see things". Where presence is needed it is needed as a report
-(§9), and the report is honest about the rows it does not have.</p>
-<p><strong><code>WHITELISTED</code> does not exist.</strong> There is no stored state to name: the nearest facts are
-<code>source = 'staff'</code> (an organizer entered them) and promotion off the waitlist. Until the
-organization decides which of those it means, or adds a column, the operand is not available
-and the name is not reserved (§11).</p>
-<p><strong>Two binding rules, both refused when the grant is saved, both naming the operand in the
-message:</strong></p>
-<ol>
-<li><strong>A bound (argument-less) operand is legal only on an item-scope grant.</strong> At the unit there
-   is no item for it to bind to, so a grant at the unit whose expression names <code>PLACED</code>,
-   <code>ATTENDED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code> or <code>ORGANIZERS</code> is refused. The explicit form
-   (<code>PLACED(&lt;event&gt;)</code>) remains legal at the unit, and it means the same words with the event
-   written down — which is the difference between the two, not an accident of parsing.</li>
-<li><strong>A bound operand is legal only on a matching item type.</strong> <code>PLACED</code> on a <code>person_group</code>
-   grant is refused, because that item is not an event. This is <code>selector_type.argument_type</code>
-   checked against <code>grant_scope_type</code> at the write — which is the reason D-101's registry is
-   doing real work and not merely tidying a table.</li>
-</ol>
-<p>A consequence of rule 1 worth naming for whoever builds the editor: <strong>an audience is a stored
-row and a grant is a different stored row</strong>, so an audience whose expression contains a bound
-operand is perfectly storable and simply cannot be aimed at a unit-scope grant. The refusal
-lands on the grant, where D-102 puts it, and the audience browser should show which scopes an
-expression is usable at rather than letting the save discover it
-(<a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>).</p>
-<p><strong>The seeded grant: <code>event.answer.view</code> on an event to <code>ORGANIZERS</code>.</strong> This is where
-<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>'s
-"answers are read by that event's organizers" now lives — a row in <code>access_grant</code>, not a
-clause in the resolver, which is the same move D-102 made to the whole of unit authority over
-an event. It is aimed at a <strong>set</strong>, so it does not contradict
-<a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
-and does not make <code>event_organizer</code> a grant table: adding a cook to the roster changes a set,
-and the grant keeps pointing at the set. The registered spelling of the code is the catalog's
-<code>event.answer.view</code>, singular <em>answer</em>, which <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-now uses too — it wrote <code>event.answers.view</code> while the entry was new, and the two spellings were
-one code, not two.</p>
-<p><em>Assumption:</em> a grant's scope is the unit or exactly one item, and a bound operand is legal
-only on an item-scope grant, so the seeded grant <strong>cannot be one row for every event</strong>. This
-module reads it as a <strong>seed template instantiated by the event-creation path</strong>, which writes
-one item-scope grant on each new event; the one-off import owes the same row for every event
-it writes, or an imported camp's organizers cannot read that camp's answers. D-102 does not
-say who writes the row. Integrity check 1 in §10 is the net.</p>
-<p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" stops being a property
-of a grant row once an operand binds: <code>PLACED</code> is different people on different events. The
-editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
-against, and ~~the cache key for a bound operand must include the item~~ — the answer cache that had a key is
-deleted (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
-but the rule survives it at the layer below: the item is bound at <strong>resolution</strong>, so nothing expanded while
-computing one item may be reused for another. Stated as a requirement
-in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>. That expansion
-is not capped or deferred, and the ground is now stated rather than assumed: a few dozen registrants on a
-typical event and a big camp on the order of two hundred is a preview nobody feels — a size
-<strong>stated, not measured</strong>, with a named trigger to reopen it
-(<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</p>
-<p><strong>A write to <code>event_registration</code> is not a ruleset write — and since <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-that buys it no staleness whatsoever.</strong> ~~There is one cache policy and three triggers — rebuilt nightly in full,
-immediately on any write to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table
-to get right (<a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
-The ruleset is the grant and expression rows, the permission registry, the guardianship rows, <code>role_holder</code> and
-<code>person_group_member</code>; <strong><code>event_registration</code> is not in it</strong>. So marking a register, confirming a place, or
-promoting somebody off the waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code> and
-rebuilds nothing: a cached answer behind those four tiers <strong>may be up to one night stale, by design</strong>. This is the
-module where an implementer would most confidently assume the opposite, so it is stated here rather than only in
-the authorization page. What stays immediate is everything a person actually does to authority — revoke, deny,
-close a grant period, end an assignment — because every one of those is a ruleset write.~~</p>
-<p><strong>What is true now:</strong> marking a register, confirming a place, flipping <code>is_confirmed</code> or promoting somebody off the
-waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code>, and <strong>the change is visible on the
-next check</strong> — the one after the write, with no job in between — because a check resolves the expression against
-live rows and there is no cached answer left to sit behind the roster
-(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
-<strong>The same is true of <code>ORGANIZERS</code></strong>, which reads the organizer rows and not the registration table at all: five
-bound operands, five live reads, and a birthday crossing <code>OLDER(n)</code> moves an answer on exactly the same footing as
-a registration write does. <strong>Immediacy here is by construction, not by policy:</strong> nothing maps a person to an
-answer anywhere in the schema, so there is no row that could be a night old. <strong>And this module was right to be uneasy about the paragraph above.</strong>
-Four tiers computed from four registration tables, with the boundary of what counts drawn in a different file from
-the read path it had to describe, is precisely the shape that made the cache untenable — the deletion this page
-reports arrived because lists like that one omitted <code>membership</code> while <code>membership.terminate</code> ⛔ was the most
-safeguarding-shaped write in the catalog. <strong>What survives of the old vocabulary, said precisely:</strong> a registration
-write is still not a ruleset write, now in the narrowed sense that <strong>it changes no rule's text</strong>, and
-<code>ruleset_version</code> — which keys a <em>compiled expression</em>, not an answer — is bumped by <strong><code>audience_operand</code> and
-<code>selector_type</code></strong> alone, so a registration write is not a ruleset write at all now, in the only sense the phrase
-still has. <em>"Not a ruleset write" no longer buys a night of staleness; it says which two-table bump set you are
-not in, and nothing more.</em> <strong>And the rule whose mechanism just went has to say who enforces it now</strong>
-(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
-which is the question this paragraph would otherwise leave hanging: <strong>nobody enforces it, because there is nothing
-left to invalidate.</strong> The old sentence's job — <em>"a registration change reaches an answer"</em> — is now done by the
-read path itself, and a page cannot opt out of a read path the way it can forget to add a row to a list.</p>
-<h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
-<p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
-window does not admit it. The guard runs inside the transaction that inserts the row, on every
-insert path — and since there is nothing left to attach it to, that coverage is now a requirement
-on the paths rather than a property the database supplies for them. Steps 4 and 5 read the
-event's own dates and step 2 exempts a source value, so no constraint states this rule and no
-report would catch a violation the way a window violation should be caught: at the write.
-<strong>The order is a rule</strong>: "there is no such event" must be settled
-before anything reads the event's dates, and the staff carve-out must be answered before the
-checks it overrides.</p>
-<ol>
-<li>Read the event the registration names. If there is no such event, refuse the row — a
-   registration cannot name an event that does not exist.</li>
-<li>If <code>source</code> is <code>staff</code>, admit the row and stop here. Staff may always register, including
-   at a cancelled event (to record who had been coming) — they are acting deliberately and
-   are attributed.</li>
-<li>Otherwise refuse the row if the event is cancelled (<code>cancelled_at</code> is set).</li>
-<li>Refuse it if <code>registration_opens_at</code> is set and has not yet arrived.</li>
-<li>Refuse it if the effective close has passed — <code>registration_closes_at</code>, or <code>starts_at</code>
-   when <code>registration_closes_at</code> is absent. This is where "<code>NULL</code> = open until the event
-   starts" is enforced.</li>
-<li>Admit the row.</li>
-</ol>
-<p><strong>Guard 2 — an event with registrations cannot be deleted.</strong> Deleting an event is refused as
-soon as the event has any registration row at all, and the refusal says what to do instead:
-cancel it (set <code>cancelled_at</code>) so the record of who was coming survives. Cancellation is the
-mechanism.</p>
-<blockquote>
-<p><strong>Guard 2 is what makes the cascade in §3 safe.</strong> Organizers cascade when an
-event is deleted — but an event that anyone registered for cannot be deleted at all. So
-the cascade can only ever fire on a draft with no registrations, which is the only case
-where losing the roster is harmless.</p>
-</blockquote>
-<hr />
-<h2 id="9-the-three-queries-that-matter">9. The three queries that matter<a class="headerlink" href="#9-the-three-queries-that-matter" title="Permanent link">&para;</a></h2>
-<h3 id="who-has-not-replied-yet">Who has not replied yet?<a class="headerlink" href="#who-has-not-replied-yet" title="Permanent link">&para;</a></h3>
-<p>"Unanswered" is a subtraction (<a href="../../domain/07-events/#3-registration-one-record-two-stored-answers-and-no-unanswered">../domain/07-events.md §3</a>).
-The subtrahend is <em>who the event is open to</em> — which, for an open event, is an audience.</p>
-<p>The question asked of one camp is: <strong>every person who may register for it and has not
-answered.</strong> The audience is the eligible set, the registration table is the answered set, and
-the answer is the difference between them, listed by preferred name. What makes the question
-answerable at all:</p>
-<ul>
-<li>The eligible set is <em>evaluated</em>, not stored: it is the people named by the live <strong>allow</strong>
-  grants of <code>event.register_self</code> — at the unit, which reaches this event, or on this event —
-  through their audiences, assessed as of the day the question is asked, not as of the day the
-  grant was written. A child who joined a group last week is on this list; a child who has
-  left is not.</li>
-<li>Only live allows count, and a person against whom a live <strong>deny</strong> of the same code applies
-  is not eligible however many allows reach them — deny is absolute, and an eligibility list
-  that ignored it would chase people who were deliberately excluded
-  (<a href="../../decisions/round-01a/#d-013--explicit-deny-revoked-is-checked-before-everything">D-013</a>).</li>
-<li>Where the grant's expression contains a bound operand, the eligible set is computed
-  <strong>against this event</strong>, which is the only thing it can mean (§8).</li>
-<li>The answered set is one row per person at most (§4), so the subtraction cannot leave the
-  same person on the list twice.</li>
-<li>People who have been merged away are excluded, so a tombstone never turns up on a list
-  somebody is being asked to chase.</li>
-</ul>
-<p><strong>This is the query that would be impossible if <code>unanswered</code> were a stored value</strong>, because
-the eligible set — an audience, evaluated as a rule — is what defines the question. Storing
-"unanswered" rows would mean enumerating an audience into rows, and re-enumerating whenever
-a child joins a group.</p>
-<h3 id="who-is-actually-coming">Who is actually coming?<a class="headerlink" href="#who-is-actually-coming" title="Permanent link">&para;</a></h3>
-<p>Four numbers about one event, in one answer, all counted over that event's <code>attending</code>
-registrations: how many are not waitlisted (coming), how many are waitlisted (waiting), how
-many are unconfirmed and not waitlisted (holding a place without having paid), and the
-event's <code>capacity</code>. An event with no registrations still has to produce the row, with zeros.</p>
-<p>The four numbers an organizer needs, in one row: coming, waiting, holding a place without
-having paid, and the limit. <code>attending &gt; capacity</code> is the overrun, and it is visible here
-rather than prevented (§10 check 5).</p>
-<p>The first two of the four are <code>PLACED</code> and <code>ON_WAITLIST</code> counted rather than listed, and the
-third is <code>PLACED</code> minus <code>CONFIRMED</code>. The selector definitions in §8 and the counts here are
-one set of facts stated twice on purpose: the screen and the grant must not be able to
-disagree about who "coming" means.</p>
-<h3 id="who-was-actually-there">Who was actually there?<a class="headerlink" href="#who-was-actually-there" title="Permanent link">&para;</a></h3>
-<p>For one camp, the attending registrations listed with each person's preferred name, birth
-date and <code>was_present</code>, <strong>with the unmarked listed first</strong> — the unmarked sort ahead of both
-a mark and an absence recorded as <code>false</code>, because the unmarked are the work remaining. This
-is the camp roster as a safeguarding record, not a plan.</p>
-<p><code>NULLS FIRST</code> puts the unmarked at the top, which is the work remaining. Once every row is
-<code>true</code> or <code>false</code>, this is the answer to "who was in the organization's care at that camp" —
-and it is the reason <code>was_present</code> is three-valued rather than a boolean defaulting to false.</p>
-<p><strong>This report has no selector twin, and that is the point.</strong> Nothing in the selector language
-computes over <code>was_present</code>, so no grant can reach fewer people because the register was
-never taken. §8 states the refusal; this query is the reason it matters.</p>
-<hr />
-<h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
-<p><strong>Invariants to verify</strong></p>
-<ol>
-<li><strong>A bound selector on a grant that cannot bind it.</strong> Counts live grants whose expression
-   contains <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code> or <code>ORGANIZERS</code> in argument-less
-   form and whose scope is the unit, or whose scope is an item of a type other than the
-   operand's <code>argument_type</code>. <strong>Both rules are refused on the write path</strong> (§8), so a non-zero
-   result is evidence about the code, not the data: somebody added a path that saves a grant
-   without going through the check, and a grant like this resolves to the empty set and
-   silently authorizes nobody.</li>
-<li><strong>An event whose organizers hold no seeded answer-view grant.</strong> Counts non-cancelled events
-   that have at least one <code>event_organizer</code> row and no live allow of <code>event.answer.view</code> on
-   that event aimed at <code>ORGANIZERS</code>. The seeded grant is written by the code that creates the
-   event (§8), so the failure shape is the one check 10 knows well: an event imported or
-   created by a path that forgot, where the organizers cannot read the answers of the camp
-   they are running, and every row they left behind is individually correct.</li>
-<li><strong>An event with no organizer.</strong> Counts events that are neither cancelled nor already begun
-   and have no <code>event_organizer</code> row at all — an event nobody is running: either abandoned
-   mid-setup, or a data-entry error. Not a rule on write, because an event is legitimately
-   created before its organizers are named.</li>
-<li><strong>A registration held by a person who has been merged away.</strong> Counts registrations whose
-   person carries a merge pointer. The merge should have repointed them; a non-zero result
-   catches the ones it missed.</li>
-<li><strong>An event running over its stated capacity.</strong> Counts, for each non-cancelled event that
-   has a capacity, its <code>PLACED</code> registrations, and reports the events where that count exceeds
-   the capacity. PERMITTED — a staff registration may exceed deliberately
-   (<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>) — so this
-   is a report, not an error. A pattern of overruns means the capacity numbers are wrong, not
-   that the rule is.</li>
-<li><strong>An unpaid registration holding a place past the waitlist deadline.</strong> Counts attending,
-   non-waitlisted registrations on a non-cancelled event whose <code>waitlist_deadline</code> has passed
-   and whose fee obligation stands at <code>unpaid</code>, <code>partially_paid</code> or <code>overdue</code>. It should be
-   empty once the release in §5 has run — a non-empty result means the job is not running.</li>
-<li><strong>An answer to a question the person was never registered for.</strong> Counts answers whose
-   person has no registration for the event that owns the question. Either the registration
-   was deleted, or the answer was written against the wrong person.</li>
-<li>
-<p><strong>Presence marked on a registration that declined.</strong> Counts <code>not_attending</code> registrations
-   whose <code>was_present</code> is not absent. Contradictory: you cannot have been present at a thing
-   you said you were not attending. Nothing above forbids the combination, so this is a
-   written prohibition and a check rather than a guard — a prohibition nobody runs is a
-   convention, not a guarantee.</p>
-</li>
-<li>
-<p><strong>A registration outside its event's registration window.</strong> Counts registrations whose
-   <code>registered_at</code> falls before the window opens or after it closes, excluding the ones an
-   organizer recorded deliberately (<code>source = 'staff'</code>, whose window is the event's own
-   period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
-   <strong>there is no constraint behind that guard</strong> — a window spans two columns of two tables, so
-   the check runs inside the writing transaction or nowhere
-   (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).
-   A non-zero result is therefore evidence about the code, not the data: someone added a second
-   path that places a registration.</p>
-</li>
-<li><strong>A fee-bearing event with registrations and no obligations.</strong> Counts non-cancelled events
-   that require a fee and have at least one registration, where no <code>fee_obligation</code> exists for
-   some of those registrations. <strong>The obligation is created by the code that places the
-   registration</strong> (<a href="#6-payments-and-confirmation">§6</a>); there is no rule attached to the registration row
-   that would create it, so a path that forgets produces a person with a confirmed place and no
-   bill — invisible to every check here, because every row it left behind is individually
-   correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
-   more expensively; this is the version worth running nightly.</li>
-</ol>
-<p><strong>Checks 1, 2 and 10 are the same shape and should be read as one warning.</strong> Each tests
-whether a piece of <em>code</em> that nothing else depends on actually ran: the grant save, the event
-creation, the placing rule. Each will read empty on correct data and each is the kind of bug
-that a schema change never surfaces, because every row a forgotten step leaves behind is
-individually valid.</p>
-<p><strong>Check 5 is the important one to read correctly.</strong> It will produce rows, and that is not a
-failure — exceeding capacity is a permitted, attributed act
-(<a href="../../domain/07-events/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>). What the
-report is <em>for</em> is the pattern: an event that overruns every year has a capacity number that
-is wrong, and the fix is to change the number rather than to start refusing people.</p>
-<p><em>Numbering note:</em> checks 1 and 2 were rewritten in place rather than dropped, and 3–10 keep
-the numbers other files cite them by.</p>
-<hr />
-<h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
-<p>Tracked in <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>.</p>
-<ul>
-<li>~~<strong>The age ceiling on an open event.</strong>~~ <strong>Settled: there is none</strong>
-  (<a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
-  No <code>min_age</code>/<code>max_age</code> on <code>event</code>, no age branch anywhere in the registration path. If it is
-  ever revisited the shape is a new <strong>seeded selector operand</strong>, not a column on the row.</li>
-<li>~~<strong>Whether <code>event.manage_participants</code> should split.</strong>~~ <strong>It did</strong>, into
-  <code>event.presence.mark</code> — no longer "a level lower", because there are no levels, but a
-  separate code, which is the same protection stated in the only vocabulary D-099 leaves
-  (§4, EV-5).</li>
-<li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds <code>event.answer.view</code> and nothing
-  else, so an organizer who holds no unit-scope grant can read the answers of a camp they are
-  running and can do nothing else at it. Whether that is the intended shape or an omission is
-  not settled, and this module has not seeded more on its own initiative (§3, §8).</li>
-<li><strong>Who writes the per-event seeded grant.</strong> Read as a template the creation path and the
-  import both instantiate; D-102 does not say (§8, check 2).</li>
-<li><strong><code>WHITELISTED</code>.</strong> No stored state to name, so no operand and no reserved name (§8).</li>
-<li><strong>Retention of <code>event_answer</code>.</strong> Answers end with the event and there is no policy saying when (§7).
-  This used to be argued from the answer being <em>health data</em>, which
-  <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-  left without a referent: it is personal data, which makes the question ordinary rather than
-  answered — and sharper, since the same sentence recorded as a <code>person_attribute</code> follows a different
-  retention rule on purpose (<a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>).</li>
-<li><strong>Cancelled events and fees.</strong> Cancelling keeps the registrations. Whether it releases the
-  obligations, refunds them, or neither is the finance module's decision (§6). That decision
-  has since been taken for events
-  (<a href="../../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>):
-  cancelling voids the outstanding requests and money that already arrived waits in the
-  unmatched queue (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>).</li>
-<li><strong><code>was_present</code> as a safeguarding record.</strong> Whether presence needs its own retention or its
-  own permission, given what it is (§9 of the domain doc). D-102's refusal of <code>PRESENT</code> makes
-  the second half of that question sharper: presence now governs nothing about access, which
-  is either why it needs no permission of its own or why its retention is all that is left.</li>
-<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> D-102 settled the <em>mechanism</em> —
-  a set named by a selector, aimed at by grants — without changing D-062's answer that the
-  roster is not itself a grant. What remains open is smaller than it used to be: whether more
-  codes should be seeded to <code>ORGANIZERS</code>, which is the question above
-  (<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>).</li>
-<li><strong>Waitlist notification.</strong> Promotion is deliberate; telling the promoted person is not
-  designed. It belongs to the communication module.</li>
-</ul>
 
 
 
@@ -4062,13 +3637,13 @@ the numbers other files cite them by.</p>
         
         
           
-          <a href="../../appendix/erd/" class="md-footer__link md-footer__link--next" aria-label="Next: ERD">
+          <a href="../08a-event-guards-and-checks/" class="md-footer__link md-footer__link--next" aria-label="Next: Guards and Integrity Checks">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                ERD
+                Guards and Integrity Checks
               </div>
             </div>
             <div class="md-footer__button md-icon">

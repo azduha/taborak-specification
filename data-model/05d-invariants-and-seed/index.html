@@ -705,6 +705,61 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../domain/07-events/" class="md-nav__link">
         
@@ -722,6 +777,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1331,9 +1422,28 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../08-events/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1347,7 +1457,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2498,10 +2680,11 @@ branch (§2).</p>
   without one is a piece of the resolver's vocabulary that nothing can compose with, and §11's check 12 is
   the net for the leaf side of that. <strong>Whether <code>code</code> should simply be <em>required</em> on an <code>is_system</code>
   audience rather than merely seeded is a question this document does not settle</strong> (§13). <strong>No seeded
-  audience is parameterized</strong>: there is one unit, so nothing needs a row per unit. Three names from the
-  older catalog still get asked for, and each is now something smaller or nothing at all —
-  <code>unit_participants</code> is <code>MEMBERS</code>; <code>unit_leaders</code> is <code>ROLE(x)</code>, the case §8's evaluation rules are
-  written against because the stored rule matched nobody while every grant aimed at it looked granted; and
+  audience is parameterized</strong>: there is one unit, so nothing needs a row per unit. <strong>Three names keep being
+  asked for, and each of them is something smaller or nothing at all</strong> —
+  <code>unit_participants</code> is <code>MEMBERS</code>; <code>unit_leaders</code> is <code>ROLE(x)</code>, the shape §8's evaluation rules are written
+  against — <strong>an expression that resolves to nobody is silent, while every grant aimed at it looks
+  granted</strong>; and
   <code>guardians_of</code> is <strong>nothing</strong> — a guardian's authority is the guardianship channel's <code>right_level</code> over
   the child, not a set an audience can name, which is why <code>GUARDIANS</code> is not a selector
   (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
@@ -2667,8 +2850,8 @@ the assertion that it stays the only one).</p>
   here to make it a guard, and no layer of this spec can tell a writer that <code>PERSON(</code> had no row behind it.</li>
 <li><strong>The <code>LIST</code> gloss, and the proposed rename of that operand to <code>ADDED</code> (§8): moot — there is no such
   operand</strong> (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
-  The name was judged the weak part of a design that no longer has it; there is nothing left to rename or
-  gloss, so the question has no subject either way.</li>
+  Neither the gloss nor the rename has a subject: <code>LIST</code> is not an operand of this grammar, so there is
+  nothing to rename and nothing to explain.</li>
 <li><strong>Whether two people editing one audience is handled by a lock, a queue, or nothing (§8).</strong> Editing an
   audience is one expression edit, so two clerks editing one audience <strong>can</strong> collide, <strong>and a silent lost
   update removes somebody's access without any row recording that it happened.</strong>
@@ -2720,22 +2903,22 @@ the assertion that it stays the only one).</p>
   <code>selector_arg_id</code> too.</li>
 <li><strong>How long a <code>permission_cache</code> entry may live (§10): there is no such table, so there is no lifetime</strong>
   (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
-  F-6 spent four rounds on that number and D-111 answered it with a nightly rebuild instead of a TTL, which
-  is why <code>expires_at</code> is not a column of §10 and <code>ruleset_version</code> is
+  <strong>No TTL is being asked about, because there is no row to put one on:</strong> <code>expires_at</code> is not a column of
+  §10 and <code>ruleset_version</code> is, as a compilation key bumped by writes to <code>audience_operand</code> and
+  <code>selector_type</code>
   (<a href="../../open-questions/#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a>,
-  <a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>);
-  the table itself is then gone, so the question has no subject. <strong>Nothing is open here.</strong>
-  <code>ruleset_version</code> survives as a compilation key, bumped by writes to <code>audience_operand</code> and
-  <code>selector_type</code>, and the affordability question F-6 ended on is answered by D-112's stated size — with no
-  job left to afford.</li>
+  <a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
+  <strong>Nothing is open here.</strong> The affordability question F-6 ended on is answered by
+  <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s
+  stated size and trigger, and there is no rebuild job to afford.</li>
 <li><strong>Cache vs a materialized effective-permission table (§8, §10): dissolved, not decided</strong> —
   <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a>.
-  A nightly full rebuild of cached answers and a nightly materialized <code>effective_permission</code> table are
-  <strong>the same job with two names</strong>, and the choice was made on grounds outside the question. It is recorded
-  as dissolved because <strong>a dissolved question is the kind that comes back if nobody writes down that it
-  dissolved</strong>, and "history, not performance" is exactly where it would come back from. What is left of the
-  pair is the history side alone: there is no rebuild left to confuse with a history table, a table of
-  today's answers was never a record of 2011, and <strong>invariant 19 is the thing a return has to argue with.</strong></li>
+  A rebuild of cached answers and a materialized <code>effective_permission</code> table are <strong>the same job with two
+  names</strong>, which is why the pair is recorded as dissolved rather than answered — and <strong>a dissolved question
+  is the kind that comes back if nobody writes down that it dissolved</strong>, with "history, not performance"
+  exactly where it would come back from. What is left of the pair is the history side alone: there is no
+  rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
+  <strong>invariant 19 is the thing a return has to argue with.</strong></li>
 <li>Retention policy for <code>access_log</code> — legal input required
   (<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>).</li>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>

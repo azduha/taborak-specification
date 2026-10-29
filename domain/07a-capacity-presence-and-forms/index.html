@@ -1,0 +1,2804 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/domain/07a-capacity-presence-and-forms/">
+      
+      
+        <link rel="prev" href="../07-events/">
+      
+      
+        <link rel="next" href="../../data-model/00-conventions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Capacity, Presence, Forms - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#events-capacity-presence-payments-and-the-forms" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Capacity, Presence, Forms
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#8-capacity-and-the-waitlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Capacity and the waitlist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-presence-what-actually-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Presence: what actually happened
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-cancellation-and-why-there-is-no-status-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Cancellation, and why there is no status column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-payments-on-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Payments on events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-the-forms-questions-and-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. The forms: questions and answers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. The forms: questions and answers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#health-data-and-the-widening-this-represents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health data, and the widening this represents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/removed-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../decisions/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#8-capacity-and-the-waitlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Capacity and the waitlist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-presence-what-actually-happened" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Presence: what actually happened
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-cancellation-and-why-there-is-no-status-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Cancellation, and why there is no status column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-payments-on-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Payments on events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-the-forms-questions-and-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. The forms: questions and answers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. The forms: questions and answers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#health-data-and-the-widening-this-represents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health data, and the widening this represents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Open issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/domain/07a-capacity-presence-and-forms.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/domain/07a-capacity-presence-and-forms.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="events-capacity-presence-payments-and-the-forms">Events: capacity, presence, payments and the forms<a class="headerlink" href="#events-capacity-presence-payments-and-the-forms" title="Permanent link">&para;</a></h1>
+<p>What happens between a filled capacity and a completed event: the waitlist, attendance, cancellation, the money, and the questions an organizer asks.</p>
+<p><strong>Section numbers are shared across the two parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../07-events/">07-events.md</a> holds §1–§7, <a href="./">07a</a> §8–§13 (capacity and the waitlist, presence, cancellation, payments, the forms, open issues).</p>
+<hr />
+<h2 id="8-capacity-and-the-waitlist">8. Capacity and the waitlist<a class="headerlink" href="#8-capacity-and-the-waitlist" title="Permanent link">&para;</a></h2>
+<p>An event may have a capacity — beds, bus seats, a fire-safety limit. When it fills:</p>
+<p><strong>Registrations past capacity are accepted as waitlisted</strong>, not refused. A person who
+registers for a full camp appears on the list, ordered, marked as waiting, and an organizer
+promotes them when a place frees up.</p>
+<p>This is a real feature rather than a flag, and it is the honest model of how a camp with
+twelve beds actually runs: the thirteenth caller is not turned away, they are written down.
+See <a href="../../data-model/08-events/#5-capacity-and-the-waitlist">data-model/08 §5</a> for the
+ordering and promotion mechanics.</p>
+<p><strong>And organizers may exceed capacity outright</strong> — deliberately, because a leader who knows
+there are two spare tents should not be blocked by a number they cannot edit mid-camp
+(<a href="../../decisions/round-05/#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it">D-065</a>).
+The overrun is permitted, attributed, and <strong>reported</strong>
+(<a href="../../data-model/01-identity/#10-integrity-checks">data-model/08 §10</a>): an event running over
+its stated capacity is a fact the organization can see, not a state it cannot reach.</p>
+<p>The mechanism of <em>how</em> an organizer gets past the number is unchanged by round 10 and was
+never the resolver: the waitlist fires only for <code>source = 'self'</code>, and a registration written
+by a person holding <code>event.register_other</code> arrives as <code>source = 'staff'</code> and is admitted.
+What changed is where that permission came from — before, the owning unit supplied it; now it
+is a grant at the unit or on the event, like every other code
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
+<p>So capacity is three things at once, and all three are intentional:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Self-registration when full</td>
+<td><strong>Waitlisted</strong> — never refused, never admitted</td>
+</tr>
+<tr>
+<td>A staff registration when full</td>
+<td><strong>Admitted</strong>, the overrun reported</td>
+</tr>
+<tr>
+<td>Any capacity change</td>
+<td>An <code>UPDATE</code>, visible and attributed</td>
+</tr>
+</tbody>
+</table>
+<p>The set capacity is compared against has a name now: it is <strong><code>PLACED</code></strong>, the attending
+non-waitlisted registrations of an event (§7) — the same set <code>PLACED</code> selects and the same
+index the capacity test already uses.</p>
+<hr />
+<h2 id="9-presence-what-actually-happened">9. Presence: what actually happened<a class="headerlink" href="#9-presence-what-actually-happened" title="Permanent link">&para;</a></h2>
+<p>The registration says what someone <em>said</em>. Presence says what <em>happened</em>.</p>
+<p><code>event_registration.was_present</code> is a <strong>nullable boolean</strong>:
+<code>NULL</code> = not yet marked, <code>true</code> = turned up, <code>false</code> = marked absent. The three-valued
+column is not sloppiness — it distinguishes <em>"we did not take a register"</em> from <em>"we took a
+register and they were not there"</em>, which are different facts and only one of them is a
+safeguarding signal
+(<a href="../../decisions/round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>).</p>
+<p><strong>Why this matters more than it looks.</strong> For a camp, the end-of-week roster is the record
+of who was actually in the organization's care. That is the row that matters if the fee buys
+insurance (finance question 9: <em>"member on the date of the incident"</em>), and it is the row
+that cannot be reconstructed afterwards from registrations. It is also why the column is
+marked by an organizer and recorded with who marked it and when.</p>
+<p><strong>Presence is not registration.</strong> A child who registered and did not come is a registration
+with <code>was_present = false</code>. A child who turned up without registering — a sibling along for
+the day — is not representable, deliberately: that child was not in the organization's care
+and must not silently appear to have been. Recording them means registering them, which
+means they have a guardian and the organizers have a name.</p>
+<p><strong>And presence is not an audience.</strong> The temptation to build <code>PRESENT(&lt;event&gt;)</code> on this
+column — to let "everyone who came" be a set a grant names — is refused, and §7 states why:
+the column is <code>NULL</code> until somebody takes a register, so an operand over it makes access
+depend on a volunteer's diligence, and it would turn a safeguarding record into an access
+control. Attendance for the purposes of a grant stops at <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>
+and <code>ON_WAITLIST</code>.</p>
+<hr />
+<h2 id="10-cancellation-and-why-there-is-no-status-column">10. Cancellation, and why there is no <code>status</code> column<a class="headerlink" href="#10-cancellation-and-why-there-is-no-status-column" title="Permanent link">&para;</a></h2>
+<p><strong>There is no lifecycle status.</strong> An event is a row with dates and a set of grants.</p>
+<p><strong>Visibility <em>is</em> the permission model.</strong> A newly created event has no grants of its own, so
+whoever can see it can see it because of a grant they already hold — normally an
+<code>event.view</code> at the unit, which reaches every event and therefore every new one the moment it
+is created. Publishing is not a state change — it is <strong>granting</strong> someone access: an audience,
+a group, a role. This is your answer, and it is
+better than a <code>status</code> enum for the usual reason: a status column and a permission system
+that both claim to say "who may see this" will eventually disagree, and the one that gets
+enforced is whoever wrote the last <code>IF</code>.</p>
+<p>That has a consequence worth saying out loud, because it is the opposite of the old
+behaviour. ~~A newly created event has no grants beyond its organizers' own authority, so
+nobody else can see it~~ — under
+<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
+a draft reached exactly one audience: the owning unit's own people, whom
+<a href="../../decisions/round-05/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a>'s
+rule carried across to it, and nobody else. After D-102 there is <strong>no such narrow default</strong>: a
+person holding <code>event.view</code> at the unit sees a half-typed event the instant it is committed,
+and there is no narrower scope a grant could have sat at instead. A genuinely private event is
+therefore an <em>act</em> — an item grant, plus a deny at the unit if the audience is broad — rather
+than the absence of one. D-064's reasoning about the two-writer problem is untouched; what
+moved is which side of the pair the default sits on.</p>
+<p>So the questions that a <code>draft</code> status would answer are answered by grants:</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Is this ready to be seen?"</td>
+<td>Has anyone been granted <code>event.view</code> beyond the unit-scope holders?</td>
+</tr>
+<tr>
+<td>"Who can see it before it is announced?"</td>
+<td>Whoever a live allow names — including every unit-scope holder</td>
+</tr>
+<tr>
+<td>"How do I hide it again?"</td>
+<td>Revoke the grant — <code>revoked_at</code> set, row kept — or write a deny</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cancellation is a fact, not a status</strong> — and this is where the logic diverges, because the
+audience is different:</p>
+<p>Three columns carry it: <code>cancelled_at</code> says when, <code>cancelled_by</code> says who — a person, so the
+decision has a name attached to it — and <code>cancel_reason</code> says why.</p>
+<blockquote>
+<p><strong>Cancelling by revoking grants would hide the cancellation from exactly the people who
+need it.</strong> The registrants are the ones who must be told the camp is off; if the event is
+hidden by revoking their <code>view</code>, they see nothing at all — not "cancelled", just gone.
+So cancellation is recorded, and the event stays visible, marked.</p>
+</blockquote>
+<p>A cancelled event <strong>stops accepting registrations</strong> (the registration window closes
+implicitly) and <strong>keeps every existing row</strong>: those registrations are the record that the
+camp was planned and who was coming. That record is exactly what is needed afterwards — to
+notify people, and to refund them.</p>
+<p><strong><code>completed</code> is derived, never set.</strong> <code>cancelled_at IS NULL AND ends_at &lt; now()</code>. There is
+no state to keep consistent, and no job to move events between states.</p>
+<p><strong>One more thing, which is structural:</strong> there is no <code>event.is_published</code> and no
+<code>cancelled</code> <em>status</em>, but there <strong>is</strong> a <code>cancelled_at</code>. An event that is cancelled and an
+event that is merely past are distinguished by one <code>NULL</code> — and the "what needs attention?"
+query is <code>WHERE cancelled_at IS NULL AND ends_at &gt;= now()</code>, ordering by start. That is the
+whole lifecycle.</p>
+<hr />
+<h2 id="11-payments-on-events">11. Payments on events<a class="headerlink" href="#11-payments-on-events" title="Permanent link">&para;</a></h2>
+<p>An event may cost money, and <strong>payment confirms the place</strong> — but payment is never
+mandatory, because plenty of events are free.</p>
+<p>The rule, stated once:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An event with a fee</td>
+<td>Registering creates an obligation; <strong>the place is confirmed on payment</strong></td>
+</tr>
+<tr>
+<td>An event without a fee</td>
+<td>Registering confirms the place immediately</td>
+</tr>
+<tr>
+<td>An unpaid registration at capacity</td>
+<td>Holds a slot <strong>until the deadline</strong>, then releases to the waitlist</td>
+</tr>
+<tr>
+<td>Money</td>
+<td><strong>The finance module's problem</strong> — events record that a fee applies and what it is</td>
+</tr>
+</tbody>
+</table>
+<p>The only new schema here is a <strong>pointer</strong>: <code>fee_obligation.event_registration_id</code>. It is one
+arm of <code>fee_obligation</code>'s exactly-one rule, restored after
+<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a> removed the household arm,
+and this time it is a <em>real</em> arm with data behind it rather than a dormant hedge.</p>
+<p><strong>The <code>is_confirmed</code> / deadline interaction is the one automatic transition in this module</strong>,
+and it is worth flagging as such: the design has spent effort avoiding automatic state
+changes (<a href="../../decisions/round-01b/#d-023--nothing-is-auto-lapsed-or-auto-terminated">D-023</a>,
+<a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
+and payment-confirms-the-place reintroduces one. It is a <em>deadline</em>, not a sweep: it applies
+only to registrations at a full event with an unpaid fee, and only after the deadline the
+organizer set. <a href="../../data-model/08-events/#6-payments-and-confirmation">data-model/08 §6</a>
+records it as an accepted cost with the reasoning, and
+<a href="../../open-questions/">open-questions</a> carries it.</p>
+<hr />
+<h2 id="12-the-forms-questions-and-answers">12. The forms: questions and answers<a class="headerlink" href="#12-the-forms-questions-and-answers" title="Permanent link">&para;</a></h2>
+<p>An event may ask registrants for details it needs — tent preference, dietary preference, T-
+shirt size, whether they are coming by bus.</p>
+<p><strong>Questions are defined per event, and answers are rows.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>event_question          what this event asks
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>   └── event_answer     what a person said    ──  one row per question per person
+</code></pre></div>
+<p>Answers as <strong>rows rather than JSONB</strong> is the choice that makes the feature work: <em>"who needs
+a gluten-free meal, and how many?"</em> is a <code>GROUP BY</code>, not a JSON traversal. The cost is a row
+per answer, which is correct — the number of answers is the number of things the
+organization must actually act on.</p>
+<p>Questions may apply to <strong>attendees, organizers, or both</strong>, and may be required or optional.
+Required means <em>the person registering must answer</em>; it is not a global gate on
+registration, because a form that blocks sign-up is a form nobody completes.</p>
+<p><strong>Reusable question libraries were considered and rejected.</strong> A shared pool of question
+definitions is structurally the requirement machinery removed in
+<a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>,
+and it earns its keep only when the same question must mean the same thing across events.
+Tent preference does not: what one camp asks and what another needs are allowed to differ,
+and per-event definitions keep them from having to agree.</p>
+<h3 id="health-data-and-the-widening-this-represents">Health data, and the widening this represents<a class="headerlink" href="#health-data-and-the-widening-this-represents" title="Permanent link">&para;</a></h3>
+<p>You confirmed that <strong>event answers are readable by that event's organizers, with no extra
+gate</strong> (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>),
+and round 10 changed only <em>where that sentence is written down</em>. It is no longer prose inside
+the resolver; it is <strong>a seeded grant</strong> — <code>event.answer.view</code> on an event, aimed at
+<code>ORGANIZERS</code>
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+Two things follow, and neither weakens D-061:</p>
+<ul>
+<li><strong>"No extra gate" is now literally true and visible.</strong> The seeded grant <em>is</em> the whole
+  mechanism; there is no clause special-casing organizers. Anyone who wants to see who may
+  read an event's answers reads a grant row.</li>
+<li><strong>The reach of that grant is per-event, which D-061 always asserted and round 10 makes
+  checkable.</strong> <code>ORGANIZERS</code> with no argument binds to the event the grant sits on, so the
+  seeded row cannot accidentally name the organizers of every camp at once.</li>
+</ul>
+<p>Two consequences of D-061 follow, and the second is the significant one.</p>
+<p><strong>1. Only preference-level detail belongs on a form.</strong> A dietary <em>preference</em> ("vegetarian",
+"no pork") is an operational note for the cook. A <em>condition</em> ("coeliac", "nut allergy") is
+medical data, and nothing in the schema distinguishes them — the difference is what the
+organizer types into a label. So the discipline is in the form design, not the constraint:
+<a href="../../data-model/08-events/#7-event_question-and-event_answer">data-model/08 §7</a> states it,
+and it is guidance, not enforcement.</p>
+<p><strong>2. This is the route by which a leader learns a child has a nut allergy, and that is a
+deliberate widening.</strong> A guardian's reach over a child is <strong>one value on the <code>guardianship</code> row</strong>
+— <code>none</code>, <code>view</code> or <code>write</code> — read by a channel of its own, entered only when the act is about
+someone other than the actor and never answered by a role or a grant
+(<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>,
+<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>;
+<a href="../../appendix/permission-catalog/#9-there-is-no-dependent-namespace">appendix/permission-catalog.md §9</a>).
+The namespace that used to spell this out is deleted, the safeguarding property it carried is not:</p>
+<blockquote>
+<p><em>"A person does not get these by virtue of leading — that is a safeguarding
+property."</em></p>
+</blockquote>
+<p><strong>Corrected in round 7, because this sentence was doing work it could no longer do.</strong> It used to read
+<em>"so a camp leader cannot reach a child's medical record at all"</em> — and after
+<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+there is no medical record to be unreachable, so the sentence is not merely out of date, it describes a
+guarantee the model never had once the category disappeared. What is actually true, in the two forms
+that matter:</p>
+<ul>
+<li><strong>No role gets it by leading.</strong> The starting role set gives a leadership role its rosters and
+  its events — and <strong>no read over a person's data</strong>
+  (<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11</a>). That
+  is the safeguarding property, exactly as before: leadership is not guardianship, and the
+  guardianship channel answers only for the person its row names.</li>
+<li><strong>It is now one grant away, and round 10 widened what "one grant" means.</strong> Whoever holds
+  <code>person.view</code> <strong>at the unit</strong> reads every child's whole record, allergy list included — and
+  after <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+  a grant at the unit has no narrower reading available, because the unit is the only scope
+  there is. Nothing in the resolver will stop that and nothing should — but a document that
+  promised it was impossible would have been trusted, and a promise the model does not make is
+  worse than none.</li>
+</ul>
+<p>**The widening in the next paragraph is therefore unchanged in substance and better stated: the
+protection is a decision about a role, revisitable by whoever administers roles, not a wall."</p>
+<p>Which means: under the starting roles, an allergy recorded on a camp form is <strong>the only way the people
+running the camp will know</strong>. That is a coherent and defensible configuration — <em>the parent tells the
+people present, per event, and nobody outside the family holds the fact</em> — but it is a widening from "few
+people, via a guardianship-scoped permission" to "every organizer of any event the child
+registers for", and it is recorded as such in
+<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
+with the reasoning, so that nobody later "fixes" the apparent duplication between the two
+stores by tightening this one.</p>
+<p><strong>Event answers are not the person's record.</strong> They are operational detail for one event, read by that
+event's organizers, and they end with the event — while the same fact, recorded on the person, is
+audited, curable and erased with them. <strong><a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+made those two copies the same class of data</strong>, which is what turns the retention question below into
+a real one, and <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>
+into the alternative: collect the fact once, confirm it at the door. See
+<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">§11</a> for the retention question, which is open.</p>
+<hr />
+<h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
+<p>Moved to <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>, where they are
+tracked with the rest. The ones this module raises:</p>
+<ul>
+<li>~~<strong>The age ceiling on an open event</strong>~~ — <strong>settled: accepted as a risk</strong>, the grant is
+  the rule, and closing it later would mean a new operand rather than a column (§4,
+  <a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
+  <strong>That prediction has come true and it changes the shape of the answer, not the answer:</strong> the
+  operand arrived as <code>YOUNGER(n)</code>, so an age ceiling is writable today as
+  <code>event.register_self</code> aimed at <code>MEMBERS * YOUNGER(15)</code>. <strong>EV-1 stays closed, now as a choice
+  the organization renews rather than a limit it inherits</strong> — nobody has to be told the ceiling
+  cannot be stated, only whether it should be (§4,
+  <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
+<li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds exactly one grant,
+  <code>event.answer.view</code>. Everything else an organizer needs — editing the event, working the
+  roster — now reaches them only through a unit-scope or item grant they happen to hold, and
+  no decision says whether that is the intended shape or an oversight (§5, §6). This module
+  does not seed more of its own accord.</li>
+<li><strong>Whether a bound selector makes its audience single-scope.</strong> An audience whose expression
+  names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared audience row can stop
+  being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
+  as written; whether the editor should warn at the audience instead is unsettled (§7).</li>
+<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it, so it is not a selector (§7) — a question about
+  whether the feature is wanted, and not one about whether the language could hold it: a
+  predicate over a column is an ordinary operand now
+  (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
+<li><strong>Event answer retention</strong> (§12). Answers end with the event — but a dietary answer naming a
+  condition is data of exactly the same class as what the person record holds, held under weaker rules
+  and fresher. No policy yet; see
+  <a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>.</li>
+<li><strong>Cancelled events and fees</strong> (§10–11). Cancelling keeps the registrations; whether it
+  releases the obligations, refunds them, or neither is the finance module's call.</li>
+<li><strong>Presence for minors and the safeguarding record</strong> (§9). <code>was_present</code> is the "who was in
+  our care" record. Whether it needs its own retention or its own permission is unresolved —
+  and §7's refusal of <code>PRESENT</code> is the sharp edge of why that matters.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../07-events/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Events">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Events
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../data-model/00-conventions/" class="md-footer__link md-footer__link--next" aria-label="Next: Conventions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Conventions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>

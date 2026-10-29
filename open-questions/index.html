@@ -703,6 +703,61 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../domain/07-events/" class="md-nav__link">
         
@@ -720,6 +775,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1245,9 +1336,28 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../data-model/08-events/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1261,7 +1371,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3737,7 +3919,7 @@ in, never by a read-side hop limit, because a step limit's only achievement is c
 answer to return), and <strong>chain length becomes a signal</strong> — resolution has no bound, but a chain over
 three hops is reported, because four merges on one line of people is a statement about the matcher's
 queue and not about the row.
-<a href="../data-model/08-events/#10-integrity-checks">01-identity §10</a> treated "survivor itself tombstoned"
+<a href="../data-model/08a-event-guards-and-checks/#10-integrity-checks">01-identity §10</a> treated "survivor itself tombstoned"
 as a breach; with chains decided, that is normal, and only the length means anything.</p>
 <p><strong>The asymmetry worth remembering.</strong> A merge can be undone; <strong>the merged period cannot be.</strong> The four
 reversal steps in <a href="../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03 §6</a> lift the tombstone
@@ -4310,7 +4492,7 @@ instead. D-113 then <strong>deleted a row outright</strong>, and the argument th
 <strong>The bound form could never be saved; the explicit one plausibly could.</strong> <code>GUARDIANS</code> shipped with
 <code>takes_argument</code> optional and <code>argument_type</code> <code>person</code>; the item-type match is a check the <strong>binding</strong> rule reads,
 and the events module says out loud that <strong>the explicit form stays legal at the unit</strong>
-(<a href="../data-model/08-events/#selectors-that-bind-to-an-event">data-model/08</a>) — so <code>GUARDIANS(p)</code> on a
+(<a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08</a>) — so <code>GUARDIANS(p)</code> on a
 unit-scope grant is not obviously refused by any save rule I can point at. <strong>If such a leaf exists anywhere,
 deleting its row turns it into a failing leaf, which is the state D-109 retired deletion in order to prevent and
 the state D-109 said only a redacted person could still produce.</strong> What is needed is one sentence, in D-113 or at
@@ -5554,7 +5736,7 @@ one entry covers them instead of four:</p>
 <tr>
 <td><code>event.answer.view</code> / <code>event.answers.view</code></td>
 <td>a <strong>code vs its own spelling</strong> — <a href="../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a> wrote the plural while its entry was new, and §12 of <a href="../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">data-model/05</a> did too</td>
-<td><strong>reconciled.</strong> Declared: the catalog's spelling is the registered one, <strong>one code, not two</strong> (<a href="../data-model/08-events/#selectors-that-bind-to-an-event">data-model/08 §8</a>). The plural is now <strong>gone corpus-wide — grep reports zero</strong>, so this row is fixed rather than disputed</td>
+<td><strong>reconciled.</strong> Declared: the catalog's spelling is the registered one, <strong>one code, not two</strong> (<a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08 §8</a>). The plural is now <strong>gone corpus-wide — grep reports zero</strong>, so this row is fixed rather than disputed</td>
 <td>it relied on <strong>the catalog being the arbiter</strong>, and that assumption is what the third case breaks</td>
 </tr>
 <tr>
@@ -7111,7 +7293,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>42</td>
 <td>Event answers are read by that event's organizers (D-061) † — <strong>still true, and no longer a resolver clause</strong>: it is one seeded grant row (<code>event.answer.view</code>, scoped to the event, aimed at <code>ORGANIZERS</code>) instantiated per event, which D-102 calls out as the deliberate move from prose to data. <strong>An event created without its grant has organizers who can read nothing</strong></td>
-<td><a href="../data-model/08-events/#selectors-that-bind-to-an-event">data-model/08</a></td>
+<td><a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08</a></td>
 </tr>
 <tr>
 <td>43</td>
@@ -7186,7 +7368,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>57</td>
 <td>A grant's scope is the unit <strong>or exactly one item</strong>, so the seeded answer-view grant is a <strong>template instantiated per event</strong> rather than one row for every event (D-102) †</td>
-<td><a href="../data-model/08-events/#selectors-that-bind-to-an-event">data-model/08</a></td>
+<td><a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08</a></td>
 </tr>
 <tr>
 <td>58</td>

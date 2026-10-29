@@ -705,6 +705,61 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../domain/07-events/" class="md-nav__link">
         
@@ -722,6 +777,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1247,9 +1338,28 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/08-events/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1263,7 +1373,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -4107,7 +4289,7 @@ land when the grant is saved: a <strong>bound</strong> (argument-less) operand i
 grant, and only where <code>selector_type.argument_type</code> matches the item — <code>PLACED</code> on a group grant is
 refused because that item is not an event. And <code>PRESENT(&lt;event&gt;)</code> is refused outright (§1).
 The definitions, and the reason <code>PLACED</code> rather than <code>ATTENDED</code> is the capacity set, are in
-<a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>.</p>
+<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>.</p>
 <p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose, and it used to sit a
 level <em>lower</em>.</strong> Marking presence is a task handed to whoever is at the door with a clipboard;
 managing the roster is a task for the event's leadership. One permission covering both forces the
@@ -4156,7 +4338,7 @@ which had no delete permission and had six codes of its own; §5.) A draft event
 registrations is a mistake to be cleaned up; anything else is cancelled, not deleted
 (<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).
 <strong>No event with even one registration row may be deleted</strong> — Guard 2 in
-<a href="../../data-model/08-events/#guards">../data-model/08-events.md §8</a> is the rule, and cancelling
+<a href="../../data-model/08a-event-guards-and-checks/#guards">../data-model/08-events.md §8</a> is the rule, and cancelling
 is what to do instead. The obligation is not the permission's to carry: <code>event.delete</code> decides
 who may ask, and only a migration-level constraint — <code>event_registration.event_id</code> referencing
 <code>event.id</code> with no cascade — refuses the same delete when it arrives from an import or a
@@ -4172,7 +4354,7 @@ is deleted, so the sentence is now said where permissions are said: a seeded gra
 what ships is a <strong>template</strong>, and D-102 now says plainly that the event-creation path instantiates it
 beside the event row, in the same transaction as the event, and that the import owes one instantiation
 per event it writes
-(<a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>).</em>
+(<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>).</em>
 <em>What remains open is only the safety net: an event whose two writes were not one transaction has no
 organizer who can read its answers, and "these two rows exist together" is a report —</em> events with no
 answer-view grant — <em>that no layer of this project can express as a constraint</em>
@@ -5003,7 +5185,7 @@ round 10 created them:</strong></p>
   over the seeded registries, run by hand.</strong> D-104 supplied the grammar and the report; <strong>it did not
   re-point these five sentences</strong>, and that repair still belongs to whoever owns each of those pages.</li>
 <li><strong>The registered spelling of the answer-read code is the catalog's, singular, and the round said so
-  out loud.</strong> <a href="../../data-model/08-events/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>
+  out loud.</strong> <a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>
   records that D-102 wrote the plural while its own entry was new, that the two spellings were one code
   and not two, and that <strong>the catalog is the arbiter</strong> — so the seeded grant in §11 and the code in §8a
   are <code>event.answer.view</code>, and no other spelling is registered anywhere. That case was easy, because

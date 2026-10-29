@@ -1015,6 +1015,61 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../07-events/" class="md-nav__link">
         
@@ -1032,6 +1087,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1557,9 +1648,28 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/08-events/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1573,7 +1683,79 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2803,7 +2985,7 @@ sign up for a camp on the day the form closes, which is not self-correcting at a
 <li><strong>A hypothesis that is blocking an account gets an age check, and it alerts.</strong> Its victim is a
   specific person who cannot log in and whose only remaining channel is to telephone someone. The check
   is shaped like <code>field_conflict</code>'s thirty days
-  (<a href="../../data-model/08-events/#10-integrity-checks">01-identity.md §10</a>); the alerting is the point.</li>
+  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">01-identity.md §10</a>); the alerting is the point.</li>
 <li><strong>The holding message confirms nothing.</strong> It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -2920,7 +3102,7 @@ schema carries no way to catch it
 (<a href="../../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>).
 What catches it is a report of live rows that reference a tombstoned person, which is the only form of
 this failure that is visible after the fact
-(<a href="../../data-model/08-events/#10-integrity-checks">../data-model/01-identity.md §10</a>).</p>
+(<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/01-identity.md §10</a>).</p>
 <h3 id="the-security-rule-that-must-not-be-skipped">The security rule that must not be skipped<a class="headerlink" href="#the-security-rule-that-must-not-be-skipped" title="Permanent link">&para;</a></h3>
 <p>Merging unions the two people's permissions. If a bad merge is performed, the survivor
 gains the absorbed person's access. Therefore:</p>
@@ -2957,7 +3139,7 @@ closed off, not merely slower</strong> — it is a trade against a named feature
   means the matcher is producing duplicates faster than a human can settle them, which is a statement
   about the queue and not about the row. A survivor that has itself been absorbed is <em>normal</em>; only
   the length means anything
-  (<a href="../../data-model/08-events/#10-integrity-checks">../data-model/01-identity.md §10</a>).</li>
+  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/01-identity.md §10</a>).</li>
 </ul>
 <p>The reversal is four steps, and they restore the row split:</p>
 <ol>
