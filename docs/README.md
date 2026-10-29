@@ -110,7 +110,10 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [data-model/02-organization.md](data-model/02-organization.md) | `person_group`, `person_group_member` — named sets of people, their lifetimes, their dated rosters. There is no unit table; the unit is a scope. |
 | [data-model/03-membership.md](data-model/03-membership.md) | `membership_type`, `membership_request`, `membership` — the period, the renewal window, the sweep. |
 | [data-model/04-relationships.md](data-model/04-relationships.md) | `guardianship`, and the history of its right level. |
-| [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, and the grantee expression: `audience`, `audience_operand`, `selector_type`. |
+| [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`. §1–§7. |
+| [05a](data-model/05a-audience-and-grammar.md) · [05b](data-model/05b-expression-tree.md) | The grantee expression: `audience`, the grammar, `selector_type`, and the `audience_operand` tree. §8. |
+| [05c](data-model/05c-access-log-and-resolver.md) | `access_log` and the resolver. §9–§10. |
+| [05d](data-model/05d-invariants-and-seed.md) | The invariants, what ships seeded, and what is open. §11–§13. The five parts share one section numbering, so a `§` citation names a number and this table says where it lives. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |
 | [data-model/08-events.md](data-model/08-events.md) | `event`, organizers, registrations, questions, answers. |

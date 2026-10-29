@@ -321,7 +321,7 @@ discovering later:
   detects roles that should have been closed rather than the mechanism doing the blocking.
 
 **See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#6-the-resolver),
-[../data-model/05-authorization.md](../data-model/05-authorization.md#10-the-resolver).
+[../data-model/05-authorization.md](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
 
 ---
 
@@ -433,7 +433,7 @@ member automatically receives what the pack was granted, with no rows to maintai
 stale-group problem. Named groups are the escape hatch, and they carry that problem
 knowingly — nobody ever removes anyone from a group.
 
-**See:** [../data-model/05-authorization.md](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people).
+**See:** [../data-model/05-authorization.md](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people).
 
 ---
 

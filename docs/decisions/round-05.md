@@ -143,7 +143,7 @@ VALUES ('event', :camp_id,
 
 *The requirement now, without the statement: an `access_grant` may address an **audience** instead of
 a person, so "everyone who is a current member may take part in this event" is one row rather than
-one per member — [05-authorization §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people).*
+one per member — [05-authorization §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people).*
 
 An age-gated camp is a camp opened to `unit:<id>:participants` for a unit whose participants
 are that age. **This is the case audiences ([D-042](round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals))
@@ -399,7 +399,7 @@ only when `source = 'self'`. A staff registration is admitted regardless. So:
 | Capacity change | An `UPDATE` — visible and attributed |
 
 **Capacity is therefore three things at once, on purpose:** a rule for self-service, a number
-organizers can exceed, and a report. [data-model/08 §10 check 5](../data-model/08-events.md#10-integrity-checks)
+organizers can exceed, and a report. [data-model/08 §10 check 5](../data-model/01-identity.md#10-integrity-checks)
 produces rows and **that is not a failure** — an event that overruns every year has a wrong
 capacity number, and the fix is the number, not refusing people.
 
@@ -494,7 +494,7 @@ the row that cannot be reconstructed afterwards from registrations.
 
 **Presence is not registration**, and the distinction is enforced: a `not_attending`
 registration with `was_present` set is contradictory and reported
-([data-model/08 §10 check 8](../data-model/08-events.md#10-integrity-checks)).
+([data-model/08 §10 check 8](../data-model/01-identity.md#10-integrity-checks)).
 
 **A walk-in is not representable, deliberately.** A sibling who turns up on the day was not
 in the organization's care — no guardian recorded, no name on the roster — and must not
@@ -564,7 +564,7 @@ inconvenience for a quiet hazard. The reversal takes the opposite side of the sa
 **What replaces the protection** — since the wildcard is gone, reachability needs a check of
 its own. **Integrity check 18** lists permissions that **no role grants**, which is the query
 that surfaces a permission silently orphaned by the absence of a wildcard (numbering follows
-the existing list in [../data-model/05 §11](../data-model/05-authorization.md#11-invariants-to-verify).
+the existing list in [../data-model/05 §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify).
 It was written as an executable query, and this is it as decided:
 
 ```sql
@@ -580,7 +580,7 @@ SELECT p.code, p.resource
 
 *The requirement now: **every assignable permission that no role bundles is reported**, which is the
 net the `.admin` wildcard used to be; the check is item 18 of
-[05-authorization §11](../data-model/05-authorization.md#11-invariants-to-verify), and like the other
+[05-authorization §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify), and like the other
 eighteen it is now something to be verified rather than something that runs.*
 
 **What happens to the F-4 question that prompted this.** It does not dissolve — it **moves,

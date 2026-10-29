@@ -3,7 +3,7 @@
 Every permission code, its namespace, and the grant that carries it.
 
 This is the **proposed** catalog, seeded in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#12-what-the-organization-starts-with).
+[../data-model/05-authorization.md](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with).
 
 > **Round 10 rewrote this page.**
 > [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
@@ -258,7 +258,7 @@ The refusals below are operands people ask for that the registry does not carry.
 **Every expression below is printed in the canonical stored form, which brackets every bracket,
 always.** `*` and `-` bind tighter than `+`; `*` and `-` bind equally, left to right; and the stored
 string never relies on a reader who memorized that
-([../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets)).
+([../domain/06-authorization-model.md §6.2](../domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets)).
 So `event.answer.view` on an event is aimed at `ORGANIZERS`, an open camp is opened by
 `MEMBERS`, a gated office is `MEMBERS * ROLE(treasurers)`, and the exemption for one named person is
 `(MEMBERS * ROLE(treasurers)) + PERSON(jan)` — a second grant aimed at a person is the other way to
@@ -398,7 +398,7 @@ The **Sens.** column flags permissions that need extra care:
 | ⛔ | Granting it can end someone's membership or standing |
 
 These marks should drive UI warnings and the alerting in
-[../data-model/05-authorization.md](../data-model/05-authorization.md#11-invariants-to-verify).
+[../data-model/05-authorization.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify).
 **A mark grades what a grant exposes, not the table a code names**
 ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)),
 and the two new families are placed by that rule: `person_group.member.manage` takes **⚠** because a
@@ -746,7 +746,7 @@ difference is the whole reason there are two tables — and the office codes are
 > was invented to do it. That stays an open question, not an answer (§12), and until it is answered
 > the only control is the one D-091 named and D-102 sharpened: **the editor shows the people a grant
 > reaches, expanded, computed for an item, rather than the expression's name**
-> ([../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets)).
+> ([../domain/06-authorization-model.md §6.2](../domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets)).
 >
 > **The display is itself a read over people, and this catalog does not grade that yet.** Showing a
 > resolved set means enumerating which humans an expression currently covers — which is what
@@ -1265,7 +1265,7 @@ therefore reviewed in `access_grant`, not in a role editor (§7).
 Everything else the seed carries is vocabulary — the permission rows of this catalog, the
 `selector_type` operands (§1), the `grant_scope_type` rows that make an event or a group or a role an
 item, and two `is_system` audiences whose expressions are `EVERYONE` and `MEMBERS`
-([§7](../data-model/05-authorization.md#12-what-the-organization-starts-with)). **None of those is
+([§7](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with)). **None of those is
 authority**, and the sentence is repeated here because this section is where a reader looks for it.
 
 | Seeded row | Table | `is_system` | Holders at seed | What it grants |
@@ -1635,7 +1635,7 @@ round 10 created them:**
   `audience.manage` — accepting exactly that consequence — or it gets a code of its own; **no code was
   invented here to fill the gap**. The interim control is the editor showing the expanded set and the
   affected grants *before* the save, which is a user-interface requirement carried in
-  [../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets),
+  [../domain/06-authorization-model.md §6.2](../domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets),
   not a permission.
 - **Nothing bounds what a permission check costs, and that was a property of this system until this
   round.** The bound lived in `audience.selector_depth_limit` and was refused at the save, which is
@@ -1739,8 +1739,8 @@ round 10 created them:**
   — the two module pages that call `PERSON(…)` *"not in the language at all"*, one of them refusing the
   leaf while its own gate table writes it, and the domain grammar that omits it for the same reason,
   need this round's correction; the registry row and the printed grammar belong to
-  [../data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people)
-  and [../domain/06-authorization-model.md §6.2](../domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets),
+  [../data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
+  and [../domain/06-authorization-model.md §6.2](../domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets),
   not to this appendix. **The fallback survives the answer**: a second grant aimed at the person is the
   other way to write the exception, and the better one when the exception should not appear in the
   expression everybody else reads (§11).

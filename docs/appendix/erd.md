@@ -881,7 +881,7 @@ item-bound codes — `ORGANIZERS`, `PLACED`, `CONFIRMED`, `ATTENDED`, `ON_WAITLI
 optional exactly because the item being checked usually supplies it
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
-See [../data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people)
+See [../data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
 and [../domain/06-authorization-model.md §6](../domain/06-authorization-model.md#6-the-resolver).
 
 ---

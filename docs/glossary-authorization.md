@@ -88,7 +88,7 @@ that list, in either spelling**: guardianship is a channel and not a set, so a k
 of contact adults is a `GROUP(x)`
 ([D-113](decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)).
 **A count of the operands belongs only in the registry table itself**
-([data-model/05 §8](data-model/05-authorization.md#the-selector-registry)).
+([data-model/05 §8](data-model/05a-audience-and-grammar.md#the-selector-registry)).
 **Fail closed in every direction:** an operand that does not resolve is the empty set, and
 an expression that cannot be evaluated reaches nobody. **The direction is the half people
 get backwards:** a failed operand on the `+` or `*` side narrows the set and a failed
@@ -100,7 +100,7 @@ not a failure at all** — a person with no birth date is simply not in `OLDER(1
 as a person with no membership row is not in `MEMBERS`. Because **a grant's reach is not
 visible in the row that grants it**, whoever edits a grant or an audience is shown the
 expanded set of people — **for a specific item** — rather than a name
-([domain/06 §6.2](domain/06-authorization-model.md#62-audiences--an-expression-over-named-sets)).
+([domain/06 §6.2](domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets)).
 
 **Selector** — One **operand** of an audience expression: **a named operand, which means a
 row** in the seeded registry `selector_type` (`code`, `takes_argument`, `binds_to_item`,

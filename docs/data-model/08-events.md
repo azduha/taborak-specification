@@ -214,7 +214,7 @@ What *did* change is what this table is now **aimed at**. It is the extension of
 granted anything by being listed
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 **An operand is a set, not a grant** — the same sentence
-[data-model/05 §8](05-authorization.md#8-audience--grants-that-target-a-set-of-people) repeats
+[data-model/05 §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) repeats
 for named sets generally, and it is why D-062 survives the deletion of the mechanism that used
 to make organizers matter. See §8 for the seeded grant that aims at this table.
 
@@ -628,7 +628,7 @@ different questions.
 Six sets describe the people connected to an event, and each is a **selector that binds to
 the item being checked** — written with no argument inside an item-scope grant, and with an
 explicit event in every other context. They are seeded rows of `selector_type`, the registry
-of [data-model/05 §8](05-authorization.md#8-audience--grants-that-target-a-set-of-people), and
+of [data-model/05 §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people), and
 that registry is what makes the two write-path rules below checkable rather than a matter of
 tact
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree),

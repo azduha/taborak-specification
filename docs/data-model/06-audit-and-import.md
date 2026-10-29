@@ -3,7 +3,7 @@
 `audit_log`, `import_batch`, staging tables, and the redaction log.
 
 `access_log` (the authorization audit trail) is in
-[05-authorization.md](05-authorization.md#9-access_log). This document covers the
+[05-authorization.md](05c-access-log-and-resolver.md#9-access_log). This document covers the
 data-change audit trail, the legacy import pipeline, and erasure.
 
 ---
@@ -146,7 +146,7 @@ and what it means is that the guard on `audit_log` is now load-bearing in a way 
 entry about a person is as sensitive as the person data it quotes**, which is stated as a requirement
 on `audit.view`'s sensitivity mark in
 [../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system)
-and argued in [05-authorization.md §9](05-authorization.md#9-access_log) — where the case against
+and argued in [05-authorization.md §9](05c-access-log-and-resolver.md#9-access_log) — where the case against
 copying data into a less-guarded place applies to this table directly, since this table is the copy.
 The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
 worry is a table nobody audits, and here it is a table whose payloads outrank its own permission. No
@@ -231,7 +231,7 @@ because they fail in opposite directions.
 > other half — the log's access controls and retention are what is wrong about the copy, and emptying
 > the payload fixes neither while destroying the reason the table exists. See
 > [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and
-> [05-authorization.md §9](05-authorization.md#9-access_log), which argues against copying data into a
+> [05-authorization.md §9](05c-access-log-and-resolver.md#9-access_log), which argues against copying data into a
 > less-guarded place and, read against this table, names the copy in question.
 >
 > **One clause of that sentence has since been changed from the side it complained about.** The copy's
@@ -362,7 +362,7 @@ having done so, and an erasure (§4) deletes `person_attribute` rows and records
 **All three operations are updates, and an append-only guard has to be written knowing that.** Nothing in
 this repository defines an append-only trigger — D-072 removed the last of them — but the property is
 still asserted in prose, and the neighbouring trail states it as a literal refusal of updates
-([05-authorization.md §9](05-authorization.md#9-access_log)). **A blanket refusal of updates blocks the
+([05-authorization.md §9](05c-access-log-and-resolver.md#9-access_log)). **A blanket refusal of updates blocks the
 erasure scrub and the reduction job alike**, quietly, from the side of the rule that looks safest. What is
 worth keeping is not *nothing changes* but **nothing is corrected**: no write may alter what a row says
 about who did what, to which row, when; the only writes permitted after the fact are the two that remove
@@ -400,7 +400,7 @@ already asked for, now with a concrete policy in front of it instead of a blank 
 proposed at the same 24 months under
 [F-8](../open-questions.md#f-8--retention-policy-for-access_log), which still needs confirming; it is a
 weaker question than this one because that table keeps the payloads of *reads* out of itself to begin
-with ([05-authorization.md §9](05-authorization.md#9-access_log)).
+with ([05-authorization.md §9](05c-access-log-and-resolver.md#9-access_log)).
 
 **The personal-data entries in the old redaction list are gone, and they were removed rather than
 renamed.** It used to read `secret_hash`, `notes`, `custody_arrangement`, `termination_note`,
@@ -863,7 +863,7 @@ is the source's claim about a status rather than a record of the act: nobody pai
   [D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)
   adopted — and names `audience_operand` in `redacted_tables`, because a field that lists which tables the
   erasure reached is worth nothing if the one table where the person still appears is left off it. The nightly
-  orphan scan in [05-authorization.md §11](05-authorization.md#11-invariants-to-verify) is the backstop for
+  orphan scan in [05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify) is the backstop for
   this, and is not the control: the control is the erasure path itself, because a scan that reports a grant
   denying everybody every night is a report somebody stops reading.
 

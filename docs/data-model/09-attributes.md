@@ -240,7 +240,7 @@ reading them as a dependency rather than as reassurance:
 - **Therefore the guard on `audit_log` carries person data now.** An audit entry about a person is as
   sensitive as the person data it quotes, which is written as a requirement on `audit.view` in
   [../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system) and
-  argued in [05-authorization §9](05-authorization.md#9-access_log) — where the case against copying
+  argued in [05-authorization §9](05c-access-log-and-resolver.md#9-access_log) — where the case against copying
   data into a less-guarded place is, in this table, a description of the table itself. **Whether that
   single guard is the right shape is not settled here**: filtering history per entry, or splitting the
   permission into the trail's shape and its payloads, are both live options and both have costs

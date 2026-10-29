@@ -251,7 +251,7 @@ period says it existed, the member rows say who was in it, and *"who was in
 `schuzka2026-1` on 14 March 2026"* is a point-in-time read over the roster — which is why
 the rows are dated, and why that answer survives the audit trail's payload expiry.
 **A group is not an audience**: a group *states* its members and an audience *picks* them
-([Audience](glossary-authorization.md#authorization)). **Nobody writes themselves onto a roster** —
+([Audience](glossary.md#authorization)). **Nobody writes themselves onto a roster** —
 `person_group.member.manage` has no self-scoped variant and none will be added, and **no
 group is seeded**. **Moving a person between groups closes one dated row and opens
 another.** Specified in
@@ -397,7 +397,7 @@ jamboree. It has a start and an end, an optional capacity, an optional fee, and 
 cancellation is a recorded fact rather than a state. **Nothing owns an event**: there is no
 `event.org_unit_id` and no `can_event()`; the people connected to an event are named by
 **selectors that bind to it**
-([Bound operand](glossary-authorization.md#authorization)), and an event is addressed by being
+([Bound operand](glossary.md#authorization)), and an event is addressed by being
 **the item** of an item-scope grant, which is the only way anything reaches it
 ([D-064](decisions/round-05.md#d-064--there-is-no-event-status-visibility-is-the-permission-model),
 [D-102](decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).

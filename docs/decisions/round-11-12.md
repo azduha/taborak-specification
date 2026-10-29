@@ -39,7 +39,7 @@ finding: **`LIST` was kept by D-101 on the stated grounds that "a hand-written s
 derivable from anything", and D-101 was amended, late in the same round, to add `PERSON(x)`** — the operand
 that names exactly one human being. That amendment removed the table's reason and the round did not notice,
 so the last round ended with two ways to write the same set of names and a page of prose
-([data-model/05 §8, *What `LIST` is, said plainly — withdrawn by D-105*](../data-model/05-authorization.md#what-list-is-said-plainly--withdrawn-by-d-105))
+([data-model/05 §8, *What `LIST` is, said plainly — withdrawn by D-105*](../data-model/05a-audience-and-grammar.md#what-list-is-said-plainly--withdrawn-by-d-105))
 arguing that they were **two operands and not one wearing two names**. They were one. The argument was
 correct about the semantics and wrong about the conclusion, and the difference between those two is a table
 nobody needs.
@@ -230,7 +230,7 @@ adopted as its remedy, run once, on the rows this migration puts at risk.
 **Date:** refinement round 12
 **Amends:** the failure semantics described in
 [D-101](round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) and written out in
-[data-model/05 §8](../data-model/05-authorization.md#the-selector-registry)
+[data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
 
 **Decision.** Nothing about resolution changes. An operand whose argument names nothing — a deleted
 person, a renamed role, a merged-away id — **is the empty set**, and `EVERYONE - PERSON(x)` with a dead
@@ -278,7 +278,7 @@ records the premise that makes a notification enough: the people writing these e
 who know what they say.
 
 **See:** [domain/06 §6.4](../domain/06-authorization-model.md) for the rules that make the tree safe,
-[data-model/05 §8](../data-model/05-authorization.md#the-selector-registry) for where the empty-set rule is
+[data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry) for where the empty-set rule is
 stated, and [F-15](../open-questions.md#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it),
 which this does not answer — a report is not a preview and neither is free.
 
@@ -467,7 +467,7 @@ sentence those pages should always have carried — the count this corpus keeps 
 things to scan, not the count of values a column may hold.
 
 **See:** [domain/06 §6 and §6.1](../domain/06-authorization-model.md) for the language and the corrected
-argument, [data-model/05 §8](../data-model/05-authorization.md#the-selector-registry) for the fourteen-row
+argument, [data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry) for the fourteen-row
 registry, [permission-catalog §1](../appendix/permission-catalog.md#1-conventions) for the leaf list,
 [F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it), which closes on its
 age half, and [EV-1](../open-questions.md#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule),

@@ -207,7 +207,7 @@ size, so nothing computed here changes — but a load-bearing number in a decisi
 counted, and this one was not.
 
 **See:** [F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request) and its
-invalidation table, which this replaces, and [data-model/05 §10's cache section](../data-model/05-authorization.md#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer).
+invalidation table, which this replaces, and [data-model/05 §10's cache section](../data-model/05c-access-log-and-resolver.md#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer).
 
 ---
 

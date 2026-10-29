@@ -135,7 +135,7 @@ and which must not become the history of record for anything
 - **A member row whose period lies outside its group's period is reported, not refused.** The two periods
   are two facts and D-098 keeps both without ruling that one contains the other, so containment is
   assumed here and nowhere decided. **Status:** assumption — see integrity check 2, and
-  [§8](#8-open-issues).
+  [§8](../domain/04-organization-structure.md#8-open-issues).
 
 **Who enforces the overlap rule now.** [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
 does not let a rule keep a mechanism it no longer has, so the answer is specific. **The migration layer**,
@@ -211,7 +211,7 @@ table they touch:
 - **The polymorphic id has no foreign key**, exactly as `access_grant.scope_id` accepted it
   ([D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)),
   and the compensating orphan check is specified once in
-  [05-authorization.md §11](05-authorization.md#11-invariants-to-verify). This page does not re-state it.
+  [05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). This page does not re-state it.
 
 **Ending a group is refused at save while something live names it, and the reason is the subtraction, not
 the grant.** [D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience) rules it for
@@ -250,7 +250,7 @@ column that is NULL until somebody takes a register would revoke a child's acces
 because a volunteer forgot a tick box.
 
 **A deny that matches no live allow is dead weight and is reported** — the check is specified in
-[05-authorization.md §11](05-authorization.md#11-invariants-to-verify) and applies to group-scope denies as
+[05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify) and applies to group-scope denies as
 to any other, because a deny that denies nothing is how a stale restriction survives its reason (D-099).
 
 ---
@@ -379,7 +379,7 @@ write path still does (D-081's rule, D-101's requirement). That is check 4 below
    which — F-10 being unanswered — is the state of things today.
 2. **A member row lying outside its group's own period** (§2). A list to read rather than a breach: the two
    periods are two facts and containment is assumed here, not ruled
-   (**Status:** assumption — [§8](#8-open-issues)). A large count means people are editing old rows
+   (**Status:** assumption — [§8](../domain/04-organization-structure.md#8-open-issues)). A large count means people are editing old rows
    instead of opening new ones.
 3. **A group name that collides** — with another group, with a role, with a set `audience.code`, or with a
    reserved `selector_type.code` (§1). Reports the collisions the write path should have refused; a non-zero

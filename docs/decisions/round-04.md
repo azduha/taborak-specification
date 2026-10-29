@@ -244,7 +244,7 @@ which assignment. It is a small list of people who keep authority without paying
 should be as visible as the `system.admin` holders already are.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
-[../data-model/05 §12](../data-model/05-authorization.md#12-what-the-organization-starts-with),
+[../data-model/05 §12](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with),
 [../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
 
 ---
@@ -578,7 +578,7 @@ asked again.
 
 **Also removed with it:** integrity check 7 (households with no address and no billing
 contact), which has nothing left to check; the `household` bullet in
-[data-model/04 §7](../data-model/04-relationships.md#7-open-issues); and D-9 in
+[data-model/04 §7](../domain/02-actors.md#7-open-issues); and D-9 in
 [open-questions.md](../open-questions.md).
 
 **See:** [../data-model/04-relationships.md](../data-model/04-relationships.md),

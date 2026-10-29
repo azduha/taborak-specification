@@ -376,7 +376,7 @@ tidiness — it is a trade against a feature someone named.
    than **three hops** is reported. Four merges in a row on one line of people does not mean the data
    is odd, it means the matcher is producing duplicates faster than a human can settle them, which is a
    statement about the queue and not about the row.
-   [01-identity.md §10](../data-model/01-identity.md#10-integrity-checks) stated this as a breach and
+   [01-identity.md §10](../data-model/08-events.md#10-integrity-checks) stated this as a breach and
    is corrected: with chains decided, *a survivor that has itself been absorbed is normal*, and only the
    length means anything.
 
@@ -479,7 +479,7 @@ B-3 already names, now with a concrete policy to review rather than a blank.
 
 **Also decided from here:** `access_log` takes the same window as `audit_log`'s payloads as a proposed
 default (**F-8**, which needs your confirmation, and which is a weaker question because
-[05-authorization §9](../data-model/05-authorization.md#9-access_log) keeps the payloads of *reads*
+[05-authorization §9](../data-model/05c-access-log-and-resolver.md#9-access_log) keeps the payloads of *reads*
 out of that table to begin with).
 
 **Closes:** [B-3](../open-questions.md#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short).

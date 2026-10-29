@@ -13,7 +13,7 @@ audience is **an expression over named sets of people**, stored as a tree of bin
 by a grant
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 Fields, storage rules and the write-path checks are in
-[data-model/05 §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people);
+[data-model/05 §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people);
 what belongs here is the language, and why it is shaped like this.
 
 > **Author in sets. Evaluate per person.**
@@ -86,7 +86,7 @@ expression in exactly the sense `MEMBERS * GROUP(cubs) * PERSON(a)` is, and it p
 below with nothing added to them.
 
 **This block and §*The selectors* are copies of the registry** in
-[data-model/05 §8](../data-model/05-authorization.md#the-selector-registry), **which is the registry** —
+[data-model/05 §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), **which is the registry** —
 the seeded rows, not the prose. An operand that is not a seeded row does not exist however natural it
 looks in a grammar, and copies of a table drift from it
 ([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it));
@@ -181,7 +181,7 @@ An operand aimed at a child's guardians would therefore offer, one code at a tim
 those people already hold. A kept list of a child's contact adults is a `person_group`.
 
 **Thirteen selectors, and this table is a copy of
-[data-model/05-authorization.md §8](../data-model/05-authorization.md#the-selector-registry), which is the
+[data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), which is the
 registry.** Which selectors ship is settled: these thirteen, seeded, organization-read-only, and a
 fourteenth is a decision entry plus a seed row
 ([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)).

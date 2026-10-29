@@ -374,7 +374,7 @@ is how "may this person edit event 1204?" is asked. `at` defaults to now. Where 
 touched has an owner, the caller passes the owner too, because one step below needs to know whose
 record this is. The answer is allowed or denied; the function has no other output, and no part of it
 is stored. (Field names and the exact signature are in
-[data-model/05 §10](../data-model/05-authorization.md#10-the-resolver).)
+[data-model/05 §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).)
 
 The steps run in this order:
 
@@ -608,7 +608,7 @@ so a cache keyed by it would be a stored answer to "who was at this event", whic
 declined to make permanent.
 
 **What may never be stored again is invariant 19** (§11 of
-[data-model/05-authorization.md](../data-model/05-authorization.md#11-invariants-to-verify)): **no row,
+[data-model/05-authorization.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)): **no row,
 table or field may map a person — or a person and a code, or a person and an item — to a permission
 answer.** Its enforcement is structural, which is the best kind this corpus has: **the schema has
 nowhere to put one.** The residue is named rather than glossed — an implementer who wants a cache back is

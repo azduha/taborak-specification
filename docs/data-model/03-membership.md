@@ -546,7 +546,7 @@ in the expression or leaving it out, and the expression is a row that can be rea
 *Corrected in this round:* an earlier draft of this page read D-100's `PERSON(y)` as shorthand for the
 audience's own `LIST`, on the grounds that the seeded `selector_type` registry did not carry the code. **The
 registry was the side that was wrong** — `PERSON` was seeded then, as the thirteenth row
-([data-model/05 §8](05-authorization.md#the-selector-registry), [D-101's amendment](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
+([data-model/05 §8](05a-audience-and-grammar.md#the-selector-registry), [D-101's amendment](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
 so `MEMBERS * ROLE(x) + PERSON(y)` parses as written. **`LIST` was never a substitute**, which was the part
 worth remembering at the time: it is one set belonging to one audience, so `+ LIST` brings everybody on it and
 nothing on that list can except one person from itself. **That confusion can no longer recur**, because
@@ -603,7 +603,7 @@ none of which is the resolver:
   ~~D-101 helps rather than excuses it — a cache may key on an operand and reuse it across every grant~~ — and
   the yearly expiry sweep keeps every other thing it had to do; what it no longer has to do is invalidate
   anything, because
-  [§11's invariant 19](05-authorization.md#11-invariants-to-verify) forbids the row that would need it.
+  [§11's invariant 19](05d-invariants-and-seed.md#11-invariants-to-verify) forbids the row that would need it.
 - **A lapse silently removes access** — from exactly those grants whose expression names `MEMBERS`,
   and from
   none of the others. "Why can't I see this?" now has an answer that is a date *and* a line of grant
@@ -691,7 +691,7 @@ for cases no constraint rejects at the write.
 **Two checks this module deliberately does not hold.** The one [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
 asks for — a live `deny` whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
-[05-authorization.md §11](05-authorization.md#11-invariants-to-verify). The no-overlap invariant over
+[05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). The no-overlap invariant over
 `person_group_member` belongs to the groups module, [02-organization.md §6](02-organization.md#6-integrity-checks).
 Naming both here is to stop either being written twice and drifting.
 
@@ -719,7 +719,7 @@ and membership is ageless, so there are no age limits to seed (D-038).
 
 **Nothing else is seeded here.** The `counselors` role that D-100 seeds — shipped `is_system`, so an
 editor refuses to delete it — is a row of the authorization module
-([05-authorization.md §12](05-authorization.md#12-what-the-organization-starts-with)) and not of this one,
+([05-authorization.md §12](05d-invariants-and-seed.md#12-what-the-organization-starts-with)) and not of this one,
 and it is a **set** that confers nothing until a grant names it: no more than a membership type has ever
 conferred.
 

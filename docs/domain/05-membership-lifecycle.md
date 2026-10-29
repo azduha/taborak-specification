@@ -456,7 +456,7 @@ those people when somebody opens them — affordable at the size
 [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)
 states, and precisely what that entry's trigger reopens, with D-114 naming the reopen answer: materialize
 `effective_permission` per person **and call it that**.
-See [data-model/05 §10](../data-model/05-authorization.md#10-the-resolver).
+See [data-model/05 §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
 
 ---
 

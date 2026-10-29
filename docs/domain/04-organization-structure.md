@@ -276,7 +276,7 @@ operand bracketed, a leaf left bare:
 A person who must be excepted is subtracted as themselves, and the exemption belongs `+ PERSON(y)` inside
 the very grant that carries the rule, so the exception is read next to the thing it exempts. The registry of
 named operands lives in one table —
-[the selector registry](../data-model/05-authorization.md#the-selector-registry) — and this page does not
+[the selector registry](../data-model/05a-audience-and-grammar.md#the-selector-registry) — and this page does not
 recite its row count.
 
 The posture is **opt-in per grant**, so a grant written as `ROLE(TREASURERS)` with no `MEMBERS` authorizes a

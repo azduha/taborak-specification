@@ -210,8 +210,8 @@ whose direction the narrowed bump set needs), [D-105](round-11-12.md#d-105--ther
 [D-081](round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
 — a rule that outlives its mechanism must say who enforces it now, and this entry deleted the mechanism on
 purpose and wrote the answer down. **The invariant lives in
-[`data-model/05` §11](../data-model/05-authorization.md#11-invariants-to-verify) as check 19, and the read path it
-protects is [§10 of the same page](../data-model/05-authorization.md#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer).**
+[`data-model/05` §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify) as check 19, and the read path it
+protects is [§10 of the same page](../data-model/05c-access-log-and-resolver.md#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer).**
 **And the finding that decided it came from another module's file**
 ([`data-model/03-membership.md` §6](../data-model/03-membership.md#6-membership-and-the-authorization-system)),
 which is where a reader should look for the shape of this failure again.

@@ -554,7 +554,7 @@ ordering and promotion mechanics.
 there are two spare tents should not be blocked by a number they cannot edit mid-camp
 ([D-065](../decisions/round-05.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it)).
 The overrun is permitted, attributed, and **reported**
-([data-model/08 §10](../data-model/08-events.md#10-integrity-checks)): an event running over
+([data-model/08 §10](../data-model/01-identity.md#10-integrity-checks)): an event running over
 its stated capacity is a fact the organization can see, not a state it cannot reach.
 
 The mechanism of *how* an organizer gets past the number is unchanged by round 10 and was
