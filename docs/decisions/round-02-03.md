@@ -91,7 +91,7 @@ Holding a position grants nothing by itself; `is_leadership` only *suggests* a
 `role_assignment`.
 
 **See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-what-this-page-held-before-round-10),
-[../domain/04-organization-structure.md](../domain/04-organization-structure.md#6-appointments-which-no-longer-end-at-a-position).
+[../domain/04-organization-structure.md](../domain/04-organization-structure.md#6-appointments).
 
 ---
 

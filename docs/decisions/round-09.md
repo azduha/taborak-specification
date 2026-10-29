@@ -106,7 +106,7 @@ arms.
 
 **See:** [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
 [domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
-[domain/04-organization-structure.md §4](../domain/04-organization-structure.md#6-appointments-which-no-longer-end-at-a-position).
+[domain/04-organization-structure.md §4](../domain/04-organization-structure.md#6-appointments).
 
 ---
 

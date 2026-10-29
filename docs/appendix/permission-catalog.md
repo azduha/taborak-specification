@@ -652,7 +652,7 @@ named person under `role.assign`, and the only thing that turns it into authorit
 `ROLE(x)`. *What is genuinely lost is the elected-versus-appointed distinction as stored data*
 (D-100): it survives only as offices the organization invents — `elected_council` beside
 `appointed_it` — or not at all
-([../domain/04-organization-structure.md §6](../domain/04-organization-structure.md#6-appointments-which-no-longer-end-at-a-position)).
+([../domain/04-organization-structure.md §6](../domain/04-organization-structure.md#6-appointments)).
 
 > `org_unit.restructure` was separated from routine editing because a split rewrites the answer to
 > historical questions. **Reparenting had already been taken out of it** — a unit could not change
