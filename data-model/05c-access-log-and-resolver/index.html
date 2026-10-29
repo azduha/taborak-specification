@@ -2199,7 +2199,7 @@ pages cite them by number and their anchors are built from them: <a href="../05-
 <tr>
 <td><code>authorization_channel</code></td>
 <td>enum: <code>deny</code>, <code>ownership</code>, <code>guardianship</code>, <code>unit_grant</code>, <code>item_grant</code>, <code>none</code>, or absent</td>
-<td>Which channel answered this. Makes the audit answerable: "by what authority did this person do that?" <code>deny</code> records that a deny row defeated the allows; <code>none</code> records that nothing answered at all. <strong><code>role</code> and <code>system</code> are gone from this enum</strong> — there is no role channel to name (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>), and <code>system</code> was never a channel rather than a namespace. <strong>An answer of <code>role</code> in an old row is now unreadable by the model that reads this table</strong>, which is the honest state of a historical value: the audit trail keeps the word that was written, and nothing can keep a channel that no longer exists.</td>
+<td>Which channel answered this. Makes the audit answerable: "by what authority did this person do that?" <code>deny</code> records that a deny row defeated the allows; <code>none</code> records that nothing answered at all. <strong>Six values, and <code>role</code> is not one of them</strong>: there is no role channel to name (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>), and <code>system</code> was never a channel rather than a namespace. <strong>An answer of <code>role</code> in an old row is now unreadable by the model that reads this table</strong>, which is the honest state of a historical value: the audit trail keeps the word that was written, and nothing can keep a channel that no longer exists.</td>
 </tr>
 <tr>
 <td><code>authorization_ref_id</code></td>
@@ -2293,39 +2293,39 @@ rather than a log.</strong> A record saying "person 100 changed person 200's add
 <em>what</em> and <em>who</em>. A record that also names the <code>guardianship_permission</code> row that
 authorized it answers <em>why they were allowed to</em> — and whether that authority was valid at
 the time. When a custody dispute arises eighteen months later, that is the question asked.</p>
-<p><strong>The channel enum got smaller in round 10 and the audit answer got better, which is worth saying in
-the same breath.</strong> <code>item_grant</code> and <code>unit_grant</code> are now the only two ways a permission is granted,
-and both name a row the auditor can open. Under the ladder, a row saying <code>role</code> plus an assignment id
-answered "by what authority" with a <em>bundle</em> — the auditor still had to expand <code>manage</code> into codes to
-learn what the person could actually do, and the table doing the expansion was <code>permission_level</code>.
-<strong>Now the row names the grant, and the grant names one code.</strong> That is the one place where deleting
-the levels makes the trail more useful rather than less.</p>
+<p><strong>Every value in that enum names a row the auditor can open.</strong> <code>unit_grant</code> and <code>item_grant</code> are the two
+ways a permission is granted, and a grant names one code, so the row answers "by what authority" with the
+authority itself. <strong>Why that is worth stating:</strong> an audit answer naming a <em>bundle</em> is not an answer — the
+reader still has to expand it into codes to learn what the person could actually do, and the table that
+used to do the expanding holds nothing
+(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</p>
 <p><strong><code>denied</code> results are logged too.</strong> A series of denials is the signature of someone
 probing for access they do not have. Logging only successes discards the signal.</p>
-<p><strong><code>before_state</code>/<code>after_state</code> must be redacted, and the sentence is the reason this document is
-cited everywhere else.</strong> Copying a value out of a guarded record into a table guarded by different
+<p><strong><code>before_state</code>/<code>after_state</code> must be redacted before the insert.</strong> Copying a value out of a guarded record into a table guarded by different
 people, on a different path, for longer than the record is kept, produces a copy with less protection
 than the original — and the copy is the one that gets read by auditors, exported for reports and
 mirrored into backups. Redaction therefore happens <strong>before the insert</strong>, in the logging function, and
-never in a job that might not run — the ordering is the part of this rule with teeth, and it survives
-<a href="../../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
-taking the trigger that used to enforce it.</p>
-<p><strong>One clause of that sentence is now bounded, and the bounded half is not the half that mattered.</strong>
-<em>For longer than the record is kept</em> was written when this table's state columns and <code>audit_log</code>'s
-payloads were both permanent. If
-<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a> is confirmed, the state columns expire on
-the window
+never in a job that might not run — the ordering is the part of this rule with teeth. <strong>No database
+constraint can carry this one</strong>, because a constraint sees the row after the values are already in it, and
+this rule is about never letting them in: it is the application's obligation, and it is stated with the
+redactor itself in
+<a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>. This is a rule of
+<a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>'s last kind — no automatic
+enforcement reaches it — so it is written as an obligation, not as a guarantee.</p>
+<p><strong>A retention window does not weaken this rule, and it is worth seeing why.</strong> If
+<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a> is confirmed, this table's state columns
+expire on the window
 <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
-proposes for the change trail, which inverts that arithmetic: the copy becomes shorter-lived than the
-business row it was copied from. The conclusion is unmoved, because what the rule guards is the
+proposes for the change trail, so the copy is <em>shorter-lived</em> than the business row it was copied from.
+The conclusion is unmoved, because what the rule guards is the
 <em>audience</em>. A window decides how long a copied value is readable; it does not decide who may read it
 while it is readable, and the readers here are whoever holds <code>audit.view</code>, not whoever may see the
 record. A sensitive value copied into a less-protected table is a protection failure on the day it is
 copied, not only for as long as it then survives.</p>
-<p><strong>How far the argument reaches, now that the person record has no sensitive corner.</strong> It is an argument
-about <em>the copy's guard</em>, not about the copy's contents, and reading it as an instruction to empty
-payloads is the mistake this section made once and corrected. <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-removed the subset that a field list selects from — everything about a person beyond name, gender and
+<p><strong>How far the argument reaches.</strong> It is an argument
+about <em>the copy's guard</em>, not about the copy's contents, so it is <strong>not</strong> an instruction to empty
+payloads. <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+refused the subset a field list would select from — everything about a person beyond name, gender and
 age is a value in <code>person_attribute</code> (<a href="../09-attributes/">09-attributes.md</a>) — which rules out
 name-keyed scrubbing of personal data for good: there is no list, and <code>allergy</code> is not on it. It leaves
 two conclusions, and they point in opposite directions from the obvious one:</p>
@@ -2347,7 +2347,7 @@ two conclusions, and they point in opposite directions from the obvious one:</p>
 <p><strong>Append-only enforcement:</strong></p>
 <p>Any update or delete against <code>access_log</code> is refused row by row, before it happens, with an
 error saying the table is append-only. Nothing is left to the application remembering this.</p>
-<p><strong>That sentence has two exceptions, and written as a blanket refusal it defeats the retention policy.</strong>
+<p><strong>Two operations are excepted, and a blanket refusal would defeat the retention policy.</strong>
 Emptying a row's payloads once it passes the window below is an update, and so is scrubbing one person's
 values out of a row after an erasure. Neither is a correction: nobody is making a version of this table
 right, and the answer the row gives to <em>who, what, when, by what authority</em> is untouched in both cases.
@@ -2358,21 +2358,19 @@ and every other field on the row is immutable. The literal version of this rule 
 one, because it fails silently and what it fails is the policy. The same reasoning applies to
 <code>audit_log</code> and is stated with the operations themselves in
 <a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>.</p>
-<p><strong>Retention: the same window as <code>audit_log</code>'s payloads, as a proposal rather than a decision.</strong> This
-paragraph used to read <em>"never delete them — the partition retention policy is a legal question, not a
-technical one"</em>, and the second half of that is still exactly right. What has changed is that the
-decision which bounded the change trail's payloads
-(<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
-proposes the same window here — <strong>24 months on the state columns, rows kept, 12 months as the floor</strong> —
-and records it as <a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>, <strong>which still needs
-confirming</strong>. Until it is confirmed, that is a default awaiting a person and not this document's
-position.</p>
+<p><strong>Retention: a proposal, not this document's position.</strong> The window that
+<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+puts on <code>audit_log</code>'s payloads is proposed here too — <strong>24 months on the state columns, rows kept,
+12 months as the floor</strong> — and it is recorded as
+<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>, <strong>which still needs confirming</strong>.
+Whether an audit trail is bounded at all is a legal question rather than a technical one, so until someone
+confirms it this is a default awaiting a person.</p>
 <p><strong>Why the question is weaker here, which is structural and not luck: this table does not hold the
 contents of reads.</strong> <code>before_state</code> and <code>after_state</code> are populated for write actions only, so a read
 records <em>who asked, for what, under which permission, through which channel, and whether it was
 allowed</em> — and stops. Recording what the read <em>saw</em> would copy every record a permitted glance touched
-into a table read by a wider audience than the record itself, which is the exact act this section
-argues against two paragraphs above. So the window here protects considerably less than it protects
+into a table read by a wider audience than the record itself, which is the exact act the redaction rule
+above exists to prevent. So the window here protects considerably less than it protects
 over in <code>audit_log</code>, and what survives it is everything this table was built to answer. <strong>The valuable
 fact about a read is that it happened and by what authority, and that is precisely the part no
 reduction touches.</strong></p>
@@ -2402,14 +2400,12 @@ and one made to an audience the person is in. Any one grant row meeting all of t
 <li>It has started as of <code>at</code> and has not ended on <code>at</code>.</li>
 <li>The grantee is this person, or an audience containing them at <code>at</code> for this item (§8).</li>
 </ol>
-<p><strong>Two of the old seven conditions are gone, and both were the level.</strong> There is no
-<code>permission_level</code> row to join and no rank to compare, which means the helper now asks a question with
-a yes-or-no answer instead of one with a threshold. <strong><code>level_satisfies()</code> is deleted with them</strong> — it
-existed only to compare a grant's level with the level a permission required at a scope type, and with
-no levels its arguments do not exist.</p>
+<p><strong>The question has a yes-or-no answer, not a threshold.</strong> There is no rank to compare and nothing to join
+in order to get one: a grant carries exactly one code and either it is the checked code or it is not
+(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</p>
 <p><strong><code>person_in_audience(person, audience, at, item)</code></strong> — is the person in the value of this audience's
-expression on this date? It gained the <code>item</code> argument in this round, because a bound operand means
-different people on different items and there is no other way to tell it which event it is asking
+expression on this date? The <code>item</code> argument is there because a bound operand means
+different people on different items, and there is no other way to tell it which event it is asking
 about (§8, <em>Evaluation</em>). An unresolvable operand is the empty set; an expression that cannot be
 evaluated reaches nobody.</p>
 <p><strong><code>operand_holds(person, operand, at, item)</code></strong> — the evaluator's one recursive step: a leaf asks its
@@ -2422,30 +2418,21 @@ ids (§8, <em>Author in sets</em>).</p>
 arguments carried straight through, because a nested audience means the same people on the same date
 for the same item, and <strong>the same predicate shape, because nesting is the moment at which a lazy
 implementation would most plausibly decide to materialize the inner set and test containment.</strong> That is
-§11's check 16 and it covers recursion explicitly. <strong>What was asserted here until round 14 was that the operand
-cache keyed on <code>(person, selector_kind, selector_arg_id, …)</code> already had an entry for a nested audience, which is
-what made the recursion shallow in practice and not merely shallow in argument. That sentence is retired with the
-cache</strong> (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>), and <strong>the replacement should be stated at its real size rather than at the old one:</strong>
-within a request the memo resolves a recurring named operand once, so a screen that asks the same question about
-the same person several times pays the depth once; <strong>across requests the recursion runs to whatever depth somebody
-typed, every time.</strong> Since D-105 deleted the depth bound that is the honest price of nesting, and it is why §<em>What
-each operand costs</em> and the width report of §<em>The cost of composition</em> are the controls here rather than a cache
-that would have amortized it away. <strong>The recursion terminates
-by construction, not by a counter</strong>: a cycle through <code>AUDIENCE</code> leaves cannot be saved (§8), so a
-read-path depth cap would be a thing that decides who a grant reaches in exactly the case where the
-data is already wrong. <strong><a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-did not change this sentence; it changed what the sentence is standing on.</strong> It used to be a back-up for a
-guard that existed at save time, and now the save-time cycle walk <em>is</em> the guard and this refusal <em>is</em> the
-whole design — which is why the walk must not be relaxed along with the bound it travelled with, and why
-"the recursion terminates by construction" is a claim about a write-path check rather than about a number.</p>
-<p><strong>Deleted from this list:</strong> <code>scope_exposure_covers_assignment(org_unit_id, role_assignment_id, at)</code>
-(the exposure table is gone, D-097) and <code>person_holds_gate_exempt(person, at)</code> (the gate is gone,
-D-100). <strong>The second deletion retires a hazard with it.</strong> That helper had to be carefully kept <em>out</em>
-of <code>can()</code> — routed through the resolver, a lapsed holder of the exemption would be denied by the very
-rule it existed to lift, "a lockout with no error message, on the one day of the year it would hurt
-most". <strong>There is no such lockout any more, because there is no gate to lapse through.</strong> The special
-case is gone rather than fixed, and the lockout D-051 existed to survive is listed as retired below,
-in §12.</p>
+§11's check 16 and it covers recursion explicitly. <strong>What the recursion costs:</strong> within one request the memo
+resolves a recurring named operand once, so a screen that asks the same question about the same person
+several times pays the depth once; <strong>across requests it runs to whatever depth somebody typed, every time</strong>
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+That is the honest price of a tree with no bound on its height, which is why §<em>What each operand costs</em> and
+the width report of §<em>The cost of composition</em> are the controls here. <strong>The recursion terminates by
+construction, not by a counter</strong>: a cycle through <code>AUDIENCE</code> leaves cannot be saved (§8), so a read-path
+depth cap would be a thing that decides who a grant reaches in exactly the case where the data is already
+wrong. <strong>The save-time cycle walk is therefore the whole guard, and it must not be relaxed</strong>: "the
+recursion terminates by construction" is a claim about a write-path check, not about a number.</p>
+<p><strong>No channel of <code>can()</code> consults membership, and that is a guardrail rather than an omission.</strong>
+A membership test performed inside the resolver is an invisible lockout: somebody whose membership lapsed
+is denied by the rule that was supposed to exempt them, with no error message, on the one day of the year
+it would hurt most. Nothing in this function asks the question, so nothing can be mis-routed — membership
+is <code>MEMBERS</code>, an operand in an expression, evaluated where expressions are evaluated (§8).</p>
 <p>The single authorization entry point. One implementation, used everywhere. Algorithm:
 <a href="../../domain/06-authorization-model/#6-the-resolver">../domain/06-authorization-model.md</a>.</p>
 <p><strong><code>can(person, permission_code, scope_type, scope_id, at, owner_person_id)</code></strong> returns allowed
@@ -2455,9 +2442,10 @@ or denied. <code>scope_type</code> and <code>scope_id</code> are optional, <code
 falls through, so a step never gets to contradict an earlier one. <strong>The deny step must run first, and
 that is the only ordering with a consequence for the answer.</strong> The allow steps are alternatives
 producing the same boolean, so their order decides <strong>which channel the audit names</strong> and how quickly
-the answer arrives — never what the answer is. That is exactly what the deletion of locality means,
-and it is worth stating here because "the tiers are ordered and the first sufficient one wins" is a
-sentence this document repeated for nine rounds and no longer believes.</p>
+the answer arrives — never what the answer is. <strong>That is what having no locality means</strong>
+(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>):
+the allow steps are not ordered by strength, and "the nearest one wins" is not a sentence about this
+function.</p>
 <ol>
 <li><strong>Look the permission up by code.</strong> If no permission carries that code, <strong>return false</strong> —
    an unknown permission is a deny, and it is settled before anything else is considered.</li>
@@ -2480,18 +2468,18 @@ sentence this document repeated for nine rounds and no longer believes.</p>
 </li>
 <li>it sits on the exact thing being checked — same scope type, same id.</li>
 </ol>
-<p><strong>There is no third bullet, and the second half of that sentence is the round.</strong> The old list had a
-   third: <em>it sits on a unit and the check is about that same unit</em>, with a note that a deny on a unit
-   covered <strong>only</strong> that unit because authority does not flow down. That case is now the first bullet —
-   there is one unit and it is not a row — and the ancestor walk the note refused to perform has no
-   function left to refuse it. Any such grant: <strong>return false.</strong>
+<p><strong>A deny matching either bullet is the whole answer: return false.</strong> There is no case in which a deny
+   at the unit reaches less than everything under it, because there is nothing under it to reach — the unit
+   is a scope and there is exactly one of it
+   (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>) — so no
+   walk between scopes stands between a restriction and the item being checked.
 4. <strong>Channel 1 — a grant at the unit.</strong> <code>grant_satisfies(person, 'unit', NULL, permission, at)</code>.
-   Because a unit grant reaches every item of every type (§6), this one step is the tier that used to
-   be three: the organization grant, the unit grant, and the exposure branch that connected them.
+   Because a unit grant reaches every item of every type (§6), this one step covers every item the
+   organization has.
 5. <strong>Channel 2 — a grant on this exact item.</strong> <code>grant_satisfies(person, scope_type, scope_id,
-   permission, at)</code>, reached only when both a scope type and a scope id were supplied. <strong>This is the
-   step <code>can_event()</code> used to precede</strong>, and nothing precedes it now: a unit grant reaches the item,
-   an item grant reaches the item, and there is no owner to ask
+   permission, at)</code>, reached only when both a scope type and a scope id were supplied. <strong>Nothing is
+   consulted before it</strong>: a unit grant reaches the item, an item grant reaches the item, and there is no
+   owner to ask
    (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
 6. <strong>Channel 3 — ownership.</strong> If an owner was supplied and that owner resolves to this same
    person, <strong>return true</strong>. Your own data.
@@ -2507,69 +2495,63 @@ sentence this document repeated for nine rounds and no longer believes.</p>
    <a href="../04-relationships/#4-how-the-resolver-uses-these-tables">04-relationships.md §4</a>; the reasoning
    for both halves is
    <a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>.</p>
-<p>Two properties of this channel survive, and the third changed shape:</p>
+<p>Two properties of this channel:</p>
 <ul>
 <li><strong>Entered by shape, not by namespace</strong> (D-079, following D-074). A parent correcting their
      child's address is checked under <code>person.address.edit</code> — an ordinary, un-prefixed code — and
      still routes here. A permission added next year for a field a guardian must edit is covered
      the day the field exists, provided it is marked <code>write</code>, which is the seeding default (§2).</li>
-<li><strong>Silent rather than final.</strong> Under the old prefix rule this channel gave the last word.
-     It still does not take it, and with a boolean answer there is no longer even a shortfall to
-     fall through: a guardian whose right does not cover the code simply does not answer, and the
-     actor's own grants get their turn. <strong>A real prohibition is still possible and still absolute —
-     it is a deny row, step 3.</strong></li>
-<li>~~<strong>Gate-exempt.</strong>~~ <strong>Withdrawn by <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
-     and this was the property that made the channel need explaining.</strong> A guardian whose own
-     membership lapsed had not stopped being the child's guardian, so the gate had to be declared not
-     to apply here. Now nothing is declared, because no channel is gated: <code>MEMBERS</code> is an operand some
-     writer typed into some expression, and guardianship is not an expression.</li>
+<li><strong>Silent rather than final.</strong> The channel never takes the last word: a guardian whose right does not
+     cover the code simply does not answer, and the actor's own grants get their turn. There is no partial
+     answer to fall through either, because the channel returns a yes and nothing else. <strong>A real
+     prohibition is still possible and still absolute — it is a deny row, step 3.</strong></li>
 </ul>
-<p><strong>The rest of this channel's older commentary survives unchanged and is not repeated here:</strong> the
-   guard must not be weakened into "the subject is a minor" (the existence of a guardianship row is the
-   whole test, and an age lookup would put a branch in the resolver that D-070 and D-077 rule out), and
-   personal attributes reach this resolver through no new door — everything beyond name, gender and age
+<p><strong>Two refusals belong to this channel.</strong> The guard must not be weakened into "the subject is a minor":
+   the existence of a guardianship row is the whole test, and an age lookup would put a branch in the
+   resolver that D-070 and D-077 rule out. And personal attributes reach this resolver through no new
+   door — everything beyond name, gender and age
    is descriptive data read by <code>person.view</code> and written by <code>person.edit</code> through the channels above,
    with no <code>attribute.*</code> read permission, no fifth channel, and no branch on <em>what a value is about</em>
    (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes.md §4</a>,
    <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>).
-   <strong>The temptation that paragraph refuses — "a leader may see allergy data, but only for the children
-   in their unit" — has lost half its grammar in round 10: there is no "their unit" to refer to</strong>, and
-   what remains of the refusal is the older and better reason that a branch on content is the privileged
-   medical subset returning through the resolver after D-083 refused it through the permission list.
+   <strong>The temptation this channel is offered — "a leader may see allergy data, but only for the children in
+   their unit" — is refused twice.</strong> There is no "their unit" for such a rule to refer to
+   (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>), and the
+   older reason stands on its own: a branch on <em>what a value is about</em> is the privileged medical subset
+   walking back in through the resolver after
+   <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+   refused it through the permission list.
 8. <strong>Default deny. Return false.</strong></p>
 <blockquote>
-<p><strong>There is no membership gate anywhere in this function, and that is the deletion to notice while
-reading it.</strong> Nine rounds put one clause in the role channel — <code>AND (NOT r0.requires_membership OR
-is_current_member(p_person_id) OR person_holds_gate_exempt(p_person_id, p_at))</code> — and called it the
-thing most likely to be "optimized" away. <strong>All three disjuncts are gone</strong>: the first with the
-column, the second into the <code>MEMBERS</code> operand, the third with the permission
-(<a href="../../decisions/round-04/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>
-deleted entirely). The predicate <code>is_current_member</code> survives inside the evaluator, evaluated
-live at <code>at</code> like every other operand, and the three old shapes map exactly:</p>
+<p><strong>There is no membership gate anywhere in this function.</strong> <code>MEMBERS</code> is an operand a writer types into an
+expression, and no channel of the resolver consults membership: a check is about grants, not about whether
+the actor is a paid-up member
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
+The predicate <code>is_current_member</code> exists only inside the evaluator, evaluated live at <code>at</code> like every
+other operand. Every intent a gate would have served is written in the expression that carries the rule:</p>
 <table>
 <thead>
 <tr>
-<th>Old mechanism</th>
-<th>Expression now</th>
+<th>Intent</th>
+<th>Expression</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>The gate applied to a role with <code>requires_membership = true</code></td>
+<td>The office counts only while its holder is a member</td>
 <td><code>MEMBERS * ROLE(x)</code></td>
 </tr>
 <tr>
-<td>The gate waived for a whole role</td>
+<td>The office counts whatever their membership looks like</td>
 <td><code>ROLE(x)</code> — written without <code>MEMBERS</code></td>
 </tr>
 <tr>
-<td>The gate waived for one named person</td>
-<td><code>MEMBERS * ROLE(x) + PERSON(y)</code> — the exception inside the expression that granted the rule, so it is read next to the thing it exempts. A second grant aimed at that person alone is equivalent and arguably clearer for something permanent; what was never allowed is a row that does not parse (§8, <code>PERSON</code>)</td>
+<td>The office counts, but one named person is an exception</td>
+<td><code>MEMBERS * ROLE(x) + PERSON(y)</code> — the exception sits inside the grant that carries the rule, so it is read next to the thing it exempts. A second grant aimed at that person alone is equivalent, and arguably clearer for something permanent; what is never allowed is a row that does not parse (§8, <code>PERSON</code>)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>The posture reversed from default-on to opt-in, and the new failure mode is named rather than
-buried</strong> (D-100). Forgetting <code>MEMBERS</code> is now invisible, silent and permanent, and nothing in the
+<p><strong>The posture is opt-in, and the failure mode is named rather than buried</strong> (D-100). Forgetting <code>MEMBERS</code> is invisible, silent and permanent, and nothing in the
 resolver can see it. Three controls, none of which is the resolver: the standing report of
 <code>ROLE(...)</code> grants with no <code>MEMBERS</code> (check 6, §11); seeded grants carrying <code>MEMBERS</code> so that the
 path of least repetition is the safe path; and <strong>import completeness</strong> — <code>MEMBERS * COUNSELORS</code> is
@@ -2580,65 +2562,56 @@ must count people marked as counselors in the corpus against <code>role_holder</
 closed — nothing breaks, which is exactly why nobody notices.</strong></p>
 </blockquote>
 <h3 id="the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer">The cache is deleted: nothing in this schema holds a permission answer<a class="headerlink" href="#the-cache-is-deleted-nothing-in-this-schema-holds-a-permission-answer" title="Permanent link">&para;</a></h3>
-<p>~~The cache is rebuilt, not invalidated~~ — <strong>the section title has now been wrong twice, and both times about
-the same thing</strong>: first it was an invalidation policy, then a rebuild policy, and
-<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-ended it by deleting the object both titles were about. <strong><code>permission_cache</code> is not in this schema.</strong> Its
-columns — ~~<code>person_id</code>, <code>permission_code</code>, <code>scope_type</code>, <code>scope_id</code>, <code>allowed</code>, <code>computed_at</code>,
-<code>ruleset_version</code>~~, and <code>expires_at</code> before them — are gone, along with the operand cache keyed
-<code>(person, selector_kind, selector_arg_id[, item])</code>, and the full text of the policy that governed them is
-<a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>,
-where the text of a decision lives. What is deleted here is a live rule; nothing in this corpus silently forgets
-a past one.</p>
-<p><strong>Why the deletion reached the data model rather than stopping at an implementation note:</strong> the table mapped a
-person to a boolean, and <strong>that is the object §<em>Author in sets. Evaluate per person.</em> and §<em>Evaluation</em> forbid</strong>
-— <em>"The expansion is a predicate, not a set"</em>, <em>"No set of people is ever built"</em> — <strong>a materialized answer to
-"does this person satisfy this expression", kept where no check looks at it.</strong> A design that forbids an object in
-one path and permits it in another spends the rest of its prose explaining the difference, and this section had
-grown exactly that prose. <strong>The rule is now unconditional, which is what it gains.</strong></p>
+<p><strong>Nothing in this schema holds the answer to a permission question.</strong> No row, table or field anywhere maps a
+person — or a person and a code, or a person and an item — to an answer. That is
+<a href="../05d-invariants-and-seed/#11-invariants-to-verify">§11's invariant 19</a>, and it is why no later optimization
+can reintroduce such a table rather than merely disliking it. <strong>A check resolves, a request memoizes, and the
+only thing ever cached is a compilation</strong>
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+The rule is unconditional on purpose: the expansion of an audience is a predicate and not a set
+(§<em>Author in sets. Evaluate per person.</em>, §<em>Evaluation</em>), and a design that forbids a materialized answer in
+one path and permits it in another spends the rest of its prose explaining the difference.</p>
 <p><strong>What the checks use instead, and what may be held in memory:</strong></p>
 <ol>
 <li><strong>A compiled expression.</strong> Parsed once, operand kinds resolved once, a parameterized predicate emitted once,
    keyed by the expression's root and <code>ruleset_version</code>, <strong>holding no person and no item</strong>. It is process-local
    and <strong>not a table</strong>: nothing about it is queryable, durable, or a source of truth, and a restart discards it.
-   <code>ruleset_version</code> therefore bumps on <strong><code>audience_operand</code></strong> (a subtree changed, so every compilation embedding
-   it is stale) and on <strong><code>selector_type</code></strong> (the vocabulary changed) — two tables, down from the eight kinds of write D-111 named — six tables, the D-109 flag and a merge.
-   <code>access_grant</code> is absent because <strong>grants are not compiled</strong>: a check reads the person's live grant rows, so
-   adding, editing or revoking one changes what that read returns and leaves nothing stale to drop — and where a
-   grant is created together with a new audience, the write that matters is the one on <code>audience_operand</code>, which
-   <em>is</em> in the set; the <code>deprecated | hidden | disabled</code> flag is absent because <strong>a state is not
-   compiled in</strong> — resolution consults it live, once per request, which is also what makes <code>disabled</code> take effect
-   now (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>);
-   and <code>role_holder</code>, <code>person_group_member</code>, <code>guardianship_permission</code>, <code>event_registration</code>, a membership
-   transition and a person merge are absent because <strong>there is no answer to invalidate</strong>.</li>
+   <code>ruleset_version</code> bumps on <strong><code>audience_operand</code></strong> — a subtree changed, so every compilation embedding it is
+   stale — and on <strong><code>selector_type</code></strong>, because the vocabulary changed. On nothing else, and the absences are the
+   design:</li>
+<li><code>access_grant</code> is absent because <strong>grants are not compiled</strong>: a check reads the person's live grant rows, so
+     adding, editing or revoking one changes what that read returns and leaves nothing stale to drop. Where a
+     grant is created together with a new audience, the write that matters is the one on <code>audience_operand</code>,
+     which <em>is</em> in the set;</li>
+<li>the <code>deprecated | hidden | disabled</code> flag is absent because <strong>a state is not compiled in</strong> — resolution
+     consults it live, once per request, which is also what makes <code>disabled</code> take effect now
+     (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>);</li>
+<li><code>role_holder</code>, <code>person_group_member</code>, <code>guardianship_permission</code>, <code>event_registration</code>, a membership
+     transition and a person merge are absent because <strong>there is no answer to invalidate</strong>. That is also what
+     <a href="../03-membership/#6-membership-and-the-authorization-system">03-membership.md §6</a> asks of the yearly sweep.</li>
 <li><strong>A request-scoped memo.</strong> The checked person's live grant rows, read once; within the same request, a named
    operand that recurs. <strong>Lifetime is the request.</strong> It is worth stating in a data model precisely because it is
-   <em>not</em> one: the reason this does not need a section, an index or an invalidation list is that its lifetime is
-   shorter than any question about consistency.</li>
+   <em>not</em> one: it needs no section, no index and no invalidation list, because it is shorter-lived than any
+   question about consistency.</li>
 <li><strong>Two batch reads</strong>, <code>can_many(person, codes[], item?)</code> and <code>which_of(people[], code, item)</code>, so a screen is
    one resolution rather than a loop. <strong><code>which_of</code> is not a materialization</strong> — it evaluates the predicate for
    people already in hand; what stays forbidden is deriving a set in order to answer about one person.</li>
 </ol>
-<p><strong>Named rosters are the one thing still held across requests</strong>: <code>ROLE(x)</code> and <code>GROUP(x)</code> keyed by the name,
+<p><strong>Named rosters are the one thing held across requests</strong>: <code>ROLE(x)</code> and <code>GROUP(x)</code> keyed by the name,
 holding <strong>the dated rows or the set with its validity ranges</strong>, never the set as of today, so the checked date is
-applied at check time and a period ending at midnight needs no job. <strong>The reason this one survives while the
-answer cache does not is that its key is the thing the write touches:</strong> a <code>role_holder</code> insert invalidates one
-roster, by identity, without asking whom it reaches.
+applied at check time and a period ending at midnight needs no job. <strong>This one is allowed because its key is the
+thing the write touches:</strong> a <code>role_holder</code> insert invalidates one roster, by identity, without asking whom it
+reaches.
 <strong>And one exclusion, so the exception does not eat the rule:</strong> <code>MEMBERS</code> is <strong>not</strong> a roster and may not be cached
 this way. It is not a row anybody writes — it is the read predicate over <code>membership</code>, whose dated rows the
-<strong>1 January sweep</strong> rewrites for every member at once, which is the same bulk event under another name and lands
-straight back on the invalidation list D-114 deleted. <strong>A roster is a set with a name and its own holder rows;
+<strong>1 January sweep</strong> rewrites for every member at once, which is exactly the bulk event that must never need an
+invalidation list. <strong>A roster is a set with a name and its own holder rows;
 <code>MEMBERS</code> is neither</strong>, and the two age operands beside it are a birth date read at the checked date, which is not
 a cacheable set either (§<em>What each operand costs</em>).</p>
-<p><strong>One thing on this page is reversed by that change of denominator, and it has to be described accurately to be
-reversed honestly.</strong> The reverse closure over <code>audience_operand</code> — which expressions embed the audience being
-written — was <strong>never refused on cost grounds.</strong> It was <strong>bypassed</strong>: <a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>
-chose a mechanism that did not need it, because the version integer <strong>"never needs to know whom a rule reaches"</strong>,
-and per-entry invalidation had no answer at all for an edit to a shared audience's tree, which is why <em>"F-6's table
-spent four rounds pretending the fan-out was tractable."</em> <strong>That was the right call about the object it had.</strong>
-Removing the answers removes the fan-out it was avoiding: an edit to <code>veterans</code> now invalidates the set of
-<strong>compilations</strong> that embed <code>veterans</code>, which is finite, enumerable, and named by rows that already exist —
-<strong>not</strong> by the reached people, which is the unbounded side and the side that stayed unenumerable.
+<p><strong>Invalidation runs from the tree, never from the people.</strong> An edit to a shared audience invalidates the set of
+<strong>compilations</strong> that embed it — finite, enumerable, and named by rows that already exist, by walking the
+<strong>reverse closure</strong> over <code>audience_operand</code>: which expressions embed the audience being written. The
+unenumerable side — whom a rule reaches — is never attempted.
 <strong>Note the direction, because the save path already walks the other one:</strong> the cycle refusal of
 §<em>The expression tree</em> and check 15 walks <strong>forward</strong> from the tree being saved, while invalidation needs the
 <strong>reverse</strong> direction — the same one the delete-refusal check walks when it asks whether a live grant, or a live
@@ -2646,29 +2619,19 @@ audience reachable from one through any number of <code>AUDIENCE</code> leaves, 
 §11 check 15). <strong>So this is a new use of an existing direction, not a free ride on an existing query</strong>, and the
 listing whose cost §13 still registers as unverified is the same listing: <strong>what this reversal inherits is that
 open question, not a solved one.</strong> It is recorded there rather than resolved here.</p>
-<p><strong>What the deleted indexes were for, and where those needs live now.</strong> An index on <code>expires_at</code> served an expiry
-sweep that no longer exists; there is no sweep, because nothing expires. An index on <code>person_id</code> existed so a
-membership transition could invalidate by person fast — and
-<a href="../03-membership/#6-membership-and-the-authorization-system"><code>03-membership.md</code> §6</a> had made that a hard
-requirement three rounds before the policy it was aimed at was written: <em>"The permission cache must be
-invalidated on every membership transition — including the yearly expiry sweep … retrofitting it is where the
-bugs will be."</em> <strong>The requirement is discharged by deletion, which is the only way those two pages can now agree</strong>
-(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>);
-what it cost to notice is recorded there and in D-114, and the index that survives is the ordinary one on
-<code>access_grant(grantee…)</code>, because <strong>a check now reads a person's grants directly</strong> — which is the same index the
-resolver needed anyway, and the reason the deletion costs nothing measurable at the size
+<p><strong>What an index is for here.</strong> A check reads the person's grants directly, so the index that matters is the
+ordinary one on <code>access_grant(grantee…)</code>, which the resolver needed anyway. Nothing expires, so there is no
+sweep and no column to sweep by. At the size
 <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>
-states.</p>
+states, that is the whole performance story of this section.</p>
 <p><strong>What none of this touches.</strong> The merge and redaction duties on <code>audience_operand</code> leaves (§<em>A hand-named person
-is now a keyless reference</em>, §11 check 2) are <strong>unchanged and remain urgent</strong> — they were never cache
-maintenance. What is deleted is the sentence <em>"and invalidating the cache afterwards"</em>; what remains is that a
-missed repoint writes nothing, so nothing is triggered, and the dangling leaf under <code>-</code> <strong>denies everybody</strong>. Two
-other things this section used to own and does not lose: the <strong>bound-operand rule</strong> — an operand computed while
-checking one item may never answer for another, now a rule about how a predicate is bound rather than about a key
+is now a keyless reference</em>, §11 check 2) <strong>remain urgent</strong>: a missed repoint writes nothing, so nothing is
+triggered, and the dangling leaf under <code>-</code> <strong>denies everybody</strong>. Two other rules belong to this part of the
+design and to no storage at all: the <strong>bound-operand rule</strong> — an operand computed while checking one item may
+never answer for another, which is a rule about how a predicate is bound
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
 — and D-109's check pair, <em>"deprecating or hiding must not change an answer"</em> and <em>"disabling takes effect now,
-and must say whose"</em>, which are properties of resolution and were always being tested against the wrong
-mechanism.</p>
+and must say whose"</em>, both properties of resolution.</p>
 <h3 id="properties-to-verify-when-reviewing-this-function">Properties to verify when reviewing this function<a class="headerlink" href="#properties-to-verify-when-reviewing-this-function" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Deny is checked before everything</strong>, including ownership and guardianship. A restricted
@@ -2677,18 +2640,18 @@ mechanism.</p>
    operand evaluated at "now" inside a check performed at a past date is a wrong answer that looks
    like a right one.</li>
 <li><strong>There is no wildcard except <code>system.admin</code>.</strong> No prefix match, no implied capability.
-   If a holder can do a thing, a row says so (D-068) — and now a row says <strong>which</strong> thing, because
-   there is no level standing in for a set of them.</li>
+   If a holder can do a thing, a row says so (D-068), and the row says <strong>which</strong> thing: no level
+   stands in for a set of them.</li>
 <li><strong><code>resolve_person</code> is called on entry</strong>, so a tombstoned person's id still resolves.</li>
 <li><strong>A deny is scope-independent.</strong> Channel 0 matches a unit deny and an exact-item deny and does
    <strong>not</strong> walk ancestors — so a deny at the unit blocks every item, which is what makes a
    suspension absolute.</li>
-<li><strong>There is no hierarchy to walk, and nothing left to assert about it.</strong> ~~<code>unit_ancestors()</code> must
-   not appear in this function~~ — the function itself is deleted
-   (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-   which is a stronger guarantee than the CI assertion that replaced it in round 8 and then died with
-   the SQL in D-072. <strong>The surviving time-bomb is a different one</strong> — no permission path may
-   materialize a set of people — and it is check 16 (§11).</li>
+<li><strong>There is no hierarchy to walk.</strong> There is one unit and it is not a row, so a grant is either at
+   the unit — and then it reaches every item — or on the exact item, and no comparison between the two
+   needs a walk
+   (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+   <strong>The time-bomb in this function is a different one</strong> — no permission path may materialize a set of
+   people — and it is check 16 (§11).</li>
 <li><strong>Audience grants are evaluated through the same channels as personal ones</strong>, via
    <code>grant_satisfies()</code>. A grant to <code>EVERYONE</code> and a grant to a named person differ only in how
    <em>grantee</em> is satisfied, never in how the scope or the code is resolved.</li>
@@ -2701,7 +2664,7 @@ mechanism.</p>
    outer tree over a failed inner one is precisely the shape that produces a widening.</li>
 <li><strong>A check that supplies no item cannot answer a bound operand, and must not guess one.</strong> <code>PLACED</code>
    with nothing to bind to is not "everyone" and not "nobody at this unit" — it is a caller error, and
-   the answer is denial with a <code>denial_reason</code> that says so. <strong>This is the new cousin of the
+   the answer is denial with a <code>denial_reason</code> that says so. <strong>This is the cousin of the
    unscoped-check caveat below, and it is enforced in the same place: the calling convention, not the
    data.</strong></li>
 <li><strong><code>right_kind</code> is read in exactly one place.</strong> If a second comparison of <code>read</code> against <code>write</code>
@@ -2718,13 +2681,14 @@ mechanism.</p>
 grants it. That is correct for UI decisions like "show the admin menu?" but <strong>wrong for enforcement</strong>.
 Every enforcing call must pass a scope. Enforce this in the calling convention — make scope mandatory
 at the API layer for mutating operations.</p>
-<p>What used to be the cache definition and its invalidation rules — and what replaced them — are above, immediately
-after the resolver, because they are part of the resolver's contract and not a separate concern. <strong>That placement is
-why <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a> is written here rather than filed as a deployment note:</strong> the question was never only where to
-keep answers, it was what a check is.</p>
+<p>What may be cached is written immediately after the resolver rather than in a deployment note because it is
+part of a check's contract: <strong>the question was never only where to keep answers, it was what a check is</strong>
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).</p>
 <p>The person-merge case remains the easiest to forget —
 see <a href="../01-identity/#8-identity_hypothesis-and-person_merge">01-identity.md</a>.</p>
 <hr />
+<p><em>Decisions behind this page: D-013, D-068, D-070, D-072, D-074, D-077, D-079, D-083, D-085, D-088, D-090,
+D-097, D-099, D-100, D-102, D-103, D-109, D-112, D-114.</em></p>
 
 
 

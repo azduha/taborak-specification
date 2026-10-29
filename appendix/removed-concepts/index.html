@@ -2039,6 +2039,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a></td>
 </tr>
 <tr>
+<td><code>effective_permission</code></td>
+<td>the honest name for a table of answers — one row per person and code saying what they may do, rebuilt nightly, proposed as the answer to "who could read this in 2023?"</td>
+<td>it is <code>permission_cache</code> under its own name: a row mapping a person to an answer is what invariant 19 forbids</td>
+<td>a check resolves on the live rows; what <a href="../../open-questions/#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7</a> names as what to build again if the scale trigger is ever reached</td>
+<td><a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a></td>
+</tr>
+<tr>
 <td><code>GUARDIANS</code>, <code>GUARDIANS(p)</code></td>
 <td>an operand naming the guardians of the person an item is about</td>
 <td>guardianship is a channel entered by the shape of a request and carrying a <code>right_level</code>, not a set a grant aims at</td>
@@ -2074,7 +2081,7 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a></td>
 </tr>
 <tr>
-<td><code>access_level</code>, <code>permission_level</code>, <code>revoked &lt; view &lt; contribute &lt; manage</code></td>
+<td><code>access_level</code>, <code>permission_level</code>, <code>level_satisfies()</code>, <code>revoked &lt; view &lt; contribute &lt; manage</code></td>
 <td>a rank saying how much authority a grant carried, compared against a permission's rank</td>
 <td>a grant allows or denies exactly one code; roles and audiences are the bundle a broad office gets</td>
 <td>one <code>access_grant</code> row per code, plus the seeded starting grant set</td>
@@ -2158,11 +2165,18 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
 </tr>
 <tr>
-<td><code>scope_exposure</code>, <code>scope.expose</code>, <code>scope.exposure.review</code></td>
+<td><code>scope_exposure</code>, <code>scope.expose</code>, <code>scope.exposure.review</code>, <code>scope_exposure_covers_assignment()</code></td>
 <td>the only crossing between a covering unit and a covered one, written by the covered unit</td>
 <td>there is one unit, so there is no outside to be stopped from; the safeguarding property it bought is recorded as lost in <a href="../../domain/04-organization-structure/#1-the-organization-is-one-unit-and-the-unit-is-a-scope">domain/04 §1</a></td>
 <td>a grant at the unit, or on one item</td>
 <td><a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></td>
+</tr>
+<tr>
+<td><code>selector_depth_limit</code></td>
+<td>a configuration parameter capping how deep an audience's expression tree could nest, refused at save over the expanded tree</td>
+<td>the argument that justified a bound was a stored column that no longer exists, and the property it underwrote — that a check costs a bounded amount — was given up on purpose: an expansion is bounded only by acyclicity</td>
+<td>nothing: the save-time cycle walks are the only structural guard, and a tree is stored with the shape its writer gave it</td>
+<td><a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></td>
 </tr>
 <tr>
 <td><code>successor_of</code></td>
