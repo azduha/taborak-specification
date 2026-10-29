@@ -2787,14 +2787,14 @@ corrected the description from the source itself: a <strong>membership export</s
 <tr>
 <td><strong>Events</strong></td>
 <td>an event, and who attended it</td>
-<td>an <code>event</code> owned by the root (<a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a>) and one <code>event_registration</code> per listed attendee</td>
+<td>an <code>event</code> that belongs to nobody (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>) and one <code>event_registration</code> per listed attendee</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Neither half names a unit, and unit assignment is out of scope by instruction — a consequence, not an
 omission.</strong> <code>parsed_unit_code</code> and <code>parsed_unit_name</code> stay in the parser (§3's staged-row table says what
-reads them now, which is nothing), no batch creates an <code>org_unit</code>, and no sub-unit <code>unit_participation</code>
-row is ever imported. <strong>The consequence in one sentence: the system's historical record contains no
+reads them now, which is nothing), no batch creates a body of any kind, and no belonging row is ever
+imported for one. <strong>The consequence in one sentence: the system's historical record contains no
 sub-unit participation</strong>, so "who was in pack X in 2011?" has no answer on day one and gets one only from
 live data forward. The model has always been able to hold that history; the source cannot say it, and the
 sentence is here so that the first person to ask the question finds the sentence instead of the absence.</p>
@@ -3093,12 +3093,7 @@ event's own columns repeat down those rows, which is what the matching rule belo
 <tr>
 <td><code>applied_membership_id</code></td>
 <td>reference to membership, optional</td>
-<td>What this row created — <strong>set on every row of a people batch whose source states a membership period</strong> (§3.1). <strong>This note said the opposite until this round:</strong> it read "empty for every row of a roster batch, which creates participations only", and <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> reversed it, because the export states membership periods and the ban it rested on was about <em>inferring</em> them. Empty on every row of an events batch, and a set value on an events row is still the rule in §3.1 having been broken — membership may be imported from a period the source states, never from an attendance list</td>
-</tr>
-<tr>
-<td>~~<code>applied_participation_id</code>~~</td>
-<td>—</td>
-<td><strong>Deleted by <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>.</strong> It held the id of the root-unit participation row a membership brought with it, and its whole purpose was to say <em>"a membership row with this column empty wrote half a pair"</em> — a check on a pair that no longer exists. Nothing replaces it: §3.1's transaction writes one row, so there is no second id to record and no half to be missing</td>
+<td>What this row created — <strong>set on every row of a people batch whose source states a membership period</strong>, because the export does state periods and importing one is not inference (§3.1, <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>). <strong>Empty on every row of an events batch</strong>, and a set value on an events row is §3.1 having been broken: membership may be imported from a period the source states, never from an attendance list</td>
 </tr>
 <tr>
 <td><code>applied_event_id</code></td>
@@ -3121,21 +3116,18 @@ event's own columns repeat down those rows, which is what the matching rule belo
 <ul>
 <li><strong>One event per (title, date), not one per attendee.</strong> <code>uq_staging_event_match</code> is this rule's name.
   Enforced inside the transaction that applies a staged row, in this order: 1. normalise the title and
-  take the date; 2. look for an event this batch has already created with that pair, then for an event the
-  root already owns with it; 3. reuse what was found, otherwise create it and record it on this row;</li>
+  take the date; 2. look for an event this batch has already created with that pair, then for an event
+  already in the system with it; 3. reuse what was found, otherwise create it and record it on this row;</li>
 <li>write the registration. <strong>Application layer, deliberately</strong> — the pair spans rows of one batch rather
   than columns of one row, and a uniqueness claim across a batch describes how the file is read, not what
   the data holds (<a href="../00-conventions/#6a-who-enforces-an-invariant-now"><code>00-conventions.md §6a</code></a> is the
   register for that kind of answer). The failure it prevents is the loud kind run quietly: ten thousand
-  attendee rows becoming ten thousand events, all owned by the root, all undeletable except by revert.</li>
+  attendee rows becoming ten thousand events, none of them deletable except by revert.</li>
 <li><strong>Which created ids a row may carry is decided by <code>import_batch.batch_kind</code>, not by the row.</strong> A people
   batch fills <code>applied_person_id</code> and <code>applied_membership_id</code>; an events batch
   fills <code>applied_person_id</code> — an attendee who had to be created is still a person created — plus
   <code>applied_event_id</code> and <code>applied_registration_id</code>. A row carrying one from each group is a batch that was
-  typed wrongly, and revert reads this rule to know what it is about to delete. <strong>The people arm used to
-  name a third column,</strong> <code>applied_participation_id</code>, and it went with the row it pointed at
-  (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>); a batch
-  applied before go-live that filled it has nothing extra waiting to be reverted.</li>
+  typed wrongly, and revert reads this rule to know what it is about to delete.</li>
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
@@ -3182,11 +3174,7 @@ Revert removes only what this batch created, and it runs in this order:</p>
    <code>membership</code> rows, then the <code>person</code> rows — and a row the batch created outright is removed rather than
    merely amended. A people batch leaves the first two arms empty and an events batch leaves the <code>membership</code>
    arm empty (§3.1); both arms exist, and neither may be skipped in the general implementation just because the
-   batch in hand does not use it. <strong>This list had a fifth arm until
-   <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong> — the
-   <code>unit_participation</code> rows sat between the events and the memberships, because a people batch used to write
-   a pair — and it is gone rather than dormant: there is no such row for a revert to find, in an old batch or
-   a new one.</li>
+   batch in hand does not use it. Four arms, and the implementation walks all four.</li>
 <li>Finally mark the staged rows themselves unapplied.</li>
 </ol>
 <p><strong>An event is deleted at most once, which is the one place revert is not row-local.</strong> <code>applied_event_id</code>
@@ -3292,25 +3280,20 @@ NULL — <strong>and read that as the surviving half of the ban D-090 left stand
 membership, and never one inferred from an attendance row</strong> (§3.1). Both ends of the period are what makes
 an imported membership safe; the import itself is not.</p>
 <h3 id="31-what-a-source-row-actually-evidences">3.1 What a source row actually evidences<a class="headerlink" href="#31-what-a-source-row-actually-evidences" title="Permanent link">&para;</a></h3>
-<p><em>This heading read "What a roster actually evidences" until round 9. The question it asks was always the
-right one — what may a row be read as proving? — and it was the noun that was wrong.</em> A roster is evidence
-of presence in a unit, and the corpus
-<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-described as one turned out to be two exports that between them evidence presence <em>at an occasion</em> and
-membership <em>of the organization</em>, and evidence no unit at all
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>). The
-answer therefore has two halves now, and they are not the same answer.</p>
+<p><strong>The question is what a source row may be read as proving</strong>, and the answer has two halves that are not the
+same answer, because the corpus is two exports and not one roster: between them they evidence presence <em>at an
+occasion</em> and membership <em>of the organization</em>, and evidence no unit at all
+(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
+<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).</p>
 <p><strong>A people row evidences a bounded membership, and the import writes one.</strong> The source states a name, a
 birth date and <em>the period during which this person was a member of the organization</em> — which is a
 membership claim made by the source rather than inferred by the reader, and that distinction is the whole
 of what <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
 changed. So a people batch writes a <code>membership</code> with <strong>both</strong> <code>valid_from</code> and <code>valid_to</code> set,
-<code>data_confidence = 'low'</code>, the batch id on it — <strong>and nothing else in the temporal layer.</strong> It used to write
-that row <em>together with</em> a root <code>unit_participation</code> row, in one transaction, under a check whose whole job
-was that the pair existed together and agreed; <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
-deleted the second row, so the transaction has one row in it and the check has nothing left to compare,
-which is what <a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a> now records rather than what it
-argues. <strong>One row per period the source states, not one per calendar year</strong>: an
+<code>data_confidence = 'low'</code>, the batch id on it — <strong>and nothing else in the temporal layer</strong>: one row in the
+transaction, and no second row to keep it company
+(<a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a>). <strong>One row per period the
+source states, not one per calendar year</strong>: an
 export of consecutive years is a period, and the <code>renewed_from_membership_id</code> chain is left to whoever
 reconstructs it by hand, because a renewal chain asserted by a parser is a lineage nobody chose and it is
 the kind of derived history
@@ -3318,20 +3301,17 @@ the kind of derived history
 refuses to infer about units for the same reason.</p>
 <p><strong>An events row evidences presence at one occasion, and nothing beyond it.</strong> It writes an
 <code>event_registration</code> for the listed attendee with <code>was_present = true</code>, against an event that <strong>belongs to
-nobody</strong> — <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-deleted <code>event.org_unit_id</code> and <a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a> with it, so the
-import owes no owner choice at all, which is one of the savings
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> counted in
-passing — and <strong>no row at all for anybody who is not listed</strong>: inventing <code>not_attending</code> from silence would
+nobody</strong> (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>),
+so the import owes no owner choice at all — and <strong>no row at all for anybody who is not listed</strong>: inventing <code>not_attending</code> from silence would
 put words in a source that said nothing (<a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>).
-Sub-unit belonging used to be a <code>unit_participation</code> rather than a membership
-(<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>);
-there is no such row left to decline to write, and the imported halves still produce nothing of either kind.
+<strong>Neither half of the import writes a belonging row for a body.</strong> A people row produces a <code>membership</code> and an
+events row a registration; D-041's second species of belonging is not a thing either half could write
+(<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>,
+<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
 <strong>What an imported event does owe, since D-102, is the per-event instantiation of the seeded
 answers-view grant</strong> — one insert beside the event row, in the same transaction, or the imported event has
 nobody who can read its answers.</p>
-<p><strong>The half of the old ban that survives, in the sentence that survives it unchanged: never an open-ended
-membership, and never one inferred from an attendance row.</strong> The reason is D-039 and it has not moved — an
+<p><strong>Never an open-ended membership, and never one inferred from an attendance row.</strong> The reason is D-039 and it has not moved — an
 open membership satisfies <code>is_current_member()</code>, so an inferred 1998 row hands whoever signs up under that
 name authority in the present, through every gated role, decades after the file that mentioned them was
 last opened. The end-date rule above is what stops an imported period from reading as current; this
@@ -3344,29 +3324,21 @@ what is being decided is one reviewed batch, mapping read before it applies, on 
 arrive twice. A rule sized for a recurring process is too strict for a one-time one, and the safety that
 mattered was never the ban, it was the review. <strong>The stakes were named in D-041 and D-039 before they were
 resolved, and they are why what remains is a rule rather than a preference.</strong></p>
-<p><strong>Superseded, and kept visible because the reasoning is the useful part.</strong> This section used to hedge:
-import a participation, <em>unless</em> there is evidence of payment, in which case a membership may be inferred —
-and then, one round later, to state the opposite as flat fact: <strong>"a roster row makes a
-<code>unit_participation</code> and nothing else; <code>membership</code> rows come only from the current register."</strong> Both
-sentences were arguing against something real. The first was a rule waiting to be misapplied by whoever
-found a dues column in a later file and read the older text as permission, which is why it was tightened.
-The second was correct about rosters and wrong about the corpus: it generalised from <em>this file has no
-money in it</em> to <em>no membership may arrive from a file</em>, and the corpus arrived with membership periods in
-it. Neither half of that history is deleted above, because the next import will be a third shape and
-whoever writes it needs both failure modes on the record, not a clean line.</p>
-<p><strong>What the two halves agree on is the thing nobody asked about: neither names a unit.</strong> <code>parsed_unit_code</code>
-still fills and still goes unread (§3), no batch creates an <code>org_unit</code>, and no sub-unit participation row
-is imported. <strong>The system's historical record therefore contains no sub-units.</strong> "Who was in pack X in
-2011?" is unanswerable on day one, and the first answer anyone reads will be a roster somebody typed in —
-which is why the sentence belongs here rather than in the decision log: the absence is in the source, but
-the surprise is in this pipeline.</p>
+<p><strong>Both failure modes stay on the record, because the next import will be a third shape.</strong> The rule once
+hedged — import a participation, <em>unless</em> there is evidence of payment, in which case a membership may be
+inferred — and was then stated as its opposite: <strong>"a roster row makes a participation and nothing else;
+<code>membership</code> rows come only from the current register."</strong> Both were arguing against something real. The
+hedge was a rule waiting to be misapplied by whoever found a dues column in a later file and read it as
+permission. The flat ban was correct about rosters and wrong about the corpus: it generalised from <em>this file
+has no money in it</em> to <em>no membership may arrive from a file</em>, and the corpus arrived with membership
+periods in it.</p>
 <p><strong>What this gives up, since it gives up something.</strong> <em>"Did they pay?"</em> has no answer for any imported
 period — no money arrives in either export, so there is no <code>fee_obligation</code> and no balance on these rows
 at all (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), and every cross-decade member
 count is a mix of an export and a register distinguished only by <code>data_confidence</code> and <code>import_batch_id</code>.
-What the previous round gave up is narrower now, and what remains given up is that the imported membership
+*<em>What remains given up is that the imported membership
 is the source's claim about a status rather than a record of the act: nobody paid a fee in this system for
-1998, and the row says <em>the organization's export said so</em>, which is the most the evidence supports.</p>
+1998, and the row says <em>the organization's export said so</em>, which is the most the evidence supports.</em></p>
 
 
 
