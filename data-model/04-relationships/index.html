@@ -3165,9 +3165,9 @@ the ORM decides how each rule is enforced.</p>
 <p>Authority is <strong>per <code>guardianship</code> row</strong>, never per person. A parent can hold <code>write</code> for one
 child and <code>view</code> for another — a realistic shared-custody arrangement, and one the model must
 represent without inventing a second parent identity.</p>
-<p>What changed with <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
-is the <em>grain</em>, not the <em>location</em>. Per row it used to be a set of capability codes; per row it
-is now one of three values. See §2 for what that costs.</p>
+<p>Authority sits <strong>on the row, not on the person</strong>, and it is <strong>one of three values, not a set of capability
+codes</strong> (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+§2 states what that grain costs.</p>
 <h3 id="guardianship-ends--and-who-is-allowed-to-end-it">Guardianship ends — and who is allowed to end it<a class="headerlink" href="#guardianship-ends--and-who-is-allowed-to-end-it" title="Permanent link">&para;</a></h3>
 <p><code>valid_to</code> is set when:</p>
 <ul>
@@ -3181,18 +3181,9 @@ is now one of three values. See §2 for what that costs.</p>
 <p>Staff may always do it when asked. <strong>Staff may never be the only way it happens.</strong></p>
 <p><strong>The parties are principals, not third parties with a grant.</strong> A guardianship row is not the
 guardian's record, and it is not the subject's record. It is a record <em>of a relationship between
-them</em>, and both hold it.</p>
-<p><strong>This claim used to borrow its justification from a rule that no longer exists.</strong> It was written as
-<em>scope authority</em> — ~~the rule that authority over a nested thing originates at that thing~~
-(<a href="../../decisions/round-02-03/#d-031--no-downward-inheritance-of-authority-scope_exposure-is-the-only-crossing">D-031</a>),
-"applied to a household instead of a unit" — which was a good analogy right up until
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> deleted
-the nesting it was borrowed from, along with the crossing mechanism that made it a rule rather than a
-sentiment. The claim does not need the borrowing. <strong>A relationship row belongs to the people in it</strong> is a
-statement about this channel and stands on its own, and it is the reason neither party needs a grant to act
-on the row. What the deleted rule was really doing on this page was answering <em>who may end it</em>, and that
-answer is already given locally, a paragraph above: a party to the row, or staff acting on a request — with
-staff never the only way it can happen.</p>
+them</em>, and both hold it — which is why neither of them needs a grant to act on the row. Who may end it is
+answered locally, a paragraph above: a party to the row, or staff acting on a request, with staff never the
+only way it can happen.</p>
 <p><strong>It is not the ownership channel, and the distinction is worth keeping.</strong> Ownership is <em>your own
 record</em>. Ending a guardianship over yourself is not editing your own record; it is dissolving a
 relationship you are one half of. Mechanically this is the <strong>guardianship channel gaining a
@@ -3361,34 +3352,29 @@ see in March 2024?" stays answerable — the same current-value-plus-temporal-hi
   a new, deliberate level.</li>
 </ul>
 <h3 id="three-values-two-kinds-and-no-scale">Three values, two kinds, and no scale<a class="headerlink" href="#three-values-two-kinds-and-no-scale" title="Permanent link">&para;</a></h3>
-<p><strong>This section used to argue that the guardian rights were not a second authorization model by mapping
-them onto the shared level ladder</strong> — <code>none</code> → 0, <code>view</code> → 10, <code>write</code> → 20, so the resolver would never
-need to know which ladder it was standing on. <strong>The ladder is deleted</strong>
-(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
-so that argument is gone and the requirement underneath it is still met, by a different mechanism: the
-level is compared against a column on the permission, <strong><code>permission.right_kind ∈ read | write</code></strong> —
-<strong><code>none</code> covers nothing, <code>view</code> covers the codes marked <code>read</code>, <code>write</code> covers both.</strong> There is nothing to
-order and no rank to keep in step, because three values against two kinds is a lookup, not a scale. The
-column exists for exactly this comparison and for no other customer in the system
-(<a href="../05-authorization/#right_kind-a-column-with-exactly-one-customer">05-authorization.md §1</a>).</p>
-<p><strong>What the ladder was really buying survives, and it never was the numbers.</strong> A guardian was never a staff
-member, and that was expressed by <code>write</code> landing on <code>contribute</code> rather than <code>manage</code>. It is now expressed
-by the shape of the request: <strong>the guardianship channel is entered only when the check is about somebody
-other than the actor</strong> (<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>),
+<p><strong>Three values are compared against a column, not against a ladder.</strong> <code>permission.right_kind ∈ read | write</code>
+is the whole mechanism: <strong><code>none</code> covers nothing, <code>view</code> covers the codes marked <code>read</code>, <code>write</code> covers both</strong>
+(<a href="../05-authorization/#right_kind-a-column-with-exactly-one-customer">05-authorization.md §1</a>). There is
+nothing to order and no rank to keep in step, because three values against two kinds is a lookup, not a
+scale, and that column has no other customer in the system.</p>
+<p><strong>A guardian is not a staff member, and what says so is the shape of the request, not a rank.</strong> The
+guardianship channel is entered only when the check is about somebody other than the actor
+(<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>),
 so the widest guardian right in the system reaches the child's record and cannot reach a roster, a fee
 schedule or another family — not because its rank was too low, but <strong>because those checks are not about the
-child and the channel is never asked</strong>. Losing the ladder costs the comparison; the boundary moved into the
-one place that was always enforcing it.</p>
+child and the channel is never asked</strong>.</p>
 <h3 id="what-the-collapse-gives-up-written-down-rather-than-discovered-later">What the collapse gives up, written down rather than discovered later<a class="headerlink" href="#what-the-collapse-gives-up-written-down-rather-than-discovered-later" title="Permanent link">&para;</a></h3>
-<p>Before D-074, a guardianship carried a set of capability codes — <code>dependent.profile.view</code>,
-<code>dependent.medical.view</code>, <code>dependent.consent.give</code>, <code>dependent.fee.pay</code>, and thirteen others,
-with <code>dependent.admin</code> as a shorthand for all of them. <strong>Every <code>dependent.*</code> code is deleted.</strong></p>
-<p>The consequence is specific and should not be softened: <strong>it is no longer expressible that this
-guardian may register the child for events but may not read the medical record.</strong> The case the old
-model existed for — a court order restricting one parent's access to medical information while
-their other access continues — cannot be represented. A grandmother who was granted roster
-visibility and nothing else is now a <code>view</code> guardian, which means she can see the fee history and
-the medical file too.</p>
+<p>A guardianship carries <strong>one</strong> value where it once carried a set of capability codes, and every
+<code>dependent.*</code> code is deleted (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+The consequence is stated rather than softened: <strong>it is not possible to say "read everything except the
+medical record."</strong> The arrangement those codes existed for — a court order restricting one parent's access
+to the health facts about a child while their other access continues — cannot be represented, and
+<a href="../../open-questions/#e-7">E-7</a> records it as refused by deleting the premise: there is <strong>no medical record</strong>
+inside the person record to be excepted from, because everything other than a name, a gender and an age is
+descriptive data of one class
+(<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>).
+So <code>view</code> reads the record <strong>whole</strong>: a grandmother granted visibility and nothing else sees the fee history
+and the health facts alike.</p>
 <p>What still holds:</p>
 <ul>
 <li><code>write</code> is not <code>manage</code>, and since <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> there is no <code>manage</code> to be short of: the ceiling on a guardian is the <strong>channel</strong>, which answers only for checks about this child. A guardian cannot do organization-wide things because those checks are not about the child, not because a rank was too low.</li>
@@ -3401,8 +3387,8 @@ the medical file too.</p>
 <p><strong>If the split turns out to matter in operation it is a new decision, not a permission to be
 re-added quietly</strong> (<a href="../../open-questions/#e-7">E-7</a>).</p>
 <h3 id="defaults-still-depend-on-how-the-guardianship-arose">Defaults still depend on how the guardianship arose<a class="headerlink" href="#defaults-still-depend-on-how-the-guardianship-arose" title="Permanent link">&para;</a></h3>
-<p><a href="../../decisions/round-02-03/#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created">D-046</a>
-survives, with one value where it used to have a set:</p>
+<p><strong>The value a guardianship starts at depends on how it arose</strong>
+(<a href="../../decisions/round-02-03/#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created">D-046</a>):</p>
 <table>
 <thead>
 <tr>
@@ -3435,9 +3421,9 @@ intent that no database rule can inspect. What must not happen is the default be
 a form: an import that omits it produces a <code>view</code> guardian where the person meant full rights, and
 nothing objects. <strong>And nothing in §6 catches this either</strong>, which is worth being plain about: a
 default that was never applied leaves no inconsistent row behind — only a quiet <code>view</code> where a
-<code>write</code> was intended, indistinguishable from a deliberate restriction. <strong>That gap is a consequence
-of §2's collapse.</strong> Before D-074 an omitted bundle of grants was visible as an empty set, and an
-empty set is reportable where <code>view</code> is not. What closes it is not a report but the shape of the
+<code>write</code> was intended, indistinguishable from a deliberate restriction. <strong>That gap is a consequence of
+§2's collapse: an omitted set of grants was visible as an empty set, and an empty set is reportable where
+<code>view</code> is not.</strong> What closes it is not a report but the shape of the
 write path: one place creates guardianships, it reads <code>source</code>, and it does not accept a
 <code>right_level</code> from a caller who is not entitled to choose one. The <code>staff</code> and <code>court_order</code> paths
 need a human choosing a value, and a default that fires before anybody is asked is not a default,
@@ -3509,14 +3495,12 @@ receive a membership, an account, and eventually permissions.</p>
 <h2 id="4-how-the-resolver-uses-these-tables">4. How the resolver uses these tables<a class="headerlink" href="#4-how-the-resolver-uses-these-tables" title="Permanent link">&para;</a></h2>
 <p>The guardianship channel is step 4 of the resolver
 (<a href="../../domain/06-authorization-model/#6-the-resolver">../domain/06-authorization-model.md</a>).</p>
-<p><strong>How the channel is selected — a change D-074 forces, and it is an improvement.</strong> It used to be
-selected by the permission code's namespace: a code beginning <code>dependent.</code> routed here, and the
-point of routing by prefix was that <em>no caller gets to choose which channel applies</em>, which is what
-stops one authorization rule being implemented twice, once wrong. With no <code>dependent.*</code> codes there
-is no prefix, so the channel is now selected by <strong>a fact about the request: the person the action is
-about is not the person performing it.</strong> Nobody picks a channel; the shape of the call picks it. And
-it catches what the prefix missed — a parent editing their child's address under a <code>person.*</code> code
-previously did not route through guardianship at all, because the code's name said otherwise.</p>
+<p><strong>How the channel is selected: a fact about the request, never a name.</strong> It applies when <strong>the person the
+action is about is not the person performing it.</strong> Nobody picks a channel and no caller gets to choose which
+one applies, which is what stops one authorization rule being implemented twice, once wrong
+(<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>);
+and a shape has none of the blind spots a name had, so a parent editing their child's address under a
+<code>person.*</code> code routes through guardianship too.</p>
 <p>Asked about another person, it resolves in this <strong>fixed order</strong>, and it produces one of <strong>two</strong>
 outcomes: <strong>an allow, or no answer at all.</strong> It never answers "no".</p>
 <ol>
@@ -3530,15 +3514,14 @@ outcomes: <strong>an allow, or no answer at all.</strong> It never answers "no".
    but note that this deny is found by <strong>channel 0 of the resolver, before this step runs</strong>, so
    nothing in this list can override it. It is listed second only because it is the other reason a
    guardian with a sufficient <code>right_level</code> still gets nothing.</li>
-<li><strong>Read the row's <code>right_level</code></strong> and rank it: <code>none</code> 0, <code>view</code> 10, <code>write</code> 20.</li>
-<li><strong>Compare against what the action needs.</strong> Reading a profile needs 10; editing a contact needs</li>
-<li>At or above the requirement → <strong>allow</strong>. Below it, or <code>none</code> → <strong>no answer</strong>, and the
-   actor's own roles are tried.</li>
+<li><strong>Read the row's <code>right_level</code></strong>: <code>none</code>, <code>view</code> or <code>write</code>.</li>
+<li><strong>Compare it against what the action needs</strong>, which is a column on the permission rather than a number
+   on the guardian: <code>permission.right_kind</code> is <code>read</code> or <code>write</code>, <code>view</code> covers <code>read</code>, <code>write</code> covers both,
+   and <code>none</code> covers nothing (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
+   Covered → <strong>allow</strong>. Not covered, or <code>none</code> → <strong>no answer</strong>, and the actor's own roles are tried.</li>
 </ol>
-<p><strong>Why step 1 and step 4 fall through instead of refusing, when refusing is what this channel used
-to do.</strong> It used to be entered only by codes no role could hold, so its refusal was the whole
-answer. Now it is entered by ordinary codes that a role may also carry, and finality produces an
-absurd result the moment one person wears two hats: <strong>the parent who is also the event registrar,
+<p><strong>Why step 1 and step 4 fall through instead of refusing.</strong> This channel is entered by ordinary codes that a
+role may also carry, so a final refusal here produces an absurd result the moment one person wears two hats: <strong>the parent who is also the event registrar,
 holding <code>view</code> over their own child, refused the right to mark attendance.</strong> The relationship
 should not be able to revoke a job. What is <em>not</em> given up: <code>none</code> still grants nothing (that is
 what D-074 promised, not a power to block other bases), and an organization that genuinely must
@@ -3627,8 +3610,9 @@ to something.</p>
 <li><strong>A minor member or participant whom no guardian can see.</strong> Two shapes, one report, because
    they are the same gap arriving by different routes: <strong>no guardianship row at all</strong>, and <strong>a full
    set of guardians with every one of them at <code>right_level = none</code></strong>. Age comes from
-   <code>person.birth_date</code> — there is no membership category to read it from, because membership is
-   ageless (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>). <strong>This is a
+   <code>person.birth_date</code> — there is no membership category to read it from, because membership is ageless
+   (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>), and a birth date cannot go stale the
+   way a category recorded when a row was opened would. <strong>This is a
    safeguarding gap, not a data-quality nit</strong>: the organization holds a member it cannot contact in
    an emergency and cannot obtain consent from. It should alert, not log. This check is one of the
    reasons <code>guardianship</code> is a required part of the model rather than an optional convenience.</li>
@@ -3646,32 +3630,16 @@ to something.</p>
 6. <strong><code>guardianship.right_level</code> disagrees with its own open history row.</strong> A new invariant created
    by D-074's current-value-plus-history shape. If it is ever non-empty, the copy is wrong and the
    row is right.</p>
-<p><em>Deleted with the model that needed it:</em> "a guardian permission outside the <code>dependent.*</code>
-namespace" — there is no <code>dependent.*</code> namespace any more. "Households with no address" went with
-<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>; the nearest surviving signal is
-a live billing purpose with no postal address behind it, which is a finance problem.</p>
-<p>Note what changed when membership became ageless. Check 4 used to read
-<code>membership_type.category = 'child'</code>; with one membership type
-(<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>)
-that column does not exist, and the question is now answered from <code>person.birth_date</code>. The signal
-is arguably better than it was: "this person is under 18 today" rather than "this person's
-membership row was categorised as a child when it was opened", which could be years out of date.</p>
+<p>The nearest surviving signal of the old "households with no address" report is a live billing purpose
+with no postal address behind it, which is a finance problem
+(<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>).</p>
 <hr />
 <h2 id="7-open-issues">7. Open issues<a class="headerlink" href="#7-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>~~Whether guardianship should auto-expire at majority, or always require review.~~
-  <strong>Neither</strong> — the system takes no position on majority, and the review queue this file
-  recommended was withdrawn with it (§1, <a href="../../decisions/round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>).</li>
-<li>~~How does an adult end a guardianship over themselves?~~ <strong>They end it, themselves, as a party
-  to the row</strong> — <a href="../../decisions/round-06/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>.</li>
-<li><strong>New:</strong> a guardian may appoint a guardian, with no approval from the organization. Attributed
-  and notified, not prevented. <a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</li>
-<li><strong>New:</strong> one right level cannot separate the medical record from the profile, which is the case
-  the deleted capability codes existed for.
-  <a href="../../open-questions/#e-7">E-7</a>.</li>
-<li><strong>Resolved: <code>household</code> is removed entirely</strong> — answered "drop household entirely", now
-  <a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a> (§3). Addresses live on
-  <code>person_contact</code>.</li>
+<li><strong>A guardian may appoint a guardian, with no approval from the organization.</strong> Attributed and notified,
+  not prevented. <a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</li>
+<li><strong>One right level cannot separate the health facts from the rest of the record</strong> — the arrangement the
+  per-code model existed for. <a href="../../open-questions/#e-7">E-7</a>, and §2 states what it costs.</li>
 <li>Whether a guardian may act for a dependent who is also a member in their own right — e.g.
   can a parent register their adult child for an event, if the child consents? Recommend an
   explicit consent-based delegation rather than a guardianship, since the legal basis
@@ -3685,11 +3653,10 @@ membership row was categorised as a child when it was opened", which could be ye
   almost certainly right — guardianship comes from a legal relationship, not a membership — but it
   should be a stated choice, not a side effect of where the gate was placed.</li>
 </ul>
-<p><strong>Resolved and no longer open</strong>, kept visible so the reasoning survives: the default grant at
-guardianship creation (now one level, chosen by <code>source</code> — D-046); whether fees are per person or
-per household (per person, flat — D-037, which retired the load-bearing half of <code>household</code> and led
-to its removal — D-057); and background checks (none are recorded — D-043).</p>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p>What this page once wondered about and no longer does — the default right level at creation, what
+happens at majority, whether an adult ends their own guardianship, the household grouping, background
+checks — is registered in <a href="../../open-questions/">../open-questions.md</a> with the decision that settled
+each.</p>
 
 
 
