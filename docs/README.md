@@ -89,6 +89,7 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | Document | Covers |
 |----------|--------|
 | [glossary.md](glossary.md) | Ubiquitous language. Read this first. |
+| [glossary-authorization.md](glossary-authorization.md) | The words the permission system is made of: grants, scopes, operands, expressions. |
 | [domain/01-overview.md](domain/01-overview.md) | The model in plain language: actors, lifecycles, how a person's history reads. |
 | [domain/02-actors.md](domain/02-actors.md) | Accounts, self-registration, unauthenticated people. |
 | [domain/03-identity-and-legacy.md](domain/03-identity-and-legacy.md) | Historical records, matching, merging and unmerging people. |
@@ -96,6 +97,7 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [domain/04-organization-structure.md](domain/04-organization-structure.md) | The unit as a scope, groups, offices, and what joining one means. |
 | [domain/05-membership-lifecycle.md](domain/05-membership-lifecycle.md) | Register → request → accept → pay → member → lapse → return. |
 | [domain/06-authorization-model.md](domain/06-authorization-model.md) | The permission model end to end. The one to read if you read only one. |
+| [domain/06a-audiences-and-selectors.md](domain/06a-audiences-and-selectors.md) | Who a grant is aimed at: the expression grammar, the selector registry, and the rules that keep a tree safe. |
 | [domain/07-events.md](domain/07-events.md) | Events, registration, capacity, presence, forms. |
 
 ### Data model — the tables

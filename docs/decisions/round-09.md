@@ -105,7 +105,7 @@ arms.
 **Closes:** [C-4](../open-questions.md#c-4--closed--a-group-is-filled-by-a-rule-and-a-list-and-appointing-creates-nothing).
 
 **See:** [data-model/05-authorization.md §8](../data-model/05-authorization.md#8-audience--grants-that-target-a-set-of-people),
-[domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+[domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item),
 [domain/04-organization-structure.md §4](../domain/04-organization-structure.md#6-appointments).
 
 ---

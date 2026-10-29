@@ -119,7 +119,7 @@ the registrar actually needs ([D-041](round-02-03.md#d-041--belonging-to-a-sub-u
 This will be misread as a mistake by someone who assumes a parent can see its children. It is
 not a mistake, and the catalog says so in place.
 
-**See:** [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+**See:** [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item),
 [../data-model/05-authorization.md §5](../data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097).
 
 ---

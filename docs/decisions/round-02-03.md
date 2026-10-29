@@ -33,7 +33,7 @@ therefore outside this rule. It is scoped to the whole system, not to a unit, so
 a counterexample to "authority originates at the unit" — but it is all-or-nothing and
 should be rare.
 
-**See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it),
+**See:** [../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item),
 [../data-model/05-authorization.md](../data-model/05-authorization.md#5-scope_exposure--deleted-by-d-097).
 
 ---
@@ -499,7 +499,7 @@ case, the question was put again and your answer was: *"Not needed if audiences 
 **Consequence — the rule is now absolute.** There is no sanctioned bypass, no marker prefix,
 no exception to explain. `scope.expose` held **at the covered unit** is the only way a row is
 created, and it is enforced by the same predicate at three layers
-([domain/06 §2.5](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it)).
+([domain/06 §2](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item)).
 
 **This is a genuine simplification**, and it removes the design's most uncomfortable
 paragraph — the one arguing that the rule had to bend for scale.

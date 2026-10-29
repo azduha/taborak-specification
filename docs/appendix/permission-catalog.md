@@ -700,7 +700,7 @@ difference is the whole reason there are two tables — and the office codes are
 > inside a body it does not run?* — **no longer has a subject**, and someone who remembers the answer
 > "no, unless the body says so" should find that fact rather than a silent gap. The same reasoning is
 > worked through in
-> [../domain/06-authorization-model.md §2.1](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it).
+> [../domain/06-authorization-model.md §2](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item).
 
 > **`person_group.member.manage` is a ⚠ next to a 🔒🔒 two rows away, and the gap is the design.**
 > [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)

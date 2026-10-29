@@ -28,7 +28,7 @@ four, because an ORM hides the list:
   other semi-structured payloads whose shape is per-row by design.
 - **Recursive queries** — for the unit hierarchy. Note that this one is *only* for structure:
   no authorization path may walk the hierarchy
-  ([../domain/06-authorization-model.md](../domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it)).
+  ([../domain/06-authorization-model.md](../domain/06-authorization-model.md#2-scopes--the-unit-and-the-item)).
 
 Native enum types are avoided — see §5.
 

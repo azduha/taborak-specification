@@ -234,7 +234,7 @@ The consequence that will be misread as a bug: `registrar` holds `unit_participa
 organization scope and **cannot** read a pack roster. Scope is an exact match; it reads the
 root participation rows, which mirror membership
 ([D-041](decisions/round-02-03.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership)).
-See [domain/06 §2.4](domain/06-authorization-model.md#23-systemadmin).
+See [domain/06 §2.1](domain/06-authorization-model.md#21-systemadmin).
 **D-094 gave this the same shape in the other direction**: imported events belong to the root, so a
 unit-scoped "our events" report sees historical camps it did not run — a date filter, not a unit filter,
 is what makes either list mean what it looks like it means.
@@ -908,7 +908,7 @@ untouched**, and `PERSON(x)` is now the operand that would be misread, since it 
 only way to name a set of people by hand.
 
 **Round 11 found the same defect again, this time in prose.**
-[domain/06 §4.2](domain/06-authorization-model.md#the-selectors) keeps its own copy of this table for readers
+[domain/06a](domain/06a-audiences-and-selectors.md#the-selectors) keeps its own copy of this table for readers
 who never open the data model, and that copy had never grown a `PERSON` row or an `AUDIENCE` row while still
 carrying the `LIST` row D-105 deleted — so the page that teaches this language to everybody who is not
 implementing it taught a language in which two of the twelve operands could not be written, and taught one
@@ -3267,7 +3267,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 | 18 | Currency is EUR | [data-model/07](data-model/07-finance.md#2-minimal-provisional-shape) |
 | 19 | `access_log` is not human-annotatable | [data-model/05](data-model/05-authorization.md#9-access_log) |
 | ~~20~~ | ~~Each permission has an `admin` sibling~~ — **superseded**: no per-resource wildcard codes (D-068) | throughout |
-| 21 | No downward inheritance; ~~exposures are written by the unit~~ (D-031) † — **deprived of its subject, not weakened** ([D-097](decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)): the rule was always about a hierarchy that no longer exists, and what survives is the ordinary reading of a scope — **a grant reaches its scope and nothing beside it** | [domain/06](domain/06-authorization-model.md#21-the-founding-rule-and-what-is-left-of-it) |
+| 21 | No downward inheritance; ~~exposures are written by the unit~~ (D-031) † — **deprived of its subject, not weakened** ([D-097](decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)): the rule was always about a hierarchy that no longer exists, and what survives is the ordinary reading of a scope — **a grant reaches its scope and nothing beside it** | [domain/06 §2](domain/06-authorization-model.md#2-scopes--the-unit-and-the-item) |
 | 22 | The person record holds no deceased flag (D-034) † | [data-model/01](data-model/01-identity.md#2-person) |
 | ~~23~~ | ~~Positions are multi-holder unless `max_holders` says otherwise~~ (D-033) — **deleted by D-100** with `position`, `position_assignment`, `is_leadership` and `max_holders`. The vacancy question it answered is now unanswered by construction; see [F-18](#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write) | [domain/04](domain/04-organization-structure.md) |
 | 24 | Membership is ageless — no category, no `min_age`, no `max_age` (D-038) † | [data-model/03](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table) |

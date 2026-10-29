@@ -69,7 +69,9 @@ extra_javascript:
 
 nav:
   - Overview: README.md
-  - Glossary: glossary.md
+  - Glossary:
+      - glossary.md
+      - Authorization terms: glossary-authorization.md
   - Domain:
       - Overview: domain/01-overview.md
       - Actors and Accounts: domain/02-actors.md
@@ -78,6 +80,7 @@ nav:
       - Groups and the Unit: domain/04-organization-structure.md
       - Membership Lifecycle: domain/05-membership-lifecycle.md
       - Authorization Model: domain/06-authorization-model.md
+      - Audiences and Selectors: domain/06a-audiences-and-selectors.md
       - Events: domain/07-events.md
   - Data Model:
       - Conventions: data-model/00-conventions.md
