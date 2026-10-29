@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -935,6 +937,34 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -954,10 +984,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
             
   
   
@@ -975,8 +1005,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1356,10 +1386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
         
           
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
             
   
   
@@ -1377,8 +1407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1589,10 +1619,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
         
           
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
             
   
   
@@ -1610,8 +1640,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1764,10 +1794,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
         
           
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
             
   
   
@@ -1785,8 +1815,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2146,6 +2176,8 @@
       
         
           
+        
+      
         
       
         
@@ -2679,6 +2711,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3109,13 +3169,12 @@ correctness property of the data belongs in the database, <em>even when the ORM 
 migration must be written by hand</em>. Application validation still belongs on the write path, because it
 produces the error message a volunteer can read — but it is a usability feature and not the invariant.
 Underneath, integrity check 1 is the nightly net.</p>
-<p><strong>And this is F-10 shape 1, which is the problem.</strong> The overlap invariant needs an exclusion constraint
-over a range built from two columns; no ORM emits one
-(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>), and F-10
-is still <strong>open</strong> — nobody has ruled per shape which layer writes these. Three specific traps on the way
-to writing this one by hand:</p>
+<p><strong>And this is <a href="../00a-invariant-register/#1-no-two-rows-overlap-in-time">shape 1</a>, and its layer is
+assigned:</strong> the overlap invariant needs an exclusion constraint over a range built from two columns; no ORM
+emits one, so the register names a hand-written migration as the layer that carries it. Three specific
+traps on the way to writing this one by hand:</p>
 <ul>
-<li><strong>Shape 1 is described in F-10 as "no two <em>open</em> rows overlap", and this rule is not that rule.</strong> Copying
+<li><strong>Shape 1 is usually worded "no two <em>open</em> rows overlap", and this rule is not that rule.</strong> Copying
   the shape as worded — a constraint scoped to rows with no <code>valid_to</code> — would permit a closed row and an
   open row for the same person and group to overlap, which is exactly the pair that makes "who was in this
   group in 2019?" have two answers. It is the same mistake §6a warns about from the other side: a
@@ -3289,7 +3348,7 @@ member rows, and nothing is inferred from attendance, from an event, or from any
 <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). The gate is
 <code>person_group.member.manage</code>, at the unit or on one group (§3), the write is audited, and the row names who
 wrote it — which is D-095's answer to <em>do not place a child where nobody is responsible for them</em>.</p>
-<p><strong>No reason codes, and no role label, on purpose.</strong> No <code>join_reason_code</code> / <code>leave_reason_code</code>, so there is
+<p><strong>No reason field, and no role label, on purpose.</strong> No <code>join_reason_code</code> / <code>leave_reason_code</code>, so there is
 no <code>transfer</code>, <code>promotion</code>, <code>reorganisation</code>, <code>unit_closed</code> vocabulary to maintain, get wrong, or pretend is
 a safeguard — the eighteen-ticks-without-a-receipt shape D-095 refused. And no label saying what a member
 is, because such a label becomes an authorization check the moment somebody asks "can they edit the
@@ -3334,8 +3393,9 @@ as data except the rosters, which became <code>person_group_member</code> (§2);
 <ol>
 <li><strong>Two member rows for the same person and group covering the same date</strong> (§2). Counts overlapping pairs
    over <strong>all</strong> rows, half-open, so it agrees with the constraint it is the net beneath. §2 names the
-   migration as the enforcing layer; this report is what notices if that migration was never written,
-   which — F-10 being unanswered — is the state of things today.</li>
+   migration as the enforcing layer, as
+   <a href="../00a-invariant-register/#1-no-two-rows-overlap-in-time">shape 1</a> assigns it; this report is what
+   notices if that migration was never written, which is the job the register names this check for.</li>
 <li><strong>A member row lying outside its group's own period</strong> (§2). A list to read rather than a breach: the two
    periods are two facts and containment is assumed here, not ruled
    (<strong>Status:</strong> assumption — <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>). A large count means people are editing old rows
@@ -3395,9 +3455,6 @@ seeded that could contradict the runtime behaviour, which is the property D-054 
   hold the assertion, and D-098 refuses group-to-group edges.</li>
 <li><strong>Whether a member row must lie inside its group's period.</strong> Assumed in §2, reported in §6 check 2, and
   nowhere ruled. A one-sentence decision either way; left open rather than decided by a document.</li>
-<li><strong>Which layer writes the no-overlap constraint.</strong> That is <strong>F-10</strong>, still open, and §2 spells out the
-  three ways this particular instance of shape 1 gets written wrong if nobody answers it
-  (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">../open-questions.md</a>).</li>
 <li><strong>Whether an ended group is hidden from pickers, and whether it may be reopened.</strong> An ended group has a
   behaviour; <code>person_group</code> has a period and no rule about which screens read it. Reopening an ended
   group by clearing <code>valid_to</code> would also collide with §1's rule that a returning name is a new group, so

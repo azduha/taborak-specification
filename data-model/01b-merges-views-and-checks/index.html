@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -933,6 +935,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -956,10 +986,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
             
   
   
@@ -977,8 +1007,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1331,10 +1361,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
         
           
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
             
   
   
@@ -1352,8 +1382,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1564,10 +1594,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
         
           
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
             
   
   
@@ -1585,8 +1615,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1739,10 +1769,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
         
           
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
             
   
   
@@ -1760,8 +1790,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2121,6 +2151,8 @@
       
         
           
+        
+      
         
       
         
@@ -2641,6 +2673,34 @@
     
   
     Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
   
 
     
@@ -3238,6 +3298,18 @@ above can express.</p>
   is <code>pending_verification</code>, <code>active</code> or <code>suspended</code>; anything above one is a breach of the
   rule in §4, and the point of the check is to confirm that rule really does exclude the
   pending-plus-active combination.</li>
+<li><strong>Two current identifiers where the scheme forbids it.</strong> Count <code>person_identifier</code> rows per
+  <code>(scheme, value)</code> among the current ones, for every scheme whose <code>is_unique</code> is true; non-zero is a
+  breach of the rule in <a href="../01a-accounts-and-contacts/#7-person_identifier">01a §7</a>, which no index can carry
+  because the answer lives in another table's column.
+  <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00 §6a</a> promised this report in the sentence that
+  explained why, and <a href="../../decisions/round-18/#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes">D-130</a>
+  is the round that wrote it down somewhere.</li>
+<li><strong>A person whose displayed name is not their current one.</strong> Count persons whose
+  <code>given_name</code>/<code>family_name</code> differ from the <code>person_name</code> row with no <code>valid_to</code> for the same
+  <code>name_type</code>; the copy is what every list view shows, and it is <a href="../01-identity/#2-person">an obligation on the writing
+  transaction</a> with nothing downstream that noticed. <a href="../../open-questions/#f-28">F-28</a>
+  asks whether a report is the right thing or the copy is the wrong one.</li>
 <li><strong>A tombstoned person with no merge record.</strong> Count persons whose merge pointer is set but
   who do not appear as the merged person of any un-reversed <code>person_merge</code> row; non-zero
   means a pointer was written without the record that explains it, which is the case the

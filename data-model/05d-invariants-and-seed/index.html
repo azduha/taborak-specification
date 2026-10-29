@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -935,6 +937,34 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -954,10 +984,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
             
   
   
@@ -975,8 +1005,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1223,10 +1253,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" checked>
         
           
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
             
   
   
@@ -1244,8 +1274,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1536,10 +1566,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
         
           
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
             
   
   
@@ -1557,8 +1587,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1711,10 +1741,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
         
           
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
             
   
   
@@ -1732,8 +1762,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2093,6 +2123,8 @@
       
         
           
+        
+      
         
       
         
@@ -2626,6 +2658,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2894,13 +2954,15 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   expiry is the only guard against it outliving its reason.</strong>
 - <strong>12. Two names that are one name, and a reference that points at an unnamed thing.</strong> Three shapes,
   one namespace:
-  1. A <code>role.code</code> equal to a <code>person_group.code</code> after case, whitespace and separator folding;
+  1. A <code>role.code</code> equal to a <code>person_group.name</code> after case, whitespace and separator folding — a group
+     has no <code>code</code> column (<a href="../02-organization/#1-person_group">02 §1</a> says so), and this section promises
+     at its head that no check reads a column the schema does not have;
   2. either of those equal to a <code>selector_type.code</code>, <strong>or any of the three equal to an
      <code>audience.code</code></strong> — <code>audience</code> shares the namespace, because <code>AUDIENCE(&lt;code&gt;)</code> resolves
      through that table (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>);
   3. an <code>AUDIENCE</code> leaf whose <code>selector_arg_id</code> names an audience <strong>whose <code>code</code> is absent</strong> — legal on
      every column of both rows and unsayable as a constraint, because the check reads a third table
-     (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).</p>
+     (<a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>).</p>
 <p><strong>Zero expected; no single constraint spans three tables, and no constraint at all covers the
   reserved-word half or the null-code half</strong>, so the write path carries all of it and this check asserts
   the write path exists. A row here is not untidy: a group called <code>MEMBERS</code> would silently rewrite the
@@ -2970,7 +3032,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
 <p><strong>Why this is a CI assertion and not a report:</strong> three of the four guards are walks over rows rather
   than comparisons within one row, which means they live in application code and no migration can emit
   them
-  (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>).
+  (<a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>).
   <strong>A guard that lives in code is deleted by a refactor and the data looks fine afterwards</strong>, and nothing
   greps for it at build time (D-072).
 - <strong>16. TIME-BOMB: no permission path may materialize a set.</strong> The requirement is that
@@ -3421,16 +3483,17 @@ the assertion that it stays the only one).</p>
   <strong>Nothing in this document decides which of the two it is, and nothing detects the failure after the
   fact</strong>: the audit trail records the write that happened, not the one that was overwritten.</li>
 <li><strong>Whether a person merge repoints every leaf that named the absorbed person, and who tests it (§8,
-  §11 check 2).</strong> The requirement is D-105's and is not open; <strong>what is open is that no layer can express
-  it.</strong> <code>selector_arg_id</code> has no foreign key
+  §11 check 2).</strong> The requirement is D-105's and is not open; <strong>what no layer can express is a constraint
+  behind it</strong>, so the register puts it on the write path with §11 check 2 beneath it. <code>selector_arg_id</code> has
+  no foreign key
   (<a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>),
   so the merge reassignment table has to be told about <code>audience_operand</code> the way it was told about every
   other person-referencing table, <strong>in all five argument kinds that name an entity</strong>, and the orphan scan that would otherwise
   catch it is both late and blind — late because it runs nightly, blind because a merge that leaves the
-  absorbed row in place produces no orphan at all. It belongs to
-  <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s register
-  for exactly that reason, and it is the first item on that register where <strong>the failure direction is a
-  grant that denies everybody</strong>: <code>EVERYONE - PERSON(x)</code> with an un-repointed <code>x</code>.</li>
+  absorbed row in place produces no orphan at all. It is
+  <a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a> for exactly
+  that reason, and it is the item on the register where <strong>the failure direction is a grant that denies
+  everybody</strong>: <code>EVERYONE - PERSON(x)</code> with an un-repointed <code>x</code>.</li>
 <li><strong>Whether the reference listing is actually cheap (§8, §10).</strong> D-103 registers the assumption: "which
   live grants name this audience, and at what depth" is one indexed query over the leaf rows, cheap at
   this organization's size, <strong>unverified at any size</strong>. It is on the save path of a screen a person is

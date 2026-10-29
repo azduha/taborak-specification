@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -935,6 +937,34 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -954,10 +984,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
             
   
   
@@ -975,8 +1005,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1473,10 +1503,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
         
           
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
             
   
   
@@ -1494,8 +1524,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1706,10 +1736,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
         
           
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
             
   
   
@@ -1727,8 +1757,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1881,10 +1911,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
         
           
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
             
   
   
@@ -1902,8 +1932,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2263,6 +2293,8 @@
       
         
           
+        
+      
         
       
         
@@ -2796,6 +2828,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3197,9 +3257,9 @@ the ORM decides how each rule is enforced.</p>
 <td>Where the proof of guardianship is filed. For legal guardianship this matters: the organization must be able to show that it checked</td>
 </tr>
 <tr>
-<td><code>ended_reason_code</code></td>
-<td>free text / reason code</td>
-<td></td>
+<td><code>ended_reason</code></td>
+<td>text, optional</td>
+<td>Free text (D-128)</td>
 </tr>
 <tr>
 <td><code>ended_note</code></td>
@@ -3228,7 +3288,9 @@ the ORM decides how each rule is enforced.</p>
 <li>A person may not be a guardian of themselves: the two person references must differ.</li>
 <li><code>valid_to</code>, when present, must be after <code>valid_from</code>.</li>
 <li><strong>At most one <em>current</em> guardianship per (guardian, dependent) pair.</strong> Their periods may not
-  overlap. Past ones are unlimited and expected: a court order lapses and is renewed.</li>
+  overlap, over <strong>all</strong> rows and not only the open ones — a hand-written exclusion constraint, like the
+  three in <a href="../00a-invariant-register/#1-no-two-rows-overlap-in-time">00a §1</a>, and <a href="#6-invariants-to-verify">§6 check 7</a> is the net beneath it.
+  Past ones are unlimited and expected: a court order lapses and is renewed.</li>
 <li>A dependent may have <strong>any number</strong> of simultaneous guardians, each with its own row and its
   own <code>right_level</code>.</li>
 <li><code>is_primary_contact</code> is not unique per dependent. A child can have two primary contacts.</li>
@@ -3719,7 +3781,12 @@ to something.</p>
    data-entry error, and detectable only when both dates survived the import.
 6. <strong><code>guardianship.right_level</code> disagrees with its own open history row.</strong> A new invariant created
    by D-074's current-value-plus-history shape. If it is ever non-empty, the copy is wrong and the
-   row is right.</p>
+   row is right.
+7. <strong>Two guardianship rows for one pair covering the same day.</strong> Zero is the expected answer, and
+   the exclusion constraint in <a href="#1-guardianship">§1</a> is the thing that keeps it zero; this row exists
+   because that constraint is hand-written, and a migration somebody forgot to run is a rule that
+   quietly stopped. Which of two disagreeing <code>right_level</code> values the resolver answered with is a
+   query-order accident, which is what this reports.</p>
 <p>The nearest surviving signal of the old "households with no address" report is a live billing purpose
 with no postal address behind it, which is a finance problem
 (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>).</p>

@@ -854,6 +854,8 @@
       
         
       
+        
+      
     
     
     
@@ -933,6 +935,34 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../data-model/00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -952,10 +982,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
         
           
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
             
   
   
@@ -973,8 +1003,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1219,10 +1249,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
         
           
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
             
   
   
@@ -1240,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1452,10 +1482,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
         
           
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
             
   
   
@@ -1473,8 +1503,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1627,10 +1657,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
         
           
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
             
   
   
@@ -1648,8 +1678,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2013,6 +2043,8 @@
       
         
           
+        
+      
         
       
         
@@ -2748,6 +2780,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3395,7 +3455,7 @@ beside the event row. Two consequences, both kept:</p>
 <li><strong>An event whose creation failed between the event row and the grant has nobody who can read its
   answers.</strong> So the two writes are one transaction, and the check is a report — <em>events with no
   answer-view grant</em> — because "these two rows exist together" is
-  <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 1</a>
+  <a href="../../open-questions/#f-10">F-10 shape 1</a>
   and no layer this project owns can express it.</li>
 </ul>
 <p>What the per-event row buys, and it is not accidental: answers-view is <strong>revocable on one event</strong> without
@@ -3553,7 +3613,7 @@ an answer.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>A reference names a <code>code</code>, not a name, and only audiences that have one may be referenced.</strong> <code>audience.code</code> is optional and unique-where-set; naming stays opt-in, and an unnamed audience is simply not composable. The leaf may not point at a null code — a check reading another table, <a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10 shape 3</a>.</td>
+<td><strong>A reference names a <code>code</code>, not a name, and only audiences that have one may be referenced.</strong> <code>audience.code</code> is optional and unique-where-set; naming stays opt-in, and an unnamed audience is simply not composable. The leaf may not point at a null code — a check reading another table, <a href="../../open-questions/#f-10">F-10 shape 3</a>.</td>
 <td>Audiences were allowed to be anonymous before this round and there is no reason to force a name onto a grant's private addressee list.</td>
 </tr>
 <tr>
@@ -3741,7 +3801,7 @@ system will ever notice a code drifting from its row, including after this entry
 adopted here is a person remembering to run a script.</p>
 <p><strong>What would make it obsolete.</strong> An actual implementation, with a seed directory and a test that loads it.
 Until then the registry and the prose are two copies of one thing
-(<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s general
+(<a href="../../open-questions/#f-10">F-10</a>'s general
 shape, in its cheapest instance), and the report is the check that they still agree.</p>
 <p><strong>See:</strong> <a href="../../open-questions/#f-19">F-19</a>,
 which this closes, <a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05a-audience-and-grammar.md §8</a>
