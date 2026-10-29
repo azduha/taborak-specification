@@ -486,7 +486,7 @@ out of that table to begin with).
 
 **Closes:** [B-3](../open-questions.md#b-3).
 
-**See:** [data-model/06-audit-and-import.md §2.2, §4, §6](../data-model/06-audit-and-import.md),
+**See:** [data-model/06-audit-and-import.md §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging), [§4](../data-model/06b-redaction-and-checks.md#4-redaction-log) and [§6](../data-model/06b-redaction-and-checks.md#6-open-issues),
 [data-model/00-conventions.md §8](../data-model/00-conventions.md#8-personal-data-and-erasure),
 [data-model/09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload).
 
@@ -573,7 +573,7 @@ rather than settled here.
 number, **no payment data**, and free-text columns alongside.
 
 **The consequence that does most of the work: the corpus decides the question the import was going to
-default.** [06-audit-and-import.md §6](../data-model/06-audit-and-import.md#6-open-issues) had kept
+default.** [06-audit-and-import.md §6](../data-model/06b-redaction-and-checks.md#6-open-issues) had kept
 open whether a historical roster should create a `membership` or only a `unit_participation`, with
 "participation unless there is payment evidence" as the safe default. **There is no payment evidence in
 the corpus at all**, so the default's exception has an empty set: every imported historical row is a
@@ -590,7 +590,7 @@ life of that vocabulary — hundreds of codes from one file. Two things follow:
 
 - **The map is reviewed before the batch applies, not after.** That is precisely why the mapping is
   recorded on the batch as one object
-  ([06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline)) rather than per
+  ([06-audit-and-import.md §3](../data-model/06a-import.md#3-import-pipeline)) rather than per
   staged row: it is one artefact a person reads once, top to bottom. The codes it names arrive **`live`**,
   because a curator has just read them.
 - **`proposed` keeps its meaning.** It stays the status for what a *human at a desk* improvises later —
@@ -609,7 +609,7 @@ review is a work queue with a trustworthy set at the top of it, which
 called a strengthening of D-004 rather than a relaxation.
 
 **What this makes sharper rather than smaller.** With attendance and no money,
-[06-audit §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences) is the
+[06-audit §3.1](../data-model/06a-import.md#31-what-a-source-row-actually-evidences) is the
 load-bearing section of the whole import — a roster row evidences *presence in a unit*, and everything
 beyond that is inference. Which leaves **A-4**, the organizational year boundary, as the sharpest
 remaining import question, because it is what an end date gets inferred from.
@@ -621,7 +621,7 @@ as the import's own inputs.
 **Closes:** [B-1](../open-questions.md#b-1).
 
 **See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
-[data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline),
+[data-model/06-audit-and-import.md §3](../data-model/06a-import.md#3-import-pipeline),
 [data-model/09-attributes.md §7](../data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from).
 
 **Amended one round later, in part.** The corpus this entry describes was the wrong shape in its

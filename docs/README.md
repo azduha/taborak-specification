@@ -115,7 +115,9 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [05a](data-model/05a-audience-and-grammar.md) · [05b](data-model/05b-expression-tree.md) | The grantee expression: `audience`, the grammar, `selector_type`, and the `audience_operand` tree. §8. |
 | [05c](data-model/05c-access-log-and-resolver.md) | `access_log` and the resolver. §9–§10. |
 | [05d](data-model/05d-invariants-and-seed.md) | The invariants, what ships seeded, and what is open. §11–§13. The five parts share one section numbering, so a `§` citation names a number and this table says where it lives. |
-| [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |
+| [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | `audit_log` — the data-change trail, its trigger, what is stripped before a row is written, the history query. §1–§2. |
+| [06a](data-model/06a-import.md) | `import_batch`, the staging tables, the six stages, reversibility, idempotency, and what a source row actually evidences. §3. |
+| [06b](data-model/06b-redaction-and-checks.md) | `redaction_log`, the integrity checks over both trails, open issues. §4–§6. The three parts share one section numbering. |
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |
 | [data-model/08-events.md](data-model/08-events.md) | `event`, organizers, registrations, questions, answers. §1–§7. |
 | [08a](data-model/08a-event-guards-and-checks.md) | How authority reaches an event, the three queries that matter, integrity checks, open issues. §8–§11. The two parts share one section numbering. |

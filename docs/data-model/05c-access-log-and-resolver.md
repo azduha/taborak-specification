@@ -107,7 +107,7 @@ two conclusions, and they point in opposite directions from the obvious one:
   [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and demanded of the
   catalog in [../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system);
   erasure reaching those payloads stays absolute
-  ([06-audit-and-import.md §4](06-audit-and-import.md#4-redaction-log)).
+  ([06-audit-and-import.md §4](06b-redaction-and-checks.md#4-redaction-log)).
 
 **Append-only enforcement:**
 
@@ -147,7 +147,7 @@ reduction touches.**
 Consider partitioning by month once volume justifies it, and moving old partitions to
 cheaper storage. Rows are not deleted on either answer; the window is carried out by emptying the state
 columns, which is the job and the over-age check described for the change trail in
-[06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks). **If F-8 is confirmed, that check
+[06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks). **If F-8 is confirmed, that check
 has to be written for this table too** — a reduction with no check under it is a reduction that quietly
 stops happening, which is the failure mode §2.2 of that document names as the only one this operation
 has.

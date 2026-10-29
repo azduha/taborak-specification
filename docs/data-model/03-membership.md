@@ -175,7 +175,7 @@ inferred from date arithmetic.
 | `membership_type_id` | reference to `membership_type`, required | |
 | `status` | text, required | One of `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`, `completed`. No default — the state is always chosen deliberately. |
 | `valid_from` | date, required | |
-| `valid_to` | date, optional | NULL = open / current. **Never NULL on an imported row** — both ends are what makes an imported membership safe, and check 1 of [06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks) counts the rows that broke it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)). |
+| `valid_to` | date, optional | NULL = open / current. **Never NULL on an imported row** — both ends are what makes an imported membership safe, and check 1 of [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks) counts the rows that broke it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)). |
 | `joined_via_request_id` | reference to `membership_request`, optional | |
 | `renewed_from_membership_id` | self-reference to `membership` (the previous one), optional | Forms the renewal chain. See domain/05 §6. |
 | `outstanding_balance` | money amount, optional | **Denormalised** from `fee_obligation`/`payment`. [07-finance.md](07-finance.md) §3 recommends **dropping** this column in favour of `v_fee_obligation_balance` — a wrong balance suspends the wrong child. Kept here only until that decision is taken. **NULL on every imported row, and since [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) put memberships back into the import that is load-bearing rather than incidental:** the export carries no payment data, and a zero would be a claim — *settled* — that the export does not support. There is no `fee_obligation` underneath these rows either, which is what makes the NULL unambiguous rather than merely uncomputed ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape), [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
@@ -790,6 +790,6 @@ whether the legacy import may create a `membership` at all (**yes, bounded at bo
 `data_confidence = 'low'`, one row per period the source states —
 [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
 after a round in which the answer was no; the reasoning either way is [06-audit-and-import.md
-§3.1](06-audit-and-import.md#31-what-a-source-row-actually-evidences)**).
+§3.1](06a-import.md#31-what-a-source-row-actually-evidences)**).
 
 All tracked in [../open-questions.md](../open-questions.md).

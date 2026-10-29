@@ -127,7 +127,7 @@ more — do not solve assignment to org units.*
 **So the corpus has two halves and neither is a roster.** D-090 recorded it as *roster rows*: people
 attending units. That word was wrong in its second half, and the whole import design hung off it,
 because a roster is evidence of *presence in a unit* and that is what
-[06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences)
+[06-audit-and-import.md §3.1](../data-model/06a-import.md#31-what-a-source-row-actually-evidences)
 was written to police. What is actually arriving is a **membership export** and an **attendance
 export**. Each is evidence of a different thing, and neither is evidence of a sub-unit:
 
@@ -169,7 +169,7 @@ because the answer that decided the shape also decided this about it.
 **Closes:** [C-5](../open-questions.md#c-5).
 
 **See:** [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
-[data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline).
+[data-model/06-audit-and-import.md §3](../data-model/06a-import.md#3-import-pipeline).
 
 ---
 
@@ -235,7 +235,7 @@ and nothing in the query knows the difference.
 **Closes:** [C-5](../open-questions.md#c-5)
 (together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
-**See:** [data-model/06-audit-and-import.md §3.1](../data-model/06-audit-and-import.md#31-what-a-source-row-actually-evidences),
+**See:** [data-model/06-audit-and-import.md §3.1](../data-model/06a-import.md#31-what-a-source-row-actually-evidences),
 [data-model/03-membership.md §5.1](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097),
 [domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline).
 
@@ -294,7 +294,7 @@ attendance figures these documents will be asked for are *arrived*, not *registe
 (together with [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units)).
 
 **See:** [data-model/08-events.md §2–§4](../data-model/08-events.md#2-event),
-[data-model/06-audit-and-import.md §3](../data-model/06-audit-and-import.md#3-import-pipeline).
+[data-model/06-audit-and-import.md §3](../data-model/06a-import.md#3-import-pipeline).
 
 ---
 

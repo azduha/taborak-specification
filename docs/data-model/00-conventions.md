@@ -362,7 +362,7 @@ Requirements the design must satisfy:
    this item was a carve-out nobody had had to defend; it is now the permanent half of a pair of clocks,
    and those rows carry **no retention period at all**. That is what gives
    `redaction_log.retained_reason` a judgement worth recording instead of a formality
-   ([06-audit-and-import.md §4](06-audit-and-import.md#4-redaction-log)). **What the decision did not do
+   ([06-audit-and-import.md §4](06b-redaction-and-checks.md#4-redaction-log)). **What the decision did not do
    is supply a legal basis, and the difference should not be blurred:** what stands here is an assumption
    pending review — organizational history plus accounting obligations, leaning on a person row that the
    erasure in item 1 has made non-identifying — recorded as an assumption and not as settled law. **The
@@ -379,7 +379,7 @@ Requirements the design must satisfy:
    used to be an entirely open question and now has half an answer — **the rows are kept for the life of
    the system and their payloads are emptied 24 months after they are written**
    ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
-   [06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues) keeps the legal half that remains) —
+   [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues) keeps the legal half that remains) —
    and a redaction that stops at the business tables while the trail keeps the erased values is a
    redaction that failed in the one place a regulator looks. **The window is a ceiling on how long a value
    may sit there, never a waiting period: erasure reaches the same two columns on request, at any age of

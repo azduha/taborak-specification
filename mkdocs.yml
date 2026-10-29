@@ -97,7 +97,10 @@ nav:
           - The Expression Tree: data-model/05b-expression-tree.md
           - Access Log and Resolver: data-model/05c-access-log-and-resolver.md
           - Invariants and Seed Data: data-model/05d-invariants-and-seed.md
-      - Audit and Import: data-model/06-audit-and-import.md
+      - Audit and Import:
+          - data-model/06-audit-and-import.md
+          - The Import Pipeline: data-model/06a-import.md
+          - Redaction and Integrity Checks: data-model/06b-redaction-and-checks.md
       - Finance: data-model/07-finance.md
       - Events:
           - data-model/08-events.md

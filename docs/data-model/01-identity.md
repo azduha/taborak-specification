@@ -126,7 +126,7 @@ the curation queue, to any report on a code, and to the screen a first aider rea
 same sentence recorded as a value against a `proposed` code is visible to all three
 ([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). Whether the column
 should exist at all is open and already argued
-([06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues)); what is settled is that it
+([06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues)); what is settled is that it
 carries no protection the attribute layer does not carry, and less readability.
 
 ### The answer to "who is a member?" is never on this table
@@ -802,7 +802,7 @@ above can express.
   is the ratio:** a batch in which nobody has a period is a batch whose rows simply said nothing, and a
   batch whose stated-coverage figure disagrees with the periods written is a partially applied one. A row
   that created a membership its export did not state is a different finding, and lives in
-  [06-audit-and-import.md §5](06-audit-and-import.md#5-integrity-checks).
+  [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks).
   **It has been reversed twice, and both reversals are on the record, because this row is really a claim
   about what an import is allowed to conclude.** It began as exactly this check — imported people with no
   `membership`. ~~That was the ordinary condition of every imported row once a roster was held to make a
@@ -835,7 +835,7 @@ above can express.
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   *named* `membership` and fee rows has a basis. See
   [00-conventions.md](00-conventions.md#8-personal-data-and-erasure) and
-  [06-audit-and-import.md §6](06-audit-and-import.md#6-open-issues).
+  [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues).
 - Whether `person.gender` is needed at all; if so, what value set.
 - Whether the organization has (or will have) a national SSO identity provider — this
   determines how much of `account_credential` is actually used.

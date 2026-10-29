@@ -278,7 +278,7 @@ rule visible so nobody reinstates it by inference.
 
 **Erasure is the one thing here that is absolute.** Erasing a person deletes their rows *and* removes
 their values from payloads already written, however lawfully
-([06-audit §4](06-audit-and-import.md#4-redaction-log)); a trail that keeps what the person asked to
+([06-audit §4](06b-redaction-and-checks.md#4-redaction-log)); a trail that keeps what the person asked to
 have forgotten is not a history, it is the thing they asked to be rid of, filed where it reads well.
 
 ---
@@ -306,7 +306,7 @@ organization's descriptive vocabulary in it, and it changes how the mapping has 
   of an answer to [AT-2](../open-questions.md#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit),
   which stays open for the runtime case.
 - **The mapping is recorded on the batch**, in `import_batch.field_mapping`, one entry per raw column
-  ([06-audit §3](06-audit-and-import.md#3-import-pipeline) explains why the grain is a column and not a
+  ([06-audit §3](06a-import.md#3-import-pipeline) explains why the grain is a column and not a
   staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
   act of curation with an audit entry, not a migration.
 
