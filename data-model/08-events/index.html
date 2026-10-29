@@ -3018,7 +3018,7 @@ ordered list that parents see. It is deliberately <strong>not</strong> an <code>
 at the unit, which reaches this event, or on this event — and never from a role or an
 appointment conferring anything by itself
 (<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).</p>
-<p>What this table <strong>is aimed at</strong>: it is the extension of the selector <code>ORGANIZERS</code>, so a grant
+<p><strong>What this table is aimed at.</strong> It is the extension of the selector <code>ORGANIZERS</code>, so a grant
 can name the people running an event without any of them being granted anything by being listed
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
 <strong>An operand is a set, not a grant</strong> — the same sentence
@@ -3168,7 +3168,7 @@ corpus large and number-bearing
 (<a href="../../decisions/round-04/#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers">D-056</a>),
 linking registration rows to <code>membership</code> would make those rows unrepresentable.
 <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-applies the same reasoning to <code>person_group_member</code>, and here it is stronger.</p>
+applies the same reasoning to <code>person_group_member</code>; the argument is stronger here.</p>
 <p><strong>An inferred open-ended membership is the dangerous object.</strong> <code>MEMBERS</code> is evaluated live on the
 checked date, so one open-ended row makes a 1998 camper a member today, and every live grant whose
 expression contains <code>MEMBERS</code> reaches them. Recording past attendance as a membership writes
@@ -3284,13 +3284,13 @@ created before the registration it belongs to exists, and the registration's
 <code>fee_obligation</code> and is stated there in full
 (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>): exactly one of
 <code>membership_id</code>, <code>membership_request_id</code> and <code>event_registration_id</code> is set on every
-obligation — exactly one, not "at most three". Every obligation is for exactly one
-thing: a membership period, a membership request, or one person's place at one event, and an
-event fee uses the third arm. The
-per-person choice is deliberate, because the fee is flat and per person (D-037) and a family
-price would need people grouped into households first, and the model has no such grouping
-(<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>). Obligations carrying the event
-arm are indexed on <code>event_registration_id</code>, restricted to the rows where it is set.</p>
+obligation — exactly one, not "at most three". Every obligation is for exactly one thing: a
+membership period, a membership request, or one person's place at one event, and an event fee
+uses the third arm. The per-person choice is deliberate, because the fee is flat and per person
+(D-037) and a family price would need people grouped into households first, and the model has no
+such grouping (<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>). Obligations
+carrying the event arm are indexed on <code>event_registration_id</code>, restricted to the rows where it
+is set.</p>
 <h3 id="confirming-on-payment">Confirming on payment<a class="headerlink" href="#confirming-on-payment" title="Permanent link">&para;</a></h3>
 <p><code>confirm_event_place(obligation)</code> is called by the payment flow. It is <strong>not</strong> a rule on
 <code>fee_obligation</code>'s status — the payment module owns that transition, and a rule there would
