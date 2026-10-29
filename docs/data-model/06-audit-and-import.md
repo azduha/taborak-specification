@@ -19,27 +19,24 @@ table), [06a](06a-import.md) §3 (the legacy import pipeline), and
 | Records | Who did what, and by what authority | Which fields of a row changed, and their values before and after — **including a person's descriptive values, which are in the entry deliberately** (§2.2) |
 | Answers | "Who accessed this child's record, and were they allowed to?" | "When did this person's address change, and who changed it?" |
 | Volume | Very high | High |
-| Raised by | Application code, on every permission check and action | **Every write to an audited table, on every path** — §2.1 names who owes that write now that no trigger is defined anywhere |
+| Raised by | Application code, on every permission check and action | **Every write to an audited table, on every path** — §2.1 names who owes that write, since no trigger is defined anywhere |
 
 Keeping them separate is deliberate. They have different retention needs, different query
 patterns, and different access permissions. Merging them produces a table that is too
 large to query and too sensitive to expose to anyone who needs one half of it.
 
-**One wording change, because this table used to ask about a thing that no longer exists.** The
-first cell read "who accessed this child's *medical record*", a phrase this corpus cited in five
-places and defined in none. [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-resolved it by removing the referent rather than by building it: there is one record about a person,
-and everything in it other than name, gender and age lives in `person_attribute`
-([09-attributes.md](09-attributes.md)). **The question this trail answers is unchanged and is now
-sharper** — it is asked about the whole record, which is the thing `person.view` really reaches.
+**Both questions are asked about the whole record, and that wording is load-bearing.** There is no medical
+record to ask about —
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the referent rather than building it — so there is one record about a person, and everything in it
+other than name, gender and age lives in `person_attribute` ([09-attributes.md](09-attributes.md)). *"Who
+accessed this child's record, and were they allowed to?"* is the question `person.view` really guards.
 
-**A second cell in that table was stale in the opposite direction, and it is corrected rather than
-quietly rewritten.** It read *"except a person's descriptive values, which are never in the entry"* —
-which was §2.2's withdrawn rule surviving in a summary row after §2.2 itself had retracted it. Anyone
-who read §1 and stopped there would have concluded the payload is clean, which is the one thing this
-table is not. **A summary that contradicts the section underneath it is the more dangerous kind of stale,
-because a summary is what people read.** The payload holds those values deliberately, and loses them 24
-months later; both halves are in the entry, and neither is a detail.
+**The same holds for what this trail's payloads hold.** A person's descriptive values are in an audit
+entry deliberately (§2.2), and they are emptied once the entry passes the payload window
+([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+Both halves belong in this table's own summary, because **a summary that contradicts the section
+underneath it is the more dangerous kind of stale, and a summary is what people read.**
 
 ---
 
@@ -51,7 +48,7 @@ months later; both halves are in the entry, and neither is a detail.
 |---|---|---|
 | `id` | surrogate id | |
 | `occurred_at` | timestamp, audit time | Default: now |
-| `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. *(The example used to be three steps, ending "open a unit participation"; [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted that row, and the two-step version is still the case this column exists for — §3.1's import transaction, which used to write a pair and now writes one row, is the other.)* |
+| `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. |
 | `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` for migrations, imports, and batch jobs |
 | `actor_label` | text, optional | `system`, `migration:0042`, `import_batch:17` — for changes with no person actor. Otherwise a forensic gap |
 | `operation` | text, required | One of: `insert`, `update`, `delete` |
@@ -77,17 +74,15 @@ months later; both halves are in the entry, and neither is a detail.
 
 ### 2.1 The trigger
 
-**The heading is kept because the obligation under it is unchanged; what changed is that nothing
-in this repository defines a trigger any more.** A trigger used to be how this section guaranteed
-its own rule, and D-072 removed it without removing the rule, so the rule is now stated as what
-it is: **every insert and every update to an audited table writes exactly one `audit_log` row,
-and the change and its audit row stand or fail together.** "The audit trail usually has it" is
-not a version of this rule — the trail is how the organization answers "who changed this child's
-address, and when?", and an answer that depends on which code path made the change is not an
-answer. **The layer that owes it is the write itself, on every path**: the screens, the legacy
-import, the yearly expiry sweep, a bulk reorganisation, and a row somebody corrects by hand.
-Model-layer validation logs the intended path, which is the only path that was never at risk;
-check 5 in §5 is the net under the rest, and it is a report, not a guard.
+**Nothing in this repository defines a trigger, so this section's guarantee is a rule and not a mechanism**
+([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)):
+**every insert and every update to an audited table writes exactly one `audit_log` row, and the change and
+its audit row stand or fail together.** "The audit trail usually has it" is not a version of this rule — the
+trail is how the organization answers "who changed this child's address, and when?", and an answer that
+depends on which code path made the change is not an answer. **The layer that owes it is the write itself,
+on every path**: the screens, the legacy import, the yearly expiry sweep, a bulk reorganisation, and a row
+somebody corrects by hand. Model-layer validation logs the intended path, which is the only path that was
+never at risk; check 5 in §5 is the net under the rest, and it is a report, not a guard.
 
 The steps below are what is owed, in the order that makes it safe. The order is a rule, not a
 detail: the redaction step has to run before the write, and the "nothing changed" test has to run
@@ -111,9 +106,9 @@ before anything is spent on a row that would log noise.
    new row and falling back to the old one, the changed fields, both redacted images, and
    the session id, ip address and request id from the request context.
 8. Change nothing about the row being written. The audit row describes the change and never
-   amends it — and it commits in the same transaction as the change. That togetherness is the
-   property a trigger used to supply for nothing, and the one a logging step written beside the
-   write has to supply deliberately.
+   amends it — and it commits in the same transaction as the change. That togetherness is what a
+   trigger gave for free and what a logging step written beside the write must supply deliberately:
+   one transaction, so there is no moment in which the change exists and its audit entry does not.
 
 **The obligation covers inserts and updates on** `person`, `membership`, `guardianship`,
 `role_assignment` and `access_grant`; on `role` and `role_permission` — the role *tables*,
@@ -183,15 +178,12 @@ permission.
 nothing in this data model is hard-deleted (see
 [00-conventions.md](00-conventions.md#4-deletion-policy)). Staging tables do get deleted;
 they are not audited. The absence is a consequence of the deletion policy rather than a gap in
-the obligation above. **It is, however, true of ordinary operation and false of exactly two
-moments**, and saying so is the honest version of the paragraph.
+the obligation above. **It is true of ordinary operation and false of exactly two moments.**
 
 **The first is §3's import revert,** which *does* hard-delete business rows — the `person`,
-`membership`, `event_registration` and `event` rows a batch created (which of the three depends on which
-kind of batch it was — §3's Reversibility is the list; **there were four arms here until
-[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) deleted the
-`unit_participation` one, and a revert of an old batch finds nothing of that kind to remove**) — and those rows were live, referenced and
-visible to real users before they went. So **a revert writes audit entries for its deletes, naming the
+`membership`, `event_registration` and `event` rows a batch created — which of them depends on which kind
+of batch it was, and §3's Reversibility is the list — and those rows were live, referenced and visible to
+real users before they went. So **a revert writes audit entries for its deletes, naming the
 batch and the row it removed.**
 
 **The second is §4's erasure,** which deletes the `person_attribute` rows of the person being
@@ -220,29 +212,22 @@ it audits nothing per row, so the assertion has to know it exists rather than in
 ### 2.2 Redaction before logging
 
 **Three operations act on this table's payloads, and they are told apart by two questions: when does it
-run, and whose interest does it serve. An earlier draft of this section described a fourth, and that
-fourth has been withdrawn below rather than quietly deleted, because the mistake is the useful part.**
-The three are not variations on one idea and must not be implemented as one job. Two of them run on the
+run, and whose interest does it serve.** A fourth is tempting and is refused below, where the refusal
+carries the reasons. The three are not variations on one idea and must not be implemented as one job. Two of them run on the
 way in or on request, on the strength of a person's right or a credential's nature; the third runs on a
 calendar, on the strength of nobody's right at all. Collapsing the third into the second is the easy
 mistake available here — both empty the same two columns — and §5 carries a separate check for each
 because they fail in opposite directions.
 
 > **An audit log that stores the data it audits is a second copy of that data, with weaker access
-> controls and a longer retention period.** This sentence is still true, and it still describes
-> `audit_log`, which holds the whole person record in its payloads. **What changed is which half of it
-> is treated as the defect.** The first response was to empty the payload; the answer here is the
-> other half — the log's access controls and retention are what is wrong about the copy, and emptying
-> the payload fixes neither while destroying the reason the table exists. See
+> controls and a longer retention period.** This is true of `audit_log`, which holds the whole person
+> record in its payloads, and the answer is not an empty payload. The copy's access controls and its
+> retention are what is wrong about it; emptying the payload fixes neither while destroying the table's
+> reason for existing. So each half is answered with what it is: the guard is `audit.view` at the top
+> tier of the catalog, and the retention is a 24-month window on the payloads (mechanism three). See
 > [00-conventions.md §8 item 7](00-conventions.md#8-personal-data-and-erasure) and
 > [05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log), which argues against copying data into a
 > less-guarded place and, read against this table, names the copy in question.
->
-> **One clause of that sentence has since been changed from the side it complained about.** The copy's
-> *longer retention period* is no longer unbounded: the payloads are emptied 24 months after they are
-> written (mechanism three, argued in full below). That is a fix to the half the sentence called a
-> defect, and it is not the answer the first response wanted — the payload is emptied while the table
-> keeps its whole reason for existing, which is what the sentence above was warning against.
 
 **Mechanism one is a small set of values that must never enter the trail at all.** Credentials,
 tokens, the secret half of an integration: for these, *being in a log* is the harm, and no guard is
@@ -274,25 +259,25 @@ The redactor takes one table name and one row image and does this:
 the right shape for it: a name-based rule is the only kind that reaches a credential hidden in an
 unexpected column, and a credential is safe behind no guard, so the rule has to fire on sight.
 
-**The rule that used to sit above these steps, and why it is gone.** An earlier draft reduced a
-`person_attribute` image to its two references — `person_id` and `attribute_definition_id`, saying
-*whose* fact and *which* fact and nothing of its content, with no `«redacted»` marker either — on the
-grounds that a log read by more people than the record should not hold what the record holds. It is
-withdrawn, for two reasons that came from the decisions this section already reflects:
+**The fourth operation, refused here because somebody will propose it.** It reduces a `person_attribute`
+image to its two references — `person_id` and `attribute_definition_id` — saying *whose* fact and *which*
+fact and nothing of its content, with no `«redacted»` marker either, on the grounds that a log read by
+more people than the record should not hold what the record holds. It is refused for two reasons, both of
+them this section's own decisions:
 
-- **It re-created, inside the logging rules, the sensitive subset D-083 deleted**
-  ([../decisions/decision-log.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
+- **It re-creates, inside the logging rules, the sensitive subset that D-083 deleted**
+  ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
   A rule that strips attribute values while `person_contact` changes are logged with their values is a
   list of more-sensitive-than fields wearing a table name instead of a permission name.
-- **It left D-085's history empty.** Overwrite-in-place was chosen because the trail is the history;
+- **It leaves D-085's history empty.** Overwrite-in-place was chosen because the trail is the history;
   an entry that records *a value changed* without recording which one is a history of nothing, and the
   question this table's history is actually asked for — *what did we believe about this child in
-  March?* — would have been unanswerable by design rather than by accident.
+  March?* — would be unanswerable by design rather than by accident.
 
-What the draft got right survives as the guard instead: the copy *is* as sensitive as what it quotes,
-so the permission that reads it belongs at the top of the catalog
+What is right about the proposal is kept as the guard instead: the copy *is* as sensitive as what it
+quotes, so the permission that reads it belongs at the top of the catalog
 ([../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)), and
-that is a line in a document rather than a mechanism, which is the honest weakness.
+that is a line in a document rather than a mechanism, which is the weakness to keep in view.
 
 **What the credential list is not, stated where a reviewer will read it.** It is not the thing
 protecting personal data, and it cannot become that, because **a list of names is only as good as
@@ -301,15 +286,14 @@ those names at runtime, one per code the organization invents. `allergy` is not 
 will be, which is now the correct state of affairs rather than a hole: an allergy is a value in
 `person_attribute`, it is logged, and it is protected by who may read the table it was logged into.
 
-**Which half of that sentence is the requirement, and which was a mechanism.** "In the trigger"
-used to appear here, and D-072 deleted the trigger. What survives is the ordering, which is the
-part with the teeth and which now applies to mechanism one alone: **credential stripping runs on the
-way in, never in a cleanup job that might not run.** The trigger was one way to guarantee that; a code
-path that redacts, then writes, is another; **a code path that writes and repairs afterwards is not
-that**, because for one transaction the secret is in the log and readable, and because the repair *is*
-the cleanup job this sentence forbids. With no trigger there is nothing stopping the third option
-except whoever writes it, which is why the sentence is stated as a rule about ordering rather than
-about a database feature. Mechanism two runs in the opposite direction — it reaches rows already
+**The requirement is an ordering, not a database feature, and it applies to mechanism one alone:
+credential stripping runs on the way in, never in a cleanup job that might not run.** A trigger was one way
+to guarantee that ordering and this repository defines none
+([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)),
+so what guarantees it is the shape of the write — redact, then write. **A path that writes and repairs afterwards does not
+satisfy it**, because for one transaction the secret is in the log and readable, and because the repair
+*is* the cleanup job being forbidden here. Nothing stops that third option except whoever writes it,
+which is exactly why the sentence is about ordering. Mechanism two runs in the opposite direction — it reaches rows already
 written, which is the only way an erasure can affect a trail that must not be rewritten — and the two
 are not in tension because one is about a value that should never have been written and the other is
 about a value that was. See
@@ -364,7 +348,7 @@ having done so, and an erasure (§4) deletes `person_attribute` rows and records
 `redaction_log` rather than one entry per value.
 
 **All three operations are updates, and an append-only guard has to be written knowing that.** Nothing in
-this repository defines an append-only trigger — D-072 removed the last of them — but the property is
+this repository defines an append-only trigger ([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)), but the property is
 still asserted in prose, and the neighbouring trail states it as a literal refusal of updates
 ([05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log)). **A blanket refusal of updates blocks the
 erasure scrub and the reduction job alike**, quietly, from the side of the rule that looks safest. What is
@@ -380,7 +364,7 @@ erasure never waits for reduction.** Check 6 and check 7 exist separately becaus
 and fail the other, and the two failures mean opposite things — check 6 firing means a person's right was
 not honoured, check 7 firing means a policy was not applied.
 
-**What it costs, stated rather than buried.** The window is the cheapest thing this design will ever do
+**What it costs.** The window is the cheapest thing this design will ever do
 about the exposure [D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
 accepts, and it bounds that exposure without repairing it (above, after §2's paragraph on the guard).
 What it *spends* is the past: [D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
@@ -406,16 +390,16 @@ proposed at the same 24 months under
 weaker question than this one because that table keeps the payloads of *reads* out of itself to begin
 with ([05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log)).
 
-**The personal-data entries in the old redaction list are gone, and they were removed rather than
-renamed.** It used to read `secret_hash`, `notes`, `custody_arrangement`, `termination_note`,
-`rejection_note`, `status_note`, on the theory that free text is where a diagnosis hides; a second,
-shorter *always-redacted* set repeated `notes` and `custody_arrangement` for emphasis, which already
-told you the mechanism was running on intuition about which fields looked sensitive. All of them are
-logged now, for the same two reasons as above: the fields are person data and D-083 refuses to grade
-person data, and a scrubbed history is a history that did not happen. **The residual risk is stated
-plainly rather than left implicit — an audit table holding a child's descriptive values is a wider
-surface than any single screen, and the thing standing between it and a volunteer with an interest is
-one sensitivity mark plus whoever implements it.**
+**No free-text field about a person is on the credential list, and none is being added to it.** The list
+once carried `notes`, `custody_arrangement`, `termination_note`, `rejection_note` and `status_note` beside
+`secret_hash`, on the theory that free text is where a diagnosis hides. All of them are logged with their
+values now, for the two reasons this section has already given: person data is one class
+([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
+and a scrubbed history is a history that did not happen. A name-based rule cannot tell sensitive free text
+from sensitive structured text anyway, which is why the list is keyed on credentials only.
+**The residual risk is stated rather than left implicit:** an audit table holding a child's descriptive
+values is a wider surface than any single screen, and what stands between it and a volunteer with an
+interest is one sensitivity mark plus whoever implements it.
 
 **What still argues against `person.notes`, and it is not this.**
 Consider whether
