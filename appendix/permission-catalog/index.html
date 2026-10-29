@@ -2800,7 +2800,7 @@
 <h1 id="appendix--permission-catalog">Appendix — Permission Catalog<a class="headerlink" href="#appendix--permission-catalog" title="Permanent link">&para;</a></h1>
 <p>Every permission code, its namespace, and the grant that carries it.</p>
 <p>This is the <strong>proposed</strong> catalog, seeded in
-<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05-authorization.md</a>.</p>
+<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05d-invariants-and-seed.md</a>.</p>
 <blockquote>
 <p><strong>Round 10 rewrote this page.</strong>
 <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
@@ -3240,7 +3240,7 @@ could carry it but a column on the code itself.</p>
 </tbody>
 </table>
 <p>These marks should drive UI warnings and the alerting in
-<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">../data-model/05-authorization.md</a>.
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">../data-model/05d-invariants-and-seed.md</a>.
 <strong>A mark grades what a grant exposes, not the table a code names</strong>
 (<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>),
 and the two new families are placed by that rule: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a
@@ -4289,7 +4289,7 @@ land when the grant is saved: a <strong>bound</strong> (argument-less) operand i
 grant, and only where <code>selector_type.argument_type</code> matches the item — <code>PLACED</code> on a group grant is
 refused because that item is not an event. And <code>PRESENT(&lt;event&gt;)</code> is refused outright (§1).
 The definitions, and the reason <code>PLACED</code> rather than <code>ATTENDED</code> is the capacity set, are in
-<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>.</p>
+<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08a-event-guards-and-checks.md §8</a>.</p>
 <p><strong><code>event.presence.mark</code> is split off <code>event.manage_participants</code> on purpose, and it used to sit a
 level <em>lower</em>.</strong> Marking presence is a task handed to whoever is at the door with a clipboard;
 managing the roster is a task for the event's leadership. One permission covering both forces the
@@ -4338,7 +4338,7 @@ which had no delete permission and had six codes of its own; §5.) A draft event
 registrations is a mistake to be cleaned up; anything else is cancelled, not deleted
 (<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).
 <strong>No event with even one registration row may be deleted</strong> — Guard 2 in
-<a href="../../data-model/08a-event-guards-and-checks/#guards">../data-model/08-events.md §8</a> is the rule, and cancelling
+<a href="../../data-model/08a-event-guards-and-checks/#guards">../data-model/08a-event-guards-and-checks.md §8</a> is the rule, and cancelling
 is what to do instead. The obligation is not the permission's to carry: <code>event.delete</code> decides
 who may ask, and only a migration-level constraint — <code>event_registration.event_id</code> referencing
 <code>event.id</code> with no cascade — refuses the same delete when it arrives from an import or a
@@ -4354,7 +4354,7 @@ is deleted, so the sentence is now said where permissions are said: a seeded gra
 what ships is a <strong>template</strong>, and D-102 now says plainly that the event-creation path instantiates it
 beside the event row, in the same transaction as the event, and that the import owes one instantiation
 per event it writes
-(<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>).</em>
+(<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08a-event-guards-and-checks.md §8</a>).</em>
 <em>What remains open is only the safety net: an event whose two writes were not one transaction has no
 organizer who can read its answers, and "these two rows exist together" is a report —</em> events with no
 answer-view grant — <em>that no layer of this project can express as a constraint</em>
@@ -5115,7 +5115,7 @@ round 10 created them:</strong></p>
   — the two module pages that call <code>PERSON(…)</code> <em>"not in the language at all"</em>, one of them refusing the
   leaf while its own gate table writes it, and the domain grammar that omits it for the same reason,
   need this round's correction; the registry row and the printed grammar belong to
-  <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">../data-model/05-authorization.md §8</a>
+  <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">../data-model/05a-audience-and-grammar.md §8</a>
   and <a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
   not to this appendix. <strong>The fallback survives the answer</strong>: a second grant aimed at the person is the
   other way to write the exception, and the better one when the exception should not appear in the
@@ -5185,7 +5185,7 @@ round 10 created them:</strong></p>
   over the seeded registries, run by hand.</strong> D-104 supplied the grammar and the report; <strong>it did not
   re-point these five sentences</strong>, and that repair still belongs to whoever owns each of those pages.</li>
 <li><strong>The registered spelling of the answer-read code is the catalog's, singular, and the round said so
-  out loud.</strong> <a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08-events.md §8</a>
+  out loud.</strong> <a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08a-event-guards-and-checks.md §8</a>
   records that D-102 wrote the plural while its own entry was new, that the two spellings were one code
   and not two, and that <strong>the catalog is the arbiter</strong> — so the seeded grant in §11 and the code in §8a
   are <code>event.answer.view</code>, and no other spelling is registered anywhere. That case was easy, because

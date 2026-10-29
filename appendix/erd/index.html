@@ -3271,7 +3271,7 @@ person, an office, a group or another audience. The fifth drawn edge, to <code>e
 item-bound codes — <code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code> — whose argument is
 optional exactly because the item being checked usually supplies it
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
-<p>See <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">../data-model/05-authorization.md §8</a>
+<p>See <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">../data-model/05a-audience-and-grammar.md §8</a>
 and <a href="../../domain/06-authorization-model/#6-the-resolver">../domain/06-authorization-model.md §6</a>.</p>
 <hr />
 <h2 id="6-temporal-pattern-illustrated">6. Temporal pattern, illustrated<a class="headerlink" href="#6-temporal-pattern-illustrated" title="Permanent link">&para;</a></h2>
@@ -4024,7 +4024,7 @@ to nobody.</p>
 <p>Every other column ending in <code>_id</code> has a real foreign key with <code>ON DELETE RESTRICT</code>, <strong>with one
 exception</strong>: <code>event_organizer.event_id</code> is the single <code>ON DELETE CASCADE</code> in the design — an appointment is
 nothing once the occasion it appointed somebody to is gone, and the guards in
-<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">../data-model/08-events.md §8</a> are what make that
+<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">../data-model/08a-event-guards-and-checks.md §8</a> are what make that
 delete safe to allow at all. <strong>Round 12 changed the count of nothing here</strong>: two operands whose argument
 is an integer add no key and no cascade, because there is no row for either to be a child of — still one
 cascading column, still <code>event_organizer.event_id</code>. Everything else that merely looks like a child

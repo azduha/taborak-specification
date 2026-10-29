@@ -3078,7 +3078,7 @@ column, because people rely on it.</p>
    about the log rather than about the shape of a row: <strong>an audit entry about a person is as
    sensitive as the person data it carries</strong>, which is a requirement on a permission's sensitivity
    mark and not on anything the schema can express — see
-   <a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md §9</a>, which argues against copying data into
+   <a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>, which argues against copying data into
    a less-guarded place and describes this table better than it knows: the trail <em>is</em> such a copy,
    holding the whole person record in its payloads while historically being graded below it. Nothing
    here makes that guard true; the catalog does, or does not
@@ -3166,7 +3166,7 @@ review is the kind of thing an organization discovers from a regulator.</p>
 </tr>
 <tr>
 <td>There are exactly <strong>two</strong> reference-less keys, and both are polymorphic on purpose</td>
-<td><code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, the second documented in <a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">05-authorization.md §8</a>. Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, <a href="../05d-invariants-and-seed/#11-invariants-to-verify">Invariants to verify</a>, carries both scans and the nightly report that replaces the missing foreign key. <em>(This row used to read "<code>access_grant.scope_id</code> is the <strong>one</strong> reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened <code>selector_arg_id</code> from three tables to five got written down. It is the same defect <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a> was entered for, in a conventions page rather than a registry.)</em></td>
+<td><code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, the second documented in <a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">05a-audience-and-grammar.md §8</a>. Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, <a href="../05d-invariants-and-seed/#11-invariants-to-verify">Invariants to verify</a>, carries both scans and the nightly report that replaces the missing foreign key. <em>(This row used to read "<code>access_grant.scope_id</code> is the <strong>one</strong> reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened <code>selector_arg_id</code> from three tables to five got written down. It is the same defect <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a> was entered for, in a conventions page rather than a registry.)</em></td>
 </tr>
 <tr>
 <td>Circular references are broken with an optional column, not a deferred constraint</td>

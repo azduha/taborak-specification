@@ -2722,7 +2722,7 @@ never taken. §8 states the refusal; this query is the reason it matters.</p>
 <li><strong>An event running over its stated capacity.</strong> Counts, for each non-cancelled event that
    has a capacity, its <code>PLACED</code> registrations, and reports the events where that count exceeds
    the capacity. PERMITTED — a staff registration may exceed deliberately
-   (<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>) — so this
+   (<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07a-capacity-presence-and-forms.md §8</a>) — so this
    is a report, not an error. A pattern of overruns means the capacity numbers are wrong, not
    that the rule is.</li>
 <li><strong>An unpaid registration holding a place past the waitlist deadline.</strong> Counts attending,
@@ -2756,7 +2756,8 @@ never taken. §8 states the refusal; this query is the reason it matters.</p>
    registration</strong> (<a href="../08-events/#6-payments-and-confirmation">§6</a>); there is no rule attached to the registration row
    that would create it, so a path that forgets produces a person with a confirmed place and no
    bill — invisible to every check here, because every row it left behind is individually
-   correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
+   correct. Money-versus-roster reconciliation
+   (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>) is the same discovery arriving later and
    more expensively; this is the version worth running nightly.</li>
 </ol>
 <p><strong>Checks 1, 2 and 10 are the same shape and should be read as one warning.</strong> Each tests
@@ -2766,7 +2767,7 @@ that a schema change never surfaces, because every row a forgotten step leaves b
 individually valid.</p>
 <p><strong>Check 5 is the important one to read correctly.</strong> It will produce rows, and that is not a
 failure — exceeding capacity is a permitted, attributed act
-(<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>). What the
+(<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07a-capacity-presence-and-forms.md §8</a>). What the
 report is <em>for</em> is the pattern: an event that overruns every year has a capacity number that
 is wrong, and the fix is to change the number rather than to start refusing people.</p>
 <p><em>Numbering:</em> the numbers of checks 1–10 are cited from other files; they are not reassigned.</p>

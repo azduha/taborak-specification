@@ -2546,7 +2546,7 @@
 <h1 id="data-model--audit-and-import">Data Model — Audit and Import<a class="headerlink" href="#data-model--audit-and-import" title="Permanent link">&para;</a></h1>
 <p><code>audit_log</code>, <code>import_batch</code>, staging tables, and the redaction log.</p>
 <p><code>access_log</code> (the authorization audit trail) is in
-<a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md</a>. This document covers the
+<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md</a>. This document covers the
 data-change audit trail, the legacy import pipeline, and erasure.</p>
 <hr />
 <h2 id="1-two-audit-trails-and-why-both">1. Two audit trails, and why both<a class="headerlink" href="#1-two-audit-trails-and-why-both" title="Permanent link">&para;</a></h2>
@@ -2768,7 +2768,7 @@ and what it means is that the guard on <code>audit_log</code> is now load-bearin
 entry about a person is as sensitive as the person data it quotes</strong>, which is stated as a requirement
 on <code>audit.view</code>'s sensitivity mark in
 <a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>
-and argued in <a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md §9</a> — where the case against
+and argued in <a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a> — where the case against
 copying data into a less-guarded place applies to this table directly, since this table is the copy.
 The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
 worry is a table nobody audits, and here it is a table whose payloads outrank its own permission. No
@@ -2847,7 +2847,7 @@ is treated as the defect.</strong> The first response was to empty the payload; 
 other half — the log's access controls and retention are what is wrong about the copy, and emptying
 the payload fixes neither while destroying the reason the table exists. See
 <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md §8 item 7</a> and
-<a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md §9</a>, which argues against copying data into a
+<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>, which argues against copying data into a
 less-guarded place and, read against this table, names the copy in question.</p>
 <p><strong>One clause of that sentence has since been changed from the side it complained about.</strong> The copy's
 <em>longer retention period</em> is no longer unbounded: the payloads are emptied 24 months after they are
@@ -2998,7 +2998,7 @@ having done so, and an erasure (§4) deletes <code>person_attribute</code> rows 
 <p><strong>All three operations are updates, and an append-only guard has to be written knowing that.</strong> Nothing in
 this repository defines an append-only trigger — D-072 removed the last of them — but the property is
 still asserted in prose, and the neighbouring trail states it as a literal refusal of updates
-(<a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md §9</a>). <strong>A blanket refusal of updates blocks the
+(<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>). <strong>A blanket refusal of updates blocks the
 erasure scrub and the reduction job alike</strong>, quietly, from the side of the rule that looks safest. What is
 worth keeping is not <em>nothing changes</em> but <strong>nothing is corrected</strong>: no write may alter what a row says
 about who did what, to which row, when; the only writes permitted after the fact are the two that remove
@@ -3032,7 +3032,7 @@ already asked for, now with a concrete policy in front of it instead of a blank 
 proposed at the same 24 months under
 <a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>, which still needs confirming; it is a
 weaker question than this one because that table keeps the payloads of <em>reads</em> out of itself to begin
-with (<a href="../05c-access-log-and-resolver/#9-access_log">05-authorization.md §9</a>).</p>
+with (<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>).</p>
 <p><strong>The personal-data entries in the old redaction list are gone, and they were removed rather than
 renamed.</strong> It used to read <code>secret_hash</code>, <code>notes</code>, <code>custody_arrangement</code>, <code>termination_note</code>,
 <code>rejection_note</code>, <code>status_note</code>, on the theory that free text is where a diagnosis hides; a second,
@@ -3766,7 +3766,7 @@ is the source's claim about a status rather than a record of the act: nobody pai
   <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
   adopted — and names <code>audience_operand</code> in <code>redacted_tables</code>, because a field that lists which tables the
   erasure reached is worth nothing if the one table where the person still appears is left off it. The nightly
-  orphan scan in <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05-authorization.md §11</a> is the backstop for
+  orphan scan in <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d-invariants-and-seed.md §11</a> is the backstop for
   this, and is not the control: the control is the erasure path itself, because a scan that reports a grant
   denying everybody every night is a report somebody stops reading.</li>
 </ul>

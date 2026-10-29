@@ -3542,7 +3542,7 @@ for cases no constraint rejects at the write.</p>
 <p><strong>Two checks this module deliberately does not hold.</strong> The one <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
 asks for — a live <code>deny</code> whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
-<a href="../05d-invariants-and-seed/#11-invariants-to-verify">05-authorization.md §11</a>. The no-overlap invariant over
+<a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d-invariants-and-seed.md §11</a>. The no-overlap invariant over
 <code>person_group_member</code> belongs to the groups module, <a href="../02-organization/#6-integrity-checks">02-organization.md §6</a>.
 Naming both here is to stop either being written twice and drifting.</p>
 <p><strong>Retired with <code>unit_participation</code></strong> (§5), listed so that a citation of an old number lands somewhere:</p>
@@ -3584,7 +3584,7 @@ there is nothing to vary by type; being a counselor or a leader is a <strong>rol
 and membership is ageless, so there are no age limits to seed (D-038).</p>
 <p><strong>Nothing else is seeded here.</strong> The <code>counselors</code> role that D-100 seeds — shipped <code>is_system</code>, so an
 editor refuses to delete it — is a row of the authorization module
-(<a href="../05d-invariants-and-seed/#12-what-the-organization-starts-with">05-authorization.md §12</a>) and not of this one,
+(<a href="../05d-invariants-and-seed/#12-what-the-organization-starts-with">05d-invariants-and-seed.md §12</a>) and not of this one,
 and it is a <strong>set</strong> that confers nothing until a grant names it: no more than a membership type has ever
 conferred.</p>
 <p><strong>All three are settled, and all three are §1's columns</strong> — 12 months, 1 January, 60 days

@@ -2985,7 +2985,7 @@ sign up for a camp on the day the form closes, which is not self-correcting at a
 <li><strong>A hypothesis that is blocking an account gets an age check, and it alerts.</strong> Its victim is a
   specific person who cannot log in and whose only remaining channel is to telephone someone. The check
   is shaped like <code>field_conflict</code>'s thirty days
-  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">01-identity.md §10</a>); the alerting is the point.</li>
+  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08a-event-guards-and-checks.md §10</a>); the alerting is the point.</li>
 <li><strong>The holding message confirms nothing.</strong> It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -3102,7 +3102,7 @@ schema carries no way to catch it
 (<a href="../../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>).
 What catches it is a report of live rows that reference a tombstoned person, which is the only form of
 this failure that is visible after the fact
-(<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/01-identity.md §10</a>).</p>
+(<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/08a-event-guards-and-checks.md §10</a>).</p>
 <h3 id="the-security-rule-that-must-not-be-skipped">The security rule that must not be skipped<a class="headerlink" href="#the-security-rule-that-must-not-be-skipped" title="Permanent link">&para;</a></h3>
 <p>Merging unions the two people's permissions. If a bad merge is performed, the survivor
 gains the absorbed person's access. Therefore:</p>
@@ -3139,7 +3139,7 @@ closed off, not merely slower</strong> — it is a trade against a named feature
   means the matcher is producing duplicates faster than a human can settle them, which is a statement
   about the queue and not about the row. A survivor that has itself been absorbed is <em>normal</em>; only
   the length means anything
-  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/01-identity.md §10</a>).</li>
+  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">../data-model/08a-event-guards-and-checks.md §10</a>).</li>
 </ul>
 <p>The reversal is four steps, and they restore the row split:</p>
 <ol>
