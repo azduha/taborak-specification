@@ -4,9 +4,9 @@ This appendix describes **relationships** — what points at what, how many, and
 link is temporal. Field-level definitions live in the data-model documents, each in the one
 that owns the entity, and are deliberately not repeated here.
 
-Diagrams of the schema in [../data-model/00-conventions.md](../data-model/00-conventions.md).
-Split by subject area so each
-stays readable; the areas connect through `person`, which appears in all of them.
+The schema these diagrams draw is governed by
+[../data-model/00-conventions.md](../data-model/00-conventions.md). The appendix is split by subject area so
+each part stays readable; the areas connect through `person`, which appears in all of them.
 
 Notation: `→` is a foreign key pointing at the referenced table. `⇒` is a polymorphic
 reference (no database-level foreign key). Temporal tables are marked `[T]`.
@@ -134,11 +134,12 @@ erDiagram
 ```
 
 **Key point:** these three tables are the whole of what the system knows about a person beyond
-name, gender and age. There is no health table beside them and no privileged corner inside them:
-[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-removed the category and
-[D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)
-put an organization-maintained vocabulary in its place. Reading is `person.view`, writing is
+name, gender and age. There is no health table beside them and no privileged corner inside them: personal
+data is **one class of data**, graded by what a grant exposes rather than by which table it reads
+([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
+and what the organization collects is named by a vocabulary the organization maintains itself
+([D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)).
+Reading is `person.view`, writing is
 `person.edit`, and only the vocabulary needs a code of its own
 ([`attribute.define`](permission-catalog-a-codes.md#2-people-and-identity)). Fields and rules:
 [../data-model/09-attributes.md](../data-model/09-attributes.md).
@@ -176,11 +177,8 @@ person erases one ([../domain/08-person-data.md](../domain/08-person-data.md#5-f
 unit, it is the organization, and it is a **scope** and not a row: `grant_scope_type` carries a code
 `unit` with `is_item_scoped = false`, and a grant written at it has no `scope_id`
 ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
-What this section drew until round 10 was a hierarchy of bodies with a vocabulary of types, rename
-history, lineage edges, rosters and offices. Every one of those tables is deleted, not moved; the ledger
-of what each took with it is
-[../data-model/02-organization.md §5](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
-What is left for this section to draw is the group — a set of people, not a body.
+What this section draws is the one set-shaped thing the module holds: the group — a set of people, not a
+body — beside the roster that belongs to it.
 
 ```mermaid
 erDiagram
@@ -222,27 +220,17 @@ The box is deliberately alone beside its roster: `name` is unique across `role` 
 together, but no constraint spans two tables, so that is a write-path rule and not a drawn edge
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 
-**Gone from this diagram, one line each, so that a reader hunting for a box finds the decision:**
-
-- ~~`org_unit`~~, ~~`org_unit_type`~~, ~~`org_unit_type_rule`~~, ~~`org_unit_name`~~,
-  ~~`org_unit_relationship`~~ — all deleted by
-  [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row), with
-  `path`, `depth`, the unit vocabulary, the nesting checks, the rename history and the lineage edges.
-  **There is no unit table anywhere in this appendix.** The unit appears once, as the `unit` row of
-  `grant_scope_type` ([§5a](erd-a-authorization.md#5a-authorization--the-tables)) — a lookup row naming a scope, not a body.
-- ~~`unit_participation`~~ — deleted by D-097. `person_group_member` is the roster that outlived it and
-  `membership` (§3) is membership of the unit; **the import owes participation rows to nothing**.
-- ~~`position`~~, ~~`position_assignment`~~ — deleted by
-  [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape):
-  with one unit there is no body to be a leader **of**. `is_leadership` and `max_holders` went with them;
-  the office survives as `role` + `role_holder` ([§5a](erd-a-authorization.md#5a-authorization--the-tables)).
-- ~~`org_unit_type.allows_minors`~~ — the flag was deleted by
-  [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
-  and the table that carried it by D-097. *Do not place a child where nobody is responsible* is now
-  `person_group.member.manage` held by a named adult, and the system can no longer say which groups are
-  for children — that loss is D-095's, restated in D-098.
-- ~~`scope_exposure`~~ — deleted by D-097 with the direction-of-authority check and the nightly alert that
-  was its only detector. [§5](erd-a-authorization.md#5-authorization--the-whole-answer-in-one-diagram) says what was lost with it.
+**There is no unit table in any diagram in this appendix.** The unit appears once, as the `unit` row of
+`grant_scope_type` ([§5a](erd-a-authorization.md#5a-authorization--the-tables)) — a lookup row naming a
+scope, not a body, and there is nothing nested under it
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). What a
+reader might expect a unit to do is done by these instead: belonging to the unit is `membership` (§3),
+belonging to a set of people is `person_group_member` (above), an elected leader is a `role_holder` row,
+and *do not place a child where nobody is responsible* is `person_group.member.manage` held by a named
+adult, because nothing on a group says who it is for
+([D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
+[D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+[D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 
 See [../data-model/02-organization.md](../data-model/02-organization.md) and
 [../domain/04-organization-structure.md](../domain/04-organization-structure.md); the scope itself is
@@ -291,29 +279,25 @@ erDiagram
 - `membership_request` has **two** person references:
   `person_id` (the child, who would become a member) and `submitted_by_person_id` (the
   parent, who applied). Collapsing them makes the audit trail false.
-- **A request asks for membership of the unit and names nothing else.** `requested_unit_id` is deleted
-  with the units
+- **A request asks for membership of the unit and names no body.** No edge leaves this diagram for a
+  group: which group a new member lands in is a write on the group — one `person_group_member` row, §2 —
+  and not a preference on the application
   ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
-  [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
-  and there is therefore no edge from this diagram to any body: which group a new member lands in is a
-  write on the group — one `person_group_member` row, §2 — and not a preference on the request. The
-  ~~unit this request was aimed at~~ is withdrawn, not moved; the want behind the column is served by the
-  free-text `notes` the row already carries.
-- **Belonging lives in two shapes now, and neither is a membership.** `person_group_member` (§2) is a
-  group's dated roster and is keyed on **person**, never on `membership` — the argument `unit_participation`
-  made and [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
-  carried over: an imported roster or a 1998 camper has no membership row to point at, and inferring an
-  open-ended one would sweep that person into `MEMBERS` today. The table that held it,
-  ~~`unit_participation`~~, is deleted by
-  [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row), along
-  with the root participation row every membership used to owe. Field rules:
+  [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+  Where an applicant would have said which group they had in mind, the row has the free-text `notes` it
+  already carries.
+- **Belonging lives in two shapes, and neither is a membership.** `person_group_member` (§2) is a group's
+  dated roster and is keyed on **person**, never on `membership`: an imported roster row or a 1998 camper
+  has no membership row to point at, and inferring an open-ended one would sweep that person into
+  `MEMBERS` today
+  ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
+  A `membership` is membership of the unit, and it owes no second row to anything. Field rules:
   [../data-model/03-membership.md](../data-model/03-membership.md#5-unit_participation--deleted-by-d-097).
-- **`membership_type` exists with exactly one row**, and `category`, `min_age`, `max_age`
-  and `requires_background_check` are all gone. Membership is ageless
-  ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)); age is read from
-  `person.birth_date` where it matters, which is guardianship — positions carried the last stored
-  eligibility rule and [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
-  deleted it, so age is nobody's check and membership never was one.
+- **`membership_type` exists, with exactly one row**, kept as a table so the vocabulary can grow, and it
+  carries fee and renewal parameters. *Why the row exists at all: membership is ageless
+  ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)), and age is read from
+  `person.birth_date` where it matters — which is guardianship, entered by the shape of a request — so age
+  is nobody's eligibility check and a membership type never was one.*
 
 ---
 
