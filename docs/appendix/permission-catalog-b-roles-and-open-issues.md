@@ -603,27 +603,23 @@ contains no office grants at all** ([What the seed ships](#what-the-seed-ships),
   ([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
   [../domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline)).
   Who holds the permission afterwards, day to day, is still what is open.
-**Everything this file used to leave open is answered in the decision log, not here.** Whether a grant
-carries a strength, a locality, or more than one code
+**Settled, so that nobody reopens them from the shape of this page.** A grant carries one code, and there
+is neither a level nor a "nearest scope wins" ordering to pair with it
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality));
-whether the unit is a row or a scope
-([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)); whether
-an event has an owner
+the unit is a scope and never a row
+([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row));
+nothing owns an event
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it));
-whether leadership is a position or an office
+leadership is an office, not a position
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape));
-whether `PERSON(x)` is in the selector language and whether `LIST` still is (it is, and it is not — the
-registry table is
-[data-model/05a §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people),
-and it is the only place the number of seeded operands is written); whether presence is a set anyone may
-be granted over (it is not, on the argument that always carried it, and §1 says why); whether a code's
-last segment must be an action (it must — §1,
-[D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction));
-and the smaller reversals this section used to list one struck line at a time. **Each of those is one
-entry in [decisions/index.md](../decisions/index.md), findable by number, and each names what enforces the
-rule now** — the discipline
-([D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now))
-this appendix was written under. **What is open is the list above this paragraph, and nothing else in
-this file.**
+`PERSON(x)` is in the selector language and `LIST` is not, and
+[data-model/05a §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
+is the only place the number of seeded operands is written; presence is not a set anyone may be granted
+over (§1 carries the argument); a code's last segment is an action (§1,
+[D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
+**Every one of those is one entry in
+[decisions/index.md](../decisions/index.md), findable by number, and each entry names what enforces the
+rule now** — which is the discipline [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) states.
+**What is open is the list above this paragraph, and nothing else in this file.**
 
 All tracked in [../open-questions.md](../open-questions.md).
