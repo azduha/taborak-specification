@@ -1,0 +1,3296 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/appendix/erd-b-inventory/">
+      
+      
+        <link rel="prev" href="../erd-a-authorization/">
+      
+      
+        <link rel="next" href="../permission-catalog/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>ERD: inventory - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#appendix--erd-the-temporal-pattern-the-table-inventory-the-foreign-keys" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ERD: inventory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../erd-a-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: inventory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#6-temporal-pattern-illustrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Temporal pattern, illustrated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-table-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Table inventory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-foreign-key-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Foreign key summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permission-catalog-a-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog: the codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permission-catalog-b-roles-and-open-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../removed-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../decisions/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#6-temporal-pattern-illustrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Temporal pattern, illustrated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-table-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Table inventory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-foreign-key-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Foreign key summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/appendix/erd-b-inventory.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/appendix/erd-b-inventory.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="appendix--erd-the-temporal-pattern-the-table-inventory-the-foreign-keys">Appendix — ERD: the temporal pattern, the table inventory, the foreign keys<a class="headerlink" href="#appendix--erd-the-temporal-pattern-the-table-inventory-the-foreign-keys" title="Permanent link">&para;</a></h1>
+<p>How a dated row is written so that an answer survives the thing it describes, then one entry per entity in the whole system, and every reference between them.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../erd/">erd.md</a> holds §1–§4, the diagrams of the people — identity and attributes, the unit's groups and offices, membership, guardianship; <a href="../erd-a-authorization/">erd-a-authorization.md</a> holds §5–§5b, the whole authorization answer, its tables and the audience expression tree; <a href="./">erd-b-inventory.md</a> holds §6–§8, the temporal pattern, the table inventory and the foreign key summary.</p>
+<hr />
+<h2 id="6-temporal-pattern-illustrated">6. Temporal pattern, illustrated<a class="headerlink" href="#6-temporal-pattern-illustrated" title="Permanent link">&para;</a></h2>
+<p>Every <code>[T]</code> table above uses the same shape. The returning-member case shows why:</p>
+<pre class="mermaid"><code>flowchart TB
+    P["person 100 — Jan Novák"]
+    M1["membership #1 · member&lt;br/&gt;1990-09-01 → 2010-06-30 · terminated"]
+    GAP["14-year gap&lt;br/&gt;no rows; visible as data, not inferred"]
+    M2["membership #2 · member&lt;br/&gt;2024-10-01 → open"]
+    G1["person_group_member · oddílová rada&lt;br/&gt;1996-09-01 → 2004-06-30"]
+    G2["person_group_member · registre 2025&lt;br/&gt;2024-10-01 → 2025-12-31"]
+    RH["role_holder · treasurers&lt;br/&gt;2025-01-01 → open"]
+    AU["audience · MEMBERS * ROLE(treasurers)&lt;br/&gt;an expression, evaluated live"]
+    AG["access_grant · payment.record&lt;br/&gt;allow, at the unit&lt;br/&gt;2025-01-01 → open"]
+    GA["guardianship → child A&lt;br/&gt;2015-03-01 → open&lt;br/&gt;right_level: write"]
+    GB["guardianship → child B&lt;br/&gt;2018-07-01 → open&lt;br/&gt;right_level: view"]
+    P --&gt; M1
+    M1 --&gt; GAP --&gt; M2
+    P --&gt; G1
+    P --&gt; G2
+    P --&gt; RH
+    P --&gt; GA
+    P --&gt; GB
+    RH -.-&gt;|"named by code inside"| AU
+    AU -.-&gt;|"aimed at by"| AG
+    RH ==&gt;|"the office reaches him only&lt;br/&gt;through that grant"| AG</code></pre>
+<p>Note the two membership rows have the <strong>same type</strong>. They differ only in period and end
+reason — this person was a member twice, and was a child and then an adult throughout. The
+old diagram called them <code>child</code> and <code>adult</code>; that was the framing the ageless decision
+replaced (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>).</p>
+<p><strong>Where the first row came from is not drawn, and the answer moved twice this round.</strong> A 1990s roster row
+states a period of membership, and since
+<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> one
+reviewed batch may turn that stated period into membership #1 itself: both ends dated, <code>data_confidence</code>
+low, the batch id on it, <strong>no</strong> <code>fee_obligation</code> and a balance that stays absent rather than zero, because
+the corpus carries no money in it
+(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
+Two shapes remain forbidden, and they are the two the ban was ever really about: an <strong>open-ended</strong> imported
+membership, and one <strong>inferred from an attendance row</strong>. A closed period gates nothing in the present; an
+open one hands authority to whoever signs up under that name tomorrow. What the pipeline no longer
+produces at all is the second row of this diagram's previous version: the participation rows it owed
+beside every membership went with the unit hierarchy
+(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>), so a
+people batch writes the membership and nothing else, and the group rows are written by somebody who knows
+the group exists
+(<a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md §7</a>).</p>
+<p>Questions this shape supports, all of which fail against a design with <code>person.is_member</code>:</p>
+<ul>
+<li>Was this person a member on 1998-06-01?</li>
+<li>How many years of membership, excluding the gap?</li>
+<li>Which groups was he in during 2003? — <code>person_group_member</code> answers it, because those rows are dated
+  rather than derived from a rule that could change its mind.</li>
+<li>Who held the office of <code>treasurers</code> in 2023? — the same shape of answer, one <code>role_holder</code> row, which is
+  the reason <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> was closed
+  with the answer <em>no</em>.</li>
+<li>Would that grant have reached him on that date? — holder row, expression and grant are all evaluated as
+  of the same <code>at</code>, and none of the three may be stored as a materialized list
+  (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).</li>
+<li>How old were they when they joined the second time? — answered from <code>person.birth_date</code>,
+  which the membership rows never copy.</li>
+<li>Who are the returning members — more than one membership with a gap between?</li>
+</ul>
+<p>Every one of them is answered as of a date, and an as-of date must be applied to every join in
+the answer, not only to the first one — a period joined without it leaks the present into the
+past. That is what the <code>[T]</code> marking on the tables above exists to make visible.</p>
+<hr />
+<h2 id="7-table-inventory">7. Table inventory<a class="headerlink" href="#7-table-inventory" title="Permanent link">&para;</a></h2>
+<p>One entry per entity: what it is, what it references, how many may exist, and whether it is
+temporal. <code>⇒</code> marks a polymorphic reference with no foreign key. Entries that exist <strong>only</strong> to
+join two other entities say so. An entity that no longer exists keeps its row, <strong>struck</strong>, in the block
+a reader would have looked for it in, with the decision that deleted it — and its <code>Points at</code> and
+<code>How many</code> cells are empty, because there is nothing left to point at and no rule left to count.</p>
+<p><strong>Read the <code>[T]</code> column as a decision, not a default.</strong> A <code>no</code> is normally a lookup table, a
+definition, or an append-only trail — the kinds of thing that have no period to carry. Exactly one
+<code>no</code> in this inventory is a choice about a person's data rather than a lack of one:
+<code>person_attribute</code>, and the reason is written out under its own block below and in §1a.</p>
+<p><strong>Identity</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person</code></td>
+<td>The human being. Holds identity only — no status, no role, no membership</td>
+<td>Nothing, except itself: <code>merged_into_person_id</code> ⇒ self</td>
+<td>One per human, effectively; a merged row survives as a tombstone and is never deleted. The pointer is <strong>never rewritten forward</strong> when the survivor is itself absorbed, so chains persist and <code>resolve_person()</code> walks them (<a href="../../decisions/round-07-08/#d-087--merge-chains-stay-because-reversing-a-merge-is-a-supported-operation">D-087</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>person_name</code></td>
+<td>One name a person has had, and when</td>
+<td><code>person</code></td>
+<td>Many per person; one current row per <code>name_type</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>account</code></td>
+<td>The ability to log in. Optional, and independent of membership</td>
+<td><code>person</code></td>
+<td>Zero or many per person over a lifetime; at most one <strong>live</strong> row</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>account_credential</code></td>
+<td>One authentication method's secret or external handle</td>
+<td><code>account</code> — deliberately not <code>person</code></td>
+<td>Many per account; one current row per external issuer and reference pair</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>person_contact</code></td>
+<td>An email, phone or postal address, as a dated row rather than a column</td>
+<td><code>person</code></td>
+<td>Many per person; one current primary per type and purpose</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>person_identifier</code></td>
+<td>An identifier issued outside the system</td>
+<td><code>person</code>; <code>identifier_scheme</code> for its <code>scheme</code></td>
+<td>Many per person; <code>(scheme, value)</code> unique among current rows</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>identifier_scheme</code></td>
+<td>The vocabulary of identifier schemes</td>
+<td>Nothing</td>
+<td>Lookup table, one row per scheme</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>identity_hypothesis</code></td>
+<td>A <em>proposal</em> that two person rows are the same human</td>
+<td><code>person</code> twice; the reviewer is a <code>person</code></td>
+<td>At most one live hypothesis per pair; a rejected pair may be re-proposed</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>person_merge</code></td>
+<td>The record that one row was absorbed into another, and how to undo it</td>
+<td><code>person</code> twice; <code>identity_hypothesis</code>, optional</td>
+<td>One per merge performed; a reversal is recorded on the same row</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>field_conflict</code></td>
+<td>One value a merge could not decide between two candidates — raised for either half of the record, an identity field or a descriptive value (<a href="../erd/#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age">§1a</a>)</td>
+<td><code>person_merge</code>; <code>⇒ (entity_table, entity_id)</code> — polymorphic by nature</td>
+<td>Many per merge</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Personal attributes</strong> — everything known about a person other than name, gender and age
+(<a href="../erd/#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age">§1a</a>)</p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attribute_definition</code></td>
+<td>One thing the organization collects about people: the code, its label, its type, and whether several values may be current at once</td>
+<td>Nothing</td>
+<td>One code per <strong>normalized</strong> spelling — <code>Allergy</code> and <code>allergy</code> are one row; statuses <code>proposed</code>, <code>live</code>, <code>retired</code>, and retiring keeps the row and its values</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>attribute_option</code></td>
+<td>One allowed value of a <code>one_of</code> definition</td>
+<td><code>attribute_definition</code></td>
+<td>One row per code per definition; a retired option is never re-meaning, because values stored against it are historical facts</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>person_attribute</code></td>
+<td>The value one person currently has for one code</td>
+<td><code>person</code>, <code>attribute_definition</code>, and <code>attribute_option</code> when the type is <code>one_of</code></td>
+<td>One current row per person and code; more only where the definition sets <code>allow_multiple</code>, which no constraint can check (it reads another table)</td>
+<td><strong>no — deliberately</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>That last <code>no</code> is the decision, and it is the reason this row spells it out.</strong> Values are
+overwritten in place and <code>audit_log</code> — carrying the values themselves, <strong>for 24 months</strong> — is the only
+history. This is the one place in the schema where <em>"what did we believe in 2019?"</em> would be answered
+from the trail rather than from business data, and since round 8 the answer is that <strong>it is answered
+for two years and not beyond</strong> (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
+the honest description of this trade is <em>no long history</em>, not merely <em>no temporal columns</em>, and if a
+case ever needs the long version the fix is temporal values — D-085 reversed — not a longer trail.
+On top of that expiry sits the older caveat:
+<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
+records the trail as discipline rather than guarantee. The trade was made with that in view and is
+reversible in one entry
+(<a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>,
+<a href="../../data-model/09-attributes/#3-person_attribute--a-value-one-person-has">../data-model/09-attributes.md §3</a>).
+The two vocabulary tables carry <strong>status instead of periods</strong>, which is what lets a code be retired
+without touching a fact; only redacting a person erases values, and a redacted person still holding
+attribute rows, or still having their values readable in the trail, means the redaction did not happen
+(<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).</p>
+<p><strong>Groups and offices</strong> — what the organization module holds now (<a href="../erd/#2-organization">§2</a>), plus the two
+office tables it shares with authorization, drawn in <a href="../erd-a-authorization/#5a-authorization--the-tables">§5a</a> and specified in
+<a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3</a>
+and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-office">§4</a></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>person_group</code></td>
+<td>A named set of people with a lifetime — a crew, a registration team, everyone who ever ran the camp. <strong>Confers nothing</strong>: authority arrives only through a grant aimed at the group</td>
+<td>Nothing. Its <code>name</code> is unique <strong>together with</strong> <code>role.code</code> and a set audience's <code>code</code>, which no constraint can express, so the write path carries the rule and an integrity check asserts the write path still does</td>
+<td>One row per name. Ended by <code>valid_to</code>, never deleted while member rows exist, and <strong>ending</strong> it is refused while a live grant — or a live audience reachable from one — names it, because <code>EVERYONE - GROUP(x)</code> with an emptied group denies everybody</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>person_group_member</code></td>
+<td>Join entity: this person was in this group for that period. Written by a person, never derived from a rule</td>
+<td><code>person_group</code>; <code>person</code> — <strong><code>person</code>, not <code>membership</code></strong>, so a 1998 roster row does not have to invent a membership in order to be true; and <code>person</code> as the one who added them</td>
+<td>Many per group at once; <strong>no overlapping periods for one person in one group, over all rows</strong> including ended ones, which the write path enforces (<a href="../../data-model/02-organization/#2-person_group_member">../data-model/02-organization.md §2</a>)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td>An office — <code>treasurers</code>, <code>registrar</code>, <code>counselors</code>. A definition, valid always; the period lives on the holder row. <strong>It carries no permissions and confers nothing:</strong> the codes an office holds are the live grants whose audience names <code>ROLE(x)</code></td>
+<td>Nothing. Its <code>code</code> joins the same one namespace as group names, and every reserved <code>selector_type.code</code> is refused against it</td>
+<td>One row per <code>code</code>; deleting one is refused while holder rows exist, so an office cannot be emptied in one save</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>role_holder</code></td>
+<td>Who holds an office for what period — <strong>one named person, never a rule</strong>: <a href="../../open-questions/#f-12--closed--may-a-role-be-held-by-a-rule-as-an-audience-is">F-12</a> was closed by D-100 with the answer <em>no</em>, because an office record that cannot answer "who held this in 2023" is not one</td>
+<td><code>role</code>; <code>person</code> twice — the holder, and the person who appointed them</td>
+<td>At most one <strong>open</strong> row per person and role; no overlap over all rows; nothing forces a row to end, and the standing report is the control (<a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>~~<code>org_unit</code>~~</td>
+<td>~~A unit — the root, or anything nested beneath it to any depth.~~ <strong>Deleted by <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong>: there are no sub-units, and the unit is one row of <code>grant_scope_type</code> rather than a row of its own table</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>org_unit_type</code>~~, ~~<code>org_unit_type_rule</code>~~</td>
+<td>~~The organization's vocabulary of kinds of unit, and which kind may sit under which.~~ Deleted by the same decision; the shape of the organization is now nobody's data, and no group table replaces it</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>org_unit_name</code>~~</td>
+<td>~~One name or code a unit carried, with the period it was carried in.~~ Deleted by D-097, and nothing replaces it: a group is named by one column, so a rename loses the old name — the recorded cost in <a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">../data-model/02-organization.md §5</a></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>org_unit_relationship</code>~~</td>
+<td>~~A typed lineage between two units — <code>split_from</code>, <code>merged_into</code>, <code>successor_of</code>.~~ Deleted by D-097; <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> refuses group-to-group edges outright, so continuity is prose on a group's row</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>position</code>~~, ~~<code>position_assignment</code>~~</td>
+<td>~~A defined slot in a kind of unit, and a person filling it.~~ Deleted by <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>: an office that had to be filled before it meant anything was a second way to hold authority, and <code>role_holder</code> is the one way now</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Membership</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>membership_type</code></td>
+<td>The fee and renewal parameters. One row, <code>member</code>, kept as a table so the vocabulary can grow</td>
+<td>Nothing</td>
+<td>Exactly one row today (D-037)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>membership</code></td>
+<td>One period of membership, with its own ending</td>
+<td><code>person</code>, <code>membership_type</code>; itself via <code>renewed_from_membership_id</code></td>
+<td>Many per person over a lifetime; <strong>one open at a time, ever</strong></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>membership_request</code></td>
+<td>An application. Two person references on purpose: the subject and the submitter</td>
+<td><code>person</code> twice, <code>membership_type</code>, and <code>membership</code> twice (what it produced, what it renews). <strong>No unit</strong>: <code>requested_unit_id</code> is deleted by <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a> — a request asks for membership of the unit and names nothing else, because which group a new member joins is somebody's act afterwards, not a term of the application</td>
+<td>At most one <strong>open</strong> request per person</td>
+<td>no</td>
+</tr>
+<tr>
+<td>~~<code>unit_participation</code>~~</td>
+<td>~~Belonging to one unit — the root's mirror of a membership, or a sub-unit's roster.~~ <strong>Deleted by <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong>, which also removed the obligation to open a root row beside every membership. It had itself been renamed from <code>unit_membership</code> by <a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>; <code>person_group_member</code> is the dated roster that outlived it</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relationships</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guardianship</code></td>
+<td>One adult's responsibility for one dependent, carrying one <code>right_level</code></td>
+<td><code>person</code> twice — never the same person twice</td>
+<td>One current row per pair; unlimited past rows; a dependent may have any number of guardians at once</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>guardianship_permission</code></td>
+<td>The temporal history of that row's right level — not a capability list since D-074</td>
+<td><code>guardianship</code></td>
+<td>Exactly one open row per guardianship; its value is what <code>guardianship.right_level</code> copies</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Authorization</strong> — the tables are drawn in <a href="../erd-a-authorization/#5a-authorization--the-tables">§5a</a> and the expression in
+<a href="../erd-a-authorization/#5b-the-audience-expression">§5b</a></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>permission</code></td>
+<td>One coded capability — the only thing a check asks for, and a grant names exactly one</td>
+<td>Nothing</td>
+<td>One row per code; the code never changes. <code>applies_to</code> says whether the code may be granted at the unit or <strong>also</strong> on an item, checked when the grant is saved; <code>right_kind</code> exists for exactly one customer, the guardianship channel (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>grant_scope_type</code></td>
+<td>The registry of things a grant may be written on, and the table its id lives in. <strong><code>unit</code> is its only non-item row</strong> — which is where the unit now lives</td>
+<td>Nothing</td>
+<td>One row per scope kind: <code>unit</code>, <code>event</code>, <code>person_group</code>, <code>role</code>, and <code>document</code> deferred. Adding a grantable thing is a row here rather than a migration</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>access_grant</code></td>
+<td><strong>The only table that grants.</strong> A grantee, a scope, one permission, an effect, a period</td>
+<td><code>person</code> <strong>or</strong> <code>audience</code>, never both; <code>grant_scope_type</code> and <code>⇒ scope_id</code>, absent exactly at <code>unit</code>; <code>permission</code>; <code>person</code> as grantor, delegator and revoker</td>
+<td>At most one live <strong>allow</strong> per grantee, scope <strong>and permission</strong> — denies sit outside the rule on purpose, because allow-beside-deny is the only way to say <em>"the unit's events, except this one"</em>; a delegation must carry an end date</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>audience</code></td>
+<td>A set of people a grant may name — <strong>an expression over named sets, stored as a tree</strong> (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>), not a rule XOR a list XOR an inclusion</td>
+<td>Its own operand rows; <code>code</code> is optional and is the only thing another audience may name (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>); <code>resolver_key</code>, <code>scope_parameter</code>, <code>include_depth_limit</code> and <code>selector_depth_limit</code> are deleted, the last of them by <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></td>
+<td>One row per audience; the tree is stored exactly as the writer wrote it and its height is bounded by nothing — the save-time cycle walks are the only structural guard, and nothing bounds what resolving one costs, which <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a> accepts at the stated size rather than leaves unaddressed (<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>); an audience a live grant names is <strong>never deleted</strong> — it is flagged <code>deprecated</code>, <code>hidden</code> or <code>disabled</code>, the first two changing no answer and the third resolving to the empty set on purpose, as an audited write that prints the rules it touches (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>) — <strong>not a <code>ruleset_version</code> bump any more</strong>: a flag is a state and not part of a compilation, so resolution reads it live, once per request, which is what makes <code>disabled</code> still mean <em>now</em> (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>); an ended audience reaches nobody, so ending one is refused while a live grant names it</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>audience_operand</code></td>
+<td>Join entity: <strong>one row of one audience's expression tree</strong> — a node (<code>operator</code>, <code>left_id</code>, <code>right_id</code>) or a leaf (<code>selector_kind</code>, <code>⇒ selector_arg_id</code>), never both</td>
+<td><code>audience</code>, denormalized onto every row so one audience's tree is one indexed fetch; itself, <code>parent_id</code> on the child; <code>selector_type</code>; and <code>⇒</code> a <code>role</code>, <code>person_group</code>, <code>audience</code>, <code>person</code> or <code>event</code> <strong>with no foreign key</strong> — <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s accepted trade-off, extended by D-101</td>
+<td>One row per node or leaf; a node never belongs to another audience than its parent's; the forest is acyclic, checked on save</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>selector_type</code></td>
+<td>The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names</td>
+<td>Nothing</td>
+<td><strong>Thirteen</strong> seeded rows — fourteen for round 12 alone, until <a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a> removed a row that should never have been in the registry — built from eleven in the evaluator's arm list, <code>PERSON</code> as the thirteenth to arrive, <code>LIST</code> gone in between (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), and <code>OLDER</code> and <code>YOUNGER</code> added in round 12 (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>) — the first two whose <code>argument_type</code> is a whole number of years and not a table, and the first two whose membership changes with no write, because they read <code>person.birth_date</code> on the checked date. Six <code>argument_type</code> values, five of them tables; the operators stay <code>+ - *</code>. Every row <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>~~<code>audience_member</code>~~</td>
+<td>~~The <code>LIST</code> leaf: this audience's own hand-typed list of people — the only operand that was not a rule about anybody.~~ <strong>Deleted by <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></strong>, <code>LIST</code> and its seed row with it: a hand-written set is now <code>PERSON(a) + PERSON(b)</code> in the expression, with no per-person dates — a time-windowed exception is a second grant with its own period. The refusal to merge names into a group survives the table: a <code>PERSON(x)</code> leaf is not a <code>GROUP(x)</code> because merging them would make the permission table the system's roster</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_log</code></td>
+<td>The audit trail — who did what, by what authority, with what result</td>
+<td><code>person</code> as actor and as subject; <code>⇒ authorization_ref_id</code> naming <code>access_grant</code> <strong>or</strong> <code>guardianship_permission</code> — <code>role</code> and <code>system</code> are gone from the channel enum, so an old row reading <code>role</code> is unreadable by this model on purpose (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>); <code>⇒ entity_id</code></td>
+<td>Append-only today; <strong>proposed</strong> to take the same 24-month window as the audit payload, which would make this cell wrong as written — <strong>F-8</strong>, unconfirmed (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>~~<code>permission_cache</code>~~</td>
+<td>~~A computed answer kept so checks are cheap.~~ <strong>Deleted by <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a></strong>, and the deletion is the invariant: <strong>no row, table or field may map a person — or a person and a code, or a person and an item — to a permission answer</strong> (invariant 19, TIME-BOMB), and after this deletion the schema has nowhere to put one. The key <code>(person_id, permission_code, scope_type, scope_id, at_bucket)</code>, the nightly full rebuild and both lists of which writes bumped a version went with it. What answers a check instead: a <strong>compiled expression</strong>, cached across people because it holds no person and no item (keyed by the expression's root plus <code>ruleset_version</code>); <strong>one indexed read of the checked person's live grant rows per request</strong>, with every code, item and date in that request evaluated against them in memory; and the batch reads <code>can_many(person, codes[], item?)</code> and <code>which_of(people[], code, item)</code>. The one thing still cached across requests is a <strong>named roster</strong> — <code>ROLE(x)</code> over <code>role_holder</code>, <code>GROUP(x)</code> over <code>person_group_member</code> — keyed by the name the write touches, holding its dated rows so the checked date is applied at check time. <code>ruleset_version</code> survives with its bump set cut to <code>audience_operand</code> and <code>selector_type</code>, and it now invalidates compilations rather than answers (<a href="../../domain/06-authorization-model/#8-there-is-no-permission-cache-and-what-replaces-it">domain/06 §8</a>)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>role_permission</code>~~</td>
+<td>~~Join entity: this role carries this permission, and nothing else.~~ Deleted by D-100: the codes an office holds are the live grants naming <code>ROLE(x)</code>, so the bundle is a query a screen can show rather than a table</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>role_assignment</code>~~</td>
+<td>~~Authority held for a period over a scope.~~ Deleted by D-100 and replaced by <code>role_holder</code>, which keeps the person and the period and drops the scope columns, the level and the resolver channel</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>scope_exposure</code>~~</td>
+<td>~~A unit granting one named assignment coverage over itself — the only downward crossing.~~ Deleted by D-097 together with the direction-of-authority check it existed to serve, which had no detector but this table's own alert</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>access_level</code>~~</td>
+<td>~~The ordered ladder <code>revoked</code>, <code>view</code>, <code>contribute</code>, <code>manage</code>, <code>admin</code>, compared by rank.~~ Deleted by <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>: the answer is one boolean, <code>revoked</code> survives as <code>effect = 'deny'</code> on a grant row, and <code>admin</code> survives only as the permission code <code>system.admin</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>permission_level</code>~~</td>
+<td>~~Join entity: this permission needs this level on this kind of scope.~~ Deleted by D-099. The one question it still answered — may this code be granted on an item at all — is <code>permission.applies_to</code> now</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~<code>audience_include</code>~~</td>
+<td>~~Join entity: this group includes that group, to a depth limit.~~ Deleted by D-101; an <code>AUDIENCE(code)</code> leaf is the edge now, which is also what put the cycle check back on the save path (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>role</code> and <code>role_holder</code> are inventoried under <strong>Groups and offices</strong> above, where the module keeps them;
+both are drawn in the authorization diagram, because that is where a reader meets what they do — which is
+nothing at all, on their own.</p>
+<p><strong>Audit and import</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>audit_log</code></td>
+<td>The row-level trail of changes to business tables, <strong>before and after values included until the payload window passes</strong></td>
+<td><code>⇒ (table_name, record_id)</code> — polymorphic; <code>person</code> as actor, and on whose behalf</td>
+<td>One row per change; the row is never deleted, but a scheduled <strong>payload reduction</strong> empties the values 24 months after writing (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>redaction_log</code></td>
+<td>That a redaction happened to a person, by whom, and to what</td>
+<td><code>person</code>; the person who requested and the person who performed it</td>
+<td>One per redaction performed</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>import_batch</code></td>
+<td>One arrival of historical data, where it stands, which half of the corpus it carries (<code>people</code> or <code>events</code>), and the raw-column→code map a person read before it applied</td>
+<td><code>person</code> as creator, applier and reverting party</td>
+<td>One per batch; the map lives here as one object rather than per staged row, because it is one artefact a human reads top to bottom and the codes it names arrive <code>live</code> (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>, <a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>); staging rows may be truncated once applied</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>staging_import</code></td>
+<td>A raw source row, verbatim, with its file and line</td>
+<td><code>import_batch</code></td>
+<td>One per source row per batch</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>staging_import_row</code></td>
+<td>That row parsed, plus what the parse could not decide, and what it eventually created</td>
+<td><code>staging_import</code>; <code>person</code> as resolver; and what it created — <code>person</code> and, on a people batch, the <code>membership</code> whose <strong>both ends</strong> the source stated (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>: a stated period may be imported, an open-ended one may not and one inferred from attendance may not), and on an events batch the <code>event</code> and the <code>event_registration</code>. <strong>No participation id any more</strong> — D-097 deleted both halves of that pair</td>
+<td>One per staged row</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Finance</strong> <em>(provisional)</em></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fee_schedule</code></td>
+<td>What may be charged, for what kind of period</td>
+<td><code>membership_type</code>, optional — absent means it applies to any type. <strong>Not a unit</strong>: <code>org_unit_id</code> went with the unit (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>), so a schedule is now organization-wide by construction</td>
+<td>As the organization defines</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>fee_obligation</code></td>
+<td>What one person owes for exactly one thing</td>
+<td><code>person</code> (who it is <em>for</em>), <code>fee_schedule</code>, and <strong>exactly one</strong> of <code>membership</code>, <code>membership_request</code>, <code>event_registration</code></td>
+<td>Many per person; the target is never two and never none. An <strong>imported</strong> membership creates none, and its <code>outstanding_balance</code> is <code>NULL</code> rather than zero, because zero would be a claim the export does not support (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>payment</code></td>
+<td>Money that arrived</td>
+<td><code>person</code> as payer — deliberately not the person the fee is for</td>
+<td>One per recorded receipt</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>payment_allocation</code></td>
+<td>Join entity: this payment counted towards this obligation, by how much</td>
+<td><code>payment</code>, <code>fee_obligation</code></td>
+<td>A given payment is allocated to a given obligation at most once</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>payment_request</code></td>
+<td>The ask, carrying the variable symbol that ties a bank transfer back to it</td>
+<td><code>fee_obligation</code> — the amount is copied, never recomputed</td>
+<td>Several per obligation over time; <strong>at most one live</strong>; the symbol is unique over every symbol ever issued</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>bank_transaction</code></td>
+<td>One incoming transfer as the bank reported it</td>
+<td><code>payment_request</code> when matched — absent means it is in the queue; <code>import_batch</code></td>
+<td>Unique per bank reference within an account; immutable once imported</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Events</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>What it is</th>
+<th>Points at</th>
+<th>How many</th>
+<th>[T]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td>A dated occasion people register for. <strong>Owned by nobody</strong></td>
+<td><code>fee_schedule</code>, optional, when it costs money. <strong>No unit</strong>: <code>org_unit_id</code> is deleted by <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>, which also deleted <code>can_event()</code> and the unit-authority rule that read it — the people connected to an event are named by selectors that bind to it (<code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code>). <code>created_by</code> is attribution, not ownership, as <a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> always said</td>
+<td>One row per occasion; no recurrence, no series</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>event_organizer</code></td>
+<td>Who is running an event, with a label and an order — an appointment, not a grant (<a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>)</td>
+<td><code>event</code>, <code>person</code></td>
+<td>Many per event; the list is the domain answer to "who runs this", and it is <strong>the one cascade delete in this design</strong> (<a href="#8-foreign-key-summary">§8</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>event_registration</code></td>
+<td>One person's answer about one event, plus whether they turned up</td>
+<td><code>event</code>, <code>person</code> — <code>person</code>, never <code>membership</code>, so a 1998 camp roster does not smuggle its people into <code>MEMBERS</code> today</td>
+<td>One per person per event; unanswered is the <strong>absence</strong> of a row (D-059); <code>was_present</code> is three-valued and is deliberately the basis of no selector</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>event_question</code></td>
+<td>One thing this event asks, of attendees, organizers or both</td>
+<td><code>event</code></td>
+<td>As many as the event asks; defined per event, never shared</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>event_answer</code></td>
+<td>What one person said to one question, stored as a row and not as JSON</td>
+<td><code>event_question</code>; <code>person</code> — <strong>who answered</strong>, for a child the child, not the registration row and not whoever submitted on their behalf</td>
+<td>One row per question per answerer</td>
+<td>no</td>
+</tr>
+<tr>
+<td>~~<code>event_medical_note</code>~~</td>
+<td>~~Medical facts about one person at one event, reachable only by a medical permission.~~ <strong>Deleted by <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a></strong> — no file, no privileged reach: personal data is one class of data, so what the organization needs recorded is an ordinary <code>person_attribute</code> under <a href="../erd/#1a-personal-attributes--everything-that-is-not-a-name-a-gender-or-an-age">§1a</a>, read with <code>person.view</code> and protected by the same grants as everything else</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reference vocabularies</strong> — <code>reason_code</code>, <code>grant_scope_type</code>, <code>selector_type</code>,
+<code>identifier_scheme</code>, <code>permission</code>. Each is named by a value held elsewhere rather than pointing at
+anything, and each exists so that a vocabulary is data the organization can see rather than a list inside
+the application. Two of this list's former members are gone: <code>access_level</code> (D-099) and <code>org_unit_type</code>
+(D-097), and <code>selector_type</code> arrived in the same round, which is the whole of the change here.
+<code>attribute_definition</code> is the same kind of thing in spirit and a different shape in fact — it has a
+curation lifecycle, a child table, and rows pointing back at it — so it is inventoried above rather than
+here.</p>
+<blockquote>
+<p><strong><code>event</code> carries no <code>[T]</code></strong> — it has no <code>valid_from</code> /
+<code>valid_to</code>, because an event is a dated occasion rather than a period-tracked record. Its
+lifecycle is <code>starts_at</code> / <code>ends_at</code> / <code>cancelled_at</code>, and it has no <code>status</code> column at all
+(<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).
+<code>event_registration</code> likewise stores no period: a person is attending, or they are not, and
+"unanswered" is the absence of a row
+(<a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>).</p>
+</blockquote>
+<p><strong>Removed since the first draft</strong>, listed so the inventory stays honest: <code>requirement_code</code>
+and <code>membership_request_requirement</code> (nothing gates a request —
+<a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>);
+<code>unit_membership</code> (renamed <code>unit_participation</code> by
+<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>
+— and deleted with it by <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
+so the rename was itself undone); every background-check structure
+(<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>); every
+medical structure, <code>event_medical_note</code> included, because personal data is one class of data and no table
+of it is
+(<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>);
+the whole unit and position family, with <code>scope_exposure</code>
+(D-097, <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>);
+the level ladder and its per-scope requirements (D-099); the role's permission bundle and its assignment
+table (D-100); the group-inclusion edge (D-101); and <code>audience_member</code> with the <code>LIST</code> operand and its
+seed row (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
+the only row the selector registry has ever lost, in its one round of existence. Recorded here too, because it is the kind of entry
+this list exists for: <code>event.qr</code>, a check-in capability that never had a row in this appendix or anywhere
+else — it entered a round as prose, was argued about by name, and left as prose
+(<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).</p>
+<p><strong>[T]</strong> = temporal, carries <code>valid_from</code> / <code>valid_to</code>. A <code>no</code> says it does not; where the <em>reason</em>
+for not is a decision about someone's data rather than the nature of the table, the row says so —
+which in this inventory is <code>person_attribute</code>, and nowhere else.</p>
+<hr />
+<h2 id="8-foreign-key-summary">8. Foreign key summary<a class="headerlink" href="#8-foreign-key-summary" title="Permanent link">&para;</a></h2>
+<p>Columns with no FK, and why:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Why no FK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_grant.scope_id</code></td>
+<td>Polymorphic by design. Validated by <code>grant_scope_type</code> + orphan checks. It is <strong>absent exactly when the scope type is <code>unit</code></strong>, and that absence is the schema-level form of "the unit is a scope, not a row" (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).</td>
+</tr>
+<tr>
+<td><code>audience_operand.selector_arg_id</code></td>
+<td>The second one, and newer: one integer pointing at a <code>role</code>, a <code>person_group</code>, an <code>audience</code>, a <code>person</code> or an <code>event</code> depending on <code>selector_kind</code>, resolved by <code>selector_type.argument_type</code> and caught by the same nightly orphan scan. <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> carried <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s trade-off across deliberately, mitigations included — the registry is the only thing that says which table an id belongs to, so an unmapped kind is the empty set, not an error. <strong>It also sometimes holds no reference at all</strong>: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> store a whole number of years here (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>), and that does not make a third key — <code>18</code> points at nothing, so the orphan scan has nothing to walk, a merge has nothing to repoint, and this row is still describing one column that sometimes carries a reference and sometimes carries a scalar.</td>
+</tr>
+<tr>
+<td><code>access_log.scope_id</code></td>
+<td>Same shape as the grant's; absent for a check at the unit.</td>
+</tr>
+<tr>
+<td><code>access_log.authorization_ref_id</code></td>
+<td>Points at <strong>one of two</strong> tables, <code>access_grant</code> or <code>guardianship_permission</code>. It named <code>role_assignment</code> as a third until <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a> deleted that table; a historical row whose channel reads <code>role</code> keeps the word and loses the reference, which is the honest state of a value whose table is gone.</td>
+</tr>
+<tr>
+<td><code>access_log.entity_id</code></td>
+<td>Polymorphic target of the audited action.</td>
+</tr>
+<tr>
+<td><code>field_conflict.entity_id</code></td>
+<td>Polymorphic; recorded alongside <code>entity_table</code>.</td>
+</tr>
+<tr>
+<td><code>audit_log.record_id</code></td>
+<td>Polymorphic; recorded alongside <code>table_name</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>access_grant.scope_id</code> is no longer the only reference-less key, and this appendix said it was for
+nine rounds.</strong> That sentence is worth keeping where it can be found, because the class is what matters and
+not the count: an id with no constraint behind it needs a registry that says which table it belongs to, a
+save-path check against that registry, an orphan scan the scheduler owns, and an explicit rule that
+failure resolves to the empty set. Two columns now carry that debt and both carry the same four
+mitigations. <a href="../../data-model/00-conventions/#9-referential-integrity-rules">../data-model/00-conventions.md §9</a>
+still calls <code>access_grant.scope_id</code> "the <strong>one</strong> reference-less key"; the events module is where the newer
+row is written, and that page has not caught up. <strong>The count is still two after round 12, and it is worth
+saying why, because it could have looked like three</strong>: <code>OLDER</code> and <code>YOUNGER</code> put an integer in
+<code>audience_operand.selector_arg_id</code>, and a scalar is not an id with no constraint behind it — there is no
+table it should have named, so there is no registry lookup to miss, no orphan for the scan to find and
+nothing for a merge to repoint. The count is about references, and <code>18</code> is not one
+(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</p>
+<p><code>access_grant</code> has <strong>no <code>grantee</code> column</strong> — that is the one <strong>mutual-exclusion</strong> case rather than a
+missing-FK case: exactly one of <code>person_id</code> / <code>audience_id</code> is set, never both, never neither. Both
+columns are nullable, so nothing but the rule says whom a grant means; a grant naming neither is
+meaningless and one naming both is ambiguous about whom in the audience it speaks for.
+<code>audience_operand</code> carries the same shape of rule one table down — <code>operator</code> with <code>left_id</code>/<code>right_id</code>,
+<strong>or</strong> <code>selector_kind</code> with <code>selector_arg_id</code> where the registry says the code takes an argument — and for
+the same reason: a row satisfying neither is a node in no tree, and an expression containing one resolves
+to nobody.</p>
+<p>Every other column ending in <code>_id</code> has a real foreign key with <code>ON DELETE RESTRICT</code>, <strong>with one
+exception</strong>: <code>event_organizer.event_id</code> is the single <code>ON DELETE CASCADE</code> in the design — an appointment is
+nothing once the occasion it appointed somebody to is gone, and the guards in
+<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">../data-model/08a-event-guards-and-checks.md §8</a> are what make that
+delete safe to allow at all. <strong>Round 12 changed the count of nothing here</strong>: two operands whose argument
+is an integer add no key and no cascade, because there is no row for either to be a child of — still one
+cascading column, still <code>event_organizer.event_id</code>. Everything else that merely looks like a child
+restricts: a registration, an
+answer, a member row, a holder row, a grant. The general rule is still
+<a href="../../data-model/00-conventions/#9-referential-integrity-rules">../data-model/00-conventions.md §9</a> —
+nothing cascades in front of a 40-year trail — and this row is the exception that page does not yet list.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../erd-a-authorization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: ERD: authorization">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                ERD: authorization
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../permission-catalog/" class="md-footer__link md-footer__link--next" aria-label="Next: Permission Catalog">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Permission Catalog
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>
