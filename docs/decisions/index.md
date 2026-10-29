@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-114 of them and lists the reversals. Read the round you are curious about — each one says what was
+115 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -154,6 +154,7 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-112](round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event) | The system's scale is stated: hundreds of people, tens of registrants per event | decided (from your answer) | round 13 |
 | [D-113](round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector) | The guardianship channel has no expression: GUARDIANS is not a selector | decided (found while closing F-5) | round 13 |
 | [D-114](round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation) | There is no permission cache: a check resolves, a request memoizes, and the only cached thing is a compilation | decided (from your answer) | round 14 |
+| [D-115](round-15.md#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal) | A guardianship does not know about membership: `right_level` outlives a lapse and survives a renewal | decided (from your answer) | round 15 |
 
 ## Reversed decisions
 

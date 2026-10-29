@@ -650,7 +650,13 @@ without touching guardianship at all. What remains is the individual case.
 
 ---
 
-### E-4 🟢 Guardianship lifetime, now that the gate it was exempt from is gone
+### E-4 ✅ **Closed** — Guardianship lifetime: a guardianship does not know about membership
+
+**Answered: intended, and now recorded in its own right as
+[D-115](decisions/round-15.md#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal).**
+A lapse leaves `guardianship.right_level` alone, a renewal finds the access untouched, and ending it is an
+act somebody performs on the guardianship row. What follows is the question as it was asked, kept until the
+pass that moves closed entries out of this page.
 
 **Question, restated — and it is sharper than it was.** Guardianship used to be *exempt from the
 membership gate*

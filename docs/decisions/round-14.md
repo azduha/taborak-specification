@@ -2,7 +2,7 @@
 
 > The permission cache is deleted. A check resolves, a request memoizes, and the only cached thing is a compilation.
 
-[Refinement round 13 (D-109 … D-113) ←](round-13.md) | [All decisions](index.md)
+[Refinement round 13 (D-109 … D-113) ←](round-13.md) | [All decisions](index.md) | [Refinement round 15 (D-115) →](round-15.md)
 
 ---
 
