@@ -3388,28 +3388,21 @@ worth knowing before trusting it.</p>
 </tr>
 </tbody>
 </table>
-<p>There used to be a third value, and this subsection was about it. <code>dependent.</code> prefixed every
-guardian capability, and the resolver dispatched on the prefix: a code beginning <code>dependent.</code>
-went down the guardianship channel, everything else went down the ordinary path.
-<strong><a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
-deleted all eighteen of those codes,</strong> and with them the only thing the namespace column was
-being used to route on.</p>
-<p><strong>So the namespace column no longer selects a channel, and the guardianship channel is now
-selected by something the namespace could never express: whether the action is about a
-different person from the one performing it.</strong> A parent editing their child's address is checked
-under <code>person.address.edit</code> — an ordinary, un-prefixed code — and reaches the guardianship
-channel anyway, because the subject of the act is not the actor. See §10. The old prefix rule
-silently missed exactly that case: a guardian acting under a <code>person.*</code> code looked like a
-person acting on themselves.</p>
-<p><strong>What the column was <em>also</em> guaranteeing, and who guarantees it now.</strong> The surviving sentence in
-the old design read "a <code>system.</code> permission is resolved against role assignments and never against
-an item grant", and it was load-bearing: no one could hand someone authority over the permission
-system by sharing an item with them. <strong>Its mechanism died twice over</strong> — there is no role channel
-(D-100) and no item-scope path it needs excluding, because <code>applies_to = unit</code> already refuses the
-grant at save time. So the guarantee survives <strong>as a seeding rule plus integrity check 3</strong>, and the
-layer is named because the difference matters: it is no longer structural, and a <code>system.</code> code
-seeded <code>unit_and_item</code> by someone in a hurry would put the old hole back with nothing in the schema
-to catch it. A new namespace remains a data change rather than a resolver branch; it just has one
+<p><strong>The namespace selects no channel, for any namespace — and the guardianship channel is chosen by what
+a prefix could never express: whether the action is about a different person from the one performing it.</strong>
+A parent editing their child's address is checked under <code>person.address.edit</code> — an ordinary, un-prefixed
+code — and reaches the guardianship channel anyway, because the subject of the act is not the actor.
+See §10. <strong>A rule that routed on a namespace would miss exactly this case,</strong> since a guardian acting under
+a <code>person.*</code> code looks like a person acting on themselves; that routing is what
+<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+removed, and the <code>dependent.</code> codes it dispatched on are indexed in
+<a href="../../appendix/removed-concepts/">removed-concepts.md</a>.</p>
+<p><strong>What stops someone handing another person authority over the permission system by sharing an item with
+them.</strong> The guarantee is <strong>a seeding rule plus integrity check 3</strong>: every <code>system.</code> code is seeded
+<code>applies_to = unit</code>, and the save-time refusal rejects any item grant carrying it. <strong>The guarantee is not
+structural</strong> — there is no resolver branch on a prefix to fall back on — and naming the layer matters,
+because a <code>system.</code> code seeded <code>unit_and_item</code> by someone in a hurry reopens the hole with nothing in the
+schema to catch it, and that mis-seeding is what check 3 looks for. A new namespace remains a data change rather than a resolver branch; it just has one
 tenant and no routing left.</p>
 <hr />
 <h2 id="3-role--an-office">3. <code>role</code> — an office<a class="headerlink" href="#3-role--an-office" title="Permanent link">&para;</a></h2>
@@ -3750,11 +3743,10 @@ deleted the table that made the old rule work, so there is nothing to switch bac
 <hr />
 <h2 id="6-access_grant--the-per-item-layer">6. <code>access_grant</code> — the per-item layer<a class="headerlink" href="#6-access_grant--the-per-item-layer" title="Permanent link">&para;</a></h2>
 <p>This is the "per-item permission" table. You specified it means a <strong>capability on that
-item</strong>: "person X may act on item Y". <strong>After round 10 it is also the unit-level table</strong>, because
-the unit is now one of the scope types rather than a different kind of thing, and there is no other
-grant table to hold the difference. <strong>The heading is deliberately unchanged</strong> — it names only half
-of what the table is now, and it is kept because pages across the corpus and in the decision log
-link to this anchor.</p>
+item</strong>: "person X may act on item Y". <strong>It is also the unit-level table,</strong> because the unit is one of the
+scope types rather than a different kind of thing, and there is no other grant table to hold the
+difference. <strong>The heading names only the first half of that and stays as it is:</strong> pages across the corpus
+and in the decision log link to this anchor, so the slug is the load-bearing part and it is not moving.</p>
 <p><strong>One grant is: a grantee, a scope, one permission code, an effect, and a period</strong>
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</p>
 <p><strong>Fields</strong> (<code>grant_scope_type</code>)</p>
@@ -4006,8 +3998,8 @@ inheritance, the clause has nothing to fix.</p>
 <h3 id="the-uniqueness-rule-has-to-be-careful-with-audiences">The uniqueness rule has to be careful with audiences<a class="headerlink" href="#the-uniqueness-rule-has-to-be-careful-with-audiences" title="Permanent link">&para;</a></h3>
 <p>The obvious index — one live grant per (grantee, scope) — never worked, because a person can
 legitimately hold a <strong>personal</strong> grant <em>and</em> be covered by an <strong>audience</strong> grant on the same item,
-and those are different rows with different lifetimes. <strong>Round 10 adds a second reason it cannot
-work: one code per row, so one person legitimately holds a dozen live allows on one item.</strong>
+and those are different rows with different lifetimes. <strong>A second reason it cannot work: one code per row,
+so one person legitimately holds a dozen live allows on one item.</strong>
 A broad office is a couple of dozen rows
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
 each a different code, and a rule that permitted one live grant per grantee and item would refuse
