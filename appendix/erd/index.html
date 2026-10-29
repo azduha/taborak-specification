@@ -2739,9 +2739,9 @@
 <p>This appendix describes <strong>relationships</strong> — what points at what, how many, and whether the
 link is temporal. Field-level definitions live in the data-model documents, each in the one
 that owns the entity, and are deliberately not repeated here.</p>
-<p>Diagrams of the schema in <a href="../../data-model/00-conventions/">../data-model/00-conventions.md</a>.
-Split by subject area so each
-stays readable; the areas connect through <code>person</code>, which appears in all of them.</p>
+<p>The schema these diagrams draw is governed by
+<a href="../../data-model/00-conventions/">../data-model/00-conventions.md</a>. The appendix is split by subject area so
+each part stays readable; the areas connect through <code>person</code>, which appears in all of them.</p>
 <p>Notation: <code>→</code> is a foreign key pointing at the referenced table. <code>⇒</code> is a polymorphic
 reference (no database-level foreign key). Temporal tables are marked <code>[T]</code>.</p>
 <h2 id="section-numbers-are-shared-across-the-three-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-erdmd-holds-14-the-diagrams-of-the-people--identity-and-attributes-the-units-groups-and-offices-membership-guardianship-erd-a-authorizationmd-holds-55b-the-whole-authorization-answer-its-tables-and-the-audience-expression-tree-erd-b-inventorymd-holds-68-the-temporal-pattern-the-table-inventory-and-the-foreign-key-summary"><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">erd.md</a> holds §1–§4, the diagrams of the people — identity and attributes, the unit's groups and offices, membership, guardianship; <a href="../erd-a-authorization/">erd-a-authorization.md</a> holds §5–§5b, the whole authorization answer, its tables and the audience expression tree; <a href="../erd-b-inventory/">erd-b-inventory.md</a> holds §6–§8, the temporal pattern, the table inventory and the foreign key summary.<a class="headerlink" href="#section-numbers-are-shared-across-the-three-parts-and-never-renumbered-because-other-pages-cite-them-by-number-and-their-anchors-are-built-from-them-erdmd-holds-14-the-diagrams-of-the-people--identity-and-attributes-the-units-groups-and-offices-membership-guardianship-erd-a-authorizationmd-holds-55b-the-whole-authorization-answer-its-tables-and-the-audience-expression-tree-erd-b-inventorymd-holds-68-the-temporal-pattern-the-table-inventory-and-the-foreign-key-summary" title="Permanent link">&para;</a></h2>
@@ -2854,11 +2854,12 @@ the descriptive layer drawn next. See
     ATTRIBUTE_DEFINITION ||--o{ PERSON_ATTRIBUTE : defines
     PERSON_ATTRIBUTE }o--o| ATTRIBUTE_OPTION : selects</code></pre>
 <p><strong>Key point:</strong> these three tables are the whole of what the system knows about a person beyond
-name, gender and age. There is no health table beside them and no privileged corner inside them:
-<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-removed the category and
-<a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>
-put an organization-maintained vocabulary in its place. Reading is <code>person.view</code>, writing is
+name, gender and age. There is no health table beside them and no privileged corner inside them: personal
+data is <strong>one class of data</strong>, graded by what a grant exposes rather than by which table it reads
+(<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+and what the organization collects is named by a vocabulary the organization maintains itself
+(<a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>).
+Reading is <code>person.view</code>, writing is
 <code>person.edit</code>, and only the vocabulary needs a code of its own
 (<a href="../permission-catalog-a-codes/#2-people-and-identity"><code>attribute.define</code></a>). Fields and rules:
 <a href="../../data-model/09-attributes/">../data-model/09-attributes.md</a>.</p>
@@ -2891,11 +2892,8 @@ person erases one (<a href="../../domain/08-person-data/#5-forgetting">../domain
 unit, it is the organization, and it is a <strong>scope</strong> and not a row: <code>grant_scope_type</code> carries a code
 <code>unit</code> with <code>is_item_scoped = false</code>, and a grant written at it has no <code>scope_id</code>
 (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
-What this section drew until round 10 was a hierarchy of bodies with a vocabulary of types, rename
-history, lineage edges, rosters and offices. Every one of those tables is deleted, not moved; the ledger
-of what each took with it is
-<a href="../../data-model/02-organization/#5-what-this-page-held-before-round-10">../data-model/02-organization.md §5</a>.
-What is left for this section to draw is the group — a set of people, not a body.</p>
+What this section draws is the one set-shaped thing the module holds: the group — a set of people, not a
+body — beside the roster that belongs to it.</p>
 <pre class="mermaid"><code>erDiagram
     PERSON_GROUP {
         uuid id PK
@@ -2931,28 +2929,17 @@ The group <em>is</em> an item in <code>grant_scope_type</code>, so a grant may b
 The box is deliberately alone beside its roster: <code>name</code> is unique across <code>role</code> and <code>person_group</code>
 together, but no constraint spans two tables, so that is a write-path rule and not a drawn edge
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).</p>
-<p><strong>Gone from this diagram, one line each, so that a reader hunting for a box finds the decision:</strong></p>
-<ul>
-<li>~~<code>org_unit</code>~~, ~~<code>org_unit_type</code>~~, ~~<code>org_unit_type_rule</code>~~, ~~<code>org_unit_name</code>~~,
-  ~~<code>org_unit_relationship</code>~~ — all deleted by
-  <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, with
-  <code>path</code>, <code>depth</code>, the unit vocabulary, the nesting checks, the rename history and the lineage edges.
-  <strong>There is no unit table anywhere in this appendix.</strong> The unit appears once, as the <code>unit</code> row of
-  <code>grant_scope_type</code> (<a href="../erd-a-authorization/#5a-authorization--the-tables">§5a</a>) — a lookup row naming a scope, not a body.</li>
-<li>~~<code>unit_participation</code>~~ — deleted by D-097. <code>person_group_member</code> is the roster that outlived it and
-  <code>membership</code> (§3) is membership of the unit; <strong>the import owes participation rows to nothing</strong>.</li>
-<li>~~<code>position</code>~~, ~~<code>position_assignment</code>~~ — deleted by
-  <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>:
-  with one unit there is no body to be a leader <strong>of</strong>. <code>is_leadership</code> and <code>max_holders</code> went with them;
-  the office survives as <code>role</code> + <code>role_holder</code> (<a href="../erd-a-authorization/#5a-authorization--the-tables">§5a</a>).</li>
-<li>~~<code>org_unit_type.allows_minors</code>~~ — the flag was deleted by
-  <a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
-  and the table that carried it by D-097. <em>Do not place a child where nobody is responsible</em> is now
-  <code>person_group.member.manage</code> held by a named adult, and the system can no longer say which groups are
-  for children — that loss is D-095's, restated in D-098.</li>
-<li>~~<code>scope_exposure</code>~~ — deleted by D-097 with the direction-of-authority check and the nightly alert that
-  was its only detector. <a href="../erd-a-authorization/#5-authorization--the-whole-answer-in-one-diagram">§5</a> says what was lost with it.</li>
-</ul>
+<p><strong>There is no unit table in any diagram in this appendix.</strong> The unit appears once, as the <code>unit</code> row of
+<code>grant_scope_type</code> (<a href="../erd-a-authorization/#5a-authorization--the-tables">§5a</a>) — a lookup row naming a
+scope, not a body, and there is nothing nested under it
+(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>). What a
+reader might expect a unit to do is done by these instead: belonging to the unit is <code>membership</code> (§3),
+belonging to a set of people is <code>person_group_member</code> (above), an elected leader is a <code>role_holder</code> row,
+and <em>do not place a child where nobody is responsible</em> is <code>person_group.member.manage</code> held by a named
+adult, because nothing on a group says who it is for
+(<a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>,
+<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).</p>
 <p>See <a href="../../data-model/02-organization/">../data-model/02-organization.md</a> and
 <a href="../../domain/04-organization-structure/">../domain/04-organization-structure.md</a>; the scope itself is
 <a href="../../domain/06-authorization-model/#2-scopes--the-unit-and-the-item">../domain/06-authorization-model.md §2</a>.</p>
@@ -2994,29 +2981,25 @@ together, but no constraint spans two tables, so that is a write-path rule and n
 <li><code>membership_request</code> has <strong>two</strong> person references:
   <code>person_id</code> (the child, who would become a member) and <code>submitted_by_person_id</code> (the
   parent, who applied). Collapsing them makes the audit trail false.</li>
-<li><strong>A request asks for membership of the unit and names nothing else.</strong> <code>requested_unit_id</code> is deleted
-  with the units
+<li><strong>A request asks for membership of the unit and names no body.</strong> No edge leaves this diagram for a
+  group: which group a new member lands in is a write on the group — one <code>person_group_member</code> row, §2 —
+  and not a preference on the application
   (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>,
-  <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
-  and there is therefore no edge from this diagram to any body: which group a new member lands in is a
-  write on the group — one <code>person_group_member</code> row, §2 — and not a preference on the request. The
-  ~~unit this request was aimed at~~ is withdrawn, not moved; the want behind the column is served by the
-  free-text <code>notes</code> the row already carries.</li>
-<li><strong>Belonging lives in two shapes now, and neither is a membership.</strong> <code>person_group_member</code> (§2) is a
-  group's dated roster and is keyed on <strong>person</strong>, never on <code>membership</code> — the argument <code>unit_participation</code>
-  made and <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
-  carried over: an imported roster or a 1998 camper has no membership row to point at, and inferring an
-  open-ended one would sweep that person into <code>MEMBERS</code> today. The table that held it,
-  ~~<code>unit_participation</code>~~, is deleted by
-  <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>, along
-  with the root participation row every membership used to owe. Field rules:
+  <a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+  Where an applicant would have said which group they had in mind, the row has the free-text <code>notes</code> it
+  already carries.</li>
+<li><strong>Belonging lives in two shapes, and neither is a membership.</strong> <code>person_group_member</code> (§2) is a group's
+  dated roster and is keyed on <strong>person</strong>, never on <code>membership</code>: an imported roster row or a 1998 camper
+  has no membership row to point at, and inferring an open-ended one would sweep that person into
+  <code>MEMBERS</code> today
+  (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
+  A <code>membership</code> is membership of the unit, and it owes no second row to anything. Field rules:
   <a href="../../data-model/03-membership/#5-unit_participation--deleted-by-d-097">../data-model/03-membership.md</a>.</li>
-<li><strong><code>membership_type</code> exists with exactly one row</strong>, and <code>category</code>, <code>min_age</code>, <code>max_age</code>
-  and <code>requires_background_check</code> are all gone. Membership is ageless
-  (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>); age is read from
-  <code>person.birth_date</code> where it matters, which is guardianship — positions carried the last stored
-  eligibility rule and <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
-  deleted it, so age is nobody's check and membership never was one.</li>
+<li><strong><code>membership_type</code> exists, with exactly one row</strong>, kept as a table so the vocabulary can grow, and it
+  carries fee and renewal parameters. <em>Why the row exists at all: membership is ageless
+  (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>), and age is read from
+  <code>person.birth_date</code> where it matters — which is guardianship, entered by the shape of a request — so age
+  is nobody's eligibility check and a membership type never was one.</em></li>
 </ul>
 <hr />
 <h2 id="4-guardianship">4. Guardianship<a class="headerlink" href="#4-guardianship" title="Permanent link">&para;</a></h2>
