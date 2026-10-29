@@ -340,9 +340,9 @@ Starting catalog. Expect to edit this heavily; it is a proposal, not a specifica
 > seed row, among them a code several of the catalog's own seed roles assign and one of the two codes
 > D-068 exists to protect; the `event.*` codes are the standing example of the two lists disagreeing.
 > **With no wildcard, a code the catalog advertises and the database does not name is a capability nobody
-> can be granted**, and the permission editor is the only place the gap shows. With `role_permission` gone
-> there is no per-role list left to compare a catalog row against either, so a documented code that nothing
-> grants is invisible to anything but a report. **Integrity check 13** reads the grants for exactly that
+> can be granted**, and the permission editor is the only place the gap shows. Nothing in the schema pairs
+> codes with roles, so there is no per-role list to compare a catalog row against either: a documented code
+> that nothing grants is invisible to anything but a report. **Integrity check 13** reads the grants for exactly that
 > reason (D-068).
 >
 > **There is no SQL check for this** — one side is a Markdown file. The discipline is the
@@ -385,7 +385,7 @@ the catalog sketches, whose reason for existing is that someone has to hold `sys
 anything can be granted. **What §12 must fix, and does, is the *shape* rather than the list**: a
 `system.` permission is seeded `applies_to = unit`, so it can never arrive through an item grant. That
 is not a configuration choice — it is the structural guarantee that a shared item cannot hand someone
-authority over the permission system, and it is now carried by a column value instead of by a resolver
+authority over the permission system, and it is carried by a column value rather than by a resolver
 branch (§2).
 
 **What the organization starts with, in one list.** The platform ships:
