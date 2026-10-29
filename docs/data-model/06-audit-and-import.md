@@ -145,7 +145,7 @@ is true of the payloads for 24 months and is untrue afterwards (§2.2).** That i
 and what it means is that the guard on `audit_log` is now load-bearing in a way it was not: **an audit
 entry about a person is as sensitive as the person data it quotes**, which is stated as a requirement
 on `audit.view`'s sensitivity mark in
-[../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system)
+[../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)
 and argued in [05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log) — where the case against
 copying data into a less-guarded place applies to this table directly, since this table is the copy.
 The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
@@ -287,7 +287,7 @@ withdrawn, for two reasons that came from the decisions this section already ref
 
 What the draft got right survives as the guard instead: the copy *is* as sensitive as what it quotes,
 so the permission that reads it belongs at the top of the catalog
-([../appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system)), and
+([../appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)), and
 that is a line in a document rather than a mechanism, which is the honest weakness.
 
 **What the credential list is not, stated where a reviewer will read it.** It is not the thing

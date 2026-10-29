@@ -2850,7 +2850,7 @@ precisely so it can be granted without `event.manage_participants`**, and the gr
 is now expressed by which code a grant names. The comparison to `membership.lapse` versus
 `membership.terminate` (D-022) is the part that still says what it meant.
 
-**See:** [appendix/permission-catalog.md §8a](appendix/permission-catalog.md#8a-events)
+**See:** [appendix/permission-catalog.md §8a](appendix/permission-catalog-a-codes.md#8a-events)
 
 ---
 
@@ -2993,7 +2993,7 @@ which decided the audit trail *does* hold a person's descriptive values** — be
 made that trail the only history such values have, and stripping them would have made the history empty
 while quietly grading health-shaped fields above a change of address. What protects the copy is then one
 thing: `audit.view`, graded ⚠⚠ beside `person.view`
-([permission-catalog §8](appendix/permission-catalog.md#8-audit-and-system)). Three positions exist and
+([permission-catalog §8](appendix/permission-catalog-a-codes.md#8-audit-and-system)). Three positions exist and
 none is recorded as taken:
 
 - **The guard is enough** (current documents). One permission, marked honestly, and a rule that whoever

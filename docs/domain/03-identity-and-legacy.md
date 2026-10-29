@@ -211,7 +211,7 @@ Two obligations come with the gate, and neither is a queue-management nicety:
 login a person already has. The collision case is narrower than signing up twice — it is a person
 arriving through a door the system did not know they had. Resolving the claim is confirming or
 rejecting a hypothesis, so it is `person.merge`, held by `identity_reviewer`
-([../appendix/permission-catalog.md §2](../appendix/permission-catalog.md#2-people-and-identity));
+([../appendix/permission-catalog.md §2](../appendix/permission-catalog-a-codes.md#2-people-and-identity));
 there is deliberately no `account.link` code, because an automatic link would be D-004 under another
 name.
 
@@ -343,7 +343,7 @@ not made redundant by the existence of a reversal.
 
 **Unmerge needs no permission code of its own.** Undoing an identity correction is the same act as
 making one, performed by a named human, so it is `person.merge`
-([../appendix/permission-catalog.md §2](../appendix/permission-catalog.md#2-people-and-identity)). A
+([../appendix/permission-catalog.md §2](../appendix/permission-catalog-a-codes.md#2-people-and-identity)). A
 `person.unmerge` code would grade undoing a mistake as safer than making one. Like the merge, the
 reversal splits a person's permissions back in two, and there is nothing to invalidate: the split is
 simply visible on the next check.
@@ -505,7 +505,7 @@ with an empty set to fire on while still inviting somebody to build it.
 **A historical membership is also obtainable as a human act.** Where the organization has a period the
 export does not state — a ledger found later, a written confirmation, a person who was a member in a year
 the file lost — the period is entered by hand under `membership.backdate`
-([../appendix/permission-catalog.md §4](../appendix/permission-catalog.md#4-membership)). The pipeline
+([../appendix/permission-catalog.md §4](../appendix/permission-catalog-a-codes.md#4-membership)). The pipeline
 carries the stated ones; this is the route for the unstated: deliberate, attributed, outside the batch.
 
 **End dates are still often unknown, and this is the sharpest case of it.** A period the export leaves

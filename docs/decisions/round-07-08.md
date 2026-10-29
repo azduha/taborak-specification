@@ -336,7 +336,7 @@ the check that a payload's contents match its code's mark does not exist and can
 runtime vocabulary — see [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
 which asks whether one permission is the right shape for a trail that holds person data at all.
 
-**See:** [appendix/permission-catalog.md §8](../appendix/permission-catalog.md#8-audit-and-system),
+**See:** [appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system),
 [data-model/09-attributes.md §6](../data-model/09-attributes.md#6-erasure-retirement-and-the-audit-payload).
 ---
 

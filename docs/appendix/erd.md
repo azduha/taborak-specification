@@ -138,7 +138,7 @@ removed the category and
 [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)
 put an organization-maintained vocabulary in its place. Reading is `person.view`, writing is
 `person.edit`, and only the vocabulary needs a code of its own
-([`attribute.define`](permission-catalog.md#2-people-and-identity)). Fields and rules:
+([`attribute.define`](permission-catalog-a-codes.md#2-people-and-identity)). Fields and rules:
 [../data-model/09-attributes.md](../data-model/09-attributes.md).
 
 **None of the three is `[T]`, and the `no` beside them in §7 is a decision, not an omission.** A
@@ -147,7 +147,7 @@ sequence of beliefs, **values included for as long as the payload window lasts �
 which the row is reduced and the values are gone**
 ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
 — which is why the trail is guarded as person data is
-([the permission catalog §8](permission-catalog.md#8-audit-and-system)). This corpus gives periods to
+([the permission catalog §8](permission-catalog-a-codes.md#8-audit-and-system)). This corpus gives periods to
 things that are true *over an interval* — a membership, an address, an office held, a guardian's
 authority — and a descriptive value is not one of
 those: it is a statement made now about whatever it is about, with a timestamp on the assertion. A

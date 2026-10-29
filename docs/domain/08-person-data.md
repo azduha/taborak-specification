@@ -141,7 +141,7 @@ Two operations that look alike and must not be confused.
 history.** What changed is not what the trail holds but who may read it: an entry about a person is as
 sensitive as the person data it quotes, so the permission that opens the trail sits with the serious
 permissions rather than among the administrative ones
-([permission-catalog §8](../appendix/permission-catalog.md#8-audit-and-system)). There is no list of
+([permission-catalog §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system)). There is no list of
 sensitive *field names* the trail scrubs, and there must not be one: such a list is only as good as
 somebody having predicted the name of every field that would matter, and this organization invents those
 names at runtime. **The protection is the guard** — one line in one table of one appendix, and the

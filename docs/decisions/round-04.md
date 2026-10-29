@@ -359,7 +359,7 @@ the open-ended assignment is called the classic access failure
 A role-based permission now has no expiry of its own; it is the assignment or nothing.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
-[../appendix/permission-catalog.md §7](../appendix/permission-catalog.md#7-permissions-administration).
+[../appendix/permission-catalog.md §7](../appendix/permission-catalog-a-codes.md#7-permissions-administration).
 
 ---
 

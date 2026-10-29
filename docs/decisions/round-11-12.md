@@ -97,7 +97,7 @@ table whose absence caused it no longer exists to carry a note.
 
 **One thing is lost that does not cost anything today,** and is listed so it is not re-derived as a bug in two
 years: there was a moment when the list could have had its own permission — *may tick names on this audience*
-without *may rewrite the rule*. It never got one. [Permission-catalog §5a](../appendix/permission-catalog.md#5a-groups-roles-and-audiences)
+without *may rewrite the rule*. It never got one. [Permission-catalog §5a](../appendix/permission-catalog-a-codes.md#5a-groups-roles-and-audiences)
 wrote `audience.manage` as one code covering *"change its expression, or the `LIST` a `LIST` leaf resolves
 to"*, so the split option existed in the data model and not in the authorization model, and this decision
 closes the option in the data model too. If a real need for a names-only write ever appears, it is a new
