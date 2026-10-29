@@ -260,9 +260,10 @@ re-grant, one code at a time, what that channel grants whole
   and which names no table because it names no row
   ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded))**.
   Anything reading this column has to know the scalar case exists, and has to know what the scalar
-  is *not* — **it is not a reference**. That is why §11's assertion that exactly two polymorphic
-  keys in this design go without a foreign key (`access_grant.scope_id`,
-  `audience_operand.selector_arg_id`) holds: an `18` sitting in `selector_arg_id` points at nothing,
+  is *not* — **it is not a reference**. That is why §11's check 2 walks two keyless columns
+  (`access_grant.scope_id`, `audience_operand.selector_arg_id`) and why the design's wider count of them —
+  **seven**, kept in [00 §9](00-conventions.md#9-referential-integrity-rules) — never reaches an operand:
+  an `18` sitting in `selector_arg_id` points at nothing,
   so there is nothing for a merge to repoint, nothing for a cascade to find, and nothing for the
   orphan scan to walk. The check counts *references*, and `18` is not one (§*A hand-named person is
   now a keyless reference*, where the argument kinds are enumerated).

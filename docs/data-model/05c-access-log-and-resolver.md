@@ -48,6 +48,14 @@ The audit trail. Append-only; no updates, no deletes.
   a key *and* a claimed person, which is the impersonation this model refuses at the resolver instead
   ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)).
 
+**Three of the columns in that table carry no foreign key** — `scope_id`, `authorization_ref_id`, `entity_id`
+— and [§11's check 23](05d-invariants-and-seed.md#11-invariants-to-verify) counts them, this table being the
+one that needs the rule about which absences are legal: the guard further down lets only the erasure and the
+reduction touch a row, and only in its state columns, so when the import's revert removes an event or a person
+this table goes on naming the one it named, and that absence is expected rather than wrong. What no page says
+is whether a row here is ever written naming a `person_attribute` row an erasure will delete — `entity_type` is
+declared with an empty note and given no list of tables anywhere.
+
 **Indexes**
 
 - the subject lookup covers only rows that name a subject;
@@ -87,7 +95,7 @@ redactor itself in
 enforcement reaches it — so it is written as an obligation, not as a guarantee.
 
 **A retention window does not weaken this rule, and it is worth seeing why.** If
-[F-8](../open-questions.md#f-8--retention-policy-for-access_log) is confirmed, this table's state columns
+[F-8](../open-questions.md#f-8) is confirmed, this table's state columns
 expire on the window
 [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 proposes for the change trail, so the copy is *shorter-lived* than the business row it was copied from.
@@ -140,7 +148,7 @@ one, because it fails silently and what it fails is the policy. The same reasoni
 [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 puts on `audit_log`'s payloads is proposed here too — **24 months on the state columns, rows kept,
 12 months as the floor** — and it is recorded as
-[F-8](../open-questions.md#f-8--retention-policy-for-access_log), **which still needs confirming**.
+[F-8](../open-questions.md#f-8), **which still needs confirming**.
 Whether an audit trail is bounded at all is a legal question rather than a technical one, so until someone
 confirms it this is a default awaiting a person.
 

@@ -26,11 +26,18 @@ visible instead of being a sentence on page 412 that nobody re-reads.
 
 **How to read the two right-hand columns.** *Backstop* names the report that would list a breach, by
 the page and number where that report is written. **`none` in bold** is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. Eleven rows are
-in that state and **all eleven are shape-3 rows**, whose only enforcement is a line of code. Where the blank
-is a question rather than simply a report nobody has written, the row names it — six of the eleven,
-[F-28](../open-questions.md#f-28) to [F-33](../open-questions.md#f-33) — and none is quietly filled with an
-invented check. *Breach* is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
+slur on the rule: it means the corpus names no such report anywhere, which is the finding. Seven rows are in
+that state and **all seven are shape-3 rows**, whose only enforcement is a line of code. The seven are
+not one kind of blank. Three are open questions this register raised and left open —
+[F-28](../open-questions.md#f-28), [F-32](../open-questions.md#f-32) and
+[F-33](../open-questions.md#f-33); one is [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) deciding that a rule gets
+no report, and saying so on the page that owns the rule rather than only here; one is a promise with an
+address, because D-130's identifier row names the section the report will be added to, so that `none` is
+dated rather than permanent; and the last two are blanks this page is not allowed to fill by inventing a
+check nobody asked for. **The count came down from eleven for two reasons, both of them work rather than a
+re-reading**: two pages were given the check sections they lacked ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)), and one row here
+turned out to describe a rule no page states at all, so it is gone ([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)) — which is the
+one of the two this page should be embarrassed by. *Breach* is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
 breach both read as "two rows" and only one of them is a duplicate.
 
 **Nine numbered checks, on three pages, are assertions about the code rather than reports over data**
@@ -116,7 +123,7 @@ downstream ever says so.
 | Every `system.*` permission applies at the unit | [05 §2](05-authorization.md#2-permission) | the seeding rule | [05d §11 check 3](05d-invariants-and-seed.md#11-invariants-to-verify) |
 | A bound operand is legal only on a grant that can bind it | [05 §6](05-authorization.md#6-access_grant--the-per-item-layer) | the write path | [05d §11 checks 3 and 4](05d-invariants-and-seed.md#11-invariants-to-verify) |
 | An event arrives with the grant that lets its organizers read its answers | [08a §8](08a-event-guards-and-checks.md#8-projections-and-guards) | the insert path, and the importer's | [08a §10 check 2](08a-event-guards-and-checks.md#10-integrity-checks) |
-| A registration creates its fee obligation | [07 §4](07-finance.md#4-how-this-connects-to-membership) | the registration path | [08a §10 check 10](08a-event-guards-and-checks.md#10-integrity-checks) for events; **none** for memberships |
+| A registration creates its fee obligation | [07 §4](07-finance.md#4-how-this-connects-to-membership) | the registration path | [08a §10 check 10](08a-event-guards-and-checks.md#10-integrity-checks) for events; [07 §4a check 3](07-finance.md#4a-integrity-checks) for everything the roster never asked about |
 | A merge repoints every operand that named the person | [05b](05b-expression-tree.md) | the merge reassignment table | [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify), a backstop and not the control |
 | An audience may not reach itself | [05b](05b-expression-tree.md) | two walks at save, the whole guard | [05d §11 check 15](05d-invariants-and-seed.md#11-invariants-to-verify) — `save-refusal` |
 | A key may not be granted one of five codes | [05e §15](05e-keys-and-callers.md#15-what-a-key-may-hold) | the save path only | [05d §11 check 20](05d-invariants-and-seed.md#11-invariants-to-verify), the entire net |
@@ -131,15 +138,17 @@ downstream ever says so.
 | An audit row holds no unredacted payload | [05c §9](05c-access-log-and-resolver.md#9-access_log) | the application's obligation, in order | none reaches the ordering |
 | Every audited table is in fact audited | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | the write itself | the check of a change the trail never saw, whose ceiling is stated there |
 | An actor label is on the vocabulary | [00 §7a](00-conventions.md#7a-what-an-empty-actor-column-means) | nothing refuses one | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) |
-| A write is not audited against a key that was already ended | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | none | **none, and the page says so** — [F-29](../open-questions.md#f-29) |
-| Which audit views a holder may open follows the payload, not the table | [06 §2](06-audit-and-import.md#2-audit_log) | none | **none** — [F-29](../open-questions.md#f-29) |
+| A write is not audited against a key that was already ended | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | none | **none, and now by ruling rather than by omission** — the window is not the obstacle and [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) says so on the page that owns the rule |
 | A hand edit to an audited row is visible afterwards | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | impossible — the write is outside the application | the same check, whose ceiling is that table |
-| A polymorphic reference with no foreign key still points somewhere | [erd-b](../appendix/erd-b-inventory.md) | none for five of them | **none** — [F-30](../open-questions.md#f-30) |
+| A polymorphic reference with no foreign key still points somewhere | [00 §9](00-conventions.md#9-referential-integrity-rules) | none, and none is possible — that is the trade the columns exist to make | [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify) and its sibling check 23: **six of the seven columns are scanned; `audit_log.record_id` never is, by ruling** ([D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)) |
 | A registration is inside its event's window | [08a §8](08a-event-guards-and-checks.md#8-projections-and-guards) | every insert path | [08a §10 check 9](08a-event-guards-and-checks.md#10-integrity-checks) |
 | An event's capacity is not silently exceeded | [08 §5](08-events.md#5-capacity-and-the-waitlist) | the placing procedure | [08a §10 check 5](08a-event-guards-and-checks.md#10-integrity-checks); an overrun is permitted, attributed and reported |
 | Only members register | [08 §4](08-events.md#4-event_registration) | none, and none is wanted — eligibility is capability | none, by design |
-| One staged row makes one event | [06a §3](06a-import.md#3-import-pipeline) | the application, deliberately | **none** |
-| `membership.outstanding_balance` agrees with the allocations | [07 §3](07-finance.md#3-keeping-membershipoutstanding_balance-honest) | **unassigned** — the section opens the choice | **none** — [F-31](../open-questions.md#f-31) |
+| One staged row makes one event | [06a §3](06a-import.md#3-import-pipeline) | the application, deliberately | [06a §4 check 2](06a-import.md#4-integrity-checks) |
+| `membership.outstanding_balance` agrees with the allocations | [07 §3](07-finance.md#3-keeping-membershipoutstanding_balance-honest) | the writing transaction if the column stays; §3 recommends dropping it for a view | [07 §4a check 1](07-finance.md#4a-integrity-checks), and the same query whichever way §3 lands |
+| An imported membership is bounded at both ends and never inferred from attendance | [06a §3.1](06a-import.md#31-what-a-source-row-actually-evidences) | the parse and end-date inference rules | [06a §4 check 1](06a-import.md#4-integrity-checks) — **the one row in this table that reaches the permission gate**, because an open membership satisfies `is_current_member()` |
+| A batch can say what it did, and a revert leaves nothing behind | [06a §3](06a-import.md#3-import-pipeline) | the pre-flight refusal | [06a §4 check 3](06a-import.md#4-integrity-checks), read against the audit entries the revert wrote |
+| A payment's allocations account for its amount | [07 §2](07-finance.md#2-minimal-provisional-shape) | the write path; no constraint spans the two tables | [07 §4a check 2](07-finance.md#4a-integrity-checks), which is the whole of the backstop |
 | An operand that resolves to nothing is said out loud | [05b](05b-expression-tree.md) | none — no save is refused | the report of audiences that reach nobody, with an owner |
 | An expression tree stays a size that resolves | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | none, by design | a report the corpus says has nothing behind it |
 | A compilation is invalidated by exactly the right edits | [05c §10](05c-access-log-and-resolver.md#10-the-resolver) | the write path, `audience_operand` plus `selector_type` | **none** — the listing it depends on is itself unmeasured |
@@ -180,10 +189,13 @@ references it, and nothing leaves a row in the wrong state for a report to find.
 - **It cannot reach a rule stated only once, in prose, on the page it governs.** That is what the
   inventory behind this page was for, and what it found in the way of absences is in
   [the open questions](../open-questions.md), each one naming the page it is missing from.
-- **It cannot rank the `none`s.** Two modules are far more exposed than the rest, and for the same
-  reason: [07-finance.md](07-finance.md) and [06a-import.md](06a-import.md) carry no "Invariants to
-  verify" section of their own, so every rule they state is unassigned by construction rather than by
-  oversight. Two pages, and most of this table's `none`.
+- **It cannot rank the `none`s.** It used to be able to say at least where they clustered, and the answer
+  was two pages: [07-finance.md](07-finance.md) and [06a-import.md](06a-import.md) had no "Invariants to
+  verify" section, so every rule they stated was unassigned by construction rather than by oversight. That
+  structural excuse is gone ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)) and both pages now carry their own list, which leaves this column
+  holding only rules that were read in the round that found them and left unguarded on purpose or on the
+  table's own limits. **Ranking those is still not something a register can do without inventing a
+  severity, which is the thing it refuses to do.**
 - **It is not a substitute for the constraint.** A row here saying `migration` is not the migration.
   [00 §6a](00-conventions.md#6a-who-enforces-an-invariant-now) is the rule about what must be emitted
   below the application; this page is the evidence that the rule was applied to every row and told where
@@ -194,5 +206,8 @@ references it, and nothing leaves a row in the wrong state for a report to find.
 See also [00-conventions §6a](00-conventions.md#6a-who-enforces-an-invariant-now),
 [05d §11](05d-invariants-and-seed.md#11-invariants-to-verify),
 [the registry diff](../decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round),
-and the decisions [D-130](../decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes)
-and [D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed).
+the decisions [D-130](../decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes)
+and [D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed),
+and the four this page's blanks produced in the next round:
+[D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud), [D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never), [D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each) and
+[D-136](../decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people).

@@ -197,7 +197,7 @@ obligations, against a redacted person row that keeps the skeleton non-identifyi
 unverified, and a decision log is not the document that grants it. The audit trail runs
 the opposite direction: rows forever, payloads for 24 months. Erasure sits outside both,
 immediate and absolute. The same window is *proposed* for `access_log` and is not yet
-confirmed ([F-8](open-questions.md#f-8--retention-policy-for-access_log)).
+confirmed ([F-8](open-questions.md#f-8)).
 
 **Curation** — Keeping the vocabulary meaning one thing: merging near-duplicates,
 promoting or discarding proposals, retiring codes nobody uses, and writing the
@@ -274,8 +274,9 @@ An office is held **at the unit,
 always**; a role is an item, so a grant can be written on one. Nothing forces a holder row
 to end — the report is the control
 ([D-071](decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)),
-and an empty office is not a reportable vacancy: absence of rows has no start date
-([F-18](open-questions.md#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write)).
+and an empty office is not a reportable vacancy: absence of rows has no start date, and no office is
+marked elective in the first place ([F-18](open-questions.md#f-18), closed by
+[D-136](decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people))
 
 ---
 

@@ -338,6 +338,82 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   including when the identity belongs to somebody else. 15 and 16 are CI assertions too, and this belongs
   beside them for the same reason: **a prohibition nobody runs is a convention, not a guard.**
 
+- **23. The four reference-less keys nothing else reads, and the fifth that is deliberately left unread.**
+  One count per column over `field_conflict.entity_id`, `access_log.scope_id`,
+  `access_log.authorization_ref_id` and `access_log.entity_id`: **a row where the column is set and no row
+  exists in the table named beside it** — `entity_table`, `entity_type`, `scope_type`, `authorization_channel`
+  — or, where a registry names the table, in that table. A set id that resolves nowhere means the row was
+  written wrongly at the moment it was written; there is no constraint here for a bypassed save path to have
+  bypassed. **Only a set column counts.** An absent `scope_id` is a check at the unit and an absent
+  `authorization_ref_id` is no grant involved
+  ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)), and the `document` kind is
+  deferred, so there is no table there for any scan to walk. Check 2 holds the two keys on the granting side,
+  what the polymorphic trade costs, and the split that decides which orphan is the dangerous one; **nothing
+  this check counts grants anything**, so a row here has never changed who may do what — it has left a question
+  in the trail with nothing to answer it, which is why this one is read and not alerted on.
+
+  **Which absences are legal, and where the pages stop short of saying so.** Two paths in this design remove a
+  business row outright, and neither can take a trail row with it: [05c §9](05c-access-log-and-resolver.md#9-access_log)
+  permits only the erasure and the reduction to change a row of that trail, permits them to touch only the
+  state columns, and calls every other field on it immutable. **The import's revert** removes the
+  `event_registration`, `event`, `membership` and `person` rows a batch created
+  ([06a §3, Reversibility](06a-import.md#reversibility)), and **the erasure** deletes the person's
+  `person_attribute` rows ([00-conventions §4](00-conventions.md#4-deletion-policy),
+  [06b §4](06b-redaction-and-checks.md#4-redaction-log)). **So the exception is a rule about the target table
+  plus a demand for evidence, never a list of tolerated ids:** an absence is legal exactly when the table the
+  row names is one of those five *and* the trail shows the removal — a revert writes one audit entry per row it
+  deleted, naming the batch, and an erasure writes one `redaction_log` row naming `person_attribute` in
+  `redacted_tables`. Everything else is a defect, including a row inside those five tables with no removal
+  recorded against it — and revert's pre-flight is stated as a check for references
+  ([06a §3](06a-import.md#reversibility)) and never as one that reads a column with no foreign key in front of
+  it, which is what makes an absence under these three columns an expected outcome rather than a surprise.
+
+  **Erasure on its own accounts for none of them:** what it deletes is attribute rows, plus the expression
+  leaves naming the person where it removes one rather than rewriting it, while an erased person's `scope_id`
+  names a scope — an event, a group or an office, and nothing at all where the check was at the unit — and
+  their `authorization_ref_id` names an `access_grant` or a
+  `guardianship_permission` row, none of which erasure touches. So an orphan under `authorization_ref_id` has
+  no lawful explanation at all, and one under `scope_id` has exactly one: revert removing an `event`. **One
+  shape beside these is neither a finding nor clean:** a row whose `authorization_channel` is outside the six
+  values 05c §9 lists keeps its word and loses its table, so there is nothing for the id to be counted against,
+  and it is reported separately rather than as an orphan. Of the
+  three, only `entity_id` could name a row erasure does delete — a `person_attribute` row, or one of the
+  `audience_operand` leaves the erasure removes — and **whether it ever does is settled by nothing in this
+  corpus**: `entity_type`, the column that would say which table the id belongs to, is declared in 05c §9's
+  field table with an empty note and is given a list of tables nowhere.
+  [00-conventions §4](00-conventions.md#4-deletion-policy) and
+  [06b §4](06b-redaction-and-checks.md#4-redaction-log) say exactly what an erasure deletes and neither says
+  what is written into this trail, so no page states which writes produce an `access_log` row at all. The
+  exception is therefore written wide enough to cover the case, and a reader should expect the erasure arm of
+  it to report nothing until somebody answers that.
+
+  **`audit_log.record_id` is the fifth of these columns and no count walks it, which is a decision rather than
+  an oversight.** An audit row is built to outlive the row it describes. Its skeleton is permanent and only its
+  payloads expire ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+  and its fields are as immutable as the access trail's
+  ([05c §9](05c-access-log-and-resolver.md#9-access_log) states the guard for one trail and carries it across
+  to the other), so a removal in a business table *must* leave a reference behind; and the orphan is not merely
+  tolerated down there, it is **load-bearing** — [06b §5's check that a redacted person's payloads are empty](06b-redaction-and-checks.md#5-integrity-checks)
+  finds the rows it exists to test by their `table_name` and `record_id` precisely because those two survive
+  the erasure that deleted the row behind them, and revert's entries name a deleted row by design. A count over
+  this column would report both erasure and revert as integrity failures, **which is worse than no check at
+  all, because the first false alarm teaches whoever reads the report to ignore the real one.** What stands in
+  its place is the pair of checks that read the property the column was ever a proxy for: that an erased
+  person's payloads are empty, and that nothing past the window still carries one.
+
+  **The dangerous one of the four is `field_conflict.entity_id`,** and it is dangerous for a reason the other
+  three do not share. A conflict row is a question put to a person — one field a merge could not decide,
+  sitting `unresolved` in the queue [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) ages at
+  thirty days — and an `entity_id` naming nothing is that
+  question being unanswerable. **The reading nobody has written down before now is the likeliest one: the
+  import recorded a conflict against a row that is not there**, and every decision taken on the strength of
+  that conflict inherited the mistake. Revert explains some of them, since `entity_table` holds `person` and
+  `membership` and revert removes both, and its per-row entries settle which of the two paths was here; a row
+  outside those two tables, or with no removal behind it, is not untidiness but a merge that decided something
+  about a record that never existed. **None of this belongs on the permissions tab:** the tab lists rules, and
+  not one of these four columns is a rule — and putting a legal absence on a page about broken things is how a
+  broken one comes to be read past.
+
 **Checks 3, 4, 5, 6 and 9 are the ones to wire to alerts, plus one half of 7.**
 
 - **3 and 4 are the reports that stand in for the database rules that do not exist.** A row in either
@@ -741,7 +817,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
   **invariant 19 is the thing a return has to argue with.**
 - Retention policy for `access_log` — legal input required
-  ([F-8](../open-questions.md#f-8--retention-policy-for-access_log)).
+  ([F-8](../open-questions.md#f-8)).
 - Whether `access_log` needs human annotation (recommend a separate table if so).
 
 **Settled, stated as answers.** A role may **not** be held by a rule

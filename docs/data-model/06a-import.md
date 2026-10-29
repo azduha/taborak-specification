@@ -338,7 +338,7 @@ nobody who can read its answers.
 open membership satisfies `is_current_member()`, so an inferred 1998 row hands whoever signs up under that
 name authority in the present, through every gated role, decades after the file that mentioned them was
 last opened. The end-date rule above is what stops an imported period from reading as current; this
-sentence is what stops the class, and check 1 in §5 is what catches a batch that did it anyway. **What
+sentence is what stops the class, and check 1 in §4 is what catches a batch that did it anyway. **What
 changed is how much of the class the rule has to cover, not whether it covers it.** D-090 banned the row
 outright because the input looked like a roster and any membership in it would have been an inference;
 D-093 withdrew the ban because the input states periods, and because the hazard the ban was sized for was
@@ -364,3 +364,45 @@ count is a mix of an export and a register distinguished only by `data_confidenc
 **What remains given up is that the imported membership
 is the source's claim about a status rather than a record of the act: nobody paid a fee in this system for
 1998, and the row says *the organization's export said so*, which is the most the evidence supports.*
+
+---
+
+## 4. Integrity checks
+
+**Invariants to verify.** This section arrived late and by decision
+([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)); every other
+data-model page had one and this page argued its way out of having one, on the grounds that the pipeline is
+correct by construction. That argument is about the write path, and these three are about the data
+afterwards — which is the half the argument never covered. Check 1 is the one §3.1 has been pointing at
+ever since it wrote "check 1 in §5", citing a section this page did not have.
+
+1. **An imported membership that should not exist.** Two ways in, both stated above as rules: an imported
+   `membership` with `valid_to` absent, and a `staging_import_row` on an **events** batch carrying an
+   `applied_membership_id`. Either one means an imported period reads as present-tense belonging, and
+   **this is the only check on this page that reaches the permission gate**: an open membership satisfies
+   `is_current_member()` (D-039), so a row the end-date inference left open, or a membership written from an
+   attendance list, hands authority in the present to whoever signs up under that name decades after the
+   file was last read (§3.1). **Non-zero here is not untidy data; it is authority, and it alerts** — the
+   same shape as 09's erasure check, in that a single row is the finding.
+2. **One event per (title, date), and one registration per attendee row.** `uq_staging_event_match` (§3) is
+   enforced inside the transaction that applies a staged row, deliberately at the application layer, because
+   the pair spans rows of a batch rather than columns of a row. **That is exactly why the report exists**:
+   an application-layer rule has nothing beneath it, so this count is not a net under a constraint but the
+   whole of the backstop, and the failure it is sized for is the loud one run quietly — ten thousand
+   attendee rows becoming ten thousand events, none deletable except by revert. The mirror half catches a
+   staged attendee row that produced more than one registration.
+3. **A batch whose own accounting does not close.** Four readings of one promise — that a batch can always
+   say what it did, which is what makes revert possible at all: an `applied` batch still holding staged rows
+   that are neither applied nor `discard`ed nor `deferred`; a staged row marked `applied` carrying **no**
+   created id; a staged row carrying ids from the other half of the corpus (a people row with an
+   `applied_event_id`, an events row with an `applied_membership_id`) where §3 says `batch_kind` decides
+   which ids a row may hold; and a batch marked `reverted` whose created ids still resolve to live rows.
+   **Read the last of the four against the trail rather than only the count**: revert writes one audit entry
+   per row it deletes, each naming the batch (§Reversibility), so a batch that left rows behind also left
+   an entry for each deletion that did not happen — and a live row with no matching entry is the difference
+   between an undo that was refused and an undo that lied.
+
+**Check 1 is the one that matters, and it matters for a reason the other two do not share:** the other two
+find bad data, and this one finds data that grants permission. Checks 2 and 3 are what a pipeline with an
+application-layer rule and a hard delete owes the people who inherit its output — cheap to run, and only
+interesting when they are non-empty.

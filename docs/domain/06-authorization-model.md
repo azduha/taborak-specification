@@ -286,9 +286,10 @@ it confers nothing until a grant names it (§6.2).
 
 **An elected leader is a holder of a role**, and the audience that names them is `ROLE(leaders)`,
 meaning what its name says. What is genuinely not stored is the *elected-versus-appointed*
-distinction: it survives only as roles the organization invents (`elected_council` next to
-`appointed_it`) or not at all, which is the open question
-[F-18](../open-questions.md#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write).
+distinction, and [D-136](../decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people) settled that it will not be: an election is run outside this system and the
+outcome arrives as a holder row. The distinction survives only as roles the organization invents
+(`elected_council` next to `appointed_it`) or not at all — [F-18](../open-questions.md#f-18) is closed on
+exactly that answer.
 Where the appointment workflows end is
 [04-organization-structure.md §6](04-organization-structure.md#6-appointments).
 

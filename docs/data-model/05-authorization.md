@@ -375,6 +375,13 @@ A reason here would be free text ([D-128](../decisions/round-18.md#d-128--a-reas
 and free text is counted only when people happen to type the same words — which is the same ground
 D-098 refused it one table over, now with the cost stated instead of the column.
 
+**A holder row holds a person, not a mandate** ([D-136](../decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people)).
+No column records — and none will record — whether an office was won by a vote or given by whoever could
+assign it: the organization runs elections outside this system and imports the outcome as a row. That is why
+`granted_by` below is who wrote the fact rather than whose authority made it so, and why `note` is the only
+place "elected, 2026–2028" can appear. The argument and the cost of refusing are in
+[../domain/04-organization-structure.md §6](../domain/04-organization-structure.md#6-appointments).
+
 **What `granted_by` records, and what `audit_log` records.** The two look like duplicates and answer
 different questions, so the line is worth drawing properly. `audit_log` records **an act**: that a particular person, in a particular session, from a particular
 address, asked to appoint someone, and whether they were allowed to. It is the record of the *writing*.

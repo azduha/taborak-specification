@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-132 of them and lists the reversals. Read the round you are curious about — each one says what was
+136 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -172,6 +172,10 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-130](round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | One register answers who enforces each invariant, and F-10 closes | decided | round 18 |
 | [D-131](round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) | Shape 4 is not empty, and a code that is referenced may not be renamed | decided (found by writing the register) | round 18 |
 | [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **not applied until round 19** | round 18 |
+| [D-133](round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) | Two trail rules stay unchecked, and say so out loud | decided (from your answer) | round 19 |
+| [D-134](round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never) | Four more polymorphic columns get an orphan scan; the audit row never gets one | decided (from your answer) | round 19 |
+| [D-135](round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each) | The two modules with no check list get one each | decided (from your answer) | round 19 |
+| [D-136](round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people) | An election is not recorded; a role holds only the people | decided (from your answer) | round 19 |
 
 ## Reversed decisions
 

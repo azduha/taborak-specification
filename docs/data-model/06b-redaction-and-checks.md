@@ -149,6 +149,26 @@ what the record said.
   everywhere in this section, is the pair no rule compares — a write audited against a key whose
   `valid_to` or `revoked_at` fell *before* the row's `occurred_at`, which leaves every column filled and
   this check, which reads emptiness rather than dates, silent.
+
+  **That silence is now a ruling rather than an oversight, and the reason matters more than the ruling**
+  ([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)). **The
+  window is not the obstacle and it was never honest to say it was**: the three columns such a check would
+  compare are `api_key.valid_to`, `api_key.revoked_at` and this table's own `occurred_at`, every one of them
+  accounting skeleton, every one outliving the payload by decades. A report could be written over them
+  tomorrow and would work in year thirty. **What was decided is that it will not be written**, which leaves
+  the design without a guarantee it had been reading as though it had: nobody will be able to demonstrate
+  that no write was ever audited against a key that had already ended, and no count anywhere will ever
+  answer that question — not after 24 months, and not before them either. **What this section does hold, and
+  what the sentence above should never be read as replacing**, is narrower and worth restating while it is
+  being narrowed: every audited write left a row; that row's envelope — actor, table, record, moment — is
+  intact for as long as the row exists; and the payload is emptied on schedule rather than lingering. Those
+  three are checked. The fourth was wanted by nobody who read it, so it is stated as a rule with no report
+  beneath it, which is the only remaining honest state — and
+  [00a](00a-invariant-register.md) now says so in the same words this page does, because a register row
+  claiming a report that no page has is the defect D-129 exists to catch. A reader who needs the fourth
+  guarantee needs a different instrument than this table: the trail is a record of what happened to people,
+  and what an ended key did after it ended is tracked on the key's own page
+  ([05e-keys-and-callers.md](05e-keys-and-callers.md)).
 - **Tables whose write path does not audit.** Compare the business tables this system has —
   staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
   writing history that is never recorded. **Read this one carefully, because its meaning got worse

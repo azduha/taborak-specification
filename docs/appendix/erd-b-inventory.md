@@ -238,24 +238,33 @@ Columns with no FK, and why:
 |--------|-----------|
 | `access_grant.scope_id` | Polymorphic by design. Validated by `grant_scope_type` + orphan checks. It is **absent exactly when the scope type is `unit`**, and that absence is the schema-level form of "the unit is a scope, not a row" ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). |
 | `audience_operand.selector_arg_id` | The second one, and newer: one integer pointing at a `role`, a `person_group`, an `audience`, a `person` or an `event` depending on `selector_kind`, resolved by `selector_type.argument_type` and caught by the same nightly orphan scan. [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) carried [D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s trade-off across deliberately, mitigations included — the registry is the only thing that says which table an id belongs to, so an unmapped kind is the empty set, not an error. **It also sometimes holds no reference at all**: `OLDER(n)` and `YOUNGER(n)` store a whole number of years here ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)), and that does not make a third key — `18` points at nothing, so the orphan scan has nothing to walk, a merge has nothing to repoint, and this row is still describing one column that sometimes carries a reference and sometimes carries a scalar. |
-| `access_log.scope_id` | Same shape as the grant's; absent for a check at the unit. |
-| `access_log.authorization_ref_id` | Points at **one of two** tables, `access_grant` or `guardianship_permission`, and nothing else; a historical row whose channel reads `role` keeps the word and loses the reference, which is the honest state of a value whose table is gone ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)). |
-| `access_log.entity_id` | Polymorphic target of the audited action. |
-| `field_conflict.entity_id` | Polymorphic; recorded alongside `entity_table`. |
-| `audit_log.record_id` | Polymorphic; recorded alongside `table_name`. |
+| `access_log.scope_id` | Same shape as the grant's; absent for a check at the unit. **Followed** by [05d §11 check 23](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify), with exactly
+one legal absence available to it: of the kinds this column can name, only an `event` is ever removed, and only by the import's revert. |
+| `access_log.authorization_ref_id` | Points at **one of two** tables, `access_grant` or `guardianship_permission`, and nothing else; a historical row whose channel reads `role` keeps the word and loses the reference, which is the honest state of a value whose table is gone ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)). **Followed** by the same check and excepted by nothing, because neither target is ever deleted: a set id that does not resolve is the only unacceptable answer. A row whose channel is outside the enum names no table at all, so the scan reports it beside the findings rather than as one. |
+| `access_log.entity_id` | Polymorphic target of the audited action. **Followed** by the same check, **with its exception written there**: an absence is legal only where the table named is one this design removes *and* the trail shows the removal — a `person_attribute` row for an erasure, a `person`, `membership` or `event` row for a revert. Whether this column is ever written naming a `person_attribute` row is stated nowhere, so the erasure arm may have nothing to fire on. |
+| `field_conflict.entity_id` | Polymorphic; recorded alongside `entity_table`. **Followed** by the same check, and its finding is the dangerous one of the four: a conflict row naming nothing is an import that recorded an undecided field against a row which is not there, and the decision a person later takes inherits that. Revert accounts for the ones whose `entity_table` is `person` or `membership` and left an entry naming the row; the rest are broken. |
+| `audit_log.record_id` | Polymorphic; recorded alongside `table_name`. **Not followed, deliberately** ([D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)): an audit row outliving the row it described is what an erasure and a revert look like afterwards, and [06b §5's check 6](../data-model/06b-redaction-and-checks.md#5-integrity-checks) locates the payloads it exists to test through exactly this reference. A count here would report the two paths this design trusts as integrity failures. |
 
-**There are exactly two reference-less keys, and the class matters more than the count.**
+**There are seven reference-less keys, and the class matters more than the count.**
 `access_grant.scope_id` and `audience_operand.selector_arg_id` are ids with no constraint behind them, and
 each carries the same four things that make that survivable: a registry saying which table an id belongs
 to, a save-path check against that registry, an orphan scan the scheduler owns, and an explicit rule that a
 failure resolves to the empty set
 ([../data-model/00-conventions.md §9](../data-model/00-conventions.md#9-referential-integrity-rules)).
-A scalar is not a third one: `OLDER(n)` and `YOUNGER(n)` write a whole number of years into
+**The other five are the same class of column and they do not all get the same answer**, which is what
+[F-30](../open-questions.md#f-30) asked and
+[D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)
+settled: four are followed by [05d §11 check 23](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify),
+and `audit_log.record_id` is followed by nothing on purpose, because an id in a trail is written in order to
+outlive the row it names and the redaction check reads that reference in order to run at all. What the six
+followed columns share is the registry and the scan; what none of the seven gets is a constraint, because no
+foreign key can name one of several tables.
+A scalar is not one of the seven: `OLDER(n)` and `YOUNGER(n)` write a whole number of years into
 `audience_operand.selector_arg_id`, and there is no table that number should have named, so there is no
 registry lookup to miss, no orphan for the scan to find and nothing for a merge to repoint. The count is
 about references, and `18` is not one
 ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
-A third candidate arrived with `api_key` and is not one either: `access_grant.api_key_id` names exactly
+A candidate arrived with `api_key` and is not one either: `access_grant.api_key_id` names exactly
 one table, always, so it carries an ordinary foreign key and needs none of the four things above — no
 registry saying which table it means, no save-path check against that registry, no orphan for the scan, no
 rule about what an unreadable kind resolves to. **Becoming the third grantee cost a column with a

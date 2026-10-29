@@ -202,10 +202,11 @@ not an empty space.
   grant naming `ROLE(x)`
   ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
 
-*What is genuinely lost is elected-versus-appointed as stored data* (D-100). It survives only as offices the
-organization invents — `elected_council` beside `appointed_it` — or not at all
-([../domain/04-organization-structure.md §6](../domain/04-organization-structure.md#6-appointments)), and
-that is [F-18](../open-questions.md#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write).
+*What is genuinely lost is elected-versus-appointed as stored data* (D-100), and **it stays lost by
+decision**: [D-136](../decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people) closed [F-18](../open-questions.md#f-18) with the ruling that a role holds only the
+people who hold it. The distinction survives only as offices the organization invents — `elected_council`
+beside `appointed_it` — or not at all
+([../domain/04-organization-structure.md §6](../domain/04-organization-structure.md#6-appointments)).
 
 ## 5a. Groups, roles and audiences
 

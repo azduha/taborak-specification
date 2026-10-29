@@ -261,6 +261,28 @@ grants whose expression names `ROLE(x)`
 There is no position, no slot, no `max_holders`, and no `is_leadership` flag: nothing in the system records
 a seat that exists unfilled.
 
+**And nothing records how the person came to hold it** ([D-136](../decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people)).
+Elected at an AGM for a two-year term, handed over by the departing treasurer, filled by whoever the committee
+asked: **the row says none of this, and no column will be added to make it say so.** An election is an event
+in the world that this organization runs somewhere else — nominations, a ballot, a quorum, minutes — and what
+arrives here is the outcome: one holder row, two dates, and `note` for whoever wants the reason beside the
+fact. `granted_by` does not settle the question and never claimed to; it names the person who wrote the row,
+which for an election is a secretary recording a result rather than a mandate.
+
+**Why the obvious additions were refused.** A flag — elected or appointed — would make the distinction
+queryable and would guard nothing, and a field that looks like a control where none is wanted is worse than
+the absence, because it invites someone to rely on it. A table of elections would describe a process this
+system does not run and does not hold, on the same ground
+[D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system) refused to be a
+registry of everything true about a volunteer. And the distinction has nowhere to bite anyway: **an office
+confers nothing by being held**, as this section's first paragraph says, so there is no dangerous thing for
+an election to confer and no
+answer anywhere in the resolver that would change if a row knew how its holder arrived.
+
+**The cost, stated plainly because it is real:** nothing here will ever refuse to appoint someone to an
+office the bylaws reserve for a vote. That rule lives in the bylaws and in the people reading them, and it is
+one of this module's standing conventions rather than a gap it means to close.
+
 **This module holds no eligibility rule of any kind.** There is no `requires_membership` and no `min_age` on
 an office, and no gate in the resolver: membership is an operand, written into the grant.
 
@@ -343,4 +365,4 @@ Open, and tracked in [../open-questions.md](../open-questions.md):
 ---
 
 *Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
-D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-071.*
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071.*

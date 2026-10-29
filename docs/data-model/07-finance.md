@@ -475,6 +475,51 @@ such choice visible before 1 January rather than on it ([03-membership.md
 
 ---
 
+## 4a. Integrity checks
+
+**Invariants to verify.** This section arrived late and by decision
+([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)); what it does is
+not new to this folder, it is what every other page here already had. The rules below are all stated
+somewhere above this heading — §2, §2a and §3 each state one and then said nothing about what would notice
+a breach.
+
+1. **The balance the system shows, recomputed from §3's definition.** `amount_due` − `amount_discount` −
+   the sum of allocations whose payment is **`confirmed`**, per obligation, and the same sum rolled up
+   wherever a membership's balance is displayed. Two states put a row on this list: an allocation whose
+   payment has since been `reversed` still sitting in the total, and a discount recorded on the obligation
+   but not carried into the roll-up. **What it cannot catch is the definition being wrong on both sides** —
+   a screen and a report that each recompute `amount_due` − `amount_paid` agree perfectly and are both
+   counting money that was only promised. **If §3's recommendation is taken and the column becomes a view,
+   this check does not retire.** It moves from "the copy agrees with the sum" to "the view implements the
+   sum", which is the same query and the same failure list, and D-075's rule that only confirmed payments
+   count is what it is checking either way.
+2. **A payment whose allocations do not account for its amount, and an obligation allocated past what it
+   owes.** `payment_allocation` is many-to-many in both directions and §2's rules constrain the pair and the
+   sign of each amount, never the sums. So a payment with unallocated remainder is money that moved and was
+   never attributed to anything, and an obligation allocated beyond `amount_due` − `amount_discount` is an
+   overpayment that nobody has refunded. **The layer here is the write path, and there is no constraint to
+   sit beneath it**: the sums span rows of two tables, which is
+   [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph), so this
+   report is not a net under a rule — it is the whole of the backstop. §2 called this table "the part most
+   likely to be right", and that is an argument about the shape, not about the data ten years in.
+3. **Money nobody ever asked for.** Two readings of one failure, cheapest first: an obligation whose status
+   is `unpaid`, `partially_paid` or `overdue` with **no live `payment_request`** pointing at it, so nothing
+   has ever carried a variable symbol to anybody; and upstream of that, an `event_registration` for an event
+   carrying a `fee_schedule` with no `fee_obligation` behind it, which §2 already warned of in one sentence —
+   *an event with a fee and no obligation is invisible until someone reconciles money against the roster*,
+   because nothing creates the obligation and no trigger could have been forgotten. **Do not read this list
+   as the queue.** An unmatched `bank_transaction` is money with no subject, and
+   [D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person) rules that it
+   waits for a person, which is a correct state with a page of its own (§2b). This is the opposite case: a
+   liability with no ask attached, which is silent in both directions — nobody is chased and nobody pays.
+
+**Checks 1 and 2 are the two that matter, and §3 says why in one line: a wrong number here has a human
+consequence** — either a wrongly-suspended member or a wrongly-chased family. Check 3 is the one that finds
+a whole class of missing money rather than a wrong row, and it is the only one of the three that can be
+non-empty because a feature was never written rather than because a row is wrong.
+
+---
+
 ## 5. Open issues — the whole of this document, essentially
 
 1. **Is the fee prorated** for mid-year joins? Note this is a sharper question than it was:

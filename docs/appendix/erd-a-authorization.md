@@ -80,8 +80,8 @@ The authorization model as one diagram, the tables behind it, and the expression
    (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
    their argument is an integer — the registry's first non-reference — so          │
    `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
-   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
-   reference-less polymorphic keys stay exactly two. Thirteen seeded rows:         │
+   nothing for a merge to repoint, nothing for a cascade to find, and the keyless  │
+   polymorphic keys drawn here stay two of seven. Thirteen seeded rows:            │
    five argument tables, one integer, and the operators are still `+ - *`.         │
    `PRESENT(<event>)` is not seeded, and the reason is a consequence: a tick box   │
    on a check-in screen would revoke a leader's access to their own camp when      │
@@ -459,9 +459,10 @@ five, and the count this appendix keeps is unchanged for the right reason rather
 sitting in `selector_arg_id` is not a reference, so there is nothing to repoint when a person is merged,
 nothing for a cascade to find, nothing for the orphan scan to walk, and the binding check that compares
 `argument_type` against a grant's item type simply does not apply to an operand that binds to no item.
-**There are still exactly two reference-less polymorphic keys** — `access_grant.scope_id` and
-`audience_operand.selector_arg_id` — and `18` is not one of them, because the check is about references
-(§8). The two operands read `person.birth_date` **as of the date being checked**, which is why they are a
+**There are still exactly two reference-less polymorphic keys in what this part draws** —
+`access_grant.scope_id` and `audience_operand.selector_arg_id` — and `18` is not one of them, because the
+check is about references. **The shared inventory in §8 keeps the design's whole count, which is seven: the
+other five sit on the two trails and on a merge conflict, none of which is drawn here.** The two operands read `person.birth_date` **as of the date being checked**, which is why they are a
 registry row and nothing more: they are ordinary named operands, composed by `+ - *` like every other, and
 the set they name changes with no write at all.
 
