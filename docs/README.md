@@ -121,6 +121,7 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 |----------|--------|
 | [appendix/erd.md](appendix/erd.md) | Entity-relationship diagrams. |
 | [appendix/permission-catalog.md](appendix/permission-catalog.md) | Every permission code, and the offices the organization starts with. |
+| [appendix/removed-concepts.md](appendix/removed-concepts.md) | Names that are not in the model, what to use instead of each, and the decision that took it. |
 | [decisions/index.md](decisions/index.md) | Every decision, its reasoning, and the round that took it. |
 | [open-questions.md](open-questions.md) | What is unresolved, each with its schema impact, plus the assumption index. |
 
@@ -171,9 +172,10 @@ You are expected to iterate. When refining:
    round that took it, and add it to that page's index.
 4. Move a resolved item out of [open-questions.md](open-questions.md) rather than deleting it, so
    the reasoning survives.
-5. A name that leaves the model gets one row in the removed-concepts appendix and an entry in the
-   log. The organization may still be using the word, so it is not deleted from its vocabulary —
-   only from the model.
+5. A name that leaves the model gets one row in the
+   [removed-concepts appendix](appendix/removed-concepts.md) and an entry in the log. The
+   organization may still be using the word, so it is not deleted from its vocabulary — only from the
+   model.
 
 Where this documentation states an assumption you did not make, it is written as *Assumption:* in
 italics, so you can find and kill it with a search.

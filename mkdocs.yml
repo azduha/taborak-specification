@@ -96,6 +96,7 @@ nav:
   - Reference:
       - ERD: appendix/erd.md
       - Permission Catalog: appendix/permission-catalog.md
+      - Removed Concepts: appendix/removed-concepts.md
       - Decision Log:
           - decisions/index.md
           - Rounds 1: decisions/round-01a.md
