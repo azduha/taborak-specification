@@ -83,7 +83,7 @@ over the record, because leadership is not guardianship** — and an office conf
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
 so the only thing that could give a leader that read is a grant, written somewhere, naming them. The
 organization may hand it over deliberately, in one grant, and see exactly what that exposes.
-([permission-catalog §11 note 3](../appendix/permission-catalog.md#11-roles--proposed-seed-set))
+([permission-catalog §11 note 3](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set))
 
 The last row is the one that justifies the whole shape. A scanned form in a drawer is a legally tidy
 answer and a useless one at 23:00 in a tent; the fact has to be something a screen can show somebody who

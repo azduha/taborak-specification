@@ -224,7 +224,7 @@ deliberate widening.** A guardian's reach over a child is **one value on the `gu
 someone other than the actor and never answered by a role or a grant
 ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular),
 [D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name);
-[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace)).
+[appendix/permission-catalog.md §9](../appendix/permission-catalog-b-roles-and-open-issues.md#9-there-is-no-dependent-namespace)).
 What a leader gets over a child's data is not of that kind:
 
 > *"A person does not get these by virtue of leading — that is a safeguarding
@@ -237,7 +237,7 @@ category the model does not have. What is true, in the two forms that matter:
 
 - **No role gets it by leading.** The starting role set gives a leadership role its rosters and
   its events — and **no read over a person's data**
-  ([permission-catalog §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set)).
+  ([permission-catalog §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
   Leadership is not guardianship, and the guardianship channel answers only for the person its
   row names.
 - **It is one grant away.** Whoever holds

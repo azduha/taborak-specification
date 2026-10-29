@@ -513,7 +513,7 @@ re-inventing the namespace D-074 deleted.
 
 **See:** [../data-model/05c-access-log-and-resolver.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver),
 [../data-model/04-relationships.md §4](../data-model/04-relationships.md#4-how-the-resolver-uses-these-tables),
-[../appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
+[../appendix/permission-catalog.md §9](../appendix/permission-catalog-b-roles-and-open-issues.md#9-there-is-no-dependent-namespace).
 
 ---
 

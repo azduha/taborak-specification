@@ -199,7 +199,7 @@ name ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entere
 
 **An office is a stack of rows, not one word.** The catalog holds 66 codes, and a broad office is a
 couple of dozen rows
-([appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set)).
+([appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
 *Why:* that is the price of *"what exactly does this person have?"* being answerable by reading rows,
 and the reason there is no word like `manage` whose contents a reader would have to look up. Roles
 and audiences are the bundle, and nothing else is
@@ -268,7 +268,7 @@ reachable only by someone who already holds the corresponding code at the unit (
 [D-053](../decisions/round-04.md#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)):
 the organization creates roles, composes them from grants, and deletes the unused ones. The real
 definitions live in
-[appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+[appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set).
 One role ships, and ships `is_system` so an editor refuses to delete it: **`counselors`**. A
 permanent, organization-wide population is the opposite of the organization's own definition of a
 group ("a temporary set of members that do events together"), and the table decides the sensitivity
@@ -738,7 +738,7 @@ Stated explicitly, because each is a common and expensive mistake:
   [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)).
 - **Who may compose an expression?** `audience.manage` covers creating and editing a set, and the
   catalog is silent on the edit that puts `EVERYONE` into a grant's audience
-  ([appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues)). No new code
+  ([appendix/permission-catalog.md §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues)). No new code
   was invented for this — the gap is the finding.
 - **What reopens the settled answers on this page.** Two named conditions, both carried so nobody has to
   rediscover them: a materialized `effective_permission` table becomes worth building at

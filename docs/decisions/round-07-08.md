@@ -76,7 +76,7 @@ ships private delivery to minors with neither restriction nor mirroring would ha
 after the fact, when the storage of message bodies and the retention policy are already fixed.
 
 **See:** [MSG-1, closed](../open-questions.md#msg-1--closed--a-direct-message-to-a-minor-is-mirrored-to-their-guardians),
-[permission-catalog](../appendix/permission-catalog.md#10-deferred-namespaces),
+[permission-catalog](../appendix/permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces),
 [glossary — Mirroring](../glossary.md#communication).
 
 ---

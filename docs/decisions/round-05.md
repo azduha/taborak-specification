@@ -211,7 +211,7 @@ with a retention obligation, and there is no policy yet.
 
 **See:** [../data-model/08-events.md §7](../data-model/08-events.md#7-event_question-and-event_answer),
 [../domain/07a-capacity-presence-and-forms.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers),
-[appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
+[appendix/permission-catalog.md §9](../appendix/permission-catalog-b-roles-and-open-issues.md#9-there-is-no-dependent-namespace).
 
 ---
 

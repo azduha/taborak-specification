@@ -110,7 +110,7 @@ the whole of D-049: **the root does not need to see into a unit to answer a ques
 membership, because membership is the root's.**
 
 **One thing that now looks like a bug and is not.** The `registrar` role
-([appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set))
+([appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set))
 holds `unit_participation.view` at organization scope. Under exact-match scoping that does
 **not** let the registrar read any sub-unit's roster — the role's scope is the root, and a
 sub-unit roster is a different scope. It reads the **root** participation rows, which is what
@@ -228,7 +228,7 @@ as an act of its own. The resolver honours a role if **either** applies.
 including the administrator's, and the person who would repair the system loses the ability to
 use it on the day it breaks. That is a lockout, not a policy. Beyond `system_admin`, which
 roles carry it is settled in the role review
-([F-1](../appendix/permission-catalog.md#11-roles--proposed-seed-set)) — the mechanism is
+([F-1](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)) — the mechanism is
 fixed here, the membership of the list is data.
 
 **The evaluation must not go through `can()`.** Reading the permission through the resolver
@@ -245,7 +245,7 @@ should be as visible as the `system.admin` holders already are.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
 [../data-model/05 §12](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with),
-[../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+[../appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set).
 
 ---
 
@@ -306,7 +306,7 @@ it is now marked as such. `role.assign` escalates one person; `role.edit` escala
 holding the role. Neither implies the other.
 
 **See:** [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office),
-[../appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+[../appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set).
 
 ---
 
@@ -464,7 +464,7 @@ grants are actually narrow.
 **What this does not settle.** The catalog's *contents* remain open to revision as the
 unbuilt modules land — this decision fixes the **disposition** (comprehensive, granular,
 menu-like), not the exact 90 rows. `permission.edit` exists for later pruning, and
-[appendix/permission-catalog.md §12](../appendix/permission-catalog.md#12-open-issues) tracks
+[appendix/permission-catalog.md §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues) tracks
 what is still being decided.
 
 **See:** [../appendix/permission-catalog.md](../appendix/permission-catalog.md),

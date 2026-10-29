@@ -698,7 +698,7 @@ modules** ([D-055](decisions/round-04.md#d-055--the-permission-catalog-is-delibe
 It is a **menu**, not a checklist. Administrators assign people only the permissions they
 actually need, and that is only possible if the capabilities exist as separate rows to assign.
 The parts of the question that remain — the exact contents — are tracked in
-[appendix/permission-catalog.md §12](appendix/permission-catalog.md#12-open-issues) and will
+[appendix/permission-catalog.md §12](appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues) and will
 move as events, documents, communication and reporting land.
 
 **Note the asymmetry with roles, because it looks like an inconsistency and is not.** Roles
@@ -768,7 +768,7 @@ role is meant to have `person.merge`/`person.redact` bundled with routine `perso
 `identity_reviewer` is the one that deliberately holds `person.merge`. A role that *does* gather a resource
 including its irreversible codes should be named for it.
 
-**See:** [appendix/permission-catalog.md §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)
+**See:** [appendix/permission-catalog.md §11](appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)
 
 ### F-4a ✅ **Closed** — the catalog is the only list now
 
@@ -2957,7 +2957,7 @@ An open vocabulary is only as good as somebody tending it, and "somebody" is cur
 particular. Two halves:
 
 - **Who holds `attribute.define`.** The starting role set
-  ([permission-catalog §11](appendix/permission-catalog.md#11-roles--proposed-seed-set)) is the place
+  ([permission-catalog §11](appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)) is the place
   this gets answered, and the honest answer is that a volunteer organization has one or two people who
   will do this and not a committee. Too narrow and the proposal queue is a bottleneck that teaches
   people to file facts into notes instead; too wide and it is not a curation.
@@ -2999,7 +2999,7 @@ none is recorded as taken:
 - **The guard is enough** (current documents). One permission, marked honestly, and a rule that whoever
   holds it is reading person data. Simple, and it makes the auditor role — which has `audit.view` and
   not `person.view` — a reader of the entire person record
-  ([permission-catalog §11 note 3](appendix/permission-catalog.md#11-roles--proposed-seed-set)).
+  ([permission-catalog §11 note 3](appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
 - **Per-entry filtering in the history view:** show an audit row's values only where the reader could
   also see the live field. Consistent with everything §9 of
   [data-model/05c-access-log-and-resolver.md](data-model/05c-access-log-and-resolver.md#9-access_log) says about channels, and
@@ -3047,7 +3047,7 @@ across five files discuss who may read *the medical record* as though it were a 
 |---|---|
 | §H, this file, Health records row | "a `view` guardian already sees them" |
 | [E-7](#e-7--closed--one-level-cannot-separate-the-medical-record-from-the-profile-and-nobody-wanted-to) | "a guardian either sees everything about the child or nothing" |
-| [permission-catalog §9](appendix/permission-catalog.md#9-there-is-no-dependent-namespace) | a `view` guardian "reaches the fee history and the health record" |
+| [permission-catalog §9](appendix/permission-catalog-b-roles-and-open-issues.md#9-there-is-no-dependent-namespace) | a `view` guardian "reaches the fee history and the health record" |
 | [data-model/08 §7](data-model/08-events.md#health-facts-and-the-discipline-this-requires) | "the medical file, which **no event permission reaches**" |
 | [data-model/04 §2](data-model/04-relationships.md#2-the-guardians-right-none-view-or-write) | the case the old codes existed for is "access to medical information" |
 
@@ -3171,7 +3171,7 @@ property the safeguarding argument actually needs — **no private conversation 
 secretly unread** — without putting an age into the resolver.
 
 **See:** [D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
-[permission-catalog's `message` row](appendix/permission-catalog.md#10-deferred-namespaces),
+[permission-catalog's `message` row](appendix/permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces),
 [glossary — Mirroring](glossary.md#communication).
 
 ---

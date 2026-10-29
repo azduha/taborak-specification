@@ -105,6 +105,7 @@ nav:
   - Reference:
       - ERD: appendix/erd.md
       - Permission Catalog: appendix/permission-catalog.md
+      - Permission Catalog continued: appendix/permission-catalog-b-roles-and-open-issues.md
       - Removed Concepts: appendix/removed-concepts.md
       - Decision Log:
           - decisions/index.md

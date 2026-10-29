@@ -479,6 +479,6 @@ only thing to re-argue is the permission separation this entry records.
 **See:** [data-model/05-authorization.md §3–§4](../data-model/05-authorization.md#3-role--an-office),
 [domain/06-authorization-model.md](../domain/06-authorization-model.md),
 [domain/02-actors.md](../domain/02-actors.md),
-[appendix/permission-catalog.md §11](../appendix/permission-catalog.md#11-roles--proposed-seed-set).
+[appendix/permission-catalog.md §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set).
 
 ---
