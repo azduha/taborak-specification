@@ -1282,9 +1282,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1298,7 +1319,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3019,7 +3140,7 @@ default (<strong>F-8</strong>, which needs your confirmation, and which is a wea
 <a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05-authorization §9</a> keeps the payloads of <em>reads</em>
 out of that table to begin with).</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#b-3">B-3</a>.</p>
-<p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/">data-model/06-audit-and-import.md §2.2, §4, §6</a>,
+<p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">data-model/06-audit-and-import.md §2.2</a>, <a href="../../data-model/06b-redaction-and-checks/#4-redaction-log">§4</a> and <a href="../../data-model/06b-redaction-and-checks/#6-open-issues">§6</a>,
 <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">data-model/00-conventions.md §8</a>,
 <a href="../../data-model/09-attributes/#6-erasure-retirement-and-the-audit-payload">data-model/09-attributes.md §6</a>.</p>
 <hr />
@@ -3090,7 +3211,7 @@ rather than settled here.</p>
 <p><strong>Your answer.</strong> Thousands of roster rows, <strong>one export</strong>, 1990s to now, carrying a legacy member
 number, <strong>no payment data</strong>, and free-text columns alongside.</p>
 <p><strong>The consequence that does most of the work: the corpus decides the question the import was going to
-default.</strong> <a href="../../data-model/06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a> had kept
+default.</strong> <a href="../../data-model/06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a> had kept
 open whether a historical roster should create a <code>membership</code> or only a <code>unit_participation</code>, with
 "participation unless there is payment evidence" as the safe default. <strong>There is no payment evidence in
 the corpus at all</strong>, so the default's exception has an empty set: every imported historical row is a
@@ -3106,7 +3227,7 @@ life of that vocabulary — hundreds of codes from one file. Two things follow:<
 <ul>
 <li><strong>The map is reviewed before the batch applies, not after.</strong> That is precisely why the mapping is
   recorded on the batch as one object
-  (<a href="../../data-model/06-audit-and-import/#3-import-pipeline">06-audit-and-import.md §3</a>) rather than per
+  (<a href="../../data-model/06a-import/#3-import-pipeline">06-audit-and-import.md §3</a>) rather than per
   staged row: it is one artefact a person reads once, top to bottom. The codes it names arrive <strong><code>live</code></strong>,
   because a curator has just read them.</li>
 <li><strong><code>proposed</code> keeps its meaning.</strong> It stays the status for what a <em>human at a desk</em> improvises later —
@@ -3124,7 +3245,7 @@ review is a work queue with a trustworthy set at the top of it, which
 <a href="../../open-questions/#b-1">B-1</a> already
 called a strengthening of D-004 rather than a relaxation.</p>
 <p><strong>What this makes sharper rather than smaller.</strong> With attendance and no money,
-<a href="../../data-model/06-audit-and-import/#31-what-a-source-row-actually-evidences">06-audit §3.1</a> is the
+<a href="../../data-model/06a-import/#31-what-a-source-row-actually-evidences">06-audit §3.1</a> is the
 load-bearing section of the whole import — a roster row evidences <em>presence in a unit</em>, and everything
 beyond that is inference. Which leaves <strong>A-4</strong>, the organizational year boundary, as the sharpest
 remaining import question, because it is what an end date gets inferred from.</p>
@@ -3133,7 +3254,7 @@ batch carries; neither changes a table. B-1 is closed on the design and these tw
 as the import's own inputs.</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#b-1">B-1</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>,
-<a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>,
+<a href="../../data-model/06a-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>,
 <a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">data-model/09-attributes.md §7</a>.</p>
 <p><strong>Amended one round later, in part.</strong> The corpus this entry describes was the wrong shape in its
 second half: the rows are people with their membership periods, and events with attendance, and they

@@ -1282,9 +1282,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1298,7 +1319,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2607,7 +2728,7 @@ more — do not solve assignment to org units.</em></p>
 <p><strong>So the corpus has two halves and neither is a roster.</strong> D-090 recorded it as <em>roster rows</em>: people
 attending units. That word was wrong in its second half, and the whole import design hung off it,
 because a roster is evidence of <em>presence in a unit</em> and that is what
-<a href="../../data-model/06-audit-and-import/#31-what-a-source-row-actually-evidences">06-audit-and-import.md §3.1</a>
+<a href="../../data-model/06a-import/#31-what-a-source-row-actually-evidences">06-audit-and-import.md §3.1</a>
 was written to police. What is actually arriving is a <strong>membership export</strong> and an <strong>attendance
 export</strong>. Each is evidence of a different thing, and neither is evidence of a sub-unit:</p>
 <table>
@@ -2660,7 +2781,7 @@ these documents now assume; it is recorded as a design consequence here rather t
 because the answer that decided the shape also decided this about it.</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>.</p>
 <p><strong>See:</strong> <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>,
-<a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
+<a href="../../data-model/06a-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
 <hr />
 <h2 id="d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093 — The one-off import may create memberships, both ends dated<a class="headerlink" href="#d-093--the-one-off-import-may-create-memberships-both-ends-dated" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer)
@@ -2717,7 +2838,7 @@ spans the import boundary is comparing a source that states membership with a sy
 and nothing in the query knows the difference.</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>
 (together with <a href="#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).</p>
-<p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/#31-what-a-source-row-actually-evidences">data-model/06-audit-and-import.md §3.1</a>,
+<p><strong>See:</strong> <a href="../../data-model/06a-import/#31-what-a-source-row-actually-evidences">data-model/06-audit-and-import.md §3.1</a>,
 <a href="../../data-model/03-membership/#5-unit_participation--deleted-by-d-097">data-model/03-membership.md §5.1</a>,
 <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">domain/03-identity-and-legacy.md §7</a>.</p>
 <hr />
@@ -2766,7 +2887,7 @@ attendance figures these documents will be asked for are <em>arrived</em>, not <
 <p><strong>Closes:</strong> <a href="../../open-questions/#c-5">C-5</a>
 (together with <a href="#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>).</p>
 <p><strong>See:</strong> <a href="../../data-model/08-events/#2-event">data-model/08-events.md §2–§4</a>,
-<a href="../../data-model/06-audit-and-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
+<a href="../../data-model/06a-import/#3-import-pipeline">data-model/06-audit-and-import.md §3</a>.</p>
 <hr />
 <h2 id="d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095 — Units carry no restrictions; joining one is somebody else's act<a class="headerlink" href="#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer)

@@ -1519,9 +1519,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1535,7 +1556,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3182,7 +3303,7 @@ column, because people rely on it.</p>
    this item was a carve-out nobody had had to defend; it is now the permanent half of a pair of clocks,
    and those rows carry <strong>no retention period at all</strong>. That is what gives
    <code>redaction_log.retained_reason</code> a judgement worth recording instead of a formality
-   (<a href="../06-audit-and-import/#4-redaction-log">06-audit-and-import.md §4</a>). <strong>What the decision did not do
+   (<a href="../06b-redaction-and-checks/#4-redaction-log">06-audit-and-import.md §4</a>). <strong>What the decision did not do
    is supply a legal basis, and the difference should not be blurred:</strong> what stands here is an assumption
    pending review — organizational history plus accounting obligations, leaning on a person row that the
    erasure in item 1 has made non-identifying — recorded as an assumption and not as settled law. <strong>The
@@ -3199,7 +3320,7 @@ column, because people rely on it.</p>
    used to be an entirely open question and now has half an answer — <strong>the rows are kept for the life of
    the system and their payloads are emptied 24 months after they are written</strong>
    (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>;
-   <a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a> keeps the legal half that remains) —
+   <a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a> keeps the legal half that remains) —
    and a redaction that stops at the business tables while the trail keeps the erased values is a
    redaction that failed in the one place a regulator looks. <strong>The window is a ceiling on how long a value
    may sit there, never a waiting period: erasure reaches the same two columns on request, at any age of

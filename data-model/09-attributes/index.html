@@ -1430,9 +1430,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1446,7 +1467,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2961,7 +3082,7 @@ schema, and <a href="../06-audit-and-import/#22-redaction-before-logging">06-aud
 rule visible so nobody reinstates it by inference.</p>
 <p><strong>Erasure is the one thing here that is absolute.</strong> Erasing a person deletes their rows <em>and</em> removes
 their values from payloads already written, however lawfully
-(<a href="../06-audit-and-import/#4-redaction-log">06-audit §4</a>); a trail that keeps what the person asked to
+(<a href="../06b-redaction-and-checks/#4-redaction-log">06-audit §4</a>); a trail that keeps what the person asked to
 have forgotten is not a history, it is the thing they asked to be rid of, filed where it reads well.</p>
 <hr />
 <h2 id="7-the-legacy-import-which-is-where-the-vocabulary-comes-from">7. The legacy import, which is where the vocabulary comes from<a class="headerlink" href="#7-the-legacy-import-which-is-where-the-vocabulary-comes-from" title="Permanent link">&para;</a></h2>
@@ -2986,7 +3107,7 @@ organization's descriptive vocabulary in it, and it changes how the mapping has 
   of an answer to <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">AT-2</a>,
   which stays open for the runtime case.</li>
 <li><strong>The mapping is recorded on the batch</strong>, in <code>import_batch.field_mapping</code>, one entry per raw column
-  (<a href="../06-audit-and-import/#3-import-pipeline">06-audit §3</a> explains why the grain is a column and not a
+  (<a href="../06a-import/#3-import-pipeline">06-audit §3</a> explains why the grain is a column and not a
   staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
   act of curation with an audit entry, not a migration.</li>
 </ul>

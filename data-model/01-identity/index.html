@@ -1508,9 +1508,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1524,7 +1545,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2908,7 +3029,7 @@ the curation queue, to any report on a code, and to the screen a first aider rea
 same sentence recorded as a value against a <code>proposed</code> code is visible to all three
 (<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>). Whether the column
 should exist at all is open and already argued
-(<a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>); what is settled is that it
+(<a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a>); what is settled is that it
 carries no protection the attribute layer does not carry, and less readability.</p>
 <h3 id="the-answer-to-who-is-a-member-is-never-on-this-table">The answer to "who is a member?" is never on this table<a class="headerlink" href="#the-answer-to-who-is-a-member-is-never-on-this-table" title="Permanent link">&para;</a></h3>
 <p>To be unambiguous, the two facts:</p>
@@ -4026,7 +4147,7 @@ above can express.</p>
   is the ratio:</strong> a batch in which nobody has a period is a batch whose rows simply said nothing, and a
   batch whose stated-coverage figure disagrees with the periods written is a partially applied one. A row
   that created a membership its export did not state is a different finding, and lives in
-  <a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a>.
+  <a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a>.
   <strong>It has been reversed twice, and both reversals are on the record, because this row is really a claim
   about what an import is allowed to conclude.</strong> It began as exactly this check — imported people with no
   <code>membership</code>. ~~That was the ordinary condition of every imported row once a roster was held to make a
@@ -4058,7 +4179,7 @@ above can express.</p>
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   <em>named</em> <code>membership</code> and fee rows has a basis. See
   <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a> and
-  <a href="../06-audit-and-import/#6-open-issues">06-audit-and-import.md §6</a>.</li>
+  <a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a>.</li>
 <li>Whether <code>person.gender</code> is needed at all; if so, what value set.</li>
 <li>Whether the organization has (or will have) a national SSO identity provider — this
   determines how much of <code>account_credential</code> is actually used.</li>

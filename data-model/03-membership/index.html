@@ -1558,9 +1558,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1574,7 +1595,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3159,7 +3280,7 @@ inferred from date arithmetic.</p>
 <tr>
 <td><code>valid_to</code></td>
 <td>date, optional</td>
-<td>NULL = open / current. <strong>Never NULL on an imported row</strong> — both ends are what makes an imported membership safe, and check 1 of <a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a> counts the rows that broke it (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).</td>
+<td>NULL = open / current. <strong>Never NULL on an imported row</strong> — both ends are what makes an imported membership safe, and check 1 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a> counts the rows that broke it (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).</td>
 </tr>
 <tr>
 <td><code>joined_via_request_id</code></td>
@@ -3801,7 +3922,7 @@ rests on</strong>; the same rule had reached the imported consecutive periods D-
 whether the legacy import may create a <code>membership</code> at all (<strong>yes, bounded at both ends,
 <code>data_confidence = 'low'</code>, one row per period the source states —
 <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>,
-after a round in which the answer was no; the reasoning either way is <a href="../06-audit-and-import/#31-what-a-source-row-actually-evidences">06-audit-and-import.md
+after a round in which the answer was no; the reasoning either way is <a href="../06a-import/#31-what-a-source-row-actually-evidences">06-audit-and-import.md
 §3.1</a></strong>).</p>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 

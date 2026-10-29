@@ -1394,9 +1394,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../06-audit-and-import/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1410,7 +1431,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2674,7 +2795,7 @@ two conclusions, and they point in opposite directions from the obvious one:</p>
   <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md §8 item 7</a> and demanded of the
   catalog in <a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">../appendix/permission-catalog.md §8</a>;
   erasure reaching those payloads stays absolute
-  (<a href="../06-audit-and-import/#4-redaction-log">06-audit-and-import.md §4</a>).</li>
+  (<a href="../06b-redaction-and-checks/#4-redaction-log">06-audit-and-import.md §4</a>).</li>
 </ul>
 <p><strong>Append-only enforcement:</strong></p>
 <p>Any update or delete against <code>access_log</code> is refused row by row, before it happens, with an
@@ -2709,7 +2830,7 @@ reduction touches.</strong></p>
 <p>Consider partitioning by month once volume justifies it, and moving old partitions to
 cheaper storage. Rows are not deleted on either answer; the window is carried out by emptying the state
 columns, which is the job and the over-age check described for the change trail in
-<a href="../06-audit-and-import/#5-integrity-checks">06-audit-and-import.md §5</a>. <strong>If F-8 is confirmed, that check
+<a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a>. <strong>If F-8 is confirmed, that check
 has to be written for this table too</strong> — a reduction with no check under it is a reduction that quietly
 stops happening, which is the failure mode §2.2 of that document names as the only one this operation
 has.</p>

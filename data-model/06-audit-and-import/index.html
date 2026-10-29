@@ -16,7 +16,7 @@
         <link rel="prev" href="../05d-invariants-and-seed/">
       
       
-        <link rel="next" href="../07-finance/">
+        <link rel="next" href="../06a-import/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Audit and Import - Information System — Design Documentation</title>
+        <title>Data Model — Audit and Import: the two audit trails, and audit_log - Information System — Design Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model--audit-and-import" class="md-skip">
+        <a href="#data-model--audit-and-import-the-two-audit-trails-and-audit_log" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Audit and Import
+              Data Model — Audit and Import: the two audit trails, and audit_log
             
           </span>
         </div>
@@ -1286,6 +1286,65 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -1301,7 +1360,7 @@
   <span class="md-ellipsis">
     
   
-    Audit and Import
+    Data Model — Audit and Import: the two audit trails, and audit_log
   
 
     
@@ -1319,7 +1378,7 @@
   <span class="md-ellipsis">
     
   
-    Audit and Import
+    Data Model — Audit and Import: the two audit trails, and audit_log
   
 
     
@@ -1405,114 +1464,73 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-import-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Import pipeline
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Import pipeline">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-legacy-fieldcode-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The legacy field→code mapping
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reversibility" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reversibility
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#idempotency" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Idempotency
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#end-date-inference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        End-date inference
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#31-what-a-source-row-actually-evidences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 What a source row actually evidences
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-redaction-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Redaction log
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-integrity-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Integrity checks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-open-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Open issues
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -2555,111 +2573,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-import-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Import pipeline
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Import pipeline">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-legacy-fieldcode-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The legacy field→code mapping
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reversibility" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reversibility
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#idempotency" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Idempotency
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#end-date-inference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        End-date inference
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#31-what-a-source-row-actually-evidences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 What a source row actually evidences
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-redaction-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Redaction log
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-integrity-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Integrity checks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-open-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Open issues
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2693,11 +2606,15 @@
   
 
 
-<h1 id="data-model--audit-and-import">Data Model — Audit and Import<a class="headerlink" href="#data-model--audit-and-import" title="Permanent link">&para;</a></h1>
-<p><code>audit_log</code>, <code>import_batch</code>, staging tables, and the redaction log.</p>
-<p><code>access_log</code> (the authorization audit trail) is in
-<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md</a>. This document covers the
-data-change audit trail, the legacy import pipeline, and erasure.</p>
+<h1 id="data-model--audit-and-import-the-two-audit-trails-and-audit_log">Data Model — Audit and Import: the two audit trails, and <code>audit_log</code><a class="headerlink" href="#data-model--audit-and-import-the-two-audit-trails-and-audit_log" title="Permanent link">&para;</a></h1>
+<p><code>audit_log</code> and its trigger, what is stripped before a row is written, and the history query.
+<code>access_log</code> (the authorization audit trail) is in
+<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md</a>.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite
+them by number and their anchors are built from them:
+<a href="./">06-audit-and-import.md</a> holds §1–§2 (the two audit trails and the <code>audit_log</code>
+table), <a href="../06a-import/">06a</a> §3 (the legacy import pipeline), and
+<a href="../06b-redaction-and-checks/">06b</a> §4–§6 (the redaction log, the integrity checks, open issues).</p>
 <hr />
 <h2 id="1-two-audit-trails-and-why-both">1. Two audit trails, and why both<a class="headerlink" href="#1-two-audit-trails-and-why-both" title="Permanent link">&para;</a></h2>
 <table>
@@ -3227,883 +3144,6 @@ considered and left unimplemented, because it would mean running the resolver pe
 value that no longer exists anywhere as a row to resolve against. It is a registered question rather
 than an omission now:
 <a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>.</p>
-<hr />
-<h2 id="3-import-pipeline">3. Import pipeline<a class="headerlink" href="#3-import-pipeline" title="Permanent link">&para;</a></h2>
-<p>Six stages, from
-<a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md</a>.
-The guiding requirements: <strong>idempotent</strong>, <strong>reversible per batch</strong>, <strong>never overwrites
-self-registered data</strong>, <strong>preserves provenance</strong>.</p>
-<p><strong>What arrives is two exports, and each is evidence of a different thing.</strong>
-<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-recorded the corpus as <em>roster rows</em> — people attending units — and nearly everything below was built on
-that word, including the section that policed what a roster may be read as proving.
-<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>
-corrected the description from the source itself: a <strong>membership export</strong> and an <strong>attendance export</strong>.</p>
-<table>
-<thead>
-<tr>
-<th>Half</th>
-<th>What one source row says</th>
-<th>What the pipeline writes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>People</strong></td>
-<td>name, birth date, <em>member of the organization for a period</em></td>
-<td>a <code>person</code>, and a bounded <code>membership</code> (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>), which brings its root participation row with it</td>
-</tr>
-<tr>
-<td><strong>Events</strong></td>
-<td>an event, and who attended it</td>
-<td>an <code>event</code> owned by the root (<a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a>) and one <code>event_registration</code> per listed attendee</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Neither half names a unit, and unit assignment is out of scope by instruction — a consequence, not an
-omission.</strong> <code>parsed_unit_code</code> and <code>parsed_unit_name</code> stay in the parser (§3's staged-row table says what
-reads them now, which is nothing), no batch creates an <code>org_unit</code>, and no sub-unit <code>unit_participation</code>
-row is ever imported. <strong>The consequence in one sentence: the system's historical record contains no
-sub-unit participation</strong>, so "who was in pack X in 2011?" has no answer on day one and gets one only from
-live data forward. The model has always been able to hold that history; the source cannot say it, and the
-sentence is here so that the first person to ask the question finds the sentence instead of the absence.</p>
-<p><strong><code>import_batch</code></strong> — one run of the pipeline, and the unit revert works on.</p>
-<p><strong>Fields</strong></p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Kind</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td>surrogate id</td>
-<td></td>
-</tr>
-<tr>
-<td><code>name</code></td>
-<td>text, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>batch_kind</code></td>
-<td>text, required</td>
-<td>One of: <code>people</code>, <code>events</code>. <strong>A batch types itself</strong>, and it does so because it has to rather than because it is tidy: one <code>field_mapping</code> cannot serve both halves of the corpus, so the kind is what decides which mapping shape, which parse rules, which <code>source_row_hash</code> definition (Idempotency below) and which of <code>staging_import_row</code>'s created ids get read. There is no default — a batch that does not say which it is does not leave <code>staging</code>. Recorded as a consequence of the answer that split the corpus in two (<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>), not as an open question, because the same answer decided this about it</td>
-</tr>
-<tr>
-<td><code>description</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>source_type</code></td>
-<td>text, required</td>
-<td>One of: <code>csv</code>, <code>xlsx</code>, <code>json</code>, <code>sql_dump</code>, <code>manual_entry</code>, <code>other</code></td>
-</tr>
-<tr>
-<td><code>source_reference</code></td>
-<td>text, optional</td>
-<td>Where the file lives, or what it is. Enough to find the original again</td>
-</tr>
-<tr>
-<td><code>source_hash</code></td>
-<td>text, optional</td>
-<td>SHA-256 of the source file. Detects re-importing the same file under a new name</td>
-</tr>
-<tr>
-<td><code>row_count</code></td>
-<td>integer, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>status</code></td>
-<td>text, required</td>
-<td>One of: <code>staging</code>, <code>parsed</code>, <code>matching</code>, <code>review</code>, <code>applying</code>, <code>applied</code>, <code>reverted</code>, <code>failed</code>. Default <code>staging</code></td>
-</tr>
-<tr>
-<td><code>dry_run</code></td>
-<td>boolean, required</td>
-<td>Default false. A dry run parses and matches but writes nothing to business tables</td>
-</tr>
-<tr>
-<td><code>created_by</code></td>
-<td>reference to person, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>created_at</code></td>
-<td>timestamp, audit time</td>
-<td></td>
-</tr>
-<tr>
-<td><code>applied_at</code></td>
-<td>timestamp, audit time, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>applied_by</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>reverted_at</code></td>
-<td>timestamp, audit time, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>reverted_by</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>revert_note</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>field_mapping</code></td>
-<td>free-form jsonb, optional</td>
-<td><strong>This batch's raw-column → attribute-code map</strong>: one entry per raw column in the source, each naming one code or <code>discard</code> with a reason. Fixed for the batch, reviewed as a unit, editable only as a new decision — see <em>The legacy field→code mapping</em> below, which explains why the grain is a column and not a row. <strong>On an events batch this map is mostly <code>discard</code>, and that is its honest shape rather than a smell</strong>: event title and date become <code>parsed_event_*</code> values, not attribute codes, and the only columns on such a file worth a code are the descriptive ones riding along on the attendee</td>
-</tr>
-<tr>
-<td><code>error_summary</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>notes</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Indexes</strong></p>
-<ul>
-<li>Batches by status — the queue of runs that are not finished.</li>
-</ul>
-<p><strong><code>staging_import</code></strong> — one source row, kept exactly as it arrived.</p>
-<p><strong>Fields</strong></p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Kind</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td>surrogate id</td>
-<td></td>
-</tr>
-<tr>
-<td><code>batch_id</code></td>
-<td>reference to import batch, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>source_row_number</code></td>
-<td>integer, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>raw_data</code></td>
-<td>free-form jsonb, required</td>
-<td>The row VERBATIM. Never modified. This is the evidence</td>
-</tr>
-<tr>
-<td><code>source_row_hash</code></td>
-<td>text, required</td>
-<td>Deterministic hash of the meaningful fields. The idempotency key: re-importing a file matches on this and skips already-applied rows</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rules</strong></p>
-<ul>
-<li><code>(batch_id, source_row_hash)</code> is unique — one staged row per batch per source row. It
-  covers all rows, not only unapplied ones.</li>
-</ul>
-<p><strong>Indexes</strong></p>
-<ul>
-<li>The staged rows of one batch.</li>
-</ul>
-<p><strong><code>staging_import_row</code></strong> — what the parser made of that source row, and what became of it.
-<strong>One staged row is one person</strong>, on both halves of the corpus: a person's membership period on a people
-batch, a person's attendance at one event on an events batch. That is a decision rather than an
-observation, because an attendance export arrives most often as one row per <em>event</em> with the attendees
-packed into a cell, and unpacking it there would put the idempotency key and the review queue at the wrong
-grain — a batch that resolves half an event's attendee list would have nothing to skip on the re-run. <strong>So
-the parser unpacks a packed attendee list into one staged row per attendee before this table</strong>, and the
-event's own columns repeat down those rows, which is what the matching rule below is for.</p>
-<p><strong>Fields</strong></p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Kind</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td>surrogate id</td>
-<td></td>
-</tr>
-<tr>
-<td><code>staging_id</code></td>
-<td>reference to staging row, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>parsed_given_name</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>parsed_family_name</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>parsed_name_normalised</code></td>
-<td>text, optional</td>
-<td>Diacritics stripped, casefolded</td>
-</tr>
-<tr>
-<td><code>parsed_birth_date</code></td>
-<td>date, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>parsed_birth_precision</code></td>
-<td>text, optional</td>
-<td>Reuses the <code>person.birth_date_precision</code> values</td>
-</tr>
-<tr>
-<td><code>parsed_unit_code</code></td>
-<td>text, optional</td>
-<td><strong>Parsed, and read by nobody.</strong> Kept deliberately: an export that surprises whoever runs it with a unit column is exactly what this field and the <code>unit_not_found</code> warning are for, and keeping them costs nothing. Nothing resolves them, no batch creates an <code>org_unit</code>, and no imported sub-unit participation row can appear as a result (<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>, §3). An earlier draft had these two columns driving unit creation and the identity of a historical unit; that machinery is gone, the columns are not</td>
-</tr>
-<tr>
-<td><code>parsed_unit_name</code></td>
-<td>text, optional</td>
-<td>As <code>parsed_unit_code</code></td>
-</tr>
-<tr>
-<td><code>parsed_period_from</code></td>
-<td>date, optional</td>
-<td><strong>A people batch.</strong> The start of the membership period the export states</td>
-</tr>
-<tr>
-<td><code>parsed_period_to</code></td>
-<td>date, optional</td>
-<td><strong>A people batch.</strong> Often NULL in the source; see the inference rules below. An imported membership is never left open-ended (§3.1)</td>
-</tr>
-<tr>
-<td><code>parsed_event_title</code></td>
-<td>text, optional</td>
-<td><strong>An events batch.</strong> The occasion as the export states it. Normalised at match time rather than stored twice; the verbatim value is in <code>staging_import.raw_data</code></td>
-</tr>
-<tr>
-<td><code>parsed_event_date</code></td>
-<td>date, optional</td>
-<td><strong>An events batch.</strong> With the title, what an attendee row is matched against, so that ten thousand attendees produce the events that happened rather than a copy each — the rule is below</td>
-</tr>
-<tr>
-<td><code>parse_status</code></td>
-<td>text, required</td>
-<td>One of: <code>ok</code>, <code>warning</code>, <code>error</code>. Default <code>ok</code></td>
-</tr>
-<tr>
-<td><code>parse_warnings</code></td>
-<td>list of text</td>
-<td>For example <code>birth_date_year_only</code>, <code>unit_not_found</code>, <code>ambiguous_name</code>. Warnings do not block; errors do. <code>unit_not_found</code> still fires on a file that carries a unit column and still changes nothing, because nothing reads the parsed unit</td>
-</tr>
-<tr>
-<td><code>resolution</code></td>
-<td>text, optional</td>
-<td>One of: <code>link_existing</code>, <code>create_new</code>, <code>discard</code>, <code>deferred</code></td>
-</tr>
-<tr>
-<td><code>resolved_person_id</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>resolved_by</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>resolved_at</code></td>
-<td>timestamp, audit time, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>resolution_note</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>applied</code></td>
-<td>boolean, required</td>
-<td>Default false</td>
-</tr>
-<tr>
-<td><code>applied_person_id</code></td>
-<td>reference to person, optional</td>
-<td>What this row created</td>
-</tr>
-<tr>
-<td><code>applied_membership_id</code></td>
-<td>reference to membership, optional</td>
-<td>What this row created — <strong>set on every row of a people batch whose source states a membership period</strong> (§3.1). <strong>This note said the opposite until this round:</strong> it read "empty for every row of a roster batch, which creates participations only", and <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> reversed it, because the export states membership periods and the ban it rested on was about <em>inferring</em> them. Empty on every row of an events batch, and a set value on an events row is still the rule in §3.1 having been broken — membership may be imported from a period the source states, never from an attendance list</td>
-</tr>
-<tr>
-<td>~~<code>applied_participation_id</code>~~</td>
-<td>—</td>
-<td><strong>Deleted by <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>.</strong> It held the id of the root-unit participation row a membership brought with it, and its whole purpose was to say <em>"a membership row with this column empty wrote half a pair"</em> — a check on a pair that no longer exists. Nothing replaces it: §3.1's transaction writes one row, so there is no second id to record and no half to be missing</td>
-</tr>
-<tr>
-<td><code>applied_event_id</code></td>
-<td>reference to event, optional</td>
-<td><strong>An events batch.</strong> The event this attendee row was matched to, or created by it. <strong>Shared across rows</strong>, which is the difference from the four ids above: a hundred attendees of one camp name one event, and revert has to know that (§Reversibility)</td>
-</tr>
-<tr>
-<td><code>applied_registration_id</code></td>
-<td>reference to event registration, optional</td>
-<td><strong>An events batch.</strong> What this row created — one per attendee, and the only row an attendee who was <em>not</em> listed gets, which is none (§3.1, <a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>)</td>
-</tr>
-<tr>
-<td><code>created_at</code></td>
-<td>timestamp, audit time</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rules</strong></p>
-<ul>
-<li><strong>One event per (title, date), not one per attendee.</strong> <code>uq_staging_event_match</code> is this rule's name.
-  Enforced inside the transaction that applies a staged row, in this order: 1. normalise the title and
-  take the date; 2. look for an event this batch has already created with that pair, then for an event the
-  root already owns with it; 3. reuse what was found, otherwise create it and record it on this row;</li>
-<li>write the registration. <strong>Application layer, deliberately</strong> — the pair spans rows of one batch rather
-  than columns of one row, and a uniqueness claim across a batch describes how the file is read, not what
-  the data holds (<a href="../00-conventions/#6a-who-enforces-an-invariant-now"><code>00-conventions.md §6a</code></a> is the
-  register for that kind of answer). The failure it prevents is the loud kind run quietly: ten thousand
-  attendee rows becoming ten thousand events, all owned by the root, all undeletable except by revert.</li>
-<li><strong>Which created ids a row may carry is decided by <code>import_batch.batch_kind</code>, not by the row.</strong> A people
-  batch fills <code>applied_person_id</code> and <code>applied_membership_id</code>; an events batch
-  fills <code>applied_person_id</code> — an attendee who had to be created is still a person created — plus
-  <code>applied_event_id</code> and <code>applied_registration_id</code>. A row carrying one from each group is a batch that was
-  typed wrongly, and revert reads this rule to know what it is about to delete. <strong>The people arm used to
-  name a third column,</strong> <code>applied_participation_id</code>, and it went with the row it pointed at
-  (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>); a batch
-  applied before go-live that filled it has nothing extra waiting to be reverted.</li>
-</ul>
-<p><strong>Indexes</strong></p>
-<ul>
-<li>The staged rows of one parsed row.</li>
-<li>The review queue: parse status and resolution, restricted to rows with no resolution or a
-  <code>deferred</code> one. Decided rows are not in it.</li>
-<li>Applied rows only.</li>
-</ul>
-<h3 id="the-legacy-fieldcode-mapping">The legacy field→code mapping<a class="headerlink" href="#the-legacy-fieldcode-mapping" title="Permanent link">&para;</a></h3>
-<p>Any legacy column that is not identity machinery becomes an attribute code, and <strong>this is where the
-vocabulary comes from</strong>: most of the first two hundred definitions arrive here rather than from a
-deliberate act of design (<a href="../09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">09-attributes.md §7</a>
-owns the rule, and states why; what follows is only what the pipeline has to obey).</p>
-<ul>
-<li><strong>Every raw field name in a batch maps to a code, or is mapped to <code>discard</code> with a reason, or the
-  batch stops.</strong> An unmapped column maps to a <strong><code>proposed</code></strong> code named from the raw column — never to
-  an existing code picked by similarity, because an import-time merge is invisible and unreviewable
-  and a human makes that judgement afterwards, with both codes in front of them.</li>
-<li><strong>The mapping is recorded on the batch</strong>, in <code>import_batch.field_mapping</code>, so a mapping later found
-  wrong can be re-run rather than reverse-engineered from the damage it did. The mapping is not the
-  schema: changing it is an act of curation with an audit entry, not a migration.</li>
-<li><strong>Which table it is <em>not</em> on, because the wrong one is plausible.</strong> An earlier draft of this
-  subsection said the mapping sat "on <code>staging_import_row</code> alongside the raw value", and that is the
-  wrong grain twice over: <code>staging_import_row</code> is one row per <em>person</em> and holds a fixed set of
-  <code>parsed_*</code> columns, so a per-column fact has nowhere to sit there, and anything per-row would be a
-  mapping that can differ between two people in the same batch — which is precisely how one legacy
-  column ends up as two codes, quietly, with nothing to review. The raw values themselves stay where
-  they always were, verbatim in <code>staging_import.raw_data</code>; the map is one table up.</li>
-</ul>
-<p><strong>What this costs is a stage that is allowed to fail loudly.</strong> A batch with unmapped columns does not
-apply, and somebody has to say what those columns were — friction at the worst possible moment, since
-imports are always late. It is the cheaper failure. The alternative is a silent drop, which is the
-same loss as deleting the column and the same one §3's guiding requirements were written against: in
-2031 someone asks what the old system's <code>POZNAMKA</code> column held, and the answer is that a script
-nobody still works with decided it was not interesting.</p>
-<h3 id="reversibility">Reversibility<a class="headerlink" href="#reversibility" title="Permanent link">&para;</a></h3>
-<p><code>staging_import_row</code> holding the created ids is what makes per-batch revert possible, and the two batch
-kinds leave different ids behind — which is why the order below is one list rather than one per kind.
-Revert removes only what this batch created, and it runs in this order:</p>
-<ol>
-<li>Take every staged row of the batch being reverted.</li>
-<li>Undo what they created, <strong>dependents first</strong>, in this dependency order: the <code>event_registration</code> rows,
-   then the <code>event</code> rows those registrations pointed at, then the
-   <code>membership</code> rows, then the <code>person</code> rows — and a row the batch created outright is removed rather than
-   merely amended. A people batch leaves the first two arms empty and an events batch leaves the <code>membership</code>
-   arm empty (§3.1); both arms exist, and neither may be skipped in the general implementation just because the
-   batch in hand does not use it. <strong>This list had a fifth arm until
-   <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a></strong> — the
-   <code>unit_participation</code> rows sat between the events and the memberships, because a people batch used to write
-   a pair — and it is gone rather than dormant: there is no such row for a revert to find, in an old batch or
-   a new one.</li>
-<li>Finally mark the staged rows themselves unapplied.</li>
-</ol>
-<p><strong>An event is deleted at most once, which is the one place revert is not row-local.</strong> <code>applied_event_id</code>
-is shared across the attendee rows of one occasion, so step 2 must collect the <em>distinct</em> events the batch
-created and delete each after the last registration pointing at it is gone. <strong>An event the batch created
-that anything outside the batch now references is the refusal below, not a delete</strong> — and the pre-flight
-check has to look for that reference specifically, because a row referencing an event does not reference
-the staged row that made it, so the ordinary reference scan cannot see it.</p>
-<p><strong>Revert is only safe before live data references the imported rows.</strong> Once a real person
-has been linked, or an attendance recorded against an imported person, or a live registration attached to
-an imported event, deleting the row breaks it. Therefore:</p>
-<ul>
-<li>Revert is allowed only while <code>import_batch.status = 'applied'</code> <strong>and</strong> no row created by
-  the batch has been referenced by a later live record.</li>
-<li>Detecting that requires checking for references — implement as a pre-flight check that
-  reports which rows cannot be reverted, and refuse rather than partially applying.</li>
-<li>After that window, corrections are made by editing the data, not by reverting. This is
-  the honest behaviour; a "revert" that silently orphans references is worse than refusing.</li>
-<li><strong>Step 2's removals are audited like any other write</strong>, one entry per row deleted, each
-  naming the batch. This is the only hard delete a business row can meet, and it is precisely
-  the case where someone will later ask "this person existed in March and is gone now — what
-  happened?" An undo that erases the rows and leaves no trace of having erased them is not a
-  rollback but a cover-up, and it is the same undo a reviewer is trusting when they agree to
-  revert at all. <a href="../00-conventions/#4-deletion-policy"><code>00-conventions.md §4</code></a> is why no other
-  path is allowed to do this.</li>
-</ul>
-<blockquote>
-<p><strong>Bias toward import in small batches and review before applying.</strong> Reversibility is a
-safety net, not a workflow.</p>
-</blockquote>
-<h3 id="idempotency">Idempotency<a class="headerlink" href="#idempotency" title="Permanent link">&para;</a></h3>
-<p>The <code>(batch_id, source_row_hash)</code> uniqueness above makes re-staging cheap. Idempotency across
-<em>batches</em> needs the hash to be computed from the row's semantic content, not its position — and since
-<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a> the
-corpus has two semantic contents, so <strong><code>batch_kind</code> selects which of the two definitions below runs</strong>. A
-people row and an events row about the same person must not look like the same row, and they cannot: their
-last two inputs come from different halves of the world.</p>
-<p>A <strong>people</strong> batch, one row per membership period — unchanged from the previous round, and unchanged on
-purpose:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>source_row_hash = sha256(
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    normalise(given_name) || '|' ||
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    normalise(family_name) || '|' ||
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    coalesce(birth_date::text,'') || '|' ||
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    coalesce(unit_code,'') || '|' ||
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    coalesce(period_from::text,'')
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>)
-</code></pre></div>
-<p>An <strong>events</strong> batch, one row per attendee at one occasion:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>source_row_hash = sha256(
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    normalise(given_name) || '|' ||
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    normalise(family_name) || '|' ||
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    coalesce(birth_date::text,'') || '|' ||
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    normalise(event_title) || '|' ||
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    coalesce(event_date::text,'')
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>)
-</code></pre></div>
-<p><strong>Read <code>unit_code</code> in the first definition honestly: for this corpus it is empty on every row</strong>, since
-the export names no units, so it is a constant input doing nothing. It stays, because removing it is a
-version change that buys nothing and the rule under this block is the one that matters — <strong>the hash
-function must be stable</strong>, changing it invalidates every previously staged row, and <em>version it if it must
-change</em> rather than editing it in place. Two definitions where one was expected is the same rule applied
-to a corpus that turned out to be two files: nothing staged under the people definition is disturbed by
-the events one, and both are versioned from here.</p>
-<p>Then a re-import of an overlapping export produces rows that match already-applied ones, and the pipeline
-can skip them. Note what the two hashes are keyed on, since the events one is the weaker instrument: it
-keys on a <em>title and a date</em>, which is the most the export states, so a source that spells one camp two
-ways is two rows, and two sources that spell two camps one way on one day is one row. The matching rule
-above inherits both, and neither is fixable in the pipeline — the fix is a human in the review queue.</p>
-<h3 id="end-date-inference">End-date inference<a class="headerlink" href="#end-date-inference" title="Permanent link">&para;</a></h3>
-<p>A membership export rarely states when a period ended, and since
-<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> it
-is allowed to answer: an imported row is now a real <code>membership</code>, so what its end date is inferred from is
-a live question again rather than a question about a participation row. Three defensible options:</p>
-<table>
-<thead>
-<tr>
-<th>Rule</th>
-<th>Effect</th>
-<th>Risk</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Leave <code>valid_to</code> NULL</td>
-<td>Person appears to be current</td>
-<td><strong>Wrong and dangerous</strong> — inflates the member count, and an open row reads as present-tense belonging. <strong>And it is dangerous in the loaded sense again</strong>: an open imported <code>membership</code> satisfies <code>is_current_member()</code>, so it passes the permission gate (D-039). The row above this one said, one round ago, that "a roster batch can no longer take" that route because a roster batch makes no membership — <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> withdrew the premise, and with it the only reason this option had stopped being a live hazard. It is a hazard again, which is why <em>Never NULL</em> below is a rule and not a preference</td>
-</tr>
-<tr>
-<td>End at the end of the organizational year of the last period the person appears in</td>
-<td>Defensible, documented</td>
-<td>May truncate a period that continued</td>
-</tr>
-<tr>
-<td>End at the last date the person appears in <em>any</em> export</td>
-<td>Best fidelity, needs all exports</td>
-<td>Requires the complete dataset</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Recommended default:</strong> end at the end of the organizational year of the last period in
-which the person appears, marked <code>data_confidence = 'low'</code> and with a parse warning. Never
-NULL — <strong>and read that as the surviving half of the ban D-090 left standing: never an open-ended
-membership, and never one inferred from an attendance row</strong> (§3.1). Both ends of the period are what makes
-an imported membership safe; the import itself is not.</p>
-<h3 id="31-what-a-source-row-actually-evidences">3.1 What a source row actually evidences<a class="headerlink" href="#31-what-a-source-row-actually-evidences" title="Permanent link">&para;</a></h3>
-<p><em>This heading read "What a roster actually evidences" until round 9. The question it asks was always the
-right one — what may a row be read as proving? — and it was the noun that was wrong.</em> A roster is evidence
-of presence in a unit, and the corpus
-<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-described as one turned out to be two exports that between them evidence presence <em>at an occasion</em> and
-membership <em>of the organization</em>, and evidence no unit at all
-(<a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>). The
-answer therefore has two halves now, and they are not the same answer.</p>
-<p><strong>A people row evidences a bounded membership, and the import writes one.</strong> The source states a name, a
-birth date and <em>the period during which this person was a member of the organization</em> — which is a
-membership claim made by the source rather than inferred by the reader, and that distinction is the whole
-of what <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-changed. So a people batch writes a <code>membership</code> with <strong>both</strong> <code>valid_from</code> and <code>valid_to</code> set,
-<code>data_confidence = 'low'</code>, the batch id on it — <strong>and nothing else in the temporal layer.</strong> It used to write
-that row <em>together with</em> a root <code>unit_participation</code> row, in one transaction, under a check whose whole job
-was that the pair existed together and agreed; <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
-deleted the second row, so the transaction has one row in it and the check has nothing left to compare,
-which is what <a href="../03-membership/#5-unit_participation--deleted-by-d-097">03-membership.md §5</a> now records rather than what it
-argues. <strong>One row per period the source states, not one per calendar year</strong>: an
-export of consecutive years is a period, and the <code>renewed_from_membership_id</code> chain is left to whoever
-reconstructs it by hand, because a renewal chain asserted by a parser is a lineage nobody chose and it is
-the kind of derived history
-<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>
-refuses to infer about units for the same reason.</p>
-<p><strong>An events row evidences presence at one occasion, and nothing beyond it.</strong> It writes an
-<code>event_registration</code> for the listed attendee with <code>was_present = true</code>, against an event that <strong>belongs to
-nobody</strong> — <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-deleted <code>event.org_unit_id</code> and <a href="../../decisions/round-09/#d-094--the-root-unit-owns-every-imported-event">D-094</a> with it, so the
-import owes no owner choice at all, which is one of the savings
-<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> counted in
-passing — and <strong>no row at all for anybody who is not listed</strong>: inventing <code>not_attending</code> from silence would
-put words in a source that said nothing (<a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>).
-Sub-unit belonging used to be a <code>unit_participation</code> rather than a membership
-(<a href="../../decisions/round-02-03/#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership">D-041</a>);
-there is no such row left to decline to write, and the imported halves still produce nothing of either kind.
-<strong>What an imported event does owe, since D-102, is the per-event instantiation of the seeded
-answers-view grant</strong> — one insert beside the event row, in the same transaction, or the imported event has
-nobody who can read its answers.</p>
-<p><strong>The half of the old ban that survives, in the sentence that survives it unchanged: never an open-ended
-membership, and never one inferred from an attendance row.</strong> The reason is D-039 and it has not moved — an
-open membership satisfies <code>is_current_member()</code>, so an inferred 1998 row hands whoever signs up under that
-name authority in the present, through every gated role, decades after the file that mentioned them was
-last opened. The end-date rule above is what stops an imported period from reading as current; this
-sentence is what stops the class, and check 1 in §5 is what catches a batch that did it anyway. <strong>What
-changed is how much of the class the rule has to cover, not whether it covers it.</strong> D-090 banned the row
-outright because the input looked like a roster and any membership in it would have been an inference;
-D-093 withdrew the ban because the input states periods, and because the hazard the ban was sized for was
-a <em>standing</em> one — an import that infers, run by whoever holds the file, repeatedly, for years — whereas
-what is being decided is one reviewed batch, mapping read before it applies, on a corpus that will never
-arrive twice. A rule sized for a recurring process is too strict for a one-time one, and the safety that
-mattered was never the ban, it was the review. <strong>The stakes were named in D-041 and D-039 before they were
-resolved, and they are why what remains is a rule rather than a preference.</strong></p>
-<p><strong>Superseded, and kept visible because the reasoning is the useful part.</strong> This section used to hedge:
-import a participation, <em>unless</em> there is evidence of payment, in which case a membership may be inferred —
-and then, one round later, to state the opposite as flat fact: <strong>"a roster row makes a
-<code>unit_participation</code> and nothing else; <code>membership</code> rows come only from the current register."</strong> Both
-sentences were arguing against something real. The first was a rule waiting to be misapplied by whoever
-found a dues column in a later file and read the older text as permission, which is why it was tightened.
-The second was correct about rosters and wrong about the corpus: it generalised from <em>this file has no
-money in it</em> to <em>no membership may arrive from a file</em>, and the corpus arrived with membership periods in
-it. Neither half of that history is deleted above, because the next import will be a third shape and
-whoever writes it needs both failure modes on the record, not a clean line.</p>
-<p><strong>What the two halves agree on is the thing nobody asked about: neither names a unit.</strong> <code>parsed_unit_code</code>
-still fills and still goes unread (§3), no batch creates an <code>org_unit</code>, and no sub-unit participation row
-is imported. <strong>The system's historical record therefore contains no sub-units.</strong> "Who was in pack X in
-2011?" is unanswerable on day one, and the first answer anyone reads will be a roster somebody typed in —
-which is why the sentence belongs here rather than in the decision log: the absence is in the source, but
-the surprise is in this pipeline.</p>
-<p><strong>What this gives up, since it gives up something.</strong> <em>"Did they pay?"</em> has no answer for any imported
-period — no money arrives in either export, so there is no <code>fee_obligation</code> and no balance on these rows
-at all (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), and every cross-decade member
-count is a mix of an export and a register distinguished only by <code>data_confidence</code> and <code>import_batch_id</code>.
-What the previous round gave up is narrower now, and what remains given up is that the imported membership
-is the source's claim about a status rather than a record of the act: nobody paid a fee in this system for
-1998, and the row says <em>the organization's export said so</em>, which is the most the evidence supports.</p>
-<hr />
-<h2 id="4-redaction-log">4. Redaction log<a class="headerlink" href="#4-redaction-log" title="Permanent link">&para;</a></h2>
-<p><strong>Fields</strong></p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Kind</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>id</code></td>
-<td>surrogate id</td>
-<td></td>
-</tr>
-<tr>
-<td><code>person_id</code></td>
-<td>reference to person, required</td>
-<td>The row is NOT deleted. The id survives so historical references resolve</td>
-</tr>
-<tr>
-<td><code>requested_at</code></td>
-<td>timestamp, audit time</td>
-<td>Default: now</td>
-</tr>
-<tr>
-<td><code>requested_by</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>legal_basis</code></td>
-<td>text, optional</td>
-<td><code>gdpr_art17</code>, <code>court_order</code>, <code>internal_policy</code> — required for accountability</td>
-</tr>
-<tr>
-<td><code>performed_at</code></td>
-<td>timestamp, audit time, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>performed_by</code></td>
-<td>reference to person, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>redacted_tables</code></td>
-<td>list of text</td>
-<td>Which tables had values overwritten — <strong>and which had rows deleted.</strong> <code>person_attribute</code> is erased by deletion rather than by overwriting (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>), so naming it here is what records that the erasure reached the person's descriptive data, and omitting it is indistinguishable from not having reached it</td>
-</tr>
-<tr>
-<td><code>retained_reason</code></td>
-<td>text, optional</td>
-<td>Why some data was kept. <strong>It has a standing answer to hold now.</strong> Membership periods, fee obligations, payments and this anonymised <code>person</code> row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>, nothing in these documents had actually made. What the field adds per case is that <em>this</em> erasure made it knowingly, and the reason for anything retained beyond the skeleton. The basis underneath the standing answer is an assumption pending legal review (§6), not settled law</td>
-</tr>
-<tr>
-<td><code>note</code></td>
-<td>text, optional</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Rules</strong></p>
-<ul>
-<li>A redaction cannot record when it was performed without recording who performed it:
-  <code>performed_at</code> without <code>performed_by</code> is illegal.</li>
-<li><strong>An erasure must also rewrite the expressions that named the person, and say what it changed.</strong>
-  Since <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
-  a hand-named person is a <code>PERSON(x)</code> leaf of <code>audience_operand</code>, and <code>selector_arg_id</code> carries no foreign
-  key, so nothing refuses the deletion underneath it. <strong>The failure is not a dangling row, it is an inverted
-  grant:</strong> a leaf that resolves to nobody is the empty set, and the empty set subtracts nothing, so an
-  expression reading <code>EVERYONE - PERSON(x)</code> begins denying everybody the moment <code>x</code> is erased. So the erasure
-  walks <code>audience_operand</code> for leaves naming that person, removes or rewrites them under the same
-  <code>access_grant</code> guard that covers any other change to reach, <strong>prints the resolved set before and after for
-  every expression it touched</strong> — the same report
-  <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-  adopted — and names <code>audience_operand</code> in <code>redacted_tables</code>, because a field that lists which tables the
-  erasure reached is worth nothing if the one table where the person still appears is left off it. The nightly
-  orphan scan in <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d-invariants-and-seed.md §11</a> is the backstop for
-  this, and is not the control: the control is the erasure path itself, because a scan that reports a grant
-  denying everybody every night is a report somebody stops reading.</li>
-</ul>
-<p><strong>Indexes</strong></p>
-<ul>
-<li>A person's redaction history.</li>
-</ul>
-<p><strong>This log is the answer to "prove you honoured the erasure request".</strong> It records what
-was removed, when, on what legal basis, and — importantly — what was deliberately retained
-and why. A redaction performed without a record is indistinguishable from a data loss
-incident.</p>
-<p><strong>Two clocks, and this log is where the permanent one gets written down.</strong> An erasure now performs three
-acts with three different lifetimes. It overwrites the person row's names and contact points,
-immediately and irreversibly; it deletes the <code>person_attribute</code> rows, so that <code>redacted_tables</code> naming
-that table is the only sentence left saying they existed; and it scrubs that person's values out of the
-trail's payloads — out of rows which, since
-<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>,
-are scheduled to lose their payloads anyway (§2.2). <strong>What an erasure does not do is touch
-<code>membership</code>, <code>fee_obligation</code>, <code>payment</code>, or this row's <code>person_id</code></strong> — and the reason is now a stated
-justification rather than nobody having decided when those rows end. That difference, between a rule
-nobody defended and a rule with a reason attached, is exactly what <code>retained_reason</code> carries.</p>
-<p><strong>This log is not subject to payload reduction, and that is a decision rather than an oversight.</strong>
-Reduction empties the payloads of rows past the window. A <code>redaction_log</code> row holds no values to empty —
-a person id, a legal basis, a list of table names, and the reasoning — and it is the <em>evidence</em> that a
-person's request was honoured, which is the class of statement D-088 chose to keep for the life of the
-system when it chose to keep the skeleton. <strong>Reaching this table with reduction would delete the proof of
-an erasure in order to apply a policy about history, and those are not the same act.</strong></p>
-<p><strong>For the descriptive part of a person's record this log is the only surviving record, by design.</strong>
-The attribute rows are deleted; the audit entries that quoted their values are scrubbed by the same act
-(§2.2's mechanism two, which is the only direction in which a trail that must not be rewritten can
-still be erased); and the codes they pointed at stay live because a code belongs to the organization
-and not to the erased person
-(<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a> draws the two
-directions: retiring a code is an act about the vocabulary and keeps values, erasing a person is an act
-about the person and removes them). So <code>redacted_tables</code> naming <code>person_attribute</code> is the whole of what
-the system can honestly say — <em>this person had descriptive data and it is gone</em> — and it is enough,
-because the sentence the organization is entitled to keep is that it held a record and removed it, not
-what the record said.</p>
-<hr />
-<h2 id="5-integrity-checks">5. Integrity checks<a class="headerlink" href="#5-integrity-checks" title="Permanent link">&para;</a></h2>
-<p><strong>Invariants to verify</strong></p>
-<ul>
-<li><strong>Imported memberships with no end date.</strong> Count <code>membership</code> rows that carry an
-  <code>import_batch_id</code> and have no <code>valid_to</code>. Zero is the only acceptable answer: these are
-  the rows that silently satisfy the permission gate, so this is a security check as much as
-  a data-quality one (§3). <strong>Do not read this as a data-quality report any more, because since
-  <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-  it is the only thing standing between an imported row and the membership gate.</strong> While imports made
-  participations this check was theoretical — there were no imported memberships to find — and it is now
-  the load-bearing one, since the corpus is expected to create thousands of rows that would each satisfy
-  <code>is_current_member()</code> if their end date were missing.
-  <strong>Its sibling is re-pointed rather than removed.</strong> The previous round's version, from
-  <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
-  read "an imported membership from a batch whose source is a roster, whatever its dates say", and that
-  finding no longer exists as a finding — imported memberships are expected now. What replaces it is the
-  surviving half of the same ban (§3.1): <strong>count a <code>membership</code> carrying an <code>import_batch_id</code> whose
-  <code>batch_kind</code> is <code>events</code>.</strong> An attendance export states presence, and a membership drawn from one is the
-  inference somebody re-enabled because they found a column that looked like dues. Run both halves on the
-  same report: the first catches a missing end date, the second catches the wrong kind of source.</li>
-<li><strong>Imported people who were later merged away.</strong> Count people whose <code>record_origin</code> is
-  <code>legacy_import</code> and whose merge pointer is set. Non-zero is probably fine and worth an eye.</li>
-<li><strong>Batches left in a non-terminal state for a long time.</strong> Count <code>import_batch</code> rows whose
-  status is none of <code>applied</code>, <code>reverted</code>, <code>failed</code> and which were created more than 30 days
-  ago; non-zero means a run somebody stopped steering.</li>
-<li><strong>Audit rows with no actor at all.</strong> Count <code>audit_log</code> rows with neither an
-  <code>actor_person_id</code> nor an <code>actor_label</code>; any non-zero count is a forensic gap.</li>
-<li><strong>Tables whose write path does not audit.</strong> Compare the business tables this system has —
-  staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
-  writing history that is never recorded. <strong>Read this one carefully, because its meaning got worse
-  rather than weaker.</strong> While a trigger existed, a table was audited by being named in a trigger
-  definition, and forgetting one was a decision somebody made in a migration and could see. Now a
-  table is audited because the code that writes it calls the audit entry point, so <strong>the list and
-  the code are two artifacts that must agree and nothing forces them to</strong> — which makes this report
-  the entire control over the completeness of the audit trail, and the one check here that should
-  alert rather than log. If it ever reports a table, the finding is not "some history is missing";
-  it is "every change to that table since it was added is unrecorded, and that period cannot be
-  reconstructed later." </li>
-<li><strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
-  not the redaction marker and who still have a current contact point whose value is not
-  redacted; non-zero means an erasure was left half done. <strong>The count now reaches two more places.</strong>
-  First, <code>person_attribute</code>: a redacted person with <strong>any</strong> attribute row is an erasure that did not
-  happen, since those rows are deleted rather than overwritten
-  (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>). That is check 6 of
-  <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> read from this side — the same assertion,
-  not a second one. <strong>Second, and a different assertion, which only exists because values are logged
-  on purpose: for a redacted person, no <code>audit_log</code> row about one of their <code>person_attribute</code> changes
-  may still carry content.</strong> Content means <code>value</code>, <code>value_option_id</code> or <code>recorded_note</code> inside
-  <code>old_values</code> or <code>new_values</code>; <code>person_id</code>, <code>attribute_definition_id</code> and <code>source</code> are not content and
-  survive the scrub deliberately, because they are the only way this check can still find the rows after
-  the erasure deleted the business ones — an audit row keeps its <code>table_name</code> and <code>record_id</code> when the
-  row they named is gone, and its <code>person_id</code> is what ties it back to the person who asked to be
-  forgotten. Read this check correctly and it has exactly one meaning: <strong>the scrub did not run.</strong> Before
-  an erasure, a payload full of descriptive values is the design working
-  (<a href="#22-redaction-before-logging">§2.2</a>); afterwards it is the thing the person asked for the system to
-  stop having. Note what the check structurally <em>cannot</em> see — a copy that is present, readable, and
-  perfectly legal, held by somebody whose permission is graded below its contents — because that failure
-  leaves no rows to count; it is the guard, and the guard is reviewed by a person.
-  <strong>This check, check 5 and check 7 are the three here that should alert rather than log.</strong> A redaction
-  property that is reported once a month is a redaction property that fails between the reports, and
-  unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
-  regulator asks what the table holds.</li>
-<li><strong>An audit row past the payload window that still carries a payload.</strong> Count <code>audit_log</code> rows whose
-  <code>occurred_at</code> is older than the retention window and whose <code>old_values</code> or <code>new_values</code> still holds
-  anything. <strong>This is check 6's mirror, and merging the two is the way to lose both.</strong> Check 6 asks
-  whether an <em>erasure</em> ran, fires on one person's rows, and fails as a right not honoured; this one asks
-  whether the <em>calendar</em> ran, fires on everybody's rows alike, and fails as a policy not applied
-  (§2.2's three operations, which fail in different directions). A system passes one while failing the
-  other in both directions, so they are two queries, not one query with two clauses.
-  <strong>It alerts rather than logs, and the reason is the one §2.2 gives: reduction's failure mode is not
-  running.</strong> Nothing about the trail looks wrong from inside it — a reduced row and a row that escaped
-  reduction both still answer <em>who, what, when</em>, which is the half that was supposed to survive — so the
-  only difference between them is a payload nobody looks at until somebody with <code>audit.view</code> opens a
-  history screen and finds a child's allergy list still sitting there past the window it was meant to
-  have left. <strong>Count the rows, do not sample them</strong>: a job that stopped after the newest partition keeps
-  the oldest rows full and looks entirely healthy to a sample. And read the window from the same place
-  the job does, because a check holding one value and a job holding another reports clean forever, which
-  is the exact failure this check exists to prevent and the one it can cause by itself.</li>
-</ul>
-<p><strong>Check 5 is worth automating as a test</strong>, not just a nightly query — a test that reads the
-table list in these documents and asserts every business table on it appears on the audited list,
-since that is the nearest thing left to what asking the database used to answer. A new table
-added without being put on that list is a silent, permanent hole in the audit trail — and it will
-be discovered only when someone needs the history that was never recorded.</p>
-<hr />
-<h2 id="6-open-issues">6. Open issues<a class="headerlink" href="#6-open-issues" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Which tables must be audited. Recommend: all business tables. The cost is storage; the
-  cost of a gap is unbounded. Still open as a <em>decision</em>, closed as a <em>recommendation</em> — §2.1
-  already obligates every business table, so what is actually outstanding is somebody
-  confirming the list rather than deriving it.</li>
-<li><strong>Retention period for <code>audit_log</code> — decided as policy, still open as law</strong>
-  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
-  It used to read "retention period before archival to cold storage; legal input required", which got the
-  question wrong in two ways at once: it assumed the answer was a storage tier rather than a <em>shape</em>, and
-  it assumed one clock rather than two. The policy is now <strong>rows forever, payloads 24 months, 12 months
-  as the floor a window may be set to</strong>, enforced by the job and the check in §2.2 and §5 rather than by
-  an archive nobody queries. What remains open is the half a decision log cannot settle: whether the
-  indefinite retention of <em>named</em> <code>membership</code> and <code>fee_obligation</code> rows has a lawful basis. That is
-  recorded as an assumption with a name attached
-  (<a href="../../open-questions/#i-assumption-index">../open-questions.md</a>), not as settled law, and the review
-  now has a concrete policy in front of it instead of a blank.</li>
-<li>Whether <code>audit_log</code> should be partitioned by month from the start. <strong>Recommend yes, and the reasons
-  changed when the payload window arrived.</strong> The old reason was "the write volume and the multi-decade
-  horizon", which is still true of the <em>rows</em> — they are the permanent half — but the bulk of a row is
-  its payloads, and those are now on a 24-month clock. Monthly partitions serve the reduction job too: a
-  partition entirely past the window can be reduced as one unit rather than as a sweep across a table
-  that grows for the life of the system. The open part is which the deployment does first, not whether
-  the horizon justifies it.</li>
-<li>The definitive end-date inference rule for imported membership periods
-  (<a href="#31-what-a-source-row-actually-evidences">§3.1</a>) — needs your input on the organizational
-  year boundary (tracked as <a href="../../open-questions/">../open-questions.md</a> A-4). <strong>Sharper, not smaller,
-  since <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-  put memberships back on the receiving end of it:</strong> the inferred end date is not the end of a record nobody
-  reads, it is the <code>valid_to</code> of a row that gates authority, so the year boundary is the value
-  standing between the import and the permission gate. (When this bullet was written the row in question was a
-  <code>unit_participation</code>; <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
-  removed that table, which sharpens the point rather than softening it — there is now exactly one period an
-  inferred date can be ending, and it is the consequential one.)</li>
-<li><strong>✅ Resolved — whether the import should create a <code>membership</code> at all</strong> for a historical period, or
-  only a <code>unit_participation</code> (<a href="#31-what-a-source-row-actually-evidences">§3.1</a>). Settled by
-  <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
-  on the shape of the corpus rather than on the merits of the two options — the corpus carried no payment
-  data, so the exception arm of "participation unless there is payment evidence" had an empty set to fire
-  on — and <strong>then narrowed by
-  <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>,
-  which is what this bullet now records: the corpus turned out to state membership periods, so a bounded
-  membership may be imported, both ends dated, <code>data_confidence = 'low'</code>.</strong> What the resolution actually
-  settled was never "no imported memberships" but "no inferred ones", and that half still holds in both
-  directions: never open-ended, never from an attendance row. <strong>Superseded here and kept visible: this
-  bullet used to end "participation only, always; <code>membership</code> rows come only from the current register."</strong></li>
-<li><strong>Not a question, because the answer that split the corpus already answered it: a batch types itself</strong>
-  (<code>import_batch.batch_kind</code>, §3). Two halves of corpus mean two shapes of row, and one <code>field_mapping</code>
-  cannot serve both — an events export has no column that maps to an attribute code and a people export has
-  nothing to map to a registration. Recording it as an open question would invite somebody to answer it
-  with the larger alternative (one batch, two mappers that can never both apply), which the answer in D-092
-  explicitly passed over as the bigger change.</li>
-<li>Exact redaction scope: which fields are personal data vs. organizational history (§4). Requires legal
-  review — <strong>much narrower than it was, and still not closed.</strong> D-083 removed the <em>category</em> question
-  (there is no specially-graded subset of the person record), and
-  <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
-  has since drawn the <em>line</em>: identity and descriptive values are erased, the accounting skeleton is
-  retained, and the trail's payloads expire. What the review is asked about is therefore no longer "which
-  fields" but "on what basis does the retained half survive indefinitely" — one question about one list,
-  which is the item above.</li>
-<li>Whether <code>person.notes</code> should exist at all, given the redaction burden it creates.</li>
-</ul>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 
 
 
@@ -4156,13 +3196,13 @@ be discovered only when someone needs the history that was never recorded.</p>
         
         
           
-          <a href="../07-finance/" class="md-footer__link md-footer__link--next" aria-label="Next: Finance">
+          <a href="../06a-import/" class="md-footer__link md-footer__link--next" aria-label="Next: The Import Pipeline">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Finance
+                The Import Pipeline
               </div>
             </div>
             <div class="md-footer__button md-icon">
