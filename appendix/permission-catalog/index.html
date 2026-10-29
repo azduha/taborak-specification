@@ -3068,45 +3068,27 @@ bundle looks like now that no role carries a permission list of its own. It fail
 capability goes unheld and somebody says so, rather than a capability going unmeant and nobody
 saying so.</p>
 <h3 id="two-things-named-admin-which-are-not-the-same-thing">Two things named "admin", which are not the same thing<a class="headerlink" href="#two-things-named-admin-which-are-not-the-same-thing" title="Permanent link">&para;</a></h3>
-<p>The word used to be ambiguous three ways. Three rounds of deletion left one, and the others are
-recorded as deleted rather than quietly dropped:</p>
-<table>
-<thead>
-<tr>
-<th>Shape</th>
-<th>What it is</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>~~<code>access_level.admin</code> (rank 40)~~</td>
-<td>A <strong>grant level</strong> — how much authority a grant carries, in <code>view</code> &lt; <code>contribute</code> &lt; <code>manage</code> &lt; <code>admin</code>. Used by <code>permission_level</code> to decide whether a given grant satisfies a given permission.</td>
-<td><strong>Deleted</strong> — the whole ladder, top rung included, by <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>. This row read "real, untouched" until round 10, which is what "untouched" was worth</td>
-</tr>
-<tr>
-<td><code>system.admin</code></td>
-<td>The <strong>one wildcard permission</strong>: everything, carried by a grant at the unit and never on an item (<code>applies_to = unit</code>)</td>
-<td><strong>Real, and the one named exception</strong> — the only code in this system allowed to end in a noun. Exempted by name in words by D-068, and named as an exception by <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>, because its meaning is defined by the resolver rather than read off the name. <strong>Not a precedent</strong> (§1)</td>
-</tr>
-<tr>
-<td><code>&lt;resource&gt;.admin</code></td>
-<td>A <strong>wildcard permission code</strong> implying every sibling on that resource</td>
-<td><strong>Deleted</strong> — all sixteen, by <a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>, and refused in advance for codes not yet written by <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>: a grade word, and a prefix read as a permission</td>
-</tr>
-<tr>
-<td><code>dependent.medical.admin</code>, <code>dependent.admin</code></td>
-<td>An <strong>action</strong> meaning "edit", paired against <code>.view</code> inside a sub-resource; plus a shorthand for the whole set</td>
-<td><strong>Deleted</strong> — by <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>, which reduced a guardian's rights to <code>none</code> / <code>view</code> / <code>write</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>D-068 exempted <code>dependent.admin</code> on purpose, and D-074 withdrew the exemption.</strong> The reason
-D-068 kept it was sound at the time: it was not a prefix match inferred by code but a value a
-person deliberately stored on one row about one child. What changed is not the reasoning about
-wildcards but the thing it was a value <em>of</em> — there is no longer a set of guardian capabilities for
-a shorthand to stand for. <strong>Read the two decisions together before reinstating anything that
-spells <code>admin</code>.</strong></p>
+<p>Two meanings survive in this catalog, and they are not the same one:</p>
+<ul>
+<li><strong><code>system.admin</code></strong> is the <strong>one wildcard permission</strong>: everything, carried by a grant at the unit and never
+  on an item (<code>applies_to = unit</code>). It is the only code in this system allowed to end in a noun — exempted by
+  name in words by D-068 and named as an exception by
+  <a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>,
+  because its meaning is defined by the resolver rather than read off the name. <strong>It is not a precedent</strong> (§1).</li>
+<li><strong><code>.admin</code> is not an action in this catalog.</strong> §1's first naming rule is that the last segment names an
+  action (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>),
+  and <code>admin</code> is a grade word rather than an act: no code here pairs <code>read</code> against <code>admin</code>, and the rule
+  refuses the spelling in codes that have not been written yet. What a bundle of codes is for, a <strong>role</strong> does
+  (§1).</li>
+</ul>
+<p>Every other thing that spelled <code>admin</code> — a grant level, a per-resource wildcard, a shorthand over a
+guardian's capabilities — is gone and is indexed in <a href="../removed-concepts/">removed-concepts</a>. Two of those
+deletions are worth reading together before reinstating anything that spells the word:
+<a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
+refused a wildcard per resource but deliberately kept one stored shorthand, and
+<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>
+withdrew that exemption when the set it stood for went away — the reasoning about wildcards never changed,
+the thing it was a value <em>of</em> did.</p>
 <h3 id="namespaces">Namespaces<a class="headerlink" href="#namespaces" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -3129,33 +3111,30 @@ spells <code>admin</code>.</strong></p>
 </tr>
 </tbody>
 </table>
-<p>The channel numbers are the three in
+<p>Two prefixes, because only two things are dispatched by a name. The channel numbers are the three in
 <a href="../../domain/06-authorization-model/#1-the-three-channels-of-authority">../domain/06-authorization-model.md §1</a>:
-grants, guardianship, ownership. <strong>There used to be a fourth row in this table and a fourth channel
-above it</strong> — <code>role_assignment</code>, the channel a <code>system</code> permission could only be reached through.
-<strong>Withdrawn by
-<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>:</strong>
-<code>role_assignment</code> is <code>role_holder</code>, a role confers nothing, and every code in this catalog —
-<code>system.admin</code> included — arrives through the one grant channel now. <em>Who enforces that a <code>system</code>
-code stays out of item grants: <code>applies_to</code>, checked on save</em>
+grants, guardianship, ownership. <strong>Every code in this catalog — <code>system.admin</code> included — arrives through the
+one grant channel</strong>, because an office confers nothing by being held
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
+and there is no second route to a code. <strong>What keeps a <code>system</code> code out of an item grant is <code>applies_to</code>,
+checked when the grant is saved</strong>
 (<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
-not the absence of a channel.</p>
-<p><strong>There is no <code>dependent</code> namespace</strong> (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>);
-§9 explains what replaced it, and what was lost with it.</p>
-<p><strong>That leaves the guardianship channel with no prefix to dispatch on, which has to be answered
-rather than left implied.</strong> It used to route on <code>dependent.</code>, and the reason for routing by prefix
-was that <strong>no caller should decide which channel applies</strong> — otherwise the same authorization rule
-gets implemented twice, once correctly. It now routes on a fact about the request instead of a fact
-about the name: <strong>the channel is consulted whenever the person the action is <em>about</em> differs from
-the person performing it.</strong> That is stronger than the prefix rule, not weaker — under the old rule a
-guardian asking to change their child's address with a <code>person.contact.edit</code> code would not have
-routed through guardianship at all, because the code did not carry the right prefix. Nobody chooses
-a channel; the shape of the request selects it.</p>
-<p>The <code>guardianship.*</code> codes are additionally satisfiable by <strong>being a party to the row</strong>, and not
-only by a grant (<a href="../../decisions/round-06/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).</p>
-<p><code>system</code> permissions remain non-grantable on an item: <code>system.admin</code> must never be delegable to a
-single event, a group, or an office. What enforces it is no longer the shape of the channel that
-could carry it but a column on the code itself.</p>
+not the shape of a channel that could carry it: <code>system.admin</code> must never reach a single event, a group or an
+office.</p>
+<p>There is no <code>dependent</code> namespace (§9,
+<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>): a
+guardian's rights are one value on the guardianship row, and the <code>guardianship.*</code> codes of §6 administer that
+row from the grant side — a resource namespace like any other, not the guardianship channel.</p>
+<p><strong>Which leaves the guardianship channel with no prefix to dispatch on, which has to be said rather than left
+implied.</strong> It routes on a fact about the request instead of a fact about the name: <strong>the channel is consulted
+whenever the person the action is <em>about</em> differs from the person performing it.</strong> That holds the invariant
+the prefix was standing in for — <strong>no caller chooses a channel</strong>, because a caller who chooses one is the same
+authorization rule written twice, once correctly — and it holds it more widely: under a prefix rule, a
+guardian asking to change their child's address with a <code>person.contact.edit</code> code did not route through
+guardianship at all, because the code did not carry the right prefix. Nobody chooses; the shape of the request
+selects.</p>
+<p>The <code>guardianship.*</code> codes are additionally satisfiable by <strong>being a party to the row</strong>, and not only by a
+grant (<a href="../../decisions/round-06/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).</p>
 <h3 id="sensitivity-marker">Sensitivity marker<a class="headerlink" href="#sensitivity-marker" title="Permanent link">&para;</a></h3>
 <p>The <strong>Sens.</strong> column flags permissions that need extra care:</p>
 <table>
@@ -3192,7 +3171,7 @@ could carry it but a column on the code itself.</p>
 <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">../data-model/05d-invariants-and-seed.md</a>.
 <strong>A mark grades what a grant exposes, not the table a code names</strong>
 (<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>),
-and the two new families are placed by that rule: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a
+and the two families a reader is most likely to place wrongly are placed by it: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a
 roster is a list of people, and <code>role.*</code> keeps <strong>🔒🔒</strong> because writing a holder row writes who may
 hold everything else.</p>
 <hr />
