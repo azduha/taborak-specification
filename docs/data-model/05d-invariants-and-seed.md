@@ -580,8 +580,8 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   served today: write grants, or a `GROUP(x)`, or `PERSON(a) + PERSON(b)`. The discipline stays — a row is
   not seeded so that a question cannot become a word in a grammar by being typed often enough.
 - **`PERSON(x)` is a seeded row (`argument_type = person`); the class of bug behind it is the open item.**
-  §12 states the one count that matters: **`selector_type` holds thirteen rows today**, cheap to check, and
-  checked here because a registry that prose contradicts is a fiction
+  §12 states the one count that matters — how many rows `selector_type` holds — cheap to check, and checked
+  here because a registry that prose contradicts is a fiction
   ([D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
   **What is open is the class, not this operand:** nothing in this module, or in this repository,
   compares the dotted tokens these documents write against the seeded registries they describe, so the same

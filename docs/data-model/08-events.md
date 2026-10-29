@@ -4,19 +4,17 @@
 
 Domain rationale: [../domain/07-events.md](../domain/07-events.md).
 
-**Nothing here is provisional.** This module was designed against the authorization model
-rather than beside it, and every hook it uses — `access_grant` scoped to an item,
-`grant_scope_type`, audiences and their selectors — was already in place and seeded. The
-tables below fill those hooks; they do not extend the model.
+**Nothing here is provisional.** Every hook this module uses — `access_grant` scoped to an
+item, `grant_scope_type`, audiences and their selectors — is in place and seeded. The tables
+below fill those hooks; they do not extend the model.
 
-Round 10 removed one thing this module was built around: **an event has no owning unit**
-([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
-`event.org_unit_id` is gone, `can_event()` is gone, and the unit-authority rule that every
-event permission used to be reached through is gone. What the module uses instead is a set
-of **selectors that bind to the event being checked**, specified in §8.
-
+**An event has no owner.** No column of `event` names a unit or a group, and there is no
+event-shaped check: every event permission goes through the ordinary `can()`, with nothing
+event-shaped in it (§8). The people connected to an event are named by **selectors that bind
+to the event being checked** (§8).
 
 **Section numbers are shared across the two parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [08-events.md](08-events.md) holds §1–§7, [08a](08a-event-guards-and-checks.md) §8–§11 (projections and guards, the three queries that matter, integrity checks, open issues).
+
 ---
 
 ## 1. Why these five tables, and no `event_series`
@@ -58,16 +56,16 @@ is already modelled.
 | `starts_at` | instant in time, required | An instant, not a date. A Thursday group meets at 5pm; a camp starts on Saturday morning. The instant carries a timezone, and the timezone is the organization's, recorded rather than assumed |
 | `ends_at` | instant in time, required | An instant, not a date, for the same reason |
 | `all_day` | boolean, required | Default false. Display only — an all-day camp still has instants underneath |
-| `registration_opens_at` | instant in time, optional | `NULL` = open as soon as the event is visible. The event is visible to whoever holds `event.view`, which after D-102 normally includes everyone holding it at the unit — see [../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column) for what that does to the private-by-default draft. So `NULL` is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed |
+| `registration_opens_at` | instant in time, optional | `NULL` = open as soon as the event is visible. The event is visible to whoever holds `event.view`, which normally includes everyone holding it at the unit — see [../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column) for what that does to the private-by-default draft. So `NULL` is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed |
 | `registration_closes_at` | instant in time, optional | `NULL` = when the event starts. This is the "unlimited" case: registration stays open until the thing happens |
 | `capacity` | integer, optional | `NULL` = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it ([../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) |
 | `waitlist_deadline` | instant in time, optional | When an unpaid registration at a full event releases its place to the waitlist (§6). `NULL` = never releases. Only meaningful when the event has a fee AND a capacity; ignored otherwise. This is the ONE automatic transition in this module — see §6 for why it is accepted and what it costs |
 | `fee_schedule_id` | reference to fee schedule, optional | `NULL` = this event is free, which most are. Set = a fee applies; registering creates a `fee_obligation` (§6). The amount and currency live in `fee_schedule`, not here — events do not price themselves |
-| `cancelled_at` | instant in time, optional | Cancellation is a FACT, not a status, and this is the point where the "no status column" reasoning deliberately diverges: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming |
+| `cancelled_at` | instant in time, optional | Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming |
 | `cancelled_by` | reference to person, optional | Who cancelled. Set exactly when `cancelled_at` is set |
 | `cancel_reason` | text, optional | Free text, and it may be absent ("cancelled — see email") |
 | `created_at` | timestamp, audit time | |
-| `created_by` | reference to person, optional | Who created the row. **Not an owner** — `created_by` is attribution, and [D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity) still holds that a permission is never derived from an identity |
+| `created_by` | reference to person, optional | Who created the row. **Not an owner** — `created_by` is attribution, and a permission is never derived from an identity ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)) |
 | `updated_at` | timestamp, audit time, optional | |
 | `updated_by` | reference to person, optional | |
 | `import_batch_id` | reference to import batch, optional | Set on imported rows |
@@ -96,34 +94,25 @@ is already modelled.
 
 ### There is no owner column
 
-~~`org_unit_id` — reference to org unit, required. EXACTLY ONE owning unit, and it is never
-absent.~~ **Deleted by
-[D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it).**
-The column's note used to carry the argument that forced it: a joint camp is one unit's
-event that another unit's children register for via an audience grant, and two owners would
-have created an exception to "the root may not read a sub-unit's events" shaped exactly like
-a joint camp, with no principled place to stop. That argument was sound while
-[D-049](../decisions/round-04.md#d-049--the-root-may-not-read-into-its-sub-units-scope_exposure-is-the-only-crossing)
-was alive. [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)
-deleted the sub-units, D-049 with them, and there is nothing left for the column to protect.
+**No column of `event` names a unit** — there is no `org_unit_id` to fill, no holding group, no
+creating unit, and no rule anywhere in this module that reads one (§8). **Why:** an event is an
+item in `grant_scope_type` under the code `event`, and nothing more. A grant at the unit reaches
+every event; a grant on one event reaches that event and nothing else
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
-**An event is an item in `grant_scope_type` under the code `event`, and nothing more.** A
-grant at the unit reaches every event; a grant on one event reaches that event and nothing
-else; `event.create` has `applies_to = unit`, so writing it on an event is refused when the
-grant is saved, with the reason in the message
+`event.create` has `applies_to = unit`, so writing it on an event is refused when the grant is
+saved, with the reason in the message
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
 
-**The deletion leaves no residue in this file, which is worth recording as a fact rather than
-a hope.** There is no index on an owner (the lists above are the whole set), no check in §10
-that reads one, no cascade, and no rule in §5 or §8 that compares one. The people connected
-to an event are reached through `event_organizer` and `event_registration`, which point at
-the event directly and never needed the owner.
+**Nothing in this module reads an owner.** There is no index on one (the index list above is the
+whole set), no check in §10 that reads one, no cascade running through one, and no rule in §5 or
+§8 that compares one. The people connected to an event are reached through `event_organizer` and
+`event_registration`, which point at the event directly.
 
-**Import consequence.** The one-off import owes `event` rows and `event_registration` rows
-and it owes **no owner column** — one less thing to invent a value for
-([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
-[D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
-It does owe the per-event seeded grant in §8, which is the residue the deletion *does* leave.
+**Import consequence.** The one-off import owes `event` rows and `event_registration` rows and
+it owes **no owner column** — one less thing to invent a value for
+([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
+It does owe the per-event seeded grant in §8.
 
 ### No `status` column, and why that is not an omission
 
@@ -137,9 +126,8 @@ not an `UPDATE`. A status column and a permission system that both claim to answ
 see this?" will eventually disagree, and the one that gets enforced is whoever wrote the last
 `IF`.
 
-One clause of the old argument went with the owner column. ~~A new event has no grants beyond
-its organizers, so nobody else can see it~~ — with no owner, a fresh event is visible to
-everybody already holding `event.view` at the unit, which is the normal case. Privacy is
+A new event is visible to everybody already holding `event.view` at the unit — there is no
+owner-only draft state behind it, and nothing to withdraw to make one. Privacy is
 therefore an act rather than a default; see
 [../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column).
 
@@ -165,7 +153,7 @@ because "was Jan an organizer of that camp?" must have one answer, not a set of 
 | `id` | surrogate id | Internal only |
 | `event_id` | reference to event, required | The event this person is on. Deleting the event removes its organizer rows — the one cascade in this design, and guard 2 in §8 is what makes it safe |
 | `person_id` | reference to person, required | |
-| `organizer_role` | text, optional | `lead`, `assistant`, `cook`, `driver`, `medic`, `quartermaster` — free text. NOT a controlled vocabulary: every organization labels these differently, and a closed list here would be a guess of the kind [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) refused for reason codes. *(This note pointed at D-054 until D-097 deleted the unit-type vocabulary it argued about; the argument is unchanged and the living precedent for "the system does not ship somebody's vocabulary" is D-095.)* |
+| `organizer_role` | text, optional | `lead`, `assistant`, `cook`, `driver`, `medic`, `quartermaster` — free text. NOT a controlled vocabulary: every organization labels these differently, and a closed list here would be a guess of the kind [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) refused for reason codes. The system does not ship somebody's vocabulary. |
 | `is_primary` | boolean, required | Default false. The person the parents are told to call. At most one per event — a uniqueness rule the schema can express, so it is a constraint and not a report (Rules, below) |
 | `sort_order` | integer, required | Default 0. Display order for the list. Cooks before drivers is a real preference and not something to derive |
 | `note` | text, optional | |
@@ -196,10 +184,9 @@ because "was Jan an organizer of that camp?" must have one answer, not a set of 
 ### Organizers are appointments, not grants
 
 `event_organizer` is the **domain** answer to "who is running this camp?" — the labelled,
-ordered list that parents see. It is deliberately **not** an `access_grant`, and
-[D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)
-is untouched by round 10
-([../domain/07-events.md §5](../domain/07-events.md#5-organizers-are-appointed-not-granted)):
+ordered list that parents see. It is deliberately **not** an `access_grant`
+([D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted);
+[../domain/07-events.md §5](../domain/07-events.md#5-organizers-are-appointed-not-granted)):
 
 - A grant has no room for `organizer_role = 'cook'`.
 - "Who is running this camp?" should not be answered by reading the permission table.
@@ -211,14 +198,12 @@ at the unit, which reaches this event, or on this event — and never from a rol
 appointment conferring anything by itself
 ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
 
-What *did* change is what this table is now **aimed at**. It is the extension of the selector
-`ORGANIZERS`, so a grant can name the people running an event without any of them being
-granted anything by being listed
+What this table **is aimed at**: it is the extension of the selector `ORGANIZERS`, so a grant
+can name the people running an event without any of them being granted anything by being listed
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 **An operand is a set, not a grant** — the same sentence
 [data-model/05 §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) repeats
-for named sets generally, and it is why D-062 survives the deletion of the mechanism that used
-to make organizers matter. See §8 for the seeded grant that aims at this table.
+for named sets generally. See §8 for the seeded grant that aims at this table.
 
 ---
 
@@ -232,7 +217,7 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 |---|---|---|
 | `id` | surrogate id | Internal only |
 | `event_id` | reference to event, required | |
-| `person_id` | reference to person, required | `person_id`, NOT `membership_id` — the reasoning `unit_participation` gave and [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) carried over to `person_group_member`, and here it is stronger. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside `MEMBERS` today — see the note below |
+| `person_id` | reference to person, required | `person_id`, NOT `membership_id`. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside `MEMBERS` today — see the note below |
 | `response` | enum: `attending` / `not_attending`, required | TWO values. `unanswered` is written NOWHERE. It is the absence of a row, so "who has not replied yet?" is a subtraction, not a stored state ([../domain/07-events.md §3](../domain/07-events.md#3-registration-one-record-two-stored-answers-and-no-unanswered)). Returning someone to unanswered deletes the row, which `audit_log` records — the honest act, and the one that leaves least behind |
 | `responded_at` | timestamp, required | Default now. When the ANSWER was given, which may differ from when it was recorded. A phone call on Tuesday entered on Thursday has two dates and both matter |
 | `source` | enum: `self` / `staff` / `guardian` / `import`, required | Default `self`. How this person got here, and the audit answer to "how did they get in?". `staff` is written by a person holding `event.register_other`, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. `guardian` is acting-under-guardianship; the acting person is in `access_log` |
@@ -242,7 +227,7 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 | `is_confirmed` | boolean, required | Default false. Registration is not the same as a held place. An event with NO fee confirms immediately on registration; an event WITH a fee confirms on payment (§6). This is the "payment confirms the place" rule, and it is the only place in this module where money changes a registration's meaning |
 | `confirmed_at` | instant in time, optional | Set exactly when `is_confirmed` is true |
 | `was_present` | boolean, three-valued | `NULL` = not yet marked — no register was taken. `true` = turned up. `false` = marked absent. THREE-VALUED ON PURPOSE: "we did not take a register" and "we took one and they were not there" are different facts, and only one is a safeguarding signal. For a camp this is the record of who was actually in the organization's care, and it cannot be reconstructed afterwards (§9). **It is deliberately not the basis of any selector** — `PRESENT(<event>)` is refused, and why is in §8 |
-| `presence_marked_by` | reference to person, optional | The person who took the register. Held by whoever has been *allowed* `event.presence.mark` — deliberately a separate code from `event.manage_participants`, not a rung beneath it: after [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) there is no ladder for one permission to sit below another, and that is the stronger form of the same protection. The volunteer at the door is not also the person who can delete a child from the roster, because they were granted one code and not the other |
+| `presence_marked_by` | reference to person, optional | The person who took the register. Held by whoever has been *allowed* `event.presence.mark` — deliberately a separate code from `event.manage_participants`, not a rung beneath it: there is no ladder for one permission to sit below another ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)), and that is the stronger form of the same protection. The volunteer at the door is not also the person who can delete a child from the roster, because they were granted one code and not the other |
 | `presence_marked_at` | instant in time, optional | When the register was taken |
 | `fee_obligation_id` | reference to fee obligation, optional | Set when the event has a `fee_schedule` and this registration created an obligation. The reverse pointer from `fee_obligation.event_registration_id` also exists (§6) — both directions, because each is asked a different question: "what does this person owe for this camp?" and "what is this obligation for?" |
 | `created_at` | timestamp, audit time | |
@@ -280,22 +265,17 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 
 ### Why `person_id`, not `membership_id`
 
-The argument `unit_participation` made
-([03-membership.md §5](03-membership.md#5-unit_participation--deleted-by-d-097), before D-097 deleted it) and
-[D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
-transferred to `person_group_member`, and it is stronger here. An
-imported 1998 camp roster names children who have no membership row to point at. With the
-corpus being large and number-bearing
+An imported 1998 camp roster names children who have no membership row to point at. With the
+corpus large and number-bearing
 ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)),
-linking to `membership` would make those rows unrepresentable.
+linking registration rows to `membership` would make those rows unrepresentable.
+[D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+applies the same reasoning to `person_group_member`, and here it is stronger.
 
-**And the harm moved rather than went away.** It used to be argued through the membership
-gate, which made a 1998 camper a current member with authority today. The gate is deleted
-([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
-and the same harm now runs through the selector: `MEMBERS` is evaluated live on the checked
-date, so an inferred open-ended membership puts every one of those children inside `MEMBERS`
-today, and every live grant whose expression contains `MEMBERS` reaches them. An
-open-ended row is the dangerous object under both models; only the mechanism changed.
+**An inferred open-ended membership is the dangerous object.** `MEMBERS` is evaluated live on the
+checked date, so one open-ended row makes a 1998 camper a member today, and every live grant whose
+expression contains `MEMBERS` reaches them. Recording past attendance as a membership writes
+exactly that row, which is why the registration names the person and not a membership.
 
 **The trade-off, stated:** no database constraint can enforce "only members may register", and
 none is wanted — eligibility is capability ([../domain/07-events.md §4](../domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine)),
@@ -344,11 +324,11 @@ The rule runs on insert only; a later edit of the row does not re-run it. Promot
 release below write the same flags deliberately.
 
 > **The `source = 'self'` disjunct is the whole of "organizers may register anyone", made
-> mechanical.** Removing it silently reverses the answer: every staff registration would be
-> waitlisted behind self-service ones, and the leader adding a child on the day would be
-> told the camp is full when they can see two spare beds. Note what this rule does **not**
-> consult: not a level, not a role, and since D-102 not an owning unit. `source` is a stored
-> fact written by whoever holds `event.register_other`, and the capacity rule reads the fact.
+> mechanical.** Without it every staff registration is waitlisted behind self-service ones, and
+> the leader adding a child on the day is told the camp is full when they can see two spare
+> beds. Note what this rule does **not** consult: not a level, not a role, not an owning unit.
+> `source` is a stored fact written by whoever holds `event.register_other`, and the capacity
+> rule reads the fact.
 
 ### Promotion, which is a deliberate act
 
@@ -385,11 +365,9 @@ registration (which is admitted by hand and by a human who can see the roster).
    highest position already on that event's waitlist — `1` when the waitlist is empty.
 4. Take the place back: `is_confirmed` false, `confirmed_at` absent.
 
-> **Why this is accepted despite the design's habit of avoiding automatic transitions.** The
-> design has spent real effort keeping state changes deliberate
-> ([D-023](../decisions/round-01b.md#d-023--nothing-is-auto-lapsed-or-auto-terminated),
-> [D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
-> and "payment confirms the place" reintroduces one. It is a *deadline*, not a sweep: it
+> **Why this is accepted despite the design's refusal of automatic transitions**
+> ([D-023](../decisions/round-01b.md#d-023--nothing-is-auto-lapsed-or-auto-terminated)).
+> It is a *deadline*, not a sweep: it
 > applies to a narrow conjunction, it is opt-in per event (`waitlist_deadline` is `NULL` by
 > default, so most events never run it), and the state it produces is visible — the person
 > is on the waitlist, not silently deleted. The alternative, no deadline at all, means a
@@ -417,18 +395,16 @@ created before the registration it belongs to exists, and the registration's
    `waitlist_deadline`, falling back to the event's `starts_at` when it has none.
 5. Write the new obligation's id into the registration's `fee_obligation_id`.
 
-**The pointer that had to be restored.** [D-057](../decisions/round-04.md#d-057--household-is-removed)
-removed the household arm from the exactly-one rule over `fee_obligation`'s target columns,
-leaving two of them (membership or membership request, never both). An event fee needs an arm back — and this time it is a *real* arm
-with data behind it, not the dormant hedge the household column was.
-
-The arm lives in `fee_obligation` and is stated there in full
+**Exactly one arm of `fee_obligation` names what the fee is for.** The rule lives in
+`fee_obligation` and is stated there in full
 ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)): exactly one of
 `membership_id`, `membership_request_id` and `event_registration_id` is set on every
-obligation. Still exactly one, not "at most three" — every obligation is for exactly one
-thing: a membership period, a membership request, or one person's place at one event. The
+obligation — exactly one, not "at most three". Every obligation is for exactly one
+thing: a membership period, a membership request, or one person's place at one event, and an
+event fee uses the third arm. The
 per-person choice is deliberate, because the fee is flat and per person (D-037) and a family
-price would need the household grouping designed again first. Obligations carrying the event
+price would need people grouped into households first, and the model has no such grouping
+([D-057](../decisions/round-04.md#d-057--household-is-removed)). Obligations carrying the event
 arm are indexed on `event_registration_id`, restricted to the rows where it is set.
 
 ### Confirming on payment
@@ -517,55 +493,45 @@ is exactly the number of things the organization must act on.
 
 ### Reusable question libraries were considered and rejected
 
-A shared pool of question definitions — `question_code`, assigned to events — is
-structurally the requirement machinery removed in
-[D-044](../decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment).
-It earns its keep only when the same question must mean the same thing across events, and
-tent preference does not: what one camp asks and what another needs are allowed to differ.
-Per-event definitions keep them from having to agree, and avoid reviving a removed pattern
-for a benefit nobody asked for.
+There is no shared pool of question definitions: no `question_code`, no library a question is
+copied from, nothing that has to mean the same thing at two events. A pool earns its keep only
+when the same question must mean one thing everywhere, and tent preference does not — what one
+camp asks and what another needs are allowed to differ, and defining a question per event keeps
+them from having to agree. This is the shape
+[D-044](../decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)
+refused for membership requirements, and it is refused here for the same reason.
 
 ### Health facts, and the discipline this requires
 
 > **An event form is how the people running an event find out what they need to know about the
-> people who came.** It used to be the *only* way. [D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
-> ended that, and the guidance below is still worth reading as a warning rather than a nicety —
-> anything a form asks is read by whoever runs that event, and the number of such people is decided
-> by whoever creates the event
+> people who came.** Anything a form asks is read by whoever runs that event, and the number of
+> such people is decided by whoever creates the event
 > ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers),
 > [../domain/07-events.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
->
-> **Round 10 moved that sentence from the resolver into a row.** "Read by whoever runs that
-> event" is now a seeded grant — `event.answer.view` on the event, aimed at `ORGANIZERS` (§8).
-> That makes the warning *checkable* in a way it was not before: the number of people who can
-> read an event's answers is a grant plus the roster in §3, and both are readable.
+> "Read by whoever runs that event" is a seeded grant — `event.answer.view` on the event, aimed
+> at `ORGANIZERS` (§8) — which makes this a checkable warning rather than a nicety: the number of
+> people who can read an event's answers is a grant plus the roster in §3, and both are readable.
 
-**This sentence's reason has now been rewritten twice, and the second rewriting killed the claim.**
-It began as "the `dependent.*` namespace is unreachable by unit leaders"; [D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
-deleted that namespace and the claim survived on a better reason — no `event.*` permission includes
-the medical record, and no wildcard is left to sweep it in (D-068). **Both halves are now gone: there
-is no medical record** ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
-and the facts that would have been in one are attributes on the person, which
-**a person holding `person.view` at the unit can read** — and after
-[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) the unit is the
-only scope there is, so that grant reads everyone's
-([09-attributes §4](09-attributes.md#4-who-may-read-and-who-may-write)). A claim that had outlived two
-of its reasons should not be repaired a third time; it is stated as what is now true:
+**The form is not the ceiling on what an organizer may know.** There is no medical record: the
+facts that would have been in one are attributes on the person, and **a person holding
+`person.view` at the unit can read them** — the unit is the only scope there is, so that grant
+reads everyone's ([09-attributes §4](09-attributes.md#4-who-may-read-and-who-may-write)). An
+organizer who holds `person.view` may already have read the allergy, and any document implying
+the contrary is making a privacy promise the model does not keep
+([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
 
-- **The form is no longer the ceiling on what an organizer may know.** An organizer who holds
-  `person.view` may already have read the allergy. Any document implying the contrary was
-  quietly making a privacy promise the model does not keep.
-- **What the form is for changed accordingly** — it asks *now*, about *this* event, of a person who
-  may not be in the system at all, and its answer carries a date. That is a genuine property the
-  record does not have: a recorded attribute says what somebody believed, once, at no particular
-  time. Whether the two should meet at all is [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code),
-  and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
-  a stale health fact that arrives looking authoritative is worse data than an asked question.
-- **Nothing in the data model distinguishes a preference from a condition**, and now nothing *could*:
-  [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-  refused the category. "Vegetarian" and "coeliac" are both `data_type = 'text'` in
-  `event_answer.value`, so the line is what an organizer types into `label` — **form design guidance,
-  not an enforced constraint**:
+**What the form is for:** it asks *now*, about *this* event, of a person who may not be in the
+system at all, and its answer carries a date. That is a genuine property the record does not
+have — a recorded attribute says what somebody believed, once, at no particular time. Whether
+the two should meet at all is [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code),
+and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
+a stale health fact that arrives looking authoritative is worse data than an asked question.
+
+**Nothing in the data model distinguishes a preference from a condition, and nothing *could*:**
+[D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+refused the category. "Vegetarian" and "coeliac" are both `data_type = 'text'` in
+`event_answer.value`, so the line is what an organizer types into `label` — **form design guidance,
+not an enforced constraint**:
 
 | Belongs on an event form | Belongs on the person, as an attribute |
 |---|---|
@@ -574,15 +540,17 @@ of its reasons should not be repaired a third time; it is stated as what is now 
 | T-shirt size for a camp that is ordering shirts now | Anything whose value outlives the event that asked |
 
 Asking a returning camper to restate a recorded allergy at every event is not a privacy measure; it
-is the same fact, fresher in one table and unmanaged in it. **The honest reading of this section is
-that the event answer is where a health fact lands when the organization has not collected it
-properly** — and the fix is the record plus a confirmation pass, not a cleverer form.
+is the same fact, fresher in one table and unmanaged in it. **The event answer is where a health
+fact lands when the organization has not collected it properly** — and the fix is the record plus
+a confirmation pass, not a cleverer form.
 
 **Open:** the retention policy for answers. A dietary answer citing a medical condition is data of
-exactly the same class as everything else the organization holds about a person — [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-settled that there is no specially-sensitive category, not that this data is insignificant — and
+exactly the same class as everything else the organization holds about a person: there is no
+specially-sensitive category, which is not the same as this data being insignificant — and
 there is no policy for how long answers survive their event. See
 **[EV-2](../open-questions.md#ev-2--retention-of-event_answer)**, which notes that until it is
 answered the weakest-protected copy of a health fact is the freshest one.
 
 ---
+
+*Decisions behind this page: D-005, D-023, D-037, D-040, D-044, D-056, D-057, D-061, D-062, D-065, D-083, D-090, D-095, D-098, D-099, D-102.*
