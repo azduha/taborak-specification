@@ -2396,13 +2396,11 @@ ordering and promotion mechanics.</p>
 there are two spare tents should not be blocked by a number they cannot edit mid-camp
 (<a href="../../decisions/round-05/#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it">D-065</a>).
 The overrun is permitted, attributed, and <strong>reported</strong>
-(<a href="../../data-model/01-identity/#10-integrity-checks">data-model/08 §10</a>): an event running over
+(<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">data-model/08a §10</a>): an event running over
 its stated capacity is a fact the organization can see, not a state it cannot reach.</p>
-<p>The mechanism of <em>how</em> an organizer gets past the number is unchanged by round 10 and was
-never the resolver: the waitlist fires only for <code>source = 'self'</code>, and a registration written
-by a person holding <code>event.register_other</code> arrives as <code>source = 'staff'</code> and is admitted.
-What changed is where that permission came from — before, the owning unit supplied it; now it
-is a grant at the unit or on the event, like every other code
+<p>The way past the number is not the resolver: the waitlist fires only for <code>source = 'self'</code>, and a
+registration written by a person holding <code>event.register_other</code> arrives as <code>source = 'staff'</code> and is
+admitted. <code>event.register_other</code> is a grant at the unit or on the event, like every other code
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
 <p>So capacity is three things at once, and all three are intentional:</p>
 <table>
@@ -2427,8 +2425,9 @@ is a grant at the unit or on the event, like every other code
 </tr>
 </tbody>
 </table>
-<p>The set capacity is compared against has a name now: it is <strong><code>PLACED</code></strong>, the attending
-non-waitlisted registrations of an event (§7) — the same set <code>PLACED</code> selects and the same
+<p>The set capacity is compared against has a name: it is <strong><code>PLACED</code></strong>, the attending
+non-waitlisted registrations of an event
+(<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>) — the same set <code>PLACED</code> selects and the same
 index the capacity test already uses.</p>
 <hr />
 <h2 id="9-presence-what-actually-happened">9. Presence: what actually happened<a class="headerlink" href="#9-presence-what-actually-happened" title="Permanent link">&para;</a></h2>
@@ -2450,7 +2449,8 @@ the day — is not representable, deliberately: that child was not in the organi
 and must not silently appear to have been. Recording them means registering them, which
 means they have a guardian and the organizers have a name.</p>
 <p><strong>And presence is not an audience.</strong> The temptation to build <code>PRESENT(&lt;event&gt;)</code> on this
-column — to let "everyone who came" be a set a grant names — is refused, and §7 states why:
+column — to let "everyone who came" be a set a grant names — is refused, and
+<a href="../07-events/#7-the-people-connected-to-an-event">§7</a> states why:
 the column is <code>NULL</code> until somebody takes a register, so an operand over it makes access
 depend on a volunteer's diligence, and it would turn a safeguarding record into an access
 control. Attendance for the purposes of a grant stops at <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>
@@ -2462,22 +2462,17 @@ and <code>ON_WAITLIST</code>.</p>
 whoever can see it can see it because of a grant they already hold — normally an
 <code>event.view</code> at the unit, which reaches every event and therefore every new one the moment it
 is created. Publishing is not a state change — it is <strong>granting</strong> someone access: an audience,
-a group, a role. This is your answer, and it is
-better than a <code>status</code> enum for the usual reason: a status column and a permission system
+a group, a role.</p>
+<p><em>Why not a <code>status</code> enum:</em> a status column and a permission system
 that both claim to say "who may see this" will eventually disagree, and the one that gets
-enforced is whoever wrote the last <code>IF</code>.</p>
-<p>That has a consequence worth saying out loud, because it is the opposite of the old
-behaviour. ~~A newly created event has no grants beyond its organizers' own authority, so
-nobody else can see it~~ — under
-<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
-a draft reached exactly one audience: the owning unit's own people, whom
-<a href="../../decisions/round-05/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a>'s
-rule carried across to it, and nobody else. After D-102 there is <strong>no such narrow default</strong>: a
-person holding <code>event.view</code> at the unit sees a half-typed event the instant it is committed,
-and there is no narrower scope a grant could have sat at instead. A genuinely private event is
-therefore an <em>act</em> — an item grant, plus a deny at the unit if the audience is broad — rather
-than the absence of one. D-064's reasoning about the two-writer problem is untouched; what
-moved is which side of the pair the default sits on.</p>
+enforced is whoever wrote the last <code>IF</code>
+(<a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>).</p>
+<p><strong>There is no narrow default, and that is the shape of the model.</strong> After
+<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> the unit is
+the only scope there is, so a person holding <code>event.view</code> at the unit sees a half-typed event the instant
+it is committed, and there is no narrower scope a grant could have sat at instead. <strong>A genuinely private
+event is therefore an <em>act</em></strong> — an item grant, plus a deny at the unit if the audience is broad — rather
+than the absence of one.</p>
 <p>So the questions that a <code>draft</code> status would answer are answered by grants:</p>
 <table>
 <thead>
@@ -2501,8 +2496,9 @@ moved is which side of the pair the default sits on.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Cancellation is a fact, not a status</strong> — and this is where the logic diverges, because the
-audience is different:</p>
+<p><strong>Cancellation is a fact, not a status</strong>, and the logic diverges from visibility here because the audience
+is different: the people who must be told are the people who registered, and they must be able to see the
+event to be told anything.</p>
 <p>Three columns carry it: <code>cancelled_at</code> says when, <code>cancelled_by</code> says who — a person, so the
 decision has a name attached to it — and <code>cancel_reason</code> says why.</p>
 <blockquote>
@@ -2553,15 +2549,13 @@ mandatory, because plenty of events are free.</p>
 </tr>
 </tbody>
 </table>
-<p>The only new schema here is a <strong>pointer</strong>: <code>fee_obligation.event_registration_id</code>. It is one
-arm of <code>fee_obligation</code>'s exactly-one rule, restored after
-<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a> removed the household arm,
-and this time it is a <em>real</em> arm with data behind it rather than a dormant hedge.</p>
+<p>The only schema here is a <strong>pointer</strong>: <code>fee_obligation.event_registration_id</code>, one arm of
+<code>fee_obligation</code>'s exactly-one rule — an arm with rows behind it, not a dormant hedge.</p>
 <p><strong>The <code>is_confirmed</code> / deadline interaction is the one automatic transition in this module</strong>,
-and it is worth flagging as such: the design has spent effort avoiding automatic state
-changes (<a href="../../decisions/round-01b/#d-023--nothing-is-auto-lapsed-or-auto-terminated">D-023</a>,
+and it is worth flagging as such: the design avoids automatic state changes
+(<a href="../../decisions/round-01b/#d-023--nothing-is-auto-lapsed-or-auto-terminated">D-023</a>,
 <a href="../../decisions/round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>),
-and payment-confirms-the-place reintroduces one. It is a <em>deadline</em>, not a sweep: it applies
+and payment-confirms-the-place is the one it accepts. It is a <em>deadline</em>, not a sweep: it applies
 only to registrations at a full event with an unpaid fee, and only after the deadline the
 organizer set. <a href="../../data-model/08-events/#6-payments-and-confirmation">data-model/08 §6</a>
 records it as an accepted cost with the reasoning, and
@@ -2582,29 +2576,26 @@ organization must actually act on.</p>
 <p>Questions may apply to <strong>attendees, organizers, or both</strong>, and may be required or optional.
 Required means <em>the person registering must answer</em>; it is not a global gate on
 registration, because a form that blocks sign-up is a form nobody completes.</p>
-<p><strong>Reusable question libraries were considered and rejected.</strong> A shared pool of question
-definitions is structurally the requirement machinery removed in
+<p><strong>Reusable question libraries are rejected.</strong> A shared pool of question definitions is structurally the
+requirement machinery removed in
 <a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>,
 and it earns its keep only when the same question must mean the same thing across events.
 Tent preference does not: what one camp asks and what another needs are allowed to differ,
 and per-event definitions keep them from having to agree.</p>
 <h3 id="health-data-and-the-widening-this-represents">Health data, and the widening this represents<a class="headerlink" href="#health-data-and-the-widening-this-represents" title="Permanent link">&para;</a></h3>
-<p>You confirmed that <strong>event answers are readable by that event's organizers, with no extra
-gate</strong> (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>),
-and round 10 changed only <em>where that sentence is written down</em>. It is no longer prose inside
-the resolver; it is <strong>a seeded grant</strong> — <code>event.answer.view</code> on an event, aimed at
-<code>ORGANIZERS</code>
+<p><strong>Event answers are readable by that event's organizers, with no extra gate</strong>
+(<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).
+The mechanism is <strong>a seeded grant</strong>: <code>event.answer.view</code> on an event, aimed at <code>ORGANIZERS</code>
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
-Two things follow, and neither weakens D-061:</p>
+Two things follow:</p>
 <ul>
-<li><strong>"No extra gate" is now literally true and visible.</strong> The seeded grant <em>is</em> the whole
+<li><strong>"No extra gate" is literally true and visible.</strong> The seeded grant <em>is</em> the whole
   mechanism; there is no clause special-casing organizers. Anyone who wants to see who may
   read an event's answers reads a grant row.</li>
-<li><strong>The reach of that grant is per-event, which D-061 always asserted and round 10 makes
-  checkable.</strong> <code>ORGANIZERS</code> with no argument binds to the event the grant sits on, so the
-  seeded row cannot accidentally name the organizers of every camp at once.</li>
+<li><strong>The reach of that grant is per-event.</strong> <code>ORGANIZERS</code> with no argument binds to the event the grant
+  sits on, so the seeded row cannot accidentally name the organizers of every camp at once.</li>
 </ul>
-<p>Two consequences of D-061 follow, and the second is the significant one.</p>
+<p>Two consequences of that reach follow, and the second is the significant one.</p>
 <p><strong>1. Only preference-level detail belongs on a form.</strong> A dietary <em>preference</em> ("vegetarian",
 "no pork") is an operational note for the cook. A <em>condition</em> ("coeliac", "nut allergy") is
 medical data, and nothing in the schema distinguishes them — the difference is what the
@@ -2618,72 +2609,74 @@ someone other than the actor and never answered by a role or a grant
 (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>,
 <a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>;
 <a href="../../appendix/permission-catalog/#9-there-is-no-dependent-namespace">appendix/permission-catalog.md §9</a>).
-The namespace that used to spell this out is deleted, the safeguarding property it carried is not:</p>
+What a leader gets over a child's data is not of that kind:</p>
 <blockquote>
 <p><em>"A person does not get these by virtue of leading — that is a safeguarding
 property."</em></p>
 </blockquote>
-<p><strong>Corrected in round 7, because this sentence was doing work it could no longer do.</strong> It used to read
-<em>"so a camp leader cannot reach a child's medical record at all"</em> — and after
-<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-there is no medical record to be unreachable, so the sentence is not merely out of date, it describes a
-guarantee the model never had once the category disappeared. What is actually true, in the two forms
-that matter:</p>
+<p><strong>There is no medical record to be unreachable.</strong> Personal data is one class
+(<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+so a guarantee that a camp leader <em>"cannot reach a child's medical record at all"</em> describes a
+category the model does not have. What is true, in the two forms that matter:</p>
 <ul>
 <li><strong>No role gets it by leading.</strong> The starting role set gives a leadership role its rosters and
   its events — and <strong>no read over a person's data</strong>
-  (<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11</a>). That
-  is the safeguarding property, exactly as before: leadership is not guardianship, and the
-  guardianship channel answers only for the person its row names.</li>
-<li><strong>It is now one grant away, and round 10 widened what "one grant" means.</strong> Whoever holds
-  <code>person.view</code> <strong>at the unit</strong> reads every child's whole record, allergy list included — and
-  after <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+  (<a href="../../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11</a>).
+  Leadership is not guardianship, and the guardianship channel answers only for the person its
+  row names.</li>
+<li><strong>It is one grant away.</strong> Whoever holds
+  <code>person.view</code> <strong>at the unit</strong> reads every child's whole record, allergy list included, and
   a grant at the unit has no narrower reading available, because the unit is the only scope
-  there is. Nothing in the resolver will stop that and nothing should — but a document that
-  promised it was impossible would have been trusted, and a promise the model does not make is
-  worse than none.</li>
+  there is (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>).
+  Nothing in the resolver will stop that and nothing should — but the model does not promise it
+  is impossible either, and a promise the model does not make is worse than none.</li>
 </ul>
-<p>**The widening in the next paragraph is therefore unchanged in substance and better stated: the
-protection is a decision about a role, revisitable by whoever administers roles, not a wall."</p>
+<p><strong>So the protection is a decision about a role, revisitable by whoever administers roles — not a wall.</strong></p>
 <p>Which means: under the starting roles, an allergy recorded on a camp form is <strong>the only way the people
 running the camp will know</strong>. That is a coherent and defensible configuration — <em>the parent tells the
-people present, per event, and nobody outside the family holds the fact</em> — but it is a widening from "few
-people, via a guardianship-scoped permission" to "every organizer of any event the child
-registers for", and it is recorded as such in
+people present, per event, and nobody outside the family holds the fact</em> — but it is a widening from "the
+few adults whose <code>guardianship</code> row names them, at one <code>right_level</code>" to "every organizer of any event the
+child registers for", and it is recorded as such in
 <a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
 with the reasoning, so that nobody later "fixes" the apparent duplication between the two
 stores by tightening this one.</p>
 <p><strong>Event answers are not the person's record.</strong> They are operational detail for one event, read by that
 event's organizers, and they end with the event — while the same fact, recorded on the person, is
-audited, curable and erased with them. <strong><a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-made those two copies the same class of data</strong>, which is what turns the retention question below into
+audited, curable and erased with them. Those two copies are <strong>the same class of data</strong>
+(<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+which is what turns the retention question in §13 into
 a real one, and <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>
 into the alternative: collect the fact once, confirm it at the door. See
-<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">§11</a> for the retention question, which is open.</p>
+<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">data-model/08a §11</a> for the retention
+question, which is open.</p>
 <hr />
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
 <p>Moved to <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>, where they are
 tracked with the rest. The ones this module raises:</p>
 <ul>
-<li>~~<strong>The age ceiling on an open event</strong>~~ — <strong>settled: accepted as a risk</strong>, the grant is
-  the rule, and closing it later would mean a new operand rather than a column (§4,
-  <a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
-  <strong>That prediction has come true and it changes the shape of the answer, not the answer:</strong> the
-  operand arrived as <code>YOUNGER(n)</code>, so an age ceiling is writable today as
-  <code>event.register_self</code> aimed at <code>MEMBERS * YOUNGER(15)</code>. <strong>EV-1 stays closed, now as a choice
+<li><strong>The age ceiling on an open event — settled: accepted as a risk.</strong> The grant is the rule, and a
+  ceiling is writable today as <code>event.register_self</code> aimed at <code>MEMBERS * YOUNGER(15)</code>
+  (<a href="../07-events/#4-who-may-register-capability-not-a-separate-rule-engine">§4</a>,
+  <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+  <strong>EV-1 stays closed as a choice
   the organization renews rather than a limit it inherits</strong> — nobody has to be told the ceiling
-  cannot be stated, only whether it should be (§4,
-  <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
+  cannot be stated, only whether it should be
+  (<a href="../07-events/#4-who-may-register-capability-not-a-separate-rule-engine">§4</a>,
+  <a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).</li>
 <li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds exactly one grant,
   <code>event.answer.view</code>. Everything else an organizer needs — editing the event, working the
-  roster — now reaches them only through a unit-scope or item grant they happen to hold, and
-  no decision says whether that is the intended shape or an oversight (§5, §6). This module
+  roster — reaches them only through a unit-scope or item grant they happen to hold, and
+  no decision says whether that is the intended shape or an oversight
+  (<a href="../07-events/#5-organizers-are-appointed-not-granted">§5</a>,
+  <a href="../07-events/#6-how-authority-reaches-an-event">§6</a>). This module
   does not seed more of its own accord.</li>
 <li><strong>Whether a bound selector makes its audience single-scope.</strong> An audience whose expression
   names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared audience row can stop
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
-  as written; whether the editor should warn at the audience instead is unsettled (§7).</li>
-<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it, so it is not a selector (§7) — a question about
+  as written; whether the editor should warn at the audience instead is unsettled
+  (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>).</li>
+<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it, so it is not a selector
+  (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>) — a question about
   whether the feature is wanted, and not one about whether the language could hold it: a
   predicate over a column is an ordinary operand now
   (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
@@ -2695,8 +2688,11 @@ tracked with the rest. The ones this module raises:</p>
   releases the obligations, refunds them, or neither is the finance module's call.</li>
 <li><strong>Presence for minors and the safeguarding record</strong> (§9). <code>was_present</code> is the "who was in
   our care" record. Whether it needs its own retention or its own permission is unresolved —
-  and §7's refusal of <code>PRESENT</code> is the sharp edge of why that matters.</li>
+  and <a href="../07-events/#7-the-people-connected-to-an-event">§7</a>'s refusal of <code>PRESENT</code> is the sharp edge of
+  why that matters.</li>
 </ul>
+<hr />
+<p><em>Decisions behind this page: D-023, D-040, D-044, D-061, D-064, D-065, D-067, D-070, D-074, D-079, D-083, D-097, D-102, D-107.</em></p>
 
 
 

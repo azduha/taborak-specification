@@ -2463,38 +2463,21 @@
 <hr />
 <h2 id="8-projections-and-guards">8. Projections and guards<a class="headerlink" href="#8-projections-and-guards" title="Permanent link">&para;</a></h2>
 <h3 id="the-unit-authority-rule-and-can_event--both-deleted">The unit-authority rule, and <code>can_event()</code> — both deleted<a class="headerlink" href="#the-unit-authority-rule-and-can_event--both-deleted" title="Permanent link">&para;</a></h3>
-<p>~~A permission is satisfied at <code>('event', E)</code> if it is satisfied at the event's owning unit
-<code>('org_unit', E.org_unit_id)</code> AND the event's owner is that same unit.~~ <strong>Withdrawn by
-<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,</strong>
-which deleted <code>event.org_unit_id</code> (§2) and with it the whole rule, together with
-<a href="../../decisions/round-05/#d-063--an-event-is-an-artifact-of-its-unit-not-a-child-of-it">D-063</a>'s
-artifact-and-child distinction. <code>can_event(person, permission_code, event, at)</code> is deleted;
-<strong>every event check goes through the ordinary <code>can()</code> and nothing else.</strong></p>
-<p><strong>Who enforces it now — <code>can()</code>, with no event-shaped clause in it.</strong> The resolver matches
-scope exactly, exactly as before, and the gap D-063 was written to close cannot open: the
-only non-item scope is the unit, and a grant at the unit reaches every item of every type
-(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).
-The person whose job is to run the organization's camps passes a check at <code>('event', 42)</code>
-because their allow is at the unit, not because anything tested the event.</p>
-<p><strong>D-063's reasoning, kept because the problem it named is still a problem.</strong> The old design
-refused to let authority inherit from a body down to that body's events, and bought a narrow
-rule instead of a wide one, on the grounds that inheritance's blast radius grows with every
-restructure while an owner column's does not. Both halves of that pair are gone: there are no
-bodies and no restructures
-(<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-so there is nothing left to keep narrow. What replaced the distinction is not inheritance and
-not a test — it is the <strong>absence of an intermediate scope</strong>. Between the unit and an event
-there is now nothing to inherit through, which is the same outcome D-063 was reaching for by
-way of a rule.</p>
-<p><strong>D-063's two-way door, spent.</strong> It promised that "deleting the second <code>can()</code> call is the
-whole change, and it needs no data migration", because nothing had been written to
-<code>access_grant</code> to make the rule work. Round 10 collected on that: deleting the rule is the
-whole change and needed no migration. The door back is narrower now — an owner column, a
-resolver tier that reads it, and the checks this section deletes — and the bound selectors
-below would survive it unchanged, because an ownership grant and a bound operand answer
-different questions.</p>
+<p><strong>Every event check goes through the ordinary <code>can()</code> and nothing else.</strong> There is no
+<code>can_event(person, permission_code, event, at)</code> wrapper and no unit-authority rule for events:
+an event is an item like any other, and the resolver matches scope exactly. The person whose
+job is to run the organization's camps passes a check at <code>('event', 42)</code> because their allow is
+at the unit, not because anything tested the event.</p>
+<p><strong>Who enforces it — <code>can()</code>, with no event-shaped clause in it.</strong> The only non-item scope is
+the unit, and a grant at the unit reaches every item of every type
+(<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>),
+so there is no gap between a unit grant and one of that unit's events for anything to close.
+<strong>Why nothing closes one:</strong> there is <strong>no scope between the unit and an event</strong> — nothing to
+inherit through and nothing to test on the way. Authority reaches an event the same way it
+reaches any other item, and an event carries no authority of its own
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>
 <h3 id="selectors-that-bind-to-an-event">Selectors that bind to an event<a class="headerlink" href="#selectors-that-bind-to-an-event" title="Permanent link">&para;</a></h3>
-<p>Six sets describe the people connected to an event, and each is a <strong>selector that binds to
+<p>Five sets describe the people connected to an event, and each is a <strong>selector that binds to
 the item being checked</strong> — written with no argument inside an item-scope grant, and with an
 explicit event in every other context. They are seeded rows of <code>selector_type</code>, the registry
 of <a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>, and
@@ -2541,14 +2524,13 @@ not "more" than <code>ON_WAITLIST</code>, it is a different conjunction. <strong
 the set §5 counts against <code>capacity</code></strong>, and the same partial index serves both (§4).</p>
 <p><code>ORGANIZERS</code> is the fifth, and its definition is the roster in §3 — the labelled, ordered,
 domain answer to "who runs this", evaluated over <code>event_organizer</code> rows for the event
-checked. <strong>There is no sixth, and this page printed one until round 13.</strong> The <code>GUARDIANS</code> that sat in
-that sentence was never an operand at all, in either spelling: a guardian's authority is a
-<code>right_level ∈ none | view | write</code> held <strong>over a child</strong>, read off the <code>guardianship</code> row when the check
-is about someone other than the actor, and it is not a set that the expression language resolves
+checked. <strong>There is no sixth operand, and nothing guardian-shaped can become one.</strong> A guardian's
+authority is a <code>right_level ∈ none | view | write</code> held <strong>over a child</strong>, read off the
+<code>guardianship</code> row when the check is about someone other than the actor; it is not a set that
+the expression language resolves, and <code>GUARDIANS</code> is not a row of <code>selector_type</code> in either
+spelling
 (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>,
-<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
-Counting it alongside these five was the error, not a narrower way of stating the channel — which is why
-the paragraph below already called <code>PRESENT</code> the obvious sixth.</p>
+<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).</p>
 <p><strong><code>PRESENT(&lt;event&gt;)</code> is refused.</strong> An operand over <code>was_present</code> is the obvious sixth
 attendance tier and it is not available, and the reason is the failure direction:
 <code>was_present</code> is <code>NULL</code> until somebody takes a register, so a grant aimed at <code>PRESENT</code> would
@@ -2581,73 +2563,58 @@ operand is perfectly storable and simply cannot be aimed at a unit-scope grant. 
 lands on the grant, where D-102 puts it, and the audience browser should show which scopes an
 expression is usable at rather than letting the save discover it
 (<a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>).</p>
-<p><strong>The seeded grant: <code>event.answer.view</code> on an event to <code>ORGANIZERS</code>.</strong> This is where
-<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>'s
-"answers are read by that event's organizers" now lives — a row in <code>access_grant</code>, not a
-clause in the resolver, which is the same move D-102 made to the whole of unit authority over
-an event. It is aimed at a <strong>set</strong>, so it does not contradict
+<p><strong>The seeded grant: <code>event.answer.view</code> on an event to <code>ORGANIZERS</code>.</strong> "Answers are read by
+that event's organizers"
+(<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>)
+is a row in <code>access_grant</code>, not a clause in the resolver: authority over an event lives in
+grant rows, and so does this. It is aimed at a <strong>set</strong>, so it does not contradict
 <a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
 and does not make <code>event_organizer</code> a grant table: adding a cook to the roster changes a set,
-and the grant keeps pointing at the set. The registered spelling of the code is the catalog's
-<code>event.answer.view</code>, singular <em>answer</em>, which <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-now uses too — it wrote <code>event.answers.view</code> while the entry was new, and the two spellings were
-one code, not two.</p>
+and the grant keeps pointing at the set. The registered spelling is the catalog's
+<code>event.answer.view</code>, singular <em>answer</em>; <code>event.answers.view</code> is that one code misspelled, not a
+second code.</p>
 <p><em>Assumption:</em> a grant's scope is the unit or exactly one item, and a bound operand is legal
 only on an item-scope grant, so the seeded grant <strong>cannot be one row for every event</strong>. This
 module reads it as a <strong>seed template instantiated by the event-creation path</strong>, which writes
 one item-scope grant on each new event; the one-off import owes the same row for every event
 it writes, or an imported camp's organizers cannot read that camp's answers. D-102 does not
 say who writes the row. Integrity check 1 in §10 is the net.</p>
-<p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" stops being a property
-of a grant row once an operand binds: <code>PLACED</code> is different people on different events. The
+<p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" is not a property of a
+grant row once an operand binds: <code>PLACED</code> is different people on different events. The
 editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
-against, and ~~the cache key for a bound operand must include the item~~ — the answer cache that had a key is
-deleted (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>),
-but the rule survives it at the layer below: the item is bound at <strong>resolution</strong>, so nothing expanded while
-computing one item may be reused for another. Stated as a requirement
+against. The same bound holds inside a check: the item is bound at <strong>resolution</strong>, so nothing
+expanded while computing one item may be reused for another. Stated as a requirement
 in <a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>. That expansion
-is not capped or deferred, and the ground is now stated rather than assumed: a few dozen registrants on a
+is not capped or deferred: a few dozen registrants on a
 typical event and a big camp on the order of two hundred is a preview nobody feels — a size
 <strong>stated, not measured</strong>, with a named trigger to reopen it
 (<a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>).</p>
-<p><strong>A write to <code>event_registration</code> is not a ruleset write — and since <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>
-that buys it no staleness whatsoever.</strong> ~~There is one cache policy and three triggers — rebuilt nightly in full,
-immediately on any write to the ruleset, and on explicit request — with no per-entry TTL and no invalidation table
-to get right (<a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>).
-The ruleset is the grant and expression rows, the permission registry, the guardianship rows, <code>role_holder</code> and
-<code>person_group_member</code>; <strong><code>event_registration</code> is not in it</strong>. So marking a register, confirming a place, or
-promoting somebody off the waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code> and
-rebuilds nothing: a cached answer behind those four tiers <strong>may be up to one night stale, by design</strong>. This is the
-module where an implementer would most confidently assume the opposite, so it is stated here rather than only in
-the authorization page. What stays immediate is everything a person actually does to authority — revoke, deny,
-close a grant period, end an assignment — because every one of those is a ruleset write.~~</p>
-<p><strong>What is true now:</strong> marking a register, confirming a place, flipping <code>is_confirmed</code> or promoting somebody off the
-waitlist changes who is in <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code>, and <strong>the change is visible on the
-next check</strong> — the one after the write, with no job in between — because a check resolves the expression against
-live rows and there is no cached answer left to sit behind the roster
+<p><strong>There is no permission cache.</strong> A check resolves; a request memoizes; the only cached thing is
+a compilation — an expression root plus <code>ruleset_version</code>, holding no person and no item
 (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
-<strong>The same is true of <code>ORGANIZERS</code></strong>, which reads the organizer rows and not the registration table at all: five
-bound operands, five live reads, and a birthday crossing <code>OLDER(n)</code> moves an answer on exactly the same footing as
-a registration write does. <strong>Immediacy here is by construction, not by policy:</strong> nothing maps a person to an
-answer anywhere in the schema, so there is no row that could be a night old. <strong>And this module was right to be uneasy about the paragraph above.</strong>
-Four tiers computed from four registration tables, with the boundary of what counts drawn in a different file from
-the read path it had to describe, is precisely the shape that made the cache untenable — the deletion this page
-reports arrived because lists like that one omitted <code>membership</code> while <code>membership.terminate</code> ⛔ was the most
-safeguarding-shaped write in the catalog. <strong>What survives of the old vocabulary, said precisely:</strong> a registration
-write is still not a ruleset write, now in the narrowed sense that <strong>it changes no rule's text</strong>, and
-<code>ruleset_version</code> — which keys a <em>compiled expression</em>, not an answer — is bumped by <strong><code>audience_operand</code> and
-<code>selector_type</code></strong> alone, so a registration write is not a ruleset write at all now, in the only sense the phrase
-still has. <em>"Not a ruleset write" no longer buys a night of staleness; it says which two-table bump set you are
-not in, and nothing more.</em> <strong>And the rule whose mechanism just went has to say who enforces it now</strong>
-(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>),
-which is the question this paragraph would otherwise leave hanging: <strong>nobody enforces it, because there is nothing
-left to invalidate.</strong> The old sentence's job — <em>"a registration change reaches an answer"</em> — is now done by the
-read path itself, and a page cannot opt out of a read path the way it can forget to add a row to a list.</p>
+<code>ruleset_version</code> keys that compilation, not an answer, and it is bumped by <strong><code>audience_operand</code>
+and <code>selector_type</code></strong> alone: a write to <code>event_registration</code> changes no rule's text and is not a
+ruleset write.</p>
+<p><strong>So a registration write is visible on the next check.</strong> Marking a register, confirming a place,
+flipping <code>is_confirmed</code> or promoting somebody off the waitlist changes who is in <code>ATTENDED</code>,
+<code>PLACED</code>, <code>CONFIRMED</code> and <code>ON_WAITLIST</code>, and the change is visible on the check immediately after
+the write, with no job in between, because a check resolves the expression against live rows. The
+same is true of <code>ORGANIZERS</code>, which reads the organizer rows and not the registration table at
+all: five bound operands, five live reads, and a birthday crossing <code>OLDER(n)</code> moves an answer on
+exactly the same footing as a registration write does. <strong>This immediacy is by construction, not
+by policy:</strong> no row anywhere in the schema maps a person to an answer
+(<a href="../05d-invariants-and-seed/#11-invariants-to-verify">invariant 19</a>), so no answer can lag the
+rows it is computed from.</p>
+<p><strong>Who enforces "a registration change reaches an answer" — nobody, because there is nothing left
+to invalidate</strong>
+(<a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>).
+The read path does it, and a page cannot opt out of a read path the way it can forget to add a
+row to a list.</p>
 <h3 id="guards">Guards<a class="headerlink" href="#guards" title="Permanent link">&para;</a></h3>
 <p><strong>Guard 1 — the registration window.</strong> No registration row may be created for an event whose
 window does not admit it. The guard runs inside the transaction that inserts the row, on every
-insert path — and since there is nothing left to attach it to, that coverage is now a requirement
-on the paths rather than a property the database supplies for them. Steps 4 and 5 read the
+insert path — which makes that coverage a requirement on the paths, not a property the database
+supplies for them. Steps 4 and 5 read the
 event's own dates and step 2 exempts a source value, so no constraint states this rule and no
 report would catch a violation the way a window violation should be caught: at the write.
 <strong>The order is a rule</strong>: "there is no such event" must be settled
@@ -2707,13 +2674,12 @@ the eligible set — an audience, evaluated as a rule — is what defines the qu
 "unanswered" rows would mean enumerating an audience into rows, and re-enumerating whenever
 a child joins a group.</p>
 <h3 id="who-is-actually-coming">Who is actually coming?<a class="headerlink" href="#who-is-actually-coming" title="Permanent link">&para;</a></h3>
-<p>Four numbers about one event, in one answer, all counted over that event's <code>attending</code>
-registrations: how many are not waitlisted (coming), how many are waitlisted (waiting), how
-many are unconfirmed and not waitlisted (holding a place without having paid), and the
-event's <code>capacity</code>. An event with no registrations still has to produce the row, with zeros.</p>
-<p>The four numbers an organizer needs, in one row: coming, waiting, holding a place without
-having paid, and the limit. <code>attending &gt; capacity</code> is the overrun, and it is visible here
-rather than prevented (§10 check 5).</p>
+<p>Four numbers an organizer needs about one event, in one row, all counted over that event's
+<code>attending</code> registrations: how many are not waitlisted (coming), how many are waitlisted
+(waiting), how many are unconfirmed and not waitlisted (holding a place without having paid),
+and the event's <code>capacity</code> — the limit. An event with no registrations still has to produce the
+row, with zeros. <code>attending &gt; capacity</code> is the overrun, and it is visible here rather than
+prevented (§10 check 5).</p>
 <p>The first two of the four are <code>PLACED</code> and <code>ON_WAITLIST</code> counted rather than listed, and the
 third is <code>PLACED</code> minus <code>CONFIRMED</code>. The selector definitions in §8 and the counts here are
 one set of facts stated twice on purpose: the screen and the grant must not be able to
@@ -2803,20 +2769,20 @@ failure — exceeding capacity is a permitted, attributed act
 (<a href="../../domain/07a-capacity-presence-and-forms/#8-capacity-and-the-waitlist">../domain/07-events.md §8</a>). What the
 report is <em>for</em> is the pattern: an event that overruns every year has a capacity number that
 is wrong, and the fix is to change the number rather than to start refusing people.</p>
-<p><em>Numbering note:</em> checks 1 and 2 were rewritten in place rather than dropped, and 3–10 keep
-the numbers other files cite them by.</p>
+<p><em>Numbering:</em> the numbers of checks 1–10 are cited from other files; they are not reassigned.</p>
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
 <p>Tracked in <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>.</p>
 <ul>
-<li>~~<strong>The age ceiling on an open event.</strong>~~ <strong>Settled: there is none</strong>
+<li><strong>The age ceiling on an open event: there is none</strong>
   (<a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).
   No <code>min_age</code>/<code>max_age</code> on <code>event</code>, no age branch anywhere in the registration path. If it is
   ever revisited the shape is a new <strong>seeded selector operand</strong>, not a column on the row.</li>
-<li>~~<strong>Whether <code>event.manage_participants</code> should split.</strong>~~ <strong>It did</strong>, into
-  <code>event.presence.mark</code> — no longer "a level lower", because there are no levels, but a
-  separate code, which is the same protection stated in the only vocabulary D-099 leaves
-  (§4, EV-5).</li>
+<li><strong><code>event.manage_participants</code> and <code>event.presence.mark</code> are two codes.</strong> Marking a register is
+  a separate code, not a level below the roster — there are no levels — which is the same
+  protection stated in the only vocabulary D-099 leaves
+  (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>;
+  §4, EV-5).</li>
 <li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds <code>event.answer.view</code> and nothing
   else, so an organizer who holds no unit-scope grant can read the answers of a camp they are
   running and can do nothing else at it. Whether that is the intended shape or an omission is
@@ -2825,29 +2791,30 @@ the numbers other files cite them by.</p>
   import both instantiate; D-102 does not say (§8, check 2).</li>
 <li><strong><code>WHITELISTED</code>.</strong> No stored state to name, so no operand and no reserved name (§8).</li>
 <li><strong>Retention of <code>event_answer</code>.</strong> Answers end with the event and there is no policy saying when (§7).
-  This used to be argued from the answer being <em>health data</em>, which
-  <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
-  left without a referent: it is personal data, which makes the question ordinary rather than
-  answered — and sharper, since the same sentence recorded as a <code>person_attribute</code> follows a different
-  retention rule on purpose (<a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>).</li>
-<li><strong>Cancelled events and fees.</strong> Cancelling keeps the registrations. Whether it releases the
-  obligations, refunds them, or neither is the finance module's decision (§6). That decision
-  has since been taken for events
+  An answer is personal data of the same class as any other
+  (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+  which makes the question ordinary rather than answered — and sharper, since the same fact
+  recorded as a <code>person_attribute</code> follows a different retention rule on purpose
+  (<a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>).</li>
+<li><strong>Cancelled events and fees.</strong> Cancelling keeps the registrations. What it does to the
+  obligations is the finance module's (§6), and for events it has an answer
   (<a href="../../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>):
-  cancelling voids the outstanding requests and money that already arrived waits in the
+  cancelling voids the outstanding requests, and money that already arrived waits in the
   unmatched queue (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>).</li>
 <li><strong><code>was_present</code> as a safeguarding record.</strong> Whether presence needs its own retention or its
-  own permission, given what it is (§9 of the domain doc). D-102's refusal of <code>PRESENT</code> makes
-  the second half of that question sharper: presence now governs nothing about access, which
-  is either why it needs no permission of its own or why its retention is all that is left.</li>
-<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> D-102 settled the <em>mechanism</em> —
-  a set named by a selector, aimed at by grants — without changing D-062's answer that the
-  roster is not itself a grant. What remains open is smaller than it used to be: whether more
-  codes should be seeded to <code>ORGANIZERS</code>, which is the question above
+  own permission, given what it is (§9 of the domain doc). <code>PRESENT</code> is refused, so presence
+  governs nothing about access — which is either why it needs no permission of its own or why
+  its retention is all that is left.</li>
+<li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> The mechanism is settled —
+  a set named by a selector, aimed at by grants — and D-062's answer stands: the roster is not
+  itself a grant. What remains open is whether more codes should be seeded to <code>ORGANIZERS</code>,
+  which is the question above
   (<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>).</li>
 <li><strong>Waitlist notification.</strong> Promotion is deliberate; telling the promoted person is not
   designed. It belongs to the communication module.</li>
 </ul>
+<hr />
+<p><em>Decisions behind this page: D-013, D-061, D-062, D-067, D-070, D-074, D-076, D-081, D-083, D-099, D-101, D-102, D-112, D-113, D-114.</em></p>
 
 
 

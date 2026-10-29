@@ -3352,8 +3352,8 @@ a deny can</strong>
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</p>
 <hr />
 <h2 id="8-there-is-no-permission-cache-and-what-replaces-it">8. There is no permission cache, and what replaces it<a class="headerlink" href="#8-there-is-no-permission-cache-and-what-replaces-it" title="Permanent link">&para;</a></h2>
-<p><strong>There is no permission cache.</strong> A check resolves; a request memoizes; the only thing cached across
-requests is a compilation. Nothing in this system stores a permission answer, and no part of <code>can()</code> is
+<p><strong>There is no permission cache.</strong> A check resolves; a request memoizes; the only cached thing is a
+compilation. Nothing in this system stores a permission answer, and no part of <code>can()</code> is
 written to a table
 (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).</p>
 <p><strong>What a check costs.</strong> One indexed read fetches the checked person's live grant rows — a few dozen rows
