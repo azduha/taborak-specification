@@ -1694,6 +1694,8 @@
       
         
       
+        
+      
     
     
     
@@ -1782,6 +1784,34 @@
     
   
     Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-a-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog: the codes
   
 
     
@@ -1902,7 +1932,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1924,14 +1954,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_5">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2827,7 +2857,7 @@ is true of the payloads for 24 months and is untrue afterwards (§2.2).</strong>
 and what it means is that the guard on <code>audit_log</code> is now load-bearing in a way it was not: <strong>an audit
 entry about a person is as sensitive as the person data it quotes</strong>, which is stated as a requirement
 on <code>audit.view</code>'s sensitivity mark in
-<a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>
+<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">../appendix/permission-catalog.md §8</a>
 and argued in <a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a> — where the case against
 copying data into a less-guarded place applies to this table directly, since this table is the copy.
 The failure mode inverts, and it is worth naming because the shape is unfamiliar: everywhere else the
@@ -2958,7 +2988,7 @@ withdrawn, for two reasons that came from the decisions this section already ref
 </ul>
 <p>What the draft got right survives as the guard instead: the copy <em>is</em> as sensitive as what it quotes,
 so the permission that reads it belongs at the top of the catalog
-(<a href="../../appendix/permission-catalog/#8-audit-and-system">../appendix/permission-catalog.md §8</a>), and
+(<a href="../../appendix/permission-catalog-a-codes/#8-audit-and-system">../appendix/permission-catalog.md §8</a>), and
 that is a line in a document rather than a mechanism, which is the honest weakness.</p>
 <p><strong>What the credential list is not, stated where a reviewer will read it.</strong> It is not the thing
 protecting personal data, and it cannot become that, because <strong>a list of names is only as good as
