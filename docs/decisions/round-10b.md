@@ -404,7 +404,7 @@ way, because an ownership grant and a bound operand answer different questions a
 the difference between this and [D-097](round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
 that entry deletes a dimension, this one removes a *test* and leaves the vocabulary intact.
 
-**See:** [data-model/08-events.md §2, §8](../data-model/08-events.md#8-projections-and-guards),
+**See:** [data-model/08-events.md §2, §8](../data-model/08a-event-guards-and-checks.md#8-projections-and-guards),
 [domain/07-events.md](../domain/07-events.md),
 [data-model/05-authorization.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
 

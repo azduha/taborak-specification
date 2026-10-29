@@ -98,7 +98,8 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [domain/05-membership-lifecycle.md](domain/05-membership-lifecycle.md) | Register → request → accept → pay → member → lapse → return. |
 | [domain/06-authorization-model.md](domain/06-authorization-model.md) | The permission model end to end. The one to read if you read only one. |
 | [domain/06a-audiences-and-selectors.md](domain/06a-audiences-and-selectors.md) | Who a grant is aimed at: the expression grammar, the selector registry, and the rules that keep a tree safe. |
-| [domain/07-events.md](domain/07-events.md) | Events, registration, capacity, presence, forms. |
+| [domain/07-events.md](domain/07-events.md) | Events, registration, and how authority reaches an event. §1–§7. |
+| [domain/07a-capacity-presence-and-forms.md](domain/07a-capacity-presence-and-forms.md) | Capacity and the waitlist, presence, cancellation, payments, the forms. §8–§13. |
 
 ### Data model — the tables
 
@@ -116,7 +117,8 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [05d](data-model/05d-invariants-and-seed.md) | The invariants, what ships seeded, and what is open. §11–§13. The five parts share one section numbering, so a `§` citation names a number and this table says where it lives. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | Audit trail, merge log, legacy import. |
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |
-| [data-model/08-events.md](data-model/08-events.md) | `event`, organizers, registrations, questions, answers. |
+| [data-model/08-events.md](data-model/08-events.md) | `event`, organizers, registrations, questions, answers. §1–§7. |
+| [08a](data-model/08a-event-guards-and-checks.md) | How authority reaches an event, the three queries that matter, integrity checks, open issues. §8–§11. The two parts share one section numbering. |
 
 ### Reference
 

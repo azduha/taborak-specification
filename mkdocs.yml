@@ -81,7 +81,9 @@ nav:
       - Membership Lifecycle: domain/05-membership-lifecycle.md
       - Authorization Model: domain/06-authorization-model.md
       - Audiences and Selectors: domain/06a-audiences-and-selectors.md
-      - Events: domain/07-events.md
+      - Events:
+          - domain/07-events.md
+          - Capacity, Presence, Forms: domain/07a-capacity-presence-and-forms.md
   - Data Model:
       - Conventions: data-model/00-conventions.md
       - Identity: data-model/01-identity.md
@@ -97,7 +99,9 @@ nav:
           - Invariants and Seed Data: data-model/05d-invariants-and-seed.md
       - Audit and Import: data-model/06-audit-and-import.md
       - Finance: data-model/07-finance.md
-      - Events: data-model/08-events.md
+      - Events:
+          - data-model/08-events.md
+          - Guards and Integrity Checks: data-model/08a-event-guards-and-checks.md
   - Reference:
       - ERD: appendix/erd.md
       - Permission Catalog: appendix/permission-catalog.md

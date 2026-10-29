@@ -376,7 +376,7 @@ tidiness — it is a trade against a feature someone named.
    than **three hops** is reported. Four merges in a row on one line of people does not mean the data
    is odd, it means the matcher is producing duplicates faster than a human can settle them, which is a
    statement about the queue and not about the row.
-   [01-identity.md §10](../data-model/08-events.md#10-integrity-checks) stated this as a breach and
+   [01-identity.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks) stated this as a breach and
    is corrected: with chains decided, *a survivor that has itself been absorbed is normal*, and only the
    length means anything.
 

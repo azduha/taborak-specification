@@ -1029,7 +1029,7 @@ reason the column exists.
 > grant, and only where `selector_type.argument_type` matches the item — `PLACED` on a group grant is
 > refused because that item is not an event. And `PRESENT(<event>)` is refused outright (§1).
 > The definitions, and the reason `PLACED` rather than `ATTENDED` is the capacity set, are in
-> [../data-model/08-events.md §8](../data-model/08-events.md#selectors-that-bind-to-an-event).
+> [../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event).
 
 > **`event.presence.mark` is split off `event.manage_participants` on purpose, and it used to sit a
 > level *lower*.** Marking presence is a task handed to whoever is at the door with a clipboard;
@@ -1083,7 +1083,7 @@ reason the column exists.
 > registrations is a mistake to be cleaned up; anything else is cancelled, not deleted
 > ([D-064](../decisions/round-05.md#d-064--there-is-no-event-status-visibility-is-the-permission-model)).
 > **No event with even one registration row may be deleted** — Guard 2 in
-> [../data-model/08-events.md §8](../data-model/08-events.md#guards) is the rule, and cancelling
+> [../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#guards) is the rule, and cancelling
 > is what to do instead. The obligation is not the permission's to carry: `event.delete` decides
 > who may ask, and only a migration-level constraint — `event_registration.event_id` referencing
 > `event.id` with no cascade — refuses the same delete when it arrives from an import or a
@@ -1100,7 +1100,7 @@ reason the column exists.
 > what ships is a **template**, and D-102 now says plainly that the event-creation path instantiates it
 > beside the event row, in the same transaction as the event, and that the import owes one instantiation
 > per event it writes
-> ([../data-model/08-events.md §8](../data-model/08-events.md#selectors-that-bind-to-an-event)).*
+> ([../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event)).*
 > *What remains open is only the safety net: an event whose two writes were not one transaction has no
 > organizer who can read its answers, and "these two rows exist together" is a report —* events with no
 > answer-view grant — *that no layer of this project can express as a constraint*
@@ -1809,7 +1809,7 @@ round 10 created them:**
   over the seeded registries, run by hand.** D-104 supplied the grammar and the report; **it did not
   re-point these five sentences**, and that repair still belongs to whoever owns each of those pages.
 - **The registered spelling of the answer-read code is the catalog's, singular, and the round said so
-  out loud.** [../data-model/08-events.md §8](../data-model/08-events.md#selectors-that-bind-to-an-event)
+  out loud.** [../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event)
   records that D-102 wrote the plural while its own entry was new, that the two spellings were one code
   and not two, and that **the catalog is the arbiter** — so the seeded grant in §11 and the code in §8a
   are `event.answer.view`, and no other spelling is registered anywhere. That case was easy, because

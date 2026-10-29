@@ -210,7 +210,7 @@ tightening the wrong thing.
 with a retention obligation, and there is no policy yet.
 
 **See:** [../data-model/08-events.md §7](../data-model/08-events.md#7-event_question-and-event_answer),
-[../domain/07-events.md §12](../domain/07-events.md#12-the-forms-questions-and-answers),
+[../domain/07-events.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers),
 [appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
 
 ---
@@ -322,7 +322,7 @@ leaders should *not* automatically run every event their unit creates, **deletin
 protects. The fix, if the root wants it, is one `scope_exposure` row naming one assignment.
 
 **See:** [../domain/07-events.md §6](../domain/07-events.md#6-how-authority-reaches-an-event),
-[../data-model/08-events.md §8](../data-model/08-events.md#8-projections-and-guards).
+[../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#8-projections-and-guards).
 
 ---
 
@@ -365,7 +365,7 @@ must be **told**.
 **keeps every registration row** — those rows are the record that the camp was planned and
 who was coming, which is precisely what is needed to notify and refund.
 
-**See:** [../domain/07-events.md §10](../domain/07-events.md#10-cancellation-and-why-there-is-no-status-column),
+**See:** [../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column),
 [../data-model/08-events.md §2](../data-model/08-events.md#2-event).
 
 ---
@@ -409,7 +409,7 @@ dates. What *is* automatic is one narrow release rule, recorded as such in
 [D-066](#d-066--payment-confirms-the-place-and-the-release-deadline-is-the-one-automatic-transition).
 
 **See:** [../data-model/08-events.md §5](../data-model/08-events.md#5-capacity-and-the-waitlist),
-[../domain/07-events.md §8](../domain/07-events.md#8-capacity-and-the-waitlist).
+[../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist).
 
 ---
 
@@ -464,7 +464,7 @@ fees and event fees alike and "the fee is paid" means something different in eac
 membership *activates* (D-040), an event place *confirms*. Two transitions, two owners.
 
 **See:** [../data-model/08-events.md §6](../data-model/08-events.md#6-payments-and-confirmation),
-[../domain/07-events.md §11](../domain/07-events.md#11-payments-on-events).
+[../domain/07-events.md §11](../domain/07a-capacity-presence-and-forms.md#11-payments-on-events).
 
 ---
 
@@ -508,7 +508,7 @@ about the **organization's incomplete work** — and the work being incomplete i
 recording, because it is a task still outstanding.
 
 **See:** [../data-model/08-events.md §4](../data-model/08-events.md#4-event_registration),
-[../domain/07-events.md §9](../domain/07-events.md#9-presence-what-actually-happened).
+[../domain/07-events.md §9](../domain/07a-capacity-presence-and-forms.md#9-presence-what-actually-happened).
 
 ---
 
@@ -745,7 +745,7 @@ in one place, which is the property being protected here. **Do not reach for a c
 the row when the mechanism for evaluating membership of a set already exists.**
 
 **See:** [../domain/07-events.md §4](../domain/07-events.md#4-who-may-register-capability-not-a-separate-rule-engine),
-[../data-model/08-events.md §9](../data-model/08-events.md#9-the-three-queries-that-matter).
+[../data-model/08-events.md §9](../data-model/08a-event-guards-and-checks.md#9-the-three-queries-that-matter).
 
 ---
 

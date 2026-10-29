@@ -420,10 +420,11 @@ branch (§2).
   without one is a piece of the resolver's vocabulary that nothing can compose with, and §11's check 12 is
   the net for the leaf side of that. **Whether `code` should simply be *required* on an `is_system`
   audience rather than merely seeded is a question this document does not settle** (§13). **No seeded
-  audience is parameterized**: there is one unit, so nothing needs a row per unit. Three names from the
-  older catalog still get asked for, and each is now something smaller or nothing at all —
-  `unit_participants` is `MEMBERS`; `unit_leaders` is `ROLE(x)`, the case §8's evaluation rules are
-  written against because the stored rule matched nobody while every grant aimed at it looked granted; and
+  audience is parameterized**: there is one unit, so nothing needs a row per unit. **Three names keep being
+  asked for, and each of them is something smaller or nothing at all** —
+  `unit_participants` is `MEMBERS`; `unit_leaders` is `ROLE(x)`, the shape §8's evaluation rules are written
+  against — **an expression that resolves to nobody is silent, while every grant aimed at it looks
+  granted**; and
   `guardians_of` is **nothing** — a guardian's authority is the guardianship channel's `right_level` over
   the child, not a set an audience can name, which is why `GUARDIANS` is not a selector
   ([D-113](../decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)).
@@ -589,8 +590,8 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   here to make it a guard, and no layer of this spec can tell a writer that `PERSON(` had no row behind it.
 - **The `LIST` gloss, and the proposed rename of that operand to `ADDED` (§8): moot — there is no such
   operand** ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
-  The name was judged the weak part of a design that no longer has it; there is nothing left to rename or
-  gloss, so the question has no subject either way.
+  Neither the gloss nor the rename has a subject: `LIST` is not an operand of this grammar, so there is
+  nothing to rename and nothing to explain.
 - **Whether two people editing one audience is handled by a lock, a queue, or nothing (§8).** Editing an
   audience is one expression edit, so two clerks editing one audience **can** collide, **and a silent lost
   update removes somebody's access without any row recording that it happened.**
@@ -642,22 +643,22 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   `selector_arg_id` too.
 - **How long a `permission_cache` entry may live (§10): there is no such table, so there is no lifetime**
   ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
-  F-6 spent four rounds on that number and D-111 answered it with a nightly rebuild instead of a TTL, which
-  is why `expires_at` is not a column of §10 and `ruleset_version` is
+  **No TTL is being asked about, because there is no row to put one on:** `expires_at` is not a column of
+  §10 and `ruleset_version` is, as a compilation key bumped by writes to `audience_operand` and
+  `selector_type`
   ([F-6](../open-questions.md#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request),
-  [D-111](../decisions/round-13.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request));
-  the table itself is then gone, so the question has no subject. **Nothing is open here.**
-  `ruleset_version` survives as a compilation key, bumped by writes to `audience_operand` and
-  `selector_type`, and the affordability question F-6 ended on is answered by D-112's stated size — with no
-  job left to afford.
+  [D-111](../decisions/round-13.md#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request)).
+  **Nothing is open here.** The affordability question F-6 ended on is answered by
+  [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s
+  stated size and trigger, and there is no rebuild job to afford.
 - **Cache vs a materialized effective-permission table (§8, §10): dissolved, not decided** —
   [F-7](../open-questions.md#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job).
-  A nightly full rebuild of cached answers and a nightly materialized `effective_permission` table are
-  **the same job with two names**, and the choice was made on grounds outside the question. It is recorded
-  as dissolved because **a dissolved question is the kind that comes back if nobody writes down that it
-  dissolved**, and "history, not performance" is exactly where it would come back from. What is left of the
-  pair is the history side alone: there is no rebuild left to confuse with a history table, a table of
-  today's answers was never a record of 2011, and **invariant 19 is the thing a return has to argue with.**
+  A rebuild of cached answers and a materialized `effective_permission` table are **the same job with two
+  names**, which is why the pair is recorded as dissolved rather than answered — and **a dissolved question
+  is the kind that comes back if nobody writes down that it dissolved**, with "history, not performance"
+  exactly where it would come back from. What is left of the pair is the history side alone: there is no
+  rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
+  **invariant 19 is the thing a return has to argue with.**
 - Retention policy for `access_log` — legal input required
   ([F-8](../open-questions.md#f-8--retention-policy-for-access_log)).
 - Whether `access_log` needs human annotation (recommend a separate table if so).
