@@ -2965,136 +2965,84 @@ reaches <strong>every item of every type</strong>. A grant on one item reaches t
 is no tier between them and no relation on the item to test: no owner, no parent, no covering body.</p>
 <h3 id="a-grantee-is-an-expression">A grantee is an expression<a class="headerlink" href="#a-grantee-is-an-expression" title="Permanent link">&para;</a></h3>
 <p>Wherever this catalog writes a grantee, it is a legal expression in the selector language of
-<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>:
-the leaves <code>EVERYONE</code>, <code>MEMBERS</code>, <code>PERSON(person)</code>, <code>ROLE(name)</code>, <code>GROUP(name)</code>,
-<code>AUDIENCE(name)</code>, the two age sets <code>OLDER(n)</code> and <code>YOUNGER(n)</code>, and the five event-bound sets
-<code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>, <code>ORGANIZERS</code> — each writable with its argument spelled,
-or bound to the item being checked
+<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>: the
+leaves <code>EVERYONE</code>, <code>MEMBERS</code>, <code>OLDER(n)</code>, <code>YOUNGER(n)</code>, <code>PERSON(person)</code>, <code>ROLE(name)</code>, <code>GROUP(name)</code>,
+<code>AUDIENCE(name)</code>, and the five event-bound sets <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ON_WAITLIST</code>,
+<code>ORGANIZERS</code> — each written with its argument spelled out, or bound to the item being checked
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
-— combined with <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection</strong>, and brackets. <strong>Those three operators are
-unchanged: round 12 added two operands and no operator</strong>
-(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>),
-so <code>(MEMBERS * OLDER(18)) - YOUNGER(6)</code> — brackets printed as always, since <code>*</code> and <code>-</code> bind equally and
-the stored form never relies on a reader who memorized it — is an ordinary expression of the grammar that
-already existed, and nothing in this file's grant rows, in <code>audience_operand</code>, or in §11's tables is
-shaped differently for it.
-<strong>There is no comparison operator in the language</strong> — no <code>&gt;=</code>, no <code>&lt;</code>, no bare <code>AGE</code> — and after this
-round that, not any claim about what counts as a set, is the clause keeping eligibility rule engines out
-(<a href="../../decisions/round-05/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>,
-as amended by <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
-<strong>A hand-written set of
-people is not a leaf and has no table: it is a sum</strong>, <code>PERSON(a) + PERSON(b)</code>, because the leaf that used
-to hold one and the table behind it are both deleted
-(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).</p>
-<p><strong>Those thirteen leaves are the registry, not a sample of it</strong> — fourteen for round 12 alone, until
-<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>
-removed a row that should never have been in the registry, and neither <code>GUARDIANS</code> nor <code>GUARDIANS(p)</code> is a
-selector in its place: <em>"True, GUARDIANS should not be selectable in the audience, guardians can perform
-ANY action (their read/write perms grant) on behalf of the child."</em> A guardian's authority is a
-<code>right_level ∈ none | view | write</code> over a child, not a set this language resolves
-(<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
-They are the seeded <code>selector_type</code> rows:
-the eleven that <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
-copied from the evaluator's arm list and that survived it, plus <code>PERSON</code>, which arrived as the thirteenth
-to repair a waiver expression that did not parse — the episode
-<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>
-settles — minus <code>LIST</code>, which left in the round after
-(<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
-plus <code>OLDER(n)</code> and <code>YOUNGER(n)</code>, which arrive this round and are the first operands whose argument is a
-number rather than a row of some table
-(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
-<strong>So the count has been twelve, thirteen, twelve, fourteen and now thirteen, and it is still not a
-contradiction: the second number counted an arrival, the third a departure, the fourth two arrivals more,
-the fifth a row that should never have been counted, and only the last is a fact about today.</strong> This page
-has now printed the registry's size twice and been wrong twice, which is the lesson rather than an
-excuse: <strong>a page repeating a registry's row count is a copy of the registry</strong>, and a copy is stale the
-moment the original moves. This corpus already ruled that an ordinal and a count are different facts —
-<em>"the thirteenth to arrive"</em> and <em>"one of the twelve that remain"</em> were both true of <code>PERSON</code> at the same
-time — and round 12 is the round where <strong>one of them moved twice</strong>, so the rule now has a worked example
-rather than an assertion: <strong>the ordinals are durable and the counts are not.</strong> Every number in that
-sentence except the last is a true sentence about history and will stay true forever; the last one is a
-sentence about the seeded rows as of this round and is the only one the next round has to re-check.</p>
-<p><strong>Two of these leaves move with the calendar, and that is new.</strong> <code>OLDER(n)</code> and <code>YOUNGER(n)</code> read
-<code>person.birth_date</code> <strong>as of the date the check is made</strong>, so a person joins or leaves one of those sets
-with no write of any kind, one person at a time, at midnight — and a check asked about a past date
-answers for that past date, which is a question no snapshot design could answer. <strong>Exactly these two, and
-no others:</strong> the other dated operands — <code>ROLE</code>, <code>GROUP</code>, <code>AUDIENCE</code> — move when somebody makes a write with
-a date on it, which is a different claim and is not the one this sentence makes. Nothing is stored, so there
-is nothing to invalidate — and since round 14 there is no stored answer left to invalidate either:
-~~the cache is rebuilt nightly in full, immediately on any write to the ruleset, and on explicit request, and
-an answer that moved without one of those is simply allowed to be a night stale~~
-(<a href="../../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>)
-is retired by <a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>,
-which deletes the answer cache and with it the claim that anything could be a night stale. A check resolves
-against live rows, so <strong>a birthday moves an age set at the instant it happens</strong>, with no job standing between
-the birthday and the answer. <strong>What this costs the catalog is a sentence it used to be able to write:</strong> <em>this
-is cheap because it is cached.</em> It cannot write that any more, and the cheapness argument is now one indexed
-read of the checked person's grant rows per request, plus the two batch reads — <code>can_many(person, codes[],
-item?)</code> for a screen's affordances and <code>which_of(people[], code, item)</code> for a list's people. No table changes
-when a person turns eighteen, so there is no row to expire and no cache of <em>membership</em> to
-keep — which is exactly the property age <strong>bands</strong> would not have had, and why bands are not in this design.
-The editor's preview is a workbench and never was a record, and <strong>the record is the expression</strong>: the audit
-row logs the words, and the preview is logged as <em>a rendering on a date</em> rather than as a statement of who
-was in it (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,
-§12).</p>
-<p><strong>A leaf outside that registry does not parse</strong>, and that sentence is now the whole of what keeps a rule
-engine out: an operand must be a <strong>named</strong> operand — a row — and <code>AGE &gt;= 18</code> is not a row and cannot
-become one while the language has nowhere to put <code>&gt;=</code>. The test this corpus gave for the same rule, from
-<a href="../../domain/06-authorization-model/">../domain/06-authorization-model.md §6</a>, is quoted here so that this
-file's rule is not read as resting on it again: ~~"an attribute is not a set of people; guardianship is
-(<code>GUARDIANS(x)</code> is a set), age is not, and the line falls exactly where D-060 already drew it."~~ <strong>That
-test is withdrawn, and it was never holding anything up</strong>: <code>OLDER(18)</code> is the set of people who are
-eighteen or older on the date being checked, exactly as <code>MEMBERS</code> is the set of people who pass
-<code>is_current_member</code> and <code>ROLE(name)</code> is the set of people who hold that office — every operand in the
-registry is a test with a set behind it, and reading one column is not a different kind of thing from joining
-one table — and <code>MEMBERS</code> would have failed the old test too, since nothing in this system stores the member
-list. D-060's decision stands; its sentence does not
-(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
-<strong>The quoted sentence turned out to be wrong in a second way, and the quotation stands anyway:</strong> its parenthetical
-treated guardianship as a set the language resolves, and round 13 ruled that it is not one in either spelling
-(<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>) —
-which is a reason not to quote that sentence as a test, never a reason to rewrite what this file once printed.
-The refusals below are operands people ask for that the registry does not carry.</p>
-<p><strong>Every expression below is printed in the canonical stored form, which brackets every bracket,
-always.</strong> <code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; and the stored
-string never relies on a reader who memorized that
-(<a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).
-So <code>event.answer.view</code> on an event is aimed at <code>ORGANIZERS</code>, an open camp is opened by
-<code>MEMBERS</code>, a gated office is <code>MEMBERS * ROLE(treasurers)</code>, and the exemption for one named person is
-<code>(MEMBERS * ROLE(treasurers)) + PERSON(jan)</code> — a second grant aimed at a person is the other way to
-write the same thing, and keeps the exception off the expression everyone else reads.</p>
-<p><strong>Three refusals belong next to the language, because each is a temptation this catalog creates, and a
-reader could now mistake the first two for type errors. They are not, and never were</strong>
-(<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>):
-a selector is allowed to be a hard-coded computation in the resolver, because <code>MEMBERS</code> is one today, and
-an operand may read a column against a date, because <code>OLDER(n)</code> does. <strong>Nothing is kept out of the
-registry for what it is</strong> — the word that sounded like it did, ~~"not materializable"~~, is retired with
-the test it belonged to — <strong>so every refusal standing here is an argument about consequences, which is
-what all three have always been.</strong></p>
+— combined with <strong><code>+</code> union, <code>-</code> difference, <code>*</code> intersection</strong>, and brackets. <code>*</code> and <code>-</code> bind tighter than
+<code>+</code>, <code>*</code> and <code>-</code> bind equally with each other, left to right, and <strong>the stored form brackets every bracket
+anyway</strong> (<a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06a-audiences-and-selectors.md §6.2</a>),
+so <code>(MEMBERS * OLDER(18)) - YOUNGER(6)</code> is printed exactly as it is stored and nobody has to hold a
+precedence table to read a grant row.</p>
+<p><strong>Those leaves are the registry, not a sample of it</strong>, and the registry itself is the seeded <code>selector_type</code>
+rows: <a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05d-invariants-and-seed.md §12</a>
+states them and counts them, once. The names are repeated here so a grant row can be read where it is
+written; a second page printing the count would only be a second thing to go stale.</p>
+<p><strong>A leaf outside that registry does not parse.</strong> Three things the language therefore does not have:</p>
 <ul>
-<li><strong><code>PRESENT(&lt;event&gt;)</code> is not seeded, on the argument that always carried it.</strong> <code>was_present</code> is <code>NULL</code>
-  until somebody takes a register, so an operand over it would revoke a child's access to their own camp
-  photos — a leader's access to their own camp — because a volunteer forgot to tick a box. Presence stays a
-  three-valued safeguarding signal
-  (<a href="../../decisions/round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>),
-  and nowhere in this file is it a set anyone may be granted over. <strong>The language would not stop anybody
-  writing it now, and that is exactly why the consequence has to be the thing that says no.</strong></li>
+<li><strong>No comparison operator.</strong> There is no <code>&gt;=</code>, no <code>&lt;</code>, no bare <code>AGE</code>, so <code>AGE &gt;= 18</code> is not an expression and
+  cannot become one: an operand must be a <strong>named</strong> row of <code>selector_type</code>, and there is nowhere in the
+  grammar to put an operator between two things that are not sets. That clause — not any claim about what
+  counts as a set — is what keeps eligibility rule engines out
+  (<a href="../../decisions/round-05/#d-060--eligibility-is-capability-there-is-no-separate-rule-engine">D-060</a>, as
+  amended by <a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
+  It is not because an attribute differs in kind from a set: <code>OLDER(18)</code> is the set of people who are eighteen
+  on the date checked exactly as <code>MEMBERS</code> is the set of people who pass <code>is_current_member</code>, and every
+  operand in the registry is a test with a set behind it.</li>
+<li><strong>No hand-written set.</strong> A list of people typed into a rule is not a leaf and has no table of its own: it is
+  a sum, <code>PERSON(a) + PERSON(b)</code>
+  (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
+  Anything dated and shared is a <code>person_group</code> instead — a roster with a lifetime and an owner, rather than a
+  second list the permission system keeps.</li>
+<li><strong>No guardian set.</strong> A guardian's authority is <code>right_level ∈ none | view | write</code> over a child (§6,
+  <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>),
+  entered by the shape of the request; the channel resolves no sets, so <code>GUARDIANS</code> is not a selector in
+  either spelling and no expression names one child's guardians
+  (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).</li>
+</ul>
+<p><strong>Two leaves move with the calendar.</strong> <code>OLDER(n)</code> and <code>YOUNGER(n)</code> read <code>person.birth_date</code> <strong>as of the date
+the check is made</strong>, so a person joins or leaves one of those sets with no write of any kind — and a check
+asked about a past date answers for that past date. Exactly these two, and no others: the other dated
+operands, <code>ROLE</code>, <code>GROUP</code> and <code>AUDIENCE</code>, move when somebody makes a write with a date on it. Nothing is
+stored about the answer, so there is nothing to invalidate; a check resolves against live rows, and <strong>a
+birthday moves an age set at the instant it happens</strong>, with no job standing between the two
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+What that costs this catalog is one sentence it used to be able to write — <em>this is cheap because it is
+cached</em>. What it says instead is what a check actually reads: one indexed read of the checked person's grant
+rows per request, plus two batch reads for the shapes that need them, <code>can_many(person, codes[], item?)</code> for
+a screen's affordances and <code>which_of(people[], code, item)</code> for a list's people. No table changes when a
+person turns eighteen, so there is no row to expire — which is the property age <strong>bands</strong> would not have
+had, and why bands are not in this design.</p>
+<p><strong>The record is the expression.</strong> The editor's preview is a workbench: an audit row logs the words, and a
+preview is logged as <em>a rendering on a date</em>, never as a statement of who was in it
+(<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>, §12).</p>
+<p>So <code>event.answer.view</code> on an event is aimed at <code>ORGANIZERS</code>, an open camp is opened by <code>MEMBERS</code>, a gated
+office is <code>MEMBERS * ROLE(treasurers)</code>, and the exemption for one named person is
+<code>(MEMBERS * ROLE(treasurers)) + PERSON(jan)</code> — a second grant aimed at that person is the other way to write
+the same thing, and it keeps the exception off the expression everyone else reads.</p>
+<p><strong>Three refusals belong next to the language, because each is a temptation this catalog creates.</strong> None of
+them is refused on a type argument: a selector may be a hard-coded computation in the resolver, because
+<code>MEMBERS</code> is one, and an operand may read a column against a date, because <code>OLDER(n)</code> does. <strong>Nothing is kept
+out of the registry for what it is</strong>, so every refusal here is an argument about consequences.</p>
+<ul>
+<li><strong><code>PRESENT(&lt;event&gt;)</code> is not seeded,</strong> on the argument that always carried it: <code>was_present</code> is <code>NULL</code> until
+  somebody takes a register, so an operand over it would revoke a child's access to their own camp photos — a
+  leader's access to their own camp — because a volunteer forgot to tick a box. Presence stays a three-valued
+  safeguarding signal (<a href="../../decisions/round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>),
+  and nowhere in this file is it a set anyone may be granted over. Nothing in the grammar would stop anybody
+  adding it, which is exactly why the consequence has to be the thing that says no.</li>
 <li><strong><code>WHITELISTED</code> is not seeded because there is nothing stored to evaluate</strong>
   (<a href="../../open-questions/#f-20--closed--whitelisted-stays-unseeded-because-there-is-no-state-to-evaluate-and-the-feature-arrives-anyway">F-20</a>):
-  no type system is objecting — there is no type system left to object — but an operand with no argument,
-  nothing bound to the checked item and no column behind it is a word pointing at a state this system does
-  not keep. <strong>F-20 is closed, and closed by that reasoning rather than by a decision about the feature:</strong> the
-  operand stays unseeded because there is nothing to evaluate, and the feature it was wanted for arrives as
-  grants anyway. Whether the <em>feature</em> is wanted at all is an events question, and this catalog no longer
-  carries it — <strong>which is the closure's real content: a selector question that was really an events question
-  went back to the events module instead of being answered here.</strong></li>
+  an operand with no argument, nothing bound to the checked item and no column behind it is a word pointing at
+  a state this system does not keep. The feature it was wanted for arrives as grants anyway; whether it is
+  wanted at all is an events question, which is where it now lives.</li>
 <li><strong>A bare name is one namespace across roles and groups</strong>
   (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>),
-  which makes §11's office names a load-bearing vocabulary, and makes every selector code a reserved
-  name: an office called <code>MEMBERS</code> is refused when it is saved. <strong>Two more reserved names arrive with this
-  round</strong> — an office, a group or an audience called <code>OLDER</code> or <code>YOUNGER</code> is refused on the same rule, and
-  it is the parser rather than a review that saves a reader from <code>OLDER(18)</code> meaning an office with that
-  name.</li>
+  which makes §11's office names a load-bearing vocabulary and makes every selector code a reserved name: an
+  office called <code>MEMBERS</code> is refused when it is saved, and so is one called <code>OLDER</code> or <code>YOUNGER</code>. It is the
+  parser that refuses them, not a review, which is what keeps <code>OLDER(18)</code> from ever meaning an office with
+  that name.</li>
 </ul>
 <h3 id="there-is-no-wildcard-except-systemadmin">There is no wildcard, except <code>system.admin</code><a class="headerlink" href="#there-is-no-wildcard-except-systemadmin" title="Permanent link">&para;</a></h3>
 <p>Every capability in this catalog is <strong>narrow and explicit</strong>. A check for <code>X.y</code> is satisfied
