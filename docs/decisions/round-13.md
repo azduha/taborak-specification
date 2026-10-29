@@ -4,6 +4,8 @@
 
 [Refinement rounds 11 and 12 (D-105 … D-108) ←](round-11-12.md) | [All decisions](index.md) | [Refinement round 14 (D-114) →](round-14.md)
 
+**Four of this round's five decisions closed an open question by removing a mechanism, and that is worth naming as a result rather than as a side effect.** Half of the *How to answer* list in `open-questions.md` went into [D-109](#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report), [D-110](#d-110--the-expression-is-the-record-of-whom-a-grant-reached), [D-111](#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request), [D-112](#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event), [D-113](#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector): a standing report became a tab, a per-entry cache TTL was refused, a history question was answered by saying the expression is already the record, and a selector that existed only as a prose idiom lost its registry row. None of the four received the answer its entry had been built to receive — the TTL's open half later dissolved entirely when [D-114](round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation) deleted the cache it was a policy for. **Removing a mechanism is the one move a register of open questions is structurally bad at predicting**, which is why this corpus deletes an answered question rather than parking it, and why the reasoning of all four stays in the entries above.
+
 ---
 
 ## D-109 — Nothing a rule names is deleted: deprecated, hidden, disabled — and a tab instead of a report

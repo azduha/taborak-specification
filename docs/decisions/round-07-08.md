@@ -4,6 +4,8 @@
 
 [Refinement round 6 — the no-SQL round (D-072 … D-081) ←](round-06.md) | [All decisions](index.md) | [Refinement round 9 — organization (D-091 … D-096) →](round-09.md)
 
+**Why four whole questions about identity changed no table.** They were questions about the organization rather than about the model, and three of the four were answerable simply by looking at what the organization already has: a roster with no money in it settled a rule that had been written as a default, and a wanted feature settled a trade that had been written as an assumption. The fourth — the two retention clocks — was settled by deciding that the two halves of a person's record are allowed to age differently. That is why they were worth holding to the end rather than asking first.
+
 ---
 
 ## D-082 — A direct message to a minor is mirrored to the minor's guardians

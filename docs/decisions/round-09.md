@@ -4,6 +4,8 @@
 
 [Refinement rounds 7 and 8 (D-082 … D-090) ←](round-07-08.md) | [All decisions](index.md) | [Refinement round 10 — the deletions, part 1 (D-097 … D-100) →](round-10a.md)
 
+**Two things this round produced that are worth more than the questions it asked.** A rule that lives only as prose in one section is still a rule: "audiences do not nest" sat in the authorization data-model for three rounds and quietly cost two grants for one intention, until an answer asked for the forbidden thing. And **a decision recorded from a description of the data is only as durable as the description** — [D-090](round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)'s absolute import rule lasted one round because nobody had read the file, which is why [D-092](#d-092--the-corpus-is-people-and-events-and-it-names-no-units) exists and why the corpus questions are now asked in the present tense about a real export.
+
 ---
 
 ## D-091 — A permission group is a rule and a list at once, and a rule may name another group

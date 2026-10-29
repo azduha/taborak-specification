@@ -4,6 +4,8 @@
 
 [Refinement round 9 — organization (D-091 … D-096) ←](round-09.md) | [All decisions](index.md) | [Refinement round 10 — the deletions, part 2 (D-101 … D-104) →](round-10b.md)
 
+**What a round that redesigns rather than answers leaves behind.** Nothing in this round and its second half had to be answered before implementation could start, and that is not reassuring: the round's cost went into questions that were not open before it. Several lost their *subject* rather than getting an answer — the membership gate, the root participation row, the unit types, `scope_exposure`, positions and the level ladder — and eight new ones came in, all consequences of the new machinery rather than new wishes. **The pattern worth carrying is that a question about a mechanism outlives the mechanism**, and the honest options are to restate it against whatever replaced the mechanism, or to say that the premise is gone and keep the reasoning. Both were done here, and the entries that survived did it by naming what enforces the rule now — [D-081](round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)'s discipline, applied to whole sections that had been written as if the hierarchy were permanent.
+
 ---
 
 ## D-097 — There are no sub-units. The unit is a scope, not a row
