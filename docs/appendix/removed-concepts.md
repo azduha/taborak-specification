@@ -45,11 +45,29 @@ its vocabulary.
 | `delegation_of` on `access_grant` | a reference to the assignment row a delegated grant was lent from, which the checker re-validated at check time | the table it pointed at is gone, and with it the second half of the guard — there is no source row left to re-validate; no decision entry names this column | `is_delegated` with `delegated_from` naming the person who lent it, and the rule that a delegation must expire (integrity check 11 reports an open-ended one) | — (no decision names it; the deletion of the table it referred to is [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) |
 | `is_delegatable` on `role` | a per-role switch saying whether an office's authority could be lent | `role` carries no such field, and no decision names this one in either its deleted or its kept list — so it is not in the model, and lending is said on the grant instead | `is_delegated` with `delegated_from` on the grant, which must expire | — (no decision names it; `role`'s fields are in [data-model/05 §3](../data-model/05-authorization.md#3-role--an-office)) |
 
+### The codes that left the catalog
+
+A code is a stable identifier, so one leaving the catalog silently is a migration nobody decided. The
+tables in [the catalog](permission-catalog-a-codes.md) hold only codes that can be granted today; these
+were granted, and here is where their act is performed now.
+
+| Code | The act | Where the act is now | Decision |
+|---|---|---|---|
+| ~~`org_unit.view`~~ | the list of units, and the "which units exist" report | Nowhere. The unit is a **scope**, not a row: there is no list to read | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) |
+| ~~`org_unit.create`~~ | creating a unit | Nowhere, and nothing needs creating — the unit arrives as a code in `grant_scope_type`, not as data | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) |
+| ~~`org_unit.edit`~~, ~~`org_unit.rename`~~ | renaming what a body is called | `person_group.edit`, and it is cheap: a grant and an expression store kind + id, never a name, so a rename rewrites nothing | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row), [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) |
+| ~~`org_unit.restructure`~~ | splitting, merging and succeeding a unit | Nowhere, and the loss is stated once in D-097: a group that splits is an old group that ended and two that began, with no edge between them unless somebody writes one | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) |
+| ~~`org_unit.close`~~ | ending a unit | `person_group.end` — which ends a **set**, and is graded accordingly | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) |
+| ~~`position.view`~~, ~~`position.assign`~~ | seeing a body's slots; appointing somebody into one | `role.view` and `role.assign` (catalog §7). An elected leader is a **holder of a role**, and the audience rule that used to read `unit_leaders` is `ROLE(leaders)` | [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape) |
+| ~~`unit_participation.view`~~, ~~`unit_participation.manage`~~ | seeing and writing one sub-unit's participants | `membership.view` for the organization (one query, no depth), `person_group.view` and `person_group.member.manage` for a group. D-095's discipline transfers intact: never self-scoped, the write is somebody else's act, the report is the control | [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row), [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) |
+| ~~`membership.transfer`~~ | moving a member between units | `person_group.member.manage` — close one dated row, open another — and it does not touch the membership at all. Obsolete twice over: D-041 moved unit belonging into a participation row, and D-097 deleted that | [D-041](../decisions/round-02-03.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership), [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) |
+| ~~`guardianship.permission.grant`~~ | granting a guardian individual capability codes | there was no namespace to grant from: a guardian's rights are one value with three choices | `guardianship.change_right` | [D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular) |
+
 **Two habits this page is meant to prevent.** Naming a removed thing in a spec page, which is what put
 the history back into the pages this appendix exists to keep clean; and re-adding one quietly, which is
 why every row ends in a decision — a concept comes back by a decision entry, or it does not come back.
 
 ---
 
-*Decisions behind this page: D-001, D-043, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
+*Decisions behind this page: D-001, D-041, D-043, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
 D-099, D-100, D-101, D-102, D-105, D-113, D-114.*

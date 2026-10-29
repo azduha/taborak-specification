@@ -96,6 +96,12 @@ notice a code drifting from its row** — the check D-104 adopts is a person rem
 over the seeded registries in both directions, which this repository can only ever do by hand
 ([F-19](../open-questions.md#f-19)).
 
+**This file is the only list of grantable codes, and both directions are decisions.** A code minted while
+a decision is being propagated, and a code that simply stops appearing here, are the same mistake: a
+migration nobody decided. A decision entry that wants a code adds one to the table of the resource it acts
+on, in the same round; a decision entry that removes one leaves a row in
+[removed-concepts.md](removed-concepts.md#the-codes-that-left-the-catalog).
+
 ### What a grant is
 
 **A grant is five things: a grantee (a person or an audience expression) + a scope (the unit, or
