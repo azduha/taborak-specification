@@ -980,9 +980,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -996,7 +1021,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3556,7 +3737,7 @@ in, never by a read-side hop limit, because a step limit's only achievement is c
 answer to return), and <strong>chain length becomes a signal</strong> — resolution has no bound, but a chain over
 three hops is reported, because four merges on one line of people is a statement about the matcher's
 queue and not about the row.
-<a href="../data-model/01-identity/#10-integrity-checks">01-identity §10</a> treated "survivor itself tombstoned"
+<a href="../data-model/08-events/#10-integrity-checks">01-identity §10</a> treated "survivor itself tombstoned"
 as a breach; with chains decided, that is normal, and only the length means anything.</p>
 <p><strong>The asymmetry worth remembering.</strong> A merge can be undone; <strong>the merged period cannot be.</strong> The four
 reversal steps in <a href="../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03 §6</a> lift the tombstone
@@ -3715,7 +3896,7 @@ the second of those two and not a third thing. The two halves of D-091's answer 
 refused when the edge is saved — both stand, the first confirmed by D-100 and the second widened to
 references across audiences by D-103. What is now dead wording here is <code>audience.kind</code>, the <code>unit_leaders</code>
 rule, "level", and the link to §4 of domain/04, which was about positions.</p>
-<p><strong>See:</strong> <a href="../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>,
+<p><strong>See:</strong> <a href="../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>,
 <a href="../domain/04-organization-structure/">domain/04</a> — its §4 held the positions this round deleted</p>
 <hr />
 <h3 id="c-5--closed--the-corpus-names-no-units-and-none-are-assigned">C-5 ✅ <strong>Closed</strong> — the corpus names no units, and none are assigned<a class="headerlink" href="#c-5--closed--the-corpus-names-no-units-and-none-are-assigned" title="Permanent link">&para;</a></h3>
@@ -3806,7 +3987,7 @@ configuration act, not a specification fact. ~~An <code>access_grant</code> cann
 was real and its subject is gone; its descendant is the one D-100 records instead, that a role confers
 nothing, so nothing arrives through an office at all until a grant says so.</p>
 <p><strong>The report survived, renamed.</strong> What was check 7b is now the standing <em>report</em> D-100 lists among its
-controls — §11 of <a href="../data-model/05-authorization/#11-invariants-to-verify">data-model/05</a> was renumbered for
+controls — §11 of <a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">data-model/05</a> was renumbered for
 round 10 and no longer has a gate to report on.</p>
 <hr />
 <h3 id="d-7--closed--the-root-participation-row-is-deleted">D-7 ✅ <strong>Closed</strong> — the root participation row is deleted<a class="headerlink" href="#d-7--closed--the-root-participation-row-is-deleted" title="Permanent link">&para;</a></h3>
@@ -4072,7 +4253,7 @@ noticed, because the wildcard papered over the gap and only the permission edito
 <p><strong>What is open is the discipline, not the data.</strong> There is <strong>no SQL check for this</strong> — one side
 is a Markdown file. Integrity check 18 reads the table, so it can find a permission no role
 grants; it cannot find a permission the catalog promises and the seed never contained. The
-reconciliation is scripted in <a href="../data-model/05-authorization/#12-what-the-organization-starts-with">data-model/05 §12</a>,
+reconciliation is scripted in <a href="../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">data-model/05 §12</a>,
 and it is a review rule, not a test.</p>
 <p><strong>The actual question:</strong> should the catalog be <strong>generated from</strong> <code>permission</code> rather than
 maintained beside it? That is the only change that makes the two incapable of disagreeing.
@@ -4150,7 +4331,7 @@ rules — "anyone", "everyone with membership", "a leader role", "members of a n
 (<a href="../decisions/round-09/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>)
 — all exist now, and none of them is an audience: they are the operands <code>EVERYONE</code>, <code>MEMBERS</code>, <code>ROLE(x)</code>
 and <code>GROUP(x)</code>
-(<a href="../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a>,
+(<a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a>,
 <a href="../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
 <strong>The seeded audiences went the other way — down to two</strong> (<code>everyone</code>, <code>all_members</code>), because a built-in
 audience turned out to be a sentence someone else composes rather than a row the code ships. So this entry
@@ -4206,7 +4387,7 @@ one fact stored three times, and nothing in §11 can see any of the three.</stro
 <li><strong>"are parameterised groups seeded per instance or created on demand?"</strong> — moot. There were never any
   per-instance audiences to parameterize once there was one unit, and the three parameterized seeded
   audiences are gone with the names they carried (§12 of
-  <a href="../data-model/05-authorization/#12-what-the-organization-starts-with">data-model/05</a>).</li>
+  <a href="../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">data-model/05</a>).</li>
 </ul>
 <p><strong>The bullets this entry carried, and where each one stands now.</strong></p>
 <ul>
@@ -4570,7 +4751,7 @@ request-scoped memo and two batch entry points, neither of which is a table. The
 incremental-invalidation question stays closed, now for the second time: first because a rebuild reached the
 closure anyway, now because the only thing invalidated through the closure is a compilation and that walk is
 bounded and already exists. The per-person effect of the sweep is no longer an invalidation question at all
-(<a href="../data-model/05-authorization/#10-the-resolver">data-model/05 §10</a>) — it is a fact about what <code>MEMBERS</code>
+(<a href="../data-model/05c-access-log-and-resolver/#10-the-resolver">data-model/05 §10</a>) — it is a fact about what <code>MEMBERS</code>
 evaluates to on the checked date, which is a description of <em>what moves</em>, and nothing more.</p>
 <hr />
 <h3 id="f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job">F-7 ✅ <strong>Dissolved</strong> — a nightly rebuild of cached answers and a materialized effective-permission table are one job<a class="headerlink" href="#f-7--dissolved--a-nightly-rebuild-of-cached-answers-and-a-materialized-effective-permission-table-are-one-job" title="Permanent link">&para;</a></h3>
@@ -4659,7 +4840,7 @@ of <em>what was actually changed</em> answers the interesting half of an inciden
 Monthly partitioning survives as the mechanism; it is how the window gets applied cheaply, and it was
 recommended long before anybody decided on a window.</p>
 <p><strong>Why the question is structurally weaker here than it is for <code>audit_log</code>.</strong>
-<a href="../data-model/05-authorization/#9-access_log">05-authorization §9</a> keeps the <em>contents</em> of a read out of
+<a href="../data-model/05c-access-log-and-resolver/#9-access_log">05-authorization §9</a> keeps the <em>contents</em> of a read out of
 this table to begin with — it records that a permission was exercised, not what was on the screen — so
 there is no payload-expiry argument and no long-history loss to weigh. What remains is the ordinary
 tension: a security review wants the login trail back to the start of the system, and a privacy review
@@ -4672,7 +4853,7 @@ which now has both clocks in front of it rather than one.</p>
 <p><strong>Impact if unanswered.</strong> Neither table can be shrunk afterwards without a migration over the two
 largest tables in the system, and the first time anybody wants to answer "how long have people been
 able to read this?" the honest answer is that nobody wrote down when the logging started.</p>
-<p><strong>See:</strong> <a href="../data-model/05-authorization/#9-access_log">data-model/05 §9</a>,
+<p><strong>See:</strong> <a href="../data-model/05c-access-log-and-resolver/#9-access_log">data-model/05 §9</a>,
 <a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>.</p>
 <hr />
 <h3 id="f-9--should-membership_type-stay-a-table-with-one-row">F-9 🟢 Should <code>membership_type</code> stay a table with one row?<a class="headerlink" href="#f-9--should-membership_type-stay-a-table-with-one-row" title="Permanent link">&para;</a></h3>
@@ -4728,7 +4909,7 @@ shape 4 was the entire reason this question was red.</p>
      <code>NOT NULL</code> cannot state it and the arity check has to.</li>
 <li><em>New — a check that reads another table:</em> an <code>AUDIENCE(...)</code> leaf <strong>may not point at an audience whose
      <code>code</code> is null</strong> (D-103; §11 check 12 of
-     <a href="../data-model/05-authorization/#11-invariants-to-verify">data-model/05</a>). Nothing about the operand row
+     <a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">data-model/05</a>). Nothing about the operand row
      tells you this; only the row it references does. The same class carries the <strong>name namespace</strong>, now
      spanning <code>role</code>, <code>person_group</code> and <code>audience.code</code> with every <code>selector_type.code</code> reserved against it
      — <strong>no single constraint spans three tables and a fourth table's values</strong>, so the write path carries it
@@ -4795,7 +4976,7 @@ is that shapes 1 and 2 are hand-written migrations, and that this is the conditi
 an ORM is safe rather than an argument against using one.</strong> Shape 3 needs one more thing than a decision:
 its checks are the only enforcement the selector language has, so <strong>the arity and null-argument checks have
 to be written before the first expression is saved</strong>, and the §11 list in
-<a href="../data-model/05-authorization/#11-invariants-to-verify">data-model/05</a> — renumbered for round 10, several
+<a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">data-model/05</a> — renumbered for round 10, several
 checks having lost their subjects — is a review instruction rather than a test.</p>
 <p><strong>Impact if unanswered.</strong> Not a crash. A system whose constraints are quietly absent, whose
 integrity checks (every "Invariants to verify" section) then start reporting rows, and whose first
@@ -5180,7 +5361,7 @@ what they are about to widen. <strong>A protection you cannot see is a protectio
 the route is right there, because naming an audience is optional, so an editor that blocks the safe action
 teaches people to inline the subexpression instead, which removes the reference the safety rule needed.</p>
 <p><strong>Positions.</strong> Add the reverse index and state it as an invariant to verify (cheap, and it is a row in §11 of
-<a href="../data-model/05-authorization/#11-invariants-to-verify">data-model/05</a> rather than a design change); ~~cap the
+<a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">data-model/05</a> rather than a design change); ~~cap the
 listing by depth so the walk is bounded by <code>selector_depth_limit</code>, which D-101 already enforces and which
 makes the worst case finite by construction~~ — <strong>this position is void, and it was the cheapest of the three</strong>:
 the parameter and the save-time bound behind it are both deleted
@@ -5372,7 +5553,7 @@ one entry covers them instead of four:</p>
 </tr>
 <tr>
 <td><code>event.answer.view</code> / <code>event.answers.view</code></td>
-<td>a <strong>code vs its own spelling</strong> — <a href="../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a> wrote the plural while its entry was new, and §12 of <a href="../data-model/05-authorization/#12-what-the-organization-starts-with">data-model/05</a> did too</td>
+<td>a <strong>code vs its own spelling</strong> — <a href="../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a> wrote the plural while its entry was new, and §12 of <a href="../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">data-model/05</a> did too</td>
 <td><strong>reconciled.</strong> Declared: the catalog's spelling is the registered one, <strong>one code, not two</strong> (<a href="../data-model/08-events/#selectors-that-bind-to-an-event">data-model/08 §8</a>). The plural is now <strong>gone corpus-wide — grep reports zero</strong>, so this row is fixed rather than disputed</td>
 <td>it relied on <strong>the catalog being the arbiter</strong>, and that assumption is what the third case breaks</td>
 </tr>
@@ -5496,7 +5677,7 @@ having been found by nobody who had been asked to look there.)</em></p>
 <p><strong>Schema impact.</strong> <strong>No rows change.</strong> The grammar renames nothing today; <code>system.admin</code>'s exemption already
 existed and is only now written down; and the QR capability is <strong>absent, not renamed</strong> — the seeded
 <code>permission</code> row this entry was braced for is a row that never ships. The report is zero-schema (D-072), and
-what it will diff against is <a href="../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a> with its
+what it will diff against is <a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a> with its
 thirteen rows — twelve for the whole of round 10, thirteen when this entry was written, twelve again for the one
 round after <code>LIST</code> went
 (<a href="../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>),
@@ -6122,7 +6303,7 @@ none is recorded as taken:</p>
   (<a href="../appendix/permission-catalog/#11-roles--proposed-seed-set">permission-catalog §11 note 3</a>).</li>
 <li><strong>Per-entry filtering in the history view:</strong> show an audit row's values only where the reader could
   also see the live field. Consistent with everything §9 of
-  <a href="../data-model/05-authorization/#9-access_log">data-model/05-authorization.md</a> says about channels, and
+  <a href="../data-model/05c-access-log-and-resolver/#9-access_log">data-model/05-authorization.md</a> says about channels, and
   it was considered and left unimplemented, because it means running the resolver per audit row against
   rows that may no longer exist — a grant withdrawn last year is exactly the case a history is read for.</li>
 <li><strong>Split the permission:</strong> the trail's shape (who changed which table, when) apart from its payloads.
@@ -6815,7 +6996,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>19</td>
 <td><code>access_log</code> is not human-annotatable</td>
-<td><a href="../data-model/05-authorization/#9-access_log">data-model/05</a></td>
+<td><a href="../data-model/05c-access-log-and-resolver/#9-access_log">data-model/05</a></td>
 </tr>
 <tr>
 <td>~~20~~</td>
@@ -6850,7 +7031,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>26</td>
 <td>~~Built-in audiences are rules evaluated by the resolver, not stored lists~~ (D-042) † — <strong>reversed twice, and the second reversal is the one to keep.</strong> Round 10 found both halves wrong in opposite directions: no built-in audiences (two seeded rows remain, and the rules are the <code>selector_type</code> operands), and an audience <strong>does</strong> contain a stored list — its <code>LIST</code> leaf (<a href="../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>, <a href="../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). <strong>Round 11 deleted that leaf</strong> (<a href="../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), so an audience stores <strong>an expression and nothing else</strong>: a hand-written set is <code>PERSON(x)</code> leaves <em>inside</em> the expression — rows of the tree, not rows of a roster, with no dates of their own. <strong>D-042's original half is therefore true of an audience again, and true for a new reason</strong>: the words are what is stored, and the words can happen to name people. (The count this row quoted was stale the moment assumption 58 recorded a thirteenth row arriving, and is twelve again now that <code>LIST</code> is gone — <strong>right by subtraction, not by the same fact</strong>.)</td>
-<td><a href="../data-model/05-authorization/#the-selector-registry">data-model/05</a></td>
+<td><a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05</a></td>
 </tr>
 <tr>
 <td>~~27~~</td>
@@ -6970,12 +7151,12 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>50</td>
 <td><code>access_log</code> needs the same window as audit payloads, neither longer nor shorter (proposed, <strong>F-8</strong>)</td>
-<td><a href="../data-model/05-authorization/#9-access_log">data-model/05</a></td>
+<td><a href="../data-model/05c-access-log-and-resolver/#9-access_log">data-model/05</a></td>
 </tr>
 <tr>
 <td>51</td>
 <td><strong>Audience</strong> membership is recomputed at check time and never stored, so "who could read this in 2023" may be unanswerable once the audit payloads expire (D-091, restated for D-098/D-101) † — <strong>the half of this that used to be true of roles is no longer at risk</strong>: an office is a dated <code>role_holder</code> row and a group is a dated roster, both stored, and F-12 closed on exactly that ground. What remains exposed is the expression, and it is now a question with a number: <a href="#f-17--closed--the-expression-is-the-record-so-a-nested-audiences-past-is-recomputed-and-never-promised">F-17</a></td>
-<td><a href="../data-model/05-authorization/#three-named-sets-and-the-one-question-nesting-cannot-answer">data-model/05</a></td>
+<td><a href="../data-model/05b-expression-tree/#three-named-sets-and-the-one-question-nesting-cannot-answer">data-model/05</a></td>
 </tr>
 <tr>
 <td>52</td>
@@ -6990,7 +7171,7 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>54</td>
 <td>A bare name in an expression resolves to a <strong>role or a group only</strong>, never to an audience — and the one-namespace rule across <code>role</code>, <code>person_group</code> and <code>audience.code</code>, with every <code>selector_type.code</code> reserved, is carried by the write path with <strong>no constraint spanning three tables</strong> (D-101, D-103) †</td>
-<td><a href="../data-model/05-authorization/#names-are-one-namespace-and-reserved-words-are-the-other-half">data-model/05</a></td>
+<td><a href="../data-model/05b-expression-tree/#names-are-one-namespace-and-reserved-words-are-the-other-half">data-model/05</a></td>
 </tr>
 <tr>
 <td>55</td>
@@ -7025,17 +7206,17 @@ because the docs still cite them and because the decision is worth seeing in thi
 <tr>
 <td>61</td>
 <td>~~A cache key is <code>(person, permission, item)</code>, and a stale allow is the failure that matters because deny is absolute (D-102, D-099) — <strong>the asymmetric-TTL answer is proposed in <a href="#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a> and decided by nobody</strong> — <strong>round 12 made the key short by one component</strong>: <code>OLDER(n)</code> puts the <strong>date being checked</strong> inside the answer with no write behind it, so a key of <code>(person, permission, item)</code> can hold an answer from before a birthday unless the cache cannot outlive the day.~~ — <strong>round 14 deleted this row's subject rather than settling it: there is no cache, so there is no key, no TTL and no stale allow</strong> (<a href="../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>; see also <a href="../decisions/round-13/#d-111--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-change-and-on-request">D-111</a>, whose answer this is). <strong>Two halves of the row outlive the object they were written about, and both turn out to be about meaning rather than storage:</strong> (i) the <strong>item</strong> belongs to whatever a permission predicate is bound to — a compilation carries the item as a <em>parameter</em> and holds no item, so nothing resolved while checking one item may be served for another: D-102's finding, surviving the key it was first written into; (ii) the <strong>checked date</strong> belongs inside the answer, which is why a cached roster must hold dated rows or validity ranges and never "today's set". <a href="../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>'s acceptance is <strong>discharged, not amended</strong> — under live resolution a birthday moves the answer at the instant it happens, so <a href="#f-6--closed--the-permission-cache-is-rebuilt-nightly-on-any-ruleset-write-and-on-request">F-6</a> no longer carries a consequence</td>
-<td><a href="../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>, <a href="../data-model/05-authorization/#10-the-resolver">data-model/05 §10</a></td>
+<td><a href="../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>, <a href="../data-model/05c-access-log-and-resolver/#10-the-resolver">data-model/05 §10</a></td>
 </tr>
 <tr>
 <td>62</td>
 <td>A <code>person_group_member</code> row <strong>lies inside its group's own period</strong> — assumed in §2 of <a href="../data-model/02-organization/#2-person_group_member">data-model/02</a>, reported by integrity check 2 as "a list to read rather than a breach", and <strong>ruled nowhere</strong>. Raised by the page's own author as an assumption these documents are standing on</td>
-<td><a href="../data-model/02-organization/#8-open-issues">data-model/02 §8</a></td>
+<td><a href="../domain/04-organization-structure/#8-open-issues">data-model/02 §8</a></td>
 </tr>
 <tr>
 <td>63</td>
 <td>~~A <strong>group</strong> may be ended while a live grant or a live expression names it~~ (D-103, amended in the round after the audience row) <strong>†</strong> — <strong>refused at save, in both directions</strong>: ending a group while a live grant, or a live audience reachable from one, names it, <strong>and</strong> writing a new grant onto an already-ended group. The reason is the <code>-</code> asymmetry, not the allow side — a live grant on an ended group is safe on the allow side and <strong>widens a deny</strong> on the <code>-</code> side, so an ended operand is a way to silently empty a set that was narrowing something. Checked over <code>audience_operand</code> rows whose <code>selector_kind = 'GROUP'</code>, the same query as the audience rule. <strong><code>ROLE(x)</code> needs no such rule, and the difference is the finding:</strong> an office has no <code>role.retire</code>, no status, and deletion is already refused while holder rows exist, so <strong>an office cannot be emptied quietly while a group can be emptied in one click.</strong> The hazard is a property of the shape, not of the idea</td>
-<td><a href="../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>, <a href="../data-model/02-organization/#8-open-issues">data-model/02 §8</a></td>
+<td><a href="../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>, <a href="../domain/04-organization-structure/#8-open-issues">data-model/02 §8</a></td>
 </tr>
 <tr>
 <td>64</td>

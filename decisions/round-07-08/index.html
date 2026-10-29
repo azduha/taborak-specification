@@ -982,9 +982,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -998,7 +1023,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2409,7 +2590,7 @@ tidiness — it is a trade against a feature someone named.</p>
    than <strong>three hops</strong> is reported. Four merges in a row on one line of people does not mean the data
    is odd, it means the matcher is producing duplicates faster than a human can settle them, which is a
    statement about the queue and not about the row.
-   <a href="../../data-model/01-identity/#10-integrity-checks">01-identity.md §10</a> stated this as a breach and
+   <a href="../../data-model/08-events/#10-integrity-checks">01-identity.md §10</a> stated this as a breach and
    is corrected: with chains decided, <em>a survivor that has itself been absorbed is normal</em>, and only the
    length means anything.</li>
 </ol>
@@ -2502,7 +2683,7 @@ against a redacted person row that keeps the skeleton non-identifying — and th
 B-3 already names, now with a concrete policy to review rather than a blank.</p>
 <p><strong>Also decided from here:</strong> <code>access_log</code> takes the same window as <code>audit_log</code>'s payloads as a proposed
 default (<strong>F-8</strong>, which needs your confirmation, and which is a weaker question because
-<a href="../../data-model/05-authorization/#9-access_log">05-authorization §9</a> keeps the payloads of <em>reads</em>
+<a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05-authorization §9</a> keeps the payloads of <em>reads</em>
 out of that table to begin with).</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#b-3--closed--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">B-3</a>.</p>
 <p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/">data-model/06-audit-and-import.md §2.2, §4, §6</a>,

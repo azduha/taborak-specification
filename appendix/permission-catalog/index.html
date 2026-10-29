@@ -982,9 +982,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -998,7 +1023,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2437,7 +2618,7 @@
 <h1 id="appendix--permission-catalog">Appendix — Permission Catalog<a class="headerlink" href="#appendix--permission-catalog" title="Permanent link">&para;</a></h1>
 <p>Every permission code, its namespace, and the grant that carries it.</p>
 <p>This is the <strong>proposed</strong> catalog, seeded in
-<a href="../../data-model/05-authorization/#12-what-the-organization-starts-with">../data-model/05-authorization.md</a>.</p>
+<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05-authorization.md</a>.</p>
 <blockquote>
 <p><strong>Round 10 rewrote this page.</strong>
 <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
@@ -2694,7 +2875,7 @@ The refusals below are operands people ask for that the registry does not carry.
 <p><strong>Every expression below is printed in the canonical stored form, which brackets every bracket,
 always.</strong> <code>*</code> and <code>-</code> bind tighter than <code>+</code>; <code>*</code> and <code>-</code> bind equally, left to right; and the stored
 string never relies on a reader who memorized that
-(<a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).
+(<a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).
 So <code>event.answer.view</code> on an event is aimed at <code>ORGANIZERS</code>, an open camp is opened by
 <code>MEMBERS</code>, a gated office is <code>MEMBERS * ROLE(treasurers)</code>, and the exemption for one named person is
 <code>(MEMBERS * ROLE(treasurers)) + PERSON(jan)</code> — a second grant aimed at a person is the other way to
@@ -2877,7 +3058,7 @@ could carry it but a column on the code itself.</p>
 </tbody>
 </table>
 <p>These marks should drive UI warnings and the alerting in
-<a href="../../data-model/05-authorization/#11-invariants-to-verify">../data-model/05-authorization.md</a>.
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">../data-model/05-authorization.md</a>.
 <strong>A mark grades what a grant exposes, not the table a code names</strong>
 (<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>),
 and the two new families are placed by that rule: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a
@@ -3417,7 +3598,7 @@ did <strong>not</strong> get smaller: <code>EVERYONE</code> is a legal operand, 
 was invented to do it. That stays an open question, not an answer (§12), and until it is answered
 the only control is the one D-091 named and D-102 sharpened: <strong>the editor shows the people a grant
 reaches, expanded, computed for an item, rather than the expression's name</strong>
-(<a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).</p>
+(<a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>).</p>
 <p><strong>The display is itself a read over people, and this catalog does not grade that yet.</strong> Showing a
 resolved set means enumerating which humans an expression currently covers — which is what
 <code>audience.view</code> is for, on a row carrying no sensitivity mark. Listing the holders of
@@ -4195,7 +4376,7 @@ therefore reviewed in <code>access_grant</code>, not in a role editor (§7).</p>
 Everything else the seed carries is vocabulary — the permission rows of this catalog, the
 <code>selector_type</code> operands (§1), the <code>grant_scope_type</code> rows that make an event or a group or a role an
 item, and two <code>is_system</code> audiences whose expressions are <code>EVERYONE</code> and <code>MEMBERS</code>
-(<a href="../../data-model/05-authorization/#12-what-the-organization-starts-with">§7</a>). <strong>None of those is
+(<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">§7</a>). <strong>None of those is
 authority</strong>, and the sentence is repeated here because this section is where a reader looks for it.</p>
 <table>
 <thead>
@@ -4648,7 +4829,7 @@ round 10 created them:</strong></p>
   <code>audience.manage</code> — accepting exactly that consequence — or it gets a code of its own; <strong>no code was
   invented here to fill the gap</strong>. The interim control is the editor showing the expanded set and the
   affected grants <em>before</em> the save, which is a user-interface requirement carried in
-  <a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
+  <a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
   not a permission.</li>
 <li><strong>Nothing bounds what a permission check costs, and that was a property of this system until this
   round.</strong> The bound lived in <code>audience.selector_depth_limit</code> and was refused at the save, which is
@@ -4752,8 +4933,8 @@ round 10 created them:</strong></p>
   — the two module pages that call <code>PERSON(…)</code> <em>"not in the language at all"</em>, one of them refusing the
   leaf while its own gate table writes it, and the domain grammar that omits it for the same reason,
   need this round's correction; the registry row and the printed grammar belong to
-  <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">../data-model/05-authorization.md §8</a>
-  and <a href="../../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
+  <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">../data-model/05-authorization.md §8</a>
+  and <a href="../../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">../domain/06-authorization-model.md §6.2</a>,
   not to this appendix. <strong>The fallback survives the answer</strong>: a second grant aimed at the person is the
   other way to write the exception, and the better one when the exception should not appear in the
   expression everybody else reads (§11).</li>

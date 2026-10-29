@@ -1108,9 +1108,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1124,7 +1149,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2014,7 +2195,7 @@ audience is <strong>an expression over named sets of people</strong>, stored as 
 by a grant
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
 Fields, storage rules and the write-path checks are in
-<a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>;
+<a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a>;
 what belongs here is the language, and why it is shaped like this.</p>
 <blockquote>
 <p><strong>Author in sets. Evaluate per person.</strong></p>
@@ -2078,7 +2259,7 @@ headed "the set, on the checked date" rather than anywhere in a section about co
 expression in exactly the sense <code>MEMBERS * GROUP(cubs) * PERSON(a)</code> is, and it parses under the rules
 below with nothing added to them.</p>
 <p><strong>This block and §<em>The selectors</em> are copies of the registry</strong> in
-<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a>, <strong>which is the registry</strong> —
+<a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a>, <strong>which is the registry</strong> —
 the seeded rows, not the prose. An operand that is not a seeded row does not exist however natural it
 looks in a grammar, and copies of a table drift from it
 (<a href="../../open-questions/#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it">F-5</a>);
@@ -2239,7 +2420,7 @@ have assembled, and narrower in the only way that matters (<a href="../06-author
 An operand aimed at a child's guardians would therefore offer, one code at a time, a subset of what
 those people already hold. A kept list of a child's contact adults is a <code>person_group</code>.</p>
 <p><strong>Thirteen selectors, and this table is a copy of
-<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md §8</a>, which is the
+<a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05-authorization.md §8</a>, which is the
 registry.</strong> Which selectors ship is settled: these thirteen, seeded, organization-read-only, and a
 fourteenth is a decision entry plus a seed row
 (<a href="../../open-questions/#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it">F-5</a>).

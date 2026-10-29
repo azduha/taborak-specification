@@ -982,9 +982,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -998,7 +1023,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2093,7 +2274,7 @@ finding: <strong><code>LIST</code> was kept by D-101 on the stated grounds that 
 derivable from anything", and D-101 was amended, late in the same round, to add <code>PERSON(x)</code></strong> — the operand
 that names exactly one human being. That amendment removed the table's reason and the round did not notice,
 so the last round ended with two ways to write the same set of names and a page of prose
-(<a href="../../data-model/05-authorization/#what-list-is-said-plainly--withdrawn-by-d-105">data-model/05 §8, <em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em></a>)
+(<a href="../../data-model/05a-audience-and-grammar/#what-list-is-said-plainly--withdrawn-by-d-105">data-model/05 §8, <em>What <code>LIST</code> is, said plainly — withdrawn by D-105</em></a>)
 arguing that they were <strong>two operands and not one wearing two names</strong>. They were one. The argument was
 correct about the semantics and wrong about the conclusion, and the difference between those two is a table
 nobody needs.</p>
@@ -2263,7 +2444,7 @@ adopted as its remedy, run once, on the rows this migration puts at risk.</p>
 <strong>Date:</strong> refinement round 12
 <strong>Amends:</strong> the failure semantics described in
 <a href="../round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> and written out in
-<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a></p>
+<a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a></p>
 <p><strong>Decision.</strong> Nothing about resolution changes. An operand whose argument names nothing — a deleted
 person, a renamed role, a merged-away id — <strong>is the empty set</strong>, and <code>EVERYONE - PERSON(x)</code> with a dead
 <code>x</code> therefore still denies everybody. What is added is not a rule but a page: <strong>an audience with a leaf
@@ -2305,7 +2486,7 @@ in <a href="#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-voc
 records the premise that makes a notification enough: the people writing these expressions are the people
 who know what they say.</p>
 <p><strong>See:</strong> <a href="../../domain/06-authorization-model/">domain/06 §6.4</a> for the rules that make the tree safe,
-<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a> for where the empty-set rule is
+<a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a> for where the empty-set rule is
 stated, and <a href="../../open-questions/#f-15--closed--the-per-item-preview-is-cheap-at-the-stated-size-and-this-is-what-reopens-it">F-15</a>,
 which this does not answer — a report is not a preview and neither is free.</p>
 <hr />
@@ -2481,7 +2662,7 @@ are tables.</strong> The merge and orphan scans still walk exactly the five that
 sentence those pages should always have carried — the count this corpus keeps getting wrong is the count of
 things to scan, not the count of values a column may hold.</p>
 <p><strong>See:</strong> <a href="../../domain/06-authorization-model/">domain/06 §6 and §6.1</a> for the language and the corrected
-argument, <a href="../../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a> for the fourteen-row
+argument, <a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a> for the fourteen-row
 registry, <a href="../../appendix/permission-catalog/#1-conventions">permission-catalog §1</a> for the leaf list,
 <a href="../../open-questions/#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it">F-5</a>, which closes on its
 age half, and <a href="../../open-questions/#ev-1--closed--there-is-no-age-ceiling-the-grant-is-the-rule">EV-1</a>,

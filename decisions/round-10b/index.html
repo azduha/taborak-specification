@@ -982,9 +982,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -998,7 +1023,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2270,7 +2451,7 @@ quietly corrected.)</strong> And <strong>bare <code>name</code></strong>, becaus
 round's own control is written <code>MEMBERS * COUNSELORS</code>: an expression that does not parse is not a control.
 <code>ROLE()</code> and <code>GROUP()</code> remain as explicit qualification, required in the canonical rendering.</p>
 <p><strong>Both arms were still missing from the seeded registry when the registry was written, and that is worth
-recording rather than fixing quietly.</strong> <a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md §8</a>
+recording rather than fixing quietly.</strong> <a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05-authorization.md §8</a>
 was written from the evaluator's arm list, not from this grammar, and an arm list copied from an
 implementation is exactly the kind of source that loses an arm nobody had implemented yet. The registry
 carries <strong>thirteen</strong> rows and <code>PERSON</code> is one of them: <code>takes_argument</code> true, <code>argument_type</code> <code>person</code>,
@@ -2436,7 +2617,7 @@ reaches nobody" belongs to the editor preview that already has to exist.</p>
 operand can be added by any later decision. Precedence is the closed half: once expressions are stored in
 canonical fully-bracketed form, changing what binds tighter changes nothing already stored, which is a
 nice property and the reason the canonical rendering is a requirement rather than a convenience.</p>
-<p><strong>See:</strong> <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05-authorization.md §8</a>,
+<p><strong>See:</strong> <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05-authorization.md §8</a>,
 <a href="../../domain/06-authorization-model/">domain/06-authorization-model.md §6</a>,
 <a href="../../glossary/">glossary.md</a> (Audience, Selector, Filling rule, Locality).</p>
 <hr />
@@ -2584,7 +2765,7 @@ the difference between this and <a href="../round-10a/#d-097--there-are-no-sub-u
 that entry deletes a dimension, this one removes a <em>test</em> and leaves the vocabulary intact.</p>
 <p><strong>See:</strong> <a href="../../data-model/08-events/#8-projections-and-guards">data-model/08-events.md §2, §8</a>,
 <a href="../../domain/07-events/">domain/07-events.md</a>,
-<a href="../../data-model/05-authorization/#10-the-resolver">data-model/05-authorization.md §10</a>.</p>
+<a href="../../data-model/05c-access-log-and-resolver/#10-the-resolver">data-model/05-authorization.md §10</a>.</p>
 <hr />
 <h2 id="d-103--an-audience-may-name-another-audience">D-103 — An audience may name another audience<a class="headerlink" href="#d-103--an-audience-may-name-another-audience" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer)
@@ -2646,7 +2827,7 @@ is the only arm that can say <em>"the same people that grant may see the fee led
 its table, and the honest reading of the column is that everything in it is now either in the <code>GROUP(x)</code>
 column (a roster somebody maintains, with dates) or in the expression itself (a run of <code>PERSON(…)</code> leaves,
 with none). The three-way version that replaced this is in
-<a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md</a>; this one is kept
+<a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05-authorization.md</a>; this one is kept
 four-wide so the deletion has something to be measured against.</em></p>
 <table>
 <thead>
@@ -2777,7 +2958,7 @@ than a suggestion. <strong>The depth bound used to be named beside it in this se
 listing is alone now and the thing that replaced the bound is a report with no named reader
 (<a href="../../open-questions/#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size">F-21</a>).</p>
 <p><strong>See:</strong> <a href="#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> for the language
-this adds one arm to, <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">data-model/05-authorization.md §8</a>
+this adds one arm to, <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05-authorization.md §8</a>
 for the table, and <a href="../round-09/#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group">D-091</a>,
 whose inclusion edge this replaces for the second time.</p>
 <hr />
@@ -2899,7 +3080,7 @@ Until then the registry and the prose are two copies of one thing
 (<a href="../../open-questions/#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those">F-10</a>'s general
 shape, in its cheapest instance), and the report is the check that they still agree.</p>
 <p><strong>See:</strong> <a href="../../open-questions/#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two">F-19</a>,
-which this closes, <a href="../../data-model/05-authorization/#the-selector-registry">data-model/05-authorization.md §8</a>
+which this closes, <a href="../../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05-authorization.md §8</a>
 for the registry (<strong>thirteen rows today</strong> — back to thirteen, which is the number this sentence started with
 and not the set it counted: twelve for the one round
 <a href="../round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a> owned, thirteen as it was

@@ -1163,9 +1163,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1179,7 +1204,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2364,7 +2545,7 @@ period says it existed, the member rows say who was in it, and <em>"who was in
 <code>schuzka2026-1</code> on 14 March 2026"</em> is a point-in-time read over the roster — which is why
 the rows are dated, and why that answer survives the audit trail's payload expiry.
 <strong>A group is not an audience</strong>: a group <em>states</em> its members and an audience <em>picks</em> them
-(<a href="../glossary-authorization/#authorization">Audience</a>). <strong>Nobody writes themselves onto a roster</strong> —
+(<a href="./#authorization">Audience</a>). <strong>Nobody writes themselves onto a roster</strong> —
 <code>person_group.member.manage</code> has no self-scoped variant and none will be added, and <strong>no
 group is seeded</strong>. <strong>Moving a person between groups closes one dated row and opens
 another.</strong> Specified in
@@ -2486,7 +2667,7 @@ jamboree. It has a start and an end, an optional capacity, an optional fee, and 
 cancellation is a recorded fact rather than a state. <strong>Nothing owns an event</strong>: there is no
 <code>event.org_unit_id</code> and no <code>can_event()</code>; the people connected to an event are named by
 <strong>selectors that bind to it</strong>
-(<a href="../glossary-authorization/#authorization">Bound operand</a>), and an event is addressed by being
+(<a href="./#authorization">Bound operand</a>), and an event is addressed by being
 <strong>the item</strong> of an item-scope grant, which is the only way anything reaches it
 (<a href="../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>,
 <a href="../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</p>

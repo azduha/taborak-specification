@@ -53,6 +53,22 @@
          <lastmod>2026-10-29</lastmod>
     </url>
     <url>
+         <loc>https://azduha.github.io/taborak-specification/data-model/05a-audience-and-grammar/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
+         <loc>https://azduha.github.io/taborak-specification/data-model/05b-expression-tree/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
+         <loc>https://azduha.github.io/taborak-specification/data-model/05c-access-log-and-resolver/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
+         <loc>https://azduha.github.io/taborak-specification/data-model/05d-invariants-and-seed/</loc>
+         <lastmod>2026-10-29</lastmod>
+    </url>
+    <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/06-audit-and-import/</loc>
          <lastmod>2026-10-29</lastmod>
     </url>

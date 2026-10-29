@@ -1119,9 +1119,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1135,7 +1160,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2258,7 +2439,7 @@ and which must not become the history of record for anything
 <li><strong>A member row whose period lies outside its group's period is reported, not refused.</strong> The two periods
   are two facts and D-098 keeps both without ruling that one contains the other, so containment is
   assumed here and nowhere decided. <strong>Status:</strong> assumption — see integrity check 2, and
-  <a href="#8-open-issues">§8</a>.</li>
+  <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>.</li>
 </ul>
 <p><strong>Who enforces the overlap rule now.</strong> <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
 does not let a rule keep a mechanism it no longer has, so the answer is specific. <strong>The migration layer</strong>,
@@ -2348,7 +2529,7 @@ table they touch:</p>
 <li><strong>The polymorphic id has no foreign key</strong>, exactly as <code>access_grant.scope_id</code> accepted it
   (<a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>),
   and the compensating orphan check is specified once in
-  <a href="../05-authorization/#11-invariants-to-verify">05-authorization.md §11</a>. This page does not re-state it.</li>
+  <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05-authorization.md §11</a>. This page does not re-state it.</li>
 </ul>
 <p><strong>Ending a group is refused at save while something live names it, and the reason is the subtraction, not
 the grant.</strong> <a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a> rules it for
@@ -2384,7 +2565,7 @@ The presence operand is not among them: <code>PRESENT(&lt;event&gt;)</code> over
 column that is NULL until somebody takes a register would revoke a child's access to their own photos
 because a volunteer forgot a tick box.</p>
 <p><strong>A deny that matches no live allow is dead weight and is reported</strong> — the check is specified in
-<a href="../05-authorization/#11-invariants-to-verify">05-authorization.md §11</a> and applies to group-scope denies as
+<a href="../05d-invariants-and-seed/#11-invariants-to-verify">05-authorization.md §11</a> and applies to group-scope denies as
 to any other, because a deny that denies nothing is how a stale restriction survives its reason (D-099).</p>
 <hr />
 <h2 id="4-joins-leaves-and-transfers-close-one-row-open-another">4. Joins, leaves and transfers: close one row, open another<a class="headerlink" href="#4-joins-leaves-and-transfers-close-one-row-open-another" title="Permanent link">&para;</a></h2>
@@ -2606,7 +2787,7 @@ write path still does (D-081's rule, D-101's requirement). That is check 4 below
    which — F-10 being unanswered — is the state of things today.</li>
 <li><strong>A member row lying outside its group's own period</strong> (§2). A list to read rather than a breach: the two
    periods are two facts and containment is assumed here, not ruled
-   (<strong>Status:</strong> assumption — <a href="#8-open-issues">§8</a>). A large count means people are editing old rows
+   (<strong>Status:</strong> assumption — <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>). A large count means people are editing old rows
    instead of opening new ones.</li>
 <li><strong>A group name that collides</strong> — with another group, with a role, with a set <code>audience.code</code>, or with a
    reserved <code>selector_type.code</code> (§1). Reports the collisions the write path should have refused; a non-zero

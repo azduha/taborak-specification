@@ -1258,9 +1258,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1274,7 +1299,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3043,7 +3224,7 @@ in the expression or leaving it out, and the expression is a row that can be rea
 <p><em>Corrected in this round:</em> an earlier draft of this page read D-100's <code>PERSON(y)</code> as shorthand for the
 audience's own <code>LIST</code>, on the grounds that the seeded <code>selector_type</code> registry did not carry the code. <strong>The
 registry was the side that was wrong</strong> — <code>PERSON</code> was seeded then, as the thirteenth row
-(<a href="../05-authorization/#the-selector-registry">data-model/05 §8</a>, <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101's amendment</a>),
+(<a href="../05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a>, <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101's amendment</a>),
 so <code>MEMBERS * ROLE(x) + PERSON(y)</code> parses as written. <strong><code>LIST</code> was never a substitute</strong>, which was the part
 worth remembering at the time: it is one set belonging to one audience, so <code>+ LIST</code> brings everybody on it and
 nothing on that list can except one person from itself. <strong>That confusion can no longer recur</strong>, because
@@ -3098,7 +3279,7 @@ none of which is the resolver:</p>
   ~~D-101 helps rather than excuses it — a cache may key on an operand and reuse it across every grant~~ — and
   the yearly expiry sweep keeps every other thing it had to do; what it no longer has to do is invalidate
   anything, because
-  <a href="../05-authorization/#11-invariants-to-verify">§11's invariant 19</a> forbids the row that would need it.</li>
+  <a href="../05d-invariants-and-seed/#11-invariants-to-verify">§11's invariant 19</a> forbids the row that would need it.</li>
 <li><strong>A lapse silently removes access</strong> — from exactly those grants whose expression names <code>MEMBERS</code>,
   and from
   none of the others. "Why can't I see this?" now has an answer that is a date <em>and</em> a line of grant
@@ -3179,7 +3360,7 @@ for cases no constraint rejects at the write.</p>
 <p><strong>Two checks this module deliberately does not hold.</strong> The one <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
 asks for — a live <code>deny</code> whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
-<a href="../05-authorization/#11-invariants-to-verify">05-authorization.md §11</a>. The no-overlap invariant over
+<a href="../05d-invariants-and-seed/#11-invariants-to-verify">05-authorization.md §11</a>. The no-overlap invariant over
 <code>person_group_member</code> belongs to the groups module, <a href="../02-organization/#6-integrity-checks">02-organization.md §6</a>.
 Naming both here is to stop either being written twice and drifting.</p>
 <p><strong>Retired with <code>unit_participation</code></strong> (§5), listed so that a citation of an old number lands somewhere:</p>
@@ -3221,7 +3402,7 @@ there is nothing to vary by type; being a counselor or a leader is a <strong>rol
 and membership is ageless, so there are no age limits to seed (D-038).</p>
 <p><strong>Nothing else is seeded here.</strong> The <code>counselors</code> role that D-100 seeds — shipped <code>is_system</code>, so an
 editor refuses to delete it — is a row of the authorization module
-(<a href="../05-authorization/#12-what-the-organization-starts-with">05-authorization.md §12</a>) and not of this one,
+(<a href="../05d-invariants-and-seed/#12-what-the-organization-starts-with">05-authorization.md §12</a>) and not of this one,
 and it is a <strong>set</strong> that confers nothing until a grant names it: no more than a membership type has ever
 conferred.</p>
 <p><strong>All three are settled, and all three are §1's columns</strong> — 12 months, 1 January, 60 days

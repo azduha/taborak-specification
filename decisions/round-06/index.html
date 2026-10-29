@@ -982,9 +982,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -998,7 +1023,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2499,7 +2680,7 @@ in the deny channel rather than distributed across capability levels — so the 
 convenient place to write it, not of the mechanism.</p>
 <p><strong>Two-way door?</strong> Yes in principle, no in practice — the old dispatch can only be restored by
 re-inventing the namespace D-074 deleted.</p>
-<p><strong>See:</strong> <a href="../../data-model/05-authorization/#10-the-resolver">../data-model/05-authorization.md §10</a>,
+<p><strong>See:</strong> <a href="../../data-model/05c-access-log-and-resolver/#10-the-resolver">../data-model/05-authorization.md §10</a>,
 <a href="../../data-model/04-relationships/#4-how-the-resolver-uses-these-tables">../data-model/04-relationships.md §4</a>,
 <a href="../../appendix/permission-catalog/#9-there-is-no-dependent-namespace">../appendix/permission-catalog.md §9</a>.</p>
 <hr />
@@ -2546,7 +2727,7 @@ place the rule lives, so it has to be right.</strong></p>
 <tr>
 <td>5</td>
 <td><code>is_leadership</code> lives on <code>position</code>, and the audience rule for <code>unit_leaders</code> read it as though it lived on <code>role</code></td>
-<td><strong>Fixed where it is read.</strong> The audience is "holds a live assignment to a leadership <em>position</em> at that unit", which is what everyone had been assuming it meant. <a href="../../data-model/05-authorization/#8-audience--grants-that-target-a-set-of-people">05-authorization §8</a></td>
+<td><strong>Fixed where it is read.</strong> The audience is "holds a live assignment to a leadership <em>position</em> at that unit", which is what everyone had been assuming it meant. <a href="../../data-model/05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">05-authorization §8</a></td>
 </tr>
 </tbody>
 </table>
@@ -2626,12 +2807,12 @@ writes the migration:</p>
 <tr>
 <td>Registration outside its window</td>
 <td>Guard 1, inside the writing transaction</td>
-<td><a href="../../data-model/08-events/#10-integrity-checks">08-events §10 check 9</a> — a row here is evidence about the code, not the data</td>
+<td><a href="../../data-model/01-identity/#10-integrity-checks">08-events §10 check 9</a> — a row here is evidence about the code, not the data</td>
 </tr>
 <tr>
 <td><code>fee_obligation</code>, created by the code that places a registration</td>
 <td>nothing ever enforced it</td>
-<td><a href="../../data-model/08-events/#10-integrity-checks">08-events §10 check 10</a> — a confirmed place with no bill leaves every row individually correct</td>
+<td><a href="../../data-model/01-identity/#10-integrity-checks">08-events §10 check 10</a> — a confirmed place with no bill leaves every row individually correct</td>
 </tr>
 </tbody>
 </table>

@@ -1042,9 +1042,34 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../data-model/05-authorization/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1058,7 +1083,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1950,7 +2131,7 @@ that list, in either spelling</strong>: guardianship is a channel and not a set,
 of contact adults is a <code>GROUP(x)</code>
 (<a href="../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
 <strong>A count of the operands belongs only in the registry table itself</strong>
-(<a href="../data-model/05-authorization/#the-selector-registry">data-model/05 §8</a>).
+(<a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a>).
 <strong>Fail closed in every direction:</strong> an operand that does not resolve is the empty set, and
 an expression that cannot be evaluated reaches nobody. <strong>The direction is the half people
 get backwards:</strong> a failed operand on the <code>+</code> or <code>*</code> side narrows the set and a failed
@@ -1962,7 +2143,7 @@ not a failure at all</strong> — a person with no birth date is simply not in <
 as a person with no membership row is not in <code>MEMBERS</code>. Because <strong>a grant's reach is not
 visible in the row that grants it</strong>, whoever edits a grant or an audience is shown the
 expanded set of people — <strong>for a specific item</strong> — rather than a name
-(<a href="../domain/06-authorization-model/#62-audiences--an-expression-over-named-sets">domain/06 §6.2</a>).</p>
+(<a href="../domain/06a-audiences-and-selectors/#62-audiences--an-expression-over-named-sets">domain/06 §6.2</a>).</p>
 <p><strong>Selector</strong> — One <strong>operand</strong> of an audience expression: <strong>a named operand, which means a
 row</strong> in the seeded registry <code>selector_type</code> (<code>code</code>, <code>takes_argument</code>, <code>binds_to_item</code>,
 <code>argument_type</code>). The parser reads its reserved words from that table, the editor builds
