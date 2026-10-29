@@ -2187,6 +2187,8 @@
       
         
       
+        
+      
     
     
     
@@ -2701,6 +2703,34 @@
     
   
     Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
   
 
     
@@ -3275,9 +3305,10 @@ re-grant, one code at a time, what that channel grants whole
   and which names no table because it names no row
   (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>)</strong>.
   Anything reading this column has to know the scalar case exists, and has to know what the scalar
-  is <em>not</em> — <strong>it is not a reference</strong>. That is why §11's assertion that exactly two polymorphic
-  keys in this design go without a foreign key (<code>access_grant.scope_id</code>,
-  <code>audience_operand.selector_arg_id</code>) holds: an <code>18</code> sitting in <code>selector_arg_id</code> points at nothing,
+  is <em>not</em> — <strong>it is not a reference</strong>. That is why §11's check 2 walks two keyless columns
+  (<code>access_grant.scope_id</code>, <code>audience_operand.selector_arg_id</code>) and why the design's wider count of them —
+  <strong>seven</strong>, kept in <a href="../00-conventions/#9-referential-integrity-rules">00 §9</a> — never reaches an operand:
+  an <code>18</code> sitting in <code>selector_arg_id</code> points at nothing,
   so there is nothing for a merge to repoint, nothing for a cascade to find, and nothing for the
   orphan scan to walk. The check counts <em>references</em>, and <code>18</code> is not one (§<em>A hand-named person is
   now a keyless reference</em>, where the argument kinds are enumerated).</li>

@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/open-questions/">
       
       
-        <link rel="prev" href="../decisions/round-18/">
+        <link rel="prev" href="../decisions/round-19/">
       
       
       
@@ -2075,6 +2075,8 @@
       
         
       
+        
+      
     
     
     
@@ -2602,6 +2604,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2789,17 +2819,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-18 🟢 Does a role record elected versus appointed, and what does an election write?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#f-27--the-integration-that-this-system-calls" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2954,39 +2973,6 @@
     <span class="md-ellipsis">
       
         F-28 🟢 Is the displayed name a copy to keep in step, or a field to delete?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-29--what-can-a-report-see-about-a-trail-whose-payload-has-expired" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-29 🟡 What can a report see about a trail whose payload has expired?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-30--five-polymorphic-columns-and-the-orphans-that-are-the-design-working" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-30 🟡 Five polymorphic columns, and the orphans that are the design working
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-31--the-two-modules-with-no-check-list-of-their-own" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-31 🟡 The two modules with no check list of their own
       
     </span>
   </a>
@@ -3208,17 +3194,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-18 🟢 Does a role record elected versus appointed, and what does an election write?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#f-27--the-integration-that-this-system-calls" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3380,39 +3355,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#f-29--what-can-a-report-see-about-a-trail-whose-payload-has-expired" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-29 🟡 What can a report see about a trail whose payload has expired?
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-30--five-polymorphic-columns-and-the-orphans-that-are-the-design-working" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-30 🟡 Five polymorphic columns, and the orphans that are the design working
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-31--the-two-modules-with-no-check-list-of-their-own" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        F-31 🟡 The two modules with no check list of their own
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#f-32--a-delegation-the-delegator-has-lost--reported-or-invisible" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3506,11 +3448,13 @@
 
 
 <h1 id="open-questions">Open Questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h1>
-<p>Everything still unresolved — twenty-one questions, each with its <strong>schema impact</strong>, what changes
-once you answer, ordered roughly by how much they block. Six of them were opened by
-<a href="../decisions/round-18/">round 18</a> while it was writing down who enforces each invariant
-(<a href="#j-opened-by-writing-down-who-enforces-each-invariant">§ J</a>), and they are a different kind of item: none
-of the six is a design question, and each names a rule this corpus states with no report beneath it.</p>
+<p>Everything still unresolved — seventeen questions, each with its <strong>schema impact</strong>, what changes
+once you answer, ordered roughly by how much they block. Three of them came out of
+<a href="../decisions/round-18/">round 18</a>'s work writing down who enforces each invariant
+(<a href="#j-opened-by-writing-down-who-enforces-each-invariant">§ J</a>), and they are a different kind of item: none is
+a design question, and each names a rule this corpus states with no report beneath it. <strong>Three of that
+section's six were answered in <a href="../decisions/round-19/">round 19</a></strong>, which is the first round where the section
+gave answers back rather than only questions.</p>
 <p>Marked: 🔴 <strong>blocking</strong> something else · 🟡 <strong>important</strong> · 🟢 can be deferred.</p>
 <p><strong>A question that has been answered is not kept here.</strong> Its entry is deleted; what remains is one
 row in <a href="#r-resolved--moved-to-the-decision-log">§ R. Resolved</a> naming the question, the decision
@@ -3625,40 +3569,6 @@ hypotheses at a suspiciously high confirmation rate without asking for context, 
 signals are not enough — and the honest response is a <code>person.view</code> grant discussed as a top-tier
 membership, not a new code invented at a desk.</p>
 <p><strong>Needed.</strong> Nothing before implementation. Revisit when the first real import has produced a real queue.</p>
-<hr />
-<h3 id="f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write">F-18 🟢 Does a role record elected versus appointed, and what does an election write?<a class="headerlink" href="#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write" title="Permanent link">&para;</a></h3>
-<p><strong>Raised as a loss by <a href="../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
-not as a feature request.</strong> <code>position</code> carried <code>is_leadership</code>, <code>min_age</code>, <code>max_holders</code> and a
-<code>position_assignment</code> row, and the corpus's organization keeps an elected committee. Those columns are deleted,
-so the model now has <strong>one kind of office</strong> and cannot distinguish "elected for a two-year term by a vote"
-from "appointed by whoever holds <code>role.assign</code>". <code>role_holder</code> has <code>valid_from</code>, <code>valid_to</code>, <code>granted_by</code> and
-<code>note</code>, which is <em>nearly</em> enough to describe an election — and <code>granted_by</code> names the person who wrote the
-row, which for an election is a secretary, not a mandate.</p>
-<p><strong>Question.</strong> Does a <code>role</code> say elected or appointed; and if so, what does an election <strong>write</strong> — one
-<code>role_holder</code> row whose <code>note</code> says who voted, a document attached to the row, or a row in a table that does
-not exist yet?</p>
-<p><strong>Why it might be nothing.</strong> An election is an event in the world that the system <strong>records</strong>, not a process it
-<strong>runs</strong>: there is no ballot, no candidate table and no quorum rule anywhere in these documents, and D-043
-settled that this system does not hold background checks either — it is not the registry of everything true
-about a volunteer. <code>note</code>, <code>valid_from</code>, <code>valid_to</code> plus a <code>document</code> answer "we voted and here is the
-minutes", and <code>is_system</code> keeps the seeded offices distinct from the organization's invented ones. <strong>A
-convention, not a guard</strong>: nothing will ever refuse to appoint someone to an office the bylaws reserve for an
-election.</p>
-<p><strong>Why it might be something.</strong> Two things the deleted tables answered by construction now have no answer at
-all: <strong>the vacancy question</strong> (<code>max_holders</code> made "two chairpersons is one too many" a check) and the
-<strong>term-limit question</strong> (<code>role.max_term_months</code> is a per-role cap, not an electoral rule — a two-year term
-renewable once is a different claim from "may hold for at most 24 months"). Both recur in a Scout-like body
-with annual meetings, and both will arrive as one-off questions.</p>
-<p><strong>Positions.</strong> Nothing — <code>note</code> and a document (cheapest, defensible, and consistent with the round's
-direction); a boolean on <code>role</code> that says only <strong>how the office is filled</strong>, which answers the bylaws question
-and writes nothing new; or an <code>election</code>/<code>appointment</code> record, which is a new module and therefore a decision
-entry with an actual argument in it, not a column added here.</p>
-<p><strong>Schema impact.</strong> Either zero, one boolean on <code>role</code>, or a table plus its permission codes plus its audit
-behaviour. <strong>The boolean is not free either</strong>: it invites a check ("may a non-elected holder be written for
-an elected office?") which D-100's posture — opt-in, review by report — would refuse to enforce, and a column
-nobody enforces is a column that lies after the first exception.</p>
-<p><strong>Needed.</strong> Not before implementation. Before the first AGM, which is when somebody asks whether the system
-can show that the current chair was elected.</p>
 <hr />
 <h3 id="f-27--the-integration-that-this-system-calls"><a id="f-27"></a>F-27 🟢 The integration that this system calls<a class="headerlink" href="#f-27--the-integration-that-this-system-calls" title="Permanent link">&para;</a></h3>
 <p><strong>Everything round 16 designed is inbound.</strong> A key is a caller arriving
@@ -3946,17 +3856,19 @@ person data with no privileged subset (<a href="../decisions/round-07-08/#d-083-
 </table>
 <hr />
 <h2 id="j-opened-by-writing-down-who-enforces-each-invariant">J. Opened by writing down who enforces each invariant<a class="headerlink" href="#j-opened-by-writing-down-who-enforces-each-invariant" title="Permanent link">&para;</a></h2>
-<p>Six questions, all of them found the same way: <a href="../decisions/round-18/">round 18</a> wrote
+<p><strong>Three left, and all six were found the same way.</strong> <a href="../decisions/round-18/">Round 18</a> wrote
 <a href="../data-model/00a-invariant-register/">00a</a>, one row per invariant stating which layer carries it and which
-report would notice a breach, and eleven rows came back with <strong>no report named at all</strong>. All eleven are
-rules whose only enforcement is a line of code — a shape the earlier shapes do not have, because a temporal
-exclusion with no backstop still sits under a constraint. <strong>Six of the eleven are questions</strong> rather than
-simply reports nobody has written, and they are here. The other five — an approved request and the
-membership it produced not referring to each other, a compilation invalidated by the wrong edits, the three
-in the finance and import modules — are chores, and 00a names them where they stand.</p>
-<p><strong>None of the six changes the shape of the model.</strong> That is why they are 🟢 or 🟡 and not 🔴, and it is also
-why they are worth a moment rather than a meeting: each is a question about what a report is <em>able</em> to see,
-asked by a design that has just admitted, in one table, how often the answer is "nothing".</p>
+report would notice a breach, and eleven rows came back with <strong>no report named at all</strong>, every one of them a
+rule whose only enforcement is a line of code. Six of the eleven became questions. <strong>Three were answered by
+<a href="../decisions/round-19/">round 19</a></strong> — what a report may see after the payload window (<a href="#f-29">F-29</a>), which
+polymorphic columns get an orphan scan (<a href="#f-30">F-30</a>), and whether finance and import get check sections at
+all (<a href="#f-31">F-31</a>) — and they are in
+<a href="#r-resolved--moved-to-the-decision-log">§ R</a> with the rest. <strong>What answering them changed was not the shape
+of the model but the honesty of the table that lists them:</strong> one 00a row had to be deleted because it
+described a rule no page states, and two pages gained the section they had been arguing they did not need.</p>
+<p><strong>None of the three that remain changes the shape of the model.</strong> That is why they are 🟢 and not 🔴, and it is
+also why they are worth a moment rather than a meeting: each is a question about what a report is <em>able</em> to
+see, asked by a design that has just admitted, in one table, how often the answer is "nothing".</p>
 <hr />
 <h3 id="f-28--is-the-displayed-name-a-copy-to-keep-in-step-or-a-field-to-delete"><a id="f-28"></a>F-28 🟢 Is the displayed name a copy to keep in step, or a field to delete?<a class="headerlink" href="#f-28--is-the-displayed-name-a-copy-to-keep-in-step-or-a-field-to-delete" title="Permanent link">&para;</a></h3>
 <p><strong>Question.</strong> <a href="../data-model/01-identity/#2-person">01 §2</a> carries <code>given_name</code> and <code>family_name</code> on the
@@ -3978,88 +3890,6 @@ condition on <code>valid_to</code> being absent, which is the whole reason this 
 consent form, and then it is a data-cleanup over every person whose name was edited.</p>
 <p><strong>See:</strong> <a href="../data-model/01-identity/#2-person">01 §2</a>,
 <a href="../data-model/00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">00a §3</a>.</p>
-<hr />
-<h3 id="f-29--what-can-a-report-see-about-a-trail-whose-payload-has-expired"><a id="f-29"></a>F-29 🟡 What can a report see about a trail whose payload has expired?<a class="headerlink" href="#f-29--what-can-a-report-see-about-a-trail-whose-payload-has-expired" title="Permanent link">&para;</a></h3>
-<p><strong>Question.</strong> Two rules about the audit trail have no report, and they have none for the same structural
-reason. <strong>A write audited against an <code>api_key</code> that had already ended</strong>
-(<a href="../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a> says so out loud), and <strong>which audit
-views a holder may open following the payload window rather than the table</strong>
-(<a href="../data-model/06-audit-and-import/#2-audit_log">06 §2</a>). Both would be checked by reading a payload — and
-the payload is the part that is emptied after 24 months
-(<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
-so <strong>the report that would catch them is written in the ink the design erases on schedule.</strong></p>
-<p><strong>Why this is a question and not a chore.</strong> Every other blank in the register is filled by writing a query.
-These two ask whether a guarantee that cannot be re-checked after its window is the same guarantee. It has
-an answer the corpus already likes — check the <em>keys and timestamps</em>, which are the accounting skeleton and
-are permanent, rather than the payload: a live audit row naming an ended key, or a row whose
-<code>created_at</code> is inside the window while the key that made it is not, is visible without opening either
-value. Neither is written.</p>
-<p><strong>Positions.</strong> <strong>Check the envelope, not the payload</strong> (the two checks above, both cheap, both blind to
-content). <strong>Accept the blindness</strong> and say so, which is defensible: an incident that old is answered by
-the skeleton anyway. <strong>Widen the window for these columns</strong>, which is a privacy answer dressed as an
-integrity one and should be named if chosen.</p>
-<p><strong>Needed.</strong> A position on what a report may be asked to see after expiry — the same judgement
-<a href="#f-8">F-8</a> is making a window out of, seen from the checking end.</p>
-<p><strong>Impact if unanswered.</strong> Two rules that read as covered in the register and are covered only in the
-sentence that states them, and a reader of 00a who reasonably assumes a trail with this much prose beside it
-checks itself.</p>
-<p><strong>See:</strong> <a href="../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>,
-<a href="../data-model/06-audit-and-import/#2-audit_log">06 §2</a>,
-<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>.</p>
-<hr />
-<h3 id="f-30--five-polymorphic-columns-and-the-orphans-that-are-the-design-working"><a id="f-30"></a>F-30 🟡 Five polymorphic columns, and the orphans that are the design working<a class="headerlink" href="#f-30--five-polymorphic-columns-and-the-orphans-that-are-the-design-working" title="Permanent link">&para;</a></h3>
-<p><strong>Question.</strong> <a href="../data-model/00-conventions/#9-referential-integrity-rules">00 §9</a> used to say there were exactly
-<strong>two</strong> reference-less keys and that both were followed by an orphan scan. There are <strong>seven</strong>:
-<code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code> are scanned
-(<a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>), and
-<code>access_log.scope_id</code>, <code>access_log.authorization_ref_id</code>, <code>access_log.entity_id</code>,
-<code>field_conflict.entity_id</code> and <code>audit_log.record_id</code> are not scanned anywhere. The row now says which is
-which; whether it should say five more are followed is the question.</p>
-<p><strong>Why it is not simply an omission to fix.</strong> <strong>For the trail, an orphan may be the point.</strong> An audit row
-that outlives the row it describes is what a redaction looks like afterwards
-(<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
-and a check that counts those orphans as breaches would report the erasure path's own output as an
-integrity failure — which is worse than no check, because the first false alarm teaches people to ignore the
-real one. <code>field_conflict.entity_id</code> is the opposite case: a conflict row naming a thing that is not there
-is a broken import and nobody has written the sentence that says so.</p>
-<p><strong>Positions.</strong> <strong>Scan all five</strong>, and give the trail's scan a rule for which absences are legal —
-<code>person</code> rows erased on purpose versus rows that never existed. <strong>Scan the two that a person can cause</strong>
-(<code>field_conflict.entity_id</code>, and <code>access_log</code>'s three with the person-erasure exception written down).
-<strong>Scan none</strong>, and let <a href="../data-model/00-conventions/#9-referential-integrity-rules">00 §9</a>'s corrected row be
-the whole answer, which is defensible and is the one that stops pretending.</p>
-<p><strong>Needed.</strong> A decision per column — they are not one decision — and for <code>access_log</code>'s three, the sentence
-that says which missing targets are legal.</p>
-<p><strong>Impact if unanswered.</strong> The design knows it has polymorphic keys and does not know which of them can rot,
-which is the state that produced the count this question replaced.</p>
-<p><strong>See:</strong> <a href="../data-model/00-conventions/#9-referential-integrity-rules">00 §9</a>,
-<a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>,
-<a href="../appendix/erd-b-inventory/">erd-b</a>.</p>
-<hr />
-<h3 id="f-31--the-two-modules-with-no-check-list-of-their-own"><a id="f-31"></a>F-31 🟡 The two modules with no check list of their own<a class="headerlink" href="#f-31--the-two-modules-with-no-check-list-of-their-own" title="Permanent link">&para;</a></h3>
-<p><strong>Question.</strong> Every other data-model page ends with <strong>Invariants to verify</strong>;
-<a href="../data-model/07-finance/">07-finance.md</a> and <a href="../data-model/06a-import/">06a-import.md</a> do not. They state
-rules — <code>membership.outstanding_balance</code> agrees with the allocations, one staged row makes one event, a
-re-import reconciles rather than replaces — and then say nothing about what would notice a breach. That is
-why most of the register's blanks are in these two modules: <strong>their rules are unassigned by construction,
-not by oversight</strong>, because there is no section for the assignment to live in.</p>
-<p><strong>Why this is one question and not six.</strong> The missing checks are ordinary. What is missing is the decision
-to have them, which is the same decision every other page already made implicitly, and the reason finance
-and import skipped it is visible in their own text: both modules argue that the <em>money</em> and the <em>import</em>
-paths are correct by construction, which is an argument about the write path and not about the data
-afterwards. <a href="../data-model/00a-invariant-register/">00a</a> cannot rank these, and a reader who wants them
-ranked is asking for the thing this page refuses to invent.</p>
-<p><strong>Positions.</strong> <strong>Give each module an "Invariants to verify" section</strong> with the three checks it would write
-first — finance: balance versus allocations, an obligation with no payment request, a refund exceeding what
-was paid; import: a staged row that produced two events, a batch that ended with rows in neither state, a
-re-import that changed a matched row. <strong>Leave them out</strong>, and record that these two modules are guarded by
-their write path alone, which at least says the thing plainly.</p>
-<p><strong>Needed.</strong> A yes or no, and if yes, six checks — which is an afternoon, not a round.</p>
-<p><strong>Impact if unanswered.</strong> The two modules where the data is most numeric and therefore most checkable are
-the two where nothing is ever counted, and the first reconciliation that fails is the first report either
-module ever produced.</p>
-<p><strong>See:</strong> <a href="../data-model/07-finance/#3-keeping-membershipoutstanding_balance-honest">07 §3</a>,
-<a href="../data-model/06a-import/#3-import-pipeline">06a §3</a>,
-<a href="../data-model/00a-invariant-register/#what-the-register-cannot-say">00a "What the register cannot say"</a>.</p>
 <hr />
 <h3 id="f-32--a-delegation-the-delegator-has-lost--reported-or-invisible"><a id="f-32"></a>F-32 🟢 A delegation the delegator has lost — reported, or invisible?<a class="headerlink" href="#f-32--a-delegation-the-delegator-has-lost--reported-or-invisible" title="Permanent link">&para;</a></h3>
 <p><strong>Question.</strong> A delegation is an ordinary grant with provenance
@@ -4590,7 +4420,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 </tr>
 <tr>
 <td>~~23~~</td>
-<td>~~Positions are multi-holder unless <code>max_holders</code> says otherwise~~ (D-033) — <strong>deleted by D-100</strong> with <code>position</code>, <code>position_assignment</code>, <code>is_leadership</code> and <code>max_holders</code>. The vacancy question it answered is now unanswered by construction; see <a href="#f-18--does-a-role-record-elected-versus-appointed-and-what-does-an-election-write">F-18</a></td>
+<td>~~Positions are multi-holder unless <code>max_holders</code> says otherwise~~ (D-033) — <strong>deleted by D-100</strong> with <code>position</code>, <code>position_assignment</code>, <code>is_leadership</code> and <code>max_holders</code>. The vacancy question it answered is now unanswered by construction; see <a href="#f-18">F-18</a>, which <a href="../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a> answered by deciding not to record it</td>
 <td><a href="../domain/04-organization-structure/">domain/04</a></td>
 </tr>
 <tr>
@@ -4912,47 +4742,50 @@ the entry, and this index is a register, not a second copy of it.</p>
 </table>
 <p>| <a id="ev-3"></a>EV-3 | What happens to outstanding payment requests when an event is cancelled? | <a href="../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a> | Cancelling voids the event's outstanding payment requests, recording why, and money already received becomes a queue item — answered in the finance module rather than here, by <a href="../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>. |
 | <a id="h-0"></a>H-0 | What is <em>the medical record</em>, which five files cited and none defined? | <a href="../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a> | Found while starting the health-records module, and it changed what that module is: the referent was not missing, the <strong>category</strong> was. Everything about a person except name, gender and age is one class of data, held as fields — <a href="../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>, with the shape of the layer in <a href="../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> and the boundary in <a href="../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>. The three options this entry offered are recorded nowhere else, which is right: they were the shape of the question, not of the answer. |
-| <a id="msg-1"></a>MSG-1 | May a volunteer message a minor directly? | <a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a> | Yes — mirror it to the minor's guardians, tell the sender, block nothing (<a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>). Raised by <a href="../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>, which declined the restriction rather than forgetting it; three details were settled with it, because "mirror it to the guardians" does not by itself say who the guardians are <em>to this message</em>. |</p>
+| <a id="msg-1"></a>MSG-1 | May a volunteer message a minor directly? | <a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a> | Yes — mirror it to the minor's guardians, tell the sender, block nothing (<a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>). Raised by <a href="../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>, which declined the restriction rather than forgetting it; three details were settled with it, because "mirror it to the guardians" does not by itself say who the guardians are <em>to this message</em>. |
+| <a id="f-29"></a>F-29 | What can a report see about a trail whose payload has expired? | <a href="../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a> | <strong>Nothing, and the design now says so on the page that states the rule</strong> rather than leaving the reader to assume a trail with this much prose beside it checks itself. <strong>The premise did not survive being written down:</strong> the payload window was never what blocked the first check — <code>api_key.valid_to</code>, <code>api_key.revoked_at</code> and <code>audit_log.occurred_at</code> are all accounting skeleton, and a report over them would work in year thirty (<a href="../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>). So the answer is not "cannot" but "will not", and what the design gives up is stated: nobody will ever be able to demonstrate that no write was audited against a key that had already ended. <strong>The question's other half was not a rule at all</strong> — the register row minted beside it asserted that which audit views a holder may open follows the payload window, citing <a href="../data-model/06-audit-and-import/#2-audit_log">06 §2</a>, and no page in the corpus says any such thing; <a href="../data-model/06-audit-and-import/#23-history-query">06 §2.3</a> says close to the opposite, that a per-entry check inside the history view was considered and left unimplemented, which is <a href="#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>'s subject and already registered there. Under <a href="../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> a register row is a claim about a page, so the row is withdrawn rather than repaired. <strong>Costs:</strong> one paragraph in 06b §5, one 00a row deleted, one <code>none</code> that no longer reads as temporary. |
+| <a id="f-30"></a>F-30 | Five polymorphic columns, and the orphans that are the design working | <a href="../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a> | <strong>Four get a scan; the audit row never will.</strong> <code>field_conflict.entity_id</code> is scanned outright — a conflict naming a row that is not there is a broken import, and the sentence saying so had never been written. <code>access_log</code>'s three are scanned with the legal-absence rule beside them, because a target that is gone because a person was erased on purpose is not an integrity failure. <code>audit_log.record_id</code> is the deliberate exception and the interesting half of the answer: an audit row that outlives the row it described is <em>what a redaction looks like afterwards</em> (<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>), so a check counting those orphans as breaches would report the erasure path's own correct output as a failure — worse than no check, because the first false alarm teaches people to ignore the real one. <strong>Costs:</strong> a new check beside check 2 in <a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>; <a href="../data-model/00-conventions/#9-referential-integrity-rules">00 §9</a> and <a href="../appendix/erd-b-inventory/">erd-b</a> corrected, both of which still said there were exactly two reference-less keys; and 00a's row re-pointed at the page that owns the rule instead of at an appendix. <strong>The question's own arithmetic was wrong when it was filed:</strong> its positions offered to "scan the two a person can cause" and then named four columns. |
+| <a id="f-31"></a>F-31 | The two modules with no check list of their own | <a href="../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a> | <strong>Yes — three checks each.</strong> <a href="../data-model/07-finance/#4a-integrity-checks">07-finance</a> is asked to recompute the balance from §3's definition, to count a payment whose allocations do not account for its amount, and to find money nobody ever asked for; <a href="../data-model/06a-import/#4-integrity-checks">06a-import</a> is asked whether an imported membership is bounded at both ends, whether one occasion became one event, and whether a batch can account for what it did. <strong>The import page turns out to have had the strongest of the three in it already and never knew:</strong> an unbounded imported <code>membership</code> satisfies <code>is_current_member()</code>, so that row is the one place in the whole register where a data defect reaches the permission gate. <strong>Costs:</strong> a section on each page, three new 00a rows for rules both pages had stated and never registered, one dangling citation repaired (§3.1 had been citing "check 1 in §5" in a page with no §5), and 00a's <em>What the register cannot say</em> losing the structural excuse it had been giving for its own blanks. |
+| <a id="f-18"></a>F-18 | Does a role record elected versus appointed, and what does an election write? | <a href="../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a> | <strong>It records neither, and a role holds only the people.</strong> An election is run outside this system — nominations, a ballot, a quorum, minutes — and what arrives is the outcome: one <code>role_holder</code> row, two dates, <code>note</code> for whoever wants the reason beside the fact (<a href="../domain/04-organization-structure/#6-appointments">domain/04 §6</a>, <a href="../data-model/05-authorization/#4-role_holder--who-holds-an-office">05 §4</a>). <code>granted_by</code> is not the answer to "was she elected?" and never claimed to be: it names whoever wrote the row, which for an election is a secretary. <strong>The refusals and their reasons:</strong> a flag would make the distinction queryable and guard nothing, and a field that looks like a control where no control is wanted is worse than the absence, because someone comes to rely on it; an election table would describe a process this system does not run, on D-043's ground; and the distinction has nowhere to bite, because <strong>an office confers nothing by being held</strong>. <strong>The cost, said plainly:</strong> nothing here will ever refuse to appoint someone to an office the bylaws reserve for a vote. <strong>Also worth recording:</strong> two of this question's load-bearing facts had already gone while it sat open — <code>role.max_term_months</code> is deleted, and <code>is_system</code> is deleted by <a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>. |</p>
 <hr />
 <h2 id="how-to-answer">How to answer<a class="headerlink" href="#how-to-answer" title="Permanent link">&para;</a></h2>
 <p><strong>Nothing here blocks anything.</strong> No question on this page is marked 🔴, and none has been since round 4:
 the model is settled enough that most answers here change data rather than structure, which is what makes
-them worth a moment rather than a decision meeting. Seven are marked 🟡 and nine 🟢. The list below is
-what to answer first — roughly half of what it was before <a href="../decisions/round-13/">round 13</a> closed four of
-its nine items, which is worth saying before the list is trusted again.</p>
+them worth a moment rather than a decision meeting. Six are marked 🟡 and eleven 🟢. <strong>Round 19 took four
+out of the front of this list</strong> — the two trail blanks and the check-list question that led it, and F-18 —
+and left the list looking the way it did before § J existed: design questions again, with the register's
+leftovers behind them. <strong>Still not a question, and still owed:</strong>
+<a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
+deletes the seeded roles, audiences and grants, and the sweep that applies it is unwritten — a piece of
+cleanup, not a decision, and it happens whatever is answered here.</p>
 <ol>
-<li><strong>F-10</strong> — which invariants the ORM cannot express, and who writes those it cannot. The shape list is
-   now the shortest path to everything the write path has to carry: an <code>event</code> row that obliges a grant row,
-   requiredness conditioned on a value in <code>selector_type</code>, a check that reads a referenced row, a name
-   namespace across three tables, and exclusion constraints over <strong>all</strong> rows rather than over open ones.
-   Round 13 handed it a shape it had never had — <strong>an invariant over the <em>documents</em> rather than over the
-   data</strong>: <em>every selector name that appears in a document must be a <code>selector_type</code> row, and a check should
-   be able to say so</em> (<a href="../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>,
-   minted when the fourteenth selector turned out to be a prose idiom). That is a lint of prose against a seed
-   list, so it belongs to <a href="#f-19">F-19</a>'s machinery rather than to the write path — and it is now the only
-   check that would have caught it.</li>
-<li><strong>F-18</strong> — does a role record elected versus appointed, and what does an election write? A property of the
-   deleted <code>position</code> tables that a real elected committee still needs a place for.</li>
+<li><strong>E-6</strong> — the only remaining 🟡 whose answer changes what the system <em>does</em> rather than what a report
+   can see: whether a guardian adding a second guardian over a <strong>minor</strong> should notify anyone at the
+organization, or whether attribution in the trail is enough (<a href="#e-6--a-guardian-may-appoint-a-guardian">E-6</a>).
+   <strong>One thing to know before answering it:</strong> the recommendation on the page names a "safeguarding
+   contact", and no such office ships — <code>safeguarding_officer</code> is one of the worked examples the catalog
+   lists under "None of the following ships", and D-132 is about to delete the seed entirely. So the answer
+   needs an addressee, and the only addressee this design can offer is a grant aimed at a person or an
+   office somebody writes.</li>
 <li><strong>AT-2 / AT-4</strong> — who curates the attribute vocabulary day to day, and whether one permission is trusted to
    guard a trail that holds person data. These are one question seen from two ends: the data that lands in the
    trail arrives through the vocabulary.</li>
-<li><strong>EV-2</strong> — how long an event answer is kept once the event it answered is gone. A sharper question now that
-   the audit payloads which also held those values have a clock on them (see <a href="#b-3">B-3</a>).</li>
-<li><strong>F-19</strong> — the one item in this file that could be settled this afternoon. A script extracts the
-   code-shaped and selector-shaped words from these documents and diffs them against both registries, in both
-   directions. It costs no schema. Prose and a seeded registry disagreed four times in ten rounds, and
-   round 13 made it five — the fifth is the argument that reads hardest: <code>GUARDIANS</code> was a name in six pages of
-   prose <strong>and</strong> a registry row that should never have been minted, so <strong>both sides of the diff were wrong at
-   once</strong>. What was adopted instead is a hand-run report: a convention, not a guard
-   (<a href="../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).</li>
+<li><strong>EV-2</strong> — how long an event answer is kept once the event it answered is gone. A sharper question since
+   the audit payloads that also held those values were given a clock (see <a href="#b-3">B-3</a>), and sharper again
+   since <a href="../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a> settled that
+   the trail says what it says and does not stretch for a report.</li>
+<li><strong>F-28, F-32 and F-33</strong> — the three § J questions that survived the round, and a single sitting still
+   closes them: whether the denormalised displayed name is a copy to defend or a field to delete, whether a
+   delegate may be <em>told</em> that the person who lent them an authority has lost it, and whether <code>right_kind</code> has
+   to agree with the code beside it or should be admitted as a note.</li>
 <li><strong>The legal review</strong>, which is not a question this register can answer and which now has a concrete policy
    in front of it: named membership and fee rows kept indefinitely, audit payloads kept 24 months. Assumption
    49 is its subject — and since
    <a href="../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> the
    indefinitely-kept population includes thousands of imported people who never used the system, which is the
-   same judgement at a scale the review has not yet been shown.</li>
+   same judgement at a scale the review has not yet been shown.
+Everything else can be answered as we go.</li>
 </ol>
-<p>Everything else can be answered as we go.</p>
 <p><strong>What happened to the questions that are not here is in the decision log, not here.</strong>
 <a href="#r-resolved--moved-to-the-decision-log">§ R</a> is the register — the question, the decision that owns the
 answer, what the answer cost — and the reasoning is in the entry each row links to. Four rounds are worth
@@ -4996,7 +4829,7 @@ raised them. Each of those pages now says so at the top.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../decisions/round-18/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 18">
+          <a href="../decisions/round-19/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 19">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -5006,7 +4839,7 @@ raised them. Each of those pages now says so at the top.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Round 18
+                Round 19
               </div>
             </div>
           </a>

@@ -2159,6 +2159,8 @@
       
         
       
+        
+      
     
     
     
@@ -2686,6 +2688,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3136,7 +3166,8 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   integration to the next person reviewing who can do what</strong>, which is the same failure check 5 reports for
   a deny that denies nothing and check 13 for a code nothing grants. Closing the grant is a person's act
   with a reason, and §14's revocation triple is where the reason is written.</li>
-<li><strong>22. TIME-BOMB: nothing may read a key's own columns to decide an answer.</strong> An assertion, not a report:
+<li>
+<p><strong>22. TIME-BOMB: nothing may read a key's own columns to decide an answer.</strong> An assertion, not a report:
   no code path reaches for <code>last_used_at</code>, <code>owner_person_id</code> or <code>created_by</code> when it resolves a permission,
   and no check consults the person who installed an integration at all
   (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>,
@@ -3146,8 +3177,82 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   account, a lapsed membership or a <code>deny</code> written against whoever installed a key would otherwise change
   what the key may do, and D-005's <em>"a permission is never derived from an identity"</em> forbids exactly that —
   including when the identity belongs to somebody else. 15 and 16 are CI assertions too, and this belongs
-  beside them for the same reason: <strong>a prohibition nobody runs is a convention, not a guard.</strong></li>
+  beside them for the same reason: <strong>a prohibition nobody runs is a convention, not a guard.</strong></p>
+</li>
+<li>
+<p><strong>23. The four reference-less keys nothing else reads, and the fifth that is deliberately left unread.</strong>
+  One count per column over <code>field_conflict.entity_id</code>, <code>access_log.scope_id</code>,
+  <code>access_log.authorization_ref_id</code> and <code>access_log.entity_id</code>: <strong>a row where the column is set and no row
+  exists in the table named beside it</strong> — <code>entity_table</code>, <code>entity_type</code>, <code>scope_type</code>, <code>authorization_channel</code>
+  — or, where a registry names the table, in that table. A set id that resolves nowhere means the row was
+  written wrongly at the moment it was written; there is no constraint here for a bypassed save path to have
+  bypassed. <strong>Only a set column counts.</strong> An absent <code>scope_id</code> is a check at the unit and an absent
+  <code>authorization_ref_id</code> is no grant involved
+  (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>), and the <code>document</code> kind is
+  deferred, so there is no table there for any scan to walk. Check 2 holds the two keys on the granting side,
+  what the polymorphic trade costs, and the split that decides which orphan is the dangerous one; <strong>nothing
+  this check counts grants anything</strong>, so a row here has never changed who may do what — it has left a question
+  in the trail with nothing to answer it, which is why this one is read and not alerted on.</p>
+</li>
 </ul>
+<p><strong>Which absences are legal, and where the pages stop short of saying so.</strong> Two paths in this design remove a
+  business row outright, and neither can take a trail row with it: <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>
+  permits only the erasure and the reduction to change a row of that trail, permits them to touch only the
+  state columns, and calls every other field on it immutable. <strong>The import's revert</strong> removes the
+  <code>event_registration</code>, <code>event</code>, <code>membership</code> and <code>person</code> rows a batch created
+  (<a href="../06a-import/#reversibility">06a §3, Reversibility</a>), and <strong>the erasure</strong> deletes the person's
+  <code>person_attribute</code> rows (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>,
+  <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a>). <strong>So the exception is a rule about the target table
+  plus a demand for evidence, never a list of tolerated ids:</strong> an absence is legal exactly when the table the
+  row names is one of those five <em>and</em> the trail shows the removal — a revert writes one audit entry per row it
+  deleted, naming the batch, and an erasure writes one <code>redaction_log</code> row naming <code>person_attribute</code> in
+  <code>redacted_tables</code>. Everything else is a defect, including a row inside those five tables with no removal
+  recorded against it — and revert's pre-flight is stated as a check for references
+  (<a href="../06a-import/#reversibility">06a §3</a>) and never as one that reads a column with no foreign key in front of
+  it, which is what makes an absence under these three columns an expected outcome rather than a surprise.</p>
+<p><strong>Erasure on its own accounts for none of them:</strong> what it deletes is attribute rows, plus the expression
+  leaves naming the person where it removes one rather than rewriting it, while an erased person's <code>scope_id</code>
+  names a scope — an event, a group or an office, and nothing at all where the check was at the unit — and
+  their <code>authorization_ref_id</code> names an <code>access_grant</code> or a
+  <code>guardianship_permission</code> row, none of which erasure touches. So an orphan under <code>authorization_ref_id</code> has
+  no lawful explanation at all, and one under <code>scope_id</code> has exactly one: revert removing an <code>event</code>. <strong>One
+  shape beside these is neither a finding nor clean:</strong> a row whose <code>authorization_channel</code> is outside the six
+  values 05c §9 lists keeps its word and loses its table, so there is nothing for the id to be counted against,
+  and it is reported separately rather than as an orphan. Of the
+  three, only <code>entity_id</code> could name a row erasure does delete — a <code>person_attribute</code> row, or one of the
+  <code>audience_operand</code> leaves the erasure removes — and <strong>whether it ever does is settled by nothing in this
+  corpus</strong>: <code>entity_type</code>, the column that would say which table the id belongs to, is declared in 05c §9's
+  field table with an empty note and is given a list of tables nowhere.
+  <a href="../00-conventions/#4-deletion-policy">00-conventions §4</a> and
+  <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a> say exactly what an erasure deletes and neither says
+  what is written into this trail, so no page states which writes produce an <code>access_log</code> row at all. The
+  exception is therefore written wide enough to cover the case, and a reader should expect the erasure arm of
+  it to report nothing until somebody answers that.</p>
+<p><strong><code>audit_log.record_id</code> is the fifth of these columns and no count walks it, which is a decision rather than
+  an oversight.</strong> An audit row is built to outlive the row it describes. Its skeleton is permanent and only its
+  payloads expire (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+  and its fields are as immutable as the access trail's
+  (<a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a> states the guard for one trail and carries it across
+  to the other), so a removal in a business table <em>must</em> leave a reference behind; and the orphan is not merely
+  tolerated down there, it is <strong>load-bearing</strong> — <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5's check that a redacted person's payloads are empty</a>
+  finds the rows it exists to test by their <code>table_name</code> and <code>record_id</code> precisely because those two survive
+  the erasure that deleted the row behind them, and revert's entries name a deleted row by design. A count over
+  this column would report both erasure and revert as integrity failures, <strong>which is worse than no check at
+  all, because the first false alarm teaches whoever reads the report to ignore the real one.</strong> What stands in
+  its place is the pair of checks that read the property the column was ever a proxy for: that an erased
+  person's payloads are empty, and that nothing past the window still carries one.</p>
+<p><strong>The dangerous one of the four is <code>field_conflict.entity_id</code>,</strong> and it is dangerous for a reason the other
+  three do not share. A conflict row is a question put to a person — one field a merge could not decide,
+  sitting <code>unresolved</code> in the queue <a href="../01b-merges-views-and-checks/#10-integrity-checks">01b §10</a> ages at
+  thirty days — and an <code>entity_id</code> naming nothing is that
+  question being unanswerable. <strong>The reading nobody has written down before now is the likeliest one: the
+  import recorded a conflict against a row that is not there</strong>, and every decision taken on the strength of
+  that conflict inherited the mistake. Revert explains some of them, since <code>entity_table</code> holds <code>person</code> and
+  <code>membership</code> and revert removes both, and its per-row entries settle which of the two paths was here; a row
+  outside those two tables, or with no removal behind it, is not untidiness but a merge that decided something
+  about a record that never existed. <strong>None of this belongs on the permissions tab:</strong> the tab lists rules, and
+  not one of these four columns is a rule — and putting a legal absence on a page about broken things is how a
+  broken one comes to be read past.</p>
 <p><strong>Checks 3, 4, 5, 6 and 9 are the ones to wire to alerts, plus one half of 7.</strong></p>
 <ul>
 <li><strong>3 and 4 are the reports that stand in for the database rules that do not exist.</strong> A row in either
@@ -3543,7 +3648,7 @@ the assertion that it stays the only one).</p>
   rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
   <strong>invariant 19 is the thing a return has to argue with.</strong></li>
 <li>Retention policy for <code>access_log</code> — legal input required
-  (<a href="../../open-questions/#f-8--retention-policy-for-access_log">F-8</a>).</li>
+  (<a href="../../open-questions/#f-8">F-8</a>).</li>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>
 </ul>
 <p><strong>Settled, stated as answers.</strong> A role may <strong>not</strong> be held by a rule

@@ -2225,6 +2225,8 @@
       
         
       
+        
+      
     
     
     
@@ -2752,6 +2754,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3011,7 +3041,7 @@ brackets instead of silently rewriting them (<a href="../../decisions/round-10b/
 <tr>
 <td><code>selector_arg_id</code></td>
 <td>integer, optional</td>
-<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind — <strong>or it points at nothing: <code>OLDER</code> and <code>YOUNGER</code> write their integer into this same column</strong> (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>), because the column is an integer and the value is one. <strong>An integer in this column is not a reference</strong>: nothing to repoint on a merge, nothing for a cascade to find, nothing for the orphan scan to walk — <strong>which is precisely why that scan filters on the selector's kind and walks the five entity kinds rather than every row in this column</strong> (§<em>A hand-named person is now a keyless reference</em>). A reader who takes "polymorphic" to mean "always a row id" will write that scan wrong, which is why the sentence is here. §11 asserts that <strong>exactly two polymorphic columns in this design go without a foreign key</strong>, and it holds at <strong>thirteen</strong> operands; the count is of <em>keys</em>, so a scalar sitting in a key's column does not move it, and an operand arriving or leaving cannot move it either. <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
+<td><strong>Polymorphic, and deliberately without a foreign key</strong> — it points at <code>role</code>, <code>person_group</code>, <code>person</code>, <code>event</code> or <strong><code>audience</code></strong> depending on kind — <strong>or it points at nothing: <code>OLDER</code> and <code>YOUNGER</code> write their integer into this same column</strong> (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>), because the column is an integer and the value is one. <strong>An integer in this column is not a reference</strong>: nothing to repoint on a merge, nothing for a cascade to find, nothing for the orphan scan to walk — <strong>which is precisely why that scan filters on the selector's kind and walks the five entity kinds rather than every row in this column</strong> (§<em>A hand-named person is now a keyless reference</em>). A reader who takes "polymorphic" to mean "always a row id" will write that scan wrong, which is why the sentence is here. §11's check 2 walks <strong>two</strong> of this design's seven keyless columns — <code>access_grant.scope_id</code> and this one — its check 23 walks four more, and <a href="../00-conventions/#9-referential-integrity-rules">00 §9</a> keeps the count and says which one is walked by nothing — and none of that moves at <strong>thirteen</strong> operands; the count is of <em>keys</em>, so a scalar sitting in a key's column does not move it, and an operand arriving or leaving cannot move it either. <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s accepted trade-off, with its compensating orphan check (§11, check 2). Absent exactly when the selector's <code>takes_argument</code> is false. <strong>An <code>AUDIENCE</code> leaf stores the referenced audience's row here and is therefore also the reference edge</strong> (rule below), and the extra condition on that leaf is that the audience it names <strong>has a <code>code</code></strong> — a check reading another table, which is why it is an integrity check and not a constraint (§11, check 12).</td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -3291,9 +3321,11 @@ six values: five of them entity kinds, and the sixth <code>integer</code>, the a
 (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>)
 — <strong>and the scans walk the five.</strong> This is the one place to say why, because it looks like an omission
 and is not: <strong>an <code>18</code> in <code>selector_arg_id</code> is not a reference</strong>, so there is no row behind it to merge
-away, none to erase, none for a cascade to find and none for the orphan scan to report. <strong>The number this
-section is about — that exactly two polymorphic columns in this design go without a foreign key — is
-therefore two, and it is a count of <em>keys</em>: a scalar stored in a key's column is not one.</strong> <strong>Nobody has
+away, none to erase, none for a cascade to find and none for the orphan scan to report. **The number this
+section is about — how many keyless columns check 2 walks, which is two — does not move, and it is a count of
+<em>keys</em>: a scalar stored in a key's column is not one. <strong>The whole design has seven keyless columns, not two,
+and <a href="../00-conventions/#9-referential-integrity-rules">00 §9</a> is where that count lives;</strong> the other five
+belong to the two trails and to a merge conflict, none of which holds an operand argument. <strong>Nobody has
 to add a <code>person.birth_date</code> branch to a merge script, and anyone who does has misread this paragraph.</strong></p>
 <h3 id="what-each-operand-costs">What each operand costs<a class="headerlink" href="#what-each-operand-costs" title="Permanent link">&para;</a></h3>
 <p>What is worth comparing is whether a set is <strong>derived</strong> or <strong>kept</strong>. Every operand in the registry reads

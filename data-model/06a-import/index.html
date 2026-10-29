@@ -1684,6 +1684,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2162,6 +2173,8 @@
       
         
           
+        
+      
         
       
         
@@ -2725,6 +2738,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2863,6 +2904,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Integrity checks
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3469,7 +3521,7 @@ nobody who can read its answers.</p>
 open membership satisfies <code>is_current_member()</code>, so an inferred 1998 row hands whoever signs up under that
 name authority in the present, through every gated role, decades after the file that mentioned them was
 last opened. The end-date rule above is what stops an imported period from reading as current; this
-sentence is what stops the class, and check 1 in §5 is what catches a batch that did it anyway. <strong>What
+sentence is what stops the class, and check 1 in §4 is what catches a batch that did it anyway. <strong>What
 changed is how much of the class the rule has to cover, not whether it covers it.</strong> D-090 banned the row
 outright because the input looked like a roster and any membership in it would have been an inference;
 D-093 withdrew the ban because the input states periods, and because the hazard the ban was sized for was
@@ -3493,6 +3545,45 @@ count is a mix of an export and a register distinguished only by <code>data_conf
 *<em>What remains given up is that the imported membership
 is the source's claim about a status rather than a record of the act: nobody paid a fee in this system for
 1998, and the row says <em>the organization's export said so</em>, which is the most the evidence supports.</em></p>
+<hr />
+<h2 id="4-integrity-checks">4. Integrity checks<a class="headerlink" href="#4-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify.</strong> This section arrived late and by decision
+(<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>); every other
+data-model page had one and this page argued its way out of having one, on the grounds that the pipeline is
+correct by construction. That argument is about the write path, and these three are about the data
+afterwards — which is the half the argument never covered. Check 1 is the one §3.1 has been pointing at
+ever since it wrote "check 1 in §5", citing a section this page did not have.</p>
+<ol>
+<li><strong>An imported membership that should not exist.</strong> Two ways in, both stated above as rules: an imported
+   <code>membership</code> with <code>valid_to</code> absent, and a <code>staging_import_row</code> on an <strong>events</strong> batch carrying an
+   <code>applied_membership_id</code>. Either one means an imported period reads as present-tense belonging, and
+   <strong>this is the only check on this page that reaches the permission gate</strong>: an open membership satisfies
+   <code>is_current_member()</code> (D-039), so a row the end-date inference left open, or a membership written from an
+   attendance list, hands authority in the present to whoever signs up under that name decades after the
+   file was last read (§3.1). <strong>Non-zero here is not untidy data; it is authority, and it alerts</strong> — the
+   same shape as 09's erasure check, in that a single row is the finding.</li>
+<li><strong>One event per (title, date), and one registration per attendee row.</strong> <code>uq_staging_event_match</code> (§3) is
+   enforced inside the transaction that applies a staged row, deliberately at the application layer, because
+   the pair spans rows of a batch rather than columns of a row. <strong>That is exactly why the report exists</strong>:
+   an application-layer rule has nothing beneath it, so this count is not a net under a constraint but the
+   whole of the backstop, and the failure it is sized for is the loud one run quietly — ten thousand
+   attendee rows becoming ten thousand events, none deletable except by revert. The mirror half catches a
+   staged attendee row that produced more than one registration.</li>
+<li><strong>A batch whose own accounting does not close.</strong> Four readings of one promise — that a batch can always
+   say what it did, which is what makes revert possible at all: an <code>applied</code> batch still holding staged rows
+   that are neither applied nor <code>discard</code>ed nor <code>deferred</code>; a staged row marked <code>applied</code> carrying <strong>no</strong>
+   created id; a staged row carrying ids from the other half of the corpus (a people row with an
+   <code>applied_event_id</code>, an events row with an <code>applied_membership_id</code>) where §3 says <code>batch_kind</code> decides
+   which ids a row may hold; and a batch marked <code>reverted</code> whose created ids still resolve to live rows.
+   <strong>Read the last of the four against the trail rather than only the count</strong>: revert writes one audit entry
+   per row it deletes, each naming the batch (§Reversibility), so a batch that left rows behind also left
+   an entry for each deletion that did not happen — and a live row with no matching entry is the difference
+   between an undo that was refused and an undo that lied.</li>
+</ol>
+<p><strong>Check 1 is the one that matters, and it matters for a reason the other two do not share:</strong> the other two
+find bad data, and this one finds data that grants permission. Checks 2 and 3 are what a pipeline with an
+application-layer rule and a hard delete owes the people who inherit its output — cheap to run, and only
+interesting when they are non-empty.</p>
 
 
 

@@ -1769,6 +1769,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#4a-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4a. Integrity checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#5-open-issues--the-whole-of-this-document-essentially" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2193,6 +2204,8 @@
       
         
           
+        
+      
         
       
         
@@ -2756,6 +2769,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2916,6 +2957,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4a-integrity-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4a. Integrity checks
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3788,6 +3840,48 @@ after it. That is a data-entry lag, not a non-payment, and it is corrected with
 <code>membership.backdate</code> rather than left as a real gap. Worth a report: members who lapsed and then paid
 within a few days.</p>
 </blockquote>
+<hr />
+<h2 id="4a-integrity-checks">4a. Integrity checks<a class="headerlink" href="#4a-integrity-checks" title="Permanent link">&para;</a></h2>
+<p><strong>Invariants to verify.</strong> This section arrived late and by decision
+(<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>); what it does is
+not new to this folder, it is what every other page here already had. The rules below are all stated
+somewhere above this heading — §2, §2a and §3 each state one and then said nothing about what would notice
+a breach.</p>
+<ol>
+<li><strong>The balance the system shows, recomputed from §3's definition.</strong> <code>amount_due</code> − <code>amount_discount</code> −
+   the sum of allocations whose payment is <strong><code>confirmed</code></strong>, per obligation, and the same sum rolled up
+   wherever a membership's balance is displayed. Two states put a row on this list: an allocation whose
+   payment has since been <code>reversed</code> still sitting in the total, and a discount recorded on the obligation
+   but not carried into the roll-up. <strong>What it cannot catch is the definition being wrong on both sides</strong> —
+   a screen and a report that each recompute <code>amount_due</code> − <code>amount_paid</code> agree perfectly and are both
+   counting money that was only promised. <strong>If §3's recommendation is taken and the column becomes a view,
+   this check does not retire.</strong> It moves from "the copy agrees with the sum" to "the view implements the
+   sum", which is the same query and the same failure list, and D-075's rule that only confirmed payments
+   count is what it is checking either way.</li>
+<li><strong>A payment whose allocations do not account for its amount, and an obligation allocated past what it
+   owes.</strong> <code>payment_allocation</code> is many-to-many in both directions and §2's rules constrain the pair and the
+   sign of each amount, never the sums. So a payment with unallocated remainder is money that moved and was
+   never attributed to anything, and an obligation allocated beyond <code>amount_due</code> − <code>amount_discount</code> is an
+   overpayment that nobody has refunded. <strong>The layer here is the write path, and there is no constraint to
+   sit beneath it</strong>: the sums span rows of two tables, which is
+   <a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>, so this
+   report is not a net under a rule — it is the whole of the backstop. §2 called this table "the part most
+   likely to be right", and that is an argument about the shape, not about the data ten years in.</li>
+<li><strong>Money nobody ever asked for.</strong> Two readings of one failure, cheapest first: an obligation whose status
+   is <code>unpaid</code>, <code>partially_paid</code> or <code>overdue</code> with <strong>no live <code>payment_request</code></strong> pointing at it, so nothing
+   has ever carried a variable symbol to anybody; and upstream of that, an <code>event_registration</code> for an event
+   carrying a <code>fee_schedule</code> with no <code>fee_obligation</code> behind it, which §2 already warned of in one sentence —
+   <em>an event with a fee and no obligation is invisible until someone reconciles money against the roster</em>,
+   because nothing creates the obligation and no trigger could have been forgotten. <strong>Do not read this list
+   as the queue.</strong> An unmatched <code>bank_transaction</code> is money with no subject, and
+   <a href="../../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a> rules that it
+   waits for a person, which is a correct state with a page of its own (§2b). This is the opposite case: a
+   liability with no ask attached, which is silent in both directions — nobody is chased and nobody pays.</li>
+</ol>
+<p><strong>Checks 1 and 2 are the two that matter, and §3 says why in one line: a wrong number here has a human
+consequence</strong> — either a wrongly-suspended member or a wrongly-chased family. Check 3 is the one that finds
+a whole class of missing money rather than a wrong row, and it is the only one of the three that can be
+non-empty because a feature was never written rather than because a row is wrong.</p>
 <hr />
 <h2 id="5-open-issues--the-whole-of-this-document-essentially">5. Open issues — the whole of this document, essentially<a class="headerlink" href="#5-open-issues--the-whole-of-this-document-essentially" title="Permanent link">&para;</a></h2>
 <ol>

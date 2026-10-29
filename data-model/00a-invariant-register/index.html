@@ -2179,6 +2179,8 @@
       
         
       
+        
+      
     
     
     
@@ -2706,6 +2708,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2916,11 +2946,18 @@ visible instead of being a sentence on page 412 that nobody re-reads.</p>
 </table>
 <p><strong>How to read the two right-hand columns.</strong> <em>Backstop</em> names the report that would list a breach, by
 the page and number where that report is written. <strong><code>none</code> in bold</strong> is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. Eleven rows are
-in that state and <strong>all eleven are shape-3 rows</strong>, whose only enforcement is a line of code. Where the blank
-is a question rather than simply a report nobody has written, the row names it — six of the eleven,
-<a href="../../open-questions/#f-28">F-28</a> to <a href="../../open-questions/#f-33">F-33</a> — and none is quietly filled with an
-invented check. <em>Breach</em> is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
+slur on the rule: it means the corpus names no such report anywhere, which is the finding. Seven rows are in
+that state and <strong>all seven are shape-3 rows</strong>, whose only enforcement is a line of code. The seven are
+not one kind of blank. Three are open questions this register raised and left open —
+<a href="../../open-questions/#f-28">F-28</a>, <a href="../../open-questions/#f-32">F-32</a> and
+<a href="../../open-questions/#f-33">F-33</a>; one is <a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a> deciding that a rule gets
+no report, and saying so on the page that owns the rule rather than only here; one is a promise with an
+address, because D-130's identifier row names the section the report will be added to, so that <code>none</code> is
+dated rather than permanent; and the last two are blanks this page is not allowed to fill by inventing a
+check nobody asked for. <strong>The count came down from eleven for two reasons, both of them work rather than a
+re-reading</strong>: two pages were given the check sections they lacked (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>), and one row here
+turned out to describe a rule no page states at all, so it is gone (<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>) — which is the
+one of the two this page should be embarrassed by. <em>Breach</em> is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
 breach both read as "two rows" and only one of them is a duplicate.</p>
 <p><strong>Nine numbered checks, on three pages, are assertions about the code rather than reports over data</strong>
 — the six <code>TIME-BOMB</code> checks of
@@ -3226,7 +3263,7 @@ downstream ever says so.</p>
 <td>A registration creates its fee obligation</td>
 <td><a href="../07-finance/#4-how-this-connects-to-membership">07 §4</a></td>
 <td>the registration path</td>
-<td><a href="../08a-event-guards-and-checks/#10-integrity-checks">08a §10 check 10</a> for events; <strong>none</strong> for memberships</td>
+<td><a href="../08a-event-guards-and-checks/#10-integrity-checks">08a §10 check 10</a> for events; <a href="../07-finance/#4a-integrity-checks">07 §4a check 3</a> for everything the roster never asked about</td>
 </tr>
 <tr>
 <td>A merge repoints every operand that named the person</td>
@@ -3316,13 +3353,7 @@ downstream ever says so.</p>
 <td>A write is not audited against a key that was already ended</td>
 <td><a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a></td>
 <td>none</td>
-<td><strong>none, and the page says so</strong> — <a href="../../open-questions/#f-29">F-29</a></td>
-</tr>
-<tr>
-<td>Which audit views a holder may open follows the payload, not the table</td>
-<td><a href="../06-audit-and-import/#2-audit_log">06 §2</a></td>
-<td>none</td>
-<td><strong>none</strong> — <a href="../../open-questions/#f-29">F-29</a></td>
+<td><strong>none, and now by ruling rather than by omission</strong> — the window is not the obstacle and <a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a> says so on the page that owns the rule</td>
 </tr>
 <tr>
 <td>A hand edit to an audited row is visible afterwards</td>
@@ -3332,9 +3363,9 @@ downstream ever says so.</p>
 </tr>
 <tr>
 <td>A polymorphic reference with no foreign key still points somewhere</td>
-<td><a href="../../appendix/erd-b-inventory/">erd-b</a></td>
-<td>none for five of them</td>
-<td><strong>none</strong> — <a href="../../open-questions/#f-30">F-30</a></td>
+<td><a href="../00-conventions/#9-referential-integrity-rules">00 §9</a></td>
+<td>none, and none is possible — that is the trade the columns exist to make</td>
+<td><a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a> and its sibling check 23: <strong>six of the seven columns are scanned; <code>audit_log.record_id</code> never is, by ruling</strong> (<a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>)</td>
 </tr>
 <tr>
 <td>A registration is inside its event's window</td>
@@ -3358,13 +3389,31 @@ downstream ever says so.</p>
 <td>One staged row makes one event</td>
 <td><a href="../06a-import/#3-import-pipeline">06a §3</a></td>
 <td>the application, deliberately</td>
-<td><strong>none</strong></td>
+<td><a href="../06a-import/#4-integrity-checks">06a §4 check 2</a></td>
 </tr>
 <tr>
 <td><code>membership.outstanding_balance</code> agrees with the allocations</td>
 <td><a href="../07-finance/#3-keeping-membershipoutstanding_balance-honest">07 §3</a></td>
-<td><strong>unassigned</strong> — the section opens the choice</td>
-<td><strong>none</strong> — <a href="../../open-questions/#f-31">F-31</a></td>
+<td>the writing transaction if the column stays; §3 recommends dropping it for a view</td>
+<td><a href="../07-finance/#4a-integrity-checks">07 §4a check 1</a>, and the same query whichever way §3 lands</td>
+</tr>
+<tr>
+<td>An imported membership is bounded at both ends and never inferred from attendance</td>
+<td><a href="../06a-import/#31-what-a-source-row-actually-evidences">06a §3.1</a></td>
+<td>the parse and end-date inference rules</td>
+<td><a href="../06a-import/#4-integrity-checks">06a §4 check 1</a> — <strong>the one row in this table that reaches the permission gate</strong>, because an open membership satisfies <code>is_current_member()</code></td>
+</tr>
+<tr>
+<td>A batch can say what it did, and a revert leaves nothing behind</td>
+<td><a href="../06a-import/#3-import-pipeline">06a §3</a></td>
+<td>the pre-flight refusal</td>
+<td><a href="../06a-import/#4-integrity-checks">06a §4 check 3</a>, read against the audit entries the revert wrote</td>
+</tr>
+<tr>
+<td>A payment's allocations account for its amount</td>
+<td><a href="../07-finance/#2-minimal-provisional-shape">07 §2</a></td>
+<td>the write path; no constraint spans the two tables</td>
+<td><a href="../07-finance/#4a-integrity-checks">07 §4a check 2</a>, which is the whole of the backstop</td>
 </tr>
 <tr>
 <td>An operand that resolves to nothing is said out loud</td>
@@ -3477,10 +3526,13 @@ references it, and nothing leaves a row in the wrong state for a report to find.
 <li><strong>It cannot reach a rule stated only once, in prose, on the page it governs.</strong> That is what the
   inventory behind this page was for, and what it found in the way of absences is in
   <a href="../../open-questions/">the open questions</a>, each one naming the page it is missing from.</li>
-<li><strong>It cannot rank the <code>none</code>s.</strong> Two modules are far more exposed than the rest, and for the same
-  reason: <a href="../07-finance/">07-finance.md</a> and <a href="../06a-import/">06a-import.md</a> carry no "Invariants to
-  verify" section of their own, so every rule they state is unassigned by construction rather than by
-  oversight. Two pages, and most of this table's <code>none</code>.</li>
+<li><strong>It cannot rank the <code>none</code>s.</strong> It used to be able to say at least where they clustered, and the answer
+  was two pages: <a href="../07-finance/">07-finance.md</a> and <a href="../06a-import/">06a-import.md</a> had no "Invariants to
+  verify" section, so every rule they stated was unassigned by construction rather than by oversight. That
+  structural excuse is gone (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>) and both pages now carry their own list, which leaves this column
+  holding only rules that were read in the round that found them and left unguarded on purpose or on the
+  table's own limits. <strong>Ranking those is still not something a register can do without inventing a
+  severity, which is the thing it refuses to do.</strong></li>
 <li><strong>It is not a substitute for the constraint.</strong> A row here saying <code>migration</code> is not the migration.
   <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00 §6a</a> is the rule about what must be emitted
   below the application; this page is the evidence that the rule was applied to every row and told where
@@ -3490,8 +3542,11 @@ references it, and nothing leaves a row in the wrong state for a report to find.
 <p>See also <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions §6a</a>,
 <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>,
 <a href="../../decisions/round-18/#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round">the registry diff</a>,
-and the decisions <a href="../../decisions/round-18/#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes">D-130</a>
-and <a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>.</p>
+the decisions <a href="../../decisions/round-18/#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes">D-130</a>
+and <a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>,
+and the four this page's blanks produced in the next round:
+<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>, <a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>, <a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a> and
+<a href="../../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a>.</p>
 
 
 

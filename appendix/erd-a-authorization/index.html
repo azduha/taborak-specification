@@ -2157,6 +2157,8 @@
       
         
       
+        
+      
     
     
     
@@ -2684,6 +2686,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2895,8 +2925,8 @@
 <a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
 <a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   their argument is an integer — the registry's first non-reference — so          │
 <a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the two      │
-<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   reference-less polymorphic keys stay exactly two. Thirteen seeded rows:         │
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the keyless  │
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   polymorphic keys drawn here stay two of seven. Thirteen seeded rows:            │
 <a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
 <a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
 <a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
@@ -3256,9 +3286,10 @@ five, and the count this appendix keeps is unchanged for the right reason rather
 sitting in <code>selector_arg_id</code> is not a reference, so there is nothing to repoint when a person is merged,
 nothing for a cascade to find, nothing for the orphan scan to walk, and the binding check that compares
 <code>argument_type</code> against a grant's item type simply does not apply to an operand that binds to no item.
-<strong>There are still exactly two reference-less polymorphic keys</strong> — <code>access_grant.scope_id</code> and
-<code>audience_operand.selector_arg_id</code> — and <code>18</code> is not one of them, because the check is about references
-(§8). The two operands read <code>person.birth_date</code> <strong>as of the date being checked</strong>, which is why they are a
+<strong>There are still exactly two reference-less polymorphic keys in what this part draws</strong> —
+<code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code> — and <code>18</code> is not one of them, because the
+check is about references. <strong>The shared inventory in §8 keeps the design's whole count, which is seven: the
+other five sit on the two trails and on a merge conflict, none of which is drawn here.</strong> The two operands read <code>person.birth_date</code> <strong>as of the date being checked</strong>, which is why they are a
 registry row and nothing more: they are ordinary named operands, composed by <code>+ - *</code> like every other, and
 the set they name changes with no write at all.</p>
 <p><strong>No leaf resolves to anything but people, and that is why there is no <code>GRANTS(…)</code>.</strong> An operand resolves

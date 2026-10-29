@@ -2323,6 +2323,8 @@
       
         
       
+        
+      
     
     
     
@@ -2837,6 +2839,34 @@
     
   
     Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
   
 
     
@@ -3816,8 +3846,8 @@ discovers from a regulator.</p>
 <td>An optional reference is usually a design decision worth recording, and it is invisible in the schema.</td>
 </tr>
 <tr>
-<td>There are exactly <strong>two</strong> reference-less keys that are <strong>validated</strong>, and five more that are not</td>
-<td><code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code> are polymorphic on purpose and followed by an orphan scan (<a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>). <code>access_log.scope_id</code>, <code>access_log.authorization_ref_id</code>, <code>access_log.entity_id</code>, <code>field_conflict.entity_id</code> and <code>audit_log.record_id</code> are polymorphic the same way and are <strong>not</strong> followed anywhere — the count this row used to give was the count of the ones somebody looked at (<a href="../../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a>); what to do about the five is <a href="../../open-questions/#f-30">F-30</a></td>
+<td>There are <strong>seven</strong> reference-less keys: <strong>six are followed by a scan, and one is followed by nothing on purpose</strong></td>
+<td>Two were followed before this round — <code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>. Four more are followed now: <code>access_log.scope_id</code>, <code>access_log.authorization_ref_id</code>, <code>access_log.entity_id</code> and <code>field_conflict.entity_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, which also carries the exception <code>access_log</code>'s three need — some missing targets are legal, because two paths hard-delete business rows and a trail row may not be rewritten to follow them. <code>audit_log.record_id</code> is the seventh and is <strong>scanned by nothing, deliberately</strong>: an audit row outliving the row it described is what the erasure path and the revert path look like afterwards, and it is the reference the redaction check reads in order to run at all (<a href="../../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> is what found that the old count was the count of the ones somebody looked at; <a href="../../open-questions/#f-30">F-30</a> is settled by <a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>)</td>
 </tr>
 <tr>
 <td>Circular references are broken with an optional column, not a deferred constraint</td>

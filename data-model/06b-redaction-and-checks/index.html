@@ -2159,6 +2159,8 @@
       
         
       
+        
+      
     
     
     
@@ -2686,6 +2688,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3008,7 +3038,27 @@ what the record said.</p>
   everywhere in this section, is the pair no rule compares — a write audited against a key whose
   <code>valid_to</code> or <code>revoked_at</code> fell <em>before</em> the row's <code>occurred_at</code>, which leaves every column filled and
   this check, which reads emptiness rather than dates, silent.</li>
-<li><strong>Tables whose write path does not audit.</strong> Compare the business tables this system has —
+</ul>
+<p><strong>That silence is now a ruling rather than an oversight, and the reason matters more than the ruling</strong>
+  (<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>). <strong>The
+  window is not the obstacle and it was never honest to say it was</strong>: the three columns such a check would
+  compare are <code>api_key.valid_to</code>, <code>api_key.revoked_at</code> and this table's own <code>occurred_at</code>, every one of them
+  accounting skeleton, every one outliving the payload by decades. A report could be written over them
+  tomorrow and would work in year thirty. <strong>What was decided is that it will not be written</strong>, which leaves
+  the design without a guarantee it had been reading as though it had: nobody will be able to demonstrate
+  that no write was ever audited against a key that had already ended, and no count anywhere will ever
+  answer that question — not after 24 months, and not before them either. <strong>What this section does hold, and
+  what the sentence above should never be read as replacing</strong>, is narrower and worth restating while it is
+  being narrowed: every audited write left a row; that row's envelope — actor, table, record, moment — is
+  intact for as long as the row exists; and the payload is emptied on schedule rather than lingering. Those
+  three are checked. The fourth was wanted by nobody who read it, so it is stated as a rule with no report
+  beneath it, which is the only remaining honest state — and
+  <a href="../00a-invariant-register/">00a</a> now says so in the same words this page does, because a register row
+  claiming a report that no page has is the defect D-129 exists to catch. A reader who needs the fourth
+  guarantee needs a different instrument than this table: the trail is a record of what happened to people,
+  and what an ended key did after it ended is tracked on the key's own page
+  (<a href="../05e-keys-and-callers/">05e-keys-and-callers.md</a>).
+- <strong>Tables whose write path does not audit.</strong> Compare the business tables this system has —
   staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
   writing history that is never recorded. <strong>Read this one carefully, because its meaning got worse
   rather than weaker.</strong> While a trigger existed, a table was audited by being named in a trigger
@@ -3018,8 +3068,8 @@ what the record said.</p>
   the entire control over the completeness of the audit trail, and the one check here that should
   alert rather than log. If it ever reports a table, the finding is not "some history is missing";
   it is "every change to that table since it was added is unrecorded, and that period cannot be
-  reconstructed later." </li>
-<li><strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
+  reconstructed later." 
+- <strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
   not the redaction marker and who still have a current contact point whose value is not
   redacted; non-zero means an erasure was left half done. <strong>The count now reaches two more places.</strong>
   First, <code>person_attribute</code>: a redacted person with <strong>any</strong> attribute row is an erasure that did not
@@ -3042,9 +3092,8 @@ what the record said.</p>
   <strong>This check, check 5 and check 7 are the three here that should alert rather than log.</strong> A redaction
   property that is reported once a month is a redaction property that fails between the reports, and
   unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
-  regulator asks what the table holds.</li>
-<li>
-<p><strong>An audit row past the payload window that still carries a payload.</strong> Count <code>audit_log</code> rows whose
+  regulator asks what the table holds.
+- <strong>An audit row past the payload window that still carries a payload.</strong> Count <code>audit_log</code> rows whose
   <code>occurred_at</code> is older than the retention window and whose <code>old_values</code> or <code>new_values</code> still holds
   anything. <strong>This is check 6's mirror, and merging the two is the way to lose both.</strong> Check 6 asks
   whether an <em>erasure</em> ran, fires on one person's rows, and fails as a right not honoured; this one asks
@@ -3060,9 +3109,8 @@ what the record said.</p>
   the oldest rows full and looks entirely healthy to a sample. And read the window from the same place
   the job does, because a check holding one value and a job holding another reports clean forever, which
   is the exact failure this check exists to prevent and the one it can cause by itself.</p>
-</li>
-<li>
-<p><strong>A change the trail never saw: an audited row whose newest audit row predates its own <code>updated_at</code>.</strong>
+<ul>
+<li><strong>A change the trail never saw: an audited row whose newest audit row predates its own <code>updated_at</code>.</strong>
   For every table <a href="../06-audit-and-import/#21-the-trigger">06 §2.1</a> obligates, take each row's <code>updated_at</code>
   and the newest <code>occurred_at</code> among the audit
   rows naming that table and <code>record_id</code>, and report the rows where the change is newer than the trail's
@@ -3086,8 +3134,7 @@ what the record said.</p>
   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
   and a reduced row keeps its <code>occurred_at</code> — so 24 months after the values went, this check still has both
   timestamps to compare. Coverage outlives content by design, which is the one part of this list that gets
-  no worse with age.</p>
-</li>
+  no worse with age.</li>
 </ul>
 <p><strong>Check 5 is worth automating as a test</strong>, not just a nightly query — a test that reads the
 table list in these documents and asserts every business table on it appears on the audited list,

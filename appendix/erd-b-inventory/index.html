@@ -2157,6 +2157,8 @@
       
         
       
+        
+      
     
     
     
@@ -2671,6 +2673,34 @@
     
   
     Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
   
 
     
@@ -3408,38 +3438,50 @@ which in this inventory is <code>person_attribute</code>, and nowhere else.</p>
 </tr>
 <tr>
 <td><code>access_log.scope_id</code></td>
-<td>Same shape as the grant's; absent for a check at the unit.</td>
+<td>Same shape as the grant's; absent for a check at the unit. <strong>Followed</strong> by <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, with exactly</td>
+</tr>
+<tr>
+<td>one legal absence available to it: of the kinds this column can name, only an <code>event</code> is ever removed, and only by the import's revert.</td>
+<td></td>
 </tr>
 <tr>
 <td><code>access_log.authorization_ref_id</code></td>
-<td>Points at <strong>one of two</strong> tables, <code>access_grant</code> or <code>guardianship_permission</code>, and nothing else; a historical row whose channel reads <code>role</code> keeps the word and loses the reference, which is the honest state of a value whose table is gone (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</td>
+<td>Points at <strong>one of two</strong> tables, <code>access_grant</code> or <code>guardianship_permission</code>, and nothing else; a historical row whose channel reads <code>role</code> keeps the word and loses the reference, which is the honest state of a value whose table is gone (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>). <strong>Followed</strong> by the same check and excepted by nothing, because neither target is ever deleted: a set id that does not resolve is the only unacceptable answer. A row whose channel is outside the enum names no table at all, so the scan reports it beside the findings rather than as one.</td>
 </tr>
 <tr>
 <td><code>access_log.entity_id</code></td>
-<td>Polymorphic target of the audited action.</td>
+<td>Polymorphic target of the audited action. <strong>Followed</strong> by the same check, <strong>with its exception written there</strong>: an absence is legal only where the table named is one this design removes <em>and</em> the trail shows the removal — a <code>person_attribute</code> row for an erasure, a <code>person</code>, <code>membership</code> or <code>event</code> row for a revert. Whether this column is ever written naming a <code>person_attribute</code> row is stated nowhere, so the erasure arm may have nothing to fire on.</td>
 </tr>
 <tr>
 <td><code>field_conflict.entity_id</code></td>
-<td>Polymorphic; recorded alongside <code>entity_table</code>.</td>
+<td>Polymorphic; recorded alongside <code>entity_table</code>. <strong>Followed</strong> by the same check, and its finding is the dangerous one of the four: a conflict row naming nothing is an import that recorded an undecided field against a row which is not there, and the decision a person later takes inherits that. Revert accounts for the ones whose <code>entity_table</code> is <code>person</code> or <code>membership</code> and left an entry naming the row; the rest are broken.</td>
 </tr>
 <tr>
 <td><code>audit_log.record_id</code></td>
-<td>Polymorphic; recorded alongside <code>table_name</code>.</td>
+<td>Polymorphic; recorded alongside <code>table_name</code>. <strong>Not followed, deliberately</strong> (<a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>): an audit row outliving the row it described is what an erasure and a revert look like afterwards, and <a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5's check 6</a> locates the payloads it exists to test through exactly this reference. A count here would report the two paths this design trusts as integrity failures.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>There are exactly two reference-less keys, and the class matters more than the count.</strong>
+<p><strong>There are seven reference-less keys, and the class matters more than the count.</strong>
 <code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code> are ids with no constraint behind them, and
 each carries the same four things that make that survivable: a registry saying which table an id belongs
 to, a save-path check against that registry, an orphan scan the scheduler owns, and an explicit rule that a
 failure resolves to the empty set
 (<a href="../../data-model/00-conventions/#9-referential-integrity-rules">../data-model/00-conventions.md §9</a>).
-A scalar is not a third one: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> write a whole number of years into
+<strong>The other five are the same class of column and they do not all get the same answer</strong>, which is what
+<a href="../../open-questions/#f-30">F-30</a> asked and
+<a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>
+settled: four are followed by <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>,
+and <code>audit_log.record_id</code> is followed by nothing on purpose, because an id in a trail is written in order to
+outlive the row it names and the redaction check reads that reference in order to run at all. What the six
+followed columns share is the registry and the scan; what none of the seven gets is a constraint, because no
+foreign key can name one of several tables.
+A scalar is not one of the seven: <code>OLDER(n)</code> and <code>YOUNGER(n)</code> write a whole number of years into
 <code>audience_operand.selector_arg_id</code>, and there is no table that number should have named, so there is no
 registry lookup to miss, no orphan for the scan to find and nothing for a merge to repoint. The count is
 about references, and <code>18</code> is not one
 (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).
-A third candidate arrived with <code>api_key</code> and is not one either: <code>access_grant.api_key_id</code> names exactly
+A candidate arrived with <code>api_key</code> and is not one either: <code>access_grant.api_key_id</code> names exactly
 one table, always, so it carries an ordinary foreign key and needs none of the four things above — no
 registry saying which table it means, no save-path check against that registry, no orphan for the scan, no
 rule about what an unreadable kind resolves to. <strong>Becoming the third grantee cost a column with a

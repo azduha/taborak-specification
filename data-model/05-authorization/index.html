@@ -2370,6 +2370,8 @@
       
         
       
+        
+      
     
     
     
@@ -2884,6 +2886,34 @@
     
   
     Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
   
 
     
@@ -3813,6 +3843,12 @@ row that opens.</strong> The one thing with no answer is a reason for ending a h
 A reason here would be free text (<a href="../../decisions/round-18/#d-128--a-reason-is-text-the-reason_code-table-is-deleted">D-128</a>),
 and free text is counted only when people happen to type the same words — which is the same ground
 D-098 refused it one table over, now with the cost stated instead of the column.</p>
+<p><strong>A holder row holds a person, not a mandate</strong> (<a href="../../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a>).
+No column records — and none will record — whether an office was won by a vote or given by whoever could
+assign it: the organization runs elections outside this system and imports the outcome as a row. That is why
+<code>granted_by</code> below is who wrote the fact rather than whose authority made it so, and why <code>note</code> is the only
+place "elected, 2026–2028" can appear. The argument and the cost of refusing are in
+<a href="../../domain/04-organization-structure/#6-appointments">../domain/04-organization-structure.md §6</a>.</p>
 <p><strong>What <code>granted_by</code> records, and what <code>audit_log</code> records.</strong> The two look like duplicates and answer
 different questions, so the line is worth drawing properly. <code>audit_log</code> records <strong>an act</strong>: that a particular person, in a particular session, from a particular
 address, asked to appoint someone, and whether they were allowed to. It is the record of the <em>writing</em>.
