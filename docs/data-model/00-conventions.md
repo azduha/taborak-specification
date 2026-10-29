@@ -159,25 +159,20 @@ Why, given that native enums are more compact:
 - An allowed-value list is visible in schema introspection and in every migration tool, which
   makes review and diffing straightforward.
 
-**This section used to carry the `CREATE TABLE` and `CHECK` syntax that expressed it.** D-072
-deleted it, and the rule it expressed is unchanged: the vocabulary lives with the entity, the
-values are closed, and the vocabulary is reviewable without reading application code.
+**The rule, in the words D-072 left behind when it took the `CREATE TABLE` and `CHECK` syntax out**: the
+vocabulary lives with the entity, the values are closed, and the vocabulary is reviewable without reading
+application code.
 
 ### Critical rule: status strings are ordered, and the order is not alphabetical
 
-Several status columns have a **meaningful progression**, and code must compare by **rank**,
-never by string. The rule outlived the vocabulary it was written for, so read it as a rule about the
-next ordered column you add, not about the one that used to sit here.
-
-**The ladder that used to be the example is gone.** `revoked`(0) / `view`(10) / `contribute`(20) /
-`manage`(30) / `admin`(40) was deleted by
-[D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality):
-a grant names one permission code and its effect is `allow` or `deny`, so there is no ladder to rank and
-the mistake this section existed to prevent — `'admin' < 'contribute'` alphabetically, which ranked *full
-control including granting access* **below** *read and add* with no error, no failed test and no log line
-([D-012](../decisions/round-01a.md#d-012--status-strings-compare-by-rank-never-lexicographically)) — is
-**no longer constructible**. That is a better fix than the guard was, and the guard stays in this file
-because the next ordered vocabulary will need it.
+Several status columns have a **meaningful progression**, and code must compare by **rank**, never by
+string. Read this as a rule about the next ordered column you add: the vocabulary it was written for —
+`revoked`, `view`, `contribute`, `manage`, `admin`, ranked inside the strings — is gone, because
+[D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+made a grant name one permission code whose effect is `allow` or `deny`. **The mistake generalizes and the
+vocabulary did not.** Comparing strings ranked `admin` **below** `contribute` — full control including
+granting access, under read and add — with no error, no failed test and no log line
+([D-012](../decisions/round-01a.md#d-012--status-strings-compare-by-rank-never-lexicographically)).
 
 **And the survivor is the dangerous shape, not the safe one.** One ordered vocabulary is left: a
 guardian's right over a child is `none`, `view`, or `write`
@@ -190,9 +185,9 @@ first comparison; this one is a trap set for whoever extends the list. So:
 - **Never compare the right to itself as a string.** Ask whether the permission being checked is a `read`
   or a `write` (`permission.right_kind`, D-099) and whether the guardian's right covers that kind.
   The comparison is against a column on the permission, not between two words.
-- **"One ladder, every ladder" is withdrawn** — there is no longer a master scale for a guardian's right
-  to be a slice of. The replacement is the smaller claim: **one comparison, one column.** Adding a second
-  way to rank rights is how a guardian ends up able to do *more* than the adult who holds the grant.
+- **One comparison, one column.** There is no master scale that a guardian's right is a slice of, and
+  adding a second way to rank rights is how a guardian ends up able to do *more* than the adult who holds
+  the grant.
 
 When adding any new ordered vocabulary, ask the same two questions this section has always asked: is it
 data with a stored rank, or is it this rule wearing a name — and if it is data, does a string comparison
@@ -256,8 +251,8 @@ Two access paths carry the load and both must exist when the schema is generated
 
 ## 6a. Who enforces an invariant now
 
-**This section did not exist before D-072. It exists because deleting the constraints moved
-responsibility, and a moved responsibility that nobody names is a responsibility nobody holds.**
+**This section exists because the constraints live in migrations now, which moved a responsibility — and a
+moved responsibility that nobody names is a responsibility nobody holds.**
 
 Every data-model document in this folder states its rules as prose: "no two open rows may
 overlap", "at most one primary contact", "a revoked grant must name who revoked it". Prose does
@@ -369,16 +364,15 @@ Requirements the design must satisfy:
    uncertainty about that half reaches nothing on this side:** the erasure in items 1 and 2 is immediate
    and absolute, and would be if the retained half were cut to a single year tomorrow.
 4. **Whatever keeps its own retention policy must be able to see `person.redacted_at`, and erasure
-   reaching it is a rule that store has to implement.** This item used to read "health and
-   safeguarding records have separate retention rules and are out of scope for this document", which
-   pointed at a body of data that [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-   has since dissolved: a diagnosis is an attribute value now, with the same access, protection and
-   retention as a shoe size ([09-attributes.md](09-attributes.md)), so there is no health store left
-   for the sentence to have pointed at. What survives is the other half, and it is worth keeping
-   precisely because it is easy to wave through: `audit_log` is the store this system has. Its retention
-   used to be an entirely open question and now has half an answer — **the rows are kept for the life of
-   the system and their payloads are emptied 24 months after they are written**
-   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
+   reaching it is a rule that store has to implement.** There is no separate health or safeguarding store
+   for such a rule to live in: a diagnosis is an attribute value now, with the same access, protection and
+   retention as a shoe size
+   ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+   [09-attributes.md](09-attributes.md)). The store this system does have is `audit_log`, and this item is
+   worth keeping precisely because it is easy to wave through: its retention has half an answer — **the
+   rows are kept for the life of the system and their payloads are emptied 24 months after they are
+   written**
+([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
    [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues) keeps the legal half that remains) —
    and a redaction that stops at the business tables while the trail keeps the erased values is a
    redaction that failed in the one place a regulator looks. **The window is a ceiling on how long a value
@@ -438,41 +432,31 @@ Requirements the design must satisfy:
 > deleted that idea. **What is asked is narrower and harder: on what basis does the retained half survive
 > indefinitely.** That is the assumption item 3 names, and nothing in this section makes it lawful.
 
-**The key-name list is not how personal data is protected in the trail, and it helps to say so out
-loud.** The redactor used to be described as the
-thing that kept personal data out of the audit trail, and it worked by holding a list of sensitive
-*key names* — `notes`, `custody_arrangement`, and the rest — and stripping any image that carried
-one. That design presupposed a sensitive *subset* of the person record, because a list of names is a
-way of pointing at some fields and not others. [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-removed the subset, and a list that was standing in for a rule about a category is now a list of
-arbitrary fields. **It fails on the first value stored under a name nobody predicted**, and an
-attribute layer whose whole purpose is that nobody can enumerate its names guarantees one such name
-every time the organization invents a code — so the list is not the thing keeping personal data out
-of the trail, and item 7 is. What is left for it is one job, narrow enough that a list can genuinely
-do it: **the values that must never enter the trail at all** — credentials, tokens, the secret half
-of an integration — the only values where *being in a log* is itself the harm. Personal data is not
-on that list and does not belong on it: the answer to *who may read a child's address* was never a
-list of field names, it is the guard on the table that holds it, and item 7 exists to make that answer
-cover the table that quotes it. So `notes`, the reason fields and an attribute value are all logged,
-in the clear, protected by who may read the log. Read the list as a credential filter and it is a
-working mechanism; read it as the personal-data filter, notice that `allergy` is not in it, and
-conclude the payload is covered — which is wrong in exactly the way described two sentences ago.
-[09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload) carries the same
-warning next to the values themselves.
+**The key-name list is a credential filter, and reading it as the personal-data filter is the mistake to
+avoid.** It once carried a list of sensitive *key names* — `notes`, `custody_arrangement`, and the rest —
+and stripped any image holding one, which presupposed a sensitive **subset** of the person record: a list of
+names is a way of pointing at some fields and not others. [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+removed the subset, and what is left of the list is a set of arbitrary fields — one that **fails on the first
+value stored under a name nobody predicted**, in an attribute layer whose whole purpose is that nobody can
+enumerate its names. So the list keeps exactly one class of value out of the trail: **the values that must
+never be logged at all** — credentials, tokens, the secret half of an integration — the only values where
+*being in a log* is itself the harm. Everything else, `notes`, the reason fields and an attribute value
+included, is logged in the clear and protected by **who may read the log** (item 7), because the answer to
+*who may read a child's address* was never a list of field names. Read the list as a credential filter and it
+is a working mechanism; read it as the personal-data filter, notice that `allergy` is not in it, and conclude
+the payload is covered. [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)
+carries the same warning next to the values themselves.
 
-**Two mechanisms that used to help here are gone, and they failed in different directions.**
-Redaction of the *audit payload* was automatic: a trigger stripped listed keys out of the before/after
-images on their way into the log. There is no trigger now, so what is left of that job — the credential
-stripping, and the scrub item 2 and item 7 require when a person is erased — is application behaviour,
-and forgetting the first writes a secret into a table designed to be read later by auditors, while
-forgetting the second leaves an erased person's values sitting in the trail with a `redaction_log` row
-next to them saying they are gone. (Worth recording: inside that trigger was a list of keys to scrub
-*unconditionally*, and nothing ever read it. A dead list of forbidden fields is not a protection — and a
-live one is a mechanism with a far smaller job than the sentences describing it used to imply, which is
-what the paragraph above is about.) The other half is
-the listing view that excluded redacted rows, which is §6a's problem in general.
-**Neither failure is loud.** Both are written down because a compliance property resting on a code
-review is the kind of thing an organization discovers from a regulator.
+**Two things that used to do this work are gone, and they failed in different directions.** Redaction of the
+audit *payload* was a trigger stripping listed keys out of the before/after images; there is no trigger, so
+both halves of that job — credential stripping, and the scrub items 2 and 7 require when a person is erased —
+are application behaviour. Forgetting the first writes a secret into a table designed to be read later by
+auditors; forgetting the second leaves an erased person's values in the trail with a `redaction_log` row next
+to them saying they are gone. *(Inside that trigger was a list of keys to scrub **unconditionally**, and
+nothing ever read it: a dead list of forbidden fields is not a protection.)* The other is the listing view
+that excludes redacted rows, which is §6a's problem in general. **Neither failure is loud**, and both are
+written down because a compliance property resting on a code review is the kind of thing an organization
+discovers from a regulator.
 
 ---
 
@@ -480,7 +464,7 @@ review is the kind of thing an organization discovers from a regulator.
 
 | Rule | Rationale |
 |------|-----------|
-| References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). *(This row used to read "nothing cascades" and then "no cascading deletes anywhere", both of which were false while the design shipped that cascade; the correction is the point, not the wording.)* |
+| References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). |
 | Cascade delete is refused everywhere else | It is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one**, and read the exception above before you "fix" the one row that is allowed to cascade. |
 | Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
 | There are exactly **two** reference-less keys, and both are polymorphic on purpose | `access_grant.scope_id` and `audience_operand.selector_arg_id`, the second documented in [05a-audience-and-grammar.md §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people). Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, [Invariants to verify](05d-invariants-and-seed.md#11-invariants-to-verify), carries both scans and the nightly report that replaces the missing foreign key. *(This row used to read "`access_grant.scope_id` is the **one** reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened `selector_arg_id` from three tables to five got written down. It is the same defect [D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) was entered for, in a conventions page rather than a registry.)* |
