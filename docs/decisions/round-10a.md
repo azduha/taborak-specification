@@ -92,7 +92,7 @@ D-031's reasoning still supports is carried forward by [D-099](#d-099--a-grant-a
    report on. The organizational-year reports that mattered are membership and fee reports, which live at
    the unit and are unaffected.
 
-**One thing gets easier that nobody counted.** [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+**One thing gets easier that nobody counted.** [F-10](../open-questions.md#f-10)
 shape 4 — a column that may not change once set, the only shape with **no report at all** because a
 violation leaves every row individually valid — had exactly one instance in the whole design,
 `org_unit.parent_unit_id`. It has none now. The single-root conditional uniqueness (shape 2) goes too,
@@ -194,7 +194,7 @@ work: where both ends are set, `valid_to` is later than `valid_from`; **no two r
 and group may overlap**, counted over **all** rows and not only the open ones, half-open so a row ending
 on a day and one beginning that same day do not collide (the
 [D-002](round-01a.md#d-002--everything-temporal-is-a-period-never-a-boolean) shape, and
-[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those) shape 1,
+[F-10](../open-questions.md#f-10) shape 1,
 so a hand-written migration emits it and the ORM will not); a person who left in 2020 and came back in
 2024 is **two rows**, never one row edited in place, because the edit destroys the answer to "was she in
 the group in 2019?"; and moving from one group to another closes one row and opens another —

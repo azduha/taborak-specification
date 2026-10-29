@@ -226,7 +226,7 @@ entirety of what the attribute table was built to do.
 
 **See:** [data-model/09-attributes.md](../data-model/09-attributes.md),
 [D-085](#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
-[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+[open question F-10](../open-questions.md#f-10)
 for which of its rules the attribute layer can and cannot express.
 
 ---
@@ -254,7 +254,7 @@ primary postal contact among the open rows"*, *"a school id may repeat but a bir
 *"this person has one current name"* — each is a constraint over a **known set of columns**, and a
 key/value table has no known set. Folding those tables in would not have simplified the model; it
 would have moved four working constraints into application code and called it uniformity, which is
-[F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+[F-10 shape 3](../open-questions.md#f-10)
 manufactured on purpose. **Descriptive data is open-ended because nobody can enumerate it; identity is
 closed because it was enumerated years ago and has not changed.** That is the whole boundary.
 

@@ -175,7 +175,7 @@ pack, and a pack that wants the root's help must expose its scope.
 **Date:** refinement round 3
 
 **Superseded by [D-097](round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) — there is no parent column left whose change could be refused.** This was
-the design's only instance of an immutable column, so [F-10 shape 4](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+the design's only instance of an immutable column, so [F-10 shape 4](../open-questions.md#f-10)
 lost its subject here, which is what that entry now records.
 
 **Resolves:** C-2
@@ -211,7 +211,7 @@ all — a unit that moves is a new unit."*
 > including the legacy import. A write-path guard is reachable from exactly the clients the trigger
 > was chosen to exclude. The
 > compensations available are narrow and named in
-> [open question F-10, shape 4](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those):
+> [open question F-10, shape 4](../open-questions.md#f-10):
 > a single named repository operation for hierarchy writes, and a test that attempts the update.
 
 **See:** [../data-model/02-organization.md](../data-model/02-organization.md#5-what-this-page-held-before-round-10).
@@ -394,7 +394,7 @@ ALTER TABLE membership ADD CONSTRAINT ex_membership_no_overlap
 
 *The requirement now: **one person, one open membership, ever**, where "open" means those three
 statuses — a no-overlap rule over a period, which is exactly the shape an ORM will not generate
-([open question F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those));
+([open question F-10 shape 1](../open-questions.md#f-10));
 the temporal pattern is in [00-conventions §6](../data-model/00-conventions.md#6-the-temporal-pattern)
 and the check that catches a bypass is 1b in
 [03-membership §7](../data-model/03-membership.md#7-integrity-checks).*

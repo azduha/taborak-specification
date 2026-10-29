@@ -31,7 +31,7 @@ the ORM decides how each rule is enforced.
 | `verified_at` | timestamp, optional | |
 | `verified_by` | reference to person, optional | |
 | `evidence_reference` | free text | Where the proof of guardianship is filed. For legal guardianship this matters: the organization must be able to show that it checked |
-| `ended_reason_code` | free text / reason code | |
+| `ended_reason` | text, optional | Free text (D-128) |
 | `ended_note` | free text | |
 | `created_at`, `updated_at` | timestamps | |
 | `created_by`, `updated_by` | reference to person | |
@@ -42,7 +42,9 @@ the ORM decides how each rule is enforced.
 - A person may not be a guardian of themselves: the two person references must differ.
 - `valid_to`, when present, must be after `valid_from`.
 - **At most one *current* guardianship per (guardian, dependent) pair.** Their periods may not
-  overlap. Past ones are unlimited and expected: a court order lapses and is renewed.
+  overlap, over **all** rows and not only the open ones — a hand-written exclusion constraint, like the
+  three in [00a §1](00a-invariant-register.md#1-no-two-rows-overlap-in-time), and [§6 check 7](#6-invariants-to-verify) is the net beneath it.
+  Past ones are unlimited and expected: a court order lapses and is renewed.
 - A dependent may have **any number** of simultaneous guardians, each with its own row and its
   own `right_level`.
 - `is_primary_contact` is not unique per dependent. A child can have two primary contacts.
@@ -445,6 +447,11 @@ These were executable queries. They are now requirements stated in prose, and no
 6. **`guardianship.right_level` disagrees with its own open history row.** A new invariant created
    by D-074's current-value-plus-history shape. If it is ever non-empty, the copy is wrong and the
    row is right.
+7. **Two guardianship rows for one pair covering the same day.** Zero is the expected answer, and
+   the exclusion constraint in [§1](#1-guardianship) is the thing that keeps it zero; this row exists
+   because that constraint is hand-written, and a migration somebody forgot to run is a rule that
+   quietly stopped. Which of two disagreeing `right_level` values the resolver answered with is a
+   query-order accident, which is what this reports.
 
 The nearest surviving signal of the old "households with no address" report is a live billing purpose
 with no postal address behind it, which is a finance problem

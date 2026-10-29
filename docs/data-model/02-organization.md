@@ -142,13 +142,12 @@ migration must be written by hand*. Application validation still belongs on the 
 produces the error message a volunteer can read — but it is a usability feature and not the invariant.
 Underneath, integrity check 1 is the nightly net.
 
-**And this is F-10 shape 1, which is the problem.** The overlap invariant needs an exclusion constraint
-over a range built from two columns; no ORM emits one
-([F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)), and F-10
-is still **open** — nobody has ruled per shape which layer writes these. Three specific traps on the way
-to writing this one by hand:
+**And this is [shape 1](00a-invariant-register.md#1-no-two-rows-overlap-in-time), and its layer is
+assigned:** the overlap invariant needs an exclusion constraint over a range built from two columns; no ORM
+emits one, so the register names a hand-written migration as the layer that carries it. Three specific
+traps on the way to writing this one by hand:
 
-- **Shape 1 is described in F-10 as "no two *open* rows overlap", and this rule is not that rule.** Copying
+- **Shape 1 is usually worded "no two *open* rows overlap", and this rule is not that rule.** Copying
   the shape as worded — a constraint scoped to rows with no `valid_to` — would permit a closed row and an
   open row for the same person and group to overlap, which is exactly the pair that makes "who was in this
   group in 2019?" have two answers. It is the same mistake §6a warns about from the other side: a
@@ -283,7 +282,7 @@ member rows, and nothing is inferred from attendance, from an event, or from any
 `person_group.member.manage`, at the unit or on one group (§3), the write is audited, and the row names who
 wrote it — which is D-095's answer to *do not place a child where nobody is responsible for them*.
 
-**No reason codes, and no role label, on purpose.** No `join_reason_code` / `leave_reason_code`, so there is
+**No reason field, and no role label, on purpose.** No `join_reason_code` / `leave_reason_code`, so there is
 no `transfer`, `promotion`, `reorganisation`, `unit_closed` vocabulary to maintain, get wrong, or pretend is
 a safeguard — the eighteen-ticks-without-a-receipt shape D-095 refused. And no label saying what a member
 is, because such a label becomes an authorization check the moment somebody asks "can they edit the
@@ -336,8 +335,9 @@ as data except the rosters, which became `person_group_member` (§2); membership
 
 1. **Two member rows for the same person and group covering the same date** (§2). Counts overlapping pairs
    over **all** rows, half-open, so it agrees with the constraint it is the net beneath. §2 names the
-   migration as the enforcing layer; this report is what notices if that migration was never written,
-   which — F-10 being unanswered — is the state of things today.
+   migration as the enforcing layer, as
+   [shape 1](00a-invariant-register.md#1-no-two-rows-overlap-in-time) assigns it; this report is what
+   notices if that migration was never written, which is the job the register names this check for.
 2. **A member row lying outside its group's own period** (§2). A list to read rather than a breach: the two
    periods are two facts and containment is assumed here, not ruled
    (**Status:** assumption — [§8](../domain/04-organization-structure.md#8-open-issues)). A large count means people are editing old rows
@@ -404,9 +404,6 @@ seeded that could contradict the runtime behaviour, which is the property D-054 
   hold the assertion, and D-098 refuses group-to-group edges.
 - **Whether a member row must lie inside its group's period.** Assumed in §2, reported in §6 check 2, and
   nowhere ruled. A one-sentence decision either way; left open rather than decided by a document.
-- **Which layer writes the no-overlap constraint.** That is **F-10**, still open, and §2 spells out the
-  three ways this particular instance of shape 1 gets written wrong if nobody answers it
-  ([../open-questions.md](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
 - **Whether an ended group is hidden from pickers, and whether it may be reopened.** An ended group has a
   behaviour; `person_group` has a period and no rule about which screens read it. Reopening an ended
   group by clearing `valid_to` would also collide with §1's rule that a returning name is a new group, so

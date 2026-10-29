@@ -100,7 +100,7 @@ than letting the reader infer it.
 A request records the person it is **for** and the membership type asked for, and nothing else.
 `status` is one of `draft`, `submitted`, `under_review`, `approved`, `rejected`, `withdrawn`,
 `expired`, and `submitted_at` says when it went in. The review is carried on the same row: who took
-it up, when they decided, and on a rejection a `rejection_reason_code` with a free-text
+it up, when they decided, and on a rejection a `rejection_reason` with a free-text
 `rejection_note` beside it. An approved request points at the membership it produced; the link is
 not optional once the approval exists.
 
@@ -172,7 +172,7 @@ A membership row belongs to one person and one membership type, and carries a `s
 `pending_payment`, `active`, `lapsed`, `terminated`, `completed` or `suspended` — always chosen
 deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an absent `valid_to`
 means the period is still open: it is the current membership, not a row someone forgot to close.
-`joined_via_request_id` records the request it came out of, `termination_reason_code` the reason it
+`joined_via_request_id` records the request it came out of, `termination_reason` the reason it
 was ended, `data_confidence` is `high`, `medium` or `low`, and `import_batch_id` is set on imported
 rows and on nothing else. **Both of those columns have a live writer: the legacy import writes
 `membership` rows.** The export states a membership period directly rather than only attendance, so
@@ -222,7 +222,7 @@ rule that can only be refused *during* the write that would create it. If the ta
 cannot express exclusion constraints, the fallback is a check inside the writing transaction
 plus the nightly consistency report — **one of the strongest guarantees in the model degrading
 into the weakest class** ([data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now),
-[open question F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)):
+[shape 1](../data-model/00a-invariant-register.md#1-no-two-rows-overlap-in-time)):
 an application-level count is wrong exactly when two writers run at once, which is when an
 overlap is actually created, and the report finds it a day later in a form nobody can attribute.
 So it is not merely "weaker" and must be recorded as an accepted risk, chosen deliberately,

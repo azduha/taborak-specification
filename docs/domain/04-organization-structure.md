@@ -70,9 +70,12 @@ They are not argued away.
    exist" are not hard questions, they are questions with no subject. The organizational-year reports that
    matter — membership and fees — live at the unit and are untouched.
 
-**One invariant class now has no instance at all:** shape 4 of
-[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those), a column
-that may not change once set, whose violation leaves every row individually valid.
+**One invariant class lost its only named instance here:** shape 4 of
+[the invariant register](../data-model/00a-invariant-register.md#4-a-value-that-may-never-change-once-set) —
+a column that may not change once set, whose violation leaves every row individually valid — and
+`parent_unit_id` was the only member anybody had pointed at. **Empty and unnamed are two different claims**,
+and [D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)
+found the shape has six members: this deletion removed one of them, not the class.
 
 **It is not a two-way door.** This is the deletion of a dimension, not a flag. Adding structure back is a
 decision with a reason attached — most plausibly "the organization has outgrown one center's visibility" —
@@ -336,9 +339,6 @@ Open, and tracked in [../open-questions.md](../open-questions.md):
   a column someone adds quietly.
 - **Whether an ended group should be hidden from pickers.** A `person_group` with `valid_to` set has no
   stated behaviour either way yet.
-- **F-10**, which layer writes the no-overlap invariant on member rows. It is named in
-  [../data-model/02-organization.md §2](../data-model/02-organization.md#2-person_group_member) and remains
-  unanswered.
 
 ---
 

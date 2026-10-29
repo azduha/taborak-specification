@@ -301,7 +301,7 @@ never taken. §8 states the refusal; this query is the reason it matters.
    period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
    **there is no constraint behind that guard** — a window spans two columns of two tables, so
    the check runs inside the writing transaction or nowhere
-   ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+   ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
    A non-zero result is therefore evidence about the code, not the data: someone added a second
    path that places a registration.
 10. **A fee-bearing event with registrations and no obligations.** Counts non-cancelled events

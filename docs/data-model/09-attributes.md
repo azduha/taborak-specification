@@ -40,7 +40,7 @@ number may not"*, *"one current name per person"* — each is a constraint over 
 columns**. A key/value table has no known set of columns; that is its entire purpose. Folding
 those four tables in would have relocated working constraints into application code and been
 called uniformity, which is
-[F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+[shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)
 built on purpose. Identity is closed because it was enumerated years ago and has not changed since.
 Description is open because nobody can enumerate it. **That is the whole boundary, and it is worth
 restating in review whenever a new table tempts someone to put it in either column.**
@@ -154,7 +154,7 @@ costs is listed in §5 rather than discovered later.
 - **At most one current value per `(person, definition)` unless the definition allows multiple.**
   One row per pair, because there is no history — so the rule is a plain uniqueness rule *except*
   that whether it applies depends on a column in another table, which no constraint can express:
-  [F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those).
+  [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph).
   **Check inside the writing transaction, and report the survivors** (§8 check 4). A partial unique
   index would be the right tool for the single-valued definitions and the wrong tool for the rest;
   choosing per definition is how this rule becomes a report instead of a guarantee.
@@ -208,7 +208,7 @@ was taken with them in view rather than in the abstract.
 | Constrain a value | No constraint can reference the contents of a row chosen at runtime | The definition's type drives a **warning**; a human may always save |
 | Type-check at the database | Values are one text column | ISO-format by convention, and §8 check 7 reports a type that is wrong for the whole definition |
 | Compare or aggregate safely | `12` and `12 kg` and `twelve` are three strings | Report on the `one_of` codes; treat free text as a list to read, not a number |
-| Express the one-value rule as a constraint | The rule reads another table ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 4 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
+| Express the one-value rule as a constraint | The rule reads another table ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 4 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
 | Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** — and since [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), **nothing at all** stands between it and being empty after the payload window closes (§6) |
 | Restrict one field to some readers | [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) refused a privileged subset | One scope over one record; a court-ordered exception is a decision entry, not a code |
 | Trust that a code means one thing | Codes are typed by humans | Normalized uniqueness, `description` on every definition, §8 check 2, and a named curator |

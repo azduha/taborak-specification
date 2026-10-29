@@ -634,7 +634,7 @@ That is the whole distinction: **the documentation describes a system; this log 
 description got here, and a record is allowed to quote things it no longer endorses.**
 
 **See:** [data-model/00 §6a](../data-model/00-conventions.md#6a-who-enforces-an-invariant-now),
-[open question F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+[open question F-10](../open-questions.md#f-10)
 (now four shapes), [D-072](#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job).
 
 ---

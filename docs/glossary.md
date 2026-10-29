@@ -303,7 +303,7 @@ checklist to satisfy. **Which group a new member lands in is a write on the grou
 a preference on the request.**
 
 **Lapse** — A membership ending because the yearly fee was not paid or the person
-withdrew. Distinct from termination for cause, which requires a reason code. **A lapsed
+withdrew. Distinct from termination for cause, which requires a reason to be written. **A lapsed
 person is not a member and holds no member permissions**, though a renewal window lets
 them rejoin without re-applying.
 

@@ -592,7 +592,7 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 > What is open is the safety net rather than the rule: an event whose two writes were not one
 > transaction has no organizer who can read its answers, and "these two rows exist together" is a
 > report — *events with no answer-view grant* — that no layer of this project can express as a
-> constraint ([F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+> constraint ([shape 3](../data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
 >
 > **Whoever runs an event reads that event's answers with no additional gate.** Holding an office grants
 > nothing (§7), and leadership is not guardianship: guardianship authority belongs to the guardians (§9)

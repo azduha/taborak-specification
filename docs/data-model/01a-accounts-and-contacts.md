@@ -31,7 +31,7 @@ them by number and their anchors are built from them:
 | `last_login_at` | timestamp, audit time, optional | |
 | `failed_login_count` | integer, required | Default 0 |
 | `locked_until` | timestamp, audit time, optional | |
-| `status_reason_code` | text, optional | Why suspended or closed |
+| `status_reason` | text, optional | Why suspended or closed, in the words of whoever did it (D-128) |
 | `status_note` | text, optional | The human explanation |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |

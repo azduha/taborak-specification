@@ -96,9 +96,9 @@ The names of the columns that carried those rules are indexed in
 | `submitted_at` | timestamp, optional | |
 | `decided_at` | timestamp, optional | |
 | `decided_by` | reference to `person`, optional | |
-| `rejection_reason_code` | text, optional | |
+| `rejection_reason` | text, optional | Free text, written by whoever rejects (D-128) |
 | `rejection_note` | text, optional | |
-| `membership_id` | reference to `membership`, optional | Set on approval. The reference is added only once `membership` exists (§3): this is the design's circular pair, resolved with a deferred reference. |
+| `membership_id` | reference to `membership`, optional | Set on approval. The reference is added only once `membership` exists (§3): this is the design's circular pair, broken with an optional column and not a deferred constraint, which is what [00 §9](00-conventions.md#9-referential-integrity-rules) requires (D-129). |
 | `previous_membership_id` | reference to `membership`, optional | Links a renewal or re-application to the prior membership. This is how a returning member's chain is expressed. |
 | `expires_at` | timestamp, optional | An unreviewed request eventually goes stale. Needed so the review queue does not accumulate abandoned drafts forever. |
 | `notes` | text, optional | |
@@ -148,7 +148,7 @@ holding `person_group.member.manage` — and an approved request with no group b
 complete, ordinary outcome. **Which group a new member lands in is a write on the group, not a
 preference on the request.**
 
-**A rejection requires a reason code** (`ck_request_rejection_reason` is the rule's name): no
+**A rejection requires a reason** (`ck_request_rejection_reason` is the rule's name): no
 rejected request may be written without one. Two columns of the same row, so a migration can state
 it directly as a check on the row — and it belongs there rather than only in the model layer,
 because the two paths that most need catching, an import and a hand-corrected row, never reach a
@@ -177,7 +177,7 @@ inferred from date arithmetic.
 | `joined_via_request_id` | reference to `membership_request`, optional | |
 | `renewed_from_membership_id` | self-reference to `membership` (the previous one), optional | Forms the renewal chain. See domain/05 §6. |
 | `outstanding_balance` | money amount, optional | **Denormalised** from `fee_obligation`/`payment`. [07-finance.md](07-finance.md) §3 recommends **dropping** this column in favour of `v_fee_obligation_balance` — a wrong balance suspends the wrong child. Kept here only until that decision is taken. **NULL on every imported row, and since [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) put memberships back into the import that is load-bearing rather than incidental:** the export carries no payment data, and a zero would be a claim — *settled* — that the export does not support. There is no `fee_obligation` underneath these rows either, which is what makes the NULL unambiguous rather than merely uncomputed ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape), [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
-| `termination_reason_code` | text, optional | |
+| `termination_reason` | text, optional | Free text, written by whoever terminates (D-128) |
 | `termination_note` | text, optional | |
 | `ended_by` | reference to `person`, optional | |
 | `ended_at` | timestamp, optional | |
@@ -189,7 +189,7 @@ inferred from date arithmetic.
 **Rules**
 
 - Where both ends of the period are set, `valid_to` is later than `valid_from`.
-- A `terminated` membership has **both** a `termination_reason_code` and an `ended_at`.
+- A `terminated` membership has **both** a `termination_reason` and an `ended_at`.
 - A membership may not be renewed from itself: `renewed_from_membership_id` never points at its
   own row.
 - **THE critical rule — one person, one membership, full stop.** Two rows for the same person
@@ -456,11 +456,10 @@ their fee, or their standing as a member changes, because moving was never a mem
 **Who enforces it now.** The close-and-open pair is the write path's, behind
 `person_group.member.manage`, audited and naming who wrote the row; the invariant underneath it —
 **no two rows for one person and one group overlap, counted over all rows and not only the open
-ones**, half-open so a row ending on a day and one beginning that day do not collide — is [open
-question
-F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those) shape
-1, which a hand-written migration emits and the ORM will not. A person who left in 2020 and came
-back in 2024 is therefore **two rows, never one row edited in place**: the edit destroys the answer
+ones**, half-open so a row ending on a day and one beginning that day do not collide — is
+[shape 1](00a-invariant-register.md#1-no-two-rows-overlap-in-time), which a hand-written migration emits
+and the ORM will not. A person who left in 2020 and came back in 2024 is therefore **two rows, never one
+row edited in place**: the edit destroys the answer
 to "were they in the group in 2019?". The groups module owns both, and this document does not
 re-specify them — [02-organization.md §1–§2](02-organization.md#1-person_group) and
 [../domain/04-organization-structure.md](../domain/04-organization-structure.md).
@@ -471,7 +470,7 @@ began, **with no edge between them unless somebody writes one**: `org_unit_relat
 recorded event
 ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
 third loss). The bulk reorganisation transfer goes with it — close and open across every member of a
-body, as one named procedure with a dry run, carrying a reason code saying why. There is no
+body, as one named procedure with a dry run, carrying a reason saying why. There is no
 reorganisation to perform in one statement now, and the lineage it recorded is a thing a person would
 have to write down on purpose. The roster's own columns went too: a vocabulary of reasons for opening
 and closing a row, a primary-group flag saying which of a person's groups to show first, a display

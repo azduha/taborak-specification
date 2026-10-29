@@ -398,7 +398,7 @@ model implements somewhere else entirely.** The grammar is closed and its vocabu
 that parses without a row behind it is the only way to say something false in it — and this corpus has now
 been caught doing exactly that with a word nobody hand-typed, which means **the vocabulary's open half was not
 the only place the check was needed.** The general rule, for
-[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s list:
+[F-10](../open-questions.md#f-10)'s list:
 ***every selector name that appears in a document must be a `selector_type` row, and a check should be able to
 say so.*** That is a lint over documentation against a seed list, which is a strange thing to want until the
 fourteenth selector turns out to be a prose idiom.

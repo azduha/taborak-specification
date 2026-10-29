@@ -368,7 +368,7 @@ beside the event row. Two consequences, both kept:
 - **An event whose creation failed between the event row and the grant has nobody who can read its
   answers.** So the two writes are one transaction, and the check is a report — *events with no
   answer-view grant* — because "these two rows exist together" is
-  [F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)
+  [F-10 shape 1](../open-questions.md#f-10)
   and no layer this project owns can express it.
 
 What the per-event row buys, and it is not accidental: answers-view is **revocable on one event** without
@@ -506,7 +506,7 @@ an answer.
 
 | Rule | Why, and where it is enforced |
 |---|---|
-| **A reference names a `code`, not a name, and only audiences that have one may be referenced.** `audience.code` is optional and unique-where-set; naming stays opt-in, and an unnamed audience is simply not composable. The leaf may not point at a null code — a check reading another table, [F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those). | Audiences were allowed to be anonymous before this round and there is no reason to force a name onto a grant's private addressee list. |
+| **A reference names a `code`, not a name, and only audiences that have one may be referenced.** `audience.code` is optional and unique-where-set; naming stays opt-in, and an unnamed audience is simply not composable. The leaf may not point at a null code — a check reading another table, [F-10 shape 3](../open-questions.md#f-10). | Audiences were allowed to be anonymous before this round and there is no reason to force a name onto a grant's private addressee list. |
 | **The code joins the shared namespace** of D-101 — `role`, `person_group`, `audience`, and every reserved `selector_type.code`. Still no single constraint spans three tables: the write path carries it and an integrity check asserts the write path exists, per D-081. | A name that resolves two ways is a silent grant. |
 | **Bare names do *not* resolve to audiences.** `MEMBERS * COUNSELORS` stays a role or a group; the audience arm must be written `AUDIENCE(veterans)`. | Adding a third table to bare resolution would change what existing stored expressions mean, and the explicit form costs four characters at the one place where being careful is the point. |
 | **Cycles are refused across audiences, at save.** | See below. |
@@ -672,7 +672,7 @@ adopted here is a person remembering to run a script.
 
 **What would make it obsolete.** An actual implementation, with a seed directory and a test that loads it.
 Until then the registry and the prose are two copies of one thing
-([F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s general
+([F-10](../open-questions.md#f-10)'s general
 shape, in its cheapest instance), and the report is the check that they still agree.
 
 **See:** [F-19](../open-questions.md#f-19),

@@ -556,17 +556,19 @@ contains no office grants at all** ([What the seed ships](#what-the-seed-ships),
   whether it is the *broadcast* grant or the group roster that carries the ⚠). §10 records it as
   messaging's call; **the catalog has not silently re-specified it either way**, including whether the
   code should become `applies_to = unit_and_item`.
-- **`membership.manage` does not exist, and five places in these documents refuse it.** D-099
+- **`membership.manage` does not exist, and five places in these documents used it as their example.** D-099
   quotes the organization's own observation — *"on an event, `membership.manage`, or `event.create`, make
   no sense"* — the domain model and the authorization module each restate that sentence as the reason
   `applies_to` exists, and the events page carries a refusal row naming the code. **This catalog has
   never registered it** — membership acts are `membership.activate`, `.lapse`, `.suspend`,
   `.terminate`, `.backdate` and the request pair (§4) — and **no code is minted here to make an example
   true**: a refusal that names nothing refuses nothing, which is the class of bug D-097's `unit_leaders`
-  correction exists to warn about. Either those five places re-point the example at a registered code —
-  `membership.terminate` is the exact fit, a fact about a person at the unit that no event owns — or the
-  code is registered here first, and then it owes what every registered code owes: a `right_kind`, an
-  `applies_to`, a ⛔ mark, and a row in §4. **This was one instance of the gap D-104 closes as
+  correction exists to warn about. **The five places now name `membership.terminate`, which is the exact
+  fit and a registered code** — a fact about a person at the unit that no event owns — found by the
+  registry diff rather than by a reader ([D-127](../decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round));
+  the organization's quoted words are left as they were spoken. Had the other branch been taken, the
+  code would owe what every registered code owes: a `right_kind`, an `applies_to`, a ⛔ mark, and a row
+  in §4. **This was one instance of the gap D-104 closes as
   [F-19](../open-questions.md#f-19):
   a code is a seeded row, this catalog is prose about rows, and the check adopted is a two-way report
   over the seeded registries, run by hand.** D-104 supplied the grammar and the report; **it did not

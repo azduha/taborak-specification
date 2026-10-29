@@ -1,0 +1,43 @@
+# Every line here is a finding `scripts/check-registries.py` reported, was read,
+# and was decided to keep. Adopted with the script by D-127: while the script
+# reports a finding that is not one of these, a round is not closed.
+#
+# A reason after the `#` is not a comment, it is the record. A line added without
+# one is the baseline becoming a place to hide things, which is the failure mode
+# every other part of this repository exists to prevent.
+#
+# Identity is `kind token`, with no line number, so moving a sentence does not
+# re-open something that was read once. If a finding is fixed, delete its line:
+# an entry here for a defect that no longer exists is a small lie with a future.
+
+# --- refusals: sentences whose whole job is to say this name does not exist -----
+# Each of these is a code-shaped token the corpus names in order to refuse it, so
+# the finding is true and the fix would destroy the refusal. The first run found
+# all of them; a reader confirmed each one by hand rather than by count.
+
+code-shape event.admin              # glossary-authorization, Authorization: `event.admin` named as the example of a code nothing matches a prefix against
+code-shape event.answers.view       # 08a §8: names the plural misspelling of `event.answer.view` precisely to say it is not a code
+code-shape membership.manage        # permission-catalog §1 and catalog-b §12: the sentences recording that five pages used a code that never existed
+code-shape person.admin             # 05d §12, glossary-authorization and F-4: the per-resource admin code D-068 refuses, and F-4 asks about it by name
+
+selector GUARDIANS                  # 06a "The selectors", 07-events and 05d §12: `GUARDIANS` is spelled as an operand only to state that it is not a selector, which is what D-113 had to name to delete
+
+# --- registered codes that no page names outside the catalog --------------------
+# These are not defects and were never going to be: the finding's own note says
+# *nobody reads this outside its own table*, which is a question. The question was
+# asked, and the answer for all ten is the same: the code is real, an organization
+# grants it to a role of its own devising, and the pages that could have named it
+# are about other things. Kept, because day one of these documents *is* the
+# permission list, and a list nobody quotes is still the list. Re-read this block
+# in any round that touches the catalog.
+
+unnamed-row code:event.cancel                 # a real act, catalog §3; no domain page walks event deletion
+unnamed-row code:event.delete                 # ditto
+unnamed-row code:event.organizer.manage       # catalog §3; the organizer model is 08 §5's prose and names no codes
+unnamed-row code:event.question.manage        # catalog §3; the answer-privacy pages name `event.answer.view`, not the management half
+unnamed-row code:guardianship.change_right    # catalog §7; the channel's own page is 04 §5 and speaks of `right_level`
+unnamed-row code:guardianship.create          # catalog §7
+unnamed-row code:guardianship.end             # catalog §7
+unnamed-row code:guardianship.view            # catalog §7
+unnamed-row code:person_group.edit            # catalog §2; 02 §1's naming rules and §3's gate name `person_group.member.manage`
+unnamed-row code:person_group.end             # catalog §2

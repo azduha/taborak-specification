@@ -165,7 +165,7 @@ role's set of grants**, and nothing else bundles.
 
 ### `applies_to`: where a code may be granted, and when that is asked
 
-**What the column encodes:** `event.create` and `membership.manage` are
+**What the column encodes:** `event.create` and `membership.terminate` are
 nonsense *on* an event. `unit` means the code may be granted at the unit and nowhere else;
 `unit_and_item` means it may be granted at the unit or on one item of a registered type.
 
@@ -227,7 +227,7 @@ above (§2, *Rules*).
 
 **The namespace selects no channel, for any namespace — and the guardianship channel is chosen by what
 a prefix could never express: whether the action is about a different person from the one performing it.**
-A parent editing their child's address is checked under `person.address.edit` — an ordinary, un-prefixed
+A parent editing their child's address is checked under `person.contact.edit` — an ordinary, un-prefixed
 code — and reaches the guardianship channel anyway, because the subject of the act is not the actor.
 See §10. **A rule that routed on a namespace would miss exactly this case,** since a guardian acting under
 a `person.*` code looks like a person acting on themselves; that routing is what
@@ -370,8 +370,10 @@ what it changes is whom a grant naming `ROLE(x)` reaches (§10).
 **This table has no scope columns** ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row):
 a role is always held at the unit, and there is nothing else to hold it at), and no columns recording
 who ended a row. **Who ended one, and when, is the audit trail's answer; the *why* is `note`, on the
-row that opens.** The one thing with no answer is a typed, countable reason code for ending a holding
-— refused for the same reason D-098 refused it one table over: ticks nobody counts.
+row that opens.** The one thing with no answer is a reason for ending a holding that anyone can count.
+A reason here would be free text ([D-128](../decisions/round-18.md#d-128--a-reason-is-text-the-reason_code-table-is-deleted)),
+and free text is counted only when people happen to type the same words — which is the same ground
+D-098 refused it one table over, now with the cost stated instead of the column.
 
 **What `granted_by` records, and what `audit_log` records.** The two look like duplicates and answer
 different questions, so the line is worth drawing properly. `audit_log` records **an act**: that a particular person, in a particular session, from a particular
@@ -412,7 +414,7 @@ There is no edge from `role_holder` to `audit_log` and there must never be one: 
   ones**, half-open so a row ending on a day and one beginning that same day do not collide. Dating
   rows imports this invariant set whether the author wants it or not — it is D-098's argument for
   the identical rule on `person_group_member`, [D-002](../decisions/round-01a.md#d-002--everything-temporal-is-a-period-never-a-boolean),
-  and [F-10 shape 1](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those),
+  and [shape 1](00a-invariant-register.md#1-no-two-rows-overlap-in-time),
   which says a hand-written migration must emit it and the ORM will not.
 - **A person who left the office in 2020 and returned in 2024 is two rows, never one row edited in
   place**, because the edit destroys the answer to "was she treasurer in 2019?" — and that is the
@@ -696,7 +698,7 @@ and the distinction is load-bearing here rather than pedantic: "unique among liv
 grants" is a **conditional** rule, so the migration must emit a partial unique index whose
 predicate excludes `deny`. A plain unique constraint over the same columns is a different and wrong
 rule — it would refuse the deny beside the allow, which is precisely the pair the domain requires.
-See [open question F-10, shape 2](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those).
+See [shape 2](00a-invariant-register.md#2-unique-but-only-among-rows-meeting-a-condition).
 
 **The condition also excludes `revoked_at`, which is easy to write wrongly in the other direction.**
 A revoked grant must not occupy the unique slot — that is what lets a grant be revoked and re-made

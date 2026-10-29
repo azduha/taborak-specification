@@ -186,7 +186,7 @@ that was never written:
 
 | Rule | Layer |
 |---|---|
-| `secret_hash` present, `code` unique among live rows, `valid_to` after `valid_from` | migration-level constraint — the invariant |
+| `secret_hash` present, `code` and `secret_hash` **each** unique among live rows, `valid_to` after `valid_from` | migration-level constraint — the invariant, and now naming both columns rather than the one D-130 found missing |
 | `api_key_id` set on a grant means `is_delegated` false; a grant never sets two grantees | model validation at the save, and check 1's shape report is the net |
 | A grant of a refused code to a key | **the save path only** — no constraint spans `permission` and `access_grant`, so check 20 is the entire net |
 | `api_key_id` and `actor_person_id` never both set on a trail row | migration-level constraint on each trail |

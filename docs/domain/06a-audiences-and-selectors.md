@@ -345,9 +345,9 @@ equivalent is the entire reason the tree exists.
   so a leaf that names a retired thing is not possible. **`PERSON(x)` names a *person*, and
   [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
   lets a redaction require the row to actually go. Erasure wins.** The reason the duty cannot be
-  expressed anywhere better is
-  [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s —
-  **the ORM has no key to follow.** And the failure is not tidiness: a leaf naming nobody is the empty
+  expressed anywhere better is stated in
+  [shape 3](../data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)
+  — **the ORM has no key to follow.** And the failure is not tidiness: a leaf naming nobody is the empty
   set, which is quiet on the allow side and loud on the deny side, so **`EVERYONE - PERSON(x)` with an
   un-repointed `x` stops subtracting anybody and denies everybody.**
 - **An operand that does not resolve is the empty set**, and an expression that cannot be evaluated

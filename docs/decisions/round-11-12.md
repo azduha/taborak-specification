@@ -181,7 +181,7 @@ this module has been pointing at for two rounds, now reachable by an ordinary me
 whose `selector_arg_id` names the absorbed or erased person, in all five argument kinds (`person`, `role`,
 `person_group`, `event`, `audience`) — the merge reassignment table gains the row, the erasure path gains the
 scan, and the nightly orphan check becomes the backstop rather than the only mechanism. It belongs to
-[F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s register for the reason that
+[F-10](../open-questions.md#f-10)'s register for the reason that
 register exists: **the ORM cannot express it, because the column has no key to follow.** Nothing in the corpus
 required this before, and it was defensible before only because the volume of hand-named people was in a table
 that had a key.

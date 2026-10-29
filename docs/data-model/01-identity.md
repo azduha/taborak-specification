@@ -60,8 +60,8 @@ a well-meaning future change.
 
 - There is deliberately **no deceased flag**. The organization does not record whether a
   person has died. A membership simply ends; the reason for the ending lives in the generic
-  reason-code fields (`membership.termination_reason_code`, `membership.ended_note`) like any
-  other ending, and the organization's own vocabulary for such reasons is theirs to define.
+  reason fields (`membership.termination_reason`, `membership.ended_note`) like any
+  other ending — text somebody types, not a row of a table (D-128), and the organization's own vocabulary for such reasons is theirs to define.
   Do not add `is_deceased` or `deceased_at` back: it is not data the organization keeps.
 - `public_id` is unique.
 - A person may not be merged into themselves — `merged_into_person_id` may never name this
@@ -119,7 +119,7 @@ may repeat, a birth number may not"* — each is a constraint over a **known set
 key/value layer has no known set of columns, which is the whole of what it is for. Folding
 `person_name`, `person_contact` or `person_identifier` into the attribute layer would have relocated
 four working constraints into application code and been called uniformity
-([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
 Identity is closed because it was enumerated years ago and has not changed; description is open
 because nobody can enumerate it
 ([D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)).
@@ -176,6 +176,10 @@ are usually wrong.
 
 - `valid_to` is either absent, or `valid_from` is absent, or `valid_to` is later than
   `valid_from`.
+- **One current name per person and `name_type`**: at most one row with `valid_to` absent. Two
+  pages cite this as one of the constraints that keeps the attribute layer honest, and until
+  [D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) this table stated only the ordering rule.
+  A partial unique index, and §2's denormalised copy of it is [reported, not constrained](01b-merges-views-and-checks.md#10-integrity-checks).
 
 **Indexes**
 

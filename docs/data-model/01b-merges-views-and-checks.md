@@ -258,6 +258,18 @@ above can express.
   is `pending_verification`, `active` or `suspended`; anything above one is a breach of the
   rule in §4, and the point of the check is to confirm that rule really does exclude the
   pending-plus-active combination.
+- **Two current identifiers where the scheme forbids it.** Count `person_identifier` rows per
+  `(scheme, value)` among the current ones, for every scheme whose `is_unique` is true; non-zero is a
+  breach of the rule in [01a §7](01a-accounts-and-contacts.md#7-person_identifier), which no index can carry
+  because the answer lives in another table's column.
+  [00 §6a](00-conventions.md#6a-who-enforces-an-invariant-now) promised this report in the sentence that
+  explained why, and [D-130](../decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes)
+  is the round that wrote it down somewhere.
+- **A person whose displayed name is not their current one.** Count persons whose
+  `given_name`/`family_name` differ from the `person_name` row with no `valid_to` for the same
+  `name_type`; the copy is what every list view shows, and it is [an obligation on the writing
+  transaction](01-identity.md#2-person) with nothing downstream that noticed. [F-28](../open-questions.md#f-28)
+  asks whether a report is the right thing or the copy is the wrong one.
 - **A tombstoned person with no merge record.** Count persons whose merge pointer is set but
   who do not appear as the merged person of any un-reversed `person_merge` row; non-zero
   means a pointer was written without the record that explains it, which is the case the

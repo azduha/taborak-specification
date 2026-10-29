@@ -58,7 +58,7 @@ brackets instead of silently rewriting them ([D-101](../decisions/round-10b.md#d
 
   Application layer for both walks, and the layer is named because each spans rows rather than columns
   of one row, which is
-  [F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those),
+  [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph),
   so no migration can emit either.
 - **There is no edge table and no depth parameter.** `audience_include` and `include_depth_limit` are
   not in the model: the edges *are* the `AUDIENCE` leaves, so there is nothing to maintain and no
@@ -255,10 +255,10 @@ the database. **This is what makes the requirement below load-bearing.**
 `selector_arg_id` names the absorbed or erased person, in all five argument kinds that name an entity.**
 The merge reassignment table carries the row, the erasure path carries the scan, and the nightly orphan
 check (§11, check 2) **is the backstop rather than the mechanism** — a scan that runs the following
-morning is not a reassignment, and by the time it reports, an expression has already resolved wrong. It
-belongs to [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s
-register for precisely the reason that register exists: **the ORM cannot express it, because the column
-has no key to follow.**
+morning is not a reassignment, and by the time it reports, an expression has already resolved wrong. It is
+[shape 3 of the invariant
+register](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph) for precisely
+the reason the register exists: **the ORM cannot express it, because the column has no key to follow.**
 
 **Why this is not housekeeping.** A leaf that resolves to nobody is the empty set, which **narrows** the
 result on the `+` and `*` sides and **widens** it on the `-` side

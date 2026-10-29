@@ -86,6 +86,7 @@ nav:
           - Capacity, Presence, Forms: domain/07a-capacity-presence-and-forms.md
   - Data Model:
       - Conventions: data-model/00-conventions.md
+      - Who Enforces Each Invariant: data-model/00a-invariant-register.md
       - Identity:
           - data-model/01-identity.md
           - Accounts, Contacts, Identifiers: data-model/01a-accounts-and-contacts.md
@@ -135,6 +136,7 @@ nav:
           - Round 15: decisions/round-15.md
           - Round 16: decisions/round-16.md
           - Round 17: decisions/round-17.md
+          - Round 18: decisions/round-18.md
       - Open Questions: open-questions.md
 
 site_url: https://azduha.github.io/taborak-specification/

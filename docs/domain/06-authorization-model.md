@@ -111,7 +111,7 @@ point-in-time read over `person_group_member`, whose rows are dated
 **Which codes may be granted where is data, not prose.** `permission.applies_to` is `unit` or
 `unit_and_item`
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)):
-`event.create` and `membership.manage` are nonsense *on* an event, and the column says so instead of
+`event.create` and `membership.terminate` are nonsense *on* an event, and the column says so instead of
 hoping a reader agrees. It is checked **when the grant is saved**, not at check time. *Why:* a grant
 of `event.create` written on one event is refused with the reason in the error, because an event
 cannot be created twice and a creation permission attached to a thing that already exists answers no

@@ -83,7 +83,7 @@ discovering them at the check:
 |---|---|
 | `event.edit` on one event | **Allowed.** A capability on the item — [D-006](../decisions/round-01a.md#d-006--per-item-permissions-are-capabilities-on-the-item) unchanged |
 | `event.create` on one event | **Refused at save**, with the reason: `applies_to` is `unit` |
-| `membership.manage` on one event | **Refused at save**, for the same reason |
+| `membership.terminate` on one event | **Refused at save**, for the same reason — a membership is a fact about a person at the unit, which no event owns |
 | A grant naming `PLACED` at the unit | **Refused at save**, naming the operand — there is no item for it to bind to (§7) |
 
 ---

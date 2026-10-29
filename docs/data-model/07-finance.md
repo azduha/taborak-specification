@@ -155,8 +155,8 @@ its own, that is a policy question for §5 and a new shape of obligation, not a 
 > nothing else. No subquery, no other table, and therefore emittable by any migration that can put a
 > condition on a row at all — the case where the ORM argument simply does not apply. **It is worth
 > naming explicitly, because it is the counterexample to the general worry** — most of what D-072
-> deleted genuinely cannot be restated declaratively ([open question
-> F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)),
+> deleted genuinely cannot be restated declaratively
+> ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)),
 > and this is not one of them.
 >
 > **If a fourth target is ever proposed, ask whether it is *used*, and expect the answer to be no.**

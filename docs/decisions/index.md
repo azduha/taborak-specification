@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-126 of them and lists the reversals. Read the round you are curious about — each one says what was
+132 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -166,6 +166,12 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-124](round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row) | Two defects: `system.admin` satisfies every code, and one prose code named no row | decided (defect fix, not a design change) | round 16 |
 | [D-125](round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | An empty actor column is this system acting on its own, and its name comes from a fixed list | decided (from your answer) | round 17 |
 | [D-126](round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism) | Break-glass is a report and a written procedure, not a mechanism | decided (from your answer) | round 17 |
+| [D-127](round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round) | The registry diff is a committed script, and it gates a round | decided (from your answer) | round 18 |
+| [D-128](round-18.md#d-128--a-reason-is-text-the-reason_code-table-is-deleted) | A reason is text; the `reason_code` table is deleted | decided (from your answer) | round 18 |
+| [D-129](round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) | Where the register and the page disagree, the page is wrong | decided (found while writing the register) | round 18 |
+| [D-130](round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | One register answers who enforces each invariant, and F-10 closes | decided | round 18 |
+| [D-131](round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) | Shape 4 is not empty, and a code that is referenced may not be renamed | decided (found by writing the register) | round 18 |
+| [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **not applied until round 19** | round 18 |
 
 ## Reversed decisions
 

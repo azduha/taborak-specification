@@ -220,7 +220,7 @@ audience, and editable one name at a time — `(GROUP(kitchen) + PERSON(honza)) 
 reviewer asking *what does this person have?* must find two grants rather than one
 audience. Since every hand-named person is a `selector_arg_id`, and **that column
 deliberately has no foreign key**, a merge must repoint the leaves that name the absorbed
-person ([F-10](open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+person ([shape 3](data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
 
 **Names are one namespace** across `role`, `person_group` and `audience.code`, and every
 `selector_type.code` is a **reserved name** — a group called `MEMBERS` is refused at the

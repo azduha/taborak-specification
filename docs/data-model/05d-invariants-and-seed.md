@@ -141,13 +141,15 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   expiry is the only guard against it outliving its reason.**
 - **12. Two names that are one name, and a reference that points at an unnamed thing.** Three shapes,
   one namespace:
-  1. A `role.code` equal to a `person_group.code` after case, whitespace and separator folding;
+  1. A `role.code` equal to a `person_group.name` after case, whitespace and separator folding — a group
+     has no `code` column ([02 §1](02-organization.md#1-person_group) says so), and this section promises
+     at its head that no check reads a column the schema does not have;
   2. either of those equal to a `selector_type.code`, **or any of the three equal to an
      `audience.code`** — `audience` shares the namespace, because `AUDIENCE(<code>)` resolves
      through that table ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience));
   3. an `AUDIENCE` leaf whose `selector_arg_id` names an audience **whose `code` is absent** — legal on
      every column of both rows and unsayable as a constraint, because the check reads a third table
-     ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+     ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
 
   **Zero expected; no single constraint spans three tables, and no constraint at all covers the
   reserved-word half or the null-code half**, so the write path carries all of it and this check asserts
@@ -219,7 +221,7 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   **Why this is a CI assertion and not a report:** three of the four guards are walks over rows rather
   than comparisons within one row, which means they live in application code and no migration can emit
   them
-  ([F-10 shape 3](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)).
+  ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
   **A guard that lives in code is deleted by a refactor and the data looks fine afterwards**, and nothing
   greps for it at build time (D-072).
 - **16. TIME-BOMB: no permission path may materialize a set.** The requirement is that
@@ -679,16 +681,17 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   **Nothing in this document decides which of the two it is, and nothing detects the failure after the
   fact**: the audit trail records the write that happened, not the one that was overwritten.
 - **Whether a person merge repoints every leaf that named the absorbed person, and who tests it (§8,
-  §11 check 2).** The requirement is D-105's and is not open; **what is open is that no layer can express
-  it.** `selector_arg_id` has no foreign key
+  §11 check 2).** The requirement is D-105's and is not open; **what no layer can express is a constraint
+  behind it**, so the register puts it on the write path with §11 check 2 beneath it. `selector_arg_id` has
+  no foreign key
   ([D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)),
   so the merge reassignment table has to be told about `audience_operand` the way it was told about every
   other person-referencing table, **in all five argument kinds that name an entity**, and the orphan scan that would otherwise
   catch it is both late and blind — late because it runs nightly, blind because a merge that leaves the
-  absorbed row in place produces no orphan at all. It belongs to
-  [F-10](../open-questions.md#f-10--which-invariants-the-orm-cannot-express-and-who-writes-those)'s register
-  for exactly that reason, and it is the first item on that register where **the failure direction is a
-  grant that denies everybody**: `EVERYONE - PERSON(x)` with an un-repointed `x`.
+  absorbed row in place produces no orphan at all. It is
+  [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph) for exactly
+  that reason, and it is the item on the register where **the failure direction is a grant that denies
+  everybody**: `EVERYONE - PERSON(x)` with an un-repointed `x`.
 - **Whether the reference listing is actually cheap (§8, §10).** D-103 registers the assumption: "which
   live grants name this audience, and at what depth" is one indexed query over the leaf rows, cheap at
   this organization's size, **unverified at any size**. It is on the save path of a screen a person is

@@ -298,7 +298,7 @@ function.
    Two properties of this channel:
 
    - **Entered by shape, not by namespace** (D-079, following D-074). A parent correcting their
-     child's address is checked under `person.address.edit` — an ordinary, un-prefixed code — and
+     child's address is checked under `person.contact.edit` — an ordinary, un-prefixed code — and
      still routes here. A permission added next year for a field a guardian must edit is covered
      the day the field exists, provided it is marked `write`, which is the seeding default (§2).
    - **Silent rather than final.** The channel never takes the last word: a guardian whose right does not

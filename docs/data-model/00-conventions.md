@@ -57,7 +57,7 @@ an accepted decision, not discovered as an outage.** Tracked in
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
 | Junction table | `<a>_<b>` in alphabetical order | `guardianship_permission`, not `permission_guardianship`. *(The example here was `audience_member` for ten rounds, which was a better illustration because its two halves are further apart alphabetically; the table is deleted by [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), and a naming convention should not be taught with a table that does not exist.)* |
-| Lookup table | singular of the vocabulary it *is* | `selector_type`, `reason_code` |
+| Lookup table | singular of the vocabulary it *is* | `selector_type`, `grant_scope_type` |
 | Index | names the table and what it answers | "the open rows for one person", not `idx_3` |
 
 Singular table names are not aesthetic. `membership` reads correctly in a sentence about one
@@ -278,21 +278,39 @@ Three consequences that are easy to get wrong:
    once, per temporal table, is cheaper than the alternative — which is duplicate open rows
    discovered in 2031 by someone who cannot tell which one was ever real.
 2. **Uniqueness that depends on a condition needs a partial unique index.** "One open request per
-   person and type", "one primary contact per child among open rows", "one live exposure per unit
-   and assignment" are all this shape. A unique constraint over the *un*conditioned columns is
+   person and type", "one primary contact among current rows", "one live allow per grantee, scope and
+   permission" are all this shape. A unique constraint over the *un*conditioned columns is
    not the same rule and is usually wrong in the direction of too strict — it forbids the second
-   closed row, which history requires.
+   closed row, which history requires. **The predicate is the rule, not a comment on it**: three
+   indexes differing only in a predicate are three rules, and copying one and editing the table names
+   is how a wrong one ships.
 3. **Uniqueness decided by data cannot live in an index at all.** `identifier_scheme.is_unique`
    says per scheme whether a value may repeat
    ([01a-accounts-and-contacts.md §7](01a-accounts-and-contacts.md#7-person_identifier)); no index can consult a row of a
    different table. This one is genuinely application-level plus a report, and it is documented as
    such rather than being pretended away. **The earlier version of that document had the opposite
    bug — an index that applied to every scheme, ignoring the flag and making `school_id`
-   unrepeatable in fact.**
+   unrepeatable in fact.** The report this consequence promises is
+   [01b §10's duplicate-identifier count](01b-merges-views-and-checks.md#10-integrity-checks), which
+   [D-130](../decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes)
+   added: the paragraph had promised it since it was written and no page contained it.
+4. **Which of the three layers, for which rule, is answered once — in
+   [00a](00a-invariant-register.md), not here.** Four shapes, one layer each: a temporal exclusion is a
+   hand-written constraint, a conditioned uniqueness is a partial index, a rule that reads another table
+   is the write path with a named report beneath it, and a value that may never change has nothing
+   automatic behind it and says so. **Where a register row and the page it cites disagree, the page is
+   wrong** ([D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)),
+   because the register holds nothing but the three facts a page is allowed to leave implicit — and a
+   fourth copy of a rule is the thing this corpus keeps getting wrong.
 
 **And the honest cost, stated in D-072's own terms: some rules now have no enforcement anywhere
 automatic can reach.** They are written as invariants to verify and they will catch drift only if
-someone runs them. A prohibition nobody runs is a convention, not a guard.
+someone runs them. A prohibition nobody runs is a convention, not a guard — **and this repository has
+no build step to run one, so the check that could be automated is a script run by hand**
+([D-127](../decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round)).
+What changed in round 18 is that running it is now part of finishing a round rather than a habit someone
+either has or does not, and that its findings are kept in a file, so the difference between "checked"
+and "read once and accepted" is something a reader can look up.
 
 ---
 
@@ -316,8 +334,8 @@ hypotheses) additionally carry a reason:
 
 | Column | Kind |
 |--------|------|
-| `<verb>_reason_code` | reference to `reason_code` |
-| `<verb>_reason_note` | free text, for the human explanation |
+| `<verb>_reason` | text, required where the act needs a why — **a value somebody types, not a row of a table** ([D-128](../decisions/round-18.md#d-128--a-reason-is-text-the-reason_code-table-is-deleted)) |
+| `<verb>_reason_note` | text, for the long explanation a reason field is too short for |
 
 **Reason codes are a lookup table, not free text.** "Why was this membership terminated?" must be
 reportable and comparable across years. Free text is not. The note exists so the code does not
@@ -531,7 +549,7 @@ discovers from a regulator.
 | References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). |
 | Cascade delete is refused everywhere else | It is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one**, and read the exception above before you "fix" the one row that is allowed to cascade. |
 | Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
-| There are exactly **two** reference-less keys, and both are polymorphic on purpose | `access_grant.scope_id` and `audience_operand.selector_arg_id`, the second documented in [05a-audience-and-grammar.md §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people). Neither may gain a third companion without a decision: a polymorphic key is a rule the schema cannot check, so each one has to buy the orphan scan that covers it — §11 of that page, [Invariants to verify](05d-invariants-and-seed.md#11-invariants-to-verify), carries both scans and the nightly report that replaces the missing foreign key. *(This row used to read "`access_grant.scope_id` is the **one** reference-less key … nothing else may be", which had been false for several rounds by the time the round that widened `selector_arg_id` from three tables to five got written down. It is the same defect [D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) was entered for, in a conventions page rather than a registry.)* |
+| There are exactly **two** reference-less keys that are **validated**, and five more that are not | `access_grant.scope_id` and `audience_operand.selector_arg_id` are polymorphic on purpose and followed by an orphan scan ([05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify)). `access_log.scope_id`, `access_log.authorization_ref_id`, `access_log.entity_id`, `field_conflict.entity_id` and `audit_log.record_id` are polymorphic the same way and are **not** followed anywhere — the count this row used to give was the count of the ones somebody looked at ([D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)); what to do about the five is [F-30](../open-questions.md#f-30) |
 | Circular references are broken with an optional column, not a deferred constraint | `membership_request` ↔ `membership` is the one instance; the two-step insert is documented where it lives. |
 
 The polymorphic `access_grant.scope_id` deserves its warning again now that the schema is
@@ -555,8 +573,8 @@ wrong answers rather than errors.
   makes old audit entries lie.
 - **Backfills are separate from schema changes**, in their own migration, so a failed backfill
   does not roll back a schema change and vice versa.
-- **Seed data for vocabularies** (`permission`, `reason_code`, `grant_scope_type`, and
-  `selector_type` — the last of these being the language an audience expression is written in,
+- **Seed data for vocabularies** (`permission`, `grant_scope_type` and `selector_type` — the
+  last of these being the language an audience expression is written in,
   [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree))
   lives in migrations, not in application startup code, so the vocabulary is versioned with the
   data it describes. Application-startup seeding produces environments that disagree about what
