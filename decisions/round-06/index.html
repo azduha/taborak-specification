@@ -933,9 +933,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -949,7 +970,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3160,12 +3281,12 @@ place the rule lives, so it has to be right.</strong></p>
 <tr>
 <td>1</td>
 <td><code>identifier_scheme.is_unique</code> said a school id may repeat; the uniqueness rule applied to every scheme and never read the flag</td>
-<td><strong>The flag decides.</strong> A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. <a href="../../data-model/01-identity/#7-person_identifier">01-identity §7</a></td>
+<td><strong>The flag decides.</strong> A second child at the same school with the same number is not a duplicate identifier, and would have been rejected at import by a constraint its own table called wrong. <a href="../../data-model/01a-accounts-and-contacts/#7-person_identifier">01a §7</a></td>
 </tr>
 <tr>
 <td>2</td>
 <td>§9 of the identity document opened by saying its views encode "always exclude merged <strong>and redacted</strong>"; <code>v_person</code> excluded merged only, while §1 and §2 both required both</td>
-<td><strong>Both exclusions.</strong> A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. <a href="../../data-model/01-identity/#9-views">01-identity §9</a></td>
+<td><strong>Both exclusions.</strong> A redacted child in a list of children is not a formatting issue. Rows still resolve; people do not appear. <a href="../../data-model/01b-merges-views-and-checks/#9-views">01b §9</a></td>
 </tr>
 <tr>
 <td>3</td>
@@ -3260,12 +3381,12 @@ writes the migration:</p>
 <tr>
 <td>Registration outside its window</td>
 <td>Guard 1, inside the writing transaction</td>
-<td><a href="../../data-model/01-identity/#10-integrity-checks">08-events §10 check 9</a> — a row here is evidence about the code, not the data</td>
+<td><a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08-events §10 check 9</a> — a row here is evidence about the code, not the data</td>
 </tr>
 <tr>
 <td><code>fee_obligation</code>, created by the code that places a registration</td>
 <td>nothing ever enforced it</td>
-<td><a href="../../data-model/01-identity/#10-integrity-checks">08-events §10 check 10</a> — a confirmed place with no bill leaves every row individually correct</td>
+<td><a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08-events §10 check 10</a> — a confirmed place with no bill leaves every row individually correct</td>
 </tr>
 </tbody>
 </table>

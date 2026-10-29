@@ -1170,9 +1170,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1186,7 +1207,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3196,7 +3317,7 @@ constraint at all, and each document's "Invariants to verify" section is exactly
    closed row, which history requires.</li>
 <li><strong>Uniqueness decided by data cannot live in an index at all.</strong> <code>identifier_scheme.is_unique</code>
    says per scheme whether a value may repeat
-   (<a href="../01-identity/#7-person_identifier">01-identity.md §7</a>); no index can consult a row of a
+   (<a href="../01a-accounts-and-contacts/#7-person_identifier">01a-accounts-and-contacts.md §7</a>); no index can consult a row of a
    different table. This one is genuinely application-level plus a report, and it is documented as
    such rather than being pretended away. <strong>The earlier version of that document had the opposite
    bug — an index that applied to every scheme, ignoring the flag and making <code>school_id</code>
@@ -3337,7 +3458,7 @@ column, because people rely on it.</p>
    Erasing what was recorded is item 2, and only item 2.</li>
 <li><strong>Redaction is invisible in listings and visible in the database.</strong> A redacted person must not
    appear where people are listed, and must still resolve wherever an old record points at them
-   (<a href="../01-identity/#9-views">01-identity.md §9</a>). These two requirements are one rule with two
+   (<a href="../01b-merges-views-and-checks/#9-views">01b-merges-views-and-checks.md §9</a>). These two requirements are one rule with two
    halves and the first version of that document had only one of them.</li>
 <li><strong>The trail is a second copy of the person record and has to be guarded like one.</strong> For a
    person's descriptive data the trail holds the <strong>value</strong> — the before and after image, exactly as
@@ -3586,13 +3707,13 @@ and not yet designed; they will need their own document. The absence is tracked 
         
         
           
-          <a href="../01-identity/" class="md-footer__link md-footer__link--next" aria-label="Next: Identity">
+          <a href="../01-identity/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Model — Identity: the central claim, person, and name history">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Identity
+                Data Model — Identity: the central claim, person, and name history
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -933,9 +933,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -949,7 +970,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3206,7 +3327,7 @@ only when <code>source = 'self'</code>. A staff registration is admitted regardl
 </tbody>
 </table>
 <p><strong>Capacity is therefore three things at once, on purpose:</strong> a rule for self-service, a number
-organizers can exceed, and a report. <a href="../../data-model/01-identity/#10-integrity-checks">data-model/08 §10 check 5</a>
+organizers can exceed, and a report. <a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">data-model/08 §10 check 5</a>
 produces rows and <strong>that is not a failure</strong> — an event that overruns every year has a wrong
 capacity number, and the fix is the number, not refusing people.</p>
 <p><strong>Promotion is not automatic</strong> because a place freeing up is not the same as it being right
@@ -3295,7 +3416,7 @@ fee buys insurance (finance question 9 — <em>"member on the date of the incide
 the row that cannot be reconstructed afterwards from registrations.</p>
 <p><strong>Presence is not registration</strong>, and the distinction is enforced: a <code>not_attending</code>
 registration with <code>was_present</code> set is contradictory and reported
-(<a href="../../data-model/01-identity/#10-integrity-checks">data-model/08 §10 check 8</a>).</p>
+(<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">data-model/08 §10 check 8</a>).</p>
 <p><strong>A walk-in is not representable, deliberately.</strong> A sibling who turns up on the day was not
 in the organization's care — no guardian recorded, no name on the roster — and must not
 <em>silently appear</em> to have been. Recording them means registering them, which means the

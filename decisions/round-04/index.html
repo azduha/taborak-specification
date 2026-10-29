@@ -933,9 +933,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -949,7 +970,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3227,7 +3348,7 @@ what is still being decided.</p>
 <p><strong>Decision.</strong> The import is designed for a <strong>substantial</strong> historical corpus — thousands of
 records, not hundreds — and the old records <strong>carry a legacy member number</strong>. That number is
 imported into <code>person_identifier</code> with <code>scheme = 'legacy'</code>
-(<a href="../../data-model/01-identity/#7-person_identifier">data-model/01 §7</a>).</p>
+(<a href="../../data-model/01a-accounts-and-contacts/#7-person_identifier">data-model/01a §7</a>).</p>
 <p><strong>Why.</strong> Your answer: <em>"Large, with legacy member numbers."</em></p>
 <p>This is the favourable case for <a href="../round-01a/#d-004--no-automatic-merging-ever">D-004</a>, and it materially
 changes what the import has to be:</p>
@@ -3294,7 +3415,7 @@ is gone, but the principle it stated is not, and that is deliberate</em>. <stron
 <p><strong>Decision.</strong> The <code>household</code> and <code>household_member</code> tables are <strong>removed</strong>, along with
 <code>fee_obligation.household_id</code>, its CHECK arm, and <code>ix_obligation_household</code>. A person's
 address is a <code>person_contact</code> row of type <code>postal</code> —
-<a href="../../data-model/01-identity/#6-person_contact">data-model/01 §6</a> — which already exists,
+<a href="../../data-model/01a-accounts-and-contacts/#6-person_contact">data-model/01a §6</a> — which already exists,
 already keeps history, and already carries a <code>purpose</code> (<code>'billing'</code>) that the permission
 model can distinguish. Same-address matching for the legacy import becomes a <strong>query over
 <code>person_contact</code></strong>, not a maintained table.</p>

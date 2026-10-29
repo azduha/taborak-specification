@@ -933,9 +933,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../data-model/01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -949,7 +970,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3023,7 +3144,7 @@ framed as the question that decides B-2, since chains make a reversal a replay a
 a rebuild — you chose <strong>chains, and an explicit unmerge</strong>.</p>
 <p><strong>Decision.</strong> <code>person.merged_into_person_id</code> stays a pointer that is <em>not</em> rewritten forward when the
 survivor is itself later absorbed. A→B→C remains a chain and <code>resolve_person()</code> keeps walking it
-(<a href="../../data-model/01-identity/#9-views">01-identity.md §9</a>). Flattening is now <strong>closed off</strong>, not
+(<a href="../../data-model/01b-merges-views-and-checks/#9-views">01b-merges-views-and-checks.md §9</a>). Flattening is now <strong>closed off</strong>, not
 merely slower.</p>
 <p><strong>What this decision actually changes is the direction of the argument.</strong> These documents have argued
 for chains <em>because</em> unmerge would otherwise be impossible — an assumption resting on a capability that
@@ -3051,7 +3172,7 @@ tidiness — it is a trade against a feature someone named.</p>
 <p><strong>What was already built, and is confirmed rather than changed.</strong> <code>person_merge</code> exists and is
 append-only with <code>reversed_at</code>/<code>reversed_by</code>/<code>reversal_note</code>, so an unmerge records that a merge was
 undone instead of erasing the record of the mistake
-(<a href="../../data-model/01-identity/#8-identity_hypothesis-and-person_merge">01-identity.md §8</a>); and the
+(<a href="../../data-model/01b-merges-views-and-checks/#8-identity_hypothesis-and-person_merge">01b-merges-views-and-checks.md §8</a>); and the
 reversal procedure is written in four steps
 (<a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03-identity-and-legacy.md §6</a>)
 — tombstone off, rows created <em>before</em> the merge go back, rows created <em>inside</em> the merged window are
@@ -3070,7 +3191,7 @@ record. Two further things follow and are stated where they belong:</p>
   person, which is the only form of this failure that is visible afterwards.</li>
 </ul>
 <p><strong>Closes:</strong> <a href="../../open-questions/#b-2">B-2</a>.</p>
-<p><strong>See:</strong> <a href="../../data-model/01-identity/#9-views">data-model/01-identity.md §9–§10</a>,
+<p><strong>See:</strong> <a href="../../data-model/01b-merges-views-and-checks/#9-views">data-model/01b-merges-views-and-checks.md §9–§10</a>,
 <a href="../../domain/03-identity-and-legacy/#6-reversing-a-merge">domain/03-identity-and-legacy.md §6</a>.</p>
 <hr />
 <h2 id="d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088 — The accounting skeleton is permanent; the audit trail is short<a class="headerlink" href="#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short" title="Permanent link">&para;</a></h2>
@@ -3152,7 +3273,7 @@ out of that table to begin with).</p>
 <p><strong>Your answer.</strong> Asked what happens when a person who already has an account signs up again with a
 different e-mail: <strong>refuse, and queue a claim</strong> — not an automatic link, and not a second account.</p>
 <p><strong>Decision, stated as the gate that enforces it.</strong> One live account per person stands
-(<a href="../../data-model/01-identity/#4-account">01-identity.md §4</a>) and is joined by a second rule: <strong>an
+(<a href="../../data-model/01a-accounts-and-contacts/#4-account">01a-accounts-and-contacts.md §4</a>) and is joined by a second rule: <strong>an
 account may not reach <code>active</code> while an unresolved <code>identity_hypothesis</code> names its person.</strong> That is the
 whole mechanism — there is no new table and no new queue, because the identity review queue already
 exists, already records its signals, and already has the reviewer role for it. A sign-up that
@@ -3199,7 +3320,7 @@ queue, and it is registered as
 <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>
 rather than settled here.</p>
 <p><strong>Closes:</strong> <a href="../../open-questions/#b-4">B-4</a>.</p>
-<p><strong>See:</strong> <a href="../../data-model/01-identity/#4-account">data-model/01-identity.md §4–§5, §8</a>,
+<p><strong>See:</strong> <a href="../../data-model/01a-accounts-and-contacts/#4-account">data-model/01a-accounts-and-contacts.md §4–§5</a> and <a href="../../data-model/01b-merges-views-and-checks/#8-identity_hypothesis-and-person_merge">§8</a>,
 <a href="../../domain/03-identity-and-legacy/#4-match-signals">domain/03-identity-and-legacy.md §4</a>.</p>
 <hr />
 <h2 id="d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090 — The legacy corpus is thousands of roster rows with numbers and no money<a class="headerlink" href="#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money" title="Permanent link">&para;</a></h2>

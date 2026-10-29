@@ -935,9 +935,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -951,7 +972,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3329,7 +3450,7 @@ the domain language and must not be in the data.</p>
 <h2 id="3-there-is-no-household-table">3. There is no <code>household</code> table<a class="headerlink" href="#3-there-is-no-household-table" title="Permanent link">&para;</a></h2>
 <p><strong>Removed</strong> (<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>). An address
 is a <code>person_contact</code> row of type <code>postal</code>
-(<a href="../01-identity/#6-person_contact">01-identity.md §6</a>), which already exists, already keeps
+(<a href="../01a-accounts-and-contacts/#6-person_contact">01a-accounts-and-contacts.md §6</a>), which already exists, already keeps
 history (<code>valid_from</code> / <code>valid_to</code>), and already carries a <code>purpose</code> — <code>'billing'</code> for the
 address an invoice goes to. A separate household table was duplicating it under a different
 key, and the duplication had gone stale: its <code>postal_address</code> column was documented as

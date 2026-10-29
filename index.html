@@ -1061,9 +1061,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="data-model/01-identity/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1077,7 +1098,107 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2817,7 +2938,15 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 </tr>
 <tr>
 <td><a href="data-model/01-identity/">data-model/01-identity.md</a></td>
-<td><code>person</code>, <code>account</code>, contact points, identifiers.</td>
+<td><code>person</code> — what the organization knows about a human, no status, no role, no type — what is deliberately not on it, and <code>person_name</code>. §1–§3.</td>
+</tr>
+<tr>
+<td><a href="data-model/01a-accounts-and-contacts/">01a</a></td>
+<td><code>account</code>, <code>account_credential</code>, <code>person_contact</code>, <code>person_identifier</code> — signing in, being reached, and being named by other systems. §4–§7.</td>
+</tr>
+<tr>
+<td><a href="data-model/01b-merges-views-and-checks/">01b</a></td>
+<td><code>identity_hypothesis</code>, <code>person_merge</code>, the views that exclude merged and redacted rows, the nightly checks, open issues. §8–§11. The three parts share one section numbering.</td>
 </tr>
 <tr>
 <td><a href="data-model/09-attributes/">data-model/09-attributes.md</a></td>
