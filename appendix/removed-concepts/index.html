@@ -2657,8 +2657,8 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a></td>
 </tr>
 <tr>
-<td><code>position</code>, <code>position_assignment</code>, <code>is_leadership</code>, <code>max_holders</code>, <code>min_age</code></td>
-<td>a slot in a body that a person filled for a period, with occupancy rules</td>
+<td><code>position</code>, <code>position_assignment</code>, <code>is_leadership</code>, <code>max_holders</code>, <code>min_age</code>, <code>position.requires_membership</code></td>
+<td>a slot in a body that a person filled for a period, with occupancy rules — one of them requiring the filler to be a paid-up member</td>
 <td>with one unit there is no body to be a leader <em>of</em> — the one fact a position held that an office does not</td>
 <td><code>role_holder</code>: an office, a person, a period</td>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
@@ -2678,9 +2678,9 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a></td>
 </tr>
 <tr>
-<td><code>role_assignment</code>, <code>role_permission</code></td>
-<td>the period a person held a role within a scope, and the codes attached to that role</td>
-<td>an office confers nothing by being held; the codes an office carries are the live grants naming <code>ROLE(x)</code></td>
+<td><code>role_assignment</code>, <code>role_permission</code>, <code>role.scope_required</code></td>
+<td>the period a person held a role within a scope, the codes attached to that role, and the column saying an office's assignments had to name a scope</td>
+<td>an office confers nothing by being held; the codes an office carries are the live grants naming <code>ROLE(x)</code>, and each of those rows names its own scope</td>
 <td><code>role_holder</code>, and grants aimed at <code>ROLE(x)</code></td>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
 </tr>
