@@ -205,30 +205,22 @@ worth knowing before trusting it.
 | absent | An ordinary code. | `membership.request.approve` |
 | `system` | A code about the system itself. It is **seeded `applies_to = unit`**, so no grant on an item can carry it, and the resolver no longer branches on the prefix. | `system.permission.edit` |
 
-There used to be a third value, and this subsection was about it. `dependent.` prefixed every
-guardian capability, and the resolver dispatched on the prefix: a code beginning `dependent.`
-went down the guardianship channel, everything else went down the ordinary path.
-**[D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
-deleted all eighteen of those codes,** and with them the only thing the namespace column was
-being used to route on.
+**The namespace selects no channel, for any namespace — and the guardianship channel is chosen by what
+a prefix could never express: whether the action is about a different person from the one performing it.**
+A parent editing their child's address is checked under `person.address.edit` — an ordinary, un-prefixed
+code — and reaches the guardianship channel anyway, because the subject of the act is not the actor.
+See §10. **A rule that routed on a namespace would miss exactly this case,** since a guardian acting under
+a `person.*` code looks like a person acting on themselves; that routing is what
+[D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)
+removed, and the `dependent.` codes it dispatched on are indexed in
+[removed-concepts.md](../appendix/removed-concepts.md).
 
-**So the namespace column no longer selects a channel, and the guardianship channel is now
-selected by something the namespace could never express: whether the action is about a
-different person from the one performing it.** A parent editing their child's address is checked
-under `person.address.edit` — an ordinary, un-prefixed code — and reaches the guardianship
-channel anyway, because the subject of the act is not the actor. See §10. The old prefix rule
-silently missed exactly that case: a guardian acting under a `person.*` code looked like a
-person acting on themselves.
-
-**What the column was *also* guaranteeing, and who guarantees it now.** The surviving sentence in
-the old design read "a `system.` permission is resolved against role assignments and never against
-an item grant", and it was load-bearing: no one could hand someone authority over the permission
-system by sharing an item with them. **Its mechanism died twice over** — there is no role channel
-(D-100) and no item-scope path it needs excluding, because `applies_to = unit` already refuses the
-grant at save time. So the guarantee survives **as a seeding rule plus integrity check 3**, and the
-layer is named because the difference matters: it is no longer structural, and a `system.` code
-seeded `unit_and_item` by someone in a hurry would put the old hole back with nothing in the schema
-to catch it. A new namespace remains a data change rather than a resolver branch; it just has one
+**What stops someone handing another person authority over the permission system by sharing an item with
+them.** The guarantee is **a seeding rule plus integrity check 3**: every `system.` code is seeded
+`applies_to = unit`, and the save-time refusal rejects any item grant carrying it. **The guarantee is not
+structural** — there is no resolver branch on a prefix to fall back on — and naming the layer matters,
+because a `system.` code seeded `unit_and_item` by someone in a hurry reopens the hole with nothing in the
+schema to catch it, and that mis-seeding is what check 3 looks for. A new namespace remains a data change rather than a resolver branch; it just has one
 tenant and no routing left.
 
 ---
@@ -479,11 +471,10 @@ deleted the table that made the old rule work, so there is nothing to switch bac
 ## 6. `access_grant` — the per-item layer
 
 This is the "per-item permission" table. You specified it means a **capability on that
-item**: "person X may act on item Y". **After round 10 it is also the unit-level table**, because
-the unit is now one of the scope types rather than a different kind of thing, and there is no other
-grant table to hold the difference. **The heading is deliberately unchanged** — it names only half
-of what the table is now, and it is kept because pages across the corpus and in the decision log
-link to this anchor.
+item**: "person X may act on item Y". **It is also the unit-level table,** because the unit is one of the
+scope types rather than a different kind of thing, and there is no other grant table to hold the
+difference. **The heading names only the first half of that and stays as it is:** pages across the corpus
+and in the decision log link to this anchor, so the slug is the load-bearing part and it is not moving.
 
 **One grant is: a grantee, a scope, one permission code, an effect, and a period**
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
@@ -602,8 +593,8 @@ inheritance, the clause has nothing to fix.
 
 The obvious index — one live grant per (grantee, scope) — never worked, because a person can
 legitimately hold a **personal** grant *and* be covered by an **audience** grant on the same item,
-and those are different rows with different lifetimes. **Round 10 adds a second reason it cannot
-work: one code per row, so one person legitimately holds a dozen live allows on one item.**
+and those are different rows with different lifetimes. **A second reason it cannot work: one code per row,
+so one person legitimately holds a dozen live allows on one item.**
 A broad office is a couple of dozen rows
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
 each a different code, and a rule that permitted one live grant per grantee and item would refuse
