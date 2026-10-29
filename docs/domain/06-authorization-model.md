@@ -564,8 +564,8 @@ a deny can**
 
 ## 8. There is no permission cache, and what replaces it
 
-**There is no permission cache.** A check resolves; a request memoizes; the only thing cached across
-requests is a compilation. Nothing in this system stores a permission answer, and no part of `can()` is
+**There is no permission cache.** A check resolves; a request memoizes; the only cached thing is a
+compilation. Nothing in this system stores a permission answer, and no part of `can()` is
 written to a table
 ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 
