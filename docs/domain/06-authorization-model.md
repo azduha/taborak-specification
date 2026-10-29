@@ -608,7 +608,7 @@ so a cache keyed by it would be a stored answer to "who was at this event", whic
 declined to make permanent.
 
 **What may never be stored again is invariant 19** (§11 of
-[data-model/05-authorization.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)): **no row,
+[data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)): **no row,
 table or field may map a person — or a person and a code, or a person and an item — to a permission
 answer.** Its enforcement is structural, which is the best kind this corpus has: **the schema has
 nowhere to put one.** The residue is named rather than glossed — an implementer who wants a cache back is

@@ -2996,7 +2996,7 @@ none is recorded as taken:
   ([permission-catalog §11 note 3](appendix/permission-catalog.md#11-roles--proposed-seed-set)).
 - **Per-entry filtering in the history view:** show an audit row's values only where the reader could
   also see the live field. Consistent with everything §9 of
-  [data-model/05-authorization.md](data-model/05c-access-log-and-resolver.md#9-access_log) says about channels, and
+  [data-model/05c-access-log-and-resolver.md](data-model/05c-access-log-and-resolver.md#9-access_log) says about channels, and
   it was considered and left unimplemented, because it means running the resolver per audit row against
   rows that may no longer exist — a grant withdrawn last year is exactly the case a history is read for.
 - **Split the permission:** the trail's shape (who changed which table, when) apart from its payloads.

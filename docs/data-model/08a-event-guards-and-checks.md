@@ -276,7 +276,7 @@ never taken. §8 states the refusal; this query is the reason it matters.
 5. **An event running over its stated capacity.** Counts, for each non-cancelled event that
    has a capacity, its `PLACED` registrations, and reports the events where that count exceeds
    the capacity. PERMITTED — a staff registration may exceed deliberately
-   ([../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) — so this
+   ([../domain/07a-capacity-presence-and-forms.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) — so this
    is a report, not an error. A pattern of overruns means the capacity numbers are wrong, not
    that the rule is.
 6. **An unpaid registration holding a place past the waitlist deadline.** Counts attending,
@@ -307,7 +307,8 @@ never taken. §8 states the refusal; this query is the reason it matters.
    registration** ([§6](08-events.md#6-payments-and-confirmation)); there is no rule attached to the registration row
    that would create it, so a path that forgets produces a person with a confirmed place and no
    bill — invisible to every check here, because every row it left behind is individually
-   correct. Money-versus-roster reconciliation (§6) is the same discovery arriving later and
+   correct. Money-versus-roster reconciliation
+   ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)) is the same discovery arriving later and
    more expensively; this is the version worth running nightly.
 
 **Checks 1, 2 and 10 are the same shape and should be read as one warning.** Each tests
@@ -318,7 +319,7 @@ individually valid.
 
 **Check 5 is the important one to read correctly.** It will produce rows, and that is not a
 failure — exceeding capacity is a permitted, attributed act
-([../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)). What the
+([../domain/07a-capacity-presence-and-forms.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)). What the
 report is *for* is the pattern: an event that overruns every year has a capacity number that
 is wrong, and the fix is to change the number rather than to start refusing people.
 

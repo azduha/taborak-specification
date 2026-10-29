@@ -881,7 +881,7 @@ item-bound codes — `ORGANIZERS`, `PLACED`, `CONFIRMED`, `ATTENDED`, `ON_WAITLI
 optional exactly because the item being checked usually supplies it
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 
-See [../data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
+See [../data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
 and [../domain/06-authorization-model.md §6](../domain/06-authorization-model.md#6-the-resolver).
 
 ---
@@ -1188,7 +1188,7 @@ to nobody.
 Every other column ending in `_id` has a real foreign key with `ON DELETE RESTRICT`, **with one
 exception**: `event_organizer.event_id` is the single `ON DELETE CASCADE` in the design — an appointment is
 nothing once the occasion it appointed somebody to is gone, and the guards in
-[../data-model/08-events.md §8](../data-model/08a-event-guards-and-checks.md#8-projections-and-guards) are what make that
+[../data-model/08a-event-guards-and-checks.md §8](../data-model/08a-event-guards-and-checks.md#8-projections-and-guards) are what make that
 delete safe to allow at all. **Round 12 changed the count of nothing here**: two operands whose argument
 is an integer add no key and no cascade, because there is no row for either to be a child of — still one
 cascading column, still `event_organizer.event_id`. Everything else that merely looks like a child

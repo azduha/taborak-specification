@@ -200,7 +200,7 @@ Two obligations come with the gate, and neither is a queue-management nicety:
 - **A hypothesis that is blocking an account gets an age check, and it alerts.** Its victim is a
   specific person who cannot log in and whose only remaining channel is to telephone someone. The check
   is shaped like `field_conflict`'s thirty days
-  ([01-identity.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)); the alerting is the point.
+  ([08a-event-guards-and-checks.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)); the alerting is the point.
 - **The holding message confirms nothing.** It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -278,7 +278,7 @@ schema carries no way to catch it
 ([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)).
 What catches it is a report of live rows that reference a tombstoned person, which is the only form of
 this failure that is visible after the fact
-([../data-model/01-identity.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)).
+([../data-model/08a-event-guards-and-checks.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)).
 
 ### The security rule that must not be skipped
 
@@ -320,7 +320,7 @@ A permanent chain needs two rules, and neither is enforced on the read:
   means the matcher is producing duplicates faster than a human can settle them, which is a statement
   about the queue and not about the row. A survivor that has itself been absorbed is *normal*; only
   the length means anything
-  ([../data-model/01-identity.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)).
+  ([../data-model/08a-event-guards-and-checks.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)).
 
 The reversal is four steps, and they restore the row split:
 

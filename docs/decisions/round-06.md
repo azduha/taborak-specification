@@ -511,7 +511,7 @@ convenient place to write it, not of the mechanism.
 **Two-way door?** Yes in principle, no in practice — the old dispatch can only be restored by
 re-inventing the namespace D-074 deleted.
 
-**See:** [../data-model/05-authorization.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver),
+**See:** [../data-model/05c-access-log-and-resolver.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver),
 [../data-model/04-relationships.md §4](../data-model/04-relationships.md#4-how-the-resolver-uses-these-tables),
 [../appendix/permission-catalog.md §9](../appendix/permission-catalog.md#9-there-is-no-dependent-namespace).
 

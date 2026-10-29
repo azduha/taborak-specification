@@ -211,7 +211,7 @@ table they touch:
 - **The polymorphic id has no foreign key**, exactly as `access_grant.scope_id` accepted it
   ([D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)),
   and the compensating orphan check is specified once in
-  [05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). This page does not re-state it.
+  [05d-invariants-and-seed.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). This page does not re-state it.
 
 **Ending a group is refused at save while something live names it, and the reason is the subtraction, not
 the grant.** [D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience) rules it for
@@ -250,7 +250,7 @@ column that is NULL until somebody takes a register would revoke a child's acces
 because a volunteer forgot a tick box.
 
 **A deny that matches no live allow is dead weight and is reported** — the check is specified in
-[05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify) and applies to group-scope denies as
+[05d-invariants-and-seed.md §11](05d-invariants-and-seed.md#11-invariants-to-verify) and applies to group-scope denies as
 to any other, because a deny that denies nothing is how a stale restriction survives its reason (D-099).
 
 ---

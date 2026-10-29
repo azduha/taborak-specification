@@ -22,7 +22,7 @@ to the event being checked** (§8).
 | Table | What it is |
 |---|---|
 | `event` | The occasion. A date, a registration window, an optional capacity — and no owner (§2) |
-| `event_organizer` | Who is running it — an appointment on the event, not a grant (§5) |
+| `event_organizer` | Who is running it — an appointment on the event, not a grant (§3) |
 | `event_registration` | One person's answer: attending, or not attending. *Unanswered is the absence of a row* |
 | `event_question` | What this event asks registrants |
 | `event_answer` | What one person said to one question |
@@ -36,7 +36,7 @@ organizers, questions — needs a second possible home, and the feature that nee
 is already modelled.
 
 **No `event_status` column.** Visibility is the permission model; cancellation is a fact
-([../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column)).
+([../domain/07a-capacity-presence-and-forms.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column)).
 
 ---
 
@@ -56,9 +56,9 @@ is already modelled.
 | `starts_at` | instant in time, required | An instant, not a date. A Thursday group meets at 5pm; a camp starts on Saturday morning. The instant carries a timezone, and the timezone is the organization's, recorded rather than assumed |
 | `ends_at` | instant in time, required | An instant, not a date, for the same reason |
 | `all_day` | boolean, required | Default false. Display only — an all-day camp still has instants underneath |
-| `registration_opens_at` | instant in time, optional | `NULL` = open as soon as the event is visible. The event is visible to whoever holds `event.view`, which normally includes everyone holding it at the unit — see [../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column) for what that does to the private-by-default draft. So `NULL` is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed |
+| `registration_opens_at` | instant in time, optional | `NULL` = open as soon as the event is visible. The event is visible to whoever holds `event.view`, which normally includes everyone holding it at the unit — see [../domain/07a-capacity-presence-and-forms.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column) for what that does to the private-by-default draft. So `NULL` is a reasonable default and wrong for a jamboree whose sign-up should not open before the dates are fixed |
 | `registration_closes_at` | instant in time, optional | `NULL` = when the event starts. This is the "unlimited" case: registration stays open until the thing happens |
-| `capacity` | integer, optional | `NULL` = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it ([../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) |
+| `capacity` | integer, optional | `NULL` = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it ([../domain/07a-capacity-presence-and-forms.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) |
 | `waitlist_deadline` | instant in time, optional | When an unpaid registration at a full event releases its place to the waitlist (§6). `NULL` = never releases. Only meaningful when the event has a fee AND a capacity; ignored otherwise. This is the ONE automatic transition in this module — see §6 for why it is accepted and what it costs |
 | `fee_schedule_id` | reference to fee schedule, optional | `NULL` = this event is free, which most are. Set = a fee applies; registering creates a `fee_obligation` (§6). The amount and currency live in `fee_schedule`, not here — events do not price themselves |
 | `cancelled_at` | instant in time, optional | Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming |
@@ -129,7 +129,7 @@ see this?" will eventually disagree, and the one that gets enforced is whoever w
 A new event is visible to everybody already holding `event.view` at the unit — there is no
 owner-only draft state behind it, and nothing to withdraw to make one. Privacy is
 therefore an act rather than a default; see
-[../domain/07-events.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column).
+[../domain/07a-capacity-presence-and-forms.md §10](../domain/07a-capacity-presence-and-forms.md#10-cancellation-and-why-there-is-no-status-column).
 
 ### Why `fee_schedule_id` and not an `event_fee` table
 
@@ -312,7 +312,7 @@ is decided, because confirmation is a property of the place the earlier steps ga
    `is_waitlisted` false and `waitlist_position` absent. A staff registration is admitted
    even past capacity: the organizer who knows there are two spare tents is not to be blocked
    by a number they cannot edit mid-camp
-   ([../domain/07-events.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist),
+   ([../domain/07a-capacity-presence-and-forms.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist),
    [D-065](../decisions/round-05.md#d-065--capacity-is-a-waitlist-threshold-and-organizers-may-exceed-it)).
    The overrun is permitted, attributed, and REPORTED (§10, check 5).
 4. Confirmation: immediate when there is no fee to wait for. If the event has no
@@ -367,8 +367,8 @@ registration (which is admitted by hand and by a human who can see the roster).
 
 > **Why this is accepted despite the design's refusal of automatic transitions**
 > ([D-023](../decisions/round-01b.md#d-023--nothing-is-auto-lapsed-or-auto-terminated)).
-> It is a *deadline*, not a sweep: it
-> applies to a narrow conjunction, it is opt-in per event (`waitlist_deadline` is `NULL` by
+> It is a *deadline*, not a sweep: it applies to a narrow conjunction, it is opt-in per event
+> (`waitlist_deadline` is `NULL` by
 > default, so most events never run it), and the state it produces is visible — the person
 > is on the waitlist, not silently deleted. The alternative, no deadline at all, means a
 > place is held forever by someone who never paid, which is worse.
@@ -507,7 +507,7 @@ refused for membership requirements, and it is refused here for the same reason.
 > people who came.** Anything a form asks is read by whoever runs that event, and the number of
 > such people is decided by whoever creates the event
 > ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers),
-> [../domain/07-events.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
+> [../domain/07a-capacity-presence-and-forms.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
 > "Read by whoever runs that event" is a seeded grant — `event.answer.view` on the event, aimed
 > at `ORGANIZERS` (§8) — which makes this a checkable warning rather than a nicety: the number of
 > people who can read an event's answers is a grant plus the roster in §3, and both are readable.

@@ -123,7 +123,7 @@ round's own control is written `MEMBERS * COUNSELORS`: an expression that does n
 `ROLE()` and `GROUP()` remain as explicit qualification, required in the canonical rendering.
 
 **Both arms were still missing from the seeded registry when the registry was written, and that is worth
-recording rather than fixing quietly.** [data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
+recording rather than fixing quietly.** [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
 was written from the evaluator's arm list, not from this grammar, and an arm list copied from an
 implementation is exactly the kind of source that loses an arm nobody had implemented yet. The registry
 carries **thirteen** rows and `PERSON` is one of them: `takes_argument` true, `argument_type` `person`,
@@ -275,7 +275,7 @@ operand can be added by any later decision. Precedence is the closed half: once 
 canonical fully-bracketed form, changing what binds tighter changes nothing already stored, which is a
 nice property and the reason the canonical rendering is a requirement rather than a convenience.
 
-**See:** [data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people),
+**See:** [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people),
 [domain/06-authorization-model.md §6](../domain/06-authorization-model.md),
 [glossary.md](../glossary.md) (Audience, Selector, Filling rule, Locality).
 
@@ -406,7 +406,7 @@ that entry deletes a dimension, this one removes a *test* and leaves the vocabul
 
 **See:** [data-model/08-events.md §2, §8](../data-model/08a-event-guards-and-checks.md#8-projections-and-guards),
 [domain/07-events.md](../domain/07-events.md),
-[data-model/05-authorization.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
+[data-model/05c-access-log-and-resolver.md §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
 
 ---
 
@@ -482,7 +482,7 @@ is the only arm that can say *"the same people that grant may see the fee ledger
 its table, and the honest reading of the column is that everything in it is now either in the `GROUP(x)`
 column (a roster somebody maintains, with dates) or in the expression itself (a run of `PERSON(…)` leaves,
 with none). The three-way version that replaced this is in
-[data-model/05-authorization.md](../data-model/05a-audience-and-grammar.md#the-selector-registry); this one is kept
+[data-model/05a-audience-and-grammar.md](../data-model/05a-audience-and-grammar.md#the-selector-registry); this one is kept
 four-wide so the deletion has something to be measured against.*
 
 | | `GROUP(x)` | `AUDIENCE(x)` | `LIST` |
@@ -550,7 +550,7 @@ listing is alone now and the thing that replaced the bound is a report with no n
 ([F-21](../open-questions.md#f-21--closed--no-report-a-tab-on-the-permissions-page-and-unbounded-cost-is-accepted-at-the-stated-size)).
 
 **See:** [D-101](#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) for the language
-this adds one arm to, [data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
+this adds one arm to, [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people)
 for the table, and [D-091](round-09.md#d-091--a-permission-group-is-a-rule-and-a-list-at-once-and-a-rule-may-name-another-group),
 whose inclusion edge this replaces for the second time.
 
@@ -676,7 +676,7 @@ Until then the registry and the prose are two copies of one thing
 shape, in its cheapest instance), and the report is the check that they still agree.
 
 **See:** [F-19](../open-questions.md#f-19--closed--a-permission-code-is-a-row-prose-names-codes-and-nothing-checks-the-two),
-which this closes, [data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
+which this closes, [data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry)
 for the registry (**thirteen rows today** — back to thirteen, which is the number this sentence started with
 and not the set it counted: twelve for the one round
 [D-105](round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) owned, thirteen as it was

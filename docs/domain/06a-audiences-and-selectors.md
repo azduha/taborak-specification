@@ -181,7 +181,7 @@ An operand aimed at a child's guardians would therefore offer, one code at a tim
 those people already hold. A kept list of a child's contact adults is a `person_group`.
 
 **Thirteen selectors, and this table is a copy of
-[data-model/05-authorization.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), which is the
+[data-model/05a-audience-and-grammar.md §8](../data-model/05a-audience-and-grammar.md#the-selector-registry), which is the
 registry.** Which selectors ship is settled: these thirteen, seeded, organization-read-only, and a
 fourteenth is a decision entry plus a seed row
 ([F-5](../open-questions.md#f-5--closed--nothing-is-missing-from-the-registry-and-the-last-gap-was-a-selector-that-should-not-have-been-in-it)).

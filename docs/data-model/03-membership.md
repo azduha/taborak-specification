@@ -691,7 +691,7 @@ for cases no constraint rejects at the write.
 **Two checks this module deliberately does not hold.** The one [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
 asks for — a live `deny` whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
-[05-authorization.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). The no-overlap invariant over
+[05d-invariants-and-seed.md §11](05d-invariants-and-seed.md#11-invariants-to-verify). The no-overlap invariant over
 `person_group_member` belongs to the groups module, [02-organization.md §6](02-organization.md#6-integrity-checks).
 Naming both here is to stop either being written twice and drifting.
 
@@ -719,7 +719,7 @@ and membership is ageless, so there are no age limits to seed (D-038).
 
 **Nothing else is seeded here.** The `counselors` role that D-100 seeds — shipped `is_system`, so an
 editor refuses to delete it — is a row of the authorization module
-([05-authorization.md §12](05d-invariants-and-seed.md#12-what-the-organization-starts-with)) and not of this one,
+([05d-invariants-and-seed.md §12](05d-invariants-and-seed.md#12-what-the-organization-starts-with)) and not of this one,
 and it is a **set** that confers nothing until a grant names it: no more than a membership type has ever
 conferred.
 
