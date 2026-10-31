@@ -3381,12 +3381,17 @@ identifiable and the mark stays (<a href="../00-conventions/#8-personal-data-and
    result is evidence about the code, not the data: somebody added a path that saves a grant
    without going through the check, and a grant like this resolves to the empty set and
    silently authorizes nobody.</li>
-<li><strong>An event whose organizers hold no answer-view grant.</strong> Counts non-cancelled events
-   that have at least one <code>event_organizer</code> row and no live allow of <code>event.answer.view</code> on
-   that event aimed at <code>ORGANIZERS</code>. The twelve grants are written by the act that creates the
-   event (§8), so the failure shape is the one check 10 knows well: an event imported or
-   created by a path that forgot, where the organizers cannot read the answers of the camp
-   they are running, and every row they left behind is individually correct. <strong>Since
+<li><strong>An event whose organizers do not hold the twelve.</strong> Counts non-cancelled events for which
+   any of the twelve is missing — a live <code>allow</code>, on that event, of each <code>event.*</code> code except
+   <code>event.create</code>, aimed at an audience whose expression is the bare operand <code>ORGANIZERS</code> (§8).
+   <strong>Every event is counted, not only events that already have an organizer row:</strong> the twelve are
+   written at the create, while that set is still empty, so an event nobody has staffed yet is owed
+   all twelve already. The report names <strong>which</strong> of the twelve are missing, because eleven of a
+   bundle is the same defect wearing different clothes — a missing <code>event.answer.view</code> means the
+   organizers cannot read the answers of the camp they are running (⚠⚠, and the row this report was
+   originally written for), a missing <code>event.manage_participants</code> means they cannot fix the roster at
+   the gate. The failure shape is the one check 10 knows well: an event imported or created by a path
+   that forgot, where every row it left behind is individually correct. <strong>Since
    <a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>
    this report has an author to name:</strong> an event arrived without its bundle through some one create or
    some one batch, which makes it a bug report about a path rather than about a missing migration. The

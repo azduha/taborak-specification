@@ -3198,10 +3198,16 @@ correction is recorded here and annotated on D-132 rather than pasted into its b
   almost nothing: an organizer may register themselves for their own event, which is the eligibility rule,
   not a privilege. A round that hand-picked the list would have left it out and would have had to maintain
   the omission forever.</li>
-<li><strong>An event whose twelve rows did not arrive is the same failure as ever</strong>, and check 2 still counts it;
-  the difference is that the failure now has an author. "The organizers cannot read the answers of the camp
-  they are running" reads as a bug report about a specific create, which is what D-132 predicted and what
-  the check is for.</li>
+<li><strong>An event whose twelve rows did not arrive is the same failure as ever</strong>, and check 2 still counts it.
+  Two things about that check moved, because a bundle is not a row: it is <strong>renamed the <em>events with an
+  incomplete organizer bundle</em> report</strong>, <strong>counts every non-cancelled event rather than only events that
+  already have an organizer row</strong> — the twelve are written at the create, while <code>ORGANIZERS</code> is still empty,
+  so an event nobody has staffed is owed all twelve already — and it <strong>names which of the twelve are
+  missing</strong>, because eleven of a bundle is the same defect wearing different clothes: a missing
+  <code>event.answer.view</code> is a camp whose organizers cannot read its answers (⚠⚠, and the row the report was
+  written for), a missing <code>event.manage_participants</code> is a roster nobody can fix at the gate. The older name
+  survives where it was coined, in <a href="../round-10b/">round 10b</a>, which is right — it is what the report was
+  called when it counted one row.</li>
 </ul>
 <hr />
 <h2 id="d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152 — Zero <code>is_system</code> columns: what protects a vocabulary is its table, not a flag on its rows<a class="headerlink" href="#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows" title="Permanent link">&para;</a></h2>
