@@ -171,7 +171,7 @@ The distinction from erasure is worth holding onto, because the two are easy to 
 them is a person's entitlement: erasure is *requested* and *verifiable* — the check is that nothing
 survives — while expiry is neither requested nor satisfied by nothing surviving, since the row itself
 remains and only its values go. **So its failure mode is the opposite one: it fails by not happening.**
-That is why it is a scheduled job with a check that alerts on an over-age row still holding content, and
+That is why it is a scheduled job with a check that reports an over-age row still holding content, and
 not a line in a policy document
 ([data-model/06 §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging) keeps that apart
 from redaction, which must never be deferred). It is also why the sentence *the trail is a second copy of

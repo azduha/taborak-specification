@@ -49,19 +49,28 @@ exists:
 
 | Path | Actor | Result |
 |------|-------|--------|
-| Self-registration | adult, or a minor with guardian involvement | `person` + `account` |
+| Self-registration | an adult, or a minor — the path does not branch on age | `person` + `account` |
 | Registration on behalf | caretaker registers a minor who has no account | `person` (child) + `guardianship` |
 | Staff-created account | registrar creates one for an adult who is not self-sufficient with computers | `person` + `account`, flagged `created_by_staff` |
 | Legacy import | no account created | `person` only, `record_origin = 'legacy_import'` |
 | Self-registration claiming history | adult registers and asserts a past membership | `person` + `account` + `identity_hypothesis` |
 | Sign-up colliding with an existing person | adult signs up again through an address the system did not know, and **strong**-matches someone who already exists | `person` + `account`, both held at `pending_verification`, + `identity_hypothesis` — and **no merge, no link, no activation**. The address typed survives as the credential it was offered as, and the hypothesis is what holds the account out of `active` (§3) |
 
-### Minor registration — the consent problem
+### Minor registration
 
-*Assumption:* a minor may not create an account unattended. The schema supports
-requiring a guardian's confirmation before a minor's account becomes usable, via
-`account.guardian_consent_at`. See [../open-questions.md](../open-questions.md) for the
-age threshold and whether consent is required at all in your jurisdiction.
+A minor may create an account unattended and nothing in the model objects, because an account is a login
+and authority reaches nothing except through grants
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+[D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives)). **No
+minimum age, no consent step, no branch in the sign-up path.** A new account holds no grants, and a new
+account is a person-shaped hole in the database until somebody writes a row about its person — a grant, a
+guardianship, a membership — which is what every new account is, not a safeguard designed for this case.
+**If the organization wants a guardian's answer on record**, it goes on the guardianship relationship,
+which already carries `right_level` and its own dates
+([../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write));
+no column returns for it. **What this page does not decide** is whether the law of this country demands a
+consent step regardless — a policy in front of the legal review beside the four data policies, and stated
+there ([06b §6](../data-model/06b-redaction-and-checks.md#6-open-issues)).
 
 ---
 
@@ -91,9 +100,12 @@ first or quietly linked to it.
 into one person's record becoming another's. Making a queue state block a login buys two obligations,
 and both are checks rather than intentions:
 
-- **A hypothesis that is blocking an account is age-checked, and it alerts.** A queue that stalls is
+- **A hypothesis that is blocking an account is age-checked.** A queue that stalls is
   not a data-quality problem with no victim you can name: it is a specific person who cannot log in,
-  whose only remaining channel is to telephone someone.
+  whose only remaining channel is to telephone someone. Nothing here will tell anyone the queue has
+  stalled — no message is sent, and the age on a row is the whole of the warning
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)),
+  which is why the block carries a number rather than sitting in a list.
 - **The message the person sees confirms nothing.** Not that the name matched, not that the birth date
   did, not that anyone by that name exists — because a sign-up form that can answer "yes, that person
   exists" is an existence oracle, and this system's roster is children.
@@ -134,8 +146,11 @@ emergency door would be the second, weaker authorization this design rejects by 
    `system.admin`, however they came by it, and says for each of them whether they can sign in:
    `account.status` is `active` **and** their credential is live
    (`account_credential.valid_to` unset or in the future, not revoked). An **empty second column is the
-   alert**, and it goes to the same person the list already goes to
-   ([05d §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)).
+   alert**, and the alert is a report somebody opens rather than a message somebody receives: nobody is
+   told when that column empties, which is precisely why step 1 says to read the report instead of acting
+   from memory and step 2 names a person long before one is needed
+   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise),
+   [05d §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)).
 2. **One named person is written down before it is needed**, and someone knows their telephone number.
    **`api_key.owner_person_id` is not that person** — it answers *whose integration is this*, not *who
    fixes it* ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
@@ -274,11 +289,16 @@ capability to be reachable in an emergency.
 
 ## 7. Open issues
 
-- Minimum age to hold an account; whether guardian consent is legally required.
-- Whether staff-created accounts are allowed for children, or only adults.
+- Whether staff-created accounts are allowed for children, or only adults. **Still open, and untouched by
+  the fact that the sign-up path has no age gate:** [D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives)
+  removes a gate on a path, not a policy about who may open an account on somebody else's behalf, so a
+  reader who takes "no gate" to mean "staff may create a child's account" has read further than the answer
+  goes. The `created_by_staff` flag on `account` ([01a §4](../data-model/01a-accounts-and-contacts.md#4-account))
+  stays whichever way this is settled.
 
-All tracked in [../open-questions.md](../open-questions.md).
+**Not registered in [../open-questions.md](../open-questions.md),** and a reader of the register alone
+would not find it: this page is the only place the question is written down.
 
 ---
 
-*Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100.*
+*Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166.*

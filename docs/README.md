@@ -153,8 +153,10 @@ Its **shape** is decided: internal first, external channels are delivery rather 
 anyone may send a direct message, `broadcast` is one ordinary scoped permission, the recipient
 chooses the channel, and a direct message to a minor is mirrored to that minor's guardians. Its
 codes are in the catalog. **What is undesigned is the module** — templates, opt-out granularity,
-retention, moderation. Notifications stay genuinely undesigned: the renewal window made them dated
-rather than status-driven, which is a design note, not a design.
+retention, moderation. Notifications stay genuinely undesigned, and nothing in this design sends
+anything to anybody today ([D-164](decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)):
+what is deferred is a module nobody has designed, not a promise anybody is waiting on. The renewal
+window made notifications dated rather than status-driven, which is a design note, not a design.
 
 **There is no health module, and none is waiting to be designed.** Everything the organization knows
 about a person beyond a name, a gender and an age is **one class of data**, held in fields the

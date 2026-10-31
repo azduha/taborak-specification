@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-154 of them and lists the reversals. Read the round you are curious about — each one says what was
+169 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -194,6 +194,21 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-152](round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows) | Zero `is_system` columns: what protects a vocabulary is its table, not a flag on its rows | decided (from your answer) — **deletes the two columns D-132 left standing, and `role.delete`'s second refusal** | round 21 |
 | [D-153](round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them) | Two named audiences go, and nothing replaces them | decided (as a consequence of D-150) | round 21 |
 | [D-154](round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office) | `counselors` is an example now, not a shipped office | decided (found by writing this round) — **D-100's argument about which table a permanent population lives in is untouched** | round 21 |
+| [D-155](round-22.md#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so) | The currency is koruna, and the module's own money path said so | decided (from your answer) — **assumption 18 corrected, not confirmed** | round 22 |
+| [D-156](round-22.md#d-156--the-fee-buys-nothing-but-membership) | The fee buys nothing but membership | decided (from your answer) — **closes §5 item 9, and the last hedged clause about cover** | round 22 |
+| [D-157](round-22.md#d-157--there-are-no-hardship-waivers) | There are no hardship waivers | decided (from your answer) — **deletes `fee.waive`, and dissolves the privacy problem D-097 left unsolved** | round 22 |
+| [D-158](round-22.md#d-158--a-refund-happens-at-the-bank) | A refund happens at the bank | decided (from your answer) — **deletes `fee.refund`; the rule it was written under was already the design** | round 22 |
+| [D-159](round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values) | The status enum keeps three of its seven values | decided (from your answer) — **`status` is `unpaid`, `partially_paid`, `paid` — the §4 exclusion excluded nothing** | round 22 |
+| [D-160](round-22.md#d-160--no-proration-rule-and-the-row-is-the-amount) | No proration rule, and the row is the amount | decided (from your answer) — **closes §5 item 1; `amount_due` is the answer somebody wrote down** | round 22 |
+| [D-161](round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last) | One live price, and the amount is filed as a question at last | decided (from your answer) — **files the fee amount as §5 item 12 and answers it; `valid_from`/`valid_to` go** | round 22 |
+| [D-162](round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page) | An imported membership is `completed`, and the warning stays on the page | decided (from your answer) — **and a seventh `imported` value is refused on meaning, not on cost** | round 22 |
+| [D-163](round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds) | A grant may not confer more than the granter holds | decided (from your answer) — **closes the catalog's sharpest hole; stops escalation, not spread** | round 22 |
+| [D-164](round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) | Nobody is told, and no page may say otherwise | decided (from your answer) — **D-137 becomes a property of the design, and D-126's named person stays** | round 22 |
+| [D-165](round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision) | There is no default for `MEMBERS`, and that is the decision | decided (from your answer) — **no default in either direction, which is now the ruling rather than the gap** | round 22 |
+| [D-166](round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives) | An account is not where authority over a child lives | decided (from your answer) — **falsifies assumption 3; the legal review gains a fourth policy** | round 22 |
+| [D-167](round-22.md#d-167--the-office-that-may-place-a-child-in-a-group-stays-unnamed) | The office that may place a child in a group stays unnamed | decided (from your answer) — **the blank is the answer, ruled so that nobody repairs it later** | round 22 |
+| [D-168](round-22.md#d-168--age-is-reported-and-never-enforced) | Age is reported and never enforced | decided (from your answer) — **and historical query 8 stays unanswerable and stays numbered** | round 22 |
+| [D-169](round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in) | An imported membership ends with the calendar year it was seen in | decided (from your answer) — **the last day is 31 December and the stored value is 1 January**, because the period is half-open | round 22 |
 
 ## Reversed decisions
 

@@ -361,9 +361,10 @@ difference is the whole reason there are two tables — and the office codes are
 
 > **`role.assign` is the permission to escalate privilege.** Whoever holds it can write themselves a
 > holder row in an office that grants them `system.admin`. It must be held by very few people and
-> every holder row must be logged and alerted on. Note that `system.admin` is deliberately a **single
-> top-level permission** rather than a per-resource one — concentrating the most dangerous capability
-> and alarming on its holders is safer than scattering equivalents of it. **`role.assign` has no
+> every holder row must be logged, and the holders counted in a report somebody opens. Note that
+> `system.admin` is deliberately a **single top-level permission** rather than a per-resource one —
+> concentrating the most dangerous capability and keeping its holders on one list that is read is safer
+> than scattering equivalents of it. **`role.assign` has no
 > self-scoped form and none will be added** (§4,
 > [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)):
 > the reason it is not a check the write performs is that there is no smaller grant to make yourself.
@@ -472,8 +473,8 @@ difference is the whole reason there are two tables — and the office codes are
 > whether one permission should guard the trail.
 >
 > **Payload reduction needs no code here, and saying so is the check that it was considered.** Nobody
-> performs it interactively: it is scheduled, and the guard on it is a check that alerts when a row
-> past the window still carries a payload
+> performs it interactively: it is scheduled, and the guard on it is a check that reports a row
+> past the window still carrying a payload
 > ([../data-model/06-audit-and-import.md §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging)).
 > A permission for it would imply a person choosing not to run it.
 >

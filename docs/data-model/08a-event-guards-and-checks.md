@@ -334,7 +334,12 @@ identifiable and the mark stays ([00-conventions §8](00-conventions.md#8-person
    that the rule is.
 6. **An unpaid registration holding a place past the waitlist deadline.** Counts attending,
    non-waitlisted registrations on a non-cancelled event whose `waitlist_deadline` has passed
-   and whose fee obligation stands at `unpaid`, `partially_paid` or `overdue`. It should be
+   and whose fee obligation is **not yet `paid`** — `unpaid` or `partially_paid`, which is the
+   whole enum since [D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)
+   deleted `overdue` along with `written_off`: lateness lives only in the obligation's `due_date`,
+   so a status that is not `paid` and a `due_date` in the past *is* overdue
+   ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)). A predicate still naming
+   `overdue` would match nothing at all and print a clean result. It should be
    empty once the release in §5 has run — a non-empty result means the job is not running.
 7. **An answer to a question the person was never registered for.** Counts answers whose
    person has no registration for the event that owns the question. Either the registration

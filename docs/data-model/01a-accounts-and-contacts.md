@@ -26,7 +26,6 @@ them by number and their anchors are built from them:
 | `username` | text, optional | |
 | `status` | text, required | One of: `pending_verification`, `active`, `suspended`, `closed`. Default `pending_verification` |
 | `verified_at` | timestamp, audit time, optional | |
-| `guardian_consent_at` | timestamp, audit time, optional | Set when a guardian confirmed a minor's account. `NULL` for adults (domain/02-actors.md §2) |
 | `created_by_staff` | boolean, required | Default false |
 | `last_login_at` | timestamp, audit time, optional | |
 | `failed_login_count` | integer, required | Default 0 |
@@ -64,10 +63,15 @@ them by number and their anchors are built from them:
 `UNIQUE (person_id)` would make it impossible to close an old account and open a new one —
 which is exactly the returning-member case at the account level.
 
-**Why `guardian_consent_at` is on `account`, not `person`.** Consent is about the *act of
-creating login credentials*, not about the human. A person who was registered as a child
-and later reaches majority keeps the same `person` row; the consent record stays attached
-to the account it was given for.
+**An account is a login, and nothing about a child is decided here.** `account` keeps the columns that
+describe authentication and no others: there is no minimum age for one, no consent step, and no branch
+in the sign-up path that a minor's sign-up takes and an adult's does
+([D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives)). What a
+new account can reach is nothing until somebody writes a row about its person — a grant, a guardianship,
+a membership — which is what every new account is anyway, not a defence built for this case. **If the
+organization wants a guardian's answer on record**, it goes on the guardianship relationship, where an
+adult's authority over a child is already written, dated, revocable and carrying its own `right_level`
+([04 §2](04-relationships.md#2-the-guardians-right-none-view-or-write)); no column returns here for it.
 
 **A colliding sign-up files a claim and brings nothing into the world that a human has not approved.**
 This is the case the second gate above exists for
@@ -123,8 +127,8 @@ absorbed, the sign-up's account still points at it, so repoint `account.person_i
 applicant keeps the login they were building. **That write is refused by §4's own rule** — one live account
 per person, unique over the pending, active and suspended rows — for the common case where the survivor
 already has an account; and in the case where it is *not* refused it quietly makes a login older than the
-person's own, carrying a consent timestamp, a verification and a credential history that belong to an act
-the survivor never performed. **The rule is instead, in this order:**
+person's own, carrying a verification and a credential history that belong to an act the survivor never
+performed. **The rule is instead, in this order:**
 
 1. **Close the placeholder account** — `status` becomes `closed`, with the reason naming the hypothesis
    that closed it. Closed rows are outside the uniqueness rule (§4), which is exactly why closing works
@@ -150,10 +154,13 @@ the survivor never performed. **The rule is instead, in this order:**
 confirmed does not continue in the account they were filling in; they log in to the one they already had.
 That is one extra login against the alternative of an account that belongs to two people's history at
 once, and the holding message (§4 above) is where they are told it.
-Two costs come with it and both are stated rather than absorbed. **A genuinely new person who happens to match now
-waits for a human**, so the blocking condition carries an age check shaped like `field_conflict`'s thirty
-days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it
-could hold a login, and a person who cannot sign up has no way to say so except by telephoning someone.
+Two costs come with it and both are stated rather than absorbed. **A genuinely new person who happens to
+match now waits for a human**, so the blocking condition carries an age check shaped like
+`field_conflict`'s thirty days below — a number on a report somebody opens, because nothing in this design
+tells anybody that a queue has stalled
+([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). A
+stalled identity queue stopped being a data-quality problem the moment it could hold a login, and the
+person it is holding has no way to say so except by telephoning someone.
 **And the reviewer deciding it is deliberately half-blind** — the office that holds the merge holds no read
 over the person record, so it decides from signals and names, which is the correct conservative shape and
 also the thing to revisit if reviewers start asking for context they cannot see. **No platform ships that

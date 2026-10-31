@@ -249,8 +249,12 @@ person, the only form of this failure that is still visible after the fact.
 
 ## 10. Integrity checks
 
-Checks that should run nightly and alert. These encode invariants that no per-column rule
-above can express.
+Checks that should run nightly, and that somebody reads the same morning. These encode invariants that
+no per-column rule above can express. **A result here is a report a person opens; no check in this
+section sends anything to anybody**
+([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)), and where a
+bullet below says a finding belongs in the report rather than in a log, what it means is that the finding
+must not wait for a reader to stumble on it.
 
 **Invariants to verify**
 
@@ -293,14 +297,14 @@ above can express.
   shape of the data and its expected value is not zero. What carries information is the *depth*: four merges
   in a row on one line of people means the matcher is producing duplicates faster than a human can settle
   them. It is read alongside the review queue's age, never on
-  its own, and it is not alertable — there is nothing wrong to fix on the row, and an alert that can only
-  be answered by "work faster" trains people to ignore alerts.
+  its own, and it asks for no urgency — there is nothing wrong to fix on the row, and a finding whose only
+  possible answer is "work faster" only teaches a reader to skip the findings that aren't.
 - **A live row that references a tombstoned person.** Count rows in any table that names a person which
   point at a person whose merge pointer is set, where the referring row is itself live. **This is the
   only net under §9's rule that every entry point calls `resolve_person()`, and it exists because D-072
   took the database-level ones away.** Getting that call wrong is invisible at the moment it happens — a
   blank name in a list, at worst the wrong name — and permanent afterwards, because the row is written and
-  referenced by whatever came after it. **This one alerts rather than logs**: the gap is not reconstructable
+  referenced by whatever came after it. **This one belongs in the report, not in a log**: the gap is not reconstructable
   later, and unlike a missing audit entry it misattributes a person rather than merely forgetting them.
 - **A cycle in the merge graph.** Walk the pointers and look for a row reachable from itself. There should
   never be a single row here: §8 refuses a merge whose chosen survivor resolves to the person being
@@ -310,8 +314,8 @@ above can express.
 - **An account held below `active` by an unresolved hypothesis for more than 30 days.** Count accounts
   whose status is not `active` or `closed`, whose person is named by a hypothesis still in `proposed` or
   `needs_review`, where that hypothesis is older than 30 days — the same shape as the conflict-age check
-  below, for the same reason. **It alerts rather than logs, and the reason is worth keeping in the check's
-  own text: a stalled identity queue stopped being a data-quality problem the day it acquired the power to
+  below, for the same reason. **It belongs in the report, not in a log, and the reason is worth keeping in
+  the check's own text: a stalled identity queue stopped being a data-quality problem the day it acquired the power to
   hold a login.** Behind each row is a specific person who cannot sign up — often to a camp whose form
   closes this week — and no channel by which to tell anyone except a telephone call.
 - **Unresolved merge conflicts older than 30 days.** Count `field_conflict` rows resolved to
@@ -342,7 +346,7 @@ above can express.
   redacted person, and attribute values still present in `audit_log`. It is named here because the
   redaction checks above are the same erasure guarantee read from the identity side, and a half-finished
   erasure does not announce which table it stopped in. Of everything on either list, that is the one
-  that should alert rather than log.
+  that must not wait for the next time a reader looks.
 
 ---
 

@@ -102,7 +102,10 @@ what the record said.
   it is the only thing standing between an imported row and the membership gate.** While imports made
   participations this check was theoretical — there were no imported memberships to find — and it is now
   the load-bearing one, since the corpus is expected to create thousands of rows that would each satisfy
-  `is_current_member()` if their end date were missing.
+  `is_current_member()` if their end date were missing. **And the zero has a route to it now:** since
+  [D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)
+  a rule supplies the date, so a non-zero result means the inference did not run — it no longer means nobody
+  knew what belonged in the column, which is the finding this check used to be the only record of.
   **Its sibling is re-pointed rather than removed.** The previous round's version, from
   [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
   read "an imported membership from a batch whose source is a roster, whatever its dates say", and that
@@ -176,10 +179,10 @@ what the record said.
   definition, and forgetting one was a decision somebody made in a migration and could see. Now a
   table is audited because the code that writes it calls the audit entry point, so **the list and
   the code are two artifacts that must agree and nothing forces them to** — which makes this report
-  the entire control over the completeness of the audit trail, and the one check here that should
-  alert rather than log. If it ever reports a table, the finding is not "some history is missing";
-  it is "every change to that table since it was added is unrecorded, and that period cannot be
-  reconstructed later." 
+  the entire control over the completeness of the audit trail, and the one check here whose
+  finding must not wait for the monthly run. If it ever reports a table, the finding is not
+  "some history is missing"; it is "every change to that table since it was added is unrecorded, and
+  that period cannot be reconstructed later."
 - **Redacted people with surviving personal data.** Count redacted people whose names are
   not the redaction marker and who still have a current contact point whose value is not
   redacted; non-zero means an erasure was left half done. **The count now reaches three more places, and the three
@@ -215,12 +218,15 @@ what the record said.
   stop having. Note what the check structurally *cannot* see — a copy that is present, readable, and
   perfectly legal, held by somebody whose permission is graded below its contents — because that failure
   leaves no rows to count; it is the guard, and the guard is reviewed by a person.
-  **This check, check 5, check 7 and check 8 are the four here that should alert rather than log** — three
-  because a value that outlives the rule about it cannot wait for a monthly report, and check 8 because it
-  is the same failure wearing the other trail's clothes. A redaction
-  property that is reported once a month is a redaction property that fails between the reports, and
-  unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
-  regulator asks what the table holds.
+  **This check, check 5, check 7 and check 8 are the four here whose findings cannot wait for the
+  monthly run** — three because a value that outlives the rule about it is not something a schedule
+  notices, and check 8 because it is the same failure wearing the other trail's clothes. **Nothing in
+  this design sends any of them to anybody**, so "cannot wait" names a duty to open these four rather
+  than a message that arrives on its own
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+  A redaction property that is reported once a month is a redaction property that fails between the
+  reports, and unlike a missing audit row, a value that outlives its erasure is not something anyone
+  notices until a regulator asks what the table holds.
 - **An audit row past the payload window that still carries a payload.** Count `audit_log` rows whose
   `occurred_at` is older than the retention window and whose `old_values` or `new_values` still holds
   anything. **This is check 6's mirror, and merging the two is the way to lose both.** Check 6 asks
@@ -228,8 +234,8 @@ what the record said.
   whether the *calendar* ran, fires on everybody's rows alike, and fails as a policy not applied
   (§2.2's three operations, which fail in different directions). A system passes one while failing the
   other in both directions, so they are two queries, not one query with two clauses.
-  **It alerts rather than logs, and the reason is the one §2.2 gives: reduction's failure mode is not
-  running.** Nothing about the trail looks wrong from inside it — a reduced row and a row that escaped
+  **Its finding cannot wait for the monthly run, and the reason is the one §2.2 gives: reduction's
+  failure mode is not running.** Nothing about the trail looks wrong from inside it — a reduced row and a row that escaped
   reduction both still answer *who, what, when*, which is the half that was supposed to survive — so the
   only difference between them is a payload nobody looks at until somebody with `audit.view` opens a
   history screen and finds a child's allergy list still sitting there past the window it was meant to
@@ -246,8 +252,8 @@ what the record said.
   "anything past 24 months" report is how both are lost, because the two findings are repaired by two
   different jobs, one of which is an update and the other a delete, and because a single count cannot say
   which half of the retention policy stopped. **The direction of failure is the same, and it is the reason
-  this one alerts rather than logs**: a job that stopped leaves a trail that looks entirely sound from
-  inside it, since nothing about a growing table reads as a promise broken. The only difference between it
+  this finding cannot wait for the monthly run**: a job that stopped leaves a trail that looks entirely
+  sound from inside it, since nothing about a growing table reads as a promise broken. The only difference between it
   and a healthy one is rows accumulating past the date the design said they would not exist, and the person
   who notices is the one asked what the system holds about them.
   **Count, do not sample**, for exactly the reason check 7 gives: a job that stopped after the newest
@@ -311,7 +317,16 @@ be discovered only when someone needs the history that was never recorded.
   indefinite retention of *named* `membership` and `fee_obligation` rows has a lawful basis. That is
   recorded as an assumption with a name attached
   ([../open-questions.md](../open-questions.md#i-assumption-index)), not as settled law, and the review
-  now has a concrete policy in front of it instead of a blank.
+  now has a concrete policy in front of it instead of a blank. **It has four policies in front of it
+  now, not three:** these rows kept with no end date, the audit payloads emptied at 24 months, the
+  `access_log` rows deleted at 24 months
+  ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)),
+  and — added by
+  [D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives) —
+  **whether a child may hold an account with no guardian's consent recorded anywhere**
+  ([domain/02 §2](../domain/02-actors.md#minor-registration)). The second and third are this system's own
+  clocks; the first and fourth are the two a data subject asks about, and the fourth is the only one of the
+  four that this design answers by *not holding a record at all*.
 - Whether `audit_log` should be partitioned by month from the start. **Recommend yes, and the reasons
   changed when the payload window arrived.** The old reason was "the write volume and the multi-decade
   horizon", which is still true of the *rows* — they are the permanent half — but the bulk of a row is
@@ -319,9 +334,18 @@ be discovered only when someone needs the history that was never recorded.
   partition entirely past the window can be reduced as one unit rather than as a sweep across a table
   that grows for the life of the system. The open part is which the deployment does first, not whether
   the horizon justifies it.
-- The definitive end-date inference rule for imported membership periods
-  ([§3.1](06a-import.md#31-what-a-source-row-actually-evidences)) — needs your input on the organizational
-  year boundary (tracked as [../open-questions.md](../open-questions.md) A-4). **Sharper, not smaller,
+- **✅ Closed — the end-date inference rule for imported membership periods**
+  ([§3.1](06a-import.md#31-what-a-source-row-actually-evidences)). An imported membership ends with the
+  calendar year of the last period in which the person appears: their last day as a member is 31 December,
+  and the value written into `valid_to` is **1 January of the following year**, because every period here is
+  half-open and current membership is read as `valid_to` *after* today — a literal 31 December in that
+  column would end every imported row one day early and look correct in every report that does not name the
+  day ([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)).
+  **The boundary was never missing, and that is the part worth keeping:** [D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)
+  put it in `membership_type` as `expiry_month` and `expiry_day`, and that row's own note says the
+  organizational year runs with the calendar — the four words this bullet asked for were sitting in the row
+  the date is read from, which is also why the day is read from those two columns rather than compiled into
+  a job as a literal. **Sharper, not smaller,
   since [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
   put memberships back on the receiving end of it:** the inferred end date is not the end of a record nobody
   reads, it is the `valid_to` of a row that gates authority, so the year boundary is the value

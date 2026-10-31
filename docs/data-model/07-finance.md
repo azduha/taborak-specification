@@ -9,9 +9,20 @@
 > ([D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person)).
 > There is no card gateway, no checkout and no dispute handling, and §2a is the consequence.
 >
-> **What the money is for is still open.** Amount, proration, discounts, whether the fee buys
-> insurance, and who may waive it are all unanswered — §5. Those are policy questions this
-> document cannot answer, and several need somebody in the organization to be asked.
+> **What the money is for is answered.** The fee is priced in **koruna**
+> ([D-155](../decisions/round-22.md#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so)),
+> it buys **membership and nothing else**
+> ([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership)), there is one live
+> price edited in place, and the number on an obligation is the number a person wrote there
+> ([D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last),
+> [D-160](../decisions/round-22.md#d-160--no-proration-rule-and-the-row-is-the-amount)). Nobody waives
+> a fee and nothing refunds one inside the system
+> ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers),
+> [D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)).
+>
+> **Five questions are open**, listed and numbered in §5: discounts, invoices, the accounting export,
+> jurisdiction, and what gets a variable symbol. Those are policy questions this document cannot
+> answer, and each needs somebody in the organization to be asked.
 >
 > This document exists because membership activation depends on payment
 > ([../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described)),
@@ -36,9 +47,27 @@
   new period at the expiry date**, so the record shows no gap.
 - There is **no grace *status***. The window is tracked as dates, and the resolver does not
   know it exists.
+- The fee is charged in **koruna**. One currency, and a second one is refused rather than deferred;
+  the column stays because the refusal is cheap to reverse with it
+  ([D-155](../decisions/round-22.md#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so)).
+- The fee buys **membership** — no insurance is bought with it, sold with it, or implied by it, so
+  **no date in this system is evidence of cover**
+  ([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership)).
+- There is **one live price**, edited in place when a billing year is reopened, because what a person
+  owed was never stored in the price list anyway (§2)
+  ([D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last)).
+- What a person owes is **whatever their obligation says**. No proration rule and no waiver mechanism
+  decide it: a reduced fee is an obligation written with a smaller `amount_due`, the same act that
+  writes any other amount
+  ([D-160](../decisions/round-22.md#d-160--no-proration-rule-and-the-row-is-the-amount),
+  [D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)).
+- Money out is recorded exactly like money in — **a refund is a `payment` in the opposite
+  direction**, and nobody initiates one inside this system
+  ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)).
 
-**Unspecified** — the fee *amount*, proration, family discounts, who may authorize a waiver,
-whether the fee buys insurance, and currency.
+**Unspecified** — family or sibling discounts beyond a per-person `amount_discount`, whether the
+organization owes people invoices, whether anything is exported to an accounting system, what the
+law of this country requires of a fee, and what gets a variable symbol. Each is in §5.
 
 **Settled, and the big one** — the organization **collects**, but not through
 a card gateway: money is requested by **variable symbol + QR code** and **arrives from the bank
@@ -50,7 +79,8 @@ API** already tagged (§2a, [D-075](../decisions/round-06.md#d-075--money-arrive
 
 Four tables, deliberately small and easy to replace.
 
-**`fee_schedule`** — a price, together with the period during which that price was the price.
+**`fee_schedule`** — a price. One is live at a time, and it is edited in place when a billing year is
+reopened; there is no price history, and none is needed, because what a person owed was never in here.
 
 **Fields**
 
@@ -63,17 +93,15 @@ Four tables, deliberately small and easy to replace.
 | `membership_type_id` | reference to membership type, optional | `NULL` = applies to any type, e.g. an organization-wide surcharge |
 | `period_months` | integer, required | Default 12 |
 | `amount` | money, required | Zero or more |
-| `currency` | three-letter currency code, required | Default `EUR`. Explicit even though the organization is single-currency — multi-currency later is far easier with the column already present |
-| `valid_from` | date, required | Fee amounts change yearly, so a price is stored against a validity period rather than overwritten |
-| `valid_to` | date, optional | `NULL` = still the current price. Storing the amount this way means a historical obligation can be recomputed correctly — critical for "what did we charge in 1998?" and for correcting a mis-applied fee |
+| `currency` | three-letter currency code, required | `CZK`, and the only value this organization writes. Required and explicit anyway: a second currency is refused for now, and the column is what makes that refusal cheap to reverse ([D-155](../decisions/round-22.md#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so)) |
 | `is_active` | boolean, required | Default true |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 
 **Nothing on a schedule is scoped to a body.** A `fee_schedule` is scoped to a membership type — one row,
-so nothing in practice — and to the period during which that price was the price. **A fee is what it has
-always been charged as: flat, per person, at the unit**
-([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
+so nothing in practice — and to nothing else at all: it is the price, current until somebody writes a
+different one into the same row. **A fee is what it has always been charged as: flat, per person, at the
+unit** ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)).
 **Why nothing narrower:** [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act)
 had already ruled that entry below the membership carries no money — *into the sub-units, there is no fee* —
 so a supplementary fee for one body was a possibility no answer ever took. If a group ever needs a charge of
@@ -82,13 +110,25 @@ its own, that is a policy question for §5 and a new shape of obligation, not a 
 **Rules**
 
 - `code` is unique. It covers all rows, not only active ones.
-- `valid_to` is either absent or later than `valid_from`.
 - `amount` is zero or more.
 
 **Indexes**
 
-- The one lookup that matters is "the schedules for one membership type, `valid_from`
-  newest first, restricted to active ones".
+- The one lookup that matters is the live schedule for one membership type: the type and `is_active`
+  together, which are expected to return one row.
+
+**One live price, and why editing it in place is safe.** `fee_obligation` snapshots `fee_schedule_id`
+"so the amount is reproducible even if the schedule is edited", and it copies `amount_due` beside the
+reference — so the record of what a person owed was never in the schedule at all. Only the price list
+was, and a price list is not a record
+([D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last)).
+What is given up is the price list's own history: nobody can ask this system what a membership cost in
+2027. The answer available is an aggregate over the obligations of 2027, which reports what people were
+actually asked rather than what a list said. **No code is named for editing the price row**, and the gap
+is named rather than filled: on the reading this design carries, opening a billing year is reached by
+whatever grant already lets a person write a fee at that scope, which is this corpus's inference from
+[D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last)
+and not a ruling inside it.
 
 **`fee_obligation`** — one thing someone owes.
 
@@ -108,11 +148,9 @@ its own, that is a policy question for §5 and a new shape of obligation, not a 
 | `amount_due` | money, required | |
 | `amount_discount` | money, required | Default 0 |
 | `amount_paid` | money, required | Default 0 |
-| `currency` | three-letter currency code, required | |
-| `status` | text, required | Default `unpaid`. One of: `unpaid`, `partially_paid`, `paid`, `waived`, `refunded`, `written_off`, `overdue` |
-| `due_date` | date, required | The yearly fee expires on a fixed organizational date (D-040); this obligation's `due_date` is what the lapse sweep compares against (§4). The renewal window that follows is carried as dates, not as a status (§1) |
-| `waived_by` | reference to person, optional | |
-| `waived_reason` | text, optional | |
+| `currency` | three-letter currency code, required | `CZK`, as on the schedule it came from |
+| `status` | text, required | Default `unpaid`. One of: `unpaid`, `partially_paid`, `paid` — **and nothing else.** The three values say how much of this obligation has arrived, and nothing more: lateness is read from `due_date`, and a fee nobody is going to pay is a row with a smaller `amount_due` ([D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)) |
+| `due_date` | date, required | The yearly fee expires on a fixed organizational date (D-040); this obligation's `due_date` is what the lapse sweep compares against (§4). The renewal window that follows is carried as dates, not as a status (§1). **This is also the only place lateness lives:** an obligation past this date and not paid is overdue, and no status value says so ([D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)) |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 | `updated_at` | timestamp, audit time | |
@@ -128,14 +166,19 @@ its own, that is a policy question for §5 and a new shape of obligation, not a 
   period, a membership request, or one person's place at one event. The per-person choice
   for events is deliberate: the fee is flat and per person (D-037), and a per-family price
   would need the household grouping designed again first (D-057).
-- A status of `waived` requires both `waived_by` and `waived_reason`. There is no waived
-  obligation whose waiver is unattributed or unexplained.
+- `status` is arithmetic, not a decision. It reports how much of `amount_due` has arrived, so there is
+  no value to set for a fee that will not be collected and no value to set because `due_date` has
+  passed. A fee nobody is going to pay is an obligation written with a smaller `amount_due`; being late
+  is a report over a date
+  ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers),
+  [D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)).
 
 **Indexes**
 
 - One person's obligations, by status.
-- Obligations ordered by `due_date`, restricted to the rows still open — status `unpaid`,
-  `partially_paid` or `overdue`. Closed rows are not in it.
+- Obligations ordered by `due_date`, restricted to the rows still open — `unpaid` or `partially_paid`.
+  Closed rows are not in it. **Read down this index past today's date and it is the overdue list**: one
+  fact stored once, with no status value to keep in step with the calendar.
 - Obligations carrying the event arm, and obligations carrying the membership arm — each
   restricted to the rows where that column is set.
 - Obligations within a `period_from` / `period_to` range.
@@ -175,8 +218,8 @@ its own, that is a policy question for §5 and a new shape of obligation, not a 
 |---|---|---|
 | `id` | surrogate id | |
 | `public_id` | external identifier, required | Unique. Appears in URLs and exports; `id` stays internal (00-conventions §3) |
-| `amount` | money, required | Never zero. A negative amount represents a reversal |
-| `currency` | three-letter currency code, required | |
+| `amount` | money, required | Never zero. A negative amount is money going out — a refund, a correction, or a reversal. **This is the only way money leaves**: there is no refund state anywhere for a row like this to point at, so a refund is written as one of these and the person who recorded it is in the row ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)) |
+| `currency` | three-letter currency code, required | `CZK`, on money going out exactly as on money coming in |
 | `paid_at` | timestamp, required | When the payment occurred, which may differ from when it was recorded — a bank transfer recorded a week later. Both matter |
 | `recorded_at` | timestamp, audit time | Default: now |
 | `method` | text, required | One of: `bank_transfer`, `cash`, `voucher`, `credit_note`, `other`. **`card` and `direct_debit` removed** — there is no card gateway and no mandate system ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
@@ -262,7 +305,7 @@ The flow, in order:
 | `variable_symbol` | text, required | **Unique across all rows, forever, including cancelled and long-settled ones.** Eleven digits from a sequence |
 | `fee_obligation_id` | reference to fee obligation, required | What is owed. The request never invents an amount of its own |
 | `amount` | money, required | Copied from the obligation at issue time, so a later price change cannot rewrite what someone was asked for |
-| `currency` | three-letter currency code, required | |
+| `currency` | three-letter currency code, required | `CZK`, copied alongside the amount for the same reason |
 | `recipient_account` | text, required | The account the QR code tells people to pay into |
 | `issued_at` | timestamp, audit time | |
 | `expires_at` | date, optional | When the request stops being payable — the close of a renewal window, or the day before an event |
@@ -277,8 +320,13 @@ The flow, in order:
 - **The symbol comes from a sequence.** It is never derived from a birth date, a membership id,
   a member number, or anything else a person can guess or work out. Anyone can type eleven digits
   into a payment form at their bank; a guessable symbol means a stranger's money lands in a
-  child's record, and the damage is not cosmetic — it reads as a paid fee, an active membership,
-  and possibly insurance cover that does not exist.
+  child's record, and the damage is not cosmetic — it reads as **a paid fee and an active membership
+  that nobody earned**, in the one part of this database that is kept with no end date
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+  A fee row is the organization's own history from the moment it is written, not a draft somebody
+  confirms later. That is also the ceiling on the damage: since the fee buys membership and nothing
+  else ([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership)), no date here can
+  be read as anything more than that.
 - `amount` is a **copy**, not a live reference. What a person was asked to pay is a historical
   fact about the ask, and recomputing it from the current schedule would make every price change
   rewrite history.
@@ -347,15 +395,16 @@ field.
 | **Attach** it to a different request | The symbol was mistyped; the real obligation is obvious from the payer |
 | **Split** it across requests | One transfer, three siblings — the ordinary shape of family payment here |
 | **Record as a donation** | Money with no obligation behind it, which is not the same as money that is missing one |
-| **Refund** it, by hand | Nothing was meant to be owed. A second payment in the opposite direction ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
+| **Refund** it, by hand | Nothing was meant to be owed. A second payment in the opposite direction ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)): the transfer goes out at the bank, and what arrives here is a `payment` naming whoever recorded it ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)) |
 
 **Why the tempting shortcut is refused.** Falling back to the payer's identity when the symbol
 fails looks like it removes most of the queue. It removes most of the queue's *accuracy* instead:
 *a parent with two children pays one amount against one symbol* is the normal case, not the edge
 case, and an identity fallback resolves it to whichever child the query reaches first. **A fee
-recorded against the wrong child is a finance error, a membership that appears paid when it is
-not, and — if the fee buys insurance — a coverage record that is untrue, all at once.** A fallback
-is not allowed to be wrong on the common path.
+recorded against the wrong child is a finance error and a membership that appears paid when it is
+not, both at once — and the sibling it was meant for stays the one who looks unpaid.** Both halves
+sit in rows that are kept with no end date. A fallback is not allowed to be wrong on the common
+path, and this is the common path.
 
 Auto-refunding is refused for two reasons: it needs the bank integration to work outbound as well
 as inbound, which is a second integration with its own authorization; and it returns the
@@ -376,7 +425,10 @@ So:
   to carry forward to a later event. It is not auto-refunded, for the reasons above.
 
 **This is EV-3's answer**, which is why it is closed here rather than left parked in the events
-module.
+module. Nothing about the queue's shape changes, and nothing about its end does either: **the queue is
+where the system stops and a person begins**, and that person's next act is at the organization's bank,
+not on a screen in this design
+([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)).
 
 **The queue is not allowed to be silently ignored.** It is a count on a dashboard, not a page
 nobody navigates to, and its oldest item is a number someone sees monthly. Unmatched money is the
@@ -416,9 +468,14 @@ has not heard of it. **A member is activated by the first, never by the second.*
 ## 4. How this connects to membership
 
 **The activation gate.** A membership's fee is settled when **no obligation attached to it has a
-positive balance after discounts** — where obligations carrying `waived`, `written_off` or
-`refunded` are excluded from the question entirely, because a waived fee that nobody is going to
-collect must not read as an unpaid one. "Settled" is the only thing money says about membership; it
+positive balance after discounts**, and that is the whole test with no status excepted from it — a fee
+nobody is going to collect is an obligation written with a smaller `amount_due`, so it never presents
+itself as a balance to work around
+([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers),
+[D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)). This test
+used to exclude obligations carrying `waived`, `written_off` or `refunded` outright, and every one of
+those values is gone, so the exclusion would now exclude nothing — which is the way you see it was a
+repair and not a rule. "Settled" is the only thing money says about membership; it
 does not grant permissions by itself
 ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
 The route from a settled fee to anything a person may do goes through a set: the fee makes
@@ -502,10 +559,14 @@ a breach.
    [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph), so this
    report is not a net under a rule — it is the whole of the backstop. §2 called this table "the part most
    likely to be right", and that is an argument about the shape, not about the data ten years in.
-3. **Money nobody ever asked for.** Two readings of one failure, cheapest first: an obligation whose status
-   is `unpaid`, `partially_paid` or `overdue` with **no live `payment_request`** pointing at it, so nothing
-   has ever carried a variable symbol to anybody; and upstream of that, an `event_registration` for an event
-   carrying a `fee_schedule` with no `fee_obligation` behind it, which §2 already warned of in one sentence —
+3. **Money nobody ever asked for.** Two readings of one failure, cheapest first: an obligation still at
+   `unpaid` or `partially_paid` whose `due_date` has passed with **no live `payment_request`** pointing at
+   it, so nothing has ever carried a variable symbol to anybody. The two conditions are read together and
+   neither is stored twice: `due_date` past plus a status that is not `paid` *is* overdue, which is why no
+   status value carries it (§2)
+   ([D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)); and
+   upstream of that, an `event_registration` for an event carrying a `fee_schedule` with no
+   `fee_obligation` behind it, which §2 already warned of in one sentence —
    *an event with a fee and no obligation is invisible until someone reconciles money against the roster*,
    because nothing creates the obligation and no trigger could have been forgotten. **Do not read this list
    as the queue.** An unmatched `bank_transaction` is money with no subject, and
@@ -522,63 +583,34 @@ non-empty because a feature was never written rather than because a row is wrong
 
 ## 5. Open issues — the whole of this document, essentially
 
-1. **Is the fee prorated** for mid-year joins? Note this is a sharper question than it was:
-   with the expiry on a fixed date ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)),
-   someone joining in October pays for three months of a twelve-month fee unless the
-   organization prorates — and the *renewal* twelve months later is a full year. Whether
-   that is fair is a policy question; whether the data model supports it is `amount_due` vs
-   `amount_expected`.
-2. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
+**Five questions are open, and they are the five below.** What this section used to ask that it no
+longer does, and the arithmetic of the list, are at the end of the page rather than inside the list.
+
+1. **Are there family/sibling discounts?** `amount_discount` exists but the rules are
    unspecified. With a flat per-person fee ([D-037](../decisions/round-02-03.md#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person)),
    this is the only remaining fee variation, so it is worth a deliberate yes or no. A **per-family**
    discount needs a grouping to be designed first — there is none
    ([D-057](../decisions/round-04.md#d-057--household-is-removed)) — so it is not a constraint change but a
    shape. A **per-person** discount is unaffected and is just `amount_discount`.
-3. **Who may authorize a refund.** The mechanics are settled by
-   [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code):
-   a refund is a second payment in the opposite direction, not a status, so it cannot corrupt the original
-   record and there is no reversal state to authorize. **The authority to initiate one is not settled**, and
-   it is the part this question was always about; `fee.refund` already flags it 🔒.
-4. **Payment methods, settled.** `bank_transfer` arrives by import and `cash` is recorded by hand;
-   `voucher` and `credit_note` are in the enum until somebody says otherwise, and there is no card and no
-   direct debit (§2). What is left here is a maintenance question, not a decision.
-5. **Invoicing:** does the organization issue invoices (legal requirement in some
+2. **Invoicing:** does the organization issue invoices (legal requirement in some
    jurisdictions)? If so, an `invoice` entity and a numbering sequence are needed. **Sharper now:**
    a `payment_request` looks like an invoice, prints like one, and is not one — it has no
    tax identity, no sequence required by law, and no delivery record. If invoices are legally
    required, the honest answer is a second document over the same obligation, not a renaming of
    this one.
-6. **Collecting, not recording — settled.** The organization collects: money arrives by bank API with a
-   variable symbol and a QR code, and there is **no card gateway**
-   ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code),
-   §2a). Reliable payment dates are what the renewal window depends on, and the bank import is what
-   supplies them.
-7. **Accounting integration:** does anything need to be exported to an accounting system? **What is
+3. **Accounting integration:** does anything need to be exported to an accounting system? **What is
    open here is the direction.** Who may call this system is designed ([05e](05e-keys-and-callers.md));
    this system calling anyone else is [F-27](../open-questions.md#f-27).
-8. **Currency and jurisdiction** — currently assumed `EUR`.
-9. **Does the fee cover insurance?** If so, "member on the date of the incident" becomes a
-   legal record with its own retention needs. This one interacts directly with the
-   lapse rule ([D-040](../decisions/round-02-03.md#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status)):
-   if the fee buys insurance, then **the date the membership lapses is the date cover
-   ends**, and the renewal window does *not* extend it. That is worth confirming with
-   whoever handles the policy, because the softer "still covered during grace" reading was
-   the alternative D-040 explicitly rejected.
-10. **Scholarships/hardship waivers** — a `waived` status exists but the process is unspecified, and
-    in a
-    youth organization this is often a sensitive, need-to-know process that must not be visible to
-    every adult who runs a group. **This got harder in round 10 rather than easier, and it is the
-    finance module's share of
-    [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)'s
-    first loss.** With no units there is no smaller scope a waiver can live inside: a `fee.view`
-    held at the unit reaches every person's money, because after D-097 there is nothing between the
-    unit and an item except the items themselves. What separates a hardship waiver from general
-    visibility is now only **which codes exist and who holds them** — `fee.view` against
-    `fee.waive`, plus the deny effect
-    ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)),
-    which can exclude a named person from a unit grant but cannot carve a private subset out of one.
-    Worth a deliberate answer rather than a shrug.
-11. **What gets a variable symbol, and one per what?** — **new, and raised by
+4. **Jurisdiction.** This is the half of an item that used to read "currency and jurisdiction", and only
+   the currency half was answerable: the currency is koruna, on all four tables that carry one (§2)
+   ([D-155](../decisions/round-22.md#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so)).
+   What is left is what the law of this country asks of a fee, which this design does not know and has no
+   column for: whether invoices of item 2's kind are compulsory rather than chosen, and whether the
+   organization owes anything about its money to anybody outside itself. This is the finance module's
+   share of the same sitting that already holds the four data policies in front of a legal review
+   ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure),
+   [06b §6](06b-redaction-and-checks.md#6-open-issues)).
+5. **What gets a variable symbol, and one per what?** — **raised by
     [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)
     rather than left over.** That decision fixed *how* money arrives and named the `payment_request`
     that carries it, but not the two choices the module is actually built from.
@@ -595,23 +627,65 @@ non-empty because a feature was never written rather than because a row is wrong
       a symbol with one.
     - **The amount mismatch, which D-076 defers and this question cannot.** 500 sent against a 550
       request goes to the queue, which is correct as a mechanism and silent as a policy. Whether
-      partial payment settles anything, whether 4.90 vs 5.00 is a shortfall, and what a payer is
-      told when their money lands and does not fit — those are undecided, **and the queue will show
-      them at volume the first spring the import runs.**
+      partial payment settles anything, whether 4.90 vs 5.00 is a shortfall, and whether the payer
+      finds out at all when their money lands and does not fit — nothing here sends anything to anyone
+      ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)),
+      so *finds out* means a person telephoning them or a module that is not designed yet — those are
+      undecided, **and the queue will show them at volume the first spring the import runs.**
 
-    **Why this is question 11 and not a footnote:** it decides whether the module has one money path
-    or two.
+    **Why this is not a footnote:** it decides whether the module has one money path or two.
 
-**The count, honestly.** Of the eleven numbered above, **two are closed** (4, 6) and **one is half
-closed** (3: the mechanics of a refund are settled, the authority to initiate one is not). **Nine remain
-open.**
+**What this section used to ask, and where each answer lives.** The list ran to eleven items; four are
+closed and one is narrowed to what is left of it. They are kept here in one line each, because for most
+of them this page is the only place the question was ever written:
 
-**None of the nine is architectural.** The architecture is why they can be left open: how money arrives,
+- **The fee amount** — the question this page asserted twice and never filed, which is why nothing could
+  ever have closed it. Filed now as item 12 of the old numbering and answered in the same act: one live
+  price, edited in place, and the amount a person owes is the number written on their obligation
+  ([D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last)).
+- **Is the fee prorated for mid-year joins** — no rule. Someone joining in October gets an `amount_due`
+  of whatever the person opening it writes, and the renewal twelve months later is written by the same
+  kind of act. Nobody will be able to point at a rule and say this organization prorates, or refuses to
+  ([D-160](../decisions/round-22.md#d-160--no-proration-rule-and-the-row-is-the-amount)).
+- **Who may authorize a refund** — nobody, because nothing is initiated here. The transfer goes out at
+  the bank; what arrives here is a `payment` naming whoever recorded it
+  ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)).
+- **Does the fee cover insurance** — it does not. No date in this system is evidence of cover, so the
+  retention question that would have followed from one never arrives, and the softer "still covered
+  during grace" reading D-040 rejected was about a thing that does not exist
+  ([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership)).
+- **Scholarships and hardship waivers** — no mechanism, at any level of granularity. What this item used
+  to be hard about was that a waiver had to be visible to few people and invisible to the rest, with only
+  which codes exist standing between the two; the problem is dissolved rather than solved, because there
+  is nothing to see
+  ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)).
+- **Payment methods, and collecting rather than recording** — both closed earlier by
+  [D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code).
+  `bank_transfer` arrives by import and `cash` is recorded by hand; `voucher` and `credit_note` stay in
+  the enum until somebody says otherwise; there is no card and no direct debit (§2). What remained in
+  those two items was maintenance, not a decision.
+
+**The count, recounted.** **Five questions are open**: discounts, invoices, the accounting export,
+jurisdiction, and what gets a variable symbol — the last still three questions in a trenchcoat, because
+it decides whether the module has one money path or two. The number this section printed was **nine
+remaining open**, and nine was right, while the list printed underneath it named **seven** of those nine and
+counted the variable-symbol item twice — eight printed, with *who may authorize a refund* and *currency*
+missing, which are the two this round closed. A summary that is right above a list that is wrong is worse than a
+wrong summary: the summary is what a reader quotes, and the list is what a reader answers from. The claim at the top of this document, repeated in §1, that the fee
+*amount* is unanswered named a question that was not on the list either, so it had to be filed before
+anything could answer it. A count next to a sentence is a claim, and the count was the part nobody had
+checked.
+
+**None of the five is architectural.** The architecture is why they can be left open: how money arrives,
 how it is requested, and what happens to money that does not match are all decided, so what remains is
-**policy that requires somebody in the organization to be asked** — proration, discounts, insurance,
-waivers, invoices, accounting, and the two choices question 11 names. *This document does not need a
-rewrite; it needs answers.*
+**policy that requires somebody in the organization to be asked** — discounts, invoices, the accounting
+export, jurisdiction, and the choices item 5 names. *This document does not need a rewrite; it needs
+answers.*
 
-The questions settled along the way — activation on payment, the flat per-person fee, the absence of a
-household grouping, collecting rather than recording — are registered in
-[../open-questions.md](../open-questions.md) with the decision that settled each.
+**None of the five is registered in [the open-questions register](../open-questions.md),** and this page is why:
+the register's finance row reports a number of open questions and names none of them, so a reader who
+never opens this document finds no finance question at all. The questions settled along the way —
+activation on payment, the flat per-person fee, the absence of a household grouping, collecting rather
+than recording — are registered there with the decision that settled each, and nothing else on this page
+is. The five above are the finance module's own open issues until somebody registers them or says here why
+not.

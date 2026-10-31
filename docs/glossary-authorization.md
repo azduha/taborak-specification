@@ -181,8 +181,8 @@ a named thing a rule may still name is retired as `deprecated` or `hidden`, both
 keep resolving, and only `disabled` changes the answer — see *Deprecated / hidden /
 disabled*. **What is required of an operand is that it be named, in the registry and not
 merely in a sentence** — and that holds of prose too: **every selector name that appears in
-these documents must be a `selector_type` row**, which is what a count is a good alarm and a
-bad oracle looks like. The registry is a **closed language**: every row ships with
+these documents must be a `selector_type` row**, which is what a count you read rather than
+one you rely on looks like. The registry is a **closed language**: every row ships with
 the platform, the table is organization-read-only, and a new operand is a decision entry
 plus a seed row, never a row somebody types into a screen. **That closure is the line that
 keeps [D-060](decisions/round-05.md#d-060--eligibility-is-capability-there-is-no-separate-rule-engine)'s

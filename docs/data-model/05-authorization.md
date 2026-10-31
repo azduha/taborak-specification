@@ -516,9 +516,9 @@ rule, that an exposure extends an assignment and never a grant, has no subject: 
 scope to extend.
 
 **A caution that outlives the table.** A write-path rule whose only guard is a report, and a report
-that stops running, is a rule that quietly stops existing: the nightly exposure alert was that
-check's only detector. Every rule in this document that has no enforcer says so, and §11 is where
-those reports are listed.
+that stops running, is a rule that quietly stops existing: the nightly exposure report was that
+check's only detector, and nothing sent anybody when it stopped. Every rule in this document that has
+no enforcer says so, and §11 is where those reports are listed.
 
 **The way back is a decision, not a migration.** The plausible reason is that the organization has
 outgrown one center's visibility, and taking it would mean re-arguing D-031 from its own premises —
@@ -745,7 +745,7 @@ they should be able to.
 
 ### What is refused when a grant is saved
 
-**Six checks, one transaction, each with the layer named** — because none of them is a database
+**Seven checks, one transaction, each with the layer named** — because none of them is a database
 rule, and D-081 forbids writing them as if one were:
 
 1. **The code may be granted at this scope.** `permission.applies_to` permits the scope shape
@@ -761,7 +761,8 @@ rule, and D-081 forbids writing them as if one were:
 4. **The audience's expression is well-formed and acyclic** (§8) — **and "acyclic" is measured over
    the expanded tree, so this check follows the `AUDIENCE` leaves into the audiences this one names**
    ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). Saving a grant
-   is not where a cycle is *created*, but it is where a person is standing to be told about one, and a
+   is not where a cycle is *created*, but it is where a person is standing in front of the one screen
+   that can refuse it, and a
    grant must never be saved pointing at an expression that cannot be evaluated. **There is no depth
    bound to check here** — [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
    left the tree unbounded — so this check carries no size rule at all, and the cycle walk is its only
@@ -773,13 +774,47 @@ rule, and D-081 forbids writing them as if one were:
    grant's reach depend on whether somebody had typed a code into a different screen.
 6. **A code that a key may never hold is not granted to a key.** `system.admin` and the four
    `api_key.*` codes are refused when `api_key_id` is set ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined),
-   [§15](05e-keys-and-callers.md)). **This is the sharpest of the six, and the reason it is here rather
-   than in a constraint is worth stating:** the other five read columns — this one reads a list of five
-   codes that is a column of nothing at all, an equality written against named rows precisely so that no
-   rule can derive it and widen it. No database rule can span it, so **integrity check 20 (§11) is the
+   [§15](05e-keys-and-callers.md)). **This is the sharpest refusal here, and the reason it is here
+   rather than in a constraint is worth stating:** the other five checks read columns — this one reads
+   a list of five codes that is a column of nothing at all, an equality written against named rows
+   precisely so that no rule can derive it and widen it. No database rule can span it, so **integrity
+   check 20 (§11) is the
    entire net** for rows that were written before the rule existed or by a path that skipped the save.
+7. **The writer holds what the row names.** A write to `access_grant` may name only a permission that
+   the person writing it holds, at a scope that reaches what they are writing — **the granter's
+   ceiling** ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)).
+   `access_grant.create` has always said *you may write grant rows*; until this check it never said what
+   they may say. The mechanism is free: it is the check the resolver already performs, pointed at the
+   granter at save time, so a writer predicts *may I grant this?* from the question they already ask —
+   *can I do this myself?* What it closes is what the catalog called the sharpest hole in its file:
+   `system.admin` can
+   now be handed out only by somebody who already holds it, and stated as an invariant — **the set of
+   privileges held by anybody in this system can only grow from a person who already holds what they are
+   handing out.** Three consequences belong beside the rule: **a right held only through a delegation
+   does not raise the ceiling** — lending is not holding, and delegation is not obstructed, because a
+   delegation's row is written by the delegator, who holds the right directly and passes this ceiling on
+   exactly the occasion [D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)
+   already validates at; **the ceiling stops escalation, not spread** — a person who holds `person.view`
+   at the unit may hand it to twenty people, since they hold it, and **no report covers that distribution
+   and none was called for**, because this design's answer to a widening nobody wrote is a report plus a
+   written procedure rather than a mechanism. The entry a reader will find nearest to it, check 7's wide half
+   (§11), is about something else: a grant that got wider because a set under a `-` stopped resolving, which
+   is an expression changing shape under a row nobody edited; and **`granted_by` becomes load-bearing in a
+   new way** — the
+   ceiling is evaluated against a named person, so an authorless grant could not be checked at all, and
+   [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)
+   records that a grant's `granted_by` names a person, so these rows have no empty to read. **Day one is
+   unaffected:** [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)'s
+   single account holds `system.admin` at the unit, which satisfies every code — the origin of all
+   authority is exempt by construction rather than by a special case. **No integrity check stands behind
+   this refusal, and none was called for:** the ceiling lives at the save, and the two
+   reports a reader will find nearby look at other things — check 9's holder list and check 7's wide half
+   (§11) — and both are read, not sent (§11). **Scope, so the ceiling is not over-read: this is a rule about writes to `access_grant` and
+   nothing else.** Editing an audience's expression or a `role_holder` row is a different code and is
+   unchanged; whether those should carry an analogous ceiling is a question this round neither answers nor
+   pretends is settled.
 
-**Why the save path and not the check path, said once for all six.** A grant that cannot mean
+**Why the save path and not the check path, said once for all seven.** A grant that cannot mean
 anything is a data-entry mistake, and a data-entry mistake is refused where the person making it is
 standing. The resolver's job in the same situation is the opposite and is already fixed: an operand
 that does not resolve is the empty set, so anything that slips past these checks denies rather
@@ -787,7 +822,7 @@ than widens (§8, *Evaluation*) — **except through `-`, where an empty operand
 these are refusals and not warnings.** Checks 3 and 4 (§11) report what got through, and a row there
 means the write path was skipped — there is no constraint to have disabled.
 
-**A seventh refusal lives on the other screen.** Ending or deleting an *audience* is refused while a live
+**An eighth refusal lives on the other screen.** Ending or deleting an *audience* is refused while a live
 grant, or a live audience reachable from one, names it (§8, *Rules*). It is listed here only so that a
 reader of this section does not conclude the grant save is the whole write path.
 

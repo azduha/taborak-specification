@@ -276,7 +276,8 @@ was taken with them in view rather than in the abstract.
 - **Redacting a person** is legal and erases values. When a person is anonymised
   ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)), every row in this table
   belonging to them is deleted. **A redacted person with attribute values attached is a redaction
-  that did not happen** — §8 check 5, and the one check here that should alert rather than log.
+  that did not happen** — §8 check 5, the one check here whose non-zero result is a breach rather
+  than a report.
 
 **The trail holds these values, and that is the load-bearing consequence of the whole module.**
 An audit entry about a `person_attribute` carries the before and after images, as it does for a contact
@@ -386,12 +387,14 @@ organization's descriptive vocabulary in it, and it changes how the mapping has 
    `yes_no` code with a three-sentence value is a definition being used as a note field, and the
    report is a conversation about which one it should have been.
 5. **A redacted person with attribute rows, or with attribute values still present in `audit_log`.**
-   Should never be non-empty; this is the erasure guarantee and it alerts.
+   Should never be non-empty; this is the erasure guarantee.
 6. **A definition whose values contradict its declared type wholesale** — a `date` code where
    nothing parses as a date. The type is advisory for one value and a signal for all of them: at
    that point the definition is wrong, not the data.
 
-**Check 5 is the one that alerts:** a person's data outliving their erasure. **Check 3 is the one
+**Check 5 is the one to open the day it is non-empty:** a person's data outliving their erasure, and
+nothing in this design tells anyone that it has — reading this report is the whole control there is
+([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **Check 3 is the one
 that indicts the code rather than the data:** non-zero there means some write path skipped §3's
 guard, and the fix is the path, not the rows. **Check 1 is the vocabulary talking** — never a
 failure, only the permanent cost of an open vocabulary, and the list worth reading before saving a

@@ -178,7 +178,11 @@ rows and on nothing else. **Both of those columns have a live writer: the legacy
 `membership` rows.** The export states a membership period directly rather than only attendance, so
 the batch writes one row per stated period — `data_confidence = 'low'`, `import_batch_id` set,
 **both ends dated** ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
-[domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). **An imported membership never
+[domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)), **and `status = 'completed'`**, the value
+an imported closed period carries: none of the six means *a source stated this and nobody in the system
+decided it*, and `completed` is the second-worst of the two available readings, taken knowingly
+([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page)).
+**An imported membership never
 runs open-ended to today, and none is inferred from an attendance row** — the part carrying the weight,
 because an open membership satisfies `is_current_member()`, so an inferred one would make every 1998
 roster a current member today. So
@@ -332,8 +336,13 @@ Everything the system needs follows from this:
 | `active` | `terminated` | disciplinary / cause | `membership.terminate` — **separate, more restricted permission** |
 | `active` | `suspended` | temporary hold | `membership.suspend` |
 
-There is no `completed` row any more. It existed only for ageing out, and ageing out no
-longer exists ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)).
+**No transition above writes `completed`, and none will.** The value existed only for ageing out, and
+ageing out no longer exists ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)). **The one
+writer `completed` has is not a transition:** the legacy import writes it on the row it inserts, so the
+status appears in the data with no live path leading to it
+([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page),
+§3) — and §9 keeps the warning about what such a row reads as. `terminated` stays exactly what this table
+says it is for, untouched by the import.
 
 **Termination must not be the same permission as lapsing.** A lapse is administrative
 (nobody paid). A termination is a decision about a person's standing in a youth
@@ -457,7 +466,7 @@ What a system built around this must still handle — none of it a membership tr
 |---|---|
 | A guardian's authority at majority | Guardianship — and the system does **not** notice the birthday. No auto-expiry and no review queue; a person ends the row (D-069) |
 | Who may be added to a group | Nowhere in the data: **no column says which group takes children, and none will** ([D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act), and [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row) took the bodies such a column would have sat on). The control is `person_group.member.manage`, held at the unit or on one group, in the hands of the people who run it ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority) transfers [D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act) intact), and [domain/04-organization-structure.md](04-organization-structure.md) owns it |
-| Whether a person may hold an office | Nowhere either: `role` carries no age column and no eligibility fields at all ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)), so what remains is `is_minor()` in a report over `role_holder` — **a report, not a check**, since nothing refuses an office to a minor. §9 carries the question |
+| Whether a person may hold an office | Nowhere either: `role` carries no age column and no eligibility fields at all ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)), so what remains is `is_minor()` in a report over `role_holder` — **a report, not a check**, since nothing refuses an office to a minor — and that is now the ruling rather than the gap: the age is reported and nothing is ever refused on it (§9, [D-168](../decisions/round-22.md#d-168--age-is-reported-and-never-enforced)) |
 | Consent for a minor's own account | `guardianship_permission`, not a membership requirement |
 | Planning around age groups | A query over `person.birth_date`. It is a report, not a state change. |
 
@@ -520,9 +529,10 @@ minors. A list of ten that quietly became eight is how a specification loses a r
    a group is explicitly listed as carrying no such rule
    ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
    So there is nothing to check a placement against, in either vocabulary, and no plan for there to
-   be one. What stands in its place is upstream — nobody is added to a group by somebody who does
-   not hold that group's roster write — plus a report of who holds that write, which is a question
-   about grants, not about people (§7)
+   be one — **and that is a ruling now rather than a hole: the age is reported and nothing is enforced
+   on it** ([D-168](../decisions/round-22.md#d-168--age-is-reported-and-never-enforced)). What stands in
+   its place is upstream — nobody is added to a group by somebody who does not hold that group's roster
+   write — plus a report of who holds that write, which is a question about grants, not about people (§7)
 9. Who are the returning members — more than one membership with a gap between?
 10. How many members did the organization have in each year since the records begin? (historical
     reporting — must include closed memberships and must not double-count)
@@ -580,28 +590,58 @@ resolver, which is the worst kind of bug to find.
 
 - The organizational calendar: which date the fee expires on, and how long the renewal window
   is (§6). The mechanism is settled; the two numbers are a guess.
-- **Which offices are written without `MEMBERS`, and who decides that an office survives its
-  holder's lapse.**
-  The gate left the resolver for the grant text (§6,
+- **Which offices are written without `MEMBERS` is ruled: per office, by whoever writes the grant, no
+  default either way — not into the expression and not out of it.** Which offices carry the term
+  ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)) is
+  therefore nobody's standing decision: an office inherits no entitlement from a template and inherits no
+  lockout either, no screen fills the term in and no screen strips it. The gate left the resolver for the
+  grant text (§6,
   [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
-  so the decision is made one grant at a time and nothing records the *why* — only whether the word
-  is in the expression. The standing report makes the outcome visible; it does not make the choice.
-  Carried also at [data-model/03 §9](../data-model/03-membership.md#9-open-issues).
-- **Whether an age rule has any home at all.** Nothing carries one: a `role` has no eligibility fields
+  so the decision is made one grant at a time and nothing records the *why* — only whether the word is in the
+  expression. **And a grant written without the term needs no reason field:** `grant_reason` is an optional
+  column and stays optional, because a mandatory reason would turn the absence of a default into a small
+  approval process. **Day one's grant carries no `MEMBERS` term at all** — it names one person, and a grant
+  aimed at one person has no expression to carry one, **and a grant with no expression to carry one cannot
+  be read as having declined one** — so the lockout
+  [D-051](../decisions/round-04.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
+  was written against is answered by
+  [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)
+  and not by an exemption. The report makes the outcome visible; it was never going to make the choice. *Two
+  clauses here are this round's reading of the ruling rather than the ruling's own words: that the standing
+  report lists every such grant rather than the offices somebody marks sensitive, and the day-one clause
+  above.* Carried also at [data-model/03 §6](../data-model/03-membership.md#6-membership-and-the-authorization-system).
+- **Whether an age rule has any home at all is answered, and the answer is a report.** Nothing carries one:
+  a `role` has no eligibility fields
   ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
   and a `person_group` is refused one
   ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)),
-  so "a scoutmaster must be an adult" survives only as a report over `role_holder` and `is_minor()`
-  (§7). If the organization wants that rule enforced rather than reported, it needs a decision this
-  round did not make.
-- What `status` an imported closed membership carries (§3). The enum offers `pending_payment`, `active`,
-  `suspended`, `lapsed`, `terminated`, `completed`, and none of them says *a source stated this
-  period and nobody in the system decided anything*: `terminated` claims an end reason the export
-  does not give, `completed` claims a lifecycle this model does not have (§5 produces no `completed`
-  row, while the enum and [data-model/03
-  §3](../data-model/03-membership.md#3-membership) both still carry the value and use it in an
-  example). This is a naming question with a reporting consequence — a `status` that reads as a
-  decision will be reported as one.
+  so "a scoutmaster must be an adult" survives as a report over `role_holder` and `is_minor()` (§7) — and
+  that is the ruling now, not the shape of the gap: **age is reported and never enforced**
+  ([D-168](../decisions/round-22.md#d-168--age-is-reported-and-never-enforced)). Enforcement is therefore
+  declined rather than deferred. **What that buys, and what it costs:** nothing refuses an office to a minor
+  and nothing refuses a placement either, so the safeguarding answer stays a human reading a list; in
+  exchange no rule silently excludes a person on a birthday, in a system with no level ladder and no
+  eligibility column to hold one. Historical query 8 — which minors are in groups that do not accept them —
+  stays unanswerable and stays numbered for exactly this reason (§8).
+- What `status` an imported closed membership carries is answered: **`completed`, and the warning stays on
+  the page** (§3). The enum offers `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`,
+  `completed`, and none of them says *a source stated this period and nobody in the system decided anything*:
+  `terminated` claims an end reason the export does not give, `completed` claims a lifecycle this model does
+  not have. **The answer takes the second-worst of the two lies, knowingly**, and what makes it survivable is
+  that the row does not stand alone: every imported membership is `data_confidence = 'low'` and both of its
+  dates came from a source row
+  ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)), so the
+  honest answer to *did anybody decide this* sits two fields away from the field that reads as a decision
+  ([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page)).
+  **A seventh value named `imported` was the alternative and it is refused:** the other six say what happened
+  to the membership, `imported` would say how the row arrived, and every historical query would then have to
+  choose between an event and a provenance inside one column — where the corpus's whole answer to *what did
+  this import assert* is already `data_confidence`, sitting beside `status` for exactly that reason. §5
+  produces no `completed` row on the live path, so the import is the value's only writer. **The reporting
+  consequence is kept, not resolved:** a `status` that reads as a decision will be reported as one, and
+  historical query 10 counts these rows as completed memberships — which is what the acceptance test wants,
+  and the reason this sentence is here rather than in a footnote.
+
 **What this page no longer asks, so that a reader does not go looking for it:** activation on payment or
 approval (it is on payment, §1); per person or per household (per person and flat, §6); renewal shape
 A or B (A, §6); age-out timing and the child→adult transition (neither exists, §7); background checks

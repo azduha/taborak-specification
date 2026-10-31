@@ -103,7 +103,7 @@ Fifteen rules, each a partial unique index whose predicate is the interesting ha
 | A key's code is used once | [05e §14](05e-keys-and-callers.md#14-api_key--a-caller-that-is-nobody) | `code` | the row is live | [05d §11](05d-invariants-and-seed.md#11-invariants-to-verify) | A call authenticates and the trail cannot say which integration made it |
 | A key's secret is not shared | [05e §14](05e-keys-and-callers.md#14-api_key--a-caller-that-is-nobody) | `secret_hash` | the row is live | as above — **and its layer row names only `code`, which D-130 corrects** | Two integrations authenticate as each other in the audit trail |
 | One live payment request per obligation | [07 §2a](07-finance.md#2a-how-money-actually-arrives) | `fee_obligation_id` | **undefined** — `voided_at` absent, or unexpired, or both | **none**, and the predicate is not written down | Two QR codes for one debt, and the money arrives twice |
-| One primary organizer per event | [08 §3](08-events.md#3-event_organizer) | `event_id` | `is_primary` | [08a §10](08a-event-guards-and-checks.md#10-integrity-checks) | Two people receive the one notification meant for the lead |
+| One primary organizer per event | [08 §3](08-events.md#3-event_organizer) | `event_id` | `is_primary` | [08a §10](08a-event-guards-and-checks.md#10-integrity-checks) | Two people answer to being the lead, and a later question about who decided something has two answers ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) removed the sentence's notification; the harm it described is untouched) |
 
 Two rules that read like this shape and are not: `person_identifier (scheme, value)` and
 `person_attribute (person_id, attribute_definition_id)`. Both conditions live in **another table** —
@@ -115,7 +115,7 @@ and answers — is a plain unique constraint and is not listed here at all.
 
 ## 3. The answer reads another table, a resolver, or a graph
 
-Forty-six rules, **counted off the table below rather than carried down from the last round that touched it** —
+Forty-seven rules, **counted off the table below rather than carried down from the last round that touched it** —
 this sentence said forty-one while the register's own summary elsewhere in the corpus said forty-five, and both
 were describing one table. **In this shape the layer is always the write path** — no constraint spans two tables —
 so the layer column is gone from this table and only two columns remain. **The report column is the one
@@ -141,6 +141,7 @@ downstream ever says so.
 | A merge repoints every operand that named the person | [05b](05b-expression-tree.md) | the merge reassignment table | [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify), a backstop and not the control |
 | An audience may not reach itself | [05b](05b-expression-tree.md) | two walks at save, the whole guard | [05d §11 check 15](05d-invariants-and-seed.md#11-invariants-to-verify) — `save-refusal` |
 | A key may not be granted one of five codes | [05e §15](05e-keys-and-callers.md#15-what-a-key-may-hold) | the save path only | [05d §11 check 20](05d-invariants-and-seed.md#11-invariants-to-verify), the entire net |
+| A grant may name no permission the granter does not hold | [05 §6](05-authorization.md#6-access_grant--the-per-item-layer) | the write path, resolving the granter with the same check the resolver runs on an act none — the refusal is the whole control. [05d §11 check 7](05d-invariants-and-seed.md#11-invariants-to-verify)'s wide half is what a grep finds here and is **not** this: it watches a grant that widened itself when a `-` beneath it stopped resolving, not a grant written too wide. One thing the ceiling does that a reader should not have to guess: **it stops escalation and not distribution** ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)) |
 | Deleting an item closes the grants written on it | [05 §6](05-authorization.md#6-access_grant--the-per-item-layer) | an application obligation, tested | [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify) |
 | An item-scoped grant carries an end date | [05 §6](05-authorization.md#6-access_grant--the-per-item-layer) | application validation | the report of long-lived open grants, named beside an admission that nothing backstops it |
 | An office does not outlive its own term limit | [05 §4](05-authorization.md#4-role_holder--who-holds-an-office) | none — the column is a prefilled nudge | the report of offices held past their end date |
@@ -162,7 +163,7 @@ downstream ever says so.
 | Only members register | [08 §4](08-events.md#4-event_registration) | none, and none is wanted — eligibility is capability | none, by design |
 | One staged row makes one event | [06a §3](06a-import.md#3-import-pipeline) | the application, deliberately | [06a §4 check 2](06a-import.md#4-integrity-checks) |
 | `membership.outstanding_balance` agrees with the allocations | [07 §3](07-finance.md#3-keeping-membershipoutstanding_balance-honest) | the writing transaction if the column stays; §3 recommends dropping it for a view | [07 §4a check 1](07-finance.md#4a-integrity-checks), and the same query whichever way §3 lands |
-| An imported membership is bounded at both ends and never inferred from attendance | [06a §3.1](06a-import.md#31-what-a-source-row-actually-evidences) | the parse and end-date inference rules | [06a §4 check 1](06a-import.md#4-integrity-checks) — **the one row in this table that reaches the permission gate**, because an open membership satisfies `is_current_member()` |
+| An imported membership is bounded at both ends and never inferred from attendance | [06a §3.1](06a-import.md#31-what-a-source-row-actually-evidences) | the parse and end-date inference rules, which now end at a stated date ([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)) | [06a §4 check 1](06a-import.md#4-integrity-checks) — **the one row in this table that reaches the permission gate**, because an open membership satisfies `is_current_member()`. **What D-169 changed is not the rule but what a non-zero answer means:** there is a value to move a row to now, so the report says the inference did not run |
 | A batch can say what it did, and a revert leaves nothing behind | [06a §3](06a-import.md#3-import-pipeline) | the pre-flight refusal | [06a §4 check 3](06a-import.md#4-integrity-checks), read against the audit entries the revert wrote |
 | A payment's allocations account for its amount | [07 §2](07-finance.md#2-minimal-provisional-shape) | the write path; no constraint spans the two tables | [07 §4a check 2](07-finance.md#4a-integrity-checks), which is the whole of the backstop |
 | An operand that resolves to nothing is said out loud | [05b](05b-expression-tree.md) | none — no save is refused | the report of audiences that reach nobody, with an owner |

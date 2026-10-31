@@ -62,7 +62,7 @@ is already modelled.
 | `capacity` | integer, optional | `NULL` = unlimited. Bed count, bus seats, fire-safety limit. Enforced as a WAITLIST threshold, not a block, and a staff registration may exceed it ([../domain/07a-capacity-presence-and-forms.md §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist)) |
 | `waitlist_deadline` | instant in time, optional | When an unpaid registration at a full event releases its place to the waitlist (§6). `NULL` = never releases. Only meaningful when the event has a fee AND a capacity; ignored otherwise. This is the ONE automatic transition in this module — see §6 for why it is accepted and what it costs |
 | `fee_schedule_id` | reference to fee schedule, optional | `NULL` = this event is free, which most are. Set = a fee applies; registering creates a `fee_obligation` (§6). The amount and currency live in `fee_schedule`, not here — events do not price themselves |
-| `cancelled_at` | instant in time, optional | Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming |
+| `cancelled_at` | instant in time, optional | Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be able to see it. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming |
 | `cancelled_by` | reference to person, optional | Who cancelled. Set exactly when `cancelled_at` is set |
 | `cancel_reason` | text, optional | Free text, and it may be absent ("cancelled — see email") |
 | `created_at` | timestamp, audit time | |
@@ -134,10 +134,22 @@ therefore an act rather than a default; see
 
 ### Why `fee_schedule_id` and not an `event_fee` table
 
-The fee amount, currency and validity already live in `fee_schedule`
-([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)), which is temporal — so a
-1998 camp's fee recomputes correctly from the 1998 schedule. An `event_fee` table would
-duplicate that and immediately drift. An event points at the schedule that prices it.
+The fee amount and currency already live in `fee_schedule`
+([07-finance.md §2](07-finance.md#2-minimal-provisional-shape)), and an event points at the schedule
+that prices it. An `event_fee` table would duplicate that and immediately drift.
+
+**What the pointer no longer buys, and this is where D-161 actually lands.**
+[D-161](../decisions/round-22.md#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last)
+deleted `fee_schedule.valid_from` and `valid_to`: there is **one live price**, edited in place when a
+billing year is reopened, and no price history — so a 1998 camp's fee does not recompute from the 1998
+schedule, and no page here may claim it does. The record of what a person owed was never on the schedule
+anyway: §6's create copies *the schedule's amount and currency* onto the `fee_obligation` beside its
+snapshot of `fee_schedule_id`, and that row is where the answer lives. Membership states it the same
+way — "what did we charge in 1998?" is answered from the obligation, not the price list
+([../domain/05-membership-lifecycle.md §3](../domain/05-membership-lifecycle.md#3-membership)). **What
+the deletion costs is one question:** *what did the price list say a 1998 camp cost?* The closest answer
+this system holds is an aggregate over the obligations of 1998, which reports what people were actually
+asked rather than what a list said.
 
 ---
 

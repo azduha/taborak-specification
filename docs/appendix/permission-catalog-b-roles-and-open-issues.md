@@ -68,7 +68,7 @@ established before anyone invents an inconsistent one.
 | Resource | Permission | Notes |
 |----------|-----------|-------|
 | `document` | `document.view`, `document.create`, `document.edit`, `document.delete`, `document.grant_access` | `document` is already a row of `grant_scope_type`, marked deferred — the item exists in the registry before the module does, which is what the polymorphic `scope_id` is for (D-011). The code is the one this catalog's own §1 rule pays for: `document.grant_access` sits beside `access_grant.create` exactly as `event.grant_access` does, and §12 asks the question once for both. |
-| `fee` | `fee.view`, `fee.create`, `fee.waive`, `fee.refund` | ⛔ `fee.waive` and `fee.refund` are sensitive — a hardship waiver must not be visible to whoever happens to run a group. There is no unit level to be below any more, so the mark and the grant list are the whole control. |
+| `fee` | `fee.view`, `fee.create` | **No ⛔ and no 🔒, and the reason is a deletion rather than a decision about sensitivity**: `fee.waive` went because there are no hardship waivers ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)) and `fee.refund` went because a refund is a transfer the bank makes and a `payment` row records, not an act authorized on a screen ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)). What is left is reading a fee and writing one, which needs no sensitivity mark and never did. |
 | `payment` | `payment.view`, `payment.record`, `payment.reverse` | |
 | `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view` | ⚠⚠ `report.safeguarding.view` |
 | `consent` | `consent.template.edit`, `consent.record.view` | |
@@ -176,7 +176,7 @@ requirement, and do not expect the list to survive contact with the organization
 | `system_admin` | `system.admin` — **one row, and it is enough** | `ROLE(system_admin)` | **no `MEMBERS`**, deliberately: the 1 January case below |
 | `registrar` | `person.view` ⚠⚠, `person.create`, `person.edit` ⚠, `person.contact.view` ⚠, `person.contact.edit` ⚠, `account.view` ⚠, `account.create`, `account.suspend` ⚠, `account.close` ⚠, `account.credential.reset` 🔒, `membership.view` ⚠, `membership.request.create`, `membership.request.review` ⚠, `membership.activate`, `membership.backdate` ⚠, `import.view` ⚠, `import.stage`, `import.apply` 🔒, `import.revert` 🔒 — **nineteen rows** | `MEMBERS * ROLE(registrar)` | staff working the organization's own records; the office stops when the fee lapses |
 | `membership_approver` | `membership.request.review` ⚠, `membership.request.approve` ⛔ | `MEMBERS * ROLE(membership_approver)` | as above |
-| `treasurer` | `fee.view`, `fee.create`, `fee.waive`, `fee.refund`, `payment.view`, `payment.record`, `payment.reverse`, `report.finance.view` | `MEMBERS * ROLE(treasurer)` | as above |
+| `treasurer` | `fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `report.finance.view` | `MEMBERS * ROLE(treasurer)` | as above, and one list shorter than it was: the treasurer waives nothing and refunds nothing here (D-157, D-158) |
 | `safeguarding_officer` | `membership.view` ⚠, `report.safeguarding.view` ⚠⚠, `membership.terminate` ⛔ | `MEMBERS * ROLE(safeguarding_officer)` | whoever finds the problem and whoever ends a membership over it are the same person, and nobody else |
 | `leaders` | the thirteen `event.*` codes (§8a), `membership.view` ⚠, `person_group.view` ⚠, `report.membership.view` ⚠ — **sixteen rows** | `ROLE(leaders)` | **volunteers, so no `MEMBERS`** (property 4): the office must survive a lapsed fee, and it reaches every event, not one body's events |
 | `audience_admin` | `audience.view`, `audience.manage` ⚠ | `MEMBERS * ROLE(audience_admin)` | §5a, including the naming rule this office is subject to |
@@ -210,7 +210,7 @@ the only place such a list exists at all. Three consequences for whoever writes 
 
 1. **`registrar` omits `person.merge` and `person.redact` by not having those rows, and the exclusion is
    exactly that literal**: two rows nobody inserted, visible in `access_grant` with a date and an author,
-   alarmable like any other row. `identity_reviewer` is the office that *does* hold `person.merge` — the
+   reviewable like any other row. `identity_reviewer` is the office that *does* hold `person.merge` — the
    whole of identity correction: merging, reversing a merge, and deciding a sign-up collision (§2) — listed
    beside `registrar` so the difference between the two is legible. **An office that bundles a resource
    *including* its 🔒 codes should be named for that**, since nothing else records the choice:
@@ -258,6 +258,13 @@ every grant
 ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership),
 [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)) —
 is in [removed-concepts.md](removed-concepts.md).*
+
+**There is no default, in either direction, and that is the ruling.** Which offices are written without
+the term is decided per office, by whoever writes the grant ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision));
+the `Unusual` section below lists *every* `ROLE(…)` operand with no `MEMBERS`, not a marked subset, and
+a grant written without the term needs no reason field: `grant_reason` is already an optional column on the
+row ([05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer)), and it stays optional.
+§12 carries the ruling and its edges.
 
 **The posture is opt-in, so name the new failure rather than bury it.** An expression written
 `ROLE(treasurers)` with no `MEMBERS` authorizes a lapsed member, silently, for as long as the grant
@@ -328,9 +335,10 @@ the first office somebody writes ([What an installation has](#what-an-installati
    catalog can answer. **Do not re-derive it as a list of codes to keep out of offices** — the rule is
    about the channel, and there is no code left to quarantine.
 4. **`system_admin`, `leaders` and `auditor` are the three example offices written without `MEMBERS`.**
-   The rule behind them is one sentence — **staff-like offices working on the organization's own records
-   require a membership; volunteer-facing offices do not** — and it is a writing habit now, not a
-   resolver clause.
+   The instinct behind them is one sentence — **staff-like offices working on the organization's own
+   records hold a membership; volunteer-facing offices need not** — and it is a writing habit, the
+   judgment of whoever writes each grant, not a default the design carries in either direction and not
+   a resolver clause ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)).
    The failure it prevents is specific: the volunteer whose own fee is unpaid still runs the Thursday
    meeting, and must not lose their roster the night it lapses. That volunteer's office appears in the
    `Unusual` section of the tab on the permissions page — grants naming a `ROLE(…)` operand with no
@@ -344,17 +352,21 @@ the first office somebody writes ([What an installation has](#what-an-installati
    descriptive values underneath are not evidence about that — and it is the same shape as `auditor`
    reading the trail without holding `person.view`.
    What round 8 changed is the pressure on it. This is now also the office a **blocked sign-up** lands
-   on: an account held out of `active` by an unresolved hypothesis, with an age check alerting because
-   the stalled item is a person who cannot log in
-   ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+   on ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)):
+   an account held out of `active` by an unresolved hypothesis, with the review queue's age check naming
+   it because the stalled item is a person who cannot log in — a listing read by whoever works the queue,
+   since nothing in this design sends anything
+   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
    **If reviewers begin asking for context they cannot see, that is the finding to act on**, and the two
    honest answers are a scoped, dated `person.view` on this office, or a review screen that shows more
    of the *signals*. Reaching instead for an organization-wide `person.view` would put the catalog's
    largest ⚠⚠ read in the office with the most write authority over identity. Tracked as
    [F-11](../open-questions.md#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim),
    where none of the three positions is yet recorded as taken.
-6. **No office in this set holds `person_group.member.manage`, and that is a hole rather than a neutral
-   omission.** What
+6. **No office in this set holds `person_group.member.manage`, and the omission is now ruled rather than
+   open — the blank is the answer, named as one by
+   [D-167](../decisions/round-22.md#d-167--the-office-that-may-place-a-child-in-a-group-stays-unnamed) so
+   no later round repairs it.** What
    D-095 decided has not moved: joining a set is somebody else's act, the write is never self-scoped, and
    this code is the only thing standing between a person and a group's roster (§5a). As written,
    `leaders` may *see* a roster and cannot write one — and because the answer behind D-095 was
@@ -399,26 +411,64 @@ the first office somebody writes ([What an installation has](#what-an-installati
   so there is no "prune this down" review to do.
   What remains is *additive*: each unbuilt module brings its own permissions as it is
   specified, and unused rows cost nothing.
-- **Which offices' grants carry `MEMBERS` is a decision with no default recorded anywhere.**
-  The answer is written into a grant's expression, and the control D-100 nominated for it exists — as a
-  section of a page, not a report: **the `Unusual` section of the tab
-  on the permissions page lists live grants naming a `ROLE(…)` operand whose expression contains no
-  `MEMBERS`** (§11). Nothing is refused and nothing is warned when such a grant is saved.
-  *Why: that test fires on the intended case as often as on the mistake, and a prompt that cries
-  wolf teaches the writer to route around it, so
+- **Which offices' grants carry `MEMBERS`: per office, by whoever writes the grant, no default either way
+  — not into the expression and not out of it — and that is the ruling.**
+  Which offices are written without the term is decided **per office, by whoever writes the grant**
+  ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)):
+  no office can inherit an entitlement by being written from a template, and no office can inherit a
+  lockout that way either. No screen adds the term and no screen strips it. The answer is written into a
+  grant's expression, and the control D-100 nominated for it exists — as a section of a page, not a report:
+  **the `Unusual` section of the tab on the permissions page lists live grants naming a `ROLE(…)` operand
+  whose expression contains no `MEMBERS`** (§11) — every one of them, not the offices somebody marks
+  sensitive, because a list filtered by which grants *should* carry the term would encode exactly the default
+  this ruling declines to set. And **a grant written without the term needs no reason field**:
+  `grant_reason` is already an optional column on the row
+  ([05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer)) and it stays optional,
+  because requiring one would turn the absence of a default into a small approval process. *The list's width
+  — every such grant rather than a marked subset — and the day-one clause below are this round's reading of
+  the ruling, not the ruling's own words.* Nothing is refused and nothing is warned when such a grant
+  is saved. *Why: that test fires on the intended case as often as on the mistake, and a prompt that
+  cries wolf teaches the writer to route around it, so
   [F-13](../open-questions.md#f-13) closed on the weaker half on purpose
   ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).*
-  What is still owed is the thing F-13 itself nominates: whether those `MEMBERS`-less office grants turn out
-  to be mistakes or choices.
-- **Nothing bounds what a holder of `access_grant.create` may write.**
-  So **anyone with `access_grant.create` can grant `system.admin` to anyone, including themselves**, and
-  the only remaining guard is `applies_to = unit`, which stops the *shape* of the grant and not the act
-  (§1, §7). *Why: the level ladder was still doing this one job — a grant could not carry a rank above
+  **Day one's grant carries no `MEMBERS` term at all** — it names a person, and a grant aimed at one
+  person has no expression to carry one, **and a grant that has no expression to carry one cannot be read
+  as having declined one** — so the lockout
+  [D-051](../decisions/round-04.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
+  was written against is answered by
+  [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped),
+  not by an exemption. What is still owed is the thing F-13 itself nominates: whether those
+  `MEMBERS`-less office grants turn out to be mistakes or choices.
+- **What a holder of `access_grant.create` may write now has a bound, and the bound is the writer.**
+  **A write to `access_grant` may name only a permission that the person writing it holds, at a scope
+  that reaches what they are writing** — the granter's ceiling
+  ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)), stated
+  where the model states write-path refusals, as check 7 of the seven in
+  [05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer).
+  `access_grant.create` has always said *you may write grant rows*; that it never said *what they may
+  say* was this file's sharpest hole, and the answer is none of the three options this page offered —
+  no second code for the `system.` namespace, no two-person rule, no verdict of trail-and-judgment.
+  *Why: the level ladder was still doing this one job — a grant could not carry a rank above
   its writer's own — and
   [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
-  deleted it without replacing that ceiling.* Whether the answer is a second code for
-  granting the `system.` namespace, a two-person rule, or "the audit trail and a small organization's
-  judgment" is open, and it is the sharpest hole in this file.
+  deleted it without replacing that ceiling; the bound that came back is the check the resolver already
+  performs, pointed at the granter at save time, so a writer predicts *may I grant this?* from the
+  question they already ask.* Three consequences, each stated with the rule on 05 §6: a right held only
+  through a delegation **does not raise** the ceiling — lending is not holding — and delegation still
+  works, because the delegator writes the row and holds the right directly; the ceiling stops
+  **escalation** and not **spread**: a person who holds `person.view` at the unit may hand it to twenty
+  people, since they hold it, and **no report covers that distribution and none was called for.** The entry a
+  reader will find nearest to the claim, the wide half of check 7 in
+  [05d §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify), is about something else — a
+  grant that widened because a set under a `-` stopped resolving, which is an expression changing shape under
+  a row nobody edited; and
+  `granted_by` is now the precondition of a security rule rather than bookkeeping, because the ceiling
+  reads a named person and
+  [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)
+  guarantees every grant row names one. Day one is untouched: the account of
+  [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)
+  holds `system.admin` at the unit, which satisfies every code, so the origin of authority is exempt by
+  construction rather than by a special case.
 - **`event.grant_access` has a subject, and the subject is every event.** What distinguishes it from
   `access_grant.create` is the scope alone (§8a), and the reading this file left open is the one that stands:
   it is a scoped front door onto the same table, and it arrives **in the bundle of twelve that the act
@@ -552,7 +602,10 @@ the first office somebody writes ([What an installation has](#what-an-installati
   ([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
   **What moved is where the mistake can be made**: it is now whoever first writes
   `MEMBERS * ROLE(system_admin)` "for consistency" (§11), and every office grant that will ever exist has
-  been written by hand, since no grant arrives from anywhere carrying anything (§11).
+  been written by hand, since no grant arrives from anywhere carrying anything (§11). The January reason
+  survives as a property of day one rather than as a rule about offices, and that is now the ruling and
+  not a reading: the design states no default for `MEMBERS` in either direction
+  ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)).
 - Whether `report.*` should be per-report permissions or one `report.view` with
   row-level filtering.
 - Whether the organization has offices this catalog does not anticipate (a chaplain, a
@@ -583,13 +636,21 @@ the first office somebody writes ([What an installation has](#what-an-installati
   **refused rather than pending**
   ([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are))
   and so is not a gap in the registry — **no operand may be added for it, and nothing reserves its name**.
-- **Which office may put a person on a group's roster is unanswered, and on day one the only grantee that
-  may is the one account holding `system.admin`.** `person_group.member.manage` is the whole of the right
-  to place a person in a set: one code,
+- **Which office may put a person on a group's roster is not named, and the blank is the answer.**
+  [D-167](../decisions/round-22.md#d-167--the-office-that-may-place-a-child-in-a-group-stays-unnamed)
+  rules that this stays unnamed **on purpose**, so that no later round repairs it as a hole:
+  `person_group.member.manage` is the whole of the right
+  to place a person in a set — one code,
   `applies_to = unit_and_item`, never self-scoped, and the only thing between a person and a roster
-  (§5a, §11 property 6). The
-  catalog's side is settled; what is missing is a decision the organization records as `role` rows and
-  grant rows, not a code.
+  (§5a, §11 property 6) — and on day one the only grantee that may write a roster is the one account
+  holding `system.admin` at the unit. The catalog's side is settled; which volunteer office holds the
+  code is the organization's decision to record as `role` rows and grant rows, for the reason §11
+  property 6 carries: an appendix that quietly hands it to `leaders` would be making a safeguarding
+  choice on someone else's behalf. The cost sits in day one rather than in the schema — the first
+  roster anybody builds is built by the account that must not be used day to day — and the relief is
+  one `role` row and a grant, not a migration
+  ([D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office),
+  [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
 - **`message.broadcast` has one scope, and messaging has not ruled on what that means.**
   There is one unit scope
   ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),

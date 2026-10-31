@@ -171,7 +171,7 @@ inferred from date arithmetic.
 | `public_id` | uuid, required, generated | The identifier used outside the system; unique. |
 | `person_id` | reference to `person`, required | |
 | `membership_type_id` | reference to `membership_type`, required | |
-| `status` | text, required | One of `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`, `completed`. No default — the state is always chosen deliberately. |
+| `status` | text, required | One of `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`, `completed`. No default — the state is always chosen deliberately. **`completed` has exactly one writer: the legacy import marks every closed period it inserts `completed`**, because none of the six means *a source stated this and nobody here decided*, and `completed` is the second-worst of the two readings available ([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page)); `low` in the column below is what makes it survivable. |
 | `valid_from` | date, required | |
 | `valid_to` | date, optional | NULL = open / current. **Never NULL on an imported row** — both ends are what makes an imported membership safe, and check 1 of [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks) counts the rows that broke it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)). |
 | `joined_via_request_id` | reference to `membership_request`, optional | |
@@ -504,6 +504,18 @@ same grant, which `PERSON` being a seeded selector makes ordinary
 outlive the office and carry its own dates, it is a second grant aimed at the person instead
 ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
 
+**And that is the ruling, not an assumption standing in for one: per office, by whoever writes the grant,
+no default either way — not into the expression and not out of it**
+([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)). No
+screen fills the term in and no screen strips it, **and a grant written without the term needs no reason
+field** — `grant_reason` is an optional column and stays optional. **Day one's grant carries no `MEMBERS`
+term at all:** it names one person, and a grant aimed at one person has no expression to carry one, **and a
+grant with no expression to carry one cannot be read as having declined one** — so the lockout
+[D-051](../decisions/round-04.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
+was written against is answered by
+[D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)
+and not by an exemption.
+
 **Guardianship and ownership were never gated.** A parent's authority comes from a legal
 relationship, so an unpaid fee must not stop a parent acting for their child; and a lapse must not
 lock a person out of the very screen they renew on. Both are channels, and a channel is not something
@@ -692,18 +704,33 @@ and a reference, a form or a photograph has never been a condition of joining.
   only a year of real lapses answers the value.
 - Whether `outstanding_balance` should exist as a denormalised column or be computed
   (§3) — depends on the finance design in [07-finance.md](07-finance.md).
-- **Which offices are written without `MEMBERS`.** The membership gate left the resolver for the grant
-  text (§6, D-100), so somebody has to decide, per office, that a lapsed member may still hold it —
-  and nothing in the model records who decided it or why, only whether the expression contains the
-  word. The standing report of §7 check 1 is the control over the outcome, not over the choice.
-  *Assumption:* this is left to whoever writes the grant, which is the honest reading of D-100
-  rather than a ruling in it.
-- **Whether a group is ever allowed to state an age rule of its own.** A group carries no eligibility
-  and
+- **Which offices are written without `MEMBERS` is ruled, and what it rules is that nothing defaults.**
+  The membership gate left the resolver for the grant text (§6, D-100), so somebody decides, per office,
+  that a lapsed member may still hold it — and nothing in the model records who decided it or why, only
+  whether the expression contains the word. The standing report of §7 check 1 is the control over the
+  outcome, not over the choice. **What was an assumption is now the ruling: per office, by whoever writes
+  the grant, no default either way — not into the expression and not out of it** — so no office inherits an
+  entitlement from a template and none inherits a lockout, **and a grant written without the term needs no
+  reason field**, `grant_reason` staying the optional column it is
+  ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)).
+  **Day one's grant carries no `MEMBERS` term at all** — it names one person, and a grant aimed at a
+  person has no expression to carry one — so the lockout
+  [D-051](../decisions/round-04.md#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag)
+  was written against is answered by
+  [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)
+  and not by an exemption. *Two clauses here are this round's reading of the ruling rather than the
+  ruling's own words: that the report of §7 check 1 lists every such grant rather than the offices somebody
+  marks sensitive, and that a grant with no expression to carry the term cannot be read as having declined
+  one.*
+- **Whether a group is ever allowed to state an age rule of its own is answered: it is not, and the age
+  rule is a report.** A group carries no eligibility and
   [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
   refuses it one, so nothing says *children only* about a group today; the answer is a report over
   `person_group_member` and `is_minor()`, which is a question about the data rather than a rule in the
-  model. Left as a question for [../open-questions.md](../open-questions.md) rather than answered here.
+  model — and that is the ruling now rather than the gap: **age is reported and never enforced**, so no
+  column, no check and no gate is owed to it, and enforcement is declined rather than deferred
+  ([D-168](../decisions/round-22.md#d-168--age-is-reported-and-never-enforced)). What it is enforced *by*
+  is whoever reads the report; what it costs is that nothing stands between a roster and a mistake.
 
 **Settled, and stated where the rule lives rather than here.** Whether a person may
 hold several open memberships, when a membership activates, whether permissions follow membership

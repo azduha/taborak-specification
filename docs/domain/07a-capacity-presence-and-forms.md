@@ -58,9 +58,13 @@ safeguarding signal
 ([D-067](../decisions/round-05.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
 
 **Why this matters more than it looks.** For a camp, the end-of-week roster is the record
-of who was actually in the organization's care. That is the row that matters if the fee buys
-insurance (finance question 9: *"member on the date of the incident"*), and it is the row
-that cannot be reconstructed afterwards from registrations. It is also why the column is
+of who was actually in the organization's care — **the only "who was there" this design
+keeps**, which is the reason it is marked deliberately rather than derived
+([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership) removed the other
+reason anybody had to ask: the fee buys membership and nothing else, so no date in this system is
+evidence of cover, and the question "was this person a member on the date of the incident" is no
+longer a question this system is asked to answer). It is also the row that cannot be reconstructed
+afterwards from registrations. It is also why the column is
 marked by an organizer and recorded with who marked it and when.
 
 **Presence is not registration.** A child who registered and did not come is a registration
@@ -139,21 +143,22 @@ So the questions that a `draft` status would answer are answered by grants:
 | "How do I hide it again?" | Revoke the grant — `revoked_at` set, row kept — or write a deny |
 
 **Cancellation is a fact, not a status**, and the logic diverges from visibility here because the audience
-is different: the people who must be told are the people who registered, and they must be able to see the
-event to be told anything.
+is different: the people who need to find out are the people who registered, and they must be able to see
+the event to find out anything.
 
 Three columns carry it: `cancelled_at` says when, `cancelled_by` says who — a person, so the
 decision has a name attached to it — and `cancel_reason` says why.
 
 > **Cancelling by revoking grants would hide the cancellation from exactly the people who
-> need it.** The registrants are the ones who must be told the camp is off; if the event is
+> need it.** The registrants are the ones who need to read that the camp is off; if the event is
 > hidden by revoking their `view`, they see nothing at all — not "cancelled", just gone.
 > So cancellation is recorded, and the event stays visible, marked.
 
 A cancelled event **stops accepting registrations** (the registration window closes
 implicitly) and **keeps every existing row**: those registrations are the record that the
-camp was planned and who was coming. That record is exactly what is needed afterwards — to
-notify people, and to refund them.
+camp was planned and who was coming. That record is exactly what is needed afterwards — to refund
+them, and to know whom a cancellation notice would have to reach, since nothing in this design sends one
+([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
 
 **`completed` is derived, never set.** `cancelled_at IS NULL AND ends_at < now()`. There is
 no state to keep consistent, and no job to move events between states.

@@ -364,8 +364,10 @@ The **Sens.** column flags permissions that need extra care:
 | 🔒🔒 | The **escalating** half of that family: granting it changes what **other people** can do, not merely what the holder can do. `role.*` is marked this way in [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape), which names it "the most sensitive code family in the catalog" |
 | ⛔ | Granting it can end someone's membership or standing |
 
-These marks should drive UI warnings and the alerting in
-[../data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify).
+These marks should drive UI warnings, and they are what the reports in
+[../data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)
+are read with — a mark is on the screen somebody opens, because nothing in this design sends anything
+to anybody ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
 **A mark grades what a grant exposes, not the table a code names**
 ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)),
 and the two families a reader is most likely to place wrongly are placed by it: `person_group.member.manage` takes **⚠** because a

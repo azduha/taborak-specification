@@ -91,8 +91,8 @@ parent who only ever manages their child is exactly this case.
 already exists runs into
 ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
 Verification is necessary and not sufficient; a human decision is the second condition. Because that
-makes a stalled queue a person who cannot log in, a hypothesis that blocks activation is age-checked
-and alerts. One live account per person is the rule doing the underlying work
+makes a stalled queue a person who cannot log in, a hypothesis that blocks activation is age-checked,
+and somebody reads the count. One live account per person is the rule doing the underlying work
 ([02-actors.md §3](02-actors.md#3-account-state-machine)).
 
 ### 3.2 Membership lifecycle
@@ -284,8 +284,10 @@ Referenced by the schema but not designed, pending your specification:
   permission, the recipient chooses the channel, a minor's guardians get a mirror of a direct
   message), and its codes are in the catalog. There is no `message` or `message_recipient` table yet,
   and no design for templates, opt-out granularity, retention or moderation.
-- **Notifications** — the renewal window made them dated rather than status-driven, which is a design
-  note, not a design.
+- **Notifications** — nothing in this design sends anything to anybody today
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)), and what is
+  deferred is a module nobody has designed: the renewal window made notifications dated rather than
+  status-driven, which is a design note, not a design.
 - **Documents, reporting, API and UI.**
 
 ---

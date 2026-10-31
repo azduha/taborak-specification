@@ -441,7 +441,9 @@ These were executable queries. They are now requirements stated in prose, and no
    ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)), and a birth date cannot go stale the
    way a category recorded when a row was opened would. **This is a
    safeguarding gap, not a data-quality nit**: the organization holds a member it cannot contact in
-   an emergency and cannot obtain consent from. It should alert, not log. This check is one of the
+   an emergency and cannot obtain consent from. It is the finding here that most demands a reader, and
+   nothing sends it to one
+   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). This check is one of the
    reasons `guardianship` is a required part of the model rather than an optional convenience.
 
    **The second half was added by [D-082](../decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),

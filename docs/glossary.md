@@ -51,7 +51,7 @@ nothing is activated.** The contact point the person typed survives as the crede
 was offered as, and `identity_reviewer` decides it with `person.merge`. The holding
 message confirms nothing, since a sign-up form that can answer "yes, that person exists"
 is an existence oracle over a roster of children; and a hypothesis that is blocking an
-account gets an age check that alerts, because a stalled queue is not a
+account gets an age check that somebody reads, because a stalled queue is not a
 data-quality problem but a specific person who cannot log in
 ([D-089](decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
 "I have a new e-mail
@@ -174,7 +174,7 @@ months is the floor the window may be set to. **Not redaction**, which is a name
 person's erasure, immediate and absolute, and reaches payloads of any age; **not an
 import revert**, which deletes the rows a batch created. Reduction is the one case in
 this design that deliberately unwrites *later* than the write, so its failure mode is not
-running at all — hence a scheduled job with a check that alerts on any row past its
+running at all — hence a scheduled job with a check that reports any row past its
 window still carrying a payload
 ([D-088](decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
 
@@ -530,7 +530,7 @@ channel, not a level — fixed to that set **at the moment of sending**. Visibil
 approval: nobody has to agree before the message is sent. A guardian at `none` receives
 nothing, because `none` is the organization having already decided that this party sees
 nothing about the child — and a minor whose guardians are *all* `none` is the same
-alertable shape as a minor with no guardian at all, so it is reported together with it
+shape as a minor with no guardian at all, so it is reported together with it
 ([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)).
 
 ---

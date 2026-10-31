@@ -197,10 +197,11 @@ sign up for a camp on the day the form closes, which is not self-correcting at a
 
 Two obligations come with the gate, and neither is a queue-management nicety:
 
-- **A hypothesis that is blocking an account gets an age check, and it alerts.** Its victim is a
+- **A hypothesis that is blocking an account gets an age check, and somebody reads it.** Its victim is a
   specific person who cannot log in and whose only remaining channel is to telephone someone. The check
   is shaped like `field_conflict`'s thirty days
-  ([08a-event-guards-and-checks.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks)); the alerting is the point.
+  ([08a-event-guards-and-checks.md §10](../data-model/08a-event-guards-and-checks.md#10-integrity-checks));
+  that a person opens it is the whole point of having it.
 - **The holding message confirms nothing.** It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -549,7 +550,7 @@ the confirmation step remains, for the reason in §3.
 account may not reach `active` while an unresolved hypothesis *names its person*, and a self-asserted
 claim names that person exactly as a collision does. So the smooth path has a human between registration
 and login, where the review could otherwise happen after the person was already using the system. The
-mitigation is the age check that alerts (§4), plus the fact that with a legacy number in hand step 2 is a
+mitigation is the age check that gets read (§4), plus the fact that with a legacy number in hand step 2 is a
 lookup a registrar settles in seconds. What is *not* settled is whether a hypothesis the person raised
 about themselves should hold their account out of `active` at all, as against a hypothesis the system
 raised about a stranger who happened to match. Recorded in §9.

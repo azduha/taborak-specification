@@ -151,12 +151,21 @@ grant aimed at `EVERYONE` or `MEMBERS` (§6.2).
 ([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
 It crosses no boundary, because there is no boundary for it to cross.
 
-Two properties keep a wildcard from being the hole in the design, and both stand on their own:
+Three properties keep a wildcard from being the hole in the design, and each stands on its own:
 
-1. **Its holders are alarmed on.** The report listing current holders must notify on every change — a
-   new holder is either a planned act or an incident, and either way someone should know within the
-   hour.
-2. **It is not delegatable** (§9), and it is `applies_to = unit`, so it cannot arrive on an item.
+1. **It can be handed out only by somebody who already holds it** — the ceiling is §5's, and what it buys
+   here is that this code changes hands only through hands that already hold it
+   ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds); the refusal
+   is [05 §6](../data-model/05-authorization.md#what-is-refused-when-a-grant-is-saved)). A right held through
+   a delegation raises no ceiling (§9), so that path opens no gap here either.
+2. **Its holders are on a list, and the list is read.** It is what tells a planned change from an
+   incident; what it does not do is reach anybody by itself, because nothing in this design sends a message
+   when the set changes, so the hour a new holder is noticed in is the hour somebody opens the report
+   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **One thing
+   this does not sweep away:** [D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)'s
+   break-glass procedure names one recovery person in advance, and that name stays — a procedure needs a
+   person where a notification needs none, and nothing here is a notification.
+3. **It is not delegatable** (§9), and it is `applies_to = unit`, so it cannot arrive on an item.
 
 **Day one is one account holding this code, and nothing else.** An installation ships no roles, no
 audiences and no grants: setting it up writes one ordinary `access_grant` row granting `system.admin` at
@@ -363,9 +372,15 @@ a second code for the same write:** every event carries `event.grant_access` amo
 creation wrote for `ORGANIZERS`, so whoever runs a camp can give the nurse, the cook and the two assistant
 leaders access to it **without holding `access_grant.create` at the unit and without asking anyone**
 ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
-Two questions, two codes, one table: what bounds them is the scope they can name — their own event, so
-nothing they write reaches another event, a group, or the unit — and `applies_to`, which refuses
-`system.admin` on an item because that code is `applies_to = unit` (§2).
+Two questions, two codes, one table. Three things bound them: the scope they can name — their own event, so
+nothing they write reaches another event, a group, or the unit — `applies_to`, which refuses `system.admin`
+on an item because that code is `applies_to = unit` (§2), and **the granter's ceiling**, which refuses a row
+naming a permission its writer does not hold, at a scope that reaches what they are writing — the check the
+resolver already performs, pointed at the granter at save time
+([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)). The second
+and third are different kinds of bound and worth keeping apart: `applies_to` says where a code may ever be
+granted, the ceiling says who may grant it. So the item-facing door is wide but not open: an organizer hands
+out what they hold, at a scope that reaches the event in front of them, and no code they do not hold.
 
 ### Allow and deny are not symmetrical
 
@@ -550,8 +565,10 @@ Nothing errors, nothing reports itself when it happens, and nothing about the gr
 lapsed treasurer is still a treasurer. Three controls, **none of which is the resolver**:
 
 1. **A standing report** of live grants naming a `ROLE(...)` operand whose expression does not contain
-   `MEMBERS`. An office held by a non-member is the case worth a human eye, and the report is narrow
-   enough to actually be read.
+   `MEMBERS` — **every one of them**, since nothing marks which offices should have carried the term
+   ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)). An
+   office held by a non-member is the case worth a human eye, and the report is narrow enough to actually be
+   read.
 2. **The grants this system writes for itself are named, and the omission inside them is deliberate.**
    Creating an event writes twelve item-scope allows beside the event row, every one aimed at the bare
    operand `ORGANIZERS`, and not one of them carries `MEMBERS` — an organizer appointed for one weekend is
@@ -565,13 +582,17 @@ lapsed treasurer is still a treasurer. Three controls, **none of which is the re
    [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
    must count people marked as counselors in the corpus against `role_holder` rows written.
 
-**Who the test should spare is a decision the organization has already made,** and it decides the
-default: *"everything except guardianship and adult volunteers."* A volunteer whose own fee is unpaid
-still runs the Thursday meeting, and losing the roster on the night the fee lapses is the failure to
-prevent. So leaving `MEMBERS` out is the **normal** shape of a grant to a contractor, a photographer
-or a parent helper, not an exemption somebody must be granted. The line that judgment draws holds, and
-it holds hardest where only a report stands behind it: **the report is how the organization notices;
-the resolver is not how it punishes.**
+**Who the test should spare is a decision the organization has already made,** and it is a judgment about
+each grant rather than a default the design carries: *"everything except guardianship and adult
+volunteers."* A volunteer whose own fee is unpaid still runs the Thursday meeting, and losing the roster on
+the night the fee lapses is the failure to prevent. So leaving `MEMBERS` out is the **normal** shape of a
+grant to a contractor, a photographer or a parent helper, not an exemption somebody must be granted. **And
+the ruling is that there is no default either way — not into the expression and not out of it:** per office,
+by whoever writes the grant, with no screen filling the term in and no screen stripping it, and a grant
+written without the term needs no reason field — `grant_reason` stays the optional column it is
+([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)). The line
+that judgment draws holds, and it holds hardest where only a report stands behind it: **the report is how the
+organization notices; the resolver is not how it punishes.**
 
 *Why the test sits in the expression.* A resolver clause applies to everything or nothing, and so has
 to carry its own exemptions; an expression says which grants are gated, in the text of the grant,
@@ -783,6 +804,10 @@ Rules:
   the delegator losing the code mid-delegation changes nothing, which is the cost of this rule and is said
   out loud rather than left to be discovered. **Two bounds remain:** a delegation must carry an end date
   (the check above), and `system.admin` cannot be delegated at all.
+- **Lending is not holding:** the ceiling (§5) reads the writer's own grants, so a permission held only
+  through a delegation cannot be lent on, while the delegation already written stands to its own `valid_to`
+  (D-143 above)
+  ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)).
 - **The provenance is recorded**, so an audit can answer "who really had this authority on that date?"
   — it lists both the holder and the delegator.
 - **A deny cannot be lent and cannot be lent around.** A delegation is an allow; the delegatee's
@@ -901,8 +926,9 @@ an unpaid debt rather than as a feature.
 attribution for an act, not a dependency of the authority: the installer's account being suspended, their
 membership lapsing, a deny written against them and their leaving all change nothing about the row
 ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
-`owner_person_id` is optional and is **a contact, not a channel** — *who do we telephone when this stops* —
-and nothing reads it to decide an answer. `valid_to` is optional and absent means current: **a mandatory
+`owner_person_id` is optional and is **a contact, not a channel** — *whose number to look up if this row
+needs asking about* — nothing reads it to decide an answer, and nothing in this design telephones that
+person when a key goes quiet: the name is there for whoever is reading the tab `valid_to` is optional and absent means current: **a mandatory
 expiry was offered and refused**, because a key is not a delegation (§9) and an expiry would buy a
 stopped integration on a date, with the failure surfacing wherever that integration writes. The control is
 a line on the permissions page's `Unusual` tab — every live key, what it holds, when it was last used, and
@@ -943,10 +969,9 @@ listed here because a reader of this page needs to know where the edge is, not b
 
 ## 11. Open issues
 
-- **Which grants are meant to carry `MEMBERS`?** Nothing enforces it (§6.1), and the tab that lists the
-  answer is decided while its threshold is not — *every* `ROLE(...)` operand without `MEMBERS`, or only
-  the offices marked sensitive? It lands in the tab's `Unusual` section either way, so what is still
-  undecided is only how wide that section is
+- **Who opens the `Unusual` section of the tab.** §6.1 rules the `MEMBERS` question itself, including that
+  the section lists every live grant naming a `ROLE(…)` operand whose expression carries no `MEMBERS`; what
+  remains is F-21's older question, whether a tab gets opened at all
   ([F-13](../open-questions.md#f-13),
   [F-21](../open-questions.md#f-21)).
 - **The holder period.** Nothing forces a `role_holder` row to end, and the report stands alone (§4,

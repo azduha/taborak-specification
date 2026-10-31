@@ -298,11 +298,37 @@ a live question again rather than a question about a participation row. Three de
 | End at the end of the organizational year of the last period the person appears in | Defensible, documented | May truncate a period that continued |
 | End at the last date the person appears in *any* export | Best fidelity, needs all exports | Requires the complete dataset |
 
-**Recommended default:** end at the end of the organizational year of the last period in
-which the person appears, marked `data_confidence = 'low'` and with a parse warning. Never
-NULL — **and read that as the surviving half of the ban D-090 left standing: never an open-ended
+**The rule: end at the end of the organizational year of the last period in which the person appears, marked
+`data_confidence = 'low'` and with a parse warning**
+([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)).
+The table above was written with its middle row's hinge left blank — *which day is the end of the organizational
+year* — and the blank was answerable from two pages away: the organizational year runs with the calendar
+([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)), so the person's last day as a member is
+**31 December**. Read `valid_to` as the column actually is, though. Every period here is half-open and
+[`is_current_member`](03-membership.md#current-membership-queries) requires `valid_to` to be *after* today, so the
+value written is **1 January of the following year**; a literal 31 December ends the row on the thirtieth, which is
+one day short in every imported record and invisible in every report that does not name the day. The boundary is
+read from `expiry_month` and `expiry_day` on the `membership_type` row and never compiled in as a literal, for the
+only reason those two columns exist — a job containing `1` and `1` is the one way to lose the property that the
+date may be moved.
+
+**The other two rows are refused, and not for the same reason.** Leaving `valid_to` NULL stays banned outright:
+an open imported row satisfies `is_current_member()` and so walks through the permission gate
+([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)). Ending at the
+last date the person appears in *any* export is refused on feasibility rather than on principle — it is the
+highest-fidelity option in the table and it requires the complete dataset, which the corpus is not: two exports
+with gaps
+([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
+[D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)). What the chosen
+rule buys that the third would not is that an imported period ends on the boundary a live membership's period ends
+on, so the yearly sweep and the member-count-per-year report read one calendar.
+
+Never NULL — **and read that as the surviving half of the ban D-090 left standing: never an open-ended
 membership, and never one inferred from an attendance row** (§3.1). Both ends of the period are what makes
-an imported membership safe; the import itself is not.
+an imported membership safe; the import itself is not. The cost of this rule is stated in its own table: a period
+that really did continue into the next year is truncated. That is the direction of error this design takes — short
+by a year, which surfaces as a person who cannot sign in, rather than open forever, which surfaces as a person who
+can.
 
 ### 3.1 What a source row actually evidences
 
@@ -390,8 +416,12 @@ ever since it wrote "check 1 in §5", citing a section this page did not have.
    **this is the only check on this page that reaches the permission gate**: an open membership satisfies
    `is_current_member()` (D-039), so a row the end-date inference left open, or a membership written from an
    attendance list, hands authority in the present to whoever signs up under that name decades after the
-   file was last read (§3.1). **Non-zero here is not untidy data; it is authority, and it alerts** — the
-   same shape as 09's erasure check, in that a single row is the finding.
+   file was last read (§3.1). **Non-zero here is not untidy data; it is authority** — the
+   same shape as 09's erasure check, in that a single row is the finding, and the same shape as that one in
+   that nothing sends this finding to anyone: since
+   [D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)
+   supplies the missing date at parse time, a non-zero result here means the inference did not run, which is a
+   bug in a path rather than a question for a person.
 2. **One event per (title, date), and one registration per attendee row.** `uq_staging_event_match` (§3) is
    enforced inside the transaction that applies a staged row, deliberately at the application layer, because
    the pair spans rows of a batch rather than columns of a row. **That is exactly why the report exists**:

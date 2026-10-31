@@ -351,7 +351,8 @@ obeyed. A rule whose failure mode is absence cannot be pinned to the write at al
 reduction at the moment of writing is not obeying it, it is refusing it**, because the window is the
 entire content of the rule and at write time there is no window to have passed. So reduction is a
 scheduled job with a check underneath it, and the check *is* the rule rather than a reassurance about
-it: check 7 in §5 counts rows older than the window that still carry a payload, and alerts. The sentence
+it: check 7 in §5 counts rows older than the window that still carry a payload, and nothing about that count
+is sent anywhere ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). The sentence
 above forbids late unwriting of a credential; this paragraph requires late unwriting of history; both
 are true at once and neither is an exception to the other.
 
