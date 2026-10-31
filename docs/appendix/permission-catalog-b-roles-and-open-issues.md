@@ -157,7 +157,7 @@ answers away the night their fee lapsed. **They are also the only grants this sy
 that is worth stating beside one of D-100's three controls, which counted on a shortcut that does not exist
 here: it was that *any grant template carries `MEMBERS`, so the path of least repetition is the safe path*,
 and **there is no repetition to take** — every grant an office holds will have been written by hand, and the
-one automated write path in the system produces twelve rows that must not carry it (§12). *Nor can
+one automated write path in the system produces twelve rows that must not carry it ([05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer)). *Nor can
 those twelve be one row covering every event — a bound operand cannot sit on a unit-scope grant — which is
 why the act that creates an event writes them beside it (§8a).*
 

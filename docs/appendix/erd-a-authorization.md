@@ -214,8 +214,9 @@ The authorization model as one diagram, the tables behind it, and the expression
   The consequence worth remembering: a bound operand is illegal at the unit, so
   "every event's answers go to its organizers" is **twelve item-scope allows** written beside the event
   row by the act that creates the event, one set per event, in one transaction — and an event whose
-  creation died partway through has nobody who can read its answers, which is what the *events with no
-  answer-view grant* report is for. **That failure has an author**: one create, named in the trail,
+  creation died partway through has nobody who can read its answers, which is what the *events with an
+  incomplete organizer bundle* report is for — it counts every event, not only staffed ones, and names which
+  of the twelve are absent. **That failure has an author**: one create, named in the trail,
   rather than a configuration step nobody took
   ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
 - `scope_id` is polymorphic (no FK) so a new grantable item type is a config row, not a

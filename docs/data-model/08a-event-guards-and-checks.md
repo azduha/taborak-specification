@@ -304,12 +304,17 @@ identifiable and the mark stays ([00-conventions §8](00-conventions.md#8-person
    result is evidence about the code, not the data: somebody added a path that saves a grant
    without going through the check, and a grant like this resolves to the empty set and
    silently authorizes nobody.
-2. **An event whose organizers hold no answer-view grant.** Counts non-cancelled events
-   that have at least one `event_organizer` row and no live allow of `event.answer.view` on
-   that event aimed at `ORGANIZERS`. The twelve grants are written by the act that creates the
-   event (§8), so the failure shape is the one check 10 knows well: an event imported or
-   created by a path that forgot, where the organizers cannot read the answers of the camp
-   they are running, and every row they left behind is individually correct. **Since
+2. **An event whose organizers do not hold the twelve.** Counts non-cancelled events for which
+   any of the twelve is missing — a live `allow`, on that event, of each `event.*` code except
+   `event.create`, aimed at an audience whose expression is the bare operand `ORGANIZERS` (§8).
+   **Every event is counted, not only events that already have an organizer row:** the twelve are
+   written at the create, while that set is still empty, so an event nobody has staffed yet is owed
+   all twelve already. The report names **which** of the twelve are missing, because eleven of a
+   bundle is the same defect wearing different clothes — a missing `event.answer.view` means the
+   organizers cannot read the answers of the camp they are running (⚠⚠, and the row this report was
+   originally written for), a missing `event.manage_participants` means they cannot fix the roster at
+   the gate. The failure shape is the one check 10 knows well: an event imported or created by a path
+   that forgot, where every row it left behind is individually correct. **Since
    [D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)
    this report has an author to name:** an event arrived without its bundle through some one create or
    some one batch, which makes it a bug report about a path rather than about a missing migration. The

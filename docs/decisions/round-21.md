@@ -254,10 +254,16 @@ correction is recorded here and annotated on D-132 rather than pasted into its b
   almost nothing: an organizer may register themselves for their own event, which is the eligibility rule,
   not a privilege. A round that hand-picked the list would have left it out and would have had to maintain
   the omission forever.
-- **An event whose twelve rows did not arrive is the same failure as ever**, and check 2 still counts it;
-  the difference is that the failure now has an author. "The organizers cannot read the answers of the camp
-  they are running" reads as a bug report about a specific create, which is what D-132 predicted and what
-  the check is for.
+- **An event whose twelve rows did not arrive is the same failure as ever**, and check 2 still counts it.
+  Two things about that check moved, because a bundle is not a row: it is **renamed the *events with an
+  incomplete organizer bundle* report**, **counts every non-cancelled event rather than only events that
+  already have an organizer row** — the twelve are written at the create, while `ORGANIZERS` is still empty,
+  so an event nobody has staffed is owed all twelve already — and it **names which of the twelve are
+  missing**, because eleven of a bundle is the same defect wearing different clothes: a missing
+  `event.answer.view` is a camp whose organizers cannot read its answers (⚠⚠, and the row the report was
+  written for), a missing `event.manage_participants` is a roster nobody can fix at the gate. The older name
+  survives where it was coined, in [round 10b](round-10b.md), which is right — it is what the report was
+  called when it counted one row.
 
 ---
 

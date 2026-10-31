@@ -635,8 +635,9 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 > organizer's read of their own event's answers away the night their fee lapsed
 > ([D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)).
 > What is open is the safety net rather than the rule: an event whose twelve writes were not one transaction
-> has no organizer who can read its answers, and "these rows exist together" is a report — *events with no
-> answer-view grant* — that no layer of this project can express as a
+> has no organizer who can read its answers, and "these twelve rows exist together" is a report —
+> *events with an incomplete organizer bundle*, naming which of the twelve are absent — that no layer of this
+> project can express as a
 > constraint ([shape 3](../data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
 > **That failure now has an author**, which is what the check is for: it reads as a bug report about one
 > create, not as a missing migration.

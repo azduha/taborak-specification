@@ -422,7 +422,7 @@ item-scope `allow` per code whose `applies_to` admits an event — **twelve besi
 event**, `event.answer.view` among them — each aimed at the bound operand `ORGANIZERS`
 ([D-151](decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
 An event created without them has organizers who can do nothing, which is why the
-*events with no answer-view grant* report exists
+*events with an incomplete organizer bundle* report exists ([08a §10 check 2](data-model/08a-event-guards-and-checks.md#10-integrity-checks))
 ([D-062](decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)).
 
 **Registration** — One person's answer about one event: `attending`, or `not_attending`.
