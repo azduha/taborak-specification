@@ -2330,6 +2330,8 @@
       
         
       
+        
+      
     
     
     
@@ -2941,6 +2943,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3452,7 +3482,11 @@ rows and on nothing else. <strong>Both of those columns have a live writer: the 
 <code>membership</code> rows.</strong> The export states a membership period directly rather than only attendance, so
 the batch writes one row per stated period — <code>data_confidence = 'low'</code>, <code>import_batch_id</code> set,
 <strong>both ends dated</strong> (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>,
-<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>). <strong>An imported membership never
+<a href="../03-identity-and-legacy/#7-legacy-import-pipeline">domain/03 §7</a>), <strong>and <code>status = 'completed'</code></strong>, the value
+an imported closed period carries: none of the six means <em>a source stated this and nobody in the system
+decided it</em>, and <code>completed</code> is the second-worst of the two available readings, taken knowingly
+(<a href="../../decisions/round-22/#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page">D-162</a>).
+<strong>An imported membership never
 runs open-ended to today, and none is inferred from an attendance row</strong> — the part carrying the weight,
 because an open membership satisfies <code>is_current_member()</code>, so an inferred one would make every 1998
 roster a current member today. So
@@ -3652,8 +3686,13 @@ is corrected or a person returns.</p>
 </tr>
 </tbody>
 </table>
-<p>There is no <code>completed</code> row any more. It existed only for ageing out, and ageing out no
-longer exists (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>).</p>
+<p><strong>No transition above writes <code>completed</code>, and none will.</strong> The value existed only for ageing out, and
+ageing out no longer exists (<a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a>). <strong>The one
+writer <code>completed</code> has is not a transition:</strong> the legacy import writes it on the row it inserts, so the
+status appears in the data with no live path leading to it
+(<a href="../../decisions/round-22/#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page">D-162</a>,
+§3) — and §9 keeps the warning about what such a row reads as. <code>terminated</code> stays exactly what this table
+says it is for, untouched by the import.</p>
 <p><strong>Termination must not be the same permission as lapsing.</strong> A lapse is administrative
 (nobody paid). A termination is a decision about a person's standing in a youth
 organization, often with safeguarding implications. Conflating them means every volunteer
@@ -3785,7 +3824,7 @@ membership does not change when they turn 18, because it was never about their a
 </tr>
 <tr>
 <td>Whether a person may hold an office</td>
-<td>Nowhere either: <code>role</code> carries no age column and no eligibility fields at all (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>), so what remains is <code>is_minor()</code> in a report over <code>role_holder</code> — <strong>a report, not a check</strong>, since nothing refuses an office to a minor. §9 carries the question</td>
+<td>Nowhere either: <code>role</code> carries no age column and no eligibility fields at all (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>), so what remains is <code>is_minor()</code> in a report over <code>role_holder</code> — <strong>a report, not a check</strong>, since nothing refuses an office to a minor — and that is now the ruling rather than the gap: the age is reported and nothing is ever refused on it (§9, <a href="../../decisions/round-22/#d-168--age-is-reported-and-never-enforced">D-168</a>)</td>
 </tr>
 <tr>
 <td>Consent for a minor's own account</td>
@@ -3852,9 +3891,10 @@ minors. A list of ten that quietly became eight is how a specification loses a r
    a group is explicitly listed as carrying no such rule
    (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
    So there is nothing to check a placement against, in either vocabulary, and no plan for there to
-   be one. What stands in its place is upstream — nobody is added to a group by somebody who does
-   not hold that group's roster write — plus a report of who holds that write, which is a question
-   about grants, not about people (§7)</li>
+   be one — <strong>and that is a ruling now rather than a hole: the age is reported and nothing is enforced
+   on it</strong> (<a href="../../decisions/round-22/#d-168--age-is-reported-and-never-enforced">D-168</a>). What stands in
+   its place is upstream — nobody is added to a group by somebody who does not hold that group's roster
+   write — plus a report of who holds that write, which is a question about grants, not about people (§7)</li>
 <li>Who are the returning members — more than one membership with a gap between?</li>
 <li>How many members did the organization have in each year since the records begin? (historical
     reporting — must include closed memberships and must not double-count)</li>
@@ -3905,37 +3945,66 @@ resolver, which is the worst kind of bug to find.</p>
 <ul>
 <li>The organizational calendar: which date the fee expires on, and how long the renewal window
   is (§6). The mechanism is settled; the two numbers are a guess.</li>
-<li><strong>Which offices are written without <code>MEMBERS</code>, and who decides that an office survives its
-  holder's lapse.</strong>
-  The gate left the resolver for the grant text (§6,
+<li><strong>Which offices are written without <code>MEMBERS</code> is ruled: per office, by whoever writes the grant, no
+  default either way — not into the expression and not out of it.</strong> Which offices carry the term
+  (<a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>) is
+  therefore nobody's standing decision: an office inherits no entitlement from a template and inherits no
+  lockout either, no screen fills the term in and no screen strips it. The gate left the resolver for the
+  grant text (§6,
   <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
-  so the decision is made one grant at a time and nothing records the <em>why</em> — only whether the word
-  is in the expression. The standing report makes the outcome visible; it does not make the choice.
-  Carried also at <a href="../../data-model/03-membership/#9-open-issues">data-model/03 §9</a>.</li>
-<li><strong>Whether an age rule has any home at all.</strong> Nothing carries one: a <code>role</code> has no eligibility fields
+  so the decision is made one grant at a time and nothing records the <em>why</em> — only whether the word is in the
+  expression. <strong>And a grant written without the term needs no reason field:</strong> <code>grant_reason</code> is an optional
+  column and stays optional, because a mandatory reason would turn the absence of a default into a small
+  approval process. <strong>Day one's grant carries no <code>MEMBERS</code> term at all</strong> — it names one person, and a grant
+  aimed at one person has no expression to carry one, <strong>and a grant with no expression to carry one cannot
+  be read as having declined one</strong> — so the lockout
+  <a href="../../decisions/round-04/#d-051--the-membership-gate-is-waived-by-a-permission-not-only-by-a-role-flag">D-051</a>
+  was written against is answered by
+  <a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>
+  and not by an exemption. The report makes the outcome visible; it was never going to make the choice. <em>Two
+  clauses here are this round's reading of the ruling rather than the ruling's own words: that the standing
+  report lists every such grant rather than the offices somebody marks sensitive, and the day-one clause
+  above.</em> Carried also at <a href="../../data-model/03-membership/#6-membership-and-the-authorization-system">data-model/03 §6</a>.</li>
+<li><strong>Whether an age rule has any home at all is answered, and the answer is a report.</strong> Nothing carries one:
+  a <code>role</code> has no eligibility fields
   (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
   and a <code>person_group</code> is refused one
   (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
-  so "a scoutmaster must be an adult" survives only as a report over <code>role_holder</code> and <code>is_minor()</code>
-  (§7). If the organization wants that rule enforced rather than reported, it needs a decision this
-  round did not make.</li>
-<li>What <code>status</code> an imported closed membership carries (§3). The enum offers <code>pending_payment</code>, <code>active</code>,
-  <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code>, and none of them says <em>a source stated this
-  period and nobody in the system decided anything</em>: <code>terminated</code> claims an end reason the export
-  does not give, <code>completed</code> claims a lifecycle this model does not have (§5 produces no <code>completed</code>
-  row, while the enum and <a href="../../data-model/03-membership/#3-membership">data-model/03
-  §3</a> both still carry the value and use it in an
-  example). This is a naming question with a reporting consequence — a <code>status</code> that reads as a
-  decision will be reported as one.
-<strong>What this page no longer asks, so that a reader does not go looking for it:</strong> activation on payment or
+  so "a scoutmaster must be an adult" survives as a report over <code>role_holder</code> and <code>is_minor()</code> (§7) — and
+  that is the ruling now, not the shape of the gap: <strong>age is reported and never enforced</strong>
+  (<a href="../../decisions/round-22/#d-168--age-is-reported-and-never-enforced">D-168</a>). Enforcement is therefore
+  declined rather than deferred. <strong>What that buys, and what it costs:</strong> nothing refuses an office to a minor
+  and nothing refuses a placement either, so the safeguarding answer stays a human reading a list; in
+  exchange no rule silently excludes a person on a birthday, in a system with no level ladder and no
+  eligibility column to hold one. Historical query 8 — which minors are in groups that do not accept them —
+  stays unanswerable and stays numbered for exactly this reason (§8).</li>
+<li>What <code>status</code> an imported closed membership carries is answered: <strong><code>completed</code>, and the warning stays on
+  the page</strong> (§3). The enum offers <code>pending_payment</code>, <code>active</code>, <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>,
+  <code>completed</code>, and none of them says <em>a source stated this period and nobody in the system decided anything</em>:
+  <code>terminated</code> claims an end reason the export does not give, <code>completed</code> claims a lifecycle this model does
+  not have. <strong>The answer takes the second-worst of the two lies, knowingly</strong>, and what makes it survivable is
+  that the row does not stand alone: every imported membership is <code>data_confidence = 'low'</code> and both of its
+  dates came from a source row
+  (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>), so the
+  honest answer to <em>did anybody decide this</em> sits two fields away from the field that reads as a decision
+  (<a href="../../decisions/round-22/#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page">D-162</a>).
+  <strong>A seventh value named <code>imported</code> was the alternative and it is refused:</strong> the other six say what happened
+  to the membership, <code>imported</code> would say how the row arrived, and every historical query would then have to
+  choose between an event and a provenance inside one column — where the corpus's whole answer to <em>what did
+  this import assert</em> is already <code>data_confidence</code>, sitting beside <code>status</code> for exactly that reason. §5
+  produces no <code>completed</code> row on the live path, so the import is the value's only writer. <strong>The reporting
+  consequence is kept, not resolved:</strong> a <code>status</code> that reads as a decision will be reported as one, and
+  historical query 10 counts these rows as completed memberships — which is what the acceptance test wants,
+  and the reason this sentence is here rather than in a footnote.</li>
+</ul>
+<p><strong>What this page no longer asks, so that a reader does not go looking for it:</strong> activation on payment or
 approval (it is on payment, §1); per person or per household (per person and flat, §6); renewal shape
 A or B (A, §6); age-out timing and the child→adult transition (neither exists, §7); background checks
 as a requirement (§2); simultaneous memberships of different types (impossible — one type, one open
 membership, §3); whether a body may refuse a minor, and who may add a person to one (nobody is added by
 somebody who does not hold that group's roster write, §7); and whether the one-off import may create
 memberships (it may, for the periods the source states, and never open-ended, §3). Each is settled, and
-the argument for each one is in the <a href="../../decisions/">decision log</a> rather than here.</li>
-</ul>
+the argument for each one is in the <a href="../../decisions/">decision log</a> rather than here.</p>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 <hr />
 <p><em>Decisions behind this page: D-016, D-037, D-038, D-039, D-040, D-043, D-044, D-047, D-048, D-051,

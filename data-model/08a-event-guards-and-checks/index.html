@@ -2254,6 +2254,8 @@
       
         
       
+        
+      
     
     
     
@@ -2865,6 +2867,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3411,7 +3441,12 @@ identifiable and the mark stays (<a href="../00-conventions/#8-personal-data-and
    that the rule is.</li>
 <li><strong>An unpaid registration holding a place past the waitlist deadline.</strong> Counts attending,
    non-waitlisted registrations on a non-cancelled event whose <code>waitlist_deadline</code> has passed
-   and whose fee obligation stands at <code>unpaid</code>, <code>partially_paid</code> or <code>overdue</code>. It should be
+   and whose fee obligation is <strong>not yet <code>paid</code></strong> — <code>unpaid</code> or <code>partially_paid</code>, which is the
+   whole enum since <a href="../../decisions/round-22/#d-159--the-status-enum-keeps-three-of-its-seven-values">D-159</a>
+   deleted <code>overdue</code> along with <code>written_off</code>: lateness lives only in the obligation's <code>due_date</code>,
+   so a status that is not <code>paid</code> and a <code>due_date</code> in the past <em>is</em> overdue
+   (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>). A predicate still naming
+   <code>overdue</code> would match nothing at all and print a clean result. It should be
    empty once the release in §5 has run — a non-empty result means the job is not running.</li>
 <li><strong>An answer to a question the person was never registered for.</strong> Counts answers whose
    person has no registration for the event that owns the question. Either the registration

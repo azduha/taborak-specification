@@ -2165,6 +2165,8 @@
       
         
       
+        
+      
     
     
     
@@ -2776,6 +2778,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2931,7 +2961,8 @@ left to read and behaviour is the strongest form still available —
 requires saying so: <strong>a prohibition nobody runs is a convention, not a guard.</strong></p>
 <p><strong>A report whose first run is empty, or is everything, is not a finding.</strong> Three entries below report
 correctly on a system that has just been set up and look, from the number alone, like a failure: check 9
-returns exactly one holder and its "more than one holder" alert has already fired
+returns exactly one holder on a system nobody has configured yet, and that holder is the installation's
+own day-one grant
 (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>),
 check 13 returns the entire permission catalog because nothing is granted to anybody at the unit yet, and the
 import reconciliation of <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
@@ -2984,7 +3015,8 @@ lesson about what a check is allowed to be).</p>
   permission's <code>applies_to</code> is <code>unit</code> — or any grant of a <code>system.</code> permission whose <code>applies_to</code> is
   not <code>unit</code>, which is the shape §12 says it fixes and nothing else. <strong>Zero expected, and a row means the save-time
   check was skipped, not that a constraint was disabled</strong> — no constraint spans those two tables.
-  This is the report that stands in for a database rule, which makes it worth alerting on.
+  This is the report that stands in for a database rule, which makes it the kind of row to find the day
+  it appears rather than weeks later: nothing about it will come and find a person on its own.
 - <strong>4. A bound operand where it cannot bind.</strong> An <code>audience_operand</code> whose selector has
   <code>binds_to_item = true</code> and which sits in an audience aimed at a <code>unit</code>-scope grant, or whose
   <code>selector_type.argument_type</code> differs from the item type of every grant aimed at that audience. Zero
@@ -3027,7 +3059,9 @@ lesson about what a check is allowed to be).</p>
   target is gone, which reads on screen as a grant that still names the audience it excludes.</strong> The
   save-time refusal (an audience named by anything live cannot be ended or deleted) is the primary
   control; this check is the one that fires when the refusal was bypassed by a restore or a manual
-  delete, and unlike the empty side it should alert rather than be read weekly.
+  delete, and unlike the empty side it is read the day it is non-empty rather than on a weekly list —
+  a widening waits there to be found, it does not announce itself
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
 - <strong>8. A grant whose expression contains <code>EVERYONE</code>.</strong> Live, and naming <code>EVERYONE</code> anywhere in the
   tree. Not a violation: it is what a public page is for, and holding <code>EVERYONE</code> directly is legal.
   It is on the list because a language with union in it lets one edit widen a grant to every person
@@ -3035,19 +3069,28 @@ lesson about what a check is allowed to be).</p>
   (§8, <em>What audiences do not do</em>).
 - <strong>9. Holders of <code>system.admin</code>, and whether they can sign in.</strong> Everyone with a live allow of it, however
   they came by it — through a personal grant or through an expression naming an office. This should be a
-  very short list, and it should alert on change. <strong>A key never appears on it and cannot</strong>: that grant is
-  refused when it is saved and counted by check 20, so a list containing only people is also the evidence
-  that the refusal held. <strong>The second column is what turns the list into a warning:</strong> for each holder, is
-  <code>account.status</code> <code>active</code> <strong>and</strong> is their credential live — <code>account_credential.valid_to</code> unset or still
-  in the future, not revoked (<a href="../01a-accounts-and-contacts/">01a §5</a>). <strong>An empty second column is the
-  report's real output:</strong> a world in which somebody could hold the capability and nobody can reach a screen
-  is the state D-126's procedure exists for, and it goes to the same place, within the hour
-  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
-  <strong>On a first run this report is one row long, its alert has already fired, and both are correct:</strong> the one
-  grant the installation writes is a holder of <code>system.admin</code>, so the report's first output is the
+  very short list, and it is the list to open whenever anyone says the holders have changed. <strong>A key never
+  appears on it and cannot</strong>: that grant is refused when it is saved and counted by check 20, so a list
+  containing only people is also the evidence that the refusal held. <strong>The second column is what turns the
+  list into a warning:</strong> for each holder, is <code>account.status</code> <code>active</code> <strong>and</strong> is their credential live —
+  <code>account_credential.valid_to</code> unset or still in the future, not revoked
+  (<a href="../01a-accounts-and-contacts/">01a §5</a>). <strong>An empty second column is the report's real output:</strong> a
+  world in which somebody could hold the capability and nobody can reach a screen is the state D-126's
+  procedure exists for, <strong>and that procedure keeps the one name it names</strong> — the column is read by whoever
+  works the queue and answered by the recovery person written into the procedure, which is a procedure
+  needing a name rather than an alert, and nothing in this design sends it to anyone
+  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>,
+  <a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
+  <strong>On a first run this report is one row long, it has already reported its holder, and both are correct:</strong>
+  the one grant the installation writes is a holder of <code>system.admin</code>, so the report's first output is the
   installation itself (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
   Nothing about an event widens this list: the bundle an event creation writes is item-scoped, and
   <code>system.admin</code> is <code>applies_to = unit</code>, so it cannot be handed out on an item at all (§2, §12).
+  <strong>And a row can only reach this list from a person who already holds what they handed out</strong> — the
+  save-time ceiling refuses a grant naming a permission its writer does not hold
+  (<a href="../05-authorization/#what-is-refused-when-a-grant-is-saved">05 §6</a>), which is what makes it bearable
+  that this report is read rather than sent
+  (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>).
 - <strong>10. Expression trees that are not trees.</strong> Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose <code>audience_id</code> differs from its parent's; a row whose
   <code>parent_id</code> names no row; an audience with zero or several root rows. <strong>Zero expected, and every
@@ -3275,7 +3318,9 @@ lesson about what a check is allowed to be).</p>
   deferred, so there is no table there for any scan to walk. Check 2 holds the two keys on the granting side,
   what the polymorphic trade costs, and the split that decides which orphan is the dangerous one; <strong>nothing
   this check counts grants anything</strong>, so a row here has never changed who may do what — it has left a question
-  in the trail with nothing to answer it, which is why this one is read and not alerted on.</p>
+  in the trail with nothing to answer it, which is why this one is a listing to read and nothing more, there
+  being nothing in the design that would send it
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
 </li>
 </ul>
 <p><strong>Which absences are legal, and where the pages stop short of saying so.</strong> Two paths in this design remove a
@@ -3336,24 +3381,43 @@ lesson about what a check is allowed to be).</p>
   about a record that never existed. <strong>None of this belongs on the permissions tab:</strong> the tab lists rules, and
   not one of these four columns is a rule — and putting a legal absence on a page about broken things is how a
   broken one comes to be read past.</p>
-<p><strong>Checks 3, 4, 5, 6 and 9 are the ones to wire to alerts, plus one half of 7.</strong></p>
+<p><strong>Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and
+no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the report
+rather than a message.</strong> <em>Why that is said here rather than assumed:</em> a sentence wiring five checks and half
+of a sixth to alerts sat above this list and named no report at all, so it survived every count of sentences
+about <code>system.admin</code> — most of what a grep for the promise matches survives the test for the same reason, a
+report described as urgent is not a message, and what this page lost was that framing sentence plus half of
+check 7
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
 <ul>
 <li><strong>3 and 4 are the reports that stand in for the database rules that do not exist.</strong> A row in either
   is not data drift — it is a save-path check that stopped running.</li>
 <li><strong>5 and 6 are the reports for the two restrictions that have no mechanism enforcing them</strong>: a deny
   that denies nothing, and an office granted without the membership operand. Both are lists a human
   reads, and both are the entire remaining control on their failure.</li>
-<li><strong>9 should email someone every time its result changes</strong> — a new holder of <code>system.admin</code> is either
-  a planned change or an incident, and either way someone should know within the hour. <strong>Its second column
-  alerts on being empty</strong>, which is a different kind of change: the authority exists and nobody can use it,
-  which is the state the written procedure in <a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a>
-  is for (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).</li>
-<li><strong>Check 7 is the exception to the rule that this list is read rather than alerting on.</strong> Its empty
+<li><strong>9 is the report that distinguishes a planned change from an incident</strong> — a new holder of
+  <code>system.admin</code> is one or the other, and this list, read by whoever opens it, is the only thing here that
+  says which. What it does not do is reach that person on its own: no mail is sent when its result changes,
+  and there is no mailbox this sentence could have named
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). <strong>Its second
+  column reads as a warning when it is empty</strong>, which is a different kind of finding: the authority exists
+  and nobody can use it, which is the state the written procedure in
+  <a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a> is for — a
+  procedure that keeps the one name it names, since a procedure needs a person where a notification does not
+  (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).</li>
+<li><strong>Check 7 is the entry on this list whose two halves are read on different schedules.</strong> Its empty
   half — a grant reaching nobody — is inert and belongs on a weekly list. <strong>Its wide half, a grant that
   got wider because something under a <code>-</code> stopped resolving, is the only entry in §11 that describes
-  authority increasing</strong>, and it should go to the same place check 9 does. <strong>Splitting 7 is not
-  tidiness</strong>: a single report containing both halves has the wide row sitting between nineteen inert
-  ones, which is how a widening gets read.</li>
+  authority increasing</strong>, and it is the half to open the day it is non-empty rather than on a schedule.
+  <strong>What it reports is not what the granter's ceiling refuses, and the two are worth keeping apart:</strong> this
+  half widens because an expression changed shape under a grant nobody rewrote, while
+  <a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>'s ceiling
+  refuses a row naming more than its writer holds at the moment it is saved
+  (<a href="../05-authorization/#what-is-refused-when-a-grant-is-saved">05 §6</a>) — a different cause at a different
+  moment. <strong>No report stands behind that ceiling and none was called for</strong>: the control is the refusal, and
+  what the trail answers afterwards is <em>who did this</em>.
+  <strong>Splitting 7 is not tidiness</strong>: a single report containing both halves has the wide row sitting between
+  nineteen inert ones, which is how a widening gets read past.</li>
 <li><strong>Checks 15 and 16 are CI assertions, not reports.</strong> They are the automated guards on the two rules
   most likely to be "simplified" away when someone optimizes the resolver: the refusal of a malformed
   expression at the write, and the refusal to compute a set where a predicate will do. Both fail the
@@ -3372,12 +3436,23 @@ lesson about what a check is allowed to be).</p>
   correctly-configured oddity a tab is for
   (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
   <strong>There is no age threshold on that line</strong>: a bound somebody might want to change belongs in a column, and
-  inventing one is not this page's call. <strong>Check 7's wide
-  half and check 9 go to a person rather than to a screen</strong>, because both describe authority getting bigger
-  while nobody edited a grant, and a tab nobody opened is not an alert. <strong>Checks 20 and 21 land in <code>Broken</code>
-  beside 3, 4 and 13</strong> — one is a save-path refusal that got through, the other is authority that reads as
-  live and is not. <strong>Checks 19 and 22 go to neither tab</strong>: they are facts about the schema and about the
-  resolver, not about a rule, and the place either can be enforced is a migration review or a CI assertion. The
+  inventing one is not this page's call. <strong>Check 7's wide half and check 9 are reports on a screen and not
+  messages to a person</strong>, and that is stated rather than glossed: both describe authority getting bigger
+  while nobody was editing a grant, and this design still sends nothing to anybody, so the honest claim is
+  that these are the two a person is expected to have opened recently
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). <strong>Being read is
+  enough here because of what the ceiling took off the table</strong>: nothing can be written that hands out more
+  than the writer holds, so neither report can be surprised by an escalation, and every change of hands that
+  does happen carries the name of the person who did it — <code>granted_by</code>, required, no empty to read. <strong>No
+  report covers how far a permission has been handed around, and none was called for</strong>: the ceiling is the
+  save, the trail is the answer to <em>who did this</em>, and check 7's wide half — the entry a reader will find
+  nearest to this claim — is about an expression widening under a grant nobody rewrote, which is a different
+  thing
+  (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>). <strong>Checks 20
+  and 21 land in <code>Broken</code> beside 3, 4 and 13</strong> — one is a save-path refusal that got through, the other is
+  authority that reads as live and is not. <strong>Checks 19 and 22 go to neither tab</strong>: they are facts about the
+  schema and about the resolver, not about a rule, and the place either can be enforced is a migration review
+  or a CI assertion. The
   tab is not a guard in
   <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>'s
   sense — nothing is blocked — but <strong>it is where the person writing the rule already is</strong>, which a report on
@@ -3424,8 +3499,12 @@ nobody's authority, only its name and description (§3).</p>
    for the purposes of the next three steps
    (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
    <strong>There is no bootstrap mechanism</strong>: no special column, no second kind of actor, no migration that knows
-   it is installing an organization. This row is the first entry in <code>audit_log</code> and the first change
-   <a href="#11-invariants-to-verify">check 9</a> alerts on, and both of those are correct rather than incidental.</li>
+   it is installing an organization. This row is the first entry in <code>audit_log</code> and the first row
+   <a href="#11-invariants-to-verify">check 9</a> reports, and both of those are correct rather than incidental.
+   <strong>The granter's ceiling asks this row nothing new</strong>, and it is worth saying which way round that is: the
+   account the row names holds <code>system.admin</code> at the unit, so the origin of all authority satisfies the rule
+   rather than being waved past it
+   (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>).</li>
 <li><strong>An office is a <code>role</code> row and it confers nothing.</strong> Name it, describe it, order it — then aim a grant at
    <code>ROLE(x)</code>, because that is the moment the office gains a permission
    (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</li>
@@ -3612,16 +3691,18 @@ named because they meant to
   register without being handed the roster</strong>, and that difference is two grant rows.</li>
 <li><strong>There is no wildcard at all, and nothing implies anything.</strong> A guardian's authority is
   <code>right_level = write</code> on the relationship, not a permission (D-074); the code families <code>dependent.*</code> and
-  <code>*.admin</code> are not in this catalog. So an office that should hold a new permission must be <strong>told</strong> —
-  check 13 is the net.</li>
+  <code>*.admin</code> are not in this catalog. So an office that should hold a new permission must have one <strong>written
+  down for it</strong> — check 13 is the net, and reading it is the whole of the follow-up.</li>
 <li><strong>Reporting ships coarse, and is left open on purpose.</strong> Only <code>report.view</code> and <code>report.export</code> exist.
   Whether reporting is per-report or one permission with row-level filtering is still open
   (catalog §12). Do not ship both shapes; pick one when reporting is designed.</li>
 </ul>
 <blockquote>
 <p><strong><code>system.admin</code> is deliberately a single top-level permission</strong>, not a
-per-resource one. Holding it satisfies everything, and check 9 in §11 alerts on its
-holders. Keeping the most dangerous capability concentrated and alarmed is safer than
+per-resource one. Holding it satisfies everything, and check 9 in §11 reports its holders —
+a list to open, since nothing here would tell anybody that it had changed
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). Keeping the most
+dangerous capability concentrated, and visible in one short report, is safer than
 spreading equivalents of it across every resource. <strong><code>system.admin</code> is a permission code, not a level</strong> —
 there are no levels (D-099) — and it is the only permission whose <em>action</em> is <code>admin</code> (§11's check 17 is
 the assertion that it stays the only one).</p>

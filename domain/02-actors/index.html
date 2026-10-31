@@ -606,10 +606,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#minor-registration--the-consent-problem" class="md-nav__link">
+  <a href="#minor-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minor registration — the consent problem
+        Minor registration
       
     </span>
   </a>
@@ -2297,6 +2297,8 @@
       
         
       
+        
+      
     
     
     
@@ -2908,6 +2910,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3012,10 +3042,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#minor-registration--the-consent-problem" class="md-nav__link">
+  <a href="#minor-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minor registration — the consent problem
+        Minor registration
       
     </span>
   </a>
@@ -3247,7 +3277,7 @@ exists:</p>
 <tbody>
 <tr>
 <td>Self-registration</td>
-<td>adult, or a minor with guardian involvement</td>
+<td>an adult, or a minor — the path does not branch on age</td>
 <td><code>person</code> + <code>account</code></td>
 </tr>
 <tr>
@@ -3277,11 +3307,20 @@ exists:</p>
 </tr>
 </tbody>
 </table>
-<h3 id="minor-registration--the-consent-problem">Minor registration — the consent problem<a class="headerlink" href="#minor-registration--the-consent-problem" title="Permanent link">&para;</a></h3>
-<p><em>Assumption:</em> a minor may not create an account unattended. The schema supports
-requiring a guardian's confirmation before a minor's account becomes usable, via
-<code>account.guardian_consent_at</code>. See <a href="../../open-questions/">../open-questions.md</a> for the
-age threshold and whether consent is required at all in your jurisdiction.</p>
+<h3 id="minor-registration">Minor registration<a class="headerlink" href="#minor-registration" title="Permanent link">&para;</a></h3>
+<p>A minor may create an account unattended and nothing in the model objects, because an account is a login
+and authority reaches nothing except through grants
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a>). <strong>No
+minimum age, no consent step, no branch in the sign-up path.</strong> A new account holds no grants, and a new
+account is a person-shaped hole in the database until somebody writes a row about its person — a grant, a
+guardianship, a membership — which is what every new account is, not a safeguard designed for this case.
+<strong>If the organization wants a guardian's answer on record</strong>, it goes on the guardianship relationship,
+which already carries <code>right_level</code> and its own dates
+(<a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">../data-model/04-relationships.md §2</a>);
+no column returns for it. <strong>What this page does not decide</strong> is whether the law of this country demands a
+consent step regardless — a policy in front of the legal review beside the four data policies, and stated
+there (<a href="../../data-model/06b-redaction-and-checks/#6-open-issues">06b §6</a>).</p>
 <hr />
 <h2 id="3-account-state-machine">3. Account state machine<a class="headerlink" href="#3-account-state-machine" title="Permanent link">&para;</a></h2>
 <table>
@@ -3326,9 +3365,12 @@ first or quietly linked to it.</p>
 into one person's record becoming another's. Making a queue state block a login buys two obligations,
 and both are checks rather than intentions:</p>
 <ul>
-<li><strong>A hypothesis that is blocking an account is age-checked, and it alerts.</strong> A queue that stalls is
+<li><strong>A hypothesis that is blocking an account is age-checked.</strong> A queue that stalls is
   not a data-quality problem with no victim you can name: it is a specific person who cannot log in,
-  whose only remaining channel is to telephone someone.</li>
+  whose only remaining channel is to telephone someone. Nothing here will tell anyone the queue has
+  stalled — no message is sent, and the age on a row is the whole of the warning
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>),
+  which is why the block carries a number rather than sitting in a list.</li>
 <li><strong>The message the person sees confirms nothing.</strong> Not that the name matched, not that the birth date
   did, not that anyone by that name exists — because a sign-up form that can answer "yes, that person
   exists" is an existence oracle, and this system's roster is children.</li>
@@ -3365,8 +3407,11 @@ emergency door would be the second, weaker authorization this design rejects by 
    <code>system.admin</code>, however they came by it, and says for each of them whether they can sign in:
    <code>account.status</code> is <code>active</code> <strong>and</strong> their credential is live
    (<code>account_credential.valid_to</code> unset or in the future, not revoked). An <strong>empty second column is the
-   alert</strong>, and it goes to the same person the list already goes to
-   (<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>).</li>
+   alert</strong>, and the alert is a report somebody opens rather than a message somebody receives: nobody is
+   told when that column empties, which is precisely why step 1 says to read the report instead of acting
+   from memory and step 2 names a person long before one is needed
+   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>,
+   <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>).</li>
 <li><strong>One named person is written down before it is needed</strong>, and someone knows their telephone number.
    <strong><code>api_key.owner_person_id</code> is not that person</strong> — it answers <em>whose integration is this</em>, not <em>who
    fixes it</em> (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).</li>
@@ -3482,12 +3527,17 @@ capability to be reachable in an emergency.</p>
 <hr />
 <h2 id="7-open-issues">7. Open issues<a class="headerlink" href="#7-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Minimum age to hold an account; whether guardian consent is legally required.</li>
-<li>Whether staff-created accounts are allowed for children, or only adults.</li>
+<li>Whether staff-created accounts are allowed for children, or only adults. <strong>Still open, and untouched by
+  the fact that the sign-up path has no age gate:</strong> <a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a>
+  removes a gate on a path, not a policy about who may open an account on somebody else's behalf, so a
+  reader who takes "no gate" to mean "staff may create a child's account" has read further than the answer
+  goes. The <code>created_by_staff</code> flag on <code>account</code> (<a href="../../data-model/01a-accounts-and-contacts/#4-account">01a §4</a>)
+  stays whichever way this is settled.</li>
 </ul>
-<p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
+<p><strong>Not registered in <a href="../../open-questions/">../open-questions.md</a>,</strong> and a reader of the register alone
+would not find it: this page is the only place the question is written down.</p>
 <hr />
-<p><em>Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100.</em></p>
+<p><em>Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166.</em></p>
 
 
 

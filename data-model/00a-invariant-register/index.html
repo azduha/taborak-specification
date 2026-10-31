@@ -2185,6 +2185,8 @@
       
         
       
+        
+      
     
     
     
@@ -2796,6 +2798,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3227,7 +3257,7 @@ once, in an index.</p>
 <td><code>event_id</code></td>
 <td><code>is_primary</code></td>
 <td><a href="../08a-event-guards-and-checks/#10-integrity-checks">08a §10</a></td>
-<td>Two people receive the one notification meant for the lead</td>
+<td>Two people answer to being the lead, and a later question about who decided something has two answers (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> removed the sentence's notification; the harm it described is untouched)</td>
 </tr>
 </tbody>
 </table>
@@ -3239,7 +3269,7 @@ wrong once by ignoring a flag. Uniqueness stated over <strong>all</strong> rows 
 <code>payment_request.variable_symbol</code>, the <code>public_id</code> columns, the one-row-per-pair rules on registrations
 and answers — is a plain unique constraint and is not listed here at all.</p>
 <h2 id="3-the-answer-reads-another-table-a-resolver-or-a-graph">3. The answer reads another table, a resolver, or a graph<a class="headerlink" href="#3-the-answer-reads-another-table-a-resolver-or-a-graph" title="Permanent link">&para;</a></h2>
-<p>Forty-six rules, <strong>counted off the table below rather than carried down from the last round that touched it</strong> —
+<p>Forty-seven rules, <strong>counted off the table below rather than carried down from the last round that touched it</strong> —
 this sentence said forty-one while the register's own summary elsewhere in the corpus said forty-five, and both
 were describing one table. <strong>In this shape the layer is always the write path</strong> — no constraint spans two tables —
 so the layer column is gone from this table and only two columns remain. <strong>The report column is the one
@@ -3356,6 +3386,12 @@ downstream ever says so.</p>
 <td><a href="../05e-keys-and-callers/#15-what-a-key-may-hold">05e §15</a></td>
 <td>the save path only</td>
 <td><a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 20</a>, the entire net</td>
+</tr>
+<tr>
+<td>A grant may name no permission the granter does not hold</td>
+<td><a href="../05-authorization/#6-access_grant--the-per-item-layer">05 §6</a></td>
+<td>the write path, resolving the granter with the same check the resolver runs on an act none — the refusal is the whole control. <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 7</a>'s wide half is what a grep finds here and is <strong>not</strong> this: it watches a grant that widened itself when a <code>-</code> beneath it stopped resolving, not a grant written too wide. One thing the ceiling does that a reader should not have to guess: <strong>it stops escalation and not distribution</strong> (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>)</td>
+<td></td>
 </tr>
 <tr>
 <td>Deleting an item closes the grants written on it</td>
@@ -3486,8 +3522,8 @@ downstream ever says so.</p>
 <tr>
 <td>An imported membership is bounded at both ends and never inferred from attendance</td>
 <td><a href="../06a-import/#31-what-a-source-row-actually-evidences">06a §3.1</a></td>
-<td>the parse and end-date inference rules</td>
-<td><a href="../06a-import/#4-integrity-checks">06a §4 check 1</a> — <strong>the one row in this table that reaches the permission gate</strong>, because an open membership satisfies <code>is_current_member()</code></td>
+<td>the parse and end-date inference rules, which now end at a stated date (<a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>)</td>
+<td><a href="../06a-import/#4-integrity-checks">06a §4 check 1</a> — <strong>the one row in this table that reaches the permission gate</strong>, because an open membership satisfies <code>is_current_member()</code>. <strong>What D-169 changed is not the rule but what a non-zero answer means:</strong> there is a value to move a row to now, so the report says the inference did not run</td>
 </tr>
 <tr>
 <td>A batch can say what it did, and a revert leaves nothing behind</td>

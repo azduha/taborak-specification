@@ -2141,6 +2141,8 @@
       
         
       
+        
+      
     
     
     
@@ -2752,6 +2754,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2885,6 +2915,13 @@ its vocabulary.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>account.guardian_consent_at</code></td>
+<td>the moment a guardian consented to a child's account — a column on the login, with no age threshold defined anywhere in the corpus to compare it against</td>
+<td>an account is a login, and nothing about a child is decided on it: no minimum age, no consent step, no branch in the sign-up path. A column that looks like a gate where no gate is wanted is worse than the absence, because somebody comes to rely on it</td>
+<td>the guardianship row (<a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write">data-model/04 §2</a>) if the organization ever wants a guardian's answer written down; the jurisdictional half is the legal review's fourth policy</td>
+<td><a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a></td>
+</tr>
+<tr>
 <td><code>audience_include</code>, <code>include_depth_limit</code></td>
 <td>a stored edge putting one permission group inside another, and the cap on how deep those edges could nest</td>
 <td>arms became operands and <code>+</code> composes inside one grant, so membership of a set is now written where it is used</td>
@@ -2939,6 +2976,41 @@ its vocabulary.</p>
 <td>the catalog and the registry are the record: a name carried only by prose is not a feature, and a registry that prose contradicts is a fiction</td>
 <td>nothing — the name was never grantable; whether a person turned up is <code>event_registration.was_present</code></td>
 <td><a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a></td>
+</tr>
+<tr>
+<td><code>fee.waive</code></td>
+<td>the code that let a fee be forgiven for somebody who could not pay</td>
+<td>there is no waiver to authorize: no status, no column and no screen records one, and the process was unspecified in sixteen rounds of being asked</td>
+<td>a <code>fee_obligation</code> with a smaller <code>amount_due</code>, written by whoever holds <code>fee.create</code>; or no obligation at all</td>
+<td><a href="../../decisions/round-22/#d-157--there-are-no-hardship-waivers">D-157</a></td>
+</tr>
+<tr>
+<td><code>fee.refund</code></td>
+<td>the code that let money be sent back to a payer</td>
+<td>the corpus had already ruled that a refund is "a second payment in the opposite direction, <strong>not a status</strong>", which is the whole design — the code was a leftover from the shape that rule replaced, and it was the only code in the file that authorized a person to do nothing</td>
+<td>the transfer goes out at the bank; what arrives here is a <code>payment</code> row, by <code>payment.record</code> or by the import that finds it</td>
+<td><a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a></td>
+</tr>
+<tr>
+<td>the <code>waived</code>, <code>written_off</code>, <code>refunded</code> and <code>overdue</code> values of <code>fee_obligation.status</code></td>
+<td>four states a fee could be in beyond how much of it had arrived</td>
+<td>two went with the rulings above; <code>written_off</code> had no code, no screen and no rule that set it in either half of the catalog; and <code>overdue</code> was already computed from <code>due_date</code> in two places on that page, so one fact lived in a report and in a column with exactly one of the two written by anybody</td>
+<td><code>unpaid</code>, <code>partially_paid</code>, <code>paid</code> — and <code>due_date</code>, which is the only place lateness lives: past that date and not <code>paid</code> <strong>is</strong> overdue</td>
+<td><a href="../../decisions/round-22/#d-157--there-are-no-hardship-waivers">D-157</a>, <a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>, <a href="../../decisions/round-22/#d-159--the-status-enum-keeps-three-of-its-seven-values">D-159</a></td>
+</tr>
+<tr>
+<td><code>fee_obligation.waived_by</code>, <code>waived_reason</code></td>
+<td>who forgave a fee, and the reason of record that a waiver had to carry</td>
+<td>no waivers. The hard part of the old item was that a waiver had to be visible to a few people and invisible to everyone else, with only the catalogue of existing codes standing between the two — that problem is dissolved rather than solved, because there is nothing to see</td>
+<td>the audit trail of the write that lowered <code>amount_due</code>, which names its author by construction</td>
+<td><a href="../../decisions/round-22/#d-157--there-are-no-hardship-waivers">D-157</a></td>
+</tr>
+<tr>
+<td><code>fee_schedule.valid_from</code>, <code>fee_schedule.valid_to</code></td>
+<td>a validity period on a price, so one schedule table could hold several prices without overwriting</td>
+<td>one live price, edited in place. Safe because the obligation snapshots <code>fee_schedule_id</code> and copies <code>amount_due</code>, so what a person owed was never read from here — which is also the price: there is no price history, and nobody can ask what the 2027 fee was going to be</td>
+<td>the single live <code>fee_schedule</code> row for the current price; <code>fee_obligation.amount_due</code> for anything historical</td>
+<td><a href="../../decisions/round-22/#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last">D-161</a></td>
 </tr>
 <tr>
 <td>the shipped <code>event.answer.view</code> → <code>ORGANIZERS</code> <strong>grant row</strong>, and the <em>template</em> read of it — the code is live and unrenamed, only the row that arrived with the platform is gone</td>

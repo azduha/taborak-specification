@@ -2403,6 +2403,8 @@
       
         
       
+        
+      
     
     
     
@@ -3014,6 +3016,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3546,11 +3576,20 @@ grant aimed at <code>EVERYONE</code> or <code>MEMBERS</code> (§6.2).</p>
 <code>X.y</code> or by <code>system.admin</code> and nothing else
 (<a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>).
 It crosses no boundary, because there is no boundary for it to cross.</p>
-<p>Two properties keep a wildcard from being the hole in the design, and both stand on their own:</p>
+<p>Three properties keep a wildcard from being the hole in the design, and each stands on its own:</p>
 <ol>
-<li><strong>Its holders are alarmed on.</strong> The report listing current holders must notify on every change — a
-   new holder is either a planned act or an incident, and either way someone should know within the
-   hour.</li>
+<li><strong>It can be handed out only by somebody who already holds it</strong> — the ceiling is §5's, and what it buys
+   here is that this code changes hands only through hands that already hold it
+   (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>; the refusal
+   is <a href="../../data-model/05-authorization/#what-is-refused-when-a-grant-is-saved">05 §6</a>). A right held through
+   a delegation raises no ceiling (§9), so that path opens no gap here either.</li>
+<li><strong>Its holders are on a list, and the list is read.</strong> It is what tells a planned change from an
+   incident; what it does not do is reach anybody by itself, because nothing in this design sends a message
+   when the set changes, so the hour a new holder is noticed in is the hour somebody opens the report
+   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). <strong>One thing
+   this does not sweep away:</strong> <a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>'s
+   break-glass procedure names one recovery person in advance, and that name stays — a procedure needs a
+   person where a notification needs none, and nothing here is a notification.</li>
 <li><strong>It is not delegatable</strong> (§9), and it is <code>applies_to = unit</code>, so it cannot arrive on an item.</li>
 </ol>
 <p><strong>Day one is one account holding this code, and nothing else.</strong> An installation ships no roles, no
@@ -3787,9 +3826,15 @@ a second code for the same write:</strong> every event carries <code>event.grant
 creation wrote for <code>ORGANIZERS</code>, so whoever runs a camp can give the nurse, the cook and the two assistant
 leaders access to it <strong>without holding <code>access_grant.create</code> at the unit and without asking anyone</strong>
 (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
-Two questions, two codes, one table: what bounds them is the scope they can name — their own event, so
-nothing they write reaches another event, a group, or the unit — and <code>applies_to</code>, which refuses
-<code>system.admin</code> on an item because that code is <code>applies_to = unit</code> (§2).</p>
+Two questions, two codes, one table. Three things bound them: the scope they can name — their own event, so
+nothing they write reaches another event, a group, or the unit — <code>applies_to</code>, which refuses <code>system.admin</code>
+on an item because that code is <code>applies_to = unit</code> (§2), and <strong>the granter's ceiling</strong>, which refuses a row
+naming a permission its writer does not hold, at a scope that reaches what they are writing — the check the
+resolver already performs, pointed at the granter at save time
+(<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>). The second
+and third are different kinds of bound and worth keeping apart: <code>applies_to</code> says where a code may ever be
+granted, the ceiling says who may grant it. So the item-facing door is wide but not open: an organizer hands
+out what they hold, at a scope that reaches the event in front of them, and no code they do not hold.</p>
 <h3 id="allow-and-deny-are-not-symmetrical">Allow and deny are not symmetrical<a class="headerlink" href="#allow-and-deny-are-not-symmetrical" title="Permanent link">&para;</a></h3>
 <p><strong>Allowed when some live allow applies and no live deny applies.</strong> Everything else in this document
 is elaboration.</p>
@@ -3979,8 +4024,10 @@ Nothing errors, nothing reports itself when it happens, and nothing about the gr
 lapsed treasurer is still a treasurer. Three controls, <strong>none of which is the resolver</strong>:</p>
 <ol>
 <li><strong>A standing report</strong> of live grants naming a <code>ROLE(...)</code> operand whose expression does not contain
-   <code>MEMBERS</code>. An office held by a non-member is the case worth a human eye, and the report is narrow
-   enough to actually be read.</li>
+   <code>MEMBERS</code> — <strong>every one of them</strong>, since nothing marks which offices should have carried the term
+   (<a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>). An
+   office held by a non-member is the case worth a human eye, and the report is narrow enough to actually be
+   read.</li>
 <li><strong>The grants this system writes for itself are named, and the omission inside them is deliberate.</strong>
    Creating an event writes twelve item-scope allows beside the event row, every one aimed at the bare
    operand <code>ORGANIZERS</code>, and not one of them carries <code>MEMBERS</code> — an organizer appointed for one weekend is
@@ -3994,13 +4041,17 @@ lapsed treasurer is still a treasurer. Three controls, <strong>none of which is 
    <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
    must count people marked as counselors in the corpus against <code>role_holder</code> rows written.</li>
 </ol>
-<p><strong>Who the test should spare is a decision the organization has already made,</strong> and it decides the
-default: <em>"everything except guardianship and adult volunteers."</em> A volunteer whose own fee is unpaid
-still runs the Thursday meeting, and losing the roster on the night the fee lapses is the failure to
-prevent. So leaving <code>MEMBERS</code> out is the <strong>normal</strong> shape of a grant to a contractor, a photographer
-or a parent helper, not an exemption somebody must be granted. The line that judgment draws holds, and
-it holds hardest where only a report stands behind it: <strong>the report is how the organization notices;
-the resolver is not how it punishes.</strong></p>
+<p><strong>Who the test should spare is a decision the organization has already made,</strong> and it is a judgment about
+each grant rather than a default the design carries: <em>"everything except guardianship and adult
+volunteers."</em> A volunteer whose own fee is unpaid still runs the Thursday meeting, and losing the roster on
+the night the fee lapses is the failure to prevent. So leaving <code>MEMBERS</code> out is the <strong>normal</strong> shape of a
+grant to a contractor, a photographer or a parent helper, not an exemption somebody must be granted. <strong>And
+the ruling is that there is no default either way — not into the expression and not out of it:</strong> per office,
+by whoever writes the grant, with no screen filling the term in and no screen stripping it, and a grant
+written without the term needs no reason field — <code>grant_reason</code> stays the optional column it is
+(<a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>). The line
+that judgment draws holds, and it holds hardest where only a report stands behind it: <strong>the report is how the
+organization notices; the resolver is not how it punishes.</strong></p>
 <p><em>Why the test sits in the expression.</em> A resolver clause applies to everything or nothing, and so has
 to carry its own exemptions; an expression says which grants are gated, in the text of the grant,
 where the person writing it can see it and a report can read it. A clause cannot answer <em>"is this
@@ -4210,6 +4261,10 @@ permission code</strong>, "do not lend more than you hold" is a set-membership t
   the delegator losing the code mid-delegation changes nothing, which is the cost of this rule and is said
   out loud rather than left to be discovered. <strong>Two bounds remain:</strong> a delegation must carry an end date
   (the check above), and <code>system.admin</code> cannot be delegated at all.</li>
+<li><strong>Lending is not holding:</strong> the ceiling (§5) reads the writer's own grants, so a permission held only
+  through a delegation cannot be lent on, while the delegation already written stands to its own <code>valid_to</code>
+  (D-143 above)
+  (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>).</li>
 <li><strong>The provenance is recorded</strong>, so an audit can answer "who really had this authority on that date?"
   — it lists both the holder and the delegator.</li>
 <li><strong>A deny cannot be lent and cannot be lent around.</strong> A delegation is an allow; the delegatee's
@@ -4419,8 +4474,9 @@ an unpaid debt rather than as a feature.</p>
 attribution for an act, not a dependency of the authority: the installer's account being suspended, their
 membership lapsing, a deny written against them and their leaving all change nothing about the row
 (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
-<code>owner_person_id</code> is optional and is <strong>a contact, not a channel</strong> — <em>who do we telephone when this stops</em> —
-and nothing reads it to decide an answer. <code>valid_to</code> is optional and absent means current: <strong>a mandatory
+<code>owner_person_id</code> is optional and is <strong>a contact, not a channel</strong> — <em>whose number to look up if this row
+needs asking about</em> — nothing reads it to decide an answer, and nothing in this design telephones that
+person when a key goes quiet: the name is there for whoever is reading the tab <code>valid_to</code> is optional and absent means current: <strong>a mandatory
 expiry was offered and refused</strong>, because a key is not a delegation (§9) and an expiry would buy a
 stopped integration on a date, with the failure surfacing wherever that integration writes. The control is
 a line on the permissions page's <code>Unusual</code> tab — every live key, what it holds, when it was last used, and
@@ -4459,10 +4515,9 @@ listed here because a reader of this page needs to know where the edge is, not b
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Which grants are meant to carry <code>MEMBERS</code>?</strong> Nothing enforces it (§6.1), and the tab that lists the
-  answer is decided while its threshold is not — <em>every</em> <code>ROLE(...)</code> operand without <code>MEMBERS</code>, or only
-  the offices marked sensitive? It lands in the tab's <code>Unusual</code> section either way, so what is still
-  undecided is only how wide that section is
+<li><strong>Who opens the <code>Unusual</code> section of the tab.</strong> §6.1 rules the <code>MEMBERS</code> question itself, including that
+  the section lists every live grant naming a <code>ROLE(…)</code> operand whose expression carries no <code>MEMBERS</code>; what
+  remains is F-21's older question, whether a tab gets opened at all
   (<a href="../../open-questions/#f-13">F-13</a>,
   <a href="../../open-questions/#f-21">F-21</a>).</li>
 <li><strong>The holder period.</strong> Nothing forces a <code>role_holder</code> row to end, and the report stands alone (§4,

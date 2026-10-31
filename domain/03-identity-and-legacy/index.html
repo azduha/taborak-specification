@@ -2391,6 +2391,8 @@
       
         
       
+        
+      
     
     
     
@@ -2989,6 +2991,34 @@
     
   
     Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
   
 
     
@@ -3614,10 +3644,11 @@ through, is matched nightly, and is reviewed); the cost of the tempting version 
 sign up for a camp on the day the form closes, which is not self-correcting at all.</p>
 <p>Two obligations come with the gate, and neither is a queue-management nicety:</p>
 <ul>
-<li><strong>A hypothesis that is blocking an account gets an age check, and it alerts.</strong> Its victim is a
+<li><strong>A hypothesis that is blocking an account gets an age check, and somebody reads it.</strong> Its victim is a
   specific person who cannot log in and whose only remaining channel is to telephone someone. The check
   is shaped like <code>field_conflict</code>'s thirty days
-  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08a-event-guards-and-checks.md §10</a>); the alerting is the point.</li>
+  (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08a-event-guards-and-checks.md §10</a>);
+  that a person opens it is the whole point of having it.</li>
 <li><strong>The holding message confirms nothing.</strong> It says the request was received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
@@ -4026,7 +4057,7 @@ the confirmation step remains, for the reason in §3.</p>
 account may not reach <code>active</code> while an unresolved hypothesis <em>names its person</em>, and a self-asserted
 claim names that person exactly as a collision does. So the smooth path has a human between registration
 and login, where the review could otherwise happen after the person was already using the system. The
-mitigation is the age check that alerts (§4), plus the fact that with a legacy number in hand step 2 is a
+mitigation is the age check that gets read (§4), plus the fact that with a legacy number in hand step 2 is a
 lookup a registrar settles in seconds. What is <em>not</em> settled is whether a hypothesis the person raised
 about themselves should hold their account out of <code>active</code> at all, as against a hypothesis the system
 raised about a stranger who happened to match. Recorded in §9.</p>

@@ -2257,6 +2257,8 @@
       
         
       
+        
+      
     
     
     
@@ -2855,6 +2857,34 @@
     
   
     Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
   
 
     
@@ -3711,9 +3741,10 @@ What <code>role.view</code> shows is the <strong>holder register</strong>, the o
 <em>who was treasurer in 2023?</em></p>
 <p><strong><code>role.assign</code> is the permission to escalate privilege.</strong> Whoever holds it can write themselves a
 holder row in an office that grants them <code>system.admin</code>. It must be held by very few people and
-every holder row must be logged and alerted on. Note that <code>system.admin</code> is deliberately a <strong>single
-top-level permission</strong> rather than a per-resource one — concentrating the most dangerous capability
-and alarming on its holders is safer than scattering equivalents of it. <strong><code>role.assign</code> has no
+every holder row must be logged, and the holders counted in a report somebody opens. Note that
+<code>system.admin</code> is deliberately a <strong>single top-level permission</strong> rather than a per-resource one —
+concentrating the most dangerous capability and keeping its holders on one list that is read is safer
+than scattering equivalents of it. <strong><code>role.assign</code> has no
 self-scoped form and none will be added</strong> (§4,
 <a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>):
 the reason it is not a check the write performs is that there is no smaller grant to make yourself.</p>
@@ -3862,8 +3893,8 @@ It puts a horizon under the risk rather than making it impossible. <strong>AT-4 
 window on the payload is an argument about how <em>long</em> a bad grant can do harm, not an answer to
 whether one permission should guard the trail.</p>
 <p><strong>Payload reduction needs no code here, and saying so is the check that it was considered.</strong> Nobody
-performs it interactively: it is scheduled, and the guard on it is a check that alerts when a row
-past the window still carries a payload
+performs it interactively: it is scheduled, and the guard on it is a check that reports a row
+past the window still carrying a payload
 (<a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">../data-model/06-audit-and-import.md §2.2</a>).
 A permission for it would imply a person choosing not to run it.</p>
 <p><strong>The excluded-keys list has one job: values that must never be logged at all.</strong> Credential secrets,

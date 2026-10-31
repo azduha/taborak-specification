@@ -2274,6 +2274,8 @@
       
         
       
+        
+      
     
     
     
@@ -2885,6 +2887,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3245,8 +3275,8 @@ parent who only ever manages their child is exactly this case.</p>
 already exists runs into
 (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
 Verification is necessary and not sufficient; a human decision is the second condition. Because that
-makes a stalled queue a person who cannot log in, a hypothesis that blocks activation is age-checked
-and alerts. One live account per person is the rule doing the underlying work
+makes a stalled queue a person who cannot log in, a hypothesis that blocks activation is age-checked,
+and somebody reads the count. One live account per person is the rule doing the underlying work
 (<a href="../02-actors/#3-account-state-machine">02-actors.md §3</a>).</p>
 <h3 id="32-membership-lifecycle">3.2 Membership lifecycle<a class="headerlink" href="#32-membership-lifecycle" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> (none)
@@ -3441,8 +3471,10 @@ member's sibling needs a guardian and the member is the one who has them.</p>
   permission, the recipient chooses the channel, a minor's guardians get a mirror of a direct
   message), and its codes are in the catalog. There is no <code>message</code> or <code>message_recipient</code> table yet,
   and no design for templates, opt-out granularity, retention or moderation.</li>
-<li><strong>Notifications</strong> — the renewal window made them dated rather than status-driven, which is a design
-  note, not a design.</li>
+<li><strong>Notifications</strong> — nothing in this design sends anything to anybody today
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and what is
+  deferred is a module nobody has designed: the renewal window made notifications dated rather than
+  status-driven, which is a design note, not a design.</li>
 <li><strong>Documents, reporting, API and UI.</strong></li>
 </ul>
 <hr />

@@ -2377,6 +2377,8 @@
       
         
       
+        
+      
     
     
     
@@ -2988,6 +2990,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3478,7 +3508,7 @@ is already modelled.</p>
 <tr>
 <td><code>cancelled_at</code></td>
 <td>instant in time, optional</td>
-<td>Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be told. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming</td>
+<td>Cancellation is a FACT, not a status: revoking grants would hide the cancellation from the registrants, who are exactly the people who must be able to see it. A cancelled event stops accepting registrations and KEEPS every registration row — those rows are the record that the camp was planned and who was coming</td>
 </tr>
 <tr>
 <td><code>cancelled_by</code></td>
@@ -3570,10 +3600,21 @@ owner-only draft state behind it, and nothing to withdraw to make one. Privacy i
 therefore an act rather than a default; see
 <a href="../../domain/07a-capacity-presence-and-forms/#10-cancellation-and-why-there-is-no-status-column">../domain/07a-capacity-presence-and-forms.md §10</a>.</p>
 <h3 id="why-fee_schedule_id-and-not-an-event_fee-table">Why <code>fee_schedule_id</code> and not an <code>event_fee</code> table<a class="headerlink" href="#why-fee_schedule_id-and-not-an-event_fee-table" title="Permanent link">&para;</a></h3>
-<p>The fee amount, currency and validity already live in <code>fee_schedule</code>
-(<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), which is temporal — so a
-1998 camp's fee recomputes correctly from the 1998 schedule. An <code>event_fee</code> table would
-duplicate that and immediately drift. An event points at the schedule that prices it.</p>
+<p>The fee amount and currency already live in <code>fee_schedule</code>
+(<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>), and an event points at the schedule
+that prices it. An <code>event_fee</code> table would duplicate that and immediately drift.</p>
+<p><strong>What the pointer no longer buys, and this is where D-161 actually lands.</strong>
+<a href="../../decisions/round-22/#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last">D-161</a>
+deleted <code>fee_schedule.valid_from</code> and <code>valid_to</code>: there is <strong>one live price</strong>, edited in place when a
+billing year is reopened, and no price history — so a 1998 camp's fee does not recompute from the 1998
+schedule, and no page here may claim it does. The record of what a person owed was never on the schedule
+anyway: §6's create copies <em>the schedule's amount and currency</em> onto the <code>fee_obligation</code> beside its
+snapshot of <code>fee_schedule_id</code>, and that row is where the answer lives. Membership states it the same
+way — "what did we charge in 1998?" is answered from the obligation, not the price list
+(<a href="../../domain/05-membership-lifecycle/#3-membership">../domain/05-membership-lifecycle.md §3</a>). <strong>What
+the deletion costs is one question:</strong> <em>what did the price list say a 1998 camp cost?</em> The closest answer
+this system holds is an aggregate over the obligations of 1998, which reports what people were actually
+asked rather than what a list said.</p>
 <hr />
 <h2 id="3-event_organizer">3. <code>event_organizer</code><a class="headerlink" href="#3-event_organizer" title="Permanent link">&para;</a></h2>
 <p><strong>The absence of a <code>valid_to</code> is deliberate.</strong> This is a <em>roster</em>, not a period: you are on

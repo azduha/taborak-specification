@@ -2193,6 +2193,8 @@
       
         
       
+        
+      
     
     
     
@@ -2804,6 +2806,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3380,8 +3410,12 @@ of catching the forgetting. <strong>Check 4 in §10 is the net under it</strong>
 person, the only form of this failure that is still visible after the fact.</p>
 <hr />
 <h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
-<p>Checks that should run nightly and alert. These encode invariants that no per-column rule
-above can express.</p>
+<p>Checks that should run nightly, and that somebody reads the same morning. These encode invariants that
+no per-column rule above can express. <strong>A result here is a report a person opens; no check in this
+section sends anything to anybody</strong>
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and where a
+bullet below says a finding belongs in the report rather than in a log, what it means is that the finding
+must not wait for a reader to stumble on it.</p>
 <p><strong>Invariants to verify</strong></p>
 <ul>
 <li><strong>A person with more than one live account.</strong> Count <code>account</code> rows per person whose status
@@ -3423,14 +3457,14 @@ above can express.</p>
   shape of the data and its expected value is not zero. What carries information is the <em>depth</em>: four merges
   in a row on one line of people means the matcher is producing duplicates faster than a human can settle
   them. It is read alongside the review queue's age, never on
-  its own, and it is not alertable — there is nothing wrong to fix on the row, and an alert that can only
-  be answered by "work faster" trains people to ignore alerts.</li>
+  its own, and it asks for no urgency — there is nothing wrong to fix on the row, and a finding whose only
+  possible answer is "work faster" only teaches a reader to skip the findings that aren't.</li>
 <li><strong>A live row that references a tombstoned person.</strong> Count rows in any table that names a person which
   point at a person whose merge pointer is set, where the referring row is itself live. <strong>This is the
   only net under §9's rule that every entry point calls <code>resolve_person()</code>, and it exists because D-072
   took the database-level ones away.</strong> Getting that call wrong is invisible at the moment it happens — a
   blank name in a list, at worst the wrong name — and permanent afterwards, because the row is written and
-  referenced by whatever came after it. <strong>This one alerts rather than logs</strong>: the gap is not reconstructable
+  referenced by whatever came after it. <strong>This one belongs in the report, not in a log</strong>: the gap is not reconstructable
   later, and unlike a missing audit entry it misattributes a person rather than merely forgetting them.</li>
 <li><strong>A cycle in the merge graph.</strong> Walk the pointers and look for a row reachable from itself. There should
   never be a single row here: §8 refuses a merge whose chosen survivor resolves to the person being
@@ -3440,8 +3474,8 @@ above can express.</p>
 <li><strong>An account held below <code>active</code> by an unresolved hypothesis for more than 30 days.</strong> Count accounts
   whose status is not <code>active</code> or <code>closed</code>, whose person is named by a hypothesis still in <code>proposed</code> or
   <code>needs_review</code>, where that hypothesis is older than 30 days — the same shape as the conflict-age check
-  below, for the same reason. <strong>It alerts rather than logs, and the reason is worth keeping in the check's
-  own text: a stalled identity queue stopped being a data-quality problem the day it acquired the power to
+  below, for the same reason. <strong>It belongs in the report, not in a log, and the reason is worth keeping in
+  the check's own text: a stalled identity queue stopped being a data-quality problem the day it acquired the power to
   hold a login.</strong> Behind each row is a specific person who cannot sign up — often to a camp whose form
   closes this week — and no channel by which to tell anyone except a telephone call.</li>
 <li><strong>Unresolved merge conflicts older than 30 days.</strong> Count <code>field_conflict</code> rows resolved to
@@ -3472,7 +3506,7 @@ above can express.</p>
   redacted person, and attribute values still present in <code>audit_log</code>. It is named here because the
   redaction checks above are the same erasure guarantee read from the identity side, and a half-finished
   erasure does not announce which table it stopped in. Of everything on either list, that is the one
-  that should alert rather than log.</li>
+  that must not wait for the next time a reader looks.</li>
 </ul>
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
