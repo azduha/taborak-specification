@@ -3330,7 +3330,7 @@ downstream ever says so.</p>
 <tr>
 <td>An operand's arity and binding match its registry row</td>
 <td><a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">05a §8</a></td>
-<td>one of six checks in one transaction</td>
+<td>one of seven checks in one transaction — six until <a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a> added the seventh, and the count is 05 §6's own</td>
 <td><a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 checks 3 and 4</a></td>
 </tr>
 <tr>
@@ -3390,8 +3390,8 @@ downstream ever says so.</p>
 <tr>
 <td>A grant may name no permission the granter does not hold</td>
 <td><a href="../05-authorization/#6-access_grant--the-per-item-layer">05 §6</a></td>
-<td>the write path, resolving the granter with the same check the resolver runs on an act none — the refusal is the whole control. <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 7</a>'s wide half is what a grep finds here and is <strong>not</strong> this: it watches a grant that widened itself when a <code>-</code> beneath it stopped resolving, not a grant written too wide. One thing the ceiling does that a reader should not have to guess: <strong>it stops escalation and not distribution</strong> (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>)</td>
-<td></td>
+<td>the write path, resolving the granter with the same check the resolver runs on an act — but <strong>not</strong> the twelve rows an event create writes beside it, which name nobody the writer chose (<a href="../../decisions/round-22/#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes">D-170</a>)</td>
+<td>none — the refusal is the whole control. <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 7</a>'s wide half is what a grep finds here and is <strong>not</strong> this: it watches a grant that widened itself when a <code>-</code> beneath it stopped resolving, not a grant written too wide. One thing the ceiling does that a reader should not have to guess: <strong>it stops escalation and not distribution</strong> (<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>)</td>
 </tr>
 <tr>
 <td>Deleting an item closes the grants written on it</td>

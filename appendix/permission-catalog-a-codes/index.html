@@ -3790,13 +3790,21 @@ and <code>(MEMBERS * ROLE(x)) + PERSON(y)</code> when one named person is to sur
 <a href="../../domain/06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">../domain/06-authorization-model.md §6.1</a>).
 The waiver code, the role flag that waived a whole office, and the resolver function that read them
 are in <a href="../removed-concepts/">removed-concepts.md</a>.</p>
-<p><strong><code>access_grant.create</code> carries no ceiling, and nothing here pretends otherwise.</strong> What bounds a
-grantor is the shape of the grant and nothing else: one code, <code>applies_to</code> refusing it on an item it
-does not fit, a scope that is the item the grant names or the unit, <code>MEMBERS</code> as the writer's own act.
-The test that an authority may not exceed its holder's is written only for delegations
-(<a href="../../domain/06-authorization-model/#9-delegation">../domain/06-authorization-model.md §9</a>), so
-<strong>a holder of <code>access_grant.create</code> can grant <code>system.admin</code> to anyone, including themselves.</strong> That
-is recorded as an open question rather than as a rule this catalog holds, and §12 is where it lives.</p>
+<p><strong><code>access_grant.create</code> says you may write grant rows, and since
+<a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a> it no longer says
+what they may say.</strong> What bounds a grantor is the shape of the grant — one code, <code>applies_to</code> refusing it on an
+item it does not fit, a scope that is the item the grant names or the unit, <code>MEMBERS</code> as the writer's own act —
+<strong>and now the granter too</strong>: a row may name only a permission its writer holds, at a scope reaching what they
+write. This page said the opposite for five rounds and said it as candour ("nothing here pretends otherwise"),
+and the sentence it drew the conclusion from — that the test an authority may not exceed its holder's is written
+only for delegations (<a href="../../domain/06-authorization-model/#9-delegation">../domain/06-authorization-model.md §9</a>)
+— was true the whole time and simply incomplete: delegation was the one place the test had been written, not the
+only place it applied. So <strong><code>system.admin</code> can no longer be handed out by a holder of <code>access_grant.create</code> who
+does not hold it</strong>, which is what §12 called the sharpest hole in this file and what closed it. <strong>The one write
+the ceiling does not read is the bundle an event create writes</strong> — twelve rows naming nobody the writer chose
+(<a href="../../decisions/round-22/#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes">D-170</a>) — and it is
+named here because an appendix that lists a rule's exceptions beside the rule is the only kind of appendix worth
+reading.</p>
 </blockquote>
 <h2 id="8-audit-and-system">8. Audit and system<a class="headerlink" href="#8-audit-and-system" title="Permanent link">&para;</a></h2>
 <table>
