@@ -2083,6 +2083,8 @@
       
         
       
+        
+      
     
     
     
@@ -2779,6 +2781,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3292,10 +3322,27 @@ away on purpose. <code>00a</code>'s shape-4 rows carry the word <code>nothing</c
 where <code>nothing</code> is explained rather than apologised for.</p>
 <hr />
 <h2 id="d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132 — Day one is one account holding <code>system.admin</code>, and every role after it is written by the organization<a class="headerlink" href="#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization" title="Permanent link">&para;</a></h2>
-<p><strong>Status:</strong> decided (from your answer) — <strong>not yet applied.</strong> The seed is still described in
-<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">05d §12</a>, and the sweep
-that removes it is round 19. It is recorded here because it was ruled here, and because a ruling that
-lives only in a conversation is a ruling that gets re-litigated.
+<p><strong>Status:</strong> decided (from your answer), <strong>applied two rounds later by
+<a href="../round-21/">round 21</a></strong> — <a href="../round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>
+for day one, <a href="../round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>
+for the event's own grants, <a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>
+for the flag columns, <a href="../round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a> and
+<a href="../round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a> for the two named audiences
+and <code>counselors</code>. The seed this entry left standing is gone from
+<a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">05d §12</a>, which is now titled for what
+it actually lists. It is recorded here because it was ruled here, and because a ruling that lives only in a
+conversation is a ruling that gets re-litigated.</p>
+<p><strong>What round 21 corrected in this entry, and added to it.</strong> Three things, and they are listed rather than
+quietly folded in because this page is the record of the ruling. <strong>The numbering moved:</strong> the sweep this
+entry calls round 19 is round 21, because round 19 was spent on other questions and round 20 on thirteen of
+them. <strong>Part 3's list of ten is not ten ungranted codes</strong> — four of them are <code>event.*</code> codes, and since
+D-151 every event's organizers hold them <em>on that event</em> from the moment it is created, so the correct
+reading is "ungranted at the unit, held on every item by the people who run it". <strong>And the consequence this
+entry says it has to say out loud is wrong in its arithmetic:</strong> the organization does not write that answer
+grant "once" — D-132 said once where the design needed once <strong>per event</strong>, because a bound operand is legal
+only on an item-scope grant. <strong>What it did not list and round 21 deleted anyway:</strong> <code>permission.is_system</code>
+and <code>selector_type.is_system</code>, on the argument that a column whose content is "a migration wrote this row"
+is not a protection of anything (D-152), and <code>role.delete</code>'s refusal that read that column.
 <strong>Deletes (in round 19):</strong> the seeded roles, the two seeded audiences, the seeded <code>event.answer.view</code>
 grant, the worked-example offices that 05d §12 presents as seed, <code>role.is_system</code> and <code>audience.is_system</code>.
 <strong>Confirms:</strong> <code>permission</code>, <code>grant_scope_type</code> and <code>selector_type</code> <strong>do</strong> ship as seed data.

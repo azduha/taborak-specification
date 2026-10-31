@@ -2355,6 +2355,8 @@
       
         
       
+        
+      
     
     
     
@@ -2925,6 +2927,34 @@
     
   
     Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
   
 
     
@@ -3954,8 +3984,13 @@ authorizes a lapsed member, silently, forever. Three controls, none of which is 
 <li><strong>A standing report</strong> of live grants naming a <code>ROLE(...)</code> operand whose expression does not contain
   <code>MEMBERS</code> — check 1 of §7. An office held by a non-member is the case worth a human eye, and the
   report is narrow enough to actually be read.</li>
-<li><strong>Seeded grants and any grant template carry <code>MEMBERS</code></strong>, so the path of least repetition is the
-  safe path.</li>
+<li><strong>The grants this system writes for itself are named, and their missing <code>MEMBERS</code> is deliberate.</strong>
+  Creating an event writes twelve item-scope allows beside the event row, all aimed at the bare operand
+  <code>ORGANIZERS</code>, none carrying <code>MEMBERS</code> — an organizer appointed for one weekend is not required to be a
+  paying member
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+  They name no <code>ROLE(...)</code>, so the report above never sees them; every grant that does arrive through a
+  screen is fair game for it.</li>
 <li><strong>Import completeness.</strong> <code>MEMBERS * COUNSELORS</code> is only as correct as the counselor roster: the
   gate used to
   fall out of membership alone, so an import that misses 300 counselors silently un-gates them. It fails
@@ -4006,8 +4041,9 @@ than on a gap.</p>
 <li><strong>1. Live grants that gate nothing.</strong> Counts live grants whose audience expression names a <code>ROLE(...)</code>
   operand and does not contain <code>MEMBERS</code> — D-100's standing report, restated here because this is
   the module whose data it reads. <strong>Enforced by no layer, and no layer can</strong>: whether an office is
-  written with <code>MEMBERS</code> is a choice made in the grant text, so the controls are this report, plus
-  seeded grants and any template carrying <code>MEMBERS</code> so the common path is the gated one (§6). <strong>A
+  written with <code>MEMBERS</code> is a choice made in the grant text, so the controls are this report and the
+  import count of §6 (§6 also names the twelve grants an event creation writes; this report never sees
+  them, because they aim at <code>ORGANIZERS</code> and name no <code>ROLE(...)</code>). <strong>A
   non-zero count is not a fault</strong> — it is the list of offices worth a human eye, and it is narrow
   enough to actually be read.</li>
 <li><strong>2. Non-members holding an office.</strong> Counts open <code>role_holder</code> rows whose holder
@@ -4091,11 +4127,16 @@ anywhere else.</p>
 there is nothing to vary by type; being a counselor or a leader is a <strong>role</strong>, not a type
 (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>);
 and membership is ageless, so there are no age limits to seed (D-038).</p>
-<p><strong>Nothing else is seeded here.</strong> The <code>counselors</code> role that D-100 seeds — shipped <code>is_system</code>, so an
-editor refuses to delete it — is a row of the authorization module
-(<a href="../05d-invariants-and-seed/#12-what-the-organization-starts-with">05d-invariants-and-seed.md §12</a>) and not of this one,
-and it is a <strong>set</strong> that confers nothing until a grant names it: no more than a membership type has ever
-conferred.</p>
+<p><strong>Nothing else is seeded here, and the office this design keeps naming as its example is not seeded
+either.</strong> <code>counselors</code> would be a row of the authorization module and not of this one, and <strong>no role ships
+at all</strong>: day one is one account holding <code>system.admin</code> at the unit, and the first office is a write like
+any other
+(<a href="../05d-invariants-and-seed/#12-what-day-one-looks-like">05d-invariants-and-seed.md §12</a>,
+<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>,
+<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>).
+D-100 settled which <strong>table</strong> a permanent, organization-wide population belongs in; it never asked anybody
+to write the row. A role is a <strong>set</strong> that confers nothing until a grant names it: no more than a
+membership type has ever conferred.</p>
 <p><strong>All three are settled, and all three are §1's columns</strong> — 12 months, 1 January, 60 days
 (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>,
 <a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).

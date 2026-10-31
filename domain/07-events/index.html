@@ -2292,6 +2292,8 @@
       
         
       
+        
+      
     
     
     
@@ -2875,6 +2877,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3414,10 +3444,16 @@ grant has no room for "cook"), on the ordering, and on the reverse question — 
 running this camp?"</em> should not be answered by reading a permission table. Two concepts,
 each doing its own job.</p>
 <p><strong>What an organizer gets.</strong> Membership of <code>event_organizer</code> makes a person a member of the
-set <code>ORGANIZERS</code>. What that set may <em>do</em> is whatever a live grant aims at it — and that is one seeded
-grant, <code>event.answer.view</code> on the event to <code>ORGANIZERS</code>
-(<a href="../07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">§12</a>). Everything else
-reaches an organizer the way it reaches anybody else: through a grant that person holds.</p>
+set <code>ORGANIZERS</code>. What that set may <em>do</em> is whatever a live grant aims at it, and <strong>the act that creates
+the event writes twelve of those grants in the same transaction as the event row</strong> — one item-scope
+<code>allow</code> per code whose <code>applies_to</code> admits an event, every one aimed at the bare operand <code>ORGANIZERS</code>,
+the set derived rather than hand-picked
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>;
+<a href="../07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">§12</a>).
+One of the twelve is <code>event.grant_access</code>: an organizer hands access to the event they run <strong>without
+holding <code>access_grant.create</code> at the unit</strong>, bounded by the scope they can name and by <code>applies_to</code>.
+Everything outside those twelve reaches an organizer the way it reaches anybody else — through a grant
+that person holds.</p>
 <hr />
 <h2 id="6-how-authority-reaches-an-event">6. How authority reaches an event<a class="headerlink" href="#6-how-authority-reaches-an-event" title="Permanent link">&para;</a></h2>
 <p><strong>Through a grant, and through nothing else.</strong> A grant at the unit reaches every event; a grant on one
@@ -3459,7 +3495,7 @@ the event comes from grants, as it does everywhere else:</p>
 </tr>
 <tr>
 <td>An organizer, as such</td>
-<td>only what a grant aims at <code>ORGANIZERS</code> — the seeded <code>event.answer.view</code></td>
+<td>only what a grant aims at <code>ORGANIZERS</code> — the twelve the event's creation wrote, answer-view among them</td>
 </tr>
 <tr>
 <td>Somebody the organization has excluded</td>

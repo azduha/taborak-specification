@@ -2139,6 +2139,8 @@
       
         
       
+        
+      
     
     
     
@@ -2722,6 +2724,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2854,9 +2884,10 @@ channel). Codes are stable identifiers, never display strings, and there is no
 Specified in <a href="../data-model/05-authorization/#2-permission">data-model/05 §2</a>.</p>
 <p><strong>Role</strong> — <strong>An office</strong>, not a bundle: see <a href="../glossary/#organization">Organization</a>. The one
 sentence people get wrong — <strong>a role confers nothing</strong>, and the codes it carries are the
-live grants naming <code>ROLE(x)</code>. Roles are runtime data: the organization invents them,
-composes them out of grants and deletes the unused ones, except for the one seeded role
-(<a href="../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>).</p>
+live grants naming <code>ROLE(x)</code>. Roles are runtime data with <strong>no exception</strong>: the organization invents them,
+composes them out of grants and deletes the unused ones, and <strong>no role ships</strong>
+(<a href="../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>,
+<a href="../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).</p>
 <p><strong>Scope</strong> — What a grant applies to: <strong>the unit, or exactly one item</strong> (<code>scope_type</code> +
 <code>scope_id</code>), never a nested body and never a choice between several items. Items are
 registered in <code>grant_scope_type</code> — <code>event</code>, <code>person_group</code>, <code>role</code>, and <code>document</code>
@@ -2975,6 +3006,10 @@ three, so <code>MEMBERS * OLDER(13) * YOUNGER(19)</code> is an ordinary term. <s
 that list, in either spelling</strong>: guardianship is a channel and not a set, so a kept list
 of contact adults is a <code>GROUP(x)</code>
 (<a href="../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
+<strong>No audience ships.</strong> A grant is aimed at an expression, and the operands are writable anywhere: an
+audience is a name worth a row only when something is going to <em>name</em> it, and a one-operand audience
+almost never is
+(<a href="../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>).
 <strong>A count of the operands belongs only in the registry table itself</strong>
 (<a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05 §8</a>).
 <strong>Fail closed in every direction:</strong> an operand that does not resolve is the empty set, and
@@ -3011,8 +3046,10 @@ vocabulary that ships</strong>, and <strong>membership is never implicit</strong
 in, so requiring it is <code>MEMBERS * ROLE(x)</code>, waiving it for a whole office is <code>ROLE(x)</code>
 alone, and waiving it for one named person is <code>MEMBERS * ROLE(x) + PERSON(y)</code>. A grant
 naming <code>ROLE(x)</code> with no <code>MEMBERS</code> authorizes a lapsed member, silently and forever, and
-nothing enforces the term — <strong>a convention, not a guard</strong> (see <em>The permissions tab</em>, and
-the seeded grants and templates that carry <code>MEMBERS</code>).
+nothing enforces the term — <strong>a convention, not a guard</strong> (see <em>The permissions tab</em>). The
+only grants this system writes for itself are the twelve beside an event, they name
+<code>ORGANIZERS</code> rather than a <code>ROLE(...)</code>, and they carry no <code>MEMBERS</code> on purpose
+(<a href="../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
 <em>Why:</em> the resolver applies no membership test of its own at any scope, so the term is
 either written into the expression or it is nowhere
 (<a href="../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</p>
@@ -3216,28 +3253,33 @@ everything": <strong><code>system.admin</code></strong> — the only wildcard pe
 audiences</strong>, the bundles the organization composes, where "someone who can do everything
 about events" is written out as a couple of dozen grant rows rather than implied by a
 resolver rule.</p>
-<p><strong><code>is_system</code></strong> — The flag meaning <em>the platform shipped this, so a screen must not destroy
-it</em>. It sits on <code>permission</code> (a shipped code can neither be deleted nor renamed), on
-<code>role</code> (<strong><code>counselors</code> ships with it so an editor refuses to delete the set every
-safeguarding convention hangs from</strong>), on the two seeded audiences <code>everyone</code> and
-<code>all_members</code>, and on every <code>selector_type</code> row — where its job is specifically <strong>to make
-the registry refuse an edit</strong>, which is what makes "a closed language" true of a table
-rather than merely asserted. The same protection extends to <strong>organization-named things</strong>
-differently: a role, a group or an audience nobody shipped is never deleted at all, only
-retired as <code>deprecated</code>, <code>hidden</code> or <code>disabled</code>. It is not a sensitivity mark and not a
-category: <code>applies_to</code> and <code>right_kind</code> grade what a code does, and the catalog's 🔒 marks
+<p><strong>What protects a vocabulary</strong> — <strong>Its table, and not a flag on its rows.</strong> Three tables ship rows and no
+screen adds one or removes one: <code>permission</code>, <code>grant_scope_type</code> and <code>selector_type</code>, plus the two effects
+and both <code>permission</code> enums. What refuses an addition or a deletion is that <strong>the write path does not
+exist</strong> — no <code>permission.create</code> and no <code>permission.delete</code> code is in the catalog, <code>permission.edit</code>
+reaches a code's labels and never its <code>code</code>, and a <code>selector_type</code> row typed into a screen would be a word
+no resolver arm evaluates
+(<a href="../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).
+<strong>Organization-named things are protected the other way:</strong> a role, a group or an audience is never deleted
+once a rule may name it, only retired as <code>deprecated</code>, <code>hidden</code> or <code>disabled</code> — see
+<em>Deprecated / hidden / disabled</em>. A per-row "the platform shipped this" boolean is not a sensitivity mark
+and not a category either: <code>applies_to</code> and <code>right_kind</code> grade what a code does, and the catalog's 🔒 marks
 grade what it exposes
 (<a href="../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>).</p>
-<p><strong>What is seeded</strong> — Membership ships <strong>one row</strong> (<code>member</code> in <code>membership_type</code>, kept as a
-table so a second kind is a data change rather than a migration); <strong>no group ships at
-all</strong>, because a seeded group would be an invented one; and <strong>one role ships</strong>,
-<code>counselors</code>, marked <code>is_system</code>, because a permanent organization-wide population is the
-opposite of what a group is. Plus the platform's own vocabulary: the permission codes, the
-<code>grant_scope_type</code> rows, the <code>selector_type</code> rows, and the two audiences <code>everyone</code> and
-<code>all_members</code>. <strong>"Every event's answers go to its organizers" ships as a grant template
-rather than a row</strong> — a bound operand is only legal on an item-scope grant, so the
-event-creation path instantiates that grant beside each event. Roles, groups and their
-rosters are <strong>runtime data</strong> in every other case
+<p><strong>What is seeded</strong> — <strong>Three vocabularies, two effects and two enums</strong>: the permission codes, the
+<code>grant_scope_type</code> rows, the <code>selector_type</code> rows, <code>allow</code> and <code>deny</code>, and both <code>permission</code> enums
+(<code>applies_to</code>, <code>right_kind</code>). They arrive with the code because the code has to agree with them — a grant
+naming a code that does not exist is a save-time refusal, and an operand no migration seeded is a word that
+fails to parse. Membership ships <strong>one row</strong> (<code>member</code> in <code>membership_type</code>, kept as a table so a second
+kind is a data change rather than a migration). <strong>Nothing else ships</strong>: no role, no audience, no grant, no
+group — a seeded group would be an invented one, and day one is one account holding <code>system.admin</code> at the
+unit, from which the first office, the first audience and the first grant are ordinary writes
+(<a href="../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
+<strong>"Every event's answers go to its organizers" is not a shipped row either</strong>: the act that creates the
+event writes twelve item-scope allows beside the event, one per code whose <code>applies_to</code> admits an event,
+each aimed at the bound operand <code>ORGANIZERS</code>
+(<a href="../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+Roles, groups and their rosters are <strong>runtime data</strong> in every other case
 (<a href="../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>).</p>
 <p><strong>Effective permission</strong> — The union of everything a person may do right now, computed from
 live grants whose expressions contain them on the checked date, plus ownership and

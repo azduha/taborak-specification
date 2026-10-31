@@ -2222,6 +2222,8 @@
       
         
       
+        
+      
     
     
     
@@ -2805,6 +2807,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3003,8 +3033,10 @@
 
 <h1 id="appendix--permission-catalog">Appendix — Permission Catalog<a class="headerlink" href="#appendix--permission-catalog" title="Permanent link">&para;</a></h1>
 <p>Every permission code, its namespace, and the grant that carries it.</p>
-<p>This is the <strong>proposed</strong> catalog, seeded in
-<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05d-invariants-and-seed.md</a>.</p>
+<p>This is the <strong>proposed</strong> catalog. Its rows are the permission vocabulary, which arrives with the code;
+<strong>who holds any one of them is a grant row</strong>, and day one is one account holding <code>system.admin</code> and no
+other grant (<a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">../data-model/05d-invariants-and-seed.md §12</a>,
+<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).</p>
 <blockquote>
 <p><strong>What a row here is.</strong> A capability, and nothing more. There is no level paired with a code —
 <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
@@ -3029,7 +3061,7 @@ comprehensive <em>role</em> list would be a specification pretending to be data.
 <p>Codes are still <strong>stable identifiers</strong>: adding one is free, renaming one is a migration
 (<a href="#code-shape">§1</a>). What is <em>not</em> yet settled is the exact contents — tracked in §12.</p>
 </blockquote>
-<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">permission-catalog.md</a> holds §1, the conventions; <a href="../permission-catalog-a-codes/">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">permission-catalog.md</a> holds §1, the conventions; <a href="../permission-catalog-a-codes/">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.</p>
 <hr />
 <h2 id="1-conventions">1. Conventions<a class="headerlink" href="#1-conventions" title="Permanent link">&para;</a></h2>
 <h3 id="code-shape">Code shape<a class="headerlink" href="#code-shape" title="Permanent link">&para;</a></h3>
@@ -3166,7 +3198,7 @@ anyway</strong> (<a href="../../domain/06a-audiences-and-selectors/#62-audiences
 so <code>(MEMBERS * OLDER(18)) - YOUNGER(6)</code> is printed exactly as it is stored and nobody has to hold a
 precedence table to read a grant row.</p>
 <p><strong>Those leaves are the registry, not a sample of it</strong>, and the registry itself is the seeded <code>selector_type</code>
-rows: <a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05d-invariants-and-seed.md §12</a>
+rows: <a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">../data-model/05d-invariants-and-seed.md §12</a>
 states them and counts them, once. The names are repeated here so a grant row can be read where it is
 written; a second page printing the count would only be a second thing to go stale.</p>
 <p><strong>A leaf outside that registry does not parse.</strong> Three things the language therefore does not have:</p>

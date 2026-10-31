@@ -2139,6 +2139,8 @@
       
         
       
+        
+      
     
     
     
@@ -2722,6 +2724,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2869,6 +2899,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a></td>
 </tr>
 <tr>
+<td><code>everyone</code>, <code>all_members</code></td>
+<td>the two audiences the platform shipped: one whose whole expression was <code>EVERYONE</code>, one whose whole expression was <code>MEMBERS</code>, each named so a grant could point at it, each marked not editable by a screen</td>
+<td>a name over a one-operand expression is worth a row only if somebody is going to name it, and naming is one row a person writes when they have a reason; the editor refusals that guarded them guarded a category that does not need a flag — an expression is not a member list, and there is no <code>audience_member</code> table to add somebody to</td>
+<td>the operand written directly in the grant's expression: <code>EVERYONE</code>, <code>MEMBERS</code>; a named audience is one someone writes, and <code>AUDIENCE(x)</code> is what makes a name worth having</td>
+<td><a href="../../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a></td>
+</tr>
+<tr>
 <td><code>dependent.*</code>, <code>guardianship_permission</code></td>
 <td>eighteen per-capability codes on a guardian: a read and an act spelling over each of eight resources — profile, contact, membership, event, fee, medical, achievement, document — plus <code>dependent.admin</code> over the lot, each its own row</td>
 <td>one right per guardianship row, compared against <code>permission.right_kind</code>; the granular split was declined, not left unbuilt</td>
@@ -2904,6 +2941,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a></td>
 </tr>
 <tr>
+<td>the shipped <code>event.answer.view</code> → <code>ORGANIZERS</code> <strong>grant row</strong>, and the <em>template</em> read of it — the code is live and unrenamed, only the row that arrived with the platform is gone</td>
+<td>the one grant row saying an event's organizers may read its registrants' answers — shipped as a row, later re-read as a template the event-creation path instantiates beside each event, since a bound operand cannot sit on a unit-scope grant</td>
+<td>one hand-written grant per event is a list somebody keeps in step with the catalog by remembering; the authority an item's people need is derivable from the codes that admit that item</td>
+<td>the act that creates an event writes <strong>twelve item-scope allows</strong> beside the event row, in the same transaction — every <code>event.*</code> code except <code>event.create</code> (<code>applies_to = unit</code>), each aimed at an audience whose expression is <code>ORGANIZERS</code></td>
+<td><a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a></td>
+</tr>
+<tr>
 <td><code>GUARDIANS</code>, <code>GUARDIANS(p)</code>, <code>guardians_of</code></td>
 <td>a named set of the same people, then an operand naming the guardians of the person an item is about</td>
 <td>guardianship is a channel entered by the shape of a request and carrying a <code>right_level</code>, not a set a grant aims at</td>
@@ -2923,6 +2967,13 @@ its vocabulary.</p>
 <td>personhood is not a type, membership is ageless, and one person can be a member twice with a gap between</td>
 <td><code>membership</code> rows, and <code>is_current_member()</code> on the date asked about; <code>is_minor(person, as_of)</code> reads the person</td>
 <td><a href="../../decisions/round-01a/#d-001--person-account-and-membership-are-three-separate-things">D-001</a>, <a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a></td>
+</tr>
+<tr>
+<td><code>permission.is_system</code>, <code>role.is_system</code>, <code>selector_type.is_system</code>, <code>audience.is_system</code></td>
+<td>a per-row boolean telling an editor that <em>this</em> row was shipped by the platform and must not be edited or deleted</td>
+<td>three of the four tables have no screen that writes them and no code that adds a row, and <code>grant_scope_type</code> — just as uneditable — never carried the flag, which is the tell: it was a sentence about the table, stored on every row of it. On <code>role</code> the flag protected exactly one row, and there is no shipped office</td>
+<td>the sentence lives in the paragraph about the table: "written only by migrations", <strong>organization-read-only</strong>. What still refuses a delete of a held office is the foreign key from <code>role_holder</code>, which was always the half that also refused an import, a manual fix and a second client</td>
+<td><a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a></td>
 </tr>
 <tr>
 <td><code>LIST</code></td>
@@ -3021,6 +3072,13 @@ its vocabulary.</p>
 <td>an office confers nothing by being held; the codes an office carries are the live grants naming <code>ROLE(x)</code>, and each of those rows names its own scope</td>
 <td><code>role_holder</code>, and grants aimed at <code>ROLE(x)</code></td>
 <td><a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a></td>
+</tr>
+<tr>
+<td>the seeded <code>role</code> set — the <code>counselors</code> row, and the <code>system_admin</code> office the catalog sketched as shipping</td>
+<td>offices the platform wrote so a new installation had somewhere to put people, with a holder column empty on arrival and no grant naming them</td>
+<td>an office confers nothing by being held, so a shipped office was a name nobody had a reason to name and a row no screen could delete — and the checklist of what to grant belongs in the catalog, where a person reads it, not in rows a migration wrote</td>
+<td><strong>day one is one account and one ordinary <code>access_grant</code> row giving it <code>system.admin</code> at the unit</strong>, and every office after it is written with <code>role.create</code> and aimed at by grants; <code>counselors</code> stays as the corpus's worked example of an office, which is what every expression naming it always was</td>
+<td><a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>, <a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a></td>
 </tr>
 <tr>
 <td><code>scope_exposure</code>, <code>scope.expose</code>, <code>scope.exposure.review</code>, <code>scope_exposure_covers_assignment()</code></td>
@@ -3197,7 +3255,7 @@ the history back into the pages this appendix exists to keep clean; and re-addin
 why every row ends in a decision — a concept comes back by a decision entry, or it does not come back.</p>
 <hr />
 <p><em>Decisions behind this page: D-001, D-037, D-038, D-040, D-041, D-043, D-044, D-050, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
-D-099, D-100, D-101, D-102, D-104, D-105, D-113, D-114.</em></p>
+D-099, D-100, D-101, D-102, D-104, D-105, D-113, D-114, D-150, D-151, D-152, D-153, D-154.</em></p>
 
 
 

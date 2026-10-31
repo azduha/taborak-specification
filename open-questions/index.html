@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/open-questions/">
       
       
-        <link rel="prev" href="../decisions/round-20/">
+        <link rel="prev" href="../decisions/round-21/">
       
       
       
@@ -2079,6 +2079,8 @@
       
         
       
+        
+      
     
     
     
@@ -2662,6 +2664,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3176,9 +3206,12 @@ since it is the one place the design pays a structural cost for a hypothetical f
 <hr />
 <h3 id="f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11 🟢 Does the identity reviewer need to <em>read</em> the person record to settle a claim?<a class="headerlink" href="#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim" title="Permanent link">&para;</a></h3>
 <p><strong>Question.</strong> <a href="../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>
-routes a colliding sign-up to <code>identity_reviewer</code> and resolves it with <code>person.merge</code>. The seed role
-holds <code>person.merge</code>, <code>import.view</code> and <code>import.apply</code> — and <strong>not</strong> <code>person.view</code>. So a reviewer
-decides "is this the same child?" from match signals, names and dates, without opening either record.</p>
+routes a colliding sign-up to <code>identity_reviewer</code> and resolves it with <code>person.merge</code>. The office an
+organization writes for this job — <a href="../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">the catalog's §11</a>
+is an example of writing one — holds <code>person.merge</code>, <code>import.view</code> and <code>import.apply</code>, and <strong>not</strong>
+<code>person.view</code>. <strong>Nothing ships a reviewer, so what used to be a fact about the seed is now a choice somebody
+writes</strong>: as written, a reviewer decides "is this the same child?" from match signals, names and dates,
+without opening either record.</p>
 <p><strong>Why this is a question now and was not one before.</strong> Merging already needed a human, but the
 alternative to merging was doing nothing: a wrong call left two rows side by side, visible in the
 nightly duplicate report, correctable next quarter. The activation gate changed the stakes. A reviewer
@@ -3218,12 +3251,14 @@ inside it, and deleting the status deleted the schedule with it. This is the one
 <strong>deleting a mechanism removed the answer to a question nobody had written down</strong>, and the round noticed only
 afterward.</p>
 <p><strong>Impact.</strong> <strong>None on the schema</strong> — no column turns on this, and no invariant is stated about it. It is a
-sequencing risk on the single most fragile operation in the corpus. Day one does not block: <a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132's
-one account</a>
-holds <code>system.admin</code>, which satisfies every code including this one, so the first definitions are writable on
-day one by the only person who is there. <strong>What is undecided is the work and the handover:</strong> who reads the
-column map, whose job it is to write several hundred codes and their value vocabularies before a batch is
-scheduled, and who holds <code>attribute.define</code> afterwards — because one holder is not curation, and the queue
+sequencing risk on the single most fragile operation in the corpus. Day one does not block, and since
+<a href="../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">round 21</a>
+that is true in the plainest possible way: <strong>day one <em>is</em> that one account</strong>, holding <code>system.admin</code>, which
+satisfies every code including this one, so the first definitions are writable before anything else exists.
+<strong>What is undecided is the work and the handover</strong>, and the round narrowed this question to the handover: who
+reads the column map, whose job it is to write several hundred codes and their value vocabularies before a
+batch is scheduled, and <strong>who holds <code>attribute.define</code> after the person who set the system up stops being the
+person using it</strong> — because one holder is not curation, and the queue
 that used to make an uncurated vocabulary visible is gone
 (<a href="../data-model/09-attributes/#8-integrity-checks">data-model/09 §8</a> is what notices rot now, and it can only
 fire on codes that exist).</p>
@@ -3898,7 +3933,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 </tr>
 <tr>
 <td>26</td>
-<td>~~Built-in audiences are rules evaluated by the resolver, not stored lists~~ (D-042) † — <strong>reversed twice, and the second reversal is the one to keep.</strong> An audience stores an expression and nothing else: a hand-written set is <code>PERSON(x)</code> leaves <em>inside</em> it — rows of the tree, not rows of a roster, with no dates of their own (<a href="../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> then <a href="../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>, which deleted the <code>LIST</code> leaf round 10 put back). D-042's half about rules is therefore true again, for a new reason: the words are what is stored, and the words can happen to name people. The count this row used to quote is stated once, in <a href="../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">data-model/05d §12</a>.</td>
+<td>~~Built-in audiences are rules evaluated by the resolver, not stored lists~~ (D-042) † — <strong>reversed twice, and the second reversal is the one to keep.</strong> An audience stores an expression and nothing else: a hand-written set is <code>PERSON(x)</code> leaves <em>inside</em> it — rows of the tree, not rows of a roster, with no dates of their own (<a href="../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a> then <a href="../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>, which deleted the <code>LIST</code> leaf round 10 put back). D-042's half about rules is therefore true again, for a new reason: the words are what is stored, and the words can happen to name people. The two audiences this row used to count are gone (<a href="../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>), and so is the count they were inside: <a href="../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">data-model/05d §12</a> now says what ships and names no audience among it.</td>
 <td><a href="../data-model/05a-audience-and-grammar/#the-selector-registry">data-model/05</a></td>
 </tr>
 <tr>
@@ -3978,7 +4013,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 </tr>
 <tr>
 <td>42</td>
-<td>Event answers are read by that event's organizers (D-061) † — <strong>still true, and no longer a resolver clause</strong>: it is one seeded grant row (<code>event.answer.view</code>, scoped to the event, aimed at <code>ORGANIZERS</code>) instantiated per event, which D-102 calls out as the deliberate move from prose to data. <strong>An event created without its grant has organizers who can read nothing</strong></td>
+<td>Event answers are read by that event's organizers (D-061) † — <strong>still true, and no longer a resolver clause</strong>: it is one grant row per event (<code>event.answer.view</code>, scoped to the event, aimed at <code>ORGANIZERS</code>), which D-102 calls out as the deliberate move from prose to data. <strong>Round 21 found the two words doing different work</strong>: it is not a seeded template instantiated per event, it is a row the create writes — one of twelve (<a href="../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>). <strong>An event created without its grant has organizers who can read nothing</strong>, and now there is an author to name in that report</td>
 <td><a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08</a></td>
 </tr>
 <tr>
@@ -4053,7 +4088,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 </tr>
 <tr>
 <td>57</td>
-<td>A grant's scope is the unit <strong>or exactly one item</strong>, so the seeded answer-view grant is a <strong>template instantiated per event</strong> rather than one row for every event (D-102) †</td>
+<td>A grant's scope is the unit <strong>or exactly one item</strong> (D-102) † — <strong>and the half this row drew from it is wrong, which is the most useful thing about it</strong>: it read "one item per grant" as though a template were the cheap way to say twelve rows, and <a href="../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a> found the seed page and the event page disagreeing about the row count with an integrity check written against the second reading. There is no template; there are twelve rows per event, written by the create.</td>
 <td><a href="../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">data-model/08</a></td>
 </tr>
 <tr>
@@ -4209,7 +4244,7 @@ the entry, and this index is a register, not a second copy of it.</p>
 | <a id="f-29"></a>F-29 | What can a report see about a trail whose payload has expired? | <a href="../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a> | <strong>Nothing, and the design now says so on the page that states the rule</strong> rather than leaving the reader to assume a trail with this much prose beside it checks itself. <strong>The premise did not survive being written down:</strong> the payload window was never what blocked the first check — <code>api_key.valid_to</code>, <code>api_key.revoked_at</code> and <code>audit_log.occurred_at</code> are all accounting skeleton, and a report over them would work in year thirty (<a href="../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>). So the answer is not "cannot" but "will not", and what the design gives up is stated: nobody will ever be able to demonstrate that no write was audited against a key that had already ended. <strong>The question's other half was not a rule at all</strong> — the register row minted beside it asserted that which audit views a holder may open follows the payload window, citing <a href="../data-model/06-audit-and-import/#2-audit_log">06 §2</a>, and no page in the corpus says any such thing; <a href="../data-model/06-audit-and-import/#23-history-query">06 §2.3</a> says close to the opposite, that a per-entry check inside the history view was considered and left unimplemented, which is <a href="#at-4">AT-4</a>'s subject and already registered there. Under <a href="../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> a register row is a claim about a page, so the row is withdrawn rather than repaired. <strong>Costs:</strong> one paragraph in 06b §5, one 00a row deleted, one <code>none</code> that no longer reads as temporary. |
 | <a id="f-30"></a>F-30 | Five polymorphic columns, and the orphans that are the design working | <a href="../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a> | <strong>Four get a scan; the audit row never will.</strong> <code>field_conflict.entity_id</code> is scanned outright — a conflict naming a row that is not there is a broken import, and the sentence saying so had never been written. <code>access_log</code>'s three are scanned with the legal-absence rule beside them, because a target that is gone because a person was erased on purpose is not an integrity failure. <code>audit_log.record_id</code> is the deliberate exception and the interesting half of the answer: an audit row that outlives the row it described is <em>what a redaction looks like afterwards</em> (<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>), so a check counting those orphans as breaches would report the erasure path's own correct output as a failure — worse than no check, because the first false alarm teaches people to ignore the real one. <strong>Costs:</strong> a new check beside check 2 in <a href="../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>; <a href="../data-model/00-conventions/#9-referential-integrity-rules">00 §9</a> and <a href="../appendix/erd-b-inventory/">erd-b</a> corrected, both of which still said there were exactly two reference-less keys; and 00a's row re-pointed at the page that owns the rule instead of at an appendix. <strong>The question's own arithmetic was wrong when it was filed:</strong> its positions offered to "scan the two a person can cause" and then named four columns. |
 | <a id="f-31"></a>F-31 | The two modules with no check list of their own | <a href="../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a> | <strong>Yes — three checks each.</strong> <a href="../data-model/07-finance/#4a-integrity-checks">07-finance</a> is asked to recompute the balance from §3's definition, to count a payment whose allocations do not account for its amount, and to find money nobody ever asked for; <a href="../data-model/06a-import/#4-integrity-checks">06a-import</a> is asked whether an imported membership is bounded at both ends, whether one occasion became one event, and whether a batch can account for what it did. <strong>The import page turns out to have had the strongest of the three in it already and never knew:</strong> an unbounded imported <code>membership</code> satisfies <code>is_current_member()</code>, so that row is the one place in the whole register where a data defect reaches the permission gate. <strong>Costs:</strong> a section on each page, three new 00a rows for rules both pages had stated and never registered, one dangling citation repaired (§3.1 had been citing "check 1 in §5" in a page with no §5), and 00a's <em>What the register cannot say</em> losing the structural excuse it had been giving for its own blanks. |
-| <a id="f-18"></a>F-18 | Does a role record elected versus appointed, and what does an election write? | <a href="../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a> | <strong>It records neither, and a role holds only the people.</strong> An election is run outside this system — nominations, a ballot, a quorum, minutes — and what arrives is the outcome: one <code>role_holder</code> row, two dates, <code>note</code> for whoever wants the reason beside the fact (<a href="../domain/04-organization-structure/#6-appointments">domain/04 §6</a>, <a href="../data-model/05-authorization/#4-role_holder--who-holds-an-office">05 §4</a>). <code>granted_by</code> is not the answer to "was she elected?" and never claimed to be: it names whoever wrote the row, which for an election is a secretary. <strong>The refusals and their reasons:</strong> a flag would make the distinction queryable and guard nothing, and a field that looks like a control where no control is wanted is worse than the absence, because someone comes to rely on it; an election table would describe a process this system does not run, on D-043's ground; and the distinction has nowhere to bite, because <strong>an office confers nothing by being held</strong>. <strong>The cost, said plainly:</strong> nothing here will ever refuse to appoint someone to an office the bylaws reserve for a vote. <strong>Also worth recording:</strong> two of this question's load-bearing facts had already gone while it sat open — <code>role.max_term_months</code> is deleted, and <code>is_system</code> is deleted by <a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>. |</p>
+| <a id="f-18"></a>F-18 | Does a role record elected versus appointed, and what does an election write? | <a href="../decisions/round-19/#d-136--an-election-is-not-recorded-a-role-holds-only-the-people">D-136</a> | <strong>It records neither, and a role holds only the people.</strong> An election is run outside this system — nominations, a ballot, a quorum, minutes — and what arrives is the outcome: one <code>role_holder</code> row, two dates, <code>note</code> for whoever wants the reason beside the fact (<a href="../domain/04-organization-structure/#6-appointments">domain/04 §6</a>, <a href="../data-model/05-authorization/#4-role_holder--who-holds-an-office">05 §4</a>). <code>granted_by</code> is not the answer to "was she elected?" and never claimed to be: it names whoever wrote the row, which for an election is a secretary. <strong>The refusals and their reasons:</strong> a flag would make the distinction queryable and guard nothing, and a field that looks like a control where no control is wanted is worse than the absence, because someone comes to rely on it; an election table would describe a process this system does not run, on D-043's ground; and the distinction has nowhere to bite, because <strong>an office confers nothing by being held</strong>. <strong>The cost, said plainly:</strong> nothing here will ever refuse to appoint someone to an office the bylaws reserve for a vote. <strong>Also worth recording:</strong> two of this question's load-bearing facts had already gone while it sat open — <code>role.max_term_months</code> is deleted, and <code>role.is_system</code> is deleted too — ruled by <a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>, gone from the schema since <a href="../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>, which took the other three with it. |</p>
 <hr />
 <h2 id="how-to-answer">How to answer<a class="headerlink" href="#how-to-answer" title="Permanent link">&para;</a></h2>
 <p><strong>Nothing here blocks anything.</strong> No question on this page is marked 🔴, and none has been since round 4:
@@ -4225,14 +4260,20 @@ the five closes on a ruling alone</strong>, and F-34 least of all, because its a
 rather than a rule.</p>
 <p><strong>What this repository owes instead is two things, and neither of them is a question.</strong></p>
 <ol>
-<li><strong>Round 21, which is a sweep and not a decision.</strong>
+<li>~~<strong>Round 21, which is a sweep and not a decision.</strong>~~ <strong>Ran, on 2026-10-31, as
+<a href="../decisions/round-21/">round 21</a>.</strong>
 <a href="../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
-was ruled two rounds ago and is still unapplied: the seeded roles, the seeded audiences, the seeded
-<code>event.answer.view</code> grant, the worked-example offices presented as seed, <code>role.is_system</code> and
-<code>audience.is_system</code>. Round 20 deliberately kept it out, so that thirteen answers and a twenty-five-page
-sweep would not land together, and two of its entries — <a href="../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>
+was ruled two rounds ago and is now applied: the seeded roles, the seeded audiences, the seeded
+<code>event.answer.view</code> grant, the worked-example offices presented as seed and <strong>all four <code>is_system</code>
+columns</strong> — the two D-132 named plus <code>permission.is_system</code> and <code>selector_type.is_system</code>, which went on
+the argument that a column reading "a migration wrote this" protects nothing
+(<a href="../decisions/round-21/">D-150 … D-154</a>). Round 20 deliberately kept it out, so that thirteen answers and a
+twenty-five-page sweep would not land together; the sweep was roughly that size and the estimate is replaced
+in the round page by a count from the diff. Two of round 20's entries —
+<a href="../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>
 and <a href="../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a> —
-are written so that the sweep has to read them. <strong>It happens whatever is answered here.</strong></li>
+were written so that the sweep had to read them, and it did. <strong>Nothing in this list is owed any more; the
+five questions above are the whole debt, and the legal review below it.</strong></li>
 <li><strong>The legal review</strong>, which is not a question this register can answer and which now has <strong>three</strong> policies
 in front of it instead of two: named membership and fee rows kept indefinitely, audit payloads emptied at
 24 months, and — new since round 20 — <strong><code>access_log</code> rows deleted outright at 24 months</strong>
@@ -4286,7 +4327,7 @@ raised them. Each of those pages now says so at the top.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../decisions/round-20/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 20">
+          <a href="../decisions/round-21/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 21">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4296,7 +4337,7 @@ raised them. Each of those pages now says so at the top.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Round 20
+                Round 21
               </div>
             </div>
           </a>

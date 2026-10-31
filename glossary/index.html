@@ -2260,6 +2260,8 @@
       
         
       
+        
+      
     
     
     
@@ -2843,6 +2845,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3337,7 +3367,7 @@ holders</strong> — the leaders, the finance people, IT — where a group is co
 difference decides <strong>who may edit the membership</strong>: <code>role.assign</code> / <code>role.unassign</code> are
 🔒🔒, the most sensitive family in the catalog, while writing a group's roster is
 <code>person_group.member.manage</code> at ⚠. <code>role</code> keeps <code>code</code>, <code>name</code>, <code>description</code>,
-<code>is_system</code>, <code>sort_order</code>; <strong><code>role_holder</code></strong>(role, person, <code>valid_from</code>, <code>valid_to</code>,
+<code>sort_order</code>; <strong><code>role_holder</code></strong>(role, person, <code>valid_from</code>, <code>valid_to</code>,
 <code>granted_by</code>, <code>note</code>) is the holder row and names <strong>exactly one person</strong> — one grantee
 per row, always, because <a href="../open-questions/#f-12">F-12</a>
 is closed and the answer is no. <strong>A role confers nothing</strong>: the codes an office carries
@@ -3469,9 +3499,11 @@ in on a given evening.</p>
 <p><strong>Organizer</strong> — Someone <strong>running</strong> an event. A roster entry on the event (<code>event_organizer</code>)
 with an optional label (<code>'lead'</code>, <code>'cook'</code>, <code>'driver'</code>) and an order — <strong>not</strong> an
 <code>access_grant</code>, and analogous only to <strong>being a member of a group</strong>. Authority to <em>act</em> on
-the event arrives from <strong>one seeded grant template</strong> — <code>event.answer.view</code>, scoped to an
-event, aimed at the bound operand <code>ORGANIZERS</code> — instantiated per event by whoever creates
-it. An event created without that grant has organizers who can do nothing, which is why the
+the event arrives from <strong>the grants written by the act that creates the event</strong>: one
+item-scope <code>allow</code> per code whose <code>applies_to</code> admits an event — <strong>twelve beside every
+event</strong>, <code>event.answer.view</code> among them — each aimed at the bound operand <code>ORGANIZERS</code>
+(<a href="../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+An event created without them has organizers who can do nothing, which is why the
 <em>events with no answer-view grant</em> report exists
 (<a href="../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>).</p>
 <p><strong>Registration</strong> — One person's answer about one event: <code>attending</code>, or <code>not_attending</code>.
@@ -3524,7 +3556,7 @@ to. From widest to narrowest:</p>
 </tr>
 <tr>
 <td><code>ORGANIZERS</code></td>
-<td>the event's organizer roster — the reason a per-event answer-view grant is seeded</td>
+<td>the event's organizer roster — the set an event's own twelve grants are aimed at</td>
 </tr>
 </tbody>
 </table>
@@ -3652,7 +3684,7 @@ as-of 1990–2010 and audit time 2026. Do not conflate them.</p>
 </tr>
 <tr>
 <td>"open to everyone"</td>
-<td>a grant naming the seeded audience <code>everyone</code>, whose expression is the operand <code>EVERYONE</code> — or <code>all_members</code>, whose expression is <code>MEMBERS</code>. A bare name in an expression is <strong>not</strong> a reference to either: audiences are named only as <code>AUDIENCE(code)</code></td>
+<td>a grant whose expression is the operand <code>EVERYONE</code> — or <code>MEMBERS</code>, if membership is wanted. There is <strong>no shipped audience behind either word</strong> (<a href="../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>): an audience is a name somebody writes when they have a reason to reuse one, and a bare name in an expression is <strong>not</strong> a reference to an audience at all — audiences are named only as <code>AUDIENCE(code)</code></td>
 </tr>
 <tr>
 <td>"the treasurer"</td>

@@ -2161,6 +2161,8 @@
       
         
       
+        
+      
     
     
     
@@ -2744,6 +2746,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3122,7 +3152,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 </tr>
 <tr>
 <td><code>role</code></td>
-<td>An office — <code>treasurers</code>, <code>registrar</code>, <code>counselors</code>. A definition, valid always; the period lives on the holder row. <strong>It carries no permissions and confers nothing:</strong> the codes an office holds are the live grants whose audience names <code>ROLE(x)</code></td>
+<td>An office — <code>treasurers</code>, <code>registrar</code>, <code>counselors</code> are the names this corpus uses when it needs one, and none of them is a row the platform writes. A definition, valid always; the period lives on the holder row. <strong>It carries no permissions and confers nothing:</strong> the codes an office holds are the live grants whose audience names <code>ROLE(x)</code></td>
 <td>Nothing. Its <code>code</code> joins the same one namespace as group names, and every reserved <code>selector_type.code</code> is refused against it</td>
 <td>One row per <code>code</code>; deleting one is refused while holder rows exist, so an office cannot be emptied in one save</td>
 <td>no</td>
@@ -3251,7 +3281,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>selector_type</code></td>
 <td>The registry of operands the language has: the reserved word, whether it takes an argument, whether its argument-less form binds to the item being checked, and what type the argument names</td>
 <td>Nothing</td>
-<td><strong>Thirteen</strong> seeded rows — the thirteen operands of the language, including <code>PERSON</code>, which is what lets an expression name a single human (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), and including <code>OLDER(n)</code> and <code>YOUNGER(n)</code>, the two whose <code>argument_type</code> is a whole number of years rather than a table and whose set moves with no write at all, because they read <code>person.birth_date</code> <strong>on the date being checked</strong> (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>). Six <code>argument_type</code> values, five of them tables; the operators are <code>+ - *</code>. Every row <code>is_system</code> and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
+<td><strong>Thirteen</strong> seeded rows — the thirteen operands of the language, including <code>PERSON</code>, which is what lets an expression name a single human (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>), and including <code>OLDER(n)</code> and <code>YOUNGER(n)</code>, the two whose <code>argument_type</code> is a whole number of years rather than a table and whose set moves with no write at all, because they read <code>person.birth_date</code> <strong>on the date being checked</strong> (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>). Six <code>argument_type</code> values, five of them tables; the operators are <code>+ - *</code>. The whole table is written only by migrations and organization-read-only, and every row both seeded and shipped — a code with no evaluator arm is a deployment bug, not a held feature (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -3393,8 +3423,8 @@ nothing at all, on their own.</p>
 <tr>
 <td><code>event</code></td>
 <td>A dated occasion people register for. <strong>Owned by nobody</strong></td>
-<td><code>fee_schedule</code>, optional, when it costs money. It belongs to <strong>no unit and nobody</strong>: the people connected to an event are named by operands that bind to it (<code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code>), so there is no owner for a check to ask (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>). <code>created_by</code> is attribution, not ownership, as <a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> says</td>
-<td>One row per occasion; no recurrence, no series</td>
+<td><code>fee_schedule</code>, optional, when it costs money. It belongs to <strong>no unit and nobody</strong>: the people connected to an event are named by operands that bind to it (<code>ORGANIZERS</code>, <code>PLACED</code>, <code>CONFIRMED</code>, <code>ATTENDED</code>, <code>ON_WAITLIST</code>), so there is no owner for a check to ask (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>). <code>created_by</code> is attribution, not ownership, as <a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> says. <strong>The act that creates an event also writes its authority</strong>: twelve item-scope allows beside the event row, in the same transaction, one per <code>event.*</code> code whose <code>applies_to</code> admits an event — all thirteen except <code>event.create</code>, which is <code>applies_to = unit</code> — each aimed at an audience whose expression is the bare operand <code>ORGANIZERS</code> (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>)</td>
+<td>One row per occasion, and <strong>twelve grants beside it</strong>; no recurrence, no series</td>
 <td>no</td>
 </tr>
 <tr>

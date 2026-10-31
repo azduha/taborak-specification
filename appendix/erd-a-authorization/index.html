@@ -2161,6 +2161,8 @@
       
         
       
+        
+      
     
     
     
@@ -2744,6 +2746,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2919,9 +2949,9 @@
 <a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>   │         role         │  an office, and │       audience        │  an EXPRESSION over
 <a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>   │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
 <a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>   │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101). Nothing here
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ is_system ·          │  by itself:     │ one shape: an         │  is a roster: an operand
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ sort_order           │  the codes an   │  expression over named│  names a set, and the set
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ NO period (D-053)    │  office carries │  sets, with no depth  │  is computed at the check
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>   │ sort_order ·         │  by itself:     │ one shape: an         │  is a roster: an operand
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>   │ valid always         │  the codes an   │  expression over named│  names a set, and the set
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>   │ (D-053): NO period   │  office carries │  sets, with no depth  │  is computed at the check
 <a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>   │ NO scope (D-100): an │  are the live   │  limit (D-101, D-105).│  it is asked about.
 <a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>   │ office is held at the│  grants whose   └───────────┬───────────┘
 <a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>   │ unit, never per item │  audience names ├───────────┴──────────────────────────┐
@@ -2942,7 +2972,7 @@
 <a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>                                  │ code (a RESERVED word) ·    │  organization-   │
 <a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>                                  │ takes_argument ·            │  read-only: the  │
 <a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>                                  │ binds_to_item ·             │  language is data│
-<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>                                  │ argument_type · is_system   │  (D-101), not    │
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>                                  │ argument_type               │  (D-101), not    │
 <a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>                                  └─────────────────────────────┘  extensible at   │
 <a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>                                                                   runtime         │
 <a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>                                                                                   │
@@ -2950,47 +2980,50 @@
 <a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>   `ATTENDED`, `ON_WAITLIST` — means "relative to the item being                   │
 <a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>   checked". Legal only on an item-scope grant whose type matches `argument_type`  │
 <a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>   (`PLACED` on a group grant is refused, `ORGANIZERS` on a unit grant is          │
-<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>   refused), and the seeded `event.answer.view` → `ORGANIZERS` is therefore a      │
-<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>   TEMPLATE instantiated beside each event row, not one row for every event        │
-<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
-<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   their argument is an integer — the registry's first non-reference — so          │
-<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
-<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the keyless  │
-<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   polymorphic keys drawn here stay two of seven. Thirteen seeded rows:            │
-<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
-<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
-<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
-<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
-<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
-<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   in it would refuse either name — both are kept out by what they would do.       │
-<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   `GUARDIANS` is not seeded: a guardian holds a level over a child, not a set of  │
-<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   codes, so an audience aimed at guardians offers one code at a time what the     │
-<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>   guardianship channel grants outright (D-113).                                   │
-<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>                                                                                   │
-<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
-<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>   can_key(api_key, permission_code, scope_type, scope_id, at) ── same resolver, no person
-<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>   ──────────────────────────────────────────────────────────────────────────────
-<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
-<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>       item of every type; a personal deny beats an audience allow, because this step has
-<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>       already returned (D-013). Revoking is ending that row's period, never a rank of its own.
-<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    1  a live ALLOW at the unit ── reaches every item of every type: there is no tier
-<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       between the unit and an item (D-097), and no owner of an item to ask (D-102).
-<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
-<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>       one resolver, and no special case for events inside it (D-102).
-<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
-<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
-<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
-<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
-<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>    5  default DENY.
-<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>   A KEY reaches steps 0, 1, 2 and 5 and no others: steps 3 and 4 each compare a person
-<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>   against a row, and a key is not a person — so neither channel is refused by a rule of its
-<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>   own, neither is reachable (D-118). can_key therefore takes no owner and no person of any
-<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>   kind: that parameter would be the impersonation hole, because a claimed person is exactly
-<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>   that — claimed (D-121).
-<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
-<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>   the audit names, never what the answer is. There is **no locality rule**: locality could
-<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>   only ever order allows against each other, and a boolean has nothing to order (D-099).
-<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>   Step 0 is not an ordering either — it is a check that runs before every other.
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>   refused). EVERY EVENT'S AUTHORITY is written by the act that CREATES THE        │
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>   EVENT, in the same transaction as the event row (D-102, D-151):                 │
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>   Twelve item-scope allows per event, each aimed at an audience whose             │
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>   expression is the bare operand ORGANIZERS — so `event.answer.view` is           │
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>   one of twelve, and never one row shared by every event.                         │
+<a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>   `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:                │
+<a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>   their argument is an integer — the registry's first non-reference — so          │
+<a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>   `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
+<a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>   nothing for a merge to repoint, nothing for a cascade to find, and the keyless  │
+<a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>   polymorphic keys drawn here stay two of seven. Thirteen seeded rows:            │
+<a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>   five argument tables, one integer, and the operators are still `+ - *`.         │
+<a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>   `PRESENT(&lt;event&gt;)` is not seeded, and the reason is a consequence: a tick box   │
+<a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>   on a check-in screen would revoke a leader's access to their own camp when      │
+<a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>   somebody forgets to tick it. `WHITELISTED` is not seeded either, for want of    │
+<a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>   any state to evaluate (F-20). Neither is kept out by the language — nothing     │
+<a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>   in it would refuse either name — both are kept out by what they would do.       │
+<a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>   `GUARDIANS` is not seeded: a guardian holds a level over a child, not a set of  │
+<a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>   codes, so an audience aimed at guardians offers one code at a time what the     │
+<a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>   guardianship channel grants outright (D-113).                                   │
+<a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>                                                                                   │
+<a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>   can(person, permission, scope_type, scope_id, at, about_whom) ── ONE resolver ─ ┘
+<a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>   can_key(api_key, permission_code, scope_type, scope_id, at) ── same resolver, no person
+<a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>   ──────────────────────────────────────────────────────────────────────────────
+<a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    0  explicit DENY ── absolute and scope-independent. A deny at the unit reaches every
+<a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>       item of every type; a personal deny beats an audience allow, because this step has
+<a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>       already returned (D-013). Revoking is ending that row's period, never a rank of its own.
+<a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    1  a live ALLOW at the unit ── reaches every item of every type: there is no tier
+<a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>       between the unit and an item (D-097), and no owner of an item to ask (D-102).
+<a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    2  a live ALLOW on this exact item ── exact scope type and id. Nothing precedes it:
+<a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>       one resolver, and no special case for events inside it (D-102).
+<a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>    3  OWNERSHIP ── the checked person is the actor. Their own row, their own data.
+<a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>    4  GUARDIANSHIP ── entered by SHAPE (the subject is not the actor), never by a code's
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>       name; answers with an ALLOW only, when `right_level` covers `permission.right_kind`
+<a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>       — none covers nothing, view covers `read`, write covers both (D-074, D-079, D-099).
+<a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>    5  default DENY.
+<a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>   A KEY reaches steps 0, 1, 2 and 5 and no others: steps 3 and 4 each compare a person
+<a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>   against a row, and a key is not a person — so neither channel is refused by a rule of its
+<a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>   own, neither is reachable (D-118). can_key therefore takes no owner and no person of any
+<a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>   kind: that parameter would be the impersonation hole, because a claimed person is exactly
+<a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>   that — claimed (D-121).
+<a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>   The allow steps are ALTERNATIVES producing one boolean: their order decides which channel
+<a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>   the audit names, never what the answer is. There is **no locality rule**: locality could
+<a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>   only ever order allows against each other, and a boolean has nothing to order (D-099).
+<a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>   Step 0 is not an ordering either — it is a check that runs before every other.
 </code></pre></div>
 <p><strong>Key points:</strong></p>
 <ul>
@@ -3024,7 +3057,8 @@
   The failure mode is a grant written <code>ROLE(x)</code> with no <code>MEMBERS</code>, authorizing a lapsed member
   silently and forever, failing closed-looking so nobody notices — the control is the <strong>Unusual
   section of the tab on the permissions page</strong>, which lists exactly that shape and refuses nothing,
-  plus seeded grants that always carry <code>MEMBERS</code>
+  plus the writer's own habit that a grant template carries <code>MEMBERS</code> — <strong>no grant arrives already
+  carrying it</strong>, and the only grants this system writes by itself, the twelve beside an event, must not
   (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>,
   <a href="../../open-questions/#f-13">F-13</a>). Ownership and guardianship are not gated and never were.</li>
 <li><strong>The guardianship channel is entered by shape, not by permission name</strong> (<a href="../../decisions/round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>):
@@ -3082,10 +3116,12 @@
   <a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>'s "an
   <code>event_organizer</code> row grants nothing" is the whole story: the row appoints, the operand resolves.
   The consequence worth remembering: a bound operand is illegal at the unit, so
-  "every event's answers go to its organizers" is a <strong>template</strong> the event-creation path instantiates
-  beside the event row, one per event, in one transaction — and an event whose creation died between
-  the two rows has nobody who can read its answers, which is what the <em>events with no answer-view
-  grant</em> report is for.</li>
+  "every event's answers go to its organizers" is <strong>twelve item-scope allows</strong> written beside the event
+  row by the act that creates the event, one set per event, in one transaction — and an event whose
+  creation died partway through has nobody who can read its answers, which is what the <em>events with no
+  answer-view grant</em> report is for. <strong>That failure has an author</strong>: one create, named in the trail,
+  rather than a configuration step nobody took
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</li>
 <li><code>scope_id</code> is polymorphic (no FK) so a new grantable item type is a config row, not a
   migration. Accepted cost, with four mandatory mitigations — the same trade-off and the same four
   mitigations hold for the second reference-less key, <code>audience_operand.selector_arg_id</code>
@@ -3103,14 +3139,12 @@
         string applies_to
         string right_kind
         string namespace
-        boolean is_system
         boolean is_assignable
     }
     ROLE {
         integer id PK
         string code
         string name
-        boolean is_system
         integer sort_order
     }
     ROLE_HOLDER {
@@ -3146,7 +3180,6 @@
         integer id PK
         string code
         string name
-        boolean is_system
         date valid_from
         date valid_to
     }
@@ -3246,7 +3279,6 @@ nodes and leaves, one row each.</p>
         integer id PK
         string code
         string name
-        boolean is_system
         date valid_from
         date valid_to
     }
@@ -3266,7 +3298,6 @@ nodes and leaves, one row each.</p>
         boolean takes_argument
         boolean binds_to_item
         string argument_type
-        boolean is_system
     }
     ROLE {
         integer id PK
@@ -3304,10 +3335,10 @@ takes an argument, whether the <strong>argument-less</strong> form binds to the 
 argument is — the parser reads its reserved words from that table, the editor builds its dropdown from
 it, and the save path checks arity against it
 (<a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>).
-It is seeded, every row <code>is_system</code>, and <strong>organization-read-only</strong>: "the language becomes data" has
-never meant the language is extensible at runtime, and a seeded code with no shipped evaluator arm is a
-deployment bug that surfaces as an empty set — which is why the registry holds no row waiting to be
-implemented.</p>
+It is seeded and <strong>organization-read-only</strong> — the whole table is written only by migrations and no screen
+edits it: "the language becomes data" has never meant the language is extensible at runtime, and a seeded
+code with no shipped evaluator arm is a deployment bug that surfaces as an empty set — which is why the
+registry holds no row waiting to be implemented.</p>
 <p><strong><code>argument_type</code> has six values and five of them are tables.</strong> <code>OLDER</code> and <code>YOUNGER</code>
 (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>)
 take <strong>an integer — a whole number of years</strong> — so <code>selector_arg_id</code> holds <code>18</code> for <code>OLDER(18)</code>, and this

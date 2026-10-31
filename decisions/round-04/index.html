@@ -2083,6 +2083,8 @@
       
         
       
+        
+      
     
     
     
@@ -2834,6 +2836,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3179,7 +3209,7 @@ need no exposure at all:</p>
 the whole of D-049: <strong>the root does not need to see into a unit to answer a question about
 membership, because membership is the root's.</strong></p>
 <p><strong>One thing that now looks like a bug and is not.</strong> The <code>registrar</code> role
-(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">appendix/permission-catalog.md §11</a>)
+(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">appendix/permission-catalog.md §11</a>)
 holds <code>unit_participation.view</code> at organization scope. Under exact-match scoping that does
 <strong>not</strong> let the registrar read any sub-unit's roster — the role's scope is the root, and a
 sub-unit roster is a different scope. It reads the <strong>root</strong> participation rows, which is what
@@ -3295,7 +3325,7 @@ as an act of its own. The resolver honours a role if <strong>either</strong> app
 including the administrator's, and the person who would repair the system loses the ability to
 use it on the day it breaks. That is a lockout, not a policy. Beyond <code>system_admin</code>, which
 roles carry it is settled in the role review
-(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">F-1</a>) — the mechanism is
+(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">F-1</a>) — the mechanism is
 fixed here, the membership of the list is data.</p>
 <p><strong>The evaluation must not go through <code>can()</code>.</strong> Reading the permission through the resolver
 would be circular: <code>can()</code> would have to evaluate the gate in order to learn whether the gate
@@ -3308,8 +3338,8 @@ itself, and it is deliberate.</p>
 which assignment. It is a small list of people who keep authority without paying, and it
 should be as visible as the <code>system.admin</code> holders already are.</p>
 <p><strong>See:</strong> <a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3</a>,
-<a href="../../data-model/05d-invariants-and-seed/#12-what-the-organization-starts-with">../data-model/05 §12</a>,
-<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">../appendix/permission-catalog.md §11</a>.</p>
+<a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">../data-model/05 §12</a>,
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">../appendix/permission-catalog.md §11</a>.</p>
 <hr />
 <h2 id="d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052 — Roles are runtime data; the seed set is not a specification<a class="headerlink" href="#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer)
@@ -3378,7 +3408,7 @@ notified. <code>role.edit</code> is a bulk privilege change wearing the clothes 
 it is now marked as such. <code>role.assign</code> escalates one person; <code>role.edit</code> escalates everyone
 holding the role. Neither implies the other.</p>
 <p><strong>See:</strong> <a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3</a>,
-<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">../appendix/permission-catalog.md §11</a>.</p>
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">../appendix/permission-catalog.md §11</a>.</p>
 <hr />
 <h2 id="d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053 — A role is valid always; only its assignment is temporal<a class="headerlink" href="#d-053--a-role-is-valid-always-only-its-assignment-is-temporal" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer)

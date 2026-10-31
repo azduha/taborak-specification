@@ -2083,6 +2083,8 @@
       
         
       
+        
+      
     
     
     
@@ -2666,6 +2668,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2795,7 +2825,7 @@
 re-litigated from scratch — and so that when a decision is reversed, the reason for the
 original choice is visible.</p>
 <p><strong>How this log is filed.</strong> The entries live in the round that took them; this page indexes all
-149 of them and lists the reversals. Read the round you are curious about — each one says what was
+154 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a <code>D-</code> number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.</p>
 <p><strong>Status values:</strong> <code>decided</code> — settled, the data model reflects it <em>(since D-072: the documents, not a schema file)</em>. <code>proposed</code> — recommended,
@@ -3620,7 +3650,7 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 <tr>
 <td><a href="round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a></td>
 <td>Day one is one account holding <code>system.admin</code>; every role after it is written by the organization</td>
-<td>decided (from your answer) — <strong>decided in round 18, still unapplied; deferred twice and now round 21's</strong></td>
+<td>decided (from your answer) — <strong>decided in round 18, deferred twice, and applied by round 21 as D-150 … D-154, which corrected two of its sentences</strong></td>
 <td>round 18</td>
 </tr>
 <tr>
@@ -3724,6 +3754,36 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 <td>Words are stored in one language, and a label is not translated</td>
 <td>decided (from your answer)</td>
 <td>round 20</td>
+</tr>
+<tr>
+<td><a href="round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a></td>
+<td>Day one is one account holding <code>system.admin</code>, and nothing else is shipped</td>
+<td>decided (from your answer) — <strong>the seed's replacement: one row in <code>access_grant</code>, and no bootstrap mechanism</strong></td>
+<td>round 21</td>
+</tr>
+<tr>
+<td><a href="round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a></td>
+<td>Creating an event writes the event's authority, and its organizers may grant on it</td>
+<td>decided (from your answer) — <strong>corrects D-132's "once", and gives <code>event.grant_access</code> the subject it lacked</strong></td>
+<td>round 21</td>
+</tr>
+<tr>
+<td><a href="round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a></td>
+<td>Zero <code>is_system</code> columns: what protects a vocabulary is its table, not a flag on its rows</td>
+<td>decided (from your answer) — <strong>deletes the two columns D-132 left standing, and <code>role.delete</code>'s second refusal</strong></td>
+<td>round 21</td>
+</tr>
+<tr>
+<td><a href="round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a></td>
+<td>Two named audiences go, and nothing replaces them</td>
+<td>decided (as a consequence of D-150)</td>
+<td>round 21</td>
+</tr>
+<tr>
+<td><a href="round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a></td>
+<td><code>counselors</code> is an example now, not a shipped office</td>
+<td>decided (found by writing this round) — <strong>D-100's argument about which table a permanent population lives in is untouched</strong></td>
+<td>round 21</td>
 </tr>
 </tbody>
 </table>

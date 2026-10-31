@@ -2213,6 +2213,8 @@
       
         
       
+        
+      
     
     
     
@@ -2796,6 +2798,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3214,15 +3244,23 @@ and per-event definitions keep them from having to agree.</p>
 <h3 id="health-data-and-the-widening-this-represents">Health data, and the widening this represents<a class="headerlink" href="#health-data-and-the-widening-this-represents" title="Permanent link">&para;</a></h3>
 <p><strong>Event answers are readable by that event's organizers, with no extra gate</strong>
 (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).
-The mechanism is <strong>a seeded grant</strong>: <code>event.answer.view</code> on an event, aimed at <code>ORGANIZERS</code>
-(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
-Two things follow:</p>
+The mechanism is <strong>a grant written by the act that creates the event</strong>: <code>event.answer.view</code> on that event,
+aimed at the bare operand <code>ORGANIZERS</code>, in the same transaction as the event row
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,
+<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+It is one of the twelve the creation writes — every <code>event.*</code> code whose <code>applies_to</code> admits an event — and
+it is written <strong>without</strong> <code>MEMBERS</code>, because an organizer appointed for one weekend is not required to be a
+paying member. Three things follow:</p>
 <ul>
-<li><strong>"No extra gate" is literally true and visible.</strong> The seeded grant <em>is</em> the whole
+<li><strong>"No extra gate" is literally true and visible.</strong> That grant <em>is</em> the whole
   mechanism; there is no clause special-casing organizers. Anyone who wants to see who may
   read an event's answers reads a grant row.</li>
 <li><strong>The reach of that grant is per-event.</strong> <code>ORGANIZERS</code> with no argument binds to the event the grant
-  sits on, so the seeded row cannot accidentally name the organizers of every camp at once.</li>
+  sits on, so the row cannot accidentally name the organizers of every camp at once.</li>
+<li><strong>A create is the author of an event's authority.</strong> Whoever holds <code>event.create</code> decides who will be
+  able to read a future event's answers, and the widening is one code deep. What keeps it honest is that
+  <em>"who could read those answers?"</em> stays a query over rows, and an event whose rows did not arrive is a
+  countable failure rather than a rumour.</li>
 </ul>
 <p>Two consequences of that reach follow, and the second is the significant one.</p>
 <p><strong>1. Only preference-level detail belongs on a form.</strong> A dietary <em>preference</em> ("vegetarian",
@@ -3248,9 +3286,9 @@ property."</em></p>
 so a guarantee that a camp leader <em>"cannot reach a child's medical record at all"</em> describes a
 category the model does not have. What is true, in the two forms that matter:</p>
 <ul>
-<li><strong>No role gets it by leading.</strong> The starting role set gives a leadership role its rosters and
-  its events — and <strong>no read over a person's data</strong>
-  (<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--proposed-seed-set">permission-catalog §11</a>).
+<li><strong>No role gets it by leading.</strong> A leadership role written out of the worked examples is given its
+  rosters and its events — and <strong>no read over a person's data</strong>
+  (<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#11-roles--worked-examples-of-writing-one">permission-catalog §11</a>).
   Leadership is not guardianship, and the guardianship channel answers only for the person its
   row names.</li>
 <li><strong>It is one grant away.</strong> Whoever holds
@@ -3261,9 +3299,10 @@ category the model does not have. What is true, in the two forms that matter:</p
   is impossible either, and a promise the model does not make is worse than none.</li>
 </ul>
 <p><strong>So the protection is a decision about a role, revisitable by whoever administers roles — not a wall.</strong></p>
-<p>Which means: under the starting roles, an allergy recorded on a camp form is <strong>the only way the people
-running the camp will know</strong>. That is a coherent and defensible configuration — <em>the parent tells the
-people present, per event, and nobody outside the family holds the fact</em> — but it is a widening from "the
+<p>Which means: under any office written the way those examples write one, an allergy recorded on a camp form
+is <strong>the only way the people running the camp will know</strong>. That is a coherent and defensible configuration
+— <em>the parent tells the people present, per event, and nobody outside the family holds the fact</em> — but it
+is a widening from "the
 few adults whose <code>guardianship</code> row names them, at one <code>right_level</code>" to "every organizer of any event the
 child registers for", and it is recorded as such in
 <a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
@@ -3289,7 +3328,7 @@ as a suggestion and writes back a fresh dated one
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
 <p>Tracked with the rest in <a href="../../open-questions/">../open-questions.md</a>: the answered ones under
 <strong>R. Resolved</strong>, each carrying the decision that answered it, and the live ones where the module map points.
-<strong>Four of the seven below are settled and say so rather than reading as still open</strong> — that is deliberate,
+<strong>Five of the seven below are settled and say so rather than reading as still open</strong> — that is deliberate,
 because a list of open issues that keeps asking an answered question is how a design gets reopened by a
 newcomer who reads the list and not the log. The ones this module raises:</p>
 <ul>
@@ -3302,13 +3341,16 @@ newcomer who reads the list and not the log. The ones this module raises:</p>
   cannot be stated, only whether it should be
   (<a href="../07-events/#4-who-may-register-capability-not-a-separate-rule-engine">§4</a>,
   <a href="../../decisions/round-05/#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule">D-070</a>).</li>
-<li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds exactly one grant,
-  <code>event.answer.view</code>. Everything else an organizer needs — editing the event, working the
-  roster — reaches them only through a unit-scope or item grant they happen to hold, and
-  no decision says whether that is the intended shape or an oversight
+<li><strong>What else an organizer should hold — settled: the bundle is derived, not curated.</strong> Creating an
+  event writes one item-scope <code>allow</code> per code whose <code>applies_to</code> admits an event — <strong>twelve beside every
+  event</strong>, <code>event.answer.view</code> among them — each aimed at <code>ORGANIZERS</code>
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+  A code added to <code>event.*</code> is in the next event's bundle without anyone remembering a list. Everything
+  outside those twelve reaches an organizer only through a unit-scope or item grant they happen to hold,
+  and that is the intended shape: the creation act writes the set of people connected to the item, and
+  writes nothing else
   (<a href="../07-events/#5-organizers-are-appointed-not-granted">§5</a>,
-  <a href="../07-events/#6-how-authority-reaches-an-event">§6</a>). This module
-  does not seed more of its own accord.</li>
+  <a href="../07-events/#6-how-authority-reaches-an-event">§6</a>).</li>
 <li><strong>Whether a bound selector makes its audience single-scope.</strong> An audience whose expression
   names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared audience row can stop
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule

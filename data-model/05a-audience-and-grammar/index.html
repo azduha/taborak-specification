@@ -2191,6 +2191,8 @@
       
         
       
+        
+      
     
     
     
@@ -2774,6 +2776,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2972,7 +3002,7 @@ it intersects and differences as well as unions.</p>
 <tr>
 <td><code>code</code></td>
 <td>text, optional, unique where set</td>
-<td><strong>Two jobs.</strong> (1) A stable handle for the seeded rows (<code>everyone</code>, <code>all_members</code>) and for reports — an audience is <em>aimed at</em> by a grant through <code>access_grant.audience_id</code>, a reference. (2) <strong>The only thing another audience can name</strong>: <code>AUDIENCE(&lt;code&gt;)</code> resolves through this column, so <strong>naming an audience is what makes it composable, and an unnamed audience is simply not one</strong> (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). Naming stays opt-in — there is no reason to force a handle onto a grant's private addressee list — and the leaf may not point at a null code, which is a check reading another table and therefore not a constraint (§11, check 12). <strong><code>code</code> joins the shared namespace</strong> of roles, groups and reserved words; <code>name</code> does not, and the two are different columns serving different questions.</td>
+<td><strong>Two jobs.</strong> (1) A stable handle for reports — an audience is <em>aimed at</em> by a grant through <code>access_grant.audience_id</code>, a reference. (2) <strong>The only thing another audience can name</strong>: <code>AUDIENCE(&lt;code&gt;)</code> resolves through this column, so <strong>naming an audience is what makes it composable, and an unnamed audience is simply not one</strong> (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). Naming stays opt-in — there is no reason to force a handle onto a grant's private addressee list — and the leaf may not point at a null code, which is a check reading another table and therefore not a constraint (§11, check 12). <strong><code>code</code> joins the shared namespace</strong> of roles, groups and reserved words; <code>name</code> does not, and the two are different columns serving different questions.</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -2983,11 +3013,6 @@ it intersects and differences as well as unions.</p>
 <td><code>description</code></td>
 <td>text, optional</td>
 <td>Why it exists, for whoever finds it in three years.</td>
-</tr>
-<tr>
-<td><code>is_system</code></td>
-<td>boolean</td>
-<td>Default false. Set on the seeded rows so an editor can refuse to delete one.</td>
 </tr>
 <tr>
 <td><code>valid_from</code></td>
@@ -3198,11 +3223,6 @@ already has.</p>
 <td>text, optional</td>
 <td>The sentence a writer reads before using it. <code>AUDIENCE</code> carries its gloss here, because the name misleads without one.</td>
 </tr>
-<tr>
-<td><code>is_system</code></td>
-<td>boolean, required</td>
-<td>Default true, and <strong>every seeded row is true with no row planned false.</strong> This column exists to make the table refuse an edit, not to mark a category.</td>
-</tr>
 </tbody>
 </table>
 <p><strong>Seeded selectors</strong>, in full, because this table <em>is</em> the language — <strong>thirteen rows, all of them
@@ -3318,16 +3338,21 @@ re-grant, one code at a time, what that channel grants whole
   then resolves to the empty set and denies quietly forever (§<em>Evaluation</em>).</li>
 <li><strong>The registry is organization-read-only, and saying that out loud is what makes "a closed
   language" true of a table rather than merely asserted.</strong> Every row ships with the platform, every
-  row is <code>is_system</code>, no screen edits this table, and no organization adds to it
-  (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). <em>The language
+  row arrives with a release, no screen edits this table, and no organization adds to it
+  (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). <strong>No row carries a flag
+  saying so, because a flag true of every row of a table nothing may add to says nothing</strong>
+  (<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).
+  <strong>What refuses an edit is that no code authorizes one and no screen offers one</strong> — there is no
+  <code>selector_type.edit</code> anywhere in the catalog — which reaches further than a flag did, because it does not
+  depend on which screen you arrived from, and an import that names this table has no row to write. <em>The language
   becomes data</em> means the parser and the editor read one place instead of three; it does not mean
   the language is extensible at runtime. <strong>A <code>code</code> in this table with no shipped resolver arm is a
   deployment bug, and it surfaces as an empty set</strong> — an operand that reaches nobody, an allow that
   allows nobody, and a deny that on the <code>-</code> side denies everybody. That is the whole hazard of
   calling a closed set "data", and it is why the seeding of this table is release engineering rather
-  than configuration. <strong>There is no third kind of row</strong> — the taxonomy is <em>shipped and seeded</em>, and
-  "seeded, marked system, but not implemented" is not a category this model allows, however useful
-  it would be as a roadmap marker.</li>
+  than configuration. <strong>There is no third kind of row</strong> — a row either ships with an evaluator arm that
+  reads it or it does not ship, and "shipped as a row, not implemented in the evaluator" is not a category
+  this model allows, however useful it would be as a roadmap marker.</li>
 <li><strong>Every <code>code</code> is a reserved name</strong> in the shared role / group / audience namespace
   (§<em>Names are one namespace</em>).</li>
 <li><code>argument_type</code> is absent exactly when <code>takes_argument</code> is false, and names a real table exactly

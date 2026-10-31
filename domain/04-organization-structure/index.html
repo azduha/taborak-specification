@@ -2233,6 +2233,8 @@
       
         
       
+        
+      
     
     
     
@@ -2816,6 +2818,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3303,7 +3333,9 @@ system is typed by a person</strong>, which is also the only way one could be tr
 <h2 id="6-appointments">6. Appointments<a class="headerlink" href="#6-appointments" title="Permanent link">&para;</a></h2>
 <p><strong>An appointment is a <code>role_holder</code> row:</strong> a role, a person, a period, who granted it, a note. Written by
 <code>role.assign</code> and removed by <code>role.unassign</code>, always held at the unit, because there is one scope and
-nowhere else to hold an office. It confers nothing by itself: the codes an office carries are the live
+nowhere else to hold an office. <strong>The role it names is one the organization wrote</strong> — no office ships, and
+day one is one account holding <code>system.admin</code>
+(<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>). It confers nothing by itself: the codes an office carries are the live
 grants whose expression names <code>ROLE(x)</code>
 (<a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3–§4</a>).
 "That these two may manage the counselors roster" is a grant on the <em>role</em>, the same move a group gets.
@@ -3364,8 +3396,11 @@ named operands lives in one table —
 recite its row count.</p>
 <p>The posture is <strong>opt-in per grant</strong>, so a grant written as <code>ROLE(TREASURERS)</code> with no <code>MEMBERS</code> authorizes a
 lapsed member silently and forever. The controls are a standing report of live grants that name a
-<code>ROLE(...)</code> operand without <code>MEMBERS</code>, seeded grants that carry <code>MEMBERS</code>, and an import count — not the
-resolver. Nothing forces a holder row to end either; the report is the control
+<code>ROLE(...)</code> operand without <code>MEMBERS</code>, and an import count — not the resolver. The only grants this system
+writes for itself are the twelve beside an event, they name <code>ORGANIZERS</code> rather than a <code>ROLE(...)</code>, and they
+carry no <code>MEMBERS</code> on purpose
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+Nothing forces a holder row to end either; the report is the control
 (<a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>).
 All of that belongs to the authorization model and is named here only because these were this module's
 workflows: <a href="../06-authorization-model/">06-authorization-model.md</a>.</p>

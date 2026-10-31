@@ -2375,6 +2375,8 @@
       
         
       
+        
+      
     
     
     
@@ -2958,6 +2960,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3309,7 +3339,8 @@
 <p><code>event</code>, <code>event_organizer</code>, <code>event_registration</code>, <code>event_question</code>, <code>event_answer</code>.</p>
 <p>Domain rationale: <a href="../../domain/07-events/">../domain/07-events.md</a>.</p>
 <p><strong>Nothing here is provisional.</strong> Every hook this module uses — <code>access_grant</code> scoped to an
-item, <code>grant_scope_type</code>, audiences and their selectors — is in place and seeded. The tables
+item, <code>grant_scope_type</code>, audiences and their selectors — is in place, and the two vocabularies
+among them ship with the platform. The tables
 below fill those hooks; they do not extend the model.</p>
 <p><strong>An event has no owner.</strong> No column of <code>event</code> names a unit or a group, and there is no
 event-shaped check: every event permission goes through the ordinary <code>can()</code>, with nothing
@@ -3524,7 +3555,7 @@ whole set), no check in §10 that reads one, no cascade running through one, and
 <p><strong>Import consequence.</strong> The one-off import owes <code>event</code> rows and <code>event_registration</code> rows and
 it owes <strong>no owner column</strong> — one less thing to invent a value for
 (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
-It does owe the per-event seeded grant in §8.</p>
+It does owe the twelve per-event grants of §8, one bundle for every event row it writes.</p>
 <h3 id="no-status-column-and-why-that-is-not-an-omission">No <code>status</code> column, and why that is not an omission<a class="headerlink" href="#no-status-column-and-why-that-is-not-an-omission" title="Permanent link">&para;</a></h3>
 <p>Nothing is stored that can be derived. "Is this event over?" is <code>ends_at</code> in the past. "Is it
 cancelled?" is <code>cancelled_at</code> set. "Needs attention now" — the list an admin screen runs — is
@@ -3647,7 +3678,7 @@ can name the people running an event without any of them being granted anything 
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
 <strong>An operand is a set, not a grant</strong> — the same sentence
 <a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">data-model/05 §8</a> repeats
-for named sets generally. See §8 for the seeded grant that aims at this table.</p>
+for named sets generally. See §8 for the twelve grants that aim at this table.</p>
 <hr />
 <h2 id="4-event_registration">4. <code>event_registration</code><a class="headerlink" href="#4-event_registration" title="Permanent link">&para;</a></h2>
 <p>One row per person per event. <strong>Two stored values; "unanswered" is the absence of a row.</strong></p>
@@ -4166,9 +4197,10 @@ people who came.</strong> Anything a form asks is read by whoever runs that even
 such people is decided by whoever creates the event
 (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>,
 <a href="../../domain/07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">../domain/07a-capacity-presence-and-forms.md §12</a>).
-"Read by whoever runs that event" is a seeded grant — <code>event.answer.view</code> on the event, aimed
-at <code>ORGANIZERS</code> (§8) — which makes this a checkable warning rather than a nicety: the number of
-people who can read an event's answers is a grant plus the roster in §3, and both are readable.</p>
+"Read by whoever runs that event" is a grant the create writes — <code>event.answer.view</code> on the event,
+aimed at <code>ORGANIZERS</code>, one of the twelve of §8 — which makes this a checkable warning rather than a
+nicety: the number of people who can read an event's answers is a grant plus the roster in §3, and both
+are readable.</p>
 </blockquote>
 <p><strong>The form is not the ceiling on what an organizer may know.</strong> There is no medical record: the
 facts that would have been in one are attributes on the person, and <strong>a person holding

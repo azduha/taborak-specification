@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-model--authorization-invariants-seed-data-open-issues" class="md-skip">
+        <a href="#data-model--authorization-invariants-day-one-open-issues" class="md-skip">
           Skip to content
         </a>
       
@@ -1475,10 +1475,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#12-what-the-organization-starts-with" class="md-nav__link">
+  <a href="#12-what-day-one-looks-like" class="md-nav__link">
     <span class="md-ellipsis">
       
-        12. What the organization starts with
+        12. What day one looks like
       
     </span>
   </a>
@@ -2163,6 +2163,8 @@
       
         
       
+        
+      
     
     
     
@@ -2746,6 +2748,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2827,10 +2857,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#12-what-the-organization-starts-with" class="md-nav__link">
+  <a href="#12-what-day-one-looks-like" class="md-nav__link">
     <span class="md-ellipsis">
       
-        12. What the organization starts with
+        12. What day one looks like
       
     </span>
   </a>
@@ -2881,7 +2911,7 @@
   
 
 
-<h1 id="data-model--authorization-invariants-seed-data-open-issues">Data Model — Authorization: invariants, seed data, open issues<a class="headerlink" href="#data-model--authorization-invariants-seed-data-open-issues" title="Permanent link">&para;</a></h1>
+<h1 id="data-model--authorization-invariants-day-one-open-issues">Data Model — Authorization: invariants, day one, open issues<a class="headerlink" href="#data-model--authorization-invariants-day-one-open-issues" title="Permanent link">&para;</a></h1>
 <p>The invariants a correct implementation must hold, the rows the platform ships
 with, and what is still open on this part of the model.</p>
 <p><strong>Section numbers are shared across the six parts</strong> and never renumbered, because other
@@ -2899,6 +2929,19 @@ below counts them.</p>
 left to read and behaviour is the strongest form still available —
 <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
 requires saying so: <strong>a prohibition nobody runs is a convention, not a guard.</strong></p>
+<p><strong>A report whose first run is empty, or is everything, is not a finding.</strong> Three entries below report
+correctly on a system that has just been set up and look, from the number alone, like a failure: check 9
+returns exactly one holder and its "more than one holder" alert has already fired
+(<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>),
+check 13 returns the entire permission catalog because nothing is granted to anybody at the unit yet, and the
+import reconciliation of <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
+counts nothing to reconcile because the office whose roster it checks is one the organization has not written
+(<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>). <strong>All three are
+the system's age showing, and each says so beside its own expectation.</strong> This paragraph is prose and no check
+was written for it, which is deliberate: "was this report read with the system's age in mind" is not a query,
+and a check that could only be answered by a human reading a number would be a report of a report
+(<a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>'s
+lesson about what a check is allowed to be).</p>
 <p><strong>Invariants to verify</strong></p>
 <ul>
 <li><strong>1. Live grants for a person who has been merged away.</strong> An open <code>access_grant</code> whose person
@@ -2939,7 +2982,7 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   (<a href="../../decisions/round-11-12/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).
 - <strong>3. A grant at a scope its code forbids.</strong> An open grant whose <code>scope_id</code> is present while the
   permission's <code>applies_to</code> is <code>unit</code> — or any grant of a <code>system.</code> permission whose <code>applies_to</code> is
-  not <code>unit</code>, which is the seeding rule §2 depends on. <strong>Zero expected, and a row means the save-time
+  not <code>unit</code>, which is the shape §12 says it fixes and nothing else. <strong>Zero expected, and a row means the save-time
   check was skipped, not that a constraint was disabled</strong> — no constraint spans those two tables.
   This is the report that stands in for a database rule, which makes it worth alerting on.
 - <strong>4. A bound operand where it cannot bind.</strong> An <code>audience_operand</code> whose selector has
@@ -3000,6 +3043,11 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   report's real output:</strong> a world in which somebody could hold the capability and nobody can reach a screen
   is the state D-126's procedure exists for, and it goes to the same place, within the hour
   (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
+  <strong>On a first run this report is one row long, its alert has already fired, and both are correct:</strong> the one
+  grant the installation writes is a holder of <code>system.admin</code>, so the report's first output is the
+  installation itself (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
+  Nothing about an event widens this list: the bundle an event creation writes is item-scoped, and
+  <code>system.admin</code> is <code>applies_to = unit</code>, so it cannot be handed out on an item at all (§2, §12).
 - <strong>10. Expression trees that are not trees.</strong> Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose <code>audience_id</code> differs from its parent's; a row whose
   <code>parent_id</code> names no row; an audience with zero or several root rows. <strong>Zero expected, and every
@@ -3030,11 +3078,16 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   accident one arm over — <strong>the kind of a name decides which set a bare expression meant.</strong>
 - <strong>13. Orphaned permissions.</strong> An assignable permission that <strong>no live grant names</strong>, at any scope.
   With no wildcard, a permission nothing bundles grants nobody, so the question is asked of the grant
-  rows themselves and of nothing else (D-068). <strong>Expected: empty after a seeding pass.</strong> A row means either a
-  permission nobody has bundled into an office yet — fine on a roadmap, wrong in production — or a
-  module was added and its grants were not. <strong>Note what it cannot see:</strong> a permission granted to <em>an</em>
-  office but not to the office that arguably should have it. That residual is the accepted cost of
-  D-068 and nothing closes it; it is a human reading the starter list in §12 against the catalog.
+  rows themselves and of nothing else (D-068). <strong>Expected on day one: everything but <code>system.admin</code>, and that
+  is not a finding.</strong> Nothing is seeded into a grant, so a first run reports the whole catalog back at the
+  person reading it, which is the most useful thing this check ever prints — it is the list of capabilities
+  that exist and have not been given to anybody, and
+  <a href="#12-what-day-one-looks-like">§12</a> calls it the checklist. <strong>A row means something different once the
+  organization has been writing grants for a year:</strong> either a permission nobody has bundled into an office
+  yet — fine on a roadmap, wrong in production — or a module was added and its grants were not. <strong>Note what
+  it cannot see:</strong> a permission granted to <em>an</em> office but not to the office that arguably should have it.
+  That residual is the accepted cost of D-068 and nothing closes it; it is a human reading the catalog
+  against the grants, and that is the one report here that gets <em>less</em> useful the longer nobody reads it.
 - <strong>14. Offices nobody holds, and holder rows pointing at an office that is gone.</strong> The first is
   <strong>expected and is not an error</strong>: a role nobody holds is either one about to be used or one stopped
   using and not deleted, and there is no third possibility, because a role has no period
@@ -3331,18 +3384,21 @@ requires saying so: <strong>a prohibition nobody runs is a convention, not a gua
   a schedule never was.</li>
 </ul>
 <hr />
-<h2 id="12-what-the-organization-starts-with">12. What the organization starts with<a class="headerlink" href="#12-what-the-organization-starts-with" title="Permanent link">&para;</a></h2>
-<p>Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.</p>
+<h2 id="12-what-day-one-looks-like">12. What day one looks like<a class="headerlink" href="#12-what-day-one-looks-like" title="Permanent link">&para;</a></h2>
+<p><strong>Nothing in this section is a starter set.</strong> The platform ships a language and no opinions; everything an
+organization would recognize as <em>its</em> configuration — every office, every audience, every grant — is written
+by somebody on the first day rather than shipped on the last one
+(<a href="../../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>,
+applied by <a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).</p>
 <blockquote>
-<p><strong>This section and <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a> are
-the same list written twice, and they drift.</strong> A reconciliation found documented permissions with no
-seed row, among them a code several of the catalog's own seed roles assign and one of the two codes
-D-068 exists to protect; the <code>event.*</code> codes are the standing example of the two lists disagreeing.
-<strong>With no wildcard, a code the catalog advertises and the database does not name is a capability nobody
-can be granted</strong>, and the permission editor is the only place the gap shows. Nothing in the schema pairs
-codes with roles, so there is no per-role list to compare a catalog row against either: a documented code
-that nothing grants is invisible to anything but a report. <strong>Integrity check 13</strong> reads the grants for exactly that
-reason (D-068).</p>
+<p><strong>This section and <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a> used to be
+the same list written twice, and they drifted.</strong> The list this section kept is gone, which removes the
+second copy and not the argument. <strong>With no wildcard, a code the catalog advertises and no grant names is
+a capability nobody can be granted</strong>, and the permission editor is the only place the gap shows. Nothing in
+the schema pairs codes with roles, so there is no per-role list to compare a catalog row against: a
+documented code that nothing grants is invisible to anything but a report. <strong>Integrity check 13</strong> reads the
+grants for exactly that reason (D-068), and on a system's first week it reports nearly everything in the
+catalog — which is what "not yet granted" looks like when a report is honest about it.</p>
 <p><strong>There is no SQL check for this</strong> — one side is a Markdown file. The discipline is the
 check: when adding a permission, add it in <strong>both</strong> places in the same edit, and treat a catalog
 row that no grant names as a bug of the same class as a missing migration. The reconciliation is
@@ -3360,39 +3416,65 @@ than people — a unit's renaming, restructuring and closing, and participation 
 is one unit and it is a scope (D-097). <code>role.assign</code>, <code>role.unassign</code>, <code>role.create</code>, <code>role.view</code>,
 <code>role.edit</code> and <code>role.delete</code> are in the catalog and are <strong>aimed at <code>role_holder</code></strong>; <code>role.edit</code> reaches
 nobody's authority, only its name and description (§3).</p>
-<p><strong>Roles are data, and the organization administers them at runtime.</strong> This section seeds the
-<em>permissions</em> — the vocabulary of things anyone might do — and one role. The role names used
-throughout the docs are worked examples of composing those permissions into grants, not a fixed list.
-Creating a role, naming it, filling it and deleting an unused one are all supported operations.</p>
-<p><strong>What is seeded as a role, and it is one row: <code>counselors</code>, marked <code>is_system</code></strong>
-(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
-A permanent, organization-wide population is the opposite of D-098's definition of a group (<em>"a
-temporary set of members that do events together"</em>), and which table it lives in decides the
-sensitivity that every safeguarding convention in this area hangs from. <strong>It ships <code>is_system</code> so an
-editor refuses to delete it</strong>, and it confers nothing: this is a <strong>set</strong>, and being in it is worth
-only what a grant naming <code>ROLE(counselors)</code> says
-(<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>).
-<strong>Consistency requirement, and it is the import's problem too:</strong> <code>MEMBERS * ROLE(counselors)</code> is only
-as correct as that roster, so the import reconciliation of D-090 counts people marked as counselors in
-the corpus against <code>role_holder</code> rows written.</p>
-<p><strong>No seeded office holds any of the four <code>api_key.*</code> codes, and none should.</strong> Whoever holds
-<code>system.admin</code> already satisfies those checks because <code>system.admin</code> satisfies every code
+<p><strong>Day one, in order, because the order is the only part that is not the organization's choice.</strong></p>
+<ol>
+<li><strong>One account, one grant, one code.</strong> An ordinary <code>access_grant</code> row: this person × <code>system.admin</code> × the
+   unit. Nothing else in the system is configured, and nothing else needs to be — <code>system.admin</code> satisfies
+   every check, so the same person already holds <code>role.create</code>, <code>audience.manage</code> and <code>access_grant.create</code>
+   for the purposes of the next three steps
+   (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
+   <strong>There is no bootstrap mechanism</strong>: no special column, no second kind of actor, no migration that knows
+   it is installing an organization. This row is the first entry in <code>audit_log</code> and the first change
+   <a href="#11-invariants-to-verify">check 9</a> alerts on, and both of those are correct rather than incidental.</li>
+<li><strong>An office is a <code>role</code> row and it confers nothing.</strong> Name it, describe it, order it — then aim a grant at
+   <code>ROLE(x)</code>, because that is the moment the office gains a permission
+   (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</li>
+<li><strong>An audience is an expression tree</strong>, written in §8's language, and it is worth naming only if something
+   will name it (<code>AUDIENCE(x)</code>). A one-operand audience is usually not worth a row: the operand <code>EVERYONE</code>
+   and the operand <code>MEMBERS</code> are writable anywhere, and the two audiences that used to stand for them are
+   gone (<a href="../../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>).</li>
+<li><strong>A grant is one code, one scope, one expression, one effect</strong> — and the grant editor reads the catalog,
+   which is the document this section deliberately does not duplicate.</li>
+</ol>
+<p><strong>The catalog is the checklist, and ten of its codes are held by nobody at first</strong>: <code>event.cancel</code>,
+<code>event.delete</code>, <code>event.organizer.manage</code>, <code>event.question.manage</code>, the four <code>guardianship.*</code>,
+<code>person_group.edit</code>, <code>person_group.end</code>. Read them as <em>not yet granted</em> — that sentence is the whole reason
+the catalog exists as a document rather than as a dropdown. <strong>Four of the ten are <code>event.*</code> codes and every
+event's organizers hold them on that event from the moment it is created</strong>
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>);
+what remains true, and what the list means, is that nobody holds any of them <strong>at the unit</strong> until somebody
+writes a grant that says so.</p>
+<p><strong><code>counselors</code> is a worked example, and the argument for it is about a table rather than a row.</strong> The name
+appears throughout this design inside expressions — <code>MEMBERS * ROLE(counselors)</code> — and every one of those was
+always an example of composing a grant, which is how they should still be read. What is no longer true is
+that the platform writes the office. <strong>D-100's reason for choosing <code>role</code> over <code>person_group</code> survives
+untouched</strong>: a permanent, organization-wide population is the opposite of D-098's definition of a group (<em>"a
+temporary set of members that do events together"</em>), and which table it lives in decides the sensitivity that
+every safeguarding convention in this area hangs from
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a>). That argument
+is about where a set may live; it never needed the platform to populate one. <strong>The consistency requirement
+goes with it, and so does its emptiness:</strong> <code>MEMBERS * ROLE(counselors)</code> is only as correct as the roster, so
+the import reconciliation of D-090 counts people marked as counselors in the corpus against <code>role_holder</code>
+rows written — and on a first run there is no such role, so the reconciliation has nothing to reconcile and
+reports nothing, which is a report whose subject arrives later rather than a check that is broken
+(<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>).</p>
+<p><strong>No office holds any of the four <code>api_key.*</code> codes, and no office should.</strong> Whoever holds <code>system.admin</code>
+already satisfies those checks because <code>system.admin</code> satisfies every code
 (<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>),
-so seeding one would move the capability to install a permanent outside authority into a row nobody chose,
-on an office whose purpose is something else
+so granting them to an office would move the capability to install a permanent outside authority into a row
+nobody chose, on an office whose purpose is something else
 (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
-<strong>It arrives by an ordinary grant or it does not arrive.</strong></p>
-<p><strong>Everything else is starter material the organization edits</strong> — including the <code>system_admin</code> office
-the catalog sketches, whose reason for existing is that someone has to hold <code>system.admin</code> before
-anything can be granted. <strong>What §12 must fix, and does, is the <em>shape</em> rather than the list</strong>: a
-<code>system.</code> permission is seeded <code>applies_to = unit</code>, so it can never arrive through an item grant. That
-is not a configuration choice — it is the structural guarantee that a shared item cannot hand someone
-authority over the permission system, and it is carried by a column value rather than by a resolver
+<strong>It arrives by an ordinary grant or it does not arrive</strong> — and now that is the only way anything arrives.</p>
+<p><strong>What §12 fixes, and still only fixes, is the <em>shape</em> rather than the list.</strong> A <code>system.</code> permission is
+<code>applies_to = unit</code>, so it can never arrive through an item grant. That is not a configuration choice and it
+is not a shipped row's property either — it is a column on the code, the structural guarantee that a shared
+item cannot hand someone authority over the permission system, carried by a value rather than by a resolver
 branch (§2).</p>
-<p><strong>What the organization starts with, in one list.</strong> The platform ships:</p>
+<p><strong>What ships, in one list, because "nothing is seeded" is a sentence that needs its exceptions.</strong> The
+platform ships three vocabularies and the enums, and no configuration:</p>
 <ul>
-<li><strong>The permission vocabulary</strong> — each code marked <code>is_system</code> so it cannot be deleted or renamed —
-  spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
+<li><strong>The permission vocabulary</strong>, spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
   legacy import, reporting, the thirteen <code>event.*</code> codes, messaging, and the four <code>api_key.*</code> codes of <a href="../05e-keys-and-callers/">05e §15</a> —
   <code>api_key.view</code>, <code>api_key.create</code>, <code>api_key.rotate</code>, <code>api_key.end</code>, every one <code>applies_to = unit</code>. <strong>The one complete list is
   <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a></strong>; this document keeps no second
@@ -3400,7 +3482,7 @@ branch (§2).</p>
 <li><strong><code>grant_scope_type</code></strong>: <code>unit</code> (the only row that is not item-scoped), <code>event</code>, <code>person_group</code>,
   <code>role</code>, and <code>document</code> (deferred).</li>
 <li><strong><code>selector_type</code></strong>: <strong>thirteen rows — the thirteen operands of §8's language — every one of them
-  seeded, <code>is_system</code> and implemented in the shipped evaluator</strong>, because there is no fourth combination
+  shipped and implemented in the evaluator</strong>, because there is no fourth combination
   and no third kind (§8, <em>The selector registry</em>, whose table <strong>is</strong> the language: the count is only the
   cheap form of the check that no operand exists anywhere else). <strong>This registry is what both the grant
   editor's dropdown and the parser's reserved words read</strong>, which is what D-101 means by <em>the language
@@ -3415,46 +3497,63 @@ branch (§2).</p>
   <strong>Refused, and therefore absent</strong> (§8): <code>GRANTS</code>, and <code>LIST</code> — a hand-written set of people is a sum of
   <code>PERSON(x)</code> leaves, not an operand
   (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).</li>
-<li><strong>Two audiences, both <code>is_system</code>, and both must have a <code>code</code></strong>: <code>everyone</code>, whose expression is
-  <code>EVERYONE</code>, and <code>all_members</code>, whose expression is <code>MEMBERS</code>. <strong>The code is not cosmetic</strong>: it is the
-  only way another audience can name them
-  (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>), so a seeded row
-  without one is a piece of the resolver's vocabulary that nothing can compose with, and §11's check 12 is
-  the net for the leaf side of that. <strong>Whether <code>code</code> should simply be <em>required</em> on an <code>is_system</code>
-  audience rather than merely seeded is a question this document does not settle</strong> (§13). <strong>No seeded
-  audience is parameterized</strong>: there is one unit, so nothing needs a row per unit. <strong>Three names keep being
-  asked for, and each of them is something smaller or nothing at all</strong> —
-  <code>unit_participants</code> is <code>MEMBERS</code>; <code>unit_leaders</code> is <code>ROLE(x)</code>, the shape §8's evaluation rules are written
-  against — <strong>an expression that resolves to nobody is silent, while every grant aimed at it looks
-  granted</strong>; and
-  <code>guardians_of</code> is <strong>nothing</strong> — a guardian's authority is the guardianship channel's <code>right_level</code> over
-  the child, not a set an audience can name, which is why <code>GUARDIANS</code> is not a selector
-  (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>).
-  <strong>A bound <code>GUARDIANS</code> on a grant about that person is unsavable on every scope that exists</strong>: <code>person</code> is
-  not a <code>grant_scope_type</code>, so the binding check refuses it. <strong><code>audience_member</code> is not a table</strong> (§8), so there is no member row on an <code>is_system</code>
-  audience for anything to refuse; what stands is the category that refusal protected — <strong>seeded audiences
-  are the resolver's own vocabulary, not a set somebody curates, and the editor should not offer to edit
-  <code>everyone</code>'s expression.</strong></li>
-<li><strong>The <code>counselors</code> role</strong>, above.</li>
-<li><strong>One seeded grant: <code>event.answer.view</code> on an event, aimed at
-  an audience whose expression is <code>ORGANIZERS</code></strong> — the code in the catalog's singular spelling, which is
-  the registered one
-  (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,
-  amending <a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).
-  "Answers are read by that event's organizers" is a row a reader can find, narrow or delete rather than a
-  sentence the resolver implements, and it is the worked example of a <strong>bound operand</strong>:
-  item-scoped, argument-less, meaning <em>the organizers of whichever event this grant is on</em> — which is
-  why it is one grant in the seed rather than one per event. <strong><a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>
-  is not contradicted</strong>: the appointment still grants nothing by itself, because an operand is a set
-  and not a grant. <strong>It is written without <code>MEMBERS</code></strong> and must not be "corrected" to include it: an
-  organizer appointed for one weekend is not required to be a paying member, and D-062's appointment
-  model assumes exactly that.</li>
+<li><strong>Nothing else — and the sentence is worth finishing, because three things used to be in this list.</strong>
+  Offices, audiences and grants are written by people; §12's first four steps are the order, and the three
+  paragraphs below say who writes each of the three, and what the two deleted audiences were for.</li>
 <li><strong>The effects and the enums.</strong> <code>allow</code> and <code>deny</code> arrive with the schema, as do the two values of
   <code>applies_to</code> and the two of <code>right_kind</code>. None of them is editable at runtime: <strong>a comparison the
   organization can edit is a security control with no owner</strong>, and there is no level comparison to seed at
   all
   (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>).</li>
 </ul>
+<p><strong>What the two named audiences were, and what replaces them: nothing.</strong> <code>everyone</code> held the expression
+<code>EVERYONE</code> and <code>all_members</code> held <code>MEMBERS</code>; both had a <code>code</code>, because a code is how another audience names
+one (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>), and §11's check 12 is
+still the net for the leaf side of that rule — an <code>AUDIENCE</code> leaf pointing at an audience with no code is
+unsayable as a constraint and unkind as a resolution. <strong>What is gone is the rows, not the operands</strong>: an
+audience whose entire content is <code>EVERYONE</code> is worth a row exactly when somebody intends to name it, and
+naming is one ordinary write. <strong>Three names keep being asked for, and each of them is something smaller or
+nothing at all</strong> — <code>unit_participants</code> is <code>MEMBERS</code>; <code>unit_leaders</code> is <code>ROLE(x)</code>, the shape §8's evaluation
+rules are written against, and <strong>an expression that resolves to nobody is silent while every grant aimed at
+it looks granted</strong>, which is the sentence to read before naming an office you have not written yet; and
+<code>guardians_of</code> is <strong>nothing</strong> — a guardian's authority is the guardianship channel's <code>right_level</code> over the
+child, not a set an expression can name, which is why <code>GUARDIANS</code> is not one of the thirteen operands
+(<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>),
+and <strong>a bound <code>GUARDIANS</code> on a grant about that person is unsavable on every scope that exists</strong> because
+<code>person</code> is not a <code>grant_scope_type</code>. Two refusals went out with the two rows — <em>do not add a person to a
+seeded audience</em>, <em>do not offer to edit <code>everyone</code>'s expression</em> — and the category they were guarding does
+not need the rows to be true: <strong>an expression is not a member list</strong>, <code>audience_member</code> is not a table (§8),
+and a hand-written set of people is a sum of <code>PERSON(x)</code> leaves rather than a membership
+(<a href="../../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>).</p>
+<p><strong>What the shipped answer-view grant was, and who writes it now: whoever creates the event.</strong>
+"<code>event.answer.view</code> on an event, aimed at <code>ORGANIZERS</code>" used to arrive with the platform, and this section
+explained it as "one grant in the seed rather than one per event" — which was false, because a bound operand
+is legal only on an item-scope grant and one row cannot cover events that do not exist yet
+(<a href="../08a-event-guards-and-checks/#selectors-that-bind-to-an-event">08a §8</a> had already said so, in the other
+direction). <strong>The act that creates an event writes twelve item-scope allows beside the event row, in the same
+transaction, all aimed at <code>ORGANIZERS</code>: every <code>event.*</code> code except <code>event.create</code>, which is
+<code>applies_to = unit</code></strong> (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+"Answers are read by that event's organizers" is still a row a reader can find, narrow or delete rather than
+a sentence the resolver implements, it is still the worked example of a <strong>bound operand</strong> — item-scoped,
+argument-less, meaning <em>the organizers of whichever event this grant is on</em> — and it is <strong>still written
+without <code>MEMBERS</code></strong> and must not be "corrected" to include it, because an organizer appointed for one weekend
+is not required to be a paying member
+(<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,
+amending <a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>).
+<strong><a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a> is not
+contradicted</strong>: the appointment still grants nothing by itself, because an operand is a set and not a grant,
+and adding a cook changes the set rather than the twelve rows. <strong>What the bundle now contains besides the
+answer row is the part a reader should stop on:</strong> <code>event.organizer.manage</code> and <code>event.grant_access</code> are in
+it, so an organizer may add an organizer and may grant access to that event without holding anything at the
+unit — the widening the catalog marks ⚠ is reachable from inside the event, and D-151 states that as the cost
+it is.</p>
+<p><strong>And one question this section used to leave open is now unaskable rather than answered.</strong> It asked whether
+<code>audience.code</code> should be <em>required</em> on an <code>is_system</code> audience rather than merely seeded on two of them.
+There is no <code>is_system</code> column anywhere in the design
+(<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>)
+and no seeded audience, so the rule would have nothing to apply to that was not an ordinary audience somebody
+named because they meant to
+(<a href="../../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>).</p>
 <p>A few of the surviving codes carry a decision in their shape, and those are worth naming:</p>
 <ul>
 <li><strong><code>person.merge</code> and <code>person.redact</code> are separate codes</strong>, not flavours of <code>person.edit</code>. <strong>They are
@@ -3515,8 +3614,8 @@ branch (§2).</p>
   <code>right_level = write</code> on the relationship, not a permission (D-074); the code families <code>dependent.*</code> and
   <code>*.admin</code> are not in this catalog. So an office that should hold a new permission must be <strong>told</strong> —
   check 13 is the net.</li>
-<li><strong>Reporting is seeded coarse, and left open on purpose.</strong> Only <code>report.view</code> and <code>report.export</code> are
-  starters. Whether reporting is per-report or one permission with row-level filtering is still open
+<li><strong>Reporting ships coarse, and is left open on purpose.</strong> Only <code>report.view</code> and <code>report.export</code> exist.
+  Whether reporting is per-report or one permission with row-level filtering is still open
   (catalog §12). Do not ship both shapes; pick one when reporting is designed.</li>
 </ul>
 <blockquote>
@@ -3541,12 +3640,14 @@ the assertion that it stays the only one).</p>
   (<a href="../../open-questions/#f-27">F-27</a>). <a href="../05e-keys-and-callers/">05e §17</a> states each from this module's side,
   and none of the three was ever answered by adding a column to <code>api_key</code> — <strong>a sweep is not a caller and
   should not have to authenticate.</strong></li>
-<li>The complete permission catalog and real role definitions (§12) — needs your input. The question is
-  <strong>which starter grants are written with <code>MEMBERS</code> in the expression and which are not</strong>: <code>role</code> has no
-  <code>requires_membership</code> switch to carry the answer
+<li><strong>Which grants an organization writes with <code>MEMBERS</code> in the expression, and which without</strong> — the question
+  this file used to ask as "which <em>starter</em> grants name <code>MEMBERS</code>", which has no starter grants to ask about
+  any more. <code>role</code> has no <code>requires_membership</code> switch to carry an answer
   (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
-  so it is answered per grant rather than per role, with check 6 (§11) as the net and the seeded grants as
-  the default.</li>
+  so it is answered per grant rather than per role, with check 6 (§11) as the net. <strong>One case the design does
+  answer:</strong> the twelve grants an event creation writes are written <em>without</em> <code>MEMBERS</code>, because an organizer
+  appointed for one weekend is not required to be a paying member
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</li>
 <li><strong>Whether the API should refuse a check that names an item for a unit-only code (§2).</strong>
   <code>applies_to</code> is deliberately a save-time rule, and D-099 says so in as many words, so the mismatched
   <em>grant</em> cannot exist — but a <em>caller</em> that asks <code>can(person, 'event.create', 'event', 1204, …)</code>
@@ -3638,11 +3739,6 @@ the assertion that it stays the only one).</p>
   needs this listing run in its <strong>reverse</strong> direction, transitively rather than one hop at a time (§10).
   If the import corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
   is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.</li>
-<li><strong>Whether <code>audience.code</code> should be required rather than optional on <code>is_system</code> rows (§8, §12).</strong>
-  The seeded audiences are the resolver's vocabulary and cannot be composed with by anything that lacks
-  a code, which makes the code mandatory in every practical sense while leaving it nullable in the
-  schema. <strong>A check is being asked to assert what a column could have guaranteed</strong>; making the column
-  required-where-<code>is_system</code> would be the honest fix and is not this document's call to make.</li>
 <li><strong>A nested audience's past reach is not reconstructable, and that is the answer (§8, <em>Three named
   sets</em>):</strong> the record of whom a grant reached <strong>is the expression</strong>
   (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,

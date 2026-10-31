@@ -2174,6 +2174,8 @@
       
         
       
+        
+      
     
     
     
@@ -2757,6 +2759,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3117,9 +3147,12 @@ Two costs come with it and both are stated rather than absorbed. <strong>A genui
 waits for a human</strong>, so the blocking condition carries an age check shaped like <code>field_conflict</code>'s thirty
 days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it
 could hold a login, and a person who cannot sign up has no way to say so except by telephoning someone.
-<strong>And the reviewer deciding it is deliberately half-blind</strong> — the seeded role holds the merge and no read
+<strong>And the reviewer deciding it is deliberately half-blind</strong> — the office that holds the merge holds no read
 over the person record, so it decides from signals and names, which is the correct conservative shape and
-also the thing to revisit if reviewers start asking for context they cannot see.</p>
+also the thing to revisit if reviewers start asking for context they cannot see. <strong>No platform ships that
+office</strong>: some organization writes it, aims <code>person.merge</code> at <code>ROLE(x)</code> and leaves <code>person.view</code> out of the
+grant, and the conservatism is in the grant it chose rather than in a row the design brought with it
+(<a href="../05d-invariants-and-seed/#12-what-day-one-looks-like">05d §12</a>).</p>
 <p><strong>The everyday case is not this case, and naming it stops the rule being oversold.</strong> "I have a new
 e-mail address" has never been a second account and is not one now: <code>account_credential</code> (§5) holds many
 credentials for one account, so a new address is an <em>addition</em> to the login a person already has and runs

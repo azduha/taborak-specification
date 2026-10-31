@@ -2183,6 +2183,8 @@
       
         
       
+        
+      
     
     
     
@@ -2766,6 +2768,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3288,7 +3318,7 @@ downstream ever says so.</p>
 <tr>
 <td>Every <code>system.*</code> permission applies at the unit</td>
 <td><a href="../05-authorization/#2-permission">05 §2</a></td>
-<td>the seeding rule</td>
+<td>the migration that writes the vocabulary, which is this table's only writer</td>
 <td><a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 3</a></td>
 </tr>
 <tr>
@@ -3547,8 +3577,8 @@ which is the one property of this shape that does not need a checker.</p>
 <tr>
 <td>A permission's <code>code</code></td>
 <td><a href="../05-authorization/#2-permission">05 §2</a></td>
-<td>every <code>access_grant</code> row, and the seeded roles, which list codes by value</td>
-<td><strong>stated twice and enforced nowhere</strong>; now a rule with a referrer listing behind it (<a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>)</td>
+<td>every <code>access_grant</code> row — <strong>and, since <a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>, that is the entire list</strong>: the second referrer used to be the seeded roles, which named codes by value in a file no review ever opened</td>
+<td><strong>stated twice and enforced nowhere</strong>; now a rule with a referrer listing behind it (<a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>) — the list shrank and the conclusion did not</td>
 </tr>
 <tr>
 <td>A selector's <code>code</code></td>

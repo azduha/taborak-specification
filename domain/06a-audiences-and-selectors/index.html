@@ -2205,6 +2205,8 @@
       
         
       
+        
+      
     
     
     
@@ -2788,6 +2790,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3279,8 +3309,12 @@ contradiction of
 appointment is <em>aimed at</em> by grants; it is not special-cased inside the resolver. So the rule that
 answers are read by that event's organizers
 (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>) is <em>said</em>
-where permissions are said: <strong>a seeded grant of <code>event.answer.view</code> on an event, aimed at
-<code>ORGANIZERS</code>.</strong></p>
+where permissions are said: <strong>one item-scope <code>allow</code> of <code>event.answer.view</code> on the event, aimed at the
+bare operand <code>ORGANIZERS</code>, written in the same transaction as the event row.</strong> It is one of the twelve
+grants the act of creating an event writes for that event
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>),
+and it is written <strong>without</strong> <code>MEMBERS</code>: an organizer appointed for one weekend is not required to be a
+paying member.</p>
 <p><strong>Presence is refused, and saying so here is the point.</strong> <code>PRESENT(&lt;event&gt;)</code> over <code>was_present</code> is not
 a selector, and the reason is the failure direction: <code>was_present</code> is <code>NULL</code> until someone takes a
 register, so an operand built on it would revoke a child's access to their own camp photos because a

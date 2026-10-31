@@ -2255,6 +2255,8 @@
       
         
       
+        
+      
     
     
     
@@ -2838,6 +2840,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3069,7 +3099,7 @@
 
 <h1 id="appendix--permission-catalog-the-codes">Appendix — Permission Catalog: the codes<a class="headerlink" href="#appendix--permission-catalog-the-codes" title="Permanent link">&para;</a></h1>
 <p>Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.</p>
-<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../permission-catalog/">permission-catalog.md</a> holds §1, the conventions; <a href="./">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="../permission-catalog/">permission-catalog.md</a> holds §1, the conventions; <a href="./">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.</p>
 <hr />
 <h2 id="2-people-and-identity">2. People and identity<a class="headerlink" href="#2-people-and-identity" title="Permanent link">&para;</a></h2>
 <table>
@@ -3156,8 +3186,8 @@ correction is the same act as making one
 deleted <code>role_permission</code>, an office holding all of <code>person.*</code> <em>is</em> the live grant rows naming <code>ROLE(x)</code>
 — one row per code, dated, attributable — so a bundle that mixes the dangerous two with routine editing
 is visible in a role editor instead of hidden in a resolver rule. <strong>§11</strong> carries the rule that follows:
-no seeded office mixes <code>person.merge</code> or <code>person.redact</code> with routine <code>person.edit</code>, and one that does
-should be named for what it is.</p>
+no worked-example office mixes <code>person.merge</code> or <code>person.redact</code> with routine <code>person.edit</code>, and one that
+does should be named for what it is.</p>
 <p><strong>No <code>person.background_check.*</code>.</strong> The organization has no background checks handled by this system, so
 there is nothing to view and nothing to record
 (<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>). If that
@@ -3623,7 +3653,7 @@ author's statement, filled in because the column cannot be left empty.</p>
 <td><code>role.delete</code></td>
 <td><code>system</code></td>
 <td>🔒🔒</td>
-<td>Delete an office. Only possible if it was <strong>never held</strong> and is not a system role</td>
+<td>Delete an office. Only possible if it was <strong>never held</strong></td>
 </tr>
 <tr>
 <td><code>role.assign</code></td>
@@ -3690,7 +3720,7 @@ the reason it is not a check the write performs is that there is no smaller gran
 <p><strong>Roles are runtime data, and these six permissions are how the organization administers them.</strong>
 <code>role.create</code> names a new office; <code>role.edit</code> renames one; <code>role.delete</code> removes one created by
 mistake; the reach of any of them is written by <code>access_grant.create</code> down the table. §11 is
-therefore a <em>starting point to be edited</em>, not a fixed vocabulary. Whether an office's authority is
+therefore a <em>set of worked examples to be edited</em>, not a fixed vocabulary. Whether an office's authority is
 conditional on a paid-up holder is not configuration either: it is in the text of each grant, which
 says <code>MEMBERS * ROLE(x)</code> when the fee is meant to matter.</p>
 <p><strong>There is no <code>role.retire</code>, and a role cannot be switched off</strong>
@@ -3708,18 +3738,20 @@ touching a holder row and without notifying anybody, is saving a grant aimed at 
 <code>access_grant.create</code> with an expression in it, and it is exactly why <code>role.*</code> stays 🔒🔒 while the
 composition of grants is the least-graded write in the catalog (§12). Escalating one person and
 escalating an office are different powers, and neither is implied by the other.</p>
-<p><strong><code>role.delete</code> only works on an office that has never been held</strong> and is not <code>is_system</code> — which is
-what protects the one seeded role, <code>counselors</code>, from an editor (§11). No delete may leave a
+<p><strong><code>role.delete</code> only works on an office that has never been held.</strong> No delete may leave a
 <code>role_holder</code> pointing at a role that is gone:
 <a href="../../data-model/05-authorization/#3-role--an-office">../data-model/05-authorization.md §3</a>
-states the guard and the order it refuses in. The two halves are not equally strong, and the
-difference is the reason this permission is not self-policing. The first is referential
-integrity — <code>role_holder.role_id</code> references <code>role.id</code>, a migration-level constraint, so it refuses
-a delete that arrives from an import, from a manual fix, or from a second client as surely as from
-the screens. The second, <code>is_system</code>, is a property of the row being deleted and no index can see
-it: it is a check inside the transaction that deletes, and a model-layer guard there is a friendlier
-message, not the refusal. A role that has been held is left in place, so the answer to "what office
-did this person hold in 2019?" survives — which is precisely when someone asks it.</p>
+states the guard and the order it refuses in. <strong>One guard, and it is referential integrity</strong> —
+<code>role_holder.role_id</code> references <code>role.id</code>, a migration-level constraint — and that is what makes this
+permission not self-policing rather than unprotected: a constraint refuses a delete that arrives from an
+import, from a manual fix, or from a second client as surely as from the screens. A per-row "do not delete
+this" flag beside it was offered and deleted, because such a flag is a property of the row being deleted
+and no index can see it — it would have been a check inside the transaction that deletes, where a
+model-layer guard is a friendlier message, not the refusal
+(<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).
+A role that has been held is left in place, so the answer to "what office did this person hold in 2019?"
+survives — which is precisely when someone asks it. <strong>What remains deletable is an office created by
+mistake and never held</strong>, which is what deleting an office was always for.</p>
 <p><strong>Nothing waives the membership test, because nothing imposes it.</strong> The resolver asks no membership
 question of a grant, so there is no exemption for a person to hold: the test is the <strong>expression the
 grant was written with</strong> — <code>MEMBERS * ROLE(x)</code> where the fee must hold, <code>ROLE(x)</code> where it need not,
@@ -3937,7 +3969,7 @@ keeps the only QR code in this system attached to a payment, where it is a rende
 <td><code>event.answer.view</code></td>
 <td>—</td>
 <td>⚠⚠</td>
-<td><strong>Read registrant answers</strong> (tent, dietary, …) — the note below, and the seeded grant</td>
+<td><strong>Read registrant answers</strong> (tent, dietary, …) — the note below, and one of the twelve grants written beside every event</td>
 </tr>
 <tr>
 <td><code>event.question.manage</code></td>
@@ -3949,7 +3981,7 @@ keeps the only QR code in this system attached to a payment, where it is a rende
 <td><code>event.grant_access</code></td>
 <td>—</td>
 <td>🔒</td>
-<td>Grant access to an event. What distinguishes it from <code>access_grant.create</code> is the scope alone, which is why §12 asks whether it is still a code with a subject</td>
+<td>Grant access to an event. What distinguishes it from <code>access_grant.create</code> is the scope alone — and it is one of the twelve grants written beside every event, so <strong>whoever runs an event may hand out access to that event and to nothing else</strong>, without holding <code>access_grant.create</code> at the unit (§12)</td>
 </tr>
 <tr>
 <td><code>event.delete</code></td>
@@ -4055,16 +4087,30 @@ record of who was coming deletable by everything except the intended route.</p>
 <p><strong><code>event.answer.view</code> is where
 <a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a> lives, and it
 lives there as a grant.</strong> <em>"Answers are read by that event's organizers"</em> is said where permissions are
-said: <strong>a seeded grant of <code>event.answer.view</code>, scoped to the event, aimed at <code>ORGANIZERS</code></strong>
+said: <strong>an item-scope <code>allow</code> of <code>event.answer.view</code>, scoped to the event, aimed at an audience whose
+expression is the bare operand <code>ORGANIZERS</code></strong>
 (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
-Because a bound operand is legal only on an item-scope grant, this cannot be one row for every event:
-what ships is a <strong>template</strong>, which the event-creation path instantiates beside the event row in the
-same transaction as the event, and which the import owes one instantiation per event it writes
+<strong>And it is one of twelve.</strong> The act that creates an event writes the event's authority beside the event
+row, in the same transaction as the event: one item-scope <code>allow</code> per code, aimed at <code>ORGANIZERS</code>, for
+<strong>every catalog code whose <code>applies_to</code> admits an event</strong> — every <code>event.*</code> code except <code>event.create</code>,
+which is <code>applies_to = unit</code> because nothing owns an event, so <strong>twelve grants beside every event</strong>
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).
+<strong>The set is derived, not hand-picked, and that is the whole of its maintenance cost being zero:</strong> a code
+added to <code>event.*</code> is in the next event's bundle without anyone remembering a list, and a curated list
+would have owed somebody the omission forever. Because a bound operand is legal only on an item-scope
+grant, none of this can be one row covering every event: it is twelve rows per event, and the import owes
+the same twelve beside every event it writes
 (<a href="../../data-model/08a-event-guards-and-checks/#selectors-that-bind-to-an-event">../data-model/08a-event-guards-and-checks.md §8</a>).
-What is open is the safety net rather than the rule: an event whose two writes were not one
-transaction has no organizer who can read its answers, and "these two rows exist together" is a
-report — <em>events with no answer-view grant</em> — that no layer of this project can express as a
-constraint (<a href="../../data-model/00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>).</p>
+<strong>All twelve are written without <code>MEMBERS</code>, and must not be "corrected"</strong> — an organizer appointed for one
+weekend is not required to hold a current membership, and a <code>MEMBERS</code> on those rows would take an
+organizer's read of their own event's answers away the night their fee lapsed
+(<a href="../../decisions/round-05/#d-062--organizers-are-appointed-on-the-event-not-granted">D-062</a>).
+What is open is the safety net rather than the rule: an event whose twelve writes were not one transaction
+has no organizer who can read its answers, and "these rows exist together" is a report — <em>events with no
+answer-view grant</em> — that no layer of this project can express as a
+constraint (<a href="../../data-model/00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>).
+<strong>That failure now has an author</strong>, which is what the check is for: it reads as a bug report about one
+create, not as a missing migration.</p>
 <p><strong>Whoever runs an event reads that event's answers with no additional gate.</strong> Holding an office grants
 nothing (§7), and leadership is not guardianship: guardianship authority belongs to the guardians (§9)
 and is not reachable by leading an event. <em>Why: D-061 names this a widening and records it as one — the
@@ -4201,12 +4247,13 @@ the rows a thief installed rather than the rows a person installed. Like check 1
 assertion this is <strong>an equality against named rows</strong>, and not <code>*.api_key</code> and not "any code about
 keys": an allow-list is where a wildcard comes back to life, which is exactly why the refused set is
 spelled out code by code.</p>
-<p><strong>No seeded office holds any of the four</strong>, and none should: whoever holds <code>system.admin</code> already
+<p><strong>No office holds any of the four on day one, and none should</strong>: whoever holds <code>system.admin</code> already
 satisfies every one of these checks, because <code>system.admin</code> satisfies every code
 (<a href="../../decisions/round-16/#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row">D-124</a>).
 <strong>The capability to install a permanent outside authority is the capability to escalate</strong>, and the
 🔒 on the three writes is that sentence — it arrives through <code>access_grant.create</code> like every other
-code, so there is no second route to it and no seeded office that quietly holds it. The fourth thing
+code, so there is no second route to it and nothing holds it quietly: an office has one of these four
+because a named person wrote that row, or it has none. The fourth thing
 a new resource owes this catalog, a row in <code>grant_scope_type</code>, is <strong>declined for a key on purpose</strong>
 (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>):
 a key is not a grantable item, so none of these codes can be written <em>on</em> one and <strong>"rotate the

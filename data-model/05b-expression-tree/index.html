@@ -2229,6 +2229,8 @@
       
         
       
+        
+      
     
     
     
@@ -2812,6 +2814,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3214,9 +3244,10 @@ place every other set in this language is written; a set that is dated and share
 <code>person_group</code>. <strong>The heading is kept so that pages linking here land on the guardrail rather than on
 nothing.</strong> None of these are in the system: a per-person <code>valid_from</code> / <code>valid_to</code> half-open period with
 its no-overlap rule, an <code>added_by</code> naming who put one person there, an editor rendering an operand as
-<code>LIST (this audience)</code>, and a refusal to add a person to a seeded <code>is_system</code> audience — adding somebody
-to <code>everyone</code> is a category error, and with no list there is no row left to refuse, so that one retires
-instead of becoming a report. What an expression carries is one period — its grant's — and <code>created_by</code>
+<code>LIST (this audience)</code>, and the editor's old refusal to add a person to a shipped audience — adding somebody
+to <code>everyone</code> was a category error, and with no list there was no row to refuse before there were no
+shipped audiences to refuse it about, so that one retires instead of becoming a report
+(<a href="../../decisions/round-21/#d-153--two-named-audiences-go-and-nothing-replaces-them">D-153</a>). What an expression carries is one period — its grant's — and <code>created_by</code>
 on a node, which answers <em>who last saved this tree</em>.</p>
 <p><strong>Not a roster edit.</strong> The refusal to solve a grant's exception by editing a group roster stands,
 because the hazard is real: making three people members of <code>GROUP(kitchen)</code> in order to reach one grant
@@ -3546,9 +3577,9 @@ rather than special-cased inside the resolver.</p>
   does not splice one of its nodes into this tree. <strong>Two expressions never share a row</strong>, so editing a
   node inside <code>veterans</code> changes exactly the grants that name <code>veterans</code> and no others — which is the
   distinction that keeps this from being the node-sharing design this corpus refuses.</li>
-<li><strong><code>everyone</code> is genuinely everyone</strong>, including people with no account and no membership.
+<li><strong><code>EVERYONE</code> is genuinely everyone</strong>, including people with no account and no membership.
   It is the right target for a public event page and the wrong one for anything else. <strong>And it is
-  reachable by <code>+</code> from inside any expression</strong>: nothing stops an expression from unioning the seeded
+  reachable by <code>+</code> from inside any expression</strong>: nothing stops an expression from unioning the
   <code>EVERYONE</code> operand, and a writer with <code>audience.manage</code> can widen a grant to the whole world in one
   edit. That is not a hole in the model — holding <code>EVERYONE</code> directly is already legal and already
   alarmed (check 8, §11) — it is that a language with union in it makes the same reach available

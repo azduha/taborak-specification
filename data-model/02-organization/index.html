@@ -2216,6 +2216,8 @@
       
         
       
+        
+      
     
     
     
@@ -2786,6 +2788,34 @@
     
   
     Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
   
 
     
@@ -3497,13 +3527,19 @@ seeded group would be an invented one, which is the exact error D-054 recorded a
 <em>a wrong vocabulary in seed data is harder to dislodge than an absent one</em>. Groups are <strong>runtime data</strong>,
 exactly as <code>role</code> is (<a href="../../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>):
 the organization creates them, names them in its own words, and ends them.</p>
-<p><strong>The one set people expect to find here is a role, and it is not on this page.</strong> <code>counselors</code> ships as a
-<strong>role</strong> with <code>is_system</code> so an editor refuses to delete it
-(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>):
-a permanent, organization-wide population is the opposite of what a group is. The seeded grant
-<code>event.answer.view</code> on an event to <code>ORGANIZERS</code> is likewise not here (§3 explains why a group is an item;
+<p><strong>The one set people expect to find here is a role, and it is not on this page.</strong> The office this design
+keeps using as its example, <code>counselors</code>, belongs in the <strong>role</strong> table and not this one: a permanent,
+organization-wide population is the opposite of what a group is
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
+That was a decision about which table, never about who writes the row — <strong>no role ships</strong>, so this one is
+written by the organization like every other
+(<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>,
+<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>).
+<strong>What an event's organizers may do is not here either, and it is not a shipped row</strong>: the act that creates
+the event writes one item-scope <code>allow</code> per event code aimed at <code>ORGANIZERS</code>, twelve beside every event
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>;
 <a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>
-owns that row).</p>
+owns the sets they are aimed at, and §3 explains why a group is an item).</p>
 <p><strong>Nothing about the unit is seeded on this page.</strong> The unit arrives as a code in <code>grant_scope_type</code>, a
 lookup row in the authorization module, so there is no root row to create and no type to give it. Nothing is
 seeded that could contradict the runtime behaviour, which is the property D-054 was protecting above.</p>

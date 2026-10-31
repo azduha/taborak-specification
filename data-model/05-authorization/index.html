@@ -2374,6 +2374,8 @@
       
         
       
+        
+      
     
     
     
@@ -2957,6 +2959,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3326,7 +3356,7 @@ pages cite them by number and their anchors are built from them: <a href="./">05
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>selector_type ──────────── the language: every operand that   'ROLE', 'MEMBERS', 'PLACED',
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                          may appear in an expression.          'AUDIENCE'
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                          Seeded, is_system, read-only.
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                          Shipped, written only by migrations.
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurers)
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                          by code from another audience.
@@ -3478,11 +3508,6 @@ why auditing an integration means reading one list rather than reconstructing on
 <td>Human label for the permission editor.</td>
 </tr>
 <tr>
-<td><code>is_system</code></td>
-<td>boolean</td>
-<td>Default false. True: seeded by the platform, cannot be deleted or have its <code>code</code> changed.</td>
-</tr>
-<tr>
 <td><code>is_assignable</code></td>
 <td>boolean</td>
 <td>Default true. False: a permission <strong>no grant may name directly</strong> — a deprecated code kept only so historical audit rows still resolve to something readable.</td>
@@ -3497,6 +3522,20 @@ why auditing an integration means reading one list rather than reconstructing on
 <p><strong>The one question this table does not answer is "may this code be granted on an event at all?"</strong> —
 that is <code>applies_to</code>, and it is answered on the save rather than in the resolver. Nothing else in the
 row constrains where a grant may sit.</p>
+<p><strong>No column marks these rows as the platform's, because every row of this table is the platform's.</strong> There is
+no <code>permission.create</code> and no <code>permission.delete</code> in the catalog: <code>permission.view</code> reads the register and
+<code>permission.edit</code> 🔒🔒 reaches the labels, which is all of it that a screen may touch, while a new code is a
+migration that also adds a resolver arm. Each half of what a protection flag used to promise is already
+carried somewhere else — <strong>no row may be deleted</strong>, because no code authorizes deleting one; <strong>the <code>code</code>
+never changes</strong>, because every grant row names a code by value and
+<a href="../00a-invariant-register/#4-a-value-that-may-never-change-once-set">shape 4</a> says what that means; and the
+<code>display_name</code> is the one field the flag never protected either
+(<a href="../../decisions/round-20/#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last">D-142</a>
+found the check that watches it drift). <strong>A flag that is true on every row of a table nothing may add to is
+not a flag; it is a sentence about the table, and the sentence is this paragraph</strong>
+(<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>
+deletes the four columns of this kind the design carried — on <code>permission</code>, <code>selector_type</code>, <code>role</code> and
+<code>audience</code> — because one argument covered all four).</p>
 <p><strong>Rules</strong></p>
 <ul>
 <li><code>code</code> is well-formed: two or more dot-separated segments of lowercase letters and
@@ -3669,11 +3708,6 @@ tenant and no routing left.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>is_system</code></td>
-<td>boolean</td>
-<td>Default false. True: seeded — cannot be <strong>deleted</strong>, and its <code>code</code> cannot be changed. False: an ordinary office the organization created and may delete.</td>
-</tr>
-<tr>
 <td><code>sort_order</code></td>
 <td>integer, required</td>
 <td>Default 0.</td>
@@ -3727,13 +3761,19 @@ tenant and no routing left.</p>
 </tr>
 </tbody>
 </table>
-<p><strong><code>role</code> is runtime data, not a fixed vocabulary.</strong> The organization creates offices, names them,
-fills them, and deletes the ones nobody ever held. Two rows ship with the platform, and the list is
-deliberately short: <code>counselors</code>, marked <code>is_system</code>
-(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>;
-a permanent, organization-wide population is the opposite of D-098's definition of a group, and the
-table is what decides the sensitivity that protects the set). §12 states what is seeded and what is
-starter material.</p>
+<p><strong><code>role</code> is runtime data, not a fixed vocabulary, and it has no shipped rows at all.</strong> The organization
+creates offices, names them, fills them, and deletes the ones nobody ever held; <strong>the platform ships none</strong>,
+which is <a href="../../decisions/round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
+applied by <a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>.
+<strong>The name this document still uses everywhere is <code>counselors</code></strong>, and it is a worked example of an office
+somebody wrote — nothing more. D-100's reason for putting a permanent, organization-wide population in this
+table rather than in <code>person_group</code> stands exactly as it was, because it is an argument about which table a
+set may live in: such a population is the opposite of D-098's definition of a group, and the table decides
+the sensitivity that protects the set
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>).
+<a href="../05d-invariants-and-seed/#12-what-day-one-looks-like">§12 of 05d</a> states what ships and what day one looks
+like.</p>
 <blockquote>
 <p><strong><code>role</code> has no <code>valid_from</code> / <code>valid_to</code>, deliberately</strong> (<a href="../../decisions/round-04/#d-053--a-role-is-valid-always-only-its-assignment-is-temporal">D-053</a>).
 A role is a <strong>definition</strong> — a named office — and a definition does not come into and out of
@@ -3762,16 +3802,24 @@ else is</strong>
   That is the invisibility §8 records for composition, arriving through the office door instead of
   the expression door — which is why <code>role.*</code> is the most sensitive code family in the catalog (🔒🔒)
   and why §11's report of <code>ROLE(...)</code> grants written without <code>MEMBERS</code> is worth reading.</li>
-<li><strong>A role that has ever been held cannot be deleted</strong>, for three reasons: <code>role_holder.role_id</code> is
+<li><strong>A role that has ever been held cannot be deleted</strong>, for two reasons: <code>role_holder.role_id</code> is
   a foreign key and D-003 forbids taking the history with the row; <em>"what authority did this person
-  have in 2019?"</em> must survive the office being abolished, which is exactly when someone asks; and an
-  <code>is_system</code> role must survive regardless, because deleting a row some grants name would silently
-  widen or narrow whatever they aim at. The guard runs row by row, in this order, and both refusals
-  are absolute:</li>
+  have in 2019?"</em> must survive the office being abolished, which is exactly when someone asks. The
+  guard runs row by row and the refusal is absolute:</li>
 <li>any <code>role_holder</code> row references the role — refuse, with a message in terms the operator can act
-     on: this office has holders, end the holder rows instead, so the history survives;</li>
-<li>otherwise, <code>is_system</code> — refuse outright.
-  A role that clears both was created by mistake and never held, and deleting it is legitimate.</li>
+     on: this office has holders, end the holder rows instead, so the history survives.
+  A role that clears it was created by mistake and never held, and deleting it is legitimate.
+  <strong>What used to stand here was a second refusal, for rows the platform had shipped</strong> — an <code>is_system</code>
+  role was refused outright, "because deleting a row some grants name would silently widen or narrow
+  whatever they aim at". The reason is true and the refusal covered one row, which is the wrong shape
+  for a true reason (<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).
+  What reaches every office is the report instead: an office that is gone leaves every
+  <code>ROLE(x)</code> leaf that named it a <strong>failed operand</strong>, and the two reports of
+  <a href="../05d-invariants-and-seed/#11-invariants-to-verify">§11 check 7</a> — the narrowing and the widening,
+  in that order, because a wide failure is only better than a narrow one when somebody is reading —
+  are the control that covers an office somebody deleted and an office that was never written in the
+  first place
+  (<a href="../../decisions/round-11-12/#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal">D-106</a>).</li>
 <li><strong>There is no permission inheritance between roles.</strong> A <code>unit_leader</code> does not get the
   <code>assistant_leader</code> permissions by being implicitly senior: inheritance chains produce
   authorization answers nobody can predict by reading the configuration, which is what makes such
@@ -3946,8 +3994,11 @@ authority are:</p>
 <p><strong>The mirror-image failure is the more likely one.</strong> A holder row that outlives the person gives that
 person authority they should not have; a grant written as <code>ROLE(x)</code> with no <code>MEMBERS</code> authorizes a
 lapsed member silently, forever, and looks fail-closed so nobody notices. Integrity check 6 (§11) is
-the standing report of that shape, and the seeded grants carry <code>MEMBERS</code> so the path of least
-repetition is the safe path (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</p>
+the standing report of that shape, and it is now the <em>only</em> one of its kind: with no seeded grants there is
+no default that carries <code>MEMBERS</code>, so the safe path is no longer the path of least repetition — it is the
+one somebody writes on purpose, and the report is what notices when they forget
+(<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).</p>
 <hr />
 <h2 id="5-scope_exposure--deleted-by-d-097">5. <code>scope_exposure</code> — deleted by D-097<a class="headerlink" href="#5-scope_exposure--deleted-by-d-097" title="Permanent link">&para;</a></h2>
 <p><strong>There is no such table, and this section exists because four pages link to its number.</strong>

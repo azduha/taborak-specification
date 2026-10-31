@@ -2252,6 +2252,8 @@
       
         
       
+        
+      
     
     
     
@@ -2835,6 +2837,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3177,8 +3207,8 @@ operand is perfectly storable and simply cannot be aimed at a unit-scope grant. 
 lands on the grant, where D-102 puts it, and the audience browser should show which scopes an
 expression is usable at rather than letting the save discover it
 (<a href="../../domain/07-events/#7-the-people-connected-to-an-event">../domain/07-events.md §7</a>).</p>
-<p><strong>The seeded grant: <code>event.answer.view</code> on an event to <code>ORGANIZERS</code>.</strong> "Answers are read by
-that event's organizers"
+<p><strong>The twelve grants an event arrives with, one of which is <code>event.answer.view</code> on <code>ORGANIZERS</code>.</strong>
+"Answers are read by that event's organizers"
 (<a href="../../decisions/round-05/#d-061--event-answers-are-read-by-that-events-organizers">D-061</a>)
 is a row in <code>access_grant</code>, not a clause in the resolver: authority over an event lives in
 grant rows, and so does this. It is aimed at a <strong>set</strong>, so it does not contradict
@@ -3186,13 +3216,27 @@ grant rows, and so does this. It is aimed at a <strong>set</strong>, so it does 
 and does not make <code>event_organizer</code> a grant table: adding a cook to the roster changes a set,
 and the grant keeps pointing at the set. The registered spelling is the catalog's
 <code>event.answer.view</code>, singular <em>answer</em>; <code>event.answers.view</code> is that one code misspelled, not a
-second code.</p>
-<p><em>Assumption:</em> a grant's scope is the unit or exactly one item, and a bound operand is legal
-only on an item-scope grant, so the seeded grant <strong>cannot be one row for every event</strong>. This
-module reads it as a <strong>seed template instantiated by the event-creation path</strong>, which writes
-one item-scope grant on each new event; the one-off import owes the same row for every event
-it writes, or an imported camp's organizers cannot read that camp's answers. D-102 does not
-say who writes the row. Integrity check 1 in §10 is the net.</p>
+second code. <strong>It is not alone and it is not shipped:</strong> the act that creates an event writes
+<strong>one item-scope allow per event code</strong> beside the event row, in the same transaction, each aimed at an
+audience whose expression is the bare operand <code>ORGANIZERS</code> — every <code>event.*</code> code whose <code>applies_to</code>
+admits an event, which is all thirteen of them but <code>event.create</code>, held at the unit because nothing owns an
+event. <strong>Twelve rows, derived rather than curated</strong>, so the list cannot drift from the catalog the way a
+hand-written one does
+(<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</p>
+<p><strong>Who writes them, which is the question D-102 left open and this section used to hedge.</strong> The person
+creating the event, through the create; the import, once per event it writes, or an imported camp's
+organizers cannot read that camp's answers. <strong>Nothing ships either row</strong>, so the module no longer reads a
+"seed template" — the row-count question that made a template necessary was that a bound operand is legal
+only on an item-scope grant, so <strong>one row could never cover every event</strong>, and per-event rows are what the
+check has always counted. That is also the correction this round owed
+<a href="../05d-invariants-and-seed/#12-what-day-one-looks-like">05d §12</a>, which claimed the opposite in as many
+words. <strong>What the bundle contains besides the answer row is the part to read twice:</strong> <code>event.grant_access</code> is
+in it, so whoever runs an event may grant access to <em>that</em> event without holding <code>access_grant.create</code> at
+the unit, and <code>event.organizer.manage</code> is in it, so an organizer may add an organizer and widen all eleven
+others. The ceiling on both is the scope and <code>applies_to</code> — <code>system.admin</code> is unit-only and cannot be
+written onto an item at all, which is the guarantee D-099 left behind when it deleted the levels.
+<strong>Integrity check 2 in §10 is the net for a missing bundle, and check 1 for a grant saved at a scope that
+cannot bind it.</strong></p>
 <p><strong>The preview requirement this creates.</strong> "Who does this grant reach?" is not a property of a
 grant row once an operand binds: <code>PLACED</code> is different people on different events. The
 editor must therefore compute the expansion <strong>for an item</strong> and name the item it computed
@@ -3337,12 +3381,16 @@ identifiable and the mark stays (<a href="../00-conventions/#8-personal-data-and
    result is evidence about the code, not the data: somebody added a path that saves a grant
    without going through the check, and a grant like this resolves to the empty set and
    silently authorizes nobody.</li>
-<li><strong>An event whose organizers hold no seeded answer-view grant.</strong> Counts non-cancelled events
+<li><strong>An event whose organizers hold no answer-view grant.</strong> Counts non-cancelled events
    that have at least one <code>event_organizer</code> row and no live allow of <code>event.answer.view</code> on
-   that event aimed at <code>ORGANIZERS</code>. The seeded grant is written by the code that creates the
+   that event aimed at <code>ORGANIZERS</code>. The twelve grants are written by the act that creates the
    event (§8), so the failure shape is the one check 10 knows well: an event imported or
    created by a path that forgot, where the organizers cannot read the answers of the camp
-   they are running, and every row they left behind is individually correct.</li>
+   they are running, and every row they left behind is individually correct. <strong>Since
+   <a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>
+   this report has an author to name:</strong> an event arrived without its bundle through some one create or
+   some one batch, which makes it a bug report about a path rather than about a missing migration. The
+   count is the same either way, and so is the camp whose organizers cannot read anything.</li>
 <li><strong>An event with no organizer.</strong> Counts events that are neither cancelled nor already begun
    and have no <code>event_organizer</code> row at all — an event nobody is running: either abandoned
    mid-setup, or a data-entry error. Not a rule on write, because an event is legitimately
@@ -3416,12 +3464,20 @@ is wrong, and the fix is to change the number rather than to start refusing peop
   protection stated in the only vocabulary D-099 leaves
   (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>;
   §4, EV-5).</li>
-<li><strong>What else should be seeded to <code>ORGANIZERS</code>.</strong> D-102 seeds <code>event.answer.view</code> and nothing
-  else, so an organizer who holds no unit-scope grant can read the answers of a camp they are
-  running and can do nothing else at it. Whether that is the intended shape or an omission is
-  not settled, and this module has not seeded more on its own initiative (§3, §8).</li>
-<li><strong>Who writes the per-event seeded grant.</strong> Read as a template the creation path and the
-  import both instantiate; D-102 does not say (§8, check 2).</li>
+<li><strong>What else an organizer should hold — settled: everything the event has, on that event.</strong> The question
+  was asked because D-102 shipped <code>event.answer.view</code> alone, leaving an organizer who held no unit-scope
+  grant able to read the answers of a camp and able to do nothing else at it, which read as an omission and
+  was not resolved by this module adding rows on its own initiative. <strong>It is resolved by not seeding
+  anything:</strong> the create writes one allow per event code whose <code>applies_to</code> admits an event, so the answer to
+  "what may an organizer do?" is twelve rows anyone can list, and the answer to "what may an organizer do
+  <em>elsewhere</em>?" is nothing, which is the shape D-100 says an office has anyway (§3, §8,
+  <a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</li>
+<li><strong>Who writes the per-event grant — settled: the create, and the import.</strong> This used to be answered as "a
+  template the creation path and the import both instantiate", with the observation that D-102 does not say
+  (§8, check 2). <strong>There is no template, because there is no seed</strong> — the rows are ordinary grants written in
+  the event's own transaction by whoever holds <code>event.create</code>, and the import owes twelve of them for every
+  event row it writes
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</li>
 <li><strong>Retention of <code>event_answer</code> — settled: nothing expires, and erasure empties the value.</strong> Neither a
   registration nor an answer ends with its event, and neither ends on a clock; what reaches an answer
   is erasure, which sets <code>value</code> to empty and leaves the row (§7,
@@ -3449,8 +3505,8 @@ is wrong, and the fix is to change the number rather than to start refusing peop
   <a href="../../open-questions/#ev-4">EV-4</a>).</li>
 <li><strong>Whether organizers should be <code>access_grant</code>s after all.</strong> The mechanism is settled —
   a set named by a selector, aimed at by grants — and D-062's answer stands: the roster is not
-  itself a grant. What remains open is whether more codes should be seeded to <code>ORGANIZERS</code>,
-  which is the question above
+  itself a grant. What used to hang off that question — whether more codes should reach <code>ORGANIZERS</code> — is
+  settled beside it, by the create writing the event's whole code family onto the event
   (<a href="../../domain/07-events/#5-organizers-are-appointed-not-granted">../domain/07-events.md §5</a>).</li>
 <li><strong>Waitlist notification.</strong> Promotion is deliberate; telling the promoted person is not
   designed. It belongs to the communication module.</li>
