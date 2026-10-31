@@ -5,7 +5,8 @@
 Domain rationale: [../domain/07-events.md](../domain/07-events.md).
 
 **Nothing here is provisional.** Every hook this module uses — `access_grant` scoped to an
-item, `grant_scope_type`, audiences and their selectors — is in place and seeded. The tables
+item, `grant_scope_type`, audiences and their selectors — is in place, and the two vocabularies
+among them ship with the platform. The tables
 below fill those hooks; they do not extend the model.
 
 **An event has no owner.** No column of `event` names a unit or a group, and there is no
@@ -112,7 +113,7 @@ whole set), no check in §10 that reads one, no cascade running through one, and
 **Import consequence.** The one-off import owes `event` rows and `event_registration` rows and
 it owes **no owner column** — one less thing to invent a value for
 ([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
-It does owe the per-event seeded grant in §8.
+It does owe the twelve per-event grants of §8, one bundle for every event row it writes.
 
 ### No `status` column, and why that is not an omission
 
@@ -203,7 +204,7 @@ can name the people running an event without any of them being granted anything 
 ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
 **An operand is a set, not a grant** — the same sentence
 [data-model/05 §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) repeats
-for named sets generally. See §8 for the seeded grant that aims at this table.
+for named sets generally. See §8 for the twelve grants that aim at this table.
 
 ---
 
@@ -580,9 +581,10 @@ the column is per question, per event, and `NULL` by default.
 > such people is decided by whoever creates the event
 > ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers),
 > [../domain/07a-capacity-presence-and-forms.md §12](../domain/07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
-> "Read by whoever runs that event" is a seeded grant — `event.answer.view` on the event, aimed
-> at `ORGANIZERS` (§8) — which makes this a checkable warning rather than a nicety: the number of
-> people who can read an event's answers is a grant plus the roster in §3, and both are readable.
+> "Read by whoever runs that event" is a grant the create writes — `event.answer.view` on the event,
+> aimed at `ORGANIZERS`, one of the twelve of §8 — which makes this a checkable warning rather than a
+> nicety: the number of people who can read an event's answers is a grant plus the roster in §3, and both
+> are readable.
 
 **The form is not the ceiling on what an organizer may know.** There is no medical record: the
 facts that would have been in one are attributes on the person, and **a person holding

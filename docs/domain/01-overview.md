@@ -181,7 +181,11 @@ This case is not special:
 - No row of its own for "is a counselor". The `role_holder` row is all of it.
 
 There is no `counselor` membership type, and being a counselor is an **office held for a period** —
-not a kind of membership, and not a grade of person. This person's membership is identical to that of
+not a kind of membership, and not a grade of person. Nor is it a shipped office: **no role ships**, so the
+`counselors` role of this example is one the organization wrote, and day one is one account holding
+`system.admin`
+([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped),
+[D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office)). This person's membership is identical to that of
 the child they lead, which is exactly the point.
 
 Their grants reach **the unit's members**, which is the whole organization: there is no smaller body

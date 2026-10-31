@@ -259,7 +259,7 @@ holders** — the leaders, the finance people, IT — where a group is company. 
 difference decides **who may edit the membership**: `role.assign` / `role.unassign` are
 🔒🔒, the most sensitive family in the catalog, while writing a group's roster is
 `person_group.member.manage` at ⚠. `role` keeps `code`, `name`, `description`,
-`is_system`, `sort_order`; **`role_holder`**(role, person, `valid_from`, `valid_to`,
+`sort_order`; **`role_holder`**(role, person, `valid_from`, `valid_to`,
 `granted_by`, `note`) is the holder row and names **exactly one person** — one grantee
 per row, always, because [F-12](open-questions.md#f-12)
 is closed and the answer is no. **A role confers nothing**: the codes an office carries
@@ -417,9 +417,11 @@ in on a given evening.
 **Organizer** — Someone **running** an event. A roster entry on the event (`event_organizer`)
 with an optional label (`'lead'`, `'cook'`, `'driver'`) and an order — **not** an
 `access_grant`, and analogous only to **being a member of a group**. Authority to *act* on
-the event arrives from **one seeded grant template** — `event.answer.view`, scoped to an
-event, aimed at the bound operand `ORGANIZERS` — instantiated per event by whoever creates
-it. An event created without that grant has organizers who can do nothing, which is why the
+the event arrives from **the grants written by the act that creates the event**: one
+item-scope `allow` per code whose `applies_to` admits an event — **twelve beside every
+event**, `event.answer.view` among them — each aimed at the bound operand `ORGANIZERS`
+([D-151](decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+An event created without them has organizers who can do nothing, which is why the
 *events with no answer-view grant* report exists
 ([D-062](decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)).
 
@@ -458,7 +460,7 @@ to. From widest to narrowest:
 | `PLACED` | those attending **who were not waitlisted** — the set the capacity actually let through |
 | `CONFIRMED` | `PLACED` **and** `is_confirmed` — somebody has since looked at each of them |
 | `ON_WAITLIST` | written down, ordered, **not yet placed** — waiting, not attending |
-| `ORGANIZERS` | the event's organizer roster — the reason a per-event answer-view grant is seeded |
+| `ORGANIZERS` | the event's organizer roster — the set an event's own twelve grants are aimed at |
 
 They are **not** one set with flags: `ATTENDED` is wider than `PLACED` precisely because a
 full event says yes to more people than it can seat, and `CONFIRMED` is narrower than
@@ -572,7 +574,7 @@ The words you and the organization will naturally use, and what they map to:
 | "lapsed but can still renew" | `valid_to` passed, within the renewal window |
 | "registered but not a member" | person with an `account` and no open `membership` — they may sign in and see their own data, but hold no member permissions |
 | "they're allowed to attend" | a live **allow** grant naming `event.register_self`, aimed at them or at a set they belong to (a grant aimed at an **integration** is the third kind of grantee and answers for that integration alone, never for a person attending), **and no live deny anywhere** naming them — not a level, and nothing inherited from a unit that owns the event |
-| "open to everyone" | a grant naming the seeded audience `everyone`, whose expression is the operand `EVERYONE` — or `all_members`, whose expression is `MEMBERS`. A bare name in an expression is **not** a reference to either: audiences are named only as `AUDIENCE(code)` |
+| "open to everyone" | a grant whose expression is the operand `EVERYONE` — or `MEMBERS`, if membership is wanted. There is **no shipped audience behind either word** ([D-153](decisions/round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them)): an audience is a name somebody writes when they have a reason to reuse one, and a bare name in an expression is **not** a reference to an audience at all — audiences are named only as `AUDIENCE(code)` |
 | "the treasurer" | `role_holder` of `treasurer`, held **for the unit** — there is no narrower place to hold it, and holding it answers no permission question on its own |
 | "put me in the Thursday group" | a `person_group_member` row **somebody else writes** under `person_group.member.manage`, which has **no self-scoped variant** — there is no self-service path and no permission with which to build one |
 | "the kitchen crew" | a **`person_group`** if the answer is a list of people somebody keeps up by hand, dated and quotable years later; an **`audience`** if the answer is a sentence recomputed each time it is asked. *"Whom did this grant reach on 1 June 2024?"* is answerable for the first and not the second |

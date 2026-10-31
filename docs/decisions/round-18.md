@@ -311,10 +311,28 @@ where `nothing` is explained rather than apologised for.
 
 ## D-132 — Day one is one account holding `system.admin`, and every role after it is written by the organization
 
-**Status:** decided (from your answer) — **not yet applied.** The seed is still described in
-[05d §12](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with), and the sweep
-that removes it is round 19. It is recorded here because it was ruled here, and because a ruling that
-lives only in a conversation is a ruling that gets re-litigated.
+**Status:** decided (from your answer), **applied two rounds later by
+[round 21](round-21.md)** — [D-150](round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)
+for day one, [D-151](round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)
+for the event's own grants, [D-152](round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)
+for the flag columns, [D-153](round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them) and
+[D-154](round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office) for the two named audiences
+and `counselors`. The seed this entry left standing is gone from
+[05d §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like), which is now titled for what
+it actually lists. It is recorded here because it was ruled here, and because a ruling that lives only in a
+conversation is a ruling that gets re-litigated.
+
+**What round 21 corrected in this entry, and added to it.** Three things, and they are listed rather than
+quietly folded in because this page is the record of the ruling. **The numbering moved:** the sweep this
+entry calls round 19 is round 21, because round 19 was spent on other questions and round 20 on thirteen of
+them. **Part 3's list of ten is not ten ungranted codes** — four of them are `event.*` codes, and since
+D-151 every event's organizers hold them *on that event* from the moment it is created, so the correct
+reading is "ungranted at the unit, held on every item by the people who run it". **And the consequence this
+entry says it has to say out loud is wrong in its arithmetic:** the organization does not write that answer
+grant "once" — D-132 said once where the design needed once **per event**, because a bound operand is legal
+only on an item-scope grant. **What it did not list and round 21 deleted anyway:** `permission.is_system`
+and `selector_type.is_system`, on the argument that a column whose content is "a migration wrote this row"
+is not a protection of anything (D-152), and `role.delete`'s refusal that read that column.
 **Deletes (in round 19):** the seeded roles, the two seeded audiences, the seeded `event.answer.view`
 grant, the worked-example offices that 05d §12 presents as seed, `role.is_system` and `audience.is_system`.
 **Confirms:** `permission`, `grant_scope_type` and `selector_type` **do** ship as seed data.

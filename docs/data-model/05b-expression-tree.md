@@ -162,9 +162,10 @@ place every other set in this language is written; a set that is dated and share
 `person_group`. **The heading is kept so that pages linking here land on the guardrail rather than on
 nothing.** None of these are in the system: a per-person `valid_from` / `valid_to` half-open period with
 its no-overlap rule, an `added_by` naming who put one person there, an editor rendering an operand as
-`LIST (this audience)`, and a refusal to add a person to a seeded `is_system` audience — adding somebody
-to `everyone` is a category error, and with no list there is no row left to refuse, so that one retires
-instead of becoming a report. What an expression carries is one period — its grant's — and `created_by`
+`LIST (this audience)`, and the editor's old refusal to add a person to a shipped audience — adding somebody
+to `everyone` was a category error, and with no list there was no row to refuse before there were no
+shipped audiences to refuse it about, so that one retires instead of becoming a report
+([D-153](../decisions/round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them)). What an expression carries is one period — its grant's — and `created_by`
 on a node, which answers *who last saved this tree*.
 
 **Not a roster edit.** The refusal to solve a grant's exception by editing a group roster stands,
@@ -457,9 +458,9 @@ rather than special-cased inside the resolver.
   does not splice one of its nodes into this tree. **Two expressions never share a row**, so editing a
   node inside `veterans` changes exactly the grants that name `veterans` and no others — which is the
   distinction that keeps this from being the node-sharing design this corpus refuses.
-- **`everyone` is genuinely everyone**, including people with no account and no membership.
+- **`EVERYONE` is genuinely everyone**, including people with no account and no membership.
   It is the right target for a public event page and the wrong one for anything else. **And it is
-  reachable by `+` from inside any expression**: nothing stops an expression from unioning the seeded
+  reachable by `+` from inside any expression**: nothing stops an expression from unioning the
   `EVERYONE` operand, and a writer with `audience.manage` can widen a grant to the whole world in one
   edit. That is not a hole in the model — holding `EVERYONE` directly is already legal and already
   alarmed (check 8, §11) — it is that a language with union in it makes the same reach available

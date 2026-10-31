@@ -135,14 +135,14 @@ writable: **anyone who may issue a key may issue any key.** That is accepted at 
 recorded as an unpaid debt rather than as a design feature — if it is ever reversed, the fourth owed thing
 is the thing to add.
 
-**Who may hold these four.** No seeded office carries them, and none should: whoever holds
+**Who may hold these four.** No office arrives holding them, and none should: whoever holds
 `system.admin` already satisfies these checks, because `system.admin` satisfies every code
 ([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row))
 — which is exactly why the three writes among them carry 🔒. `api_key.view` carries no mark, on the
 precedent of `role.view` and `permission.view`
 ([the catalog's §8b](../appendix/permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody)). The
 capability to install a permanent outside authority is a capability to escalate, and it arrives through
-the one grant channel like every other code. **There is no second route to it, and no seeded office that
+the one grant channel like every other code. **There is no second route to it, and no shipped row that
 quietly has it.**
 
 ---

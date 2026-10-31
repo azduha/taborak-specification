@@ -383,13 +383,19 @@ seeded group would be an invented one, which is the exact error D-054 recorded a
 exactly as `role` is ([D-052](../decisions/round-04.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification)):
 the organization creates them, names them in its own words, and ends them.
 
-**The one set people expect to find here is a role, and it is not on this page.** `counselors` ships as a
-**role** with `is_system` so an editor refuses to delete it
-([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)):
-a permanent, organization-wide population is the opposite of what a group is. The seeded grant
-`event.answer.view` on an event to `ORGANIZERS` is likewise not here (§3 explains why a group is an item;
+**The one set people expect to find here is a role, and it is not on this page.** The office this design
+keeps using as its example, `counselors`, belongs in the **role** table and not this one: a permanent,
+organization-wide population is the opposite of what a group is
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+That was a decision about which table, never about who writes the row — **no role ships**, so this one is
+written by the organization like every other
+([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped),
+[D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office)).
+**What an event's organizers may do is not here either, and it is not a shipped row**: the act that creates
+the event writes one item-scope `allow` per event code aimed at `ORGANIZERS`, twelve beside every event
+([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it);
 [D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
-owns that row).
+owns the sets they are aimed at, and §3 explains why a group is an item).
 
 **Nothing about the unit is seeded on this page.** The unit arrives as a code in `grant_scope_type`, a
 lookup row in the authorization module, so there is no root row to create and no type to give it. Nothing is

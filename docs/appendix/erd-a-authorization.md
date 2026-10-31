@@ -44,9 +44,9 @@ The authorization model as one diagram, the tables behind it, and the expression
    │         role         │  an office, and │       audience        │  an EXPRESSION over
    │ code · name ·        │  it confers     │ name · code? ·        │  named sets, stored as a
    │ description ·        │  NOTHING        │ valid_from/[to] [T]   │  tree (D-101). Nothing here
-   │ is_system ·          │  by itself:     │ one shape: an         │  is a roster: an operand
-   │ sort_order           │  the codes an   │  expression over named│  names a set, and the set
-   │ NO period (D-053)    │  office carries │  sets, with no depth  │  is computed at the check
+   │ sort_order ·         │  by itself:     │ one shape: an         │  is a roster: an operand
+   │ valid always         │  the codes an   │  expression over named│  names a set, and the set
+   │ (D-053): NO period   │  office carries │  sets, with no depth  │  is computed at the check
    │ NO scope (D-100): an │  are the live   │  limit (D-101, D-105).│  it is asked about.
    │ office is held at the│  grants whose   └───────────┬───────────┘
    │ unit, never per item │  audience names ├───────────┴──────────────────────────┐
@@ -67,7 +67,7 @@ The authorization model as one diagram, the tables behind it, and the expression
                                   │ code (a RESERVED word) ·    │  organization-   │
                                   │ takes_argument ·            │  read-only: the  │
                                   │ binds_to_item ·             │  language is data│
-                                  │ argument_type · is_system   │  (D-101), not    │
+                                  │ argument_type               │  (D-101), not    │
                                   └─────────────────────────────┘  extensible at   │
                                                                    runtime         │
                                                                                    │
@@ -75,9 +75,12 @@ The authorization model as one diagram, the tables behind it, and the expression
    `ATTENDED`, `ON_WAITLIST` — means "relative to the item being                   │
    checked". Legal only on an item-scope grant whose type matches `argument_type`  │
    (`PLACED` on a group grant is refused, `ORGANIZERS` on a unit grant is          │
-   refused), and the seeded `event.answer.view` → `ORGANIZERS` is therefore a      │
-   TEMPLATE instantiated beside each event row, not one row for every event        │
-   (D-102). `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:       │
+   refused). EVERY EVENT'S AUTHORITY is written by the act that CREATES THE        │
+   EVENT, in the same transaction as the event row (D-102, D-151):                 │
+   Twelve item-scope allows per event, each aimed at an audience whose             │
+   expression is the bare operand ORGANIZERS — so `event.answer.view` is           │
+   one of twelve, and never one row shared by every event.                         │
+   `OLDER(n)` and `YOUNGER(n)` bind to no item and point at no row:                │
    their argument is an integer — the registry's first non-reference — so          │
    `selector_arg_id` holds a number with nothing behind it: no edge to draw,       │
    nothing for a merge to repoint, nothing for a cascade to find, and the keyless  │
@@ -150,7 +153,8 @@ The authorization model as one diagram, the tables behind it, and the expression
   The failure mode is a grant written `ROLE(x)` with no `MEMBERS`, authorizing a lapsed member
   silently and forever, failing closed-looking so nobody notices — the control is the **Unusual
   section of the tab on the permissions page**, which lists exactly that shape and refuses nothing,
-  plus seeded grants that always carry `MEMBERS`
+  plus the writer's own habit that a grant template carries `MEMBERS` — **no grant arrives already
+  carrying it**, and the only grants this system writes by itself, the twelve beside an event, must not
   ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report),
   [F-13](../open-questions.md#f-13)). Ownership and guardianship are not gated and never were.
 - **The guardianship channel is entered by shape, not by permission name** ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name)):
@@ -208,10 +212,12 @@ The authorization model as one diagram, the tables behind it, and the expression
   [D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)'s "an
   `event_organizer` row grants nothing" is the whole story: the row appoints, the operand resolves.
   The consequence worth remembering: a bound operand is illegal at the unit, so
-  "every event's answers go to its organizers" is a **template** the event-creation path instantiates
-  beside the event row, one per event, in one transaction — and an event whose creation died between
-  the two rows has nobody who can read its answers, which is what the *events with no answer-view
-  grant* report is for.
+  "every event's answers go to its organizers" is **twelve item-scope allows** written beside the event
+  row by the act that creates the event, one set per event, in one transaction — and an event whose
+  creation died partway through has nobody who can read its answers, which is what the *events with no
+  answer-view grant* report is for. **That failure has an author**: one create, named in the trail,
+  rather than a configuration step nobody took
+  ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
 - `scope_id` is polymorphic (no FK) so a new grantable item type is a config row, not a
   migration. Accepted cost, with four mandatory mitigations — the same trade-off and the same four
   mitigations hold for the second reference-less key, `audience_operand.selector_arg_id`
@@ -233,14 +239,12 @@ erDiagram
         string applies_to
         string right_kind
         string namespace
-        boolean is_system
         boolean is_assignable
     }
     ROLE {
         integer id PK
         string code
         string name
-        boolean is_system
         integer sort_order
     }
     ROLE_HOLDER {
@@ -276,7 +280,6 @@ erDiagram
         integer id PK
         string code
         string name
-        boolean is_system
         date valid_from
         date valid_to
     }
@@ -386,7 +389,6 @@ erDiagram
         integer id PK
         string code
         string name
-        boolean is_system
         date valid_from
         date valid_to
     }
@@ -406,7 +408,6 @@ erDiagram
         boolean takes_argument
         boolean binds_to_item
         string argument_type
-        boolean is_system
     }
     ROLE {
         integer id PK
@@ -446,10 +447,10 @@ takes an argument, whether the **argument-less** form binds to the item being ch
 argument is — the parser reads its reserved words from that table, the editor builds its dropdown from
 it, and the save path checks arity against it
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)).
-It is seeded, every row `is_system`, and **organization-read-only**: "the language becomes data" has
-never meant the language is extensible at runtime, and a seeded code with no shipped evaluator arm is a
-deployment bug that surfaces as an empty set — which is why the registry holds no row waiting to be
-implemented.
+It is seeded and **organization-read-only** — the whole table is written only by migrations and no screen
+edits it: "the language becomes data" has never meant the language is extensible at runtime, and a seeded
+code with no shipped evaluator arm is a deployment bug that surfaces as an empty set — which is why the
+registry holds no row waiting to be implemented.
 
 **`argument_type` has six values and five of them are tables.** `OLDER` and `YOUNGER`
 ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded))

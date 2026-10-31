@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-149 of them and lists the reversals. Read the round you are curious about — each one says what was
+154 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -171,7 +171,7 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-129](round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) | Where the register and the page disagree, the page is wrong | decided (found while writing the register) | round 18 |
 | [D-130](round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | One register answers who enforces each invariant, and F-10 closes | decided | round 18 |
 | [D-131](round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) | Shape 4 is not empty, and a code that is referenced may not be renamed | decided (found by writing the register) | round 18 |
-| [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **decided in round 18, still unapplied; deferred twice and now round 21's** | round 18 |
+| [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **decided in round 18, deferred twice, and applied by round 21 as D-150 … D-154, which corrected two of its sentences** | round 18 |
 | [D-133](round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) | Two trail rules stay unchecked, and say so out loud | decided (from your answer) | round 19 |
 | [D-134](round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never) | Four more polymorphic columns get an orphan scan; the audit row never gets one | decided (from your answer) | round 19 |
 | [D-135](round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each) | The two modules with no check list get one each | decided (from your answer) | round 19 |
@@ -189,6 +189,11 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-147](round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own) | Presence stays on the registration: no clock of its own, no permission of its own | decided (from your answer) | round 20 |
 | [D-148](round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are) | There is no `WHITELISTED`, and the refusal is written where the tiers are | decided (from your answer) | round 20 |
 | [D-149](round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated) | Words are stored in one language, and a label is not translated | decided (from your answer) | round 20 |
+| [D-150](round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped) | Day one is one account holding `system.admin`, and nothing else is shipped | decided (from your answer) — **the seed's replacement: one row in `access_grant`, and no bootstrap mechanism** | round 21 |
+| [D-151](round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it) | Creating an event writes the event's authority, and its organizers may grant on it | decided (from your answer) — **corrects D-132's "once", and gives `event.grant_access` the subject it lacked** | round 21 |
+| [D-152](round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows) | Zero `is_system` columns: what protects a vocabulary is its table, not a flag on its rows | decided (from your answer) — **deletes the two columns D-132 left standing, and `role.delete`'s second refusal** | round 21 |
+| [D-153](round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them) | Two named audiences go, and nothing replaces them | decided (as a consequence of D-150) | round 21 |
+| [D-154](round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office) | `counselors` is an example now, not a shipped office | decided (found by writing this round) — **D-100's argument about which table a permanent population lives in is untouched** | round 21 |
 
 ## Reversed decisions
 

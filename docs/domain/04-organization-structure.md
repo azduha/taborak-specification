@@ -255,7 +255,9 @@ system is typed by a person**, which is also the only way one could be true.
 
 **An appointment is a `role_holder` row:** a role, a person, a period, who granted it, a note. Written by
 `role.assign` and removed by `role.unassign`, always held at the unit, because there is one scope and
-nowhere else to hold an office. It confers nothing by itself: the codes an office carries are the live
+nowhere else to hold an office. **The role it names is one the organization wrote** — no office ships, and
+day one is one account holding `system.admin`
+([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)). It confers nothing by itself: the codes an office carries are the live
 grants whose expression names `ROLE(x)`
 ([../data-model/05-authorization.md §3–§4](../data-model/05-authorization.md#3-role--an-office)).
 "That these two may manage the counselors roster" is a grant on the *role*, the same move a group gets.
@@ -307,8 +309,11 @@ recite its row count.
 
 The posture is **opt-in per grant**, so a grant written as `ROLE(TREASURERS)` with no `MEMBERS` authorizes a
 lapsed member silently and forever. The controls are a standing report of live grants that name a
-`ROLE(...)` operand without `MEMBERS`, seeded grants that carry `MEMBERS`, and an import count — not the
-resolver. Nothing forces a holder row to end either; the report is the control
+`ROLE(...)` operand without `MEMBERS`, and an import count — not the resolver. The only grants this system
+writes for itself are the twelve beside an event, they name `ORGANIZERS` rather than a `ROLE(...)`, and they
+carry no `MEMBERS` on purpose
+([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+Nothing forces a holder row to end either; the report is the control
 ([D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)).
 All of that belongs to the authorization model and is named here only because these were this module's
 workflows: [06-authorization-model.md](06-authorization-model.md).

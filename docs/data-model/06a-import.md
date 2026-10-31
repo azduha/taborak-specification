@@ -336,9 +336,11 @@ put words in a source that said nothing ([D-059](../decisions/round-05.md#d-059-
 events row a registration; D-041's second species of belonging is not a thing either half could write
 ([D-041](../decisions/round-02-03.md#d-041--belonging-to-a-sub-unit-is-a-participation-record-not-a-membership),
 [D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
-**What an imported event does owe, since D-102, is the per-event instantiation of the seeded
-answers-view grant** — one insert beside the event row, in the same transaction, or the imported event has
-nobody who can read its answers.
+**What an imported event does owe, since D-102, is the bundle its create would have written** —
+**twelve item-scope grants beside the event row, in the same transaction**, aimed at `ORGANIZERS`, or the
+imported event has nobody who can read its answers
+([08a §8](08a-event-guards-and-checks.md#selectors-that-bind-to-an-event),
+[D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
 
 **Never an open-ended membership, and never one inferred from an attendance row.** The reason is D-039 and it has not moved — an
 open membership satisfies `is_current_member()`, so an inferred 1998 row hands whoever signs up under that

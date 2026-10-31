@@ -154,9 +154,12 @@ Two costs come with it and both are stated rather than absorbed. **A genuinely n
 waits for a human**, so the blocking condition carries an age check shaped like `field_conflict`'s thirty
 days below, and it alerts: a stalled identity queue stopped being a data-quality problem the moment it
 could hold a login, and a person who cannot sign up has no way to say so except by telephoning someone.
-**And the reviewer deciding it is deliberately half-blind** — the seeded role holds the merge and no read
+**And the reviewer deciding it is deliberately half-blind** — the office that holds the merge holds no read
 over the person record, so it decides from signals and names, which is the correct conservative shape and
-also the thing to revisit if reviewers start asking for context they cannot see.
+also the thing to revisit if reviewers start asking for context they cannot see. **No platform ships that
+office**: some organization writes it, aims `person.merge` at `ROLE(x)` and leaves `person.view` out of the
+grant, and the conservatism is in the grant it chose rather than in a row the design brought with it
+([05d §12](05d-invariants-and-seed.md#12-what-day-one-looks-like)).
 
 **The everyday case is not this case, and naming it stops the rule being oversold.** "I have a new
 e-mail address" has never been a second account and is not one now: `account_credential` (§5) holds many

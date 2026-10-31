@@ -2,8 +2,10 @@
 
 Every permission code, its namespace, and the grant that carries it.
 
-This is the **proposed** catalog, seeded in
-[../data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with).
+This is the **proposed** catalog. Its rows are the permission vocabulary, which arrives with the code;
+**who holds any one of them is a grant row**, and day one is one account holding `system.admin` and no
+other grant ([../data-model/05d-invariants-and-seed.md §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like),
+[D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
 
 > **What a row here is.** A capability, and nothing more. There is no level paired with a code —
 > [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
@@ -32,7 +34,7 @@ This is the **proposed** catalog, seeded in
 > ([§1](#code-shape)). What is *not* yet settled is the exact contents — tracked in §12.
 
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
 
 ---
 
@@ -184,7 +186,7 @@ so `(MEMBERS * OLDER(18)) - YOUNGER(6)` is printed exactly as it is stored and n
 precedence table to read a grant row.
 
 **Those leaves are the registry, not a sample of it**, and the registry itself is the seeded `selector_type`
-rows: [../data-model/05d-invariants-and-seed.md §12](../data-model/05d-invariants-and-seed.md#12-what-the-organization-starts-with)
+rows: [../data-model/05d-invariants-and-seed.md §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like)
 states them and counts them, once. The names are repeated here so a grant row can be read where it is
 written; a second page printing the count would only be a second thing to go stale.
 

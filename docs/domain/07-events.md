@@ -252,10 +252,16 @@ running this camp?"* should not be answered by reading a permission table. Two c
 each doing its own job.
 
 **What an organizer gets.** Membership of `event_organizer` makes a person a member of the
-set `ORGANIZERS`. What that set may *do* is whatever a live grant aims at it — and that is one seeded
-grant, `event.answer.view` on the event to `ORGANIZERS`
-([§12](07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)). Everything else
-reaches an organizer the way it reaches anybody else: through a grant that person holds.
+set `ORGANIZERS`. What that set may *do* is whatever a live grant aims at it, and **the act that creates
+the event writes twelve of those grants in the same transaction as the event row** — one item-scope
+`allow` per code whose `applies_to` admits an event, every one aimed at the bare operand `ORGANIZERS`,
+the set derived rather than hand-picked
+([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it);
+[§12](07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
+One of the twelve is `event.grant_access`: an organizer hands access to the event they run **without
+holding `access_grant.create` at the unit**, bounded by the scope they can name and by `applies_to`.
+Everything outside those twelve reaches an organizer the way it reaches anybody else — through a grant
+that person holds.
 
 ---
 
@@ -291,7 +297,7 @@ the event comes from grants, as it does everywhere else:
 |---|---|
 | The person who runs the organization's camps | `event.manage_participants` **at the unit** — the grant reaches every event |
 | Somebody trusted with one camp | the same code **on that event**, as an item grant |
-| An organizer, as such | only what a grant aims at `ORGANIZERS` — the seeded `event.answer.view` |
+| An organizer, as such | only what a grant aims at `ORGANIZERS` — the twelve the event's creation wrote, answer-view among them |
 | Somebody the organization has excluded | a **deny** on the event or at the unit; deny is absolute and beats every allow ([D-013](../decisions/round-01a.md#d-013--explicit-deny-revoked-is-checked-before-everything)) |
 | `system.admin` | Everything — the sole exception, as everywhere |
 

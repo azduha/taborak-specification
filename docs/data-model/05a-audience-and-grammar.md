@@ -26,10 +26,9 @@ it intersects and differences as well as unions.
 | Field | Kind | Notes |
 |---|---|---|
 | `id` | integer identity | Surrogate key. |
-| `code` | text, optional, unique where set | **Two jobs.** (1) A stable handle for the seeded rows (`everyone`, `all_members`) and for reports — an audience is *aimed at* by a grant through `access_grant.audience_id`, a reference. (2) **The only thing another audience can name**: `AUDIENCE(<code>)` resolves through this column, so **naming an audience is what makes it composable, and an unnamed audience is simply not one** ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). Naming stays opt-in — there is no reason to force a handle onto a grant's private addressee list — and the leaf may not point at a null code, which is a check reading another table and therefore not a constraint (§11, check 12). **`code` joins the shared namespace** of roles, groups and reserved words; `name` does not, and the two are different columns serving different questions. |
+| `code` | text, optional, unique where set | **Two jobs.** (1) A stable handle for reports — an audience is *aimed at* by a grant through `access_grant.audience_id`, a reference. (2) **The only thing another audience can name**: `AUDIENCE(<code>)` resolves through this column, so **naming an audience is what makes it composable, and an unnamed audience is simply not one** ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). Naming stays opt-in — there is no reason to force a handle onto a grant's private addressee list — and the leaf may not point at a null code, which is a check reading another table and therefore not a constraint (§11, check 12). **`code` joins the shared namespace** of roles, groups and reserved words; `name` does not, and the two are different columns serving different questions. |
 | `name` | text, required | What a human calls it in the editor. |
 | `description` | text, optional | Why it exists, for whoever finds it in three years. |
-| `is_system` | boolean | Default false. Set on the seeded rows so an editor can refuse to delete one. |
 | `valid_from` | date, optional | |
 | `valid_to` | date, optional | Absent = open. **An ended audience reaches nobody**, and that is the one test that gates the whole expression (§*Evaluation*). Ending one is therefore a save-time refusal once anything names it (rule below): under `-` an emptied operand makes the result **wider**, so "ended" would otherwise be a way to widen a grant by editing a different screen. |
 | `created_at` | timestamp, audit time | |
@@ -200,7 +199,6 @@ already has.
 | `binds_to_item` | boolean, required | True exactly when the **argument-less** form means "relative to the item being checked" ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)). |
 | `argument_type` | text, optional | Which table the argument names a row of — `role`, `person_group`, `person`, `event`, **`audience`** — **or a scalar: `integer`, the argument kind `OLDER` and `YOUNGER` take ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)). Six values, five of them entity kinds and one of them not an entity.** Absent exactly when `takes_argument` is false. This is what the save path compares against the grant's item type, which is a reason the registry is doing real work and not merely tidying. **It is not always a `grant_scope_type`**: `person` never was and `audience` never will be, because a grant is never *about* an audience — it is aimed *through* one. The two coincide for exactly the item-scoped operands, which is the set the binding check reads. **A scalar argument is never in that set**, since `OLDER` binds to nothing. |
 | `description` | text, optional | The sentence a writer reads before using it. `AUDIENCE` carries its gloss here, because the name misleads without one. |
-| `is_system` | boolean, required | Default true, and **every seeded row is true with no row planned false.** This column exists to make the table refuse an edit, not to mark a category. |
 
 **Seeded selectors**, in full, because this table *is* the language — **thirteen rows, all of them
 shipped**. The number is only the cheap form of the real check: *this list is the language*, so an
@@ -243,16 +241,21 @@ re-grant, one code at a time, what that channel grants whole
   then resolves to the empty set and denies quietly forever (§*Evaluation*).
 - **The registry is organization-read-only, and saying that out loud is what makes "a closed
   language" true of a table rather than merely asserted.** Every row ships with the platform, every
-  row is `is_system`, no screen edits this table, and no organization adds to it
-  ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). *The language
+  row arrives with a release, no screen edits this table, and no organization adds to it
+  ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). **No row carries a flag
+  saying so, because a flag true of every row of a table nothing may add to says nothing**
+  ([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)).
+  **What refuses an edit is that no code authorizes one and no screen offers one** — there is no
+  `selector_type.edit` anywhere in the catalog — which reaches further than a flag did, because it does not
+  depend on which screen you arrived from, and an import that names this table has no row to write. *The language
   becomes data* means the parser and the editor read one place instead of three; it does not mean
   the language is extensible at runtime. **A `code` in this table with no shipped resolver arm is a
   deployment bug, and it surfaces as an empty set** — an operand that reaches nobody, an allow that
   allows nobody, and a deny that on the `-` side denies everybody. That is the whole hazard of
   calling a closed set "data", and it is why the seeding of this table is release engineering rather
-  than configuration. **There is no third kind of row** — the taxonomy is *shipped and seeded*, and
-  "seeded, marked system, but not implemented" is not a category this model allows, however useful
-  it would be as a roadmap marker.
+  than configuration. **There is no third kind of row** — a row either ships with an evaluator arm that
+  reads it or it does not ship, and "shipped as a row, not implemented in the evaluator" is not a category
+  this model allows, however useful it would be as a roadmap marker.
 - **Every `code` is a reserved name** in the shared role / group / audience namespace
   (§*Names are one namespace*).
 - `argument_type` is absent exactly when `takes_argument` is false, and names a real table exactly

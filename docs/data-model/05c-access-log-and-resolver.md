@@ -396,8 +396,9 @@ as there is no `role` one: a channel is a kind of authority, and a key is a hold
 >
 > **The posture is opt-in, and the failure mode is named rather than buried** (D-100). Forgetting `MEMBERS` is invisible, silent and permanent, and nothing in the
 > resolver can see it. Three controls, none of which is the resolver: the standing report of
-> `ROLE(...)` grants with no `MEMBERS` (check 6, §11); seeded grants carrying `MEMBERS` so that the
-> path of least repetition is the safe path; and **import completeness** — `MEMBERS * COUNSELORS` is
+> `ROLE(...)` grants with no `MEMBERS` (check 6, §11); the worked examples this design writes, which put
+> `MEMBERS` in first and take it out deliberately — **a posture with no default behind it now that nothing
+> ships a grant, which is why the report is the control and not the convention**; and **import completeness** — `MEMBERS * COUNSELORS` is
 > only as correct as the counselor roster, so an import that misses 300 counselors silently un-gates
 > them, and the reconciliation report of
 > [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)

@@ -2,7 +2,7 @@
 
 Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the role seed and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
 
 ---
 
@@ -43,8 +43,8 @@ Every code the system ships, grouped by the thing it acts on — people, account
 > deleted `role_permission`, an office holding all of `person.*` *is* the live grant rows naming `ROLE(x)`
 > — one row per code, dated, attributable — so a bundle that mixes the dangerous two with routine editing
 > is visible in a role editor instead of hidden in a resolver rule. **§11** carries the rule that follows:
-> no seeded office mixes `person.merge` or `person.redact` with routine `person.edit`, and one that does
-> should be named for what it is.
+> no worked-example office mixes `person.merge` or `person.redact` with routine `person.edit`, and one that
+> does should be named for what it is.
 
 > **No `person.background_check.*`.** The organization has no background checks handled by this system, so
 > there is nothing to view and nothing to record
@@ -340,7 +340,7 @@ difference is the whole reason there are two tables — and the office codes are
 | `role.view` | `system` | | See the offices that exist and **who has held them, over what period** (`role_holder`) |
 | `role.create` | `system` | 🔒🔒 | Create an office: a code, a name, a description. It carries no permission — see the note below |
 | `role.edit` | `system` | 🔒🔒 | Change an office's name or description |
-| `role.delete` | `system` | 🔒🔒 | Delete an office. Only possible if it was **never held** and is not a system role |
+| `role.delete` | `system` | 🔒🔒 | Delete an office. Only possible if it was **never held** |
 | `role.assign` | `system` | 🔒🔒 | **Write a `role_holder` row** — make someone a holder. `applies_to = unit_and_item`: on one role, this is "manage the counselors roster" |
 | `role.unassign` | `system` | 🔒 | Close a `role_holder` row — set its `valid_to` |
 | `permission.view` | `system` | | See the permission catalog |
@@ -371,7 +371,7 @@ difference is the whole reason there are two tables — and the office codes are
 > **Roles are runtime data, and these six permissions are how the organization administers them.**
 > `role.create` names a new office; `role.edit` renames one; `role.delete` removes one created by
 > mistake; the reach of any of them is written by `access_grant.create` down the table. §11 is
-> therefore a *starting point to be edited*, not a fixed vocabulary. Whether an office's authority is
+> therefore a *set of worked examples to be edited*, not a fixed vocabulary. Whether an office's authority is
 > conditional on a paid-up holder is not configuration either: it is in the text of each grant, which
 > says `MEMBERS * ROLE(x)` when the fee is meant to matter.
 
@@ -392,18 +392,20 @@ difference is the whole reason there are two tables — and the office codes are
 > composition of grants is the least-graded write in the catalog (§12). Escalating one person and
 > escalating an office are different powers, and neither is implied by the other.
 
-> **`role.delete` only works on an office that has never been held** and is not `is_system` — which is
-> what protects the one seeded role, `counselors`, from an editor (§11). No delete may leave a
+> **`role.delete` only works on an office that has never been held.** No delete may leave a
 > `role_holder` pointing at a role that is gone:
 > [../data-model/05-authorization.md §3](../data-model/05-authorization.md#3-role--an-office)
-> states the guard and the order it refuses in. The two halves are not equally strong, and the
-> difference is the reason this permission is not self-policing. The first is referential
-> integrity — `role_holder.role_id` references `role.id`, a migration-level constraint, so it refuses
-> a delete that arrives from an import, from a manual fix, or from a second client as surely as from
-> the screens. The second, `is_system`, is a property of the row being deleted and no index can see
-> it: it is a check inside the transaction that deletes, and a model-layer guard there is a friendlier
-> message, not the refusal. A role that has been held is left in place, so the answer to "what office
-> did this person hold in 2019?" survives — which is precisely when someone asks it.
+> states the guard and the order it refuses in. **One guard, and it is referential integrity** —
+> `role_holder.role_id` references `role.id`, a migration-level constraint — and that is what makes this
+> permission not self-policing rather than unprotected: a constraint refuses a delete that arrives from an
+> import, from a manual fix, or from a second client as surely as from the screens. A per-row "do not delete
+> this" flag beside it was offered and deleted, because such a flag is a property of the row being deleted
+> and no index can see it — it would have been a check inside the transaction that deletes, where a
+> model-layer guard is a friendlier message, not the refusal
+> ([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)).
+> A role that has been held is left in place, so the answer to "what office did this person hold in 2019?"
+> survives — which is precisely when someone asks it. **What remains deletable is an office created by
+> mistake and never held**, which is what deleting an office was always for.
 >
 > **Nothing waives the membership test, because nothing imposes it.** The resolver asks no membership
 > question of a grant, so there is no exemption for a person to hold: the test is the **expression the
@@ -526,9 +528,9 @@ keeps the only QR code in this system attached to a payment, where it is a rende
 | `event.register_other` | — | ⚠ | Register someone else (a minor, a walk-in) |
 | `event.manage_participants` | — | ⚠ | **Manage the roster** — add or remove registrations, work the waitlist, promote |
 | `event.presence.mark` | — | ⚠ | **Mark who turned up** — nothing else, and never a set anyone is granted over (§1) |
-| `event.answer.view` | — | ⚠⚠ | **Read registrant answers** (tent, dietary, …) — the note below, and the seeded grant |
+| `event.answer.view` | — | ⚠⚠ | **Read registrant answers** (tent, dietary, …) — the note below, and one of the twelve grants written beside every event |
 | `event.question.manage` | — | ⚠ | Define what the event asks |
-| `event.grant_access` | — | 🔒 | Grant access to an event. What distinguishes it from `access_grant.create` is the scope alone, which is why §12 asks whether it is still a code with a subject |
+| `event.grant_access` | — | 🔒 | Grant access to an event. What distinguishes it from `access_grant.create` is the scope alone — and it is one of the twelve grants written beside every event, so **whoever runs an event may hand out access to that event and to nothing else**, without holding `access_grant.create` at the unit (§12) |
 | `event.delete` | — | 🔒 | Delete an event — only possible with **no** registrations |
 
 **Where each of these may be granted, and what kind of right it is** (§1) — nothing else rides on top:
@@ -614,16 +616,30 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 > **`event.answer.view` is where
 > [D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers) lives, and it
 > lives there as a grant.** *"Answers are read by that event's organizers"* is said where permissions are
-> said: **a seeded grant of `event.answer.view`, scoped to the event, aimed at `ORGANIZERS`**
+> said: **an item-scope `allow` of `event.answer.view`, scoped to the event, aimed at an audience whose
+> expression is the bare operand `ORGANIZERS`**
 > ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
-> Because a bound operand is legal only on an item-scope grant, this cannot be one row for every event:
-> what ships is a **template**, which the event-creation path instantiates beside the event row in the
-> same transaction as the event, and which the import owes one instantiation per event it writes
+> **And it is one of twelve.** The act that creates an event writes the event's authority beside the event
+> row, in the same transaction as the event: one item-scope `allow` per code, aimed at `ORGANIZERS`, for
+> **every catalog code whose `applies_to` admits an event** — every `event.*` code except `event.create`,
+> which is `applies_to = unit` because nothing owns an event, so **twelve grants beside every event**
+> ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+> **The set is derived, not hand-picked, and that is the whole of its maintenance cost being zero:** a code
+> added to `event.*` is in the next event's bundle without anyone remembering a list, and a curated list
+> would have owed somebody the omission forever. Because a bound operand is legal only on an item-scope
+> grant, none of this can be one row covering every event: it is twelve rows per event, and the import owes
+> the same twelve beside every event it writes
 > ([../data-model/08a-event-guards-and-checks.md §8](../data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event)).
-> What is open is the safety net rather than the rule: an event whose two writes were not one
-> transaction has no organizer who can read its answers, and "these two rows exist together" is a
-> report — *events with no answer-view grant* — that no layer of this project can express as a
+> **All twelve are written without `MEMBERS`, and must not be "corrected"** — an organizer appointed for one
+> weekend is not required to hold a current membership, and a `MEMBERS` on those rows would take an
+> organizer's read of their own event's answers away the night their fee lapsed
+> ([D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)).
+> What is open is the safety net rather than the rule: an event whose twelve writes were not one transaction
+> has no organizer who can read its answers, and "these rows exist together" is a report — *events with no
+> answer-view grant* — that no layer of this project can express as a
 > constraint ([shape 3](../data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
+> **That failure now has an author**, which is what the check is for: it reads as a bug report about one
+> create, not as a missing migration.
 >
 > **Whoever runs an event reads that event's answers with no additional gate.** Holding an office grants
 > nothing (§7), and leadership is not guardianship: guardianship authority belongs to the guardians (§9)
@@ -724,12 +740,13 @@ code names:
 > keys": an allow-list is where a wildcard comes back to life, which is exactly why the refused set is
 > spelled out code by code.
 >
-> **No seeded office holds any of the four**, and none should: whoever holds `system.admin` already
+> **No office holds any of the four on day one, and none should**: whoever holds `system.admin` already
 > satisfies every one of these checks, because `system.admin` satisfies every code
 > ([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)).
 > **The capability to install a permanent outside authority is the capability to escalate**, and the
 > 🔒 on the three writes is that sentence — it arrives through `access_grant.create` like every other
-> code, so there is no second route to it and no seeded office that quietly holds it. The fourth thing
+> code, so there is no second route to it and nothing holds it quietly: an office has one of these four
+> because a named person wrote that row, or it has none. The fourth thing
 > a new resource owes this catalog, a row in `grant_scope_type`, is **declined for a key on purpose**
 > ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)):
 > a key is not a grantable item, so none of these codes can be written *on* one and **"rotate the

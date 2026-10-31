@@ -53,7 +53,7 @@ an accepted decision, not discovered as an outage.** Tracked in
 | Column | `snake_case` | `valid_from`, `person_id` |
 | Primary key | `id` | always the same name, so joins read uniformly |
 | Foreign key | `<referenced_table_singular>_id` | `person_id` → `person.id` |
-| Boolean | `is_` / `has_` / `requires_` prefix | `is_system`, `binds_to_item` |
+| Boolean | `is_` / `has_` / `requires_` prefix | `is_delegated`, `binds_to_item` |
 | Timestamp | `<verb>_at` | `created_at`, `verified_at` |
 | Date/period | `valid_from` / `valid_to` | never `start_date`/`end_date` |
 | Junction table | `<a>_<b>` in alphabetical order | `guardianship_permission`, not `permission_guardianship`. *(The example here was `audience_member` for ten rounds, which was a better illustration because its two halves are further apart alphabetically; the table is deleted by [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other), and a naming convention should not be taught with a table that does not exist.)* |

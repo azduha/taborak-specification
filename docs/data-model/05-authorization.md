@@ -27,7 +27,7 @@ role_holder ────────────── who holds it, for a perio
 
 selector_type ──────────── the language: every operand that   'ROLE', 'MEMBERS', 'PLACED',
                           may appear in an expression.          'AUDIENCE'
-                          Seeded, is_system, read-only.
+                          Shipped, written only by migrations.
 
 audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurers)
                           by code from another audience.
@@ -109,13 +109,27 @@ why auditing an integration means reading one list rather than reconstructing on
 | `namespace` | text, optional | `system`, or absent. What the column does is its own subsection below. |
 | `description` | text, required | What it means, for whoever has to read it. |
 | `display_name` | text, required | Human label for the permission editor. |
-| `is_system` | boolean | Default false. True: seeded by the platform, cannot be deleted or have its `code` changed. |
 | `is_assignable` | boolean | Default true. False: a permission **no grant may name directly** — a deprecated code kept only so historical audit rows still resolve to something readable. |
 | `created_at` | timestamp, audit time | |
 
 **The one question this table does not answer is "may this code be granted on an event at all?"** —
 that is `applies_to`, and it is answered on the save rather than in the resolver. Nothing else in the
 row constrains where a grant may sit.
+
+**No column marks these rows as the platform's, because every row of this table is the platform's.** There is
+no `permission.create` and no `permission.delete` in the catalog: `permission.view` reads the register and
+`permission.edit` 🔒🔒 reaches the labels, which is all of it that a screen may touch, while a new code is a
+migration that also adds a resolver arm. Each half of what a protection flag used to promise is already
+carried somewhere else — **no row may be deleted**, because no code authorizes deleting one; **the `code`
+never changes**, because every grant row names a code by value and
+[shape 4](00a-invariant-register.md#4-a-value-that-may-never-change-once-set) says what that means; and the
+`display_name` is the one field the flag never protected either
+([D-142](../decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)
+found the check that watches it drift). **A flag that is true on every row of a table nothing may add to is
+not a flag; it is a sentence about the table, and the sentence is this paragraph**
+([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)
+deletes the four columns of this kind the design carried — on `permission`, `selector_type`, `role` and
+`audience` — because one argument covered all four).
 
 **Rules**
 
@@ -255,7 +269,6 @@ tenant and no routing left.
 | `code` | text, required, unique among roles, **and unique across roles and groups** | `registrar`, `treasurers`, `counselors`. The cross-table half of the rule is §8's namespace rule; a single constraint cannot span two tables, so the write path carries it (§8, *Names are one namespace*). |
 | `name` | text, required | What the office is called on screen. |
 | `description` | text, optional | |
-| `is_system` | boolean | Default false. True: seeded — cannot be **deleted**, and its `code` cannot be changed. False: an ordinary office the organization created and may delete. |
 | `sort_order` | integer, required | Default 0. |
 | `created_at` | timestamp, audit time | |
 | `updated_at` | timestamp, audit time | |
@@ -270,13 +283,19 @@ tenant and no routing left.
 | `max_term_months` | the prefilled term, and with it the "expiry is the default" nudge | Nothing. Nothing forces a holder row to end, and §11's report of offices held past their end date is the control (§4, [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)). |
 | `is_delegatable` | the refusal to let an office's authority be delegated ([domain/06 §9](../domain/06-authorization-model.md#9-delegation)) | Nothing about roles. Delegation of *authority* survives only on a grant row (`is_delegated` + `delegated_from`), where the grant's own expiry is the control (§6). |
 
-**`role` is runtime data, not a fixed vocabulary.** The organization creates offices, names them,
-fills them, and deletes the ones nobody ever held. Two rows ship with the platform, and the list is
-deliberately short: `counselors`, marked `is_system`
-([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape);
-a permanent, organization-wide population is the opposite of D-098's definition of a group, and the
-table is what decides the sensitivity that protects the set). §12 states what is seeded and what is
-starter material.
+**`role` is runtime data, not a fixed vocabulary, and it has no shipped rows at all.** The organization
+creates offices, names them, fills them, and deletes the ones nobody ever held; **the platform ships none**,
+which is [D-132](../decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization)
+applied by [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped).
+**The name this document still uses everywhere is `counselors`**, and it is a worked example of an office
+somebody wrote — nothing more. D-100's reason for putting a permanent, organization-wide population in this
+table rather than in `person_group` stands exactly as it was, because it is an argument about which table a
+set may live in: such a population is the opposite of D-098's definition of a group, and the table decides
+the sensitivity that protects the set
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+[D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office)).
+[§12 of 05d](05d-invariants-and-seed.md#12-what-day-one-looks-like) states what ships and what day one looks
+like.
 
 > **`role` has no `valid_from` / `valid_to`, deliberately** ([D-053](../decisions/round-04.md#d-053--a-role-is-valid-always-only-its-assignment-is-temporal)).
 > A role is a **definition** — a named office — and a definition does not come into and out of
@@ -309,16 +328,24 @@ else is**
   That is the invisibility §8 records for composition, arriving through the office door instead of
   the expression door — which is why `role.*` is the most sensitive code family in the catalog (🔒🔒)
   and why §11's report of `ROLE(...)` grants written without `MEMBERS` is worth reading.
-- **A role that has ever been held cannot be deleted**, for three reasons: `role_holder.role_id` is
+- **A role that has ever been held cannot be deleted**, for two reasons: `role_holder.role_id` is
   a foreign key and D-003 forbids taking the history with the row; *"what authority did this person
-  have in 2019?"* must survive the office being abolished, which is exactly when someone asks; and an
-  `is_system` role must survive regardless, because deleting a row some grants name would silently
-  widen or narrow whatever they aim at. The guard runs row by row, in this order, and both refusals
-  are absolute:
+  have in 2019?"* must survive the office being abolished, which is exactly when someone asks. The
+  guard runs row by row and the refusal is absolute:
   1. any `role_holder` row references the role — refuse, with a message in terms the operator can act
-     on: this office has holders, end the holder rows instead, so the history survives;
-  2. otherwise, `is_system` — refuse outright.
-  A role that clears both was created by mistake and never held, and deleting it is legitimate.
+     on: this office has holders, end the holder rows instead, so the history survives.
+  A role that clears it was created by mistake and never held, and deleting it is legitimate.
+  **What used to stand here was a second refusal, for rows the platform had shipped** — an `is_system`
+  role was refused outright, "because deleting a row some grants name would silently widen or narrow
+  whatever they aim at". The reason is true and the refusal covered one row, which is the wrong shape
+  for a true reason ([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)).
+  What reaches every office is the report instead: an office that is gone leaves every
+  `ROLE(x)` leaf that named it a **failed operand**, and the two reports of
+  [§11 check 7](05d-invariants-and-seed.md#11-invariants-to-verify) — the narrowing and the widening,
+  in that order, because a wide failure is only better than a narrow one when somebody is reading —
+  are the control that covers an office somebody deleted and an office that was never written in the
+  first place
+  ([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
 - **There is no permission inheritance between roles.** A `unit_leader` does not get the
   `assistant_leader` permissions by being implicitly senior: inheritance chains produce
   authorization answers nobody can predict by reading the configuration, which is what makes such
@@ -453,8 +480,11 @@ authority are:
 **The mirror-image failure is the more likely one.** A holder row that outlives the person gives that
 person authority they should not have; a grant written as `ROLE(x)` with no `MEMBERS` authorizes a
 lapsed member silently, forever, and looks fail-closed so nobody notices. Integrity check 6 (§11) is
-the standing report of that shape, and the seeded grants carry `MEMBERS` so the path of least
-repetition is the safe path ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+the standing report of that shape, and it is now the *only* one of its kind: with no seeded grants there is
+no default that carries `MEMBERS`, so the safe path is no longer the path of least repetition — it is the
+one somebody writes on purpose, and the report is what notices when they forget
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+[D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
 
 ---
 

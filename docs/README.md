@@ -116,7 +116,7 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [data-model/05-authorization.md](data-model/05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`. §1–§7. |
 | [05a](data-model/05a-audience-and-grammar.md) · [05b](data-model/05b-expression-tree.md) | The grantee expression: `audience`, the grammar, `selector_type`, and the `audience_operand` tree. §8. |
 | [05c](data-model/05c-access-log-and-resolver.md) | `access_log` and the resolver. §9–§10. |
-| [05d](data-model/05d-invariants-and-seed.md) | The invariants, what ships seeded, and what is open. §11–§13. The six parts share one section numbering, so a `§` citation names a number and this table says where it lives. |
+| [05d](data-model/05d-invariants-and-seed.md) | The invariants, what day one looks like, and what is open. §11–§13. The six parts share one section numbering, so a `§` citation names a number and this table says where it lives. |
 | [05e](data-model/05e-keys-and-callers.md) | `api_key` — a caller that is nobody: what it may hold, what it may never hold, and how its calls reach the same resolver. §14–§17. |
 | [data-model/06-audit-and-import.md](data-model/06-audit-and-import.md) | `audit_log` — the data-change trail, its trigger, what is stripped before a row is written, the history query. §1–§2. |
 | [06a](data-model/06a-import.md) | `import_batch`, the staging tables, the six stages, reversibility, idempotency, and what a source row actually evidences. §3. |

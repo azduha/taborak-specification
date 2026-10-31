@@ -228,15 +228,23 @@ and per-event definitions keep them from having to agree.
 
 **Event answers are readable by that event's organizers, with no extra gate**
 ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)).
-The mechanism is **a seeded grant**: `event.answer.view` on an event, aimed at `ORGANIZERS`
-([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
-Two things follow:
+The mechanism is **a grant written by the act that creates the event**: `event.answer.view` on that event,
+aimed at the bare operand `ORGANIZERS`, in the same transaction as the event row
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it),
+[D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+It is one of the twelve the creation writes — every `event.*` code whose `applies_to` admits an event — and
+it is written **without** `MEMBERS`, because an organizer appointed for one weekend is not required to be a
+paying member. Three things follow:
 
-- **"No extra gate" is literally true and visible.** The seeded grant *is* the whole
+- **"No extra gate" is literally true and visible.** That grant *is* the whole
   mechanism; there is no clause special-casing organizers. Anyone who wants to see who may
   read an event's answers reads a grant row.
 - **The reach of that grant is per-event.** `ORGANIZERS` with no argument binds to the event the grant
-  sits on, so the seeded row cannot accidentally name the organizers of every camp at once.
+  sits on, so the row cannot accidentally name the organizers of every camp at once.
+- **A create is the author of an event's authority.** Whoever holds `event.create` decides who will be
+  able to read a future event's answers, and the widening is one code deep. What keeps it honest is that
+  *"who could read those answers?"* stays a query over rows, and an event whose rows did not arrive is a
+  countable failure rather than a rumour.
 
 Two consequences of that reach follow, and the second is the significant one.
 
@@ -264,9 +272,9 @@ What a leader gets over a child's data is not of that kind:
 so a guarantee that a camp leader *"cannot reach a child's medical record at all"* describes a
 category the model does not have. What is true, in the two forms that matter:
 
-- **No role gets it by leading.** The starting role set gives a leadership role its rosters and
-  its events — and **no read over a person's data**
-  ([permission-catalog §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
+- **No role gets it by leading.** A leadership role written out of the worked examples is given its
+  rosters and its events — and **no read over a person's data**
+  ([permission-catalog §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--worked-examples-of-writing-one)).
   Leadership is not guardianship, and the guardianship channel answers only for the person its
   row names.
 - **It is one grant away.** Whoever holds
@@ -278,9 +286,10 @@ category the model does not have. What is true, in the two forms that matter:
 
 **So the protection is a decision about a role, revisitable by whoever administers roles — not a wall.**
 
-Which means: under the starting roles, an allergy recorded on a camp form is **the only way the people
-running the camp will know**. That is a coherent and defensible configuration — *the parent tells the
-people present, per event, and nobody outside the family holds the fact* — but it is a widening from "the
+Which means: under any office written the way those examples write one, an allergy recorded on a camp form
+is **the only way the people running the camp will know**. That is a coherent and defensible configuration
+— *the parent tells the people present, per event, and nobody outside the family holds the fact* — but it
+is a widening from "the
 few adults whose `guardianship` row names them, at one `right_level`" to "every organizer of any event the
 child registers for", and it is recorded as such in
 [D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers),
@@ -310,7 +319,7 @@ as a suggestion and writes back a fresh dated one
 
 Tracked with the rest in [../open-questions.md](../open-questions.md): the answered ones under
 **R. Resolved**, each carrying the decision that answered it, and the live ones where the module map points.
-**Four of the seven below are settled and say so rather than reading as still open** — that is deliberate,
+**Five of the seven below are settled and say so rather than reading as still open** — that is deliberate,
 because a list of open issues that keeps asking an answered question is how a design gets reopened by a
 newcomer who reads the list and not the log. The ones this module raises:
 
@@ -323,13 +332,16 @@ newcomer who reads the list and not the log. The ones this module raises:
   cannot be stated, only whether it should be
   ([§4](07-events.md#4-who-may-register-capability-not-a-separate-rule-engine),
   [D-070](../decisions/round-05.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
-- **What else should be seeded to `ORGANIZERS`.** D-102 seeds exactly one grant,
-  `event.answer.view`. Everything else an organizer needs — editing the event, working the
-  roster — reaches them only through a unit-scope or item grant they happen to hold, and
-  no decision says whether that is the intended shape or an oversight
+- **What else an organizer should hold — settled: the bundle is derived, not curated.** Creating an
+  event writes one item-scope `allow` per code whose `applies_to` admits an event — **twelve beside every
+  event**, `event.answer.view` among them — each aimed at `ORGANIZERS`
+  ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+  A code added to `event.*` is in the next event's bundle without anyone remembering a list. Everything
+  outside those twelve reaches an organizer only through a unit-scope or item grant they happen to hold,
+  and that is the intended shape: the creation act writes the set of people connected to the item, and
+  writes nothing else
   ([§5](07-events.md#5-organizers-are-appointed-not-granted),
-  [§6](07-events.md#6-how-authority-reaches-an-event)). This module
-  does not seed more of its own accord.
+  [§6](07-events.md#6-how-authority-reaches-an-event)).
 - **Whether a bound selector makes its audience single-scope.** An audience whose expression
   names `PLACED` cannot be aimed at a unit-scope grant, so a shared audience row can stop
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule

@@ -1,4 +1,4 @@
-# Data Model — Authorization: invariants, seed data, open issues
+# Data Model — Authorization: invariants, day one, open issues
 
 The invariants a correct implementation must hold, the rows the platform ships
 with, and what is still open on this part of the model.
@@ -23,6 +23,20 @@ Some entries assert **behaviour rather than program text**, because there is no 
 left to read and behaviour is the strongest form still available —
 [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
 requires saying so: **a prohibition nobody runs is a convention, not a guard.**
+
+**A report whose first run is empty, or is everything, is not a finding.** Three entries below report
+correctly on a system that has just been set up and look, from the number alone, like a failure: check 9
+returns exactly one holder and its "more than one holder" alert has already fired
+([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)),
+check 13 returns the entire permission catalog because nothing is granted to anybody at the unit yet, and the
+import reconciliation of [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)
+counts nothing to reconcile because the office whose roster it checks is one the organization has not written
+([D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office)). **All three are
+the system's age showing, and each says so beside its own expectation.** This paragraph is prose and no check
+was written for it, which is deliberate: "was this report read with the system's age in mind" is not a query,
+and a check that could only be answered by a human reading a number would be a report of a report
+([D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)'s
+lesson about what a check is allowed to be).
 
 **Invariants to verify**
 
@@ -65,7 +79,7 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   ([D-106](../decisions/round-11-12.md#d-106--a-failed-operand-stays-the-empty-set-the-missing-half-was-a-report-not-a-refusal)).
 - **3. A grant at a scope its code forbids.** An open grant whose `scope_id` is present while the
   permission's `applies_to` is `unit` — or any grant of a `system.` permission whose `applies_to` is
-  not `unit`, which is the seeding rule §2 depends on. **Zero expected, and a row means the save-time
+  not `unit`, which is the shape §12 says it fixes and nothing else. **Zero expected, and a row means the save-time
   check was skipped, not that a constraint was disabled** — no constraint spans those two tables.
   This is the report that stands in for a database rule, which makes it worth alerting on.
 - **4. A bound operand where it cannot bind.** An `audience_operand` whose selector has
@@ -127,6 +141,11 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   report's real output:** a world in which somebody could hold the capability and nobody can reach a screen
   is the state D-126's procedure exists for, and it goes to the same place, within the hour
   ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
+  **On a first run this report is one row long, its alert has already fired, and both are correct:** the one
+  grant the installation writes is a holder of `system.admin`, so the report's first output is the
+  installation itself ([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
+  Nothing about an event widens this list: the bundle an event creation writes is item-scoped, and
+  `system.admin` is `applies_to = unit`, so it cannot be handed out on an item at all (§2, §12).
 - **10. Expression trees that are not trees.** Any of: a node with a selector, or a leaf with an
   operator; a node with one child; a row whose `audience_id` differs from its parent's; a row whose
   `parent_id` names no row; an audience with zero or several root rows. **Zero expected, and every
@@ -158,11 +177,16 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
   accident one arm over — **the kind of a name decides which set a bare expression meant.**
 - **13. Orphaned permissions.** An assignable permission that **no live grant names**, at any scope.
   With no wildcard, a permission nothing bundles grants nobody, so the question is asked of the grant
-  rows themselves and of nothing else (D-068). **Expected: empty after a seeding pass.** A row means either a
-  permission nobody has bundled into an office yet — fine on a roadmap, wrong in production — or a
-  module was added and its grants were not. **Note what it cannot see:** a permission granted to *an*
-  office but not to the office that arguably should have it. That residual is the accepted cost of
-  D-068 and nothing closes it; it is a human reading the starter list in §12 against the catalog.
+  rows themselves and of nothing else (D-068). **Expected on day one: everything but `system.admin`, and that
+  is not a finding.** Nothing is seeded into a grant, so a first run reports the whole catalog back at the
+  person reading it, which is the most useful thing this check ever prints — it is the list of capabilities
+  that exist and have not been given to anybody, and
+  [§12](#12-what-day-one-looks-like) calls it the checklist. **A row means something different once the
+  organization has been writing grants for a year:** either a permission nobody has bundled into an office
+  yet — fine on a roadmap, wrong in production — or a module was added and its grants were not. **Note what
+  it cannot see:** a permission granted to *an* office but not to the office that arguably should have it.
+  That residual is the accepted cost of D-068 and nothing closes it; it is a human reading the catalog
+  against the grants, and that is the one report here that gets *less* useful the longer nobody reads it.
 - **14. Offices nobody holds, and holder rows pointing at an office that is gone.** The first is
   **expected and is not an error**: a role nobody holds is either one about to be used or one stopped
   using and not deleted, and there is no third possibility, because a role has no period
@@ -463,19 +487,22 @@ requires saying so: **a prohibition nobody runs is a convention, not a guard.**
 
 ---
 
-## 12. What the organization starts with
+## 12. What day one looks like
 
-Starting catalog. Expect to edit this heavily; it is a proposal, not a specification.
+**Nothing in this section is a starter set.** The platform ships a language and no opinions; everything an
+organization would recognize as *its* configuration — every office, every audience, every grant — is written
+by somebody on the first day rather than shipped on the last one
+([D-132](../decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization),
+applied by [D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
 
-> **This section and [../appendix/permission-catalog.md](../appendix/permission-catalog.md) are
-> the same list written twice, and they drift.** A reconciliation found documented permissions with no
-> seed row, among them a code several of the catalog's own seed roles assign and one of the two codes
-> D-068 exists to protect; the `event.*` codes are the standing example of the two lists disagreeing.
-> **With no wildcard, a code the catalog advertises and the database does not name is a capability nobody
-> can be granted**, and the permission editor is the only place the gap shows. Nothing in the schema pairs
-> codes with roles, so there is no per-role list to compare a catalog row against either: a documented code
-> that nothing grants is invisible to anything but a report. **Integrity check 13** reads the grants for exactly that
-> reason (D-068).
+> **This section and [../appendix/permission-catalog.md](../appendix/permission-catalog.md) used to be
+> the same list written twice, and they drifted.** The list this section kept is gone, which removes the
+> second copy and not the argument. **With no wildcard, a code the catalog advertises and no grant names is
+> a capability nobody can be granted**, and the permission editor is the only place the gap shows. Nothing in
+> the schema pairs codes with roles, so there is no per-role list to compare a catalog row against: a
+> documented code that nothing grants is invisible to anything but a report. **Integrity check 13** reads the
+> grants for exactly that reason (D-068), and on a system's first week it reports nearly everything in the
+> catalog — which is what "not yet granted" looks like when a report is honest about it.
 >
 > **There is no SQL check for this** — one side is a Markdown file. The discipline is the
 > check: when adding a permission, add it in **both** places in the same edit, and treat a catalog
@@ -495,43 +522,69 @@ is one unit and it is a scope (D-097). `role.assign`, `role.unassign`, `role.cre
 `role.edit` and `role.delete` are in the catalog and are **aimed at `role_holder`**; `role.edit` reaches
 nobody's authority, only its name and description (§3).
 
-**Roles are data, and the organization administers them at runtime.** This section seeds the
-*permissions* — the vocabulary of things anyone might do — and one role. The role names used
-throughout the docs are worked examples of composing those permissions into grants, not a fixed list.
-Creating a role, naming it, filling it and deleting an unused one are all supported operations.
+**Day one, in order, because the order is the only part that is not the organization's choice.**
 
-**What is seeded as a role, and it is one row: `counselors`, marked `is_system`**
-([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
-A permanent, organization-wide population is the opposite of D-098's definition of a group (*"a
-temporary set of members that do events together"*), and which table it lives in decides the
-sensitivity that every safeguarding convention in this area hangs from. **It ships `is_system` so an
-editor refuses to delete it**, and it confers nothing: this is a **set**, and being in it is worth
-only what a grant naming `ROLE(counselors)` says
-([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)).
-**Consistency requirement, and it is the import's problem too:** `MEMBERS * ROLE(counselors)` is only
-as correct as that roster, so the import reconciliation of D-090 counts people marked as counselors in
-the corpus against `role_holder` rows written.
+1. **One account, one grant, one code.** An ordinary `access_grant` row: this person × `system.admin` × the
+   unit. Nothing else in the system is configured, and nothing else needs to be — `system.admin` satisfies
+   every check, so the same person already holds `role.create`, `audience.manage` and `access_grant.create`
+   for the purposes of the next three steps
+   ([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
+   **There is no bootstrap mechanism**: no special column, no second kind of actor, no migration that knows
+   it is installing an organization. This row is the first entry in `audit_log` and the first change
+   [check 9](#11-invariants-to-verify) alerts on, and both of those are correct rather than incidental.
+2. **An office is a `role` row and it confers nothing.** Name it, describe it, order it — then aim a grant at
+   `ROLE(x)`, because that is the moment the office gains a permission
+   ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+3. **An audience is an expression tree**, written in §8's language, and it is worth naming only if something
+   will name it (`AUDIENCE(x)`). A one-operand audience is usually not worth a row: the operand `EVERYONE`
+   and the operand `MEMBERS` are writable anywhere, and the two audiences that used to stand for them are
+   gone ([D-153](../decisions/round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them)).
+4. **A grant is one code, one scope, one expression, one effect** — and the grant editor reads the catalog,
+   which is the document this section deliberately does not duplicate.
 
-**No seeded office holds any of the four `api_key.*` codes, and none should.** Whoever holds
-`system.admin` already satisfies those checks because `system.admin` satisfies every code
+**The catalog is the checklist, and ten of its codes are held by nobody at first**: `event.cancel`,
+`event.delete`, `event.organizer.manage`, `event.question.manage`, the four `guardianship.*`,
+`person_group.edit`, `person_group.end`. Read them as *not yet granted* — that sentence is the whole reason
+the catalog exists as a document rather than as a dropdown. **Four of the ten are `event.*` codes and every
+event's organizers hold them on that event from the moment it is created**
+([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it));
+what remains true, and what the list means, is that nobody holds any of them **at the unit** until somebody
+writes a grant that says so.
+
+**`counselors` is a worked example, and the argument for it is about a table rather than a row.** The name
+appears throughout this design inside expressions — `MEMBERS * ROLE(counselors)` — and every one of those was
+always an example of composing a grant, which is how they should still be read. What is no longer true is
+that the platform writes the office. **D-100's reason for choosing `role` over `person_group` survives
+untouched**: a permanent, organization-wide population is the opposite of D-098's definition of a group (*"a
+temporary set of members that do events together"*), and which table it lives in decides the sensitivity that
+every safeguarding convention in this area hangs from
+([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape),
+[D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)). That argument
+is about where a set may live; it never needed the platform to populate one. **The consistency requirement
+goes with it, and so does its emptiness:** `MEMBERS * ROLE(counselors)` is only as correct as the roster, so
+the import reconciliation of D-090 counts people marked as counselors in the corpus against `role_holder`
+rows written — and on a first run there is no such role, so the reconciliation has nothing to reconcile and
+reports nothing, which is a report whose subject arrives later rather than a check that is broken
+([D-154](../decisions/round-21.md#d-154--counselors-is-an-example-now-not-a-shipped-office)).
+
+**No office holds any of the four `api_key.*` codes, and no office should.** Whoever holds `system.admin`
+already satisfies those checks because `system.admin` satisfies every code
 ([D-124](../decisions/round-16.md#d-124--two-defects-systemadmin-satisfies-every-code-and-one-prose-code-named-no-row)),
-so seeding one would move the capability to install a permanent outside authority into a row nobody chose,
-on an office whose purpose is something else
+so granting them to an office would move the capability to install a permanent outside authority into a row
+nobody chose, on an office whose purpose is something else
 ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
-**It arrives by an ordinary grant or it does not arrive.**
+**It arrives by an ordinary grant or it does not arrive** — and now that is the only way anything arrives.
 
-**Everything else is starter material the organization edits** — including the `system_admin` office
-the catalog sketches, whose reason for existing is that someone has to hold `system.admin` before
-anything can be granted. **What §12 must fix, and does, is the *shape* rather than the list**: a
-`system.` permission is seeded `applies_to = unit`, so it can never arrive through an item grant. That
-is not a configuration choice — it is the structural guarantee that a shared item cannot hand someone
-authority over the permission system, and it is carried by a column value rather than by a resolver
+**What §12 fixes, and still only fixes, is the *shape* rather than the list.** A `system.` permission is
+`applies_to = unit`, so it can never arrive through an item grant. That is not a configuration choice and it
+is not a shipped row's property either — it is a column on the code, the structural guarantee that a shared
+item cannot hand someone authority over the permission system, carried by a value rather than by a resolver
 branch (§2).
 
-**What the organization starts with, in one list.** The platform ships:
+**What ships, in one list, because "nothing is seeded" is a sentence that needs its exceptions.** The
+platform ships three vocabularies and the enums, and no configuration:
 
-- **The permission vocabulary** — each code marked `is_system` so it cannot be deleted or renamed —
-  spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
+- **The permission vocabulary**, spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
   legacy import, reporting, the thirteen `event.*` codes, messaging, and the four `api_key.*` codes of [05e §15](05e-keys-and-callers.md) —
   `api_key.view`, `api_key.create`, `api_key.rotate`, `api_key.end`, every one `applies_to = unit`. **The one complete list is
   [../appendix/permission-catalog.md](../appendix/permission-catalog.md)**; this document keeps no second
@@ -539,7 +592,7 @@ branch (§2).
 - **`grant_scope_type`**: `unit` (the only row that is not item-scoped), `event`, `person_group`,
   `role`, and `document` (deferred).
 - **`selector_type`**: **thirteen rows — the thirteen operands of §8's language — every one of them
-  seeded, `is_system` and implemented in the shipped evaluator**, because there is no fourth combination
+  shipped and implemented in the evaluator**, because there is no fourth combination
   and no third kind (§8, *The selector registry*, whose table **is** the language: the count is only the
   cheap form of the check that no operand exists anywhere else). **This registry is what both the grant
   editor's dropdown and the parser's reserved words read**, which is what D-101 means by *the language
@@ -554,45 +607,65 @@ branch (§2).
   **Refused, and therefore absent** (§8): `GRANTS`, and `LIST` — a hand-written set of people is a sum of
   `PERSON(x)` leaves, not an operand
   ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
-- **Two audiences, both `is_system`, and both must have a `code`**: `everyone`, whose expression is
-  `EVERYONE`, and `all_members`, whose expression is `MEMBERS`. **The code is not cosmetic**: it is the
-  only way another audience can name them
-  ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)), so a seeded row
-  without one is a piece of the resolver's vocabulary that nothing can compose with, and §11's check 12 is
-  the net for the leaf side of that. **Whether `code` should simply be *required* on an `is_system`
-  audience rather than merely seeded is a question this document does not settle** (§13). **No seeded
-  audience is parameterized**: there is one unit, so nothing needs a row per unit. **Three names keep being
-  asked for, and each of them is something smaller or nothing at all** —
-  `unit_participants` is `MEMBERS`; `unit_leaders` is `ROLE(x)`, the shape §8's evaluation rules are written
-  against — **an expression that resolves to nobody is silent, while every grant aimed at it looks
-  granted**; and
-  `guardians_of` is **nothing** — a guardian's authority is the guardianship channel's `right_level` over
-  the child, not a set an audience can name, which is why `GUARDIANS` is not a selector
-  ([D-113](../decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)).
-  **A bound `GUARDIANS` on a grant about that person is unsavable on every scope that exists**: `person` is
-  not a `grant_scope_type`, so the binding check refuses it. **`audience_member` is not a table** (§8), so there is no member row on an `is_system`
-  audience for anything to refuse; what stands is the category that refusal protected — **seeded audiences
-  are the resolver's own vocabulary, not a set somebody curates, and the editor should not offer to edit
-  `everyone`'s expression.**
-- **The `counselors` role**, above.
-- **One seeded grant: `event.answer.view` on an event, aimed at
-  an audience whose expression is `ORGANIZERS`** — the code in the catalog's singular spelling, which is
-  the registered one
-  ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it),
-  amending [D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)).
-  "Answers are read by that event's organizers" is a row a reader can find, narrow or delete rather than a
-  sentence the resolver implements, and it is the worked example of a **bound operand**:
-  item-scoped, argument-less, meaning *the organizers of whichever event this grant is on* — which is
-  why it is one grant in the seed rather than one per event. **[D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted)
-  is not contradicted**: the appointment still grants nothing by itself, because an operand is a set
-  and not a grant. **It is written without `MEMBERS`** and must not be "corrected" to include it: an
-  organizer appointed for one weekend is not required to be a paying member, and D-062's appointment
-  model assumes exactly that.
+- **Nothing else — and the sentence is worth finishing, because three things used to be in this list.**
+  Offices, audiences and grants are written by people; §12's first four steps are the order, and the three
+  paragraphs below say who writes each of the three, and what the two deleted audiences were for.
 - **The effects and the enums.** `allow` and `deny` arrive with the schema, as do the two values of
   `applies_to` and the two of `right_kind`. None of them is editable at runtime: **a comparison the
   organization can edit is a security control with no owner**, and there is no level comparison to seed at
   all
   ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)).
+
+**What the two named audiences were, and what replaces them: nothing.** `everyone` held the expression
+`EVERYONE` and `all_members` held `MEMBERS`; both had a `code`, because a code is how another audience names
+one ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)), and §11's check 12 is
+still the net for the leaf side of that rule — an `AUDIENCE` leaf pointing at an audience with no code is
+unsayable as a constraint and unkind as a resolution. **What is gone is the rows, not the operands**: an
+audience whose entire content is `EVERYONE` is worth a row exactly when somebody intends to name it, and
+naming is one ordinary write. **Three names keep being asked for, and each of them is something smaller or
+nothing at all** — `unit_participants` is `MEMBERS`; `unit_leaders` is `ROLE(x)`, the shape §8's evaluation
+rules are written against, and **an expression that resolves to nobody is silent while every grant aimed at
+it looks granted**, which is the sentence to read before naming an office you have not written yet; and
+`guardians_of` is **nothing** — a guardian's authority is the guardianship channel's `right_level` over the
+child, not a set an expression can name, which is why `GUARDIANS` is not one of the thirteen operands
+([D-113](../decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)),
+and **a bound `GUARDIANS` on a grant about that person is unsavable on every scope that exists** because
+`person` is not a `grant_scope_type`. Two refusals went out with the two rows — *do not add a person to a
+seeded audience*, *do not offer to edit `everyone`'s expression* — and the category they were guarding does
+not need the rows to be true: **an expression is not a member list**, `audience_member` is not a table (§8),
+and a hand-written set of people is a sum of `PERSON(x)` leaves rather than a membership
+([D-153](../decisions/round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them)).
+
+**What the shipped answer-view grant was, and who writes it now: whoever creates the event.**
+"`event.answer.view` on an event, aimed at `ORGANIZERS`" used to arrive with the platform, and this section
+explained it as "one grant in the seed rather than one per event" — which was false, because a bound operand
+is legal only on an item-scope grant and one row cannot cover events that do not exist yet
+([08a §8](08a-event-guards-and-checks.md#selectors-that-bind-to-an-event) had already said so, in the other
+direction). **The act that creates an event writes twelve item-scope allows beside the event row, in the same
+transaction, all aimed at `ORGANIZERS`: every `event.*` code except `event.create`, which is
+`applies_to = unit`** ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
+"Answers are read by that event's organizers" is still a row a reader can find, narrow or delete rather than
+a sentence the resolver implements, it is still the worked example of a **bound operand** — item-scoped,
+argument-less, meaning *the organizers of whichever event this grant is on* — and it is **still written
+without `MEMBERS`** and must not be "corrected" to include it, because an organizer appointed for one weekend
+is not required to be a paying member
+([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it),
+amending [D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)).
+**[D-062](../decisions/round-05.md#d-062--organizers-are-appointed-on-the-event-not-granted) is not
+contradicted**: the appointment still grants nothing by itself, because an operand is a set and not a grant,
+and adding a cook changes the set rather than the twelve rows. **What the bundle now contains besides the
+answer row is the part a reader should stop on:** `event.organizer.manage` and `event.grant_access` are in
+it, so an organizer may add an organizer and may grant access to that event without holding anything at the
+unit — the widening the catalog marks ⚠ is reachable from inside the event, and D-151 states that as the cost
+it is.
+
+**And one question this section used to leave open is now unaskable rather than answered.** It asked whether
+`audience.code` should be *required* on an `is_system` audience rather than merely seeded on two of them.
+There is no `is_system` column anywhere in the design
+([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows))
+and no seeded audience, so the rule would have nothing to apply to that was not an ordinary audience somebody
+named because they meant to
+([D-153](../decisions/round-21.md#d-153--two-named-audiences-go-and-nothing-replaces-them)).
 
 A few of the surviving codes carry a decision in their shape, and those are worth naming:
 
@@ -654,8 +727,8 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   `right_level = write` on the relationship, not a permission (D-074); the code families `dependent.*` and
   `*.admin` are not in this catalog. So an office that should hold a new permission must be **told** —
   check 13 is the net.
-- **Reporting is seeded coarse, and left open on purpose.** Only `report.view` and `report.export` are
-  starters. Whether reporting is per-report or one permission with row-level filtering is still open
+- **Reporting ships coarse, and is left open on purpose.** Only `report.view` and `report.export` exist.
+  Whether reporting is per-report or one permission with row-level filtering is still open
   (catalog §12). Do not ship both shapes; pick one when reporting is designed.
 
 > **`system.admin` is deliberately a single top-level permission**, not a
@@ -680,12 +753,14 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   ([F-27](../open-questions.md#f-27)). [05e §17](05e-keys-and-callers.md) states each from this module's side,
   and none of the three was ever answered by adding a column to `api_key` — **a sweep is not a caller and
   should not have to authenticate.**
-- The complete permission catalog and real role definitions (§12) — needs your input. The question is
-  **which starter grants are written with `MEMBERS` in the expression and which are not**: `role` has no
-  `requires_membership` switch to carry the answer
+- **Which grants an organization writes with `MEMBERS` in the expression, and which without** — the question
+  this file used to ask as "which *starter* grants name `MEMBERS`", which has no starter grants to ask about
+  any more. `role` has no `requires_membership` switch to carry an answer
   ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
-  so it is answered per grant rather than per role, with check 6 (§11) as the net and the seeded grants as
-  the default.
+  so it is answered per grant rather than per role, with check 6 (§11) as the net. **One case the design does
+  answer:** the twelve grants an event creation writes are written *without* `MEMBERS`, because an organizer
+  appointed for one weekend is not required to be a paying member
+  ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
 - **Whether the API should refuse a check that names an item for a unit-only code (§2).**
   `applies_to` is deliberately a save-time rule, and D-099 says so in as many words, so the mismatched
   *grant* cannot exist — but a *caller* that asks `can(person, 'event.create', 'event', 1204, …)`
@@ -777,11 +852,6 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   needs this listing run in its **reverse** direction, transitively rather than one hop at a time (§10).
   If the import corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
   is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.
-- **Whether `audience.code` should be required rather than optional on `is_system` rows (§8, §12).**
-  The seeded audiences are the resolver's vocabulary and cannot be composed with by anything that lacks
-  a code, which makes the code mandatory in every practical sense while leaving it nullable in the
-  schema. **A check is being asked to assert what a column could have guaranteed**; making the column
-  required-where-`is_system` would be the honest fix and is not this document's call to make.
 - **A nested audience's past reach is not reconstructable, and that is the answer (§8, *Three named
   sets*):** the record of whom a grant reached **is the expression**
   ([D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached),

@@ -273,8 +273,12 @@ contradiction of
 appointment is *aimed at* by grants; it is not special-cased inside the resolver. So the rule that
 answers are read by that event's organizers
 ([D-061](../decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)) is *said*
-where permissions are said: **a seeded grant of `event.answer.view` on an event, aimed at
-`ORGANIZERS`.**
+where permissions are said: **one item-scope `allow` of `event.answer.view` on the event, aimed at the
+bare operand `ORGANIZERS`, written in the same transaction as the event row.** It is one of the twelve
+grants the act of creating an event writes for that event
+([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)),
+and it is written **without** `MEMBERS`: an organizer appointed for one weekend is not required to be a
+paying member.
 
 **Presence is refused, and saying so here is the point.** `PRESENT(<event>)` over `was_present` is not
 a selector, and the reason is the failure direction: `was_present` is `NULL` until someone takes a

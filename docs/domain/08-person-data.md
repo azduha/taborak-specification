@@ -89,12 +89,13 @@ enough to be the same thing
 
 **Read the leader row twice: it is the sharpest edge in this module.** There is no privileged subset of
 the record to be kept away from anybody, so nothing in the model can promise that a leader cannot read a
-child's data. What carries the protection is that **the starting grants do not give leadership a read
-over the record, because leadership is not guardianship** — and an office confers nothing at all
+child's data. What carries the protection is that **no leadership role written from the worked examples
+carries a read over the record, because leadership is not guardianship** — and an office confers nothing at
+all
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
 so the only thing that could give a leader that read is a grant, written somewhere, naming them. The
 organization may hand it over deliberately, in one grant, and see exactly what that exposes.
-([permission-catalog §11 note 3](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set))
+([permission-catalog §11 note 3](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--worked-examples-of-writing-one))
 
 The last row is the one that justifies the whole shape. A scanned form in a drawer is a legally tidy
 answer and a useless one at 23:00 in a tent; the fact has to be something a screen can show somebody who
