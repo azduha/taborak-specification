@@ -416,13 +416,21 @@ difference is the whole reason there are two tables — and the office codes are
 > The waiver code, the role flag that waived a whole office, and the resolver function that read them
 > are in [removed-concepts.md](removed-concepts.md).
 >
-> **`access_grant.create` carries no ceiling, and nothing here pretends otherwise.** What bounds a
-> grantor is the shape of the grant and nothing else: one code, `applies_to` refusing it on an item it
-> does not fit, a scope that is the item the grant names or the unit, `MEMBERS` as the writer's own act.
-> The test that an authority may not exceed its holder's is written only for delegations
-> ([../domain/06-authorization-model.md §9](../domain/06-authorization-model.md#9-delegation)), so
-> **a holder of `access_grant.create` can grant `system.admin` to anyone, including themselves.** That
-> is recorded as an open question rather than as a rule this catalog holds, and §12 is where it lives.
+> **`access_grant.create` says you may write grant rows, and since
+> [D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds) it no longer says
+> what they may say.** What bounds a grantor is the shape of the grant — one code, `applies_to` refusing it on an
+> item it does not fit, a scope that is the item the grant names or the unit, `MEMBERS` as the writer's own act —
+> **and now the granter too**: a row may name only a permission its writer holds, at a scope reaching what they
+> write. This page said the opposite for five rounds and said it as candour ("nothing here pretends otherwise"),
+> and the sentence it drew the conclusion from — that the test an authority may not exceed its holder's is written
+> only for delegations ([../domain/06-authorization-model.md §9](../domain/06-authorization-model.md#9-delegation))
+> — was true the whole time and simply incomplete: delegation was the one place the test had been written, not the
+> only place it applied. So **`system.admin` can no longer be handed out by a holder of `access_grant.create` who
+> does not hold it**, which is what §12 called the sharpest hole in this file and what closed it. **The one write
+> the ceiling does not read is the bundle an event create writes** — twelve rows naming nobody the writer chose
+> ([D-170](../decisions/round-22.md#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes)) — and it is
+> named here because an appendix that lists a rule's exceptions beside the rule is the only kind of appendix worth
+> reading.
 
 ## 8. Audit and system
 

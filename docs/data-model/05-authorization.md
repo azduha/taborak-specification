@@ -812,7 +812,13 @@ rule, and D-081 forbids writing them as if one were:
    (§11) — and both are read, not sent (§11). **Scope, so the ceiling is not over-read: this is a rule about writes to `access_grant` and
    nothing else.** Editing an audience's expression or a `role_holder` row is a different code and is
    unchanged; whether those should carry an analogous ceiling is a question this round neither answers nor
-   pretends is settled.
+   pretends is settled. **One write to `access_grant` is outside this check, and it is exactly one:** the
+   twelve rows an event create writes beside the event
+   ([08a §8](08a-event-guards-and-checks.md#8-projections-and-guards), D-151). The ceiling reads a writer who chose
+   whom a grant names, and the create chose nobody — its audience is a fixed expression that resolves to
+   nobody at that instant, and the writer gains none of the twelve
+   ([D-170](../decisions/round-22.md#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes)). Rebuilding
+   a missing bundle by hand is *not* that write: it is a person choosing rows, and it is checked.
 
 **Why the save path and not the check path, said once for all seven.** A grant that cannot mean
 anything is a data-entry mistake, and a data-entry mistake is refused where the person making it is

@@ -1,6 +1,11 @@
-# Decision Log — Refinement round 22 (D-155 … D-169)
+# Decision Log — Refinement round 22 (D-155 … D-170)
 
-> Sixteen questions asked and answered in four sittings, and they came out as fifteen decisions, because one of the answers was taken back by a later one and two of the fifteen are rulings to decide nothing. The money module gave up its currency, its insurance, its waivers, its refunds, four of its seven status values and the question it had been asserting it had asked; the authority model got the one ceiling it had been circling and had, one round ago, written down as untouched; the import's end-date inference got its date from a boundary the register had already answered; and the promise that someone would be told within the hour was taken out of every page that had been making it. **Most of this changes no table.** Nine of the fifteen are a sentence removed, a blank confirmed, or a report named — which is what a module left open for sixteen rounds actually costs you: not structure, but a corpus that keeps saying *unanswered* in a voice nobody reads.
+> Sixteen questions asked and answered in four sittings came out as fifteen decisions, because one of the answers
+> was taken back by a later one and two of the fifteen are rulings to decide nothing. **A sixteenth arrived from
+> inside the round: [D-163](#d-163--a-grant-may-not-confer-more-than-the-granter-holds) and
+> [D-151](round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)
+> contradict each other, and the round did not notice until an hour after it was committed** — see
+> [D-170](#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes). The money module gave up its currency, its insurance, its waivers, its refunds, four of its seven status values and the question it had been asserting it had asked; the authority model got the one ceiling it had been circling and had, one round ago, written down as untouched; the import's end-date inference got its date from a boundary the register had already answered; and the promise that someone would be told within the hour was taken out of every page that had been making it. **Most of this changes no table.** Nine of the fifteen that came from an answer are a sentence removed, a blank confirmed, or a report named — which is what a module left open for sixteen rounds actually costs you: not structure, but a corpus that keeps saying *unanswered* in a voice nobody reads.
 
 [Refinement round 21 (D-150 … D-154) ←](round-21.md) | [All decisions](index.md)
 
@@ -327,6 +332,14 @@ by construction rather than by a special case.
 expression or a `role_holder` row is a different code and is unchanged; whether those should carry an analogous
 ceiling is a question this round neither answers nor pretends is settled.
 
+**And one correction, made an hour after this entry was committed.** Stated this broadly the rule refuses
+[D-151](round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)'s own
+bundle: the person creating an event holds `event.create` and not the eleven other codes the create writes, so the
+ceiling as worded here would refuse the create outright. **[D-170](#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes)
+narrows it — the ceiling reads a writer who chose whom a grant names — and the sentence above is left as it was
+written, because "a rule about writes to `access_grant`" was the part a reader needed and the exception is what
+this round got wrong.**
+
 ---
 
 ## D-164 — Nobody is told, and no page may say otherwise
@@ -377,18 +390,28 @@ who already held it**, so the question the trail answers — *who did this* — 
 The two answers belong side by side in the reader's head: this round is the admission that nothing is watching,
 and the previous one is the reason that is bearable.
 
-**What the sweep removed, counted three ways, because one number would have made this a fourth unverified
-claim.** The word grep, above, moved from 218 lines on 37 pages to 214 on 38 — which is the entire truth about a
-word list, and the sharpest of the three: the premise was corpus-wide while the count is noise, because nearly
-everything matching those five words was already describing a report. The citation grep — added lines outside
-`decisions/` carrying this decision's anchor — is **23 lines across 16 pages**, and it is the only figure here
-computed from the diff rather than from somebody's report of their own work, which is why it is the smallest.
-Between them the five sweeps listed **sixty-five sentences across twenty-five pages**, and each listed the same
-round total of **fifty-eight**, which five measurements of a growing corpus could not all produce; one page, `01a`,
-is counted in two of the five lists, so sixty-five is itself a ceiling. **I record both numbers and vouch for
-neither.** "Sentence" is not a unit two people count alike — what one sweep rewrote as one, another counted as
-two — and this round has now twice found that the count sitting beside a sentence is precisely the part nobody
-checked. What is verified, and is the thing that matters, is not a number at all: **every page in the corpus was
+**What the sweep removed, counted twice, because a third number would have been a fourth unverified claim.** The
+word grep, above, moved from 218 lines on 37 pages to 214 on 38 — which is the entire truth about a word list, and
+the bleaker of the two: the premise was corpus-wide while the count is noise, because nearly everything matching
+those five words was already describing a report. The citation grep — lines added outside `decisions/` carrying
+this decision's anchor — is **23 lines across 16 pages**, computed from the diff. Both figures come out of a
+program, and they are the only two in this entry that do.
+
+**The sentence counts are missing on purpose, and here is why they had to be.** Five sweeps worked through the
+corpus and each reported how many sentences it rewrote. Asked a second time, two of them reported a different
+number for the same work: one said five sentences in three files, then twenty-three in ten, then thirteen after it
+went back and deleted citations it no longer stood behind; another said sixteen, then twenty-one, with a note that
+it had previously said twenty-two. Four of the five printed the same round total — **fifty-eight** — which five
+measurements of a growing corpus cannot produce, so at least four of them were quoting a figure back to me rather
+than counting. And the number I nearly shipped in this paragraph, sixty-five sentences across twenty-five pages,
+was assembled in part from a breakdown I had **invented**: a report of twenty-nine sentences across nine files,
+which I quoted back to one of the sweeps as its own account and which no report of any sweep ever contained. I
+lost that handback to a context compaction, rebuilt its per-file numbers from memory, and then argued with an
+agent about a claim it had never made. **That is this round's finding about the finance page, committed by me
+against a person instead of a list**, and it goes in the log for the same reason the others do: a count nobody can
+point at is not a measurement, it is decoration, and it is read as the part that was checked.
+
+So: **every page in the corpus was
 put against the test**, the test is written where a reader will meet it rather than in this entry: `05d` §11, the
 page that had the worst sentence on the subject, now carries the rule as its own framing — *"None of them sends
 anything, and no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the
@@ -573,6 +596,66 @@ than compiled in as a literal, for the only reason those columns exist — [A-4'
 is precisely the discipline that a job containing `1` and `1` would break. This round states that as its reading
 of the answer rather than as a second ruling, and the check on it is the one that question already asked: *does
 this date come from the row?*
+
+---
+
+## D-170 — The ceiling does not read the twelve a create writes
+
+**Status:** decided (found in this round's own diff, not asked) — repairs a contradiction this page shipped
+between [D-163](#d-163--a-grant-may-not-confer-more-than-the-granter-holds) and
+[D-151](round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it),
+which were written an hour apart in different rounds and never read against each other.
+
+**The contradiction, stated so it cannot be quietly re-forgotten.** D-151 says the insert of an event writes
+twelve `access_grant` rows in the same transaction, naming every `event.*` code except `event.create`. D-163,
+answered two days later, says a write to `access_grant` may name only a permission the writer holds. **The person
+who creates an event holds `event.create` — that is the whole of what the create needs — and on the plain wording
+of the new ceiling the create is therefore refused, because eleven of the twelve name something the creator does
+not hold.** Nothing in either round noticed. The bug is invisible on day one for the reason D-163 already gave
+(its single account holds everything), and it would have appeared the first time a unit leader with `event.create`
+and nothing else tried to create an event — which is the ordinary case the design exists to serve.
+
+**The ruling: the ceiling reads an act of conferral, and a create is not one.** A write to `access_grant` is
+checked against its writer **when the writer chose whom it names**. The bundle is not such a write. Its audience
+is one fixed expression the writer cannot edit — the bare operand `ORGANIZERS`, which at the moment of the write
+resolves to nobody at all — its twelve codes are derived from `applies_to` rather than picked, and **the writer
+gains none of them**, because D-151 does not make the creator an organizer of the thing they made. What the create
+writes is part of the event's shape, in the sense that its `created_at` is: an event without those twelve is a
+broken event, not a modest one.
+
+**Why the exemption cannot carry anything it was not given.** Three things bound this path by construction, and
+they are worth naming because they are why no fourth control is being asked for. The bundle can never contain a
+`system.*` code: those apply only at the unit ([05 §2](../data-model/05-authorization.md#2-permission)) and every
+row of the bundle is item-scope by definition. It can never contain `event.create`: D-151 excludes it, which is
+the one thing that exclusion was for, though it was written as tidiness and reads now as a load-bearing
+refusal. And the widest thing the path can write is `event.*` on one item that did not exist a statement earlier,
+aimed at a set that is empty until somebody is made an organizer of it. **The report over this path is the one
+D-151 already named** — [08a §10 check 2](../data-model/08a-event-guards-and-checks.md#10-integrity-checks), the
+incomplete-bundle report — so the exemption is from the ceiling, not from being looked at.
+
+**What is *not* exempt, which is where the boundary actually does work.** The moment a person edits an
+organizer — `event.organizer.manage`, one of the twelve — the write names somebody that person chose, and the
+ceiling reads them. It binds nobody in practice, and that is the answer to the obvious worry: an organizer holds
+all twelve at their own event, so anything they hand out on it is inside their own ceiling, while a grant aimed
+at the unit is stopped two checks earlier by `applies_to`. **The exemption covers exactly one transaction,
+triggered by the create, whose rows are derived rather than chosen.** Any other write of an `access_grant` row
+reads its writer, including a write that rebuilds a missing bundle by hand: that is a person choosing rows, and
+check 2's finding is answered through the ordinary grant screen, not by re-running the create.
+
+**The alternative, refused because it is the wrong kind of clever.** Attribute the twelve to the system actor of
+[D-125](round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)
+so the ceiling has no granter to read. That works mechanically and should not be done. It is false — a person
+pressed the button, and `access_grant.granted_by` naming a person is D-125's rule for precisely these rows, which
+D-163 then made the precondition of the check — and it establishes the habit of solving a security rule by
+editing what the audit says, which is the one move that hollows out every rule in this file at once. **If the
+bundle ever needs an author other than a person, the exemption above is where that argument belongs, not in an
+empty column.**
+
+**One cost, said plainly.** There are now two things in this design that a ceiling does not reach, and the second
+one arrived in this round: day one's single account, exempt because it holds everything, and the create's bundle,
+exempt because nobody conferred anything. They are different, and the pages say *which* is which; the phrase "by
+construction" is not allowed to cover both, because a reader who thinks there is one exemption will look for the
+wrong one.
 
 ---
 

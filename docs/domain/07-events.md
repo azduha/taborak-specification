@@ -259,7 +259,10 @@ the set derived rather than hand-picked
 ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it);
 [§12](07a-capacity-presence-and-forms.md#12-the-forms-questions-and-answers)).
 One of the twelve is `event.grant_access`: an organizer hands access to the event they run **without
-holding `access_grant.create` at the unit**, bounded by the scope they can name and by `applies_to`.
+holding `access_grant.create` at the unit**, bounded by the scope they can name, by `applies_to`, and since
+[D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds) by the twelve they
+already hold at that event — the last of those three binds nothing, because handing out what they hold is exactly
+what the bundle gave them, and it is the grant reaching past their own event that the ceiling now refuses.
 Everything outside those twelve reaches an organizer the way it reaches anybody else — through a grant
 that person holds.
 

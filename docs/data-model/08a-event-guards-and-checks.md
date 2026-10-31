@@ -135,8 +135,14 @@ check has always counted. That is also the correction this round owed
 words. **What the bundle contains besides the answer row is the part to read twice:** `event.grant_access` is
 in it, so whoever runs an event may grant access to *that* event without holding `access_grant.create` at
 the unit, and `event.organizer.manage` is in it, so an organizer may add an organizer and widen all eleven
-others. The ceiling on both is the scope and `applies_to` — `system.admin` is unit-only and cannot be
-written onto an item at all, which is the guarantee D-099 left behind when it deleted the levels.
+others. The ceiling on both was the scope and `applies_to`, and since
+[D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds) it is those two plus
+the granter's own twelve — an organizer may hand out what they hold at that one event and nothing wider, which
+binds nobody in practice because the twelve are exactly what an organizer has, and stops only the grant that
+reaches past their own event. `system.admin` is unit-only and cannot be written onto an item at all, which is the
+guarantee D-099 left behind when it deleted the levels; and the create that wrote these twelve is the one write
+[D-170](../decisions/round-22.md#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes) exempts from the
+granter's ceiling, which is why the next sentence matters as much as this one.
 **Integrity check 2 in §10 is the net for a missing bundle, and check 1 for a grant saved at a scope that
 cannot bind it.**
 

@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-169 of them and lists the reversals. Read the round you are curious about — each one says what was
+170 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -209,6 +209,7 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-167](round-22.md#d-167--the-office-that-may-place-a-child-in-a-group-stays-unnamed) | The office that may place a child in a group stays unnamed | decided (from your answer) — **the blank is the answer, ruled so that nobody repairs it later** | round 22 |
 | [D-168](round-22.md#d-168--age-is-reported-and-never-enforced) | Age is reported and never enforced | decided (from your answer) — **and historical query 8 stays unanswerable and stays numbered** | round 22 |
 | [D-169](round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in) | An imported membership ends with the calendar year it was seen in | decided (from your answer) — **the last day is 31 December and the stored value is 1 January**, because the period is half-open | round 22 |
+| [D-170](round-22.md#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes) | The ceiling does not read the twelve a create writes | decided (found in this round's own diff) — **D-163 as worded refused D-151's bundle**: the ceiling reads a writer who chose whom a grant names, and the create chose nobody | round 22 |
 
 ## Reversed decisions
 
