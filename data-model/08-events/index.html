@@ -1978,6 +1978,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#a-question-bound-to-a-stored-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A question bound to a stored value
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#health-facts-and-the-discipline-this-requires" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2324,6 +2335,8 @@
       
         
           
+        
+      
         
       
         
@@ -2917,6 +2930,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3198,6 +3239,17 @@
     <span class="md-ellipsis">
       
         Reusable question libraries were considered and rejected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-question-bound-to-a-stored-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A question bound to a stored value
       
     </span>
   </a>
@@ -3720,6 +3772,28 @@ for named sets generally. See §8 for the seeded grant that aims at this table.<
   <code>presence_marked_at</code> are either all present or all absent, and <code>was_present</code> absent is the
   same condition as the other two absent. A partially-set trio is a bug, not a state.</li>
 </ul>
+<p><strong>Nothing in this table ages out.</strong> A registration is a fact about a dated occasion and the row is
+kept: no expiry when the event ends, no clock on it, and no job that forgets people — the rule the
+accounting skeleton already follows, for the same reason
+(<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>,
+<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+A cancelled event keeps every registration (guard 2 in §8), and a cancelled event with no
+registrations would be an event that demonstrably never happened.</p>
+<p><strong><code>was_present</code> inherits that retention rather than getting one of its own</strong> — no retention shorter
+than the event's, no permission narrower than the roster's, no <code>presence_record</code> table, no
+safeguarding register behind it. The mark is read with the codes that already reach the event and
+written by whoever holds <code>event.presence.mark</code>, which is all the protection a column can be given
+that is also a fact an organizer needs
+(<a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>).
+Erasure reaches a registration the way it reaches organizational history: the person stops being
+identifiable, the row stays, and the mark on it stays
+(<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>). <strong>What that costs is stated
+rather than left to be found:</strong> a 1998 camp roster holds a mark of who was in the organization's care
+for as long as the database exists, readable by whoever reaches that event. The alternative was a
+column with a clock of its own and a permission of its own, which is the first wall of an archive
+this design has refused four times and would record a fact this system does not keep — there are no
+background checks here (<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>)
+and no medical record (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>).</p>
 <p><strong>Indexes</strong></p>
 <ul>
 <li><strong>The set the capacity test counts</strong> — an event's registrations whose <code>response</code> is
@@ -3945,6 +4019,11 @@ would be a state with no meaning.</p>
 <td>Default <code>attendee</code>. Who is asked. Organizers may be asked things attendees are not (T-shirt size for the leaders' shirts) and vice versa</td>
 </tr>
 <tr>
+<td><code>bound_attribute_code</code></td>
+<td>reference to attribute definition, optional</td>
+<td><code>NULL</code> = an ordinary question, which most are. Set = this question asks about the fact stored under that <strong>definition code</strong>: the form prefills from the person's current value as a <em>suggestion</em> the answerer confirms or edits, and submitting writes a fresh value back to the person record dated today. <strong>It names <code>attribute_definition.code</code> and never a <code>person_attribute</code> row id</strong> — that distinction is what keeps erasure's one hard delete invisible (<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>, <a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>). See <em>A question bound to a stored value</em> below</td>
+</tr>
+<tr>
 <td><code>valid_from</code></td>
 <td>date, required</td>
 <td>Default today</td>
@@ -4039,6 +4118,47 @@ camp asks and what another needs are allowed to differ, and defining a question 
 them from having to agree. This is the shape
 <a href="../../decisions/round-02-03/#d-044--nothing-gates-a-membership-request-except-identity-and-payment">D-044</a>
 refused for membership requirements, and it is refused here for the same reason.</p>
+<h3 id="a-question-bound-to-a-stored-value">A question bound to a stored value<a class="headerlink" href="#a-question-bound-to-a-stored-value" title="Permanent link">&para;</a></h3>
+<p><strong>One nullable column, <code>bound_attribute_code</code>, and it points at the vocabulary.</strong> Set, it says <em>this
+question asks about the fact stored under that code</em> — nothing more. It never names whose value, and
+it never names a row. <strong>The code has to be one the vocabulary holds, checked on the save path like any other
+reference by value</strong>, and because a definition is retired rather than deleted, the refusal this column can
+ever need is for a code nobody ever wrote — a typo, or a name invented at a desk. <strong>A retired code is legal
+to bind</strong> and binding it is not an error: the questions that were asked under it stay asked, which is what
+retirement has always meant here.</p>
+<p><strong>It prefills as a suggestion.</strong> The form shows the person's current value inside the question, and
+the answerer sees that they are being shown it: they confirm it or they change it, and either way
+they are the one answering. <strong>Nothing is hidden from them and nothing is copied silently</strong>, which is
+the half of the design that makes a stale fact safe to display at all — a value that arrives
+unasked-for and looks authoritative is worse data than a question, and a value that arrives labelled
+<em>"this is what we have, is it still right?"</em> is the same value doing good
+(<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>).</p>
+<p><strong>Submitting writes back, as a second act.</strong> A confirmed or edited answer writes a <strong>fresh</strong>
+<code>person_attribute</code> value dated today, recorded as written by the person who submitted the form,
+through the same <code>person.edit</code> the answering channel already uses, and audited with that person as
+its actor (<a href="../09-attributes/#4-who-may-read-and-who-may-write">09-attributes §4</a>). The answer itself
+stays a row of the event either way: <strong>the write-back is a second act, not the same row twice</strong>, and
+what lands in the person record is a fresh statement, not a second home for the stored value. Where
+that write is not permitted it is refused <strong>and the answer still saves</strong> — a form never half-writes a
+person.</p>
+<p><strong>Which one wins: neither, and that is the shape.</strong> The person record wins as of today, because the
+write-back is dated today and the attribute's history is the record of what was believed when. An
+answer is not corrected when the record later changes, and the record is not corrected because an old
+answer said otherwise — they are two dated statements of one fact at two moments, which is how this
+corpus already treats a name. Where the answer contradicts the stored value the difference is on the
+screen, in the prefill, and a person who edits the prefill is editing the record: that is the repair
+route, and it is why the binding is not the silent disagreement the question feared.</p>
+<p><strong>What the binding may never become.</strong> Not a reference to a <code>person_attribute</code> <strong>row id</strong> —
+<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a> forbids one from any table, and this binding
+stays legal precisely because <code>attribute_definition.code</code> is never deleted, is retired instead, and so
+outlives the person whose values sit under it; a value's key would have made erasure's one hard delete
+visible. Not a copy in either direction without a person in the loop: no write-back the answerer did
+not see, and no back-filling of an old answer when the record moves. And not a link that survives a
+change of mind unnoticed: re-pointing a bound question at a different code is an act somebody must
+take deliberately, because the answers already given belong to the old code and stay exactly what they
+were. <strong>What this costs</strong> is a new path into <code>person_attribute</code> — the first place outside a person's
+own editing where an attribute value arrives with no staff member in the middle of it — which is why
+the column is per question, per event, and <code>NULL</code> by default.</p>
 <h3 id="health-facts-and-the-discipline-this-requires">Health facts, and the discipline this requires<a class="headerlink" href="#health-facts-and-the-discipline-this-requires" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p><strong>An event form is how the people running an event find out what they need to know about the
@@ -4059,10 +4179,13 @@ the contrary is making a privacy promise the model does not keep
 (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>).</p>
 <p><strong>What the form is for:</strong> it asks <em>now</em>, about <em>this</em> event, of a person who may not be in the
 system at all, and its answer carries a date. That is a genuine property the record does not
-have — a recorded attribute says what somebody believed, once, at no particular time. Whether
-the two should meet at all is <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>,
-and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
-a stale health fact that arrives looking authoritative is worse data than an asked question.</p>
+have — a recorded attribute says what somebody believed, once, at no particular time. <strong>The two do
+meet, and they meet by code, not by copy:</strong> a question may be bound to an attribute definition, and
+the meeting is the confirmation pass — a prefill the answerer sees and may change, and a write-back
+dated today — never a silent prefill
+(<a href="../../open-questions/#at-1">AT-1</a>,
+<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>).
+Bound or not, the answer stays the dated statement, and that is what the record cannot be.</p>
 <p><strong>Nothing in the data model distinguishes a preference from a condition, and nothing <em>could</em>:</strong>
 <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
 refused the category. "Vegetarian" and "coeliac" are both <code>data_type = 'text'</code> in
@@ -4093,15 +4216,29 @@ not an enforced constraint</strong>:</p>
 <p>Asking a returning camper to restate a recorded allergy at every event is not a privacy measure; it
 is the same fact, fresher in one table and unmanaged in it. <strong>The event answer is where a health
 fact lands when the organization has not collected it properly</strong> — and the fix is the record plus
-a confirmation pass, not a cleverer form.</p>
-<p><strong>Open:</strong> the retention policy for answers. A dietary answer citing a medical condition is data of
-exactly the same class as everything else the organization holds about a person: there is no
-specially-sensitive category, which is not the same as this data being insignificant — and
-there is no policy for how long answers survive their event. See
-<strong><a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a></strong>, which notes that until it is
-answered the weakest-protected copy of a health fact is the freshest one.</p>
+a confirmation pass, not a cleverer form, which is what a bound question is: the record shown so it
+can be corrected, by the person who owns it.</p>
+<p><strong>Nothing about an answer expires.</strong> No expiry when the event ends, and no clock on it: the row is a
+fact about a dated occasion and it is kept, exactly as the registration beside it is (§4) and exactly
+as a cancelled event keeps its registrations (guard 2 in §8). <strong>Erasure reaches it, and empties it
+rather than deleting it</strong> — a redacted person's <code>event_answer.value</code> is set to empty and the row
+survives, because <em>"they answered that question"</em> and <em>"this is what they said"</em> are two different
+facts and only the second one is theirs to withdraw
+(<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>,
+<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>). <strong>So the asymmetry is gone:</strong> a
+dietary answer naming a condition and the same sentence recorded as a <code>person_attribute</code> are data of
+one class — there is no specially-sensitive category, which is not the same as this data being
+insignificant (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>)
+— and they now follow one rule, so the copy a camp leader actually reads is no longer the
+weakest-protected one. <strong>What it costs:</strong> an emptied answer still says something — that a question was
+asked and answered, by whom, on what date — and that residue is deliberate, the same residue
+<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+leaves in an audit payload;
+and it is a rule the store implements rather than one the schema enforces, which is why the erasure
+check in <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> counts emptied-value answers the way
+it counts surviving names (<a href="../../open-questions/#ev-2">EV-2</a>).</p>
 <hr />
-<p><em>Decisions behind this page: D-005, D-023, D-037, D-040, D-044, D-056, D-057, D-061, D-062, D-065, D-083, D-090, D-095, D-098, D-099, D-102.</em></p>
+<p><em>Decisions behind this page: D-005, D-023, D-037, D-040, D-043, D-044, D-056, D-057, D-061, D-062, D-065, D-083, D-088, D-090, D-095, D-098, D-099, D-102, D-139, D-140, D-147.</em></p>
 
 
 

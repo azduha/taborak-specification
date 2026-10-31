@@ -2159,6 +2159,8 @@
       
         
       
+        
+      
     
     
     
@@ -2714,6 +2716,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3025,7 +3055,7 @@ definition, or an append-only trail — the kinds of thing that have no period t
 <td><code>attribute_definition</code></td>
 <td>One thing the organization collects about people: the code, its label, its type, and whether several values may be current at once</td>
 <td>Nothing</td>
-<td>One code per <strong>normalized</strong> spelling — <code>Allergy</code> and <code>allergy</code> are one row; statuses <code>proposed</code>, <code>live</code>, <code>retired</code>, and retiring keeps the row and its values</td>
+<td>One code per <strong>normalized</strong> spelling — <code>Allergy</code> and <code>allergy</code> are one row; statuses <code>live</code> and <code>retired</code> only — a definition is live at its save (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>) — and retiring keeps the row and its values</td>
 <td>no</td>
 </tr>
 <tr>
@@ -3235,7 +3265,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <td><code>access_log</code></td>
 <td>The audit trail — who did what, by what authority, with what result</td>
 <td><code>person</code> as actor and as subject, <strong>or</strong> <code>api_key</code> as actor instead of a person — the two are never both set; <code>⇒ authorization_ref_id</code> naming <code>access_grant</code> <strong>or</strong> <code>guardianship_permission</code> — the enum holds exactly those two channels, so an older row reading <code>role</code> or <code>system</code> names a channel this model cannot read, which is deliberate (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>); <code>⇒ entity_id</code></td>
-<td>Append-only today; <strong>proposed</strong> to take the same 24-month window as the audit payload, which would make this cell wrong as written — <strong>F-8</strong>, unconfirmed (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
+<td>Append-only to the application; <strong>rows are deleted at 24 months by a scheduled job</strong>, which is the third exception to "nothing is hard-deleted" and the opposite shape to <code>audit_log</code>, whose rows live forever with emptied payloads (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>, against <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 <td>no</td>
 </tr>
 </tbody>
@@ -3384,7 +3414,7 @@ nothing at all, on their own.</p>
 <tr>
 <td><code>event_question</code></td>
 <td>One thing this event asks, of attendees, organizers or both</td>
-<td><code>event</code></td>
+<td><code>event</code>; and optionally <code>attribute_definition</code> <strong>by code</strong>, which is what lets a question prefill from a stored fact and write a fresh value back — the binding never names a value row (<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>)</td>
 <td>As many as the event asks; defined per event, never shared</td>
 <td>yes</td>
 </tr>
@@ -3392,7 +3422,7 @@ nothing at all, on their own.</p>
 <td><code>event_answer</code></td>
 <td>What one person said to one question, stored as a row and not as JSON</td>
 <td><code>event_question</code>; <code>person</code> — <strong>who answered</strong>, for a child the child, not the registration row and not whoever submitted on their behalf</td>
-<td>One row per question per answerer</td>
+<td>One row per question per answerer; <strong>no expiry</strong> — it outlives its event, and erasure empties the value and keeps the row (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>)</td>
 <td>no</td>
 </tr>
 </tbody>
@@ -3438,11 +3468,7 @@ which in this inventory is <code>person_attribute</code>, and nowhere else.</p>
 </tr>
 <tr>
 <td><code>access_log.scope_id</code></td>
-<td>Same shape as the grant's; absent for a check at the unit. <strong>Followed</strong> by <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, with exactly</td>
-</tr>
-<tr>
-<td>one legal absence available to it: of the kinds this column can name, only an <code>event</code> is ever removed, and only by the import's revert.</td>
-<td></td>
+<td>Same shape as the grant's; absent for a check at the unit. <strong>Followed</strong> by <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, with exactly one legal absence available to it: of the kinds this column can name, only an <code>event</code> is ever removed, and only by the import's revert.</td>
 </tr>
 <tr>
 <td><code>access_log.authorization_ref_id</code></td>

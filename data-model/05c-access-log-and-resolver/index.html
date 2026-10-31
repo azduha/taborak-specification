@@ -2189,6 +2189,8 @@
       
         
       
+        
+      
     
     
     
@@ -2744,6 +2746,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2914,7 +2944,10 @@ answer.</p>
 pages cite them by number and their anchors are built from them: <a href="../05-authorization/">05-authorization.md</a> holds §1–§7, <a href="../05a-audience-and-grammar/">05a</a> §8 (the <code>audience</code> table, the grammar, the selector registry), <a href="../05b-expression-tree/">05b</a> §8 continued (the tree and what each operand costs), <a href="./">05c</a> §9–§10 (<code>access_log</code> and the resolver), and <a href="../05d-invariants-and-seed/">05d</a> §11–§13 (invariants, seed data, open issues), and <a href="../05e-keys-and-callers/">05e</a> §14–§17 (a key, and what it may hold).</p>
 <hr />
 <h2 id="9-access_log">9. <code>access_log</code><a class="headerlink" href="#9-access_log" title="Permanent link">&para;</a></h2>
-<p>The audit trail. Append-only; no updates, no deletes.</p>
+<p>The audit trail. Append-only: <strong>no application updates a row and no application deletes one.</strong> One
+scheduled job does delete rows, on the window stated below, and that exception is argued where the window is
+rather than left implicit here — "append-only" in this corpus means <em>nothing you write decides to change
+this</em>, which is what the guard has always protected.</p>
 <p><strong>Fields</strong></p>
 <table>
 <thead>
@@ -3048,8 +3081,9 @@ pages cite them by number and their anchors are built from them: <a href="../05-
 </ul>
 <p><strong>Three of the columns in that table carry no foreign key</strong> — <code>scope_id</code>, <code>authorization_ref_id</code>, <code>entity_id</code>
 — and <a href="../05d-invariants-and-seed/#11-invariants-to-verify">§11's check 23</a> counts them, this table being the
-one that needs the rule about which absences are legal: the guard further down lets only the erasure and the
-reduction touch a row, and only in its state columns, so when the import's revert removes an event or a person
+one that needs the rule about which absences are legal: the guard further down lets only the erasure touch a
+row's state columns — plus the age-out, which removes the whole row on schedule — so when the import's revert
+removes an event or a person
 this table goes on naming the one it named, and that absence is expected rather than wrong. What no page says
 is whether a row here is ever written naming a <code>person_attribute</code> row an erasure will delete — <code>entity_type</code> is
 declared with an empty note and given no list of tables anywhere.</p>
@@ -3087,12 +3121,12 @@ redactor itself in
 <a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>. This is a rule of
 <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a>'s last kind — no automatic
 enforcement reaches it — so it is written as an obligation, not as a guarantee.</p>
-<p><strong>A retention window does not weaken this rule, and it is worth seeing why.</strong> If
-<a href="../../open-questions/#f-8">F-8</a> is confirmed, this table's state columns
-expire on the window
-<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
-proposes for the change trail, so the copy is <em>shorter-lived</em> than the business row it was copied from.
-The conclusion is unmoved, because what the rule guards is the
+<p><strong>A retention window does not weaken this rule, and the window is no longer hypothetical.</strong>
+<a href="../../open-questions/#f-8">F-8</a> was confirmed by
+<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
+in a stricter shape than this page proposed: the row itself goes, 24 months after it is written. So the mirror
+copy is not merely <em>shorter-lived</em> than the business row it was copied from — it disappears, two years after
+the read, while the business row is still there and will be for decades. The conclusion is unmoved, because what the rule guards is the
 <em>audience</em>. A window decides how long a copied value is readable; it does not decide who may read it
 while it is readable, and the readers here are whoever holds <code>audit.view</code>, not whoever may see the
 record. A sensitive value copied into a less-protected table is a protection failure on the day it is
@@ -3122,40 +3156,64 @@ two conclusions, and they point in opposite directions from the obvious one:</p>
 <p><strong>Append-only enforcement:</strong></p>
 <p>Any update or delete against <code>access_log</code> is refused row by row, before it happens, with an
 error saying the table is append-only. Nothing is left to the application remembering this.</p>
-<p><strong>Two operations are excepted, and a blanket refusal would defeat the retention policy.</strong>
-Emptying a row's payloads once it passes the window below is an update, and so is scrubbing one person's
-values out of a row after an erasure. Neither is a correction: nobody is making a version of this table
-right, and the answer the row gives to <em>who, what, when, by what authority</em> is untouched in both cases.
+<p><strong>Two operations are excepted, and a blanket refusal would defeat the retention policy — and since
+<a href="../../decisions/round-20/">round 20</a> one of them is a delete.</strong>
+Scrubbing one person's values out of a row after an erasure is an update, and remains the only write this
+table ever takes; the age-out below <strong>removes the whole row</strong> and is the second. Neither is a correction:
+nobody is making a version of this table right, and in the erasure's case the answer the row gives to
+<em>who, what, when, by what authority</em> is untouched.
 So both fall inside what "append-only" forbids in spirit and outside what it may forbid in practice.
 <strong>State the guard as a refusal of rewrites rather than a refusal of writes</strong> — the only actor allowed to
-change a row is the erasure or the reduction, the only columns either may touch are the state columns,
-and every other field on the row is immutable. The literal version of this rule is the more dangerous
-one, because it fails silently and what it fails is the policy. The same reasoning applies to
-<code>audit_log</code> and is stated with the operations themselves in
+change a row is the erasure, the only columns it may touch are the state columns, and every other field on
+the row is immutable; the age-out does not change rows, it retires them. The literal version of this rule is
+the more dangerous one, because it fails silently and what it fails is the policy. The same reasoning applies
+to <code>audit_log</code> and is stated with the operations themselves in
 <a href="../06-audit-and-import/#22-redaction-before-logging">06-audit-and-import.md §2.2</a>.</p>
-<p><strong>Retention: a proposal, not this document's position.</strong> The window that
+<p><strong>There is no payload reduction on this table, and that is a consequence rather than an omission.</strong>
+<code>before_state</code> and <code>after_state</code> are populated for write actions only, and the emptying step this page used to
+propose for them existed because the row was to be kept. The row is not kept: it goes at 24 months, taking its
+state columns with it. So <code>system:payload-reduction</code> is not a writer of this table and never was needed here —
+<code>system:log-reduction</code> is, and what it does is delete
+(<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00 §7a</a>).</p>
+<p><strong>Retention: 24 months, and the rows go.</strong> <a href="../../open-questions/#f-8">F-8</a> was answered in
+<a href="../../decisions/round-20/">round 20</a> by
+<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>:
+<strong>an <code>access_log</code> row older than 24 months is deleted.</strong> It is <strong>not</strong> the window
 <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
-puts on <code>audit_log</code>'s payloads is proposed here too — <strong>24 months on the state columns, rows kept,
-12 months as the floor</strong> — and it is recorded as
-<a href="../../open-questions/#f-8">F-8</a>, <strong>which still needs confirming</strong>.
-Whether an audit trail is bounded at all is a legal question rather than a technical one, so until someone
-confirms it this is a default awaiting a person.</p>
+sets on the other trail, whatever the number it shares with it — <code>audit_log</code> keeps its rows for the life of the
+system and empties only their payloads, and this table loses the row entire. <strong>The two trails now differ in
+kind:</strong> what was <em>changed</em> is answerable forever, and what was <em>read</em> stops being answerable two years after
+the read. <strong>Refused with this decision was the weaker shape this page had proposed</strong> — rows kept, contents
+emptied — because a row stating <em>this person's record was opened on this date by this actor</em> is itself the
+personal data the window was asked about, not a neutral skeleton left behind by it.</p>
+<p><strong>That answer is the organization's to give and it has now been given; the legal review is still owed.</strong>
+Whether an access trail is bounded at all was a legal question when this page called the window "a default
+awaiting a person", and the default has now been chosen — which settles the design, not the review.
+<a href="../../open-questions/#i-assumption-index">Assumption 49</a> carries the remaining exposure, and it now carries
+three policies rather than two.</p>
 <p><strong>Why the question is weaker here, which is structural and not luck: this table does not hold the
 contents of reads.</strong> <code>before_state</code> and <code>after_state</code> are populated for write actions only, so a read
 records <em>who asked, for what, under which permission, through which channel, and whether it was
 allowed</em> — and stops. Recording what the read <em>saw</em> would copy every record a permitted glance touched
 into a table read by a wider audience than the record itself, which is the exact act the redaction rule
 above exists to prevent. So the window here protects considerably less than it protects
-over in <code>audit_log</code>, and what survives it is everything this table was built to answer. <strong>The valuable
-fact about a read is that it happened and by what authority, and that is precisely the part no
-reduction touches.</strong></p>
-<p>Consider partitioning by month once volume justifies it, and moving old partitions to
-cheaper storage. Rows are not deleted on either answer; the window is carried out by emptying the state
-columns, which is the job and the over-age check described for the change trail in
-<a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a>. <strong>If F-8 is confirmed, that check
-has to be written for this table too</strong> — a reduction with no check under it is a reduction that quietly
-stops happening, which is the failure mode §2.2 of that document names as the only one this operation
-has.</p>
+over in <code>audit_log</code> — and the window no longer spares the answer, it ends it. <strong>The valuable fact
+about a read is that it happened and by what authority, and after 24 months that fact is simply no longer
+held.</strong> That is the whole cost of <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>,
+stated plainly rather than in a footnote, because it is the sentence to have ready when somebody asks
+why a two-year-old access question has no answer: the design is not failing to retrieve it.</p>
+<p>Partitioning by month stops being an option and becomes the mechanism: <strong>dropping an old partition is how
+rows are deleted from the largest table in this system without locking it</strong>, which is the reason the window and
+the partition period want deciding together. Once volume justifies it, moving old partitions to cheaper storage
+before they age out is a cost decision and not a policy one — the retention answer is the same either way.</p>
+<p><strong>The age-out gets a check, and it is the sibling of the audit one.</strong>
+<a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> counts <code>audit_log</code> rows past their window still
+holding a payload; it now counts <code>access_log</code> rows past theirs still present. <strong>A reduction with no check under
+it is a reduction that quietly stops happening</strong>, which is the failure mode
+<a href="../06-audit-and-import/#22-redaction-before-logging">06 §2.2</a> names as the only one this kind of operation has —
+and here the failure direction is data kept too long, which is the very thing the window exists to prevent.
+<a href="../05d-invariants-and-seed/#11-invariants-to-verify">§11's check 23</a> needs no amendment for any of this: it
+walks this table's three keyless columns, and <strong>a row that has been deleted cannot be an orphan.</strong></p>
 <p><em>Assumption:</em> <code>access_log</code> may be queried by staff with a specific permission, but writing
 is automatic. If the organization needs human annotation of audit entries, add a separate
 <code>access_log_note</code> table rather than making this table mutable.</p>

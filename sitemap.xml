@@ -2,246 +2,250 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://azduha.github.io/taborak-specification/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/glossary-authorization/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/glossary/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/open-questions/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/erd-a-authorization/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/erd-b-inventory/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/erd/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/permission-catalog-a-codes/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/permission-catalog-b-roles-and-open-issues/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/permission-catalog/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/appendix/removed-concepts/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/00-conventions/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/00a-invariant-register/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/01-identity/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/01a-accounts-and-contacts/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/01b-merges-views-and-checks/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/02-organization/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/03-membership/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/04-relationships/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05-authorization/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05a-audience-and-grammar/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05b-expression-tree/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05c-access-log-and-resolver/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05d-invariants-and-seed/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/05e-keys-and-callers/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/06-audit-and-import/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/06a-import/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/06b-redaction-and-checks/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/07-finance/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/08-events/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/08a-event-guards-and-checks/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/data-model/09-attributes/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-01a/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-01b/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-02-03/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-04/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-05/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-06/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-07-08/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-09/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-10a/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-10b/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-11-12/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-13/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-14/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-15/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-16/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-17/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-18/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/decisions/round-19/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
+    </url>
+    <url>
+         <loc>https://azduha.github.io/taborak-specification/decisions/round-20/</loc>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/01-overview/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/02-actors/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/03-identity-and-legacy/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/04-organization-structure/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/05-membership-lifecycle/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/06-authorization-model/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/06a-audiences-and-selectors/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/07-events/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/07a-capacity-presence-and-forms/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
     <url>
          <loc>https://azduha.github.io/taborak-specification/domain/08-person-data/</loc>
-         <lastmod>2026-10-29</lastmod>
+         <lastmod>2026-10-31</lastmod>
     </url>
 </urlset>

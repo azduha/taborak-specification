@@ -2253,6 +2253,8 @@
       
         
       
+        
+      
     
     
     
@@ -2808,6 +2810,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3154,8 +3184,14 @@ The catalog's whole involvement in that is one code added and none removed:</p>
 <li><strong><code>attribute.define</code> is the one code, and it is the narrow one</strong>
   (<a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>): it
   creates, renames, merges and retires a definition — deciding what the organization <em>collects</em>, which is
-  what makes the data queryable. Recording a value against a definition that does not exist needs no such
-  permission: it saves as a <code>proposed</code> definition and waits in the curation queue. Its sensitivity column
+  what makes the data queryable. <strong>Recording a value against a definition that does not exist is refused, and
+  it creates nothing</strong>: a value may not invent a code, so the vocabulary grows only by a save from a person
+  holding this code, and it is live at that save
+  (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>)
+  — <strong>the permission is the curator</strong>, there being no queue left to hold a proposal and no office that would
+  confer the reading of one
+  (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
+  Its sensitivity column
   stays empty because it reads nobody's data — the vocabulary is rows about codes, and the values
   underneath it are reached through <code>person.view</code> like anything else.</li>
 <li><strong><code>person.view</code> carries ⚠⚠</strong> because the marker grades what a grant <em>exposes</em>, and this one exposes
@@ -3544,6 +3580,15 @@ nullable one whose null-ness silently means something would let a permission arr
 answer already decided by nobody. Nothing else could have used this comparison — since
 <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
 a grant carries no level to compare a code against.</p>
+<p><strong>Required, agreeing with nothing, checked by nothing: <code>right_kind</code> is a note, and it stays required.</strong>
+Nothing in the schema or the write path asks whether a code typed <code>read</code> really is one, and no report counts
+the codes where the two disagree — so <strong>a <code>right_kind</code> can contradict its code forever, and only a reader
+will notice</strong> (<a href="../../decisions/round-20/#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked">D-144</a>).
+<strong>That is what the column is for.</strong> A code whose declared kind reads oddly next to its name is worth noticing
+<em>while reading a catalog</em>, which is what this page is; the alternative was a validation rule that would have
+had to hold, somewhere, a second list of which codes are reads — a copy of this column in prose, and the one
+defect this corpus keeps hitting is a copy that drifted. Every marking in the tables below is therefore an
+author's statement, filled in because the column cannot be left empty.</p>
 </blockquote>
 <h2 id="7-permissions-administration">7. Permissions administration<a class="headerlink" href="#7-permissions-administration" title="Permanent link">&para;</a></h2>
 <table>
@@ -3766,6 +3811,14 @@ whose justification for overwriting a value in place is that the trail holds the
 protects the trail is the guard on it — scope, this mark, and who holds it — exactly as the guard on
 <code>person.view</code> protects the record. <em>Why: the mark follows what a grant exposes, not the table a code
 names — <a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>.</em></p>
+<p><strong>And this one code is the whole gate, with no per-entry filter behind it — now decided rather than merely
+unbuilt.</strong> <a href="../../data-model/06-audit-and-import/#23-history-query">06 §2.3</a> records the per-entry check as
+considered and left unimplemented, and
+<a href="../../decisions/round-20/#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138</a>
+is the decision that says so: what an officer can read about 2019 does not depend on an expression changed
+last week, which is the legibility the trail exists to provide. The widening above is therefore a
+<strong>stated property of one grant</strong> and not a bug waiting for a filter — which is also what makes ⚠⚠ and the
+question of who holds this code the whole of the control.</p>
 <p><strong>The contents expire, which bounds that exposure without removing it.</strong> A row lives for the life of
 the system; its <code>old_values</code>/<code>new_values</code> are emptied <strong>24 months after they were written</strong>, by a
 scheduled job this corpus calls <strong>payload reduction</strong> — a third operation on the trail, distinct
@@ -3792,10 +3845,15 @@ values stayed readable in the trail is a failed redaction, not a partial one
 payload outside every mechanism this catalog governs: scope stops at the file, revoking the grant
 does not recall the copy, and a later redaction cannot reach it. It is graded by where the data
 goes, not by what the code is allowed to see.</p>
-<p><strong>Whether one permission is enough of a guard for all that is itself open</strong> — tracked as <strong>AT-4</strong>
-(<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">../open-questions.md</a>).
-The grading above is what is settled: the trail is read with the guard of person data, whichever
-permission or combination of permissions that guard turns out to be.</p>
+<p><strong>One permission is the guard, and that is now decided rather than open</strong>: <code>audit.view</code> is the whole gate,
+with no per-entry filter behind it
+(<a href="../../decisions/round-20/#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138</a>,
+answering <strong>AT-4</strong> (<a href="../../open-questions/#at-4">../open-questions.md</a>)). The grading above is what the
+decision rests on: the trail is read with the guard of person data, and the widening that comes with one code
+over a second copy of the record is written here as a property rather than left to be discovered. <strong>What the
+decision spends is exactly what it names:</strong> a history screen over the trail is a person-data surface, so
+⚠⚠ and the question of who holds this code are the whole of the control, and a grant to a wider audience
+widens reading about every year at once.</p>
 </blockquote>
 <h2 id="8a-events">8a. Events<a class="headerlink" href="#8a-events" title="Permanent link">&para;</a></h2>
 <p>An event is <strong>an item like any other</strong> (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).

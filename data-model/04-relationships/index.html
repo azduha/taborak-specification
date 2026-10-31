@@ -2331,6 +2331,8 @@
       
         
       
+        
+      
     
     
     
@@ -2886,6 +2888,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3427,12 +3457,22 @@ lowering someone's access to a medical file also locked them out of leaving the 
 Being a party grants the act; not being one leaves the actor's own <code>guardianship.*</code> role
 permissions to be tried, which is how staff in the table above get their ✅s. An explicit deny still
 runs first and beats both.</p>
-<p><strong>The asymmetry, stated plainly.</strong> A guardian may appoint a guardian: anyone with authority over
-a child can give a second person that same authority with no approval from the organization. The
+<p><strong>The asymmetry, stated plainly.</strong> A guardian may appoint a guardian: the act is one code —
+<code>guardianship.assign</code>, which <a href="../../appendix/permission-catalog-a-codes/#5-organization-and-positions">the catalog marks ⚠⚠</a>,
+second only to reading a person — and <strong>anyone holding it over a child gives a second person that same
+authority, with no approval from the organization and no second signature anywhere.</strong> The
 ordinary case is a mother adding the father. The design does not prevent the non-ordinary case;
-it <strong>attributes</strong> it instead — who added whom, when, from which account, is audited, and the other
-party is notified. That is a deterrent and an evidence trail, not a wall. See
-<a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</p>
+it <strong>attributes</strong> it instead — who added whom, when, from which account, is audited, <strong>and that is the whole of
+the control</strong>. <strong>Nothing notifies anybody.</strong> There is no office to notify and nothing in this design that would
+receive a notification at all, and the notice-to-a-"safeguarding-contact" option this page once recommended was
+<strong>refused rather than left un-built</strong>: a control whose recipient is a row somebody must remember to create is
+off by default and silent about being off, which is worse than a trail that is on whether or not anyone
+configured it (<a href="../../decisions/round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>).
+That is a deterrent and an evidence trail, not a wall, <strong>and the cost is the one that decision states plainly:
+nothing will ever tell a parent, a second guardian, or an officer that a third adult was given authority over a
+child</strong> — the answer to <em>who added them</em> is excellent, and the answer to <em>did anyone think about it</em> is the
+person who did it, alone, at the moment they did it. See
+<a href="../../open-questions/#e-6">E-6</a>.</p>
 <p><strong>The system does not notice birthdays in this connection.</strong> No job, no review queue, no computed
 candidate date (<a href="../../decisions/round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>,
 reversing D-024 and closing E-2).</p>
@@ -3823,8 +3863,11 @@ with no postal address behind it, which is a finance problem
 <hr />
 <h2 id="7-open-issues">7. Open issues<a class="headerlink" href="#7-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>A guardian may appoint a guardian, with no approval from the organization.</strong> Attributed and notified,
-  not prevented. <a href="../../open-questions/#e-6--a-guardian-may-appoint-a-guardian">E-6</a>.</li>
+<li><strong>A guardian may appoint a guardian, with no approval from the organization. — settled: attributed, and
+  nothing more.</strong> Audited, notified to nobody, not prevented; the recommendation this page made for a notice to
+  a safeguarding contact is deleted with the question, for the reason D-137 gives
+  (<a href="../../decisions/round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>,
+  <a href="../../open-questions/#e-6">E-6</a>). <strong>§1 states what that costs, and the cost is not closed by the decision.</strong></li>
 <li><strong>One right level cannot separate the health facts from the rest of the record</strong> — the arrangement the
   per-code model existed for. <a href="../../open-questions/#e-7">E-7</a>, and §2 states what it costs.</li>
 <li>Whether a guardian may act for a dependent who is also a member in their own right — e.g.

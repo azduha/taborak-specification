@@ -2209,6 +2209,8 @@
       
         
       
+        
+      
     
     
     
@@ -2764,6 +2766,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2993,13 +3023,24 @@ layer still stores everything and answers nothing. Three defences, none clever:<
 <li><strong>Recording a value is open; naming a thing is not.</strong> Anyone who can edit a person can write down
   what the doctor said tonight. Creating a code — deciding that this is now a thing the organization
   knows about people — takes a permission and a person who reads what they are given.</li>
-<li><strong>An improvised need becomes a proposal, not a workaround.</strong> The failure this is aimed at is
+<li><strong>An improvised need has somewhere to go, and it is not a queue.</strong> The failure this is aimed at is
   specific and familiar: at 23:00 on a Friday, there is no field for "carries an adrenaline
-  auto-injector", so the leader types it into a notes box, and it is never read by anyone again. A
-  proposal is visible, queued and curable; a notes box is neither.</li>
+  auto-injector", so the leader types it into a notes box, and it is never read by anyone again.
+  <strong>The answer is blunter than the proposal stage it replaced:</strong> naming the code is the act of whoever holds
+  <code>attribute.define</code>, and it is live the moment they save it — <strong>the permission is the curator</strong>, and a person
+  holding a permission is faster than a review list
+  (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>).
+  <strong>The leader at 23:00 does not hold it, and this design no longer pretends otherwise</strong>; what it keeps is that
+  a notes box is the worse of the two remaining options, and that a value recorded against a code <em>does</em> exist
+  reaches the screen that gets read at 23:00
+  (<a href="../../data-model/09-attributes/#4-who-may-read-and-who-may-write">../data-model/09-attributes.md §4</a>).</li>
 </ul>
-<p><strong>Curation is a job, and the documents say so rather than assuming it happens.</strong> An unwatched proposal
-queue is the same information loss arriving slowly instead of all at once
+<p><strong>Curation is a job, and the documents say so rather than assuming it happens.</strong> The queue that used to make
+the job visible is gone, and with it the age signal that said nobody had read the vocabulary in a month. What
+carries it now is narrower: <code>attribute.define</code> is held by few people, <strong>every definition they save is live at
+once with nobody between the save and the record</strong>, and the report that notices a vocabulary rotting is the one
+that lists a live code whose values contradict its type, a live code nobody ever used, and two codes close
+enough to be the same thing
 (<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).</p>
 <hr />
 <h2 id="3-who-needs-to-know-what">3. Who needs to know what<a class="headerlink" href="#3-who-needs-to-know-what" title="Permanent link">&para;</a></h2>
@@ -3030,7 +3071,7 @@ queue is the same information loss arriving slowly instead of all at once
 <tr>
 <td><strong>An event organizer</strong></td>
 <td>What matters on the day, for the people who registered</td>
-<td>The registration, and the event form that asks. Where the organization already recorded a fact, <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a> asks whether the form should prefill from it rather than re-asking every camper every season</td>
+<td>The registration, and the event form that asks. Where the organization already recorded a fact, <strong>the form prefills it as a suggestion the answerer confirms or edits, and confirming writes a fresh value back dated today</strong> — the question binds to the definition and never to a stored row (<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>, <a href="../../open-questions/#at-1">AT-1</a>)</td>
 </tr>
 <tr>
 <td><strong>A first aider at a camp</strong></td>

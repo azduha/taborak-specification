@@ -2399,6 +2399,8 @@
       
         
       
+        
+      
     
     
     
@@ -2941,6 +2943,34 @@
     
   
     Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
   
 
     
@@ -4103,9 +4133,18 @@ permission code</strong>, "do not lend more than you hold" is a set-membership t
 <p>Rules:</p>
 <ul>
 <li><strong>A delegation always has an end date.</strong> Enforced on the write path.</li>
-<li><strong>A delegation cannot exceed the delegator's own authority</strong> — validate at grant time that the code
-  being delegated is one the delegator currently resolves to, and re-check at use time, because the
-  delegator may lose it mid-delegation.</li>
+<li><strong>A delegation cannot exceed the delegator's own authority, and it is checked once: when it is
+  written.</strong> The save resolves the delegator and refuses a code they do not hold at that moment
+  (<a href="../../data-model/05-authorization/#6-access_grant--the-per-item-layer">05 §6</a>). <strong>Nothing re-checks it at
+  use time</strong>, and the page that carries this rule used to promise that it did
+  (<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>).
+  <strong>That was not a gap waiting for an implementation but a second rule the data model denies</strong>: a grant row
+  records who lent it and never what the lender can currently do, so a use-time check would have had to
+  resolve a person who is not party to the check, and it would have made a delegatee's access depend on
+  somebody else's history. <strong>A delegation therefore stands to its own <code>valid_to</code>, or to a revocation</strong> —
+  the delegator losing the code mid-delegation changes nothing, which is the cost of this rule and is said
+  out loud rather than left to be discovered. <strong>Two bounds remain:</strong> a delegation must carry an end date
+  (the check above), and <code>system.admin</code> cannot be delegated at all.</li>
 <li><strong>The provenance is recorded</strong>, so an audit can answer "who really had this authority on that date?"
   — it lists both the holder and the delegator.</li>
 <li><strong>A deny cannot be lent and cannot be lent around.</strong> A delegation is an allow; the delegatee's

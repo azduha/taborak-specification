@@ -2161,6 +2161,8 @@
       
         
       
+        
+      
     
     
     
@@ -2716,6 +2718,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3071,12 +3101,27 @@ what the record said.</p>
   reconstructed later." 
 - <strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
   not the redaction marker and who still have a current contact point whose value is not
-  redacted; non-zero means an erasure was left half done. <strong>The count now reaches two more places.</strong>
+  redacted; non-zero means an erasure was left half done. <strong>The count now reaches three more places, and the three
+  fail in two different shapes.</strong>
   First, <code>person_attribute</code>: a redacted person with <strong>any</strong> attribute row is an erasure that did not
   happen, since those rows are deleted rather than overwritten
-  (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>). That is check 6 of
+  (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>). That is check 5 of
   <a href="../09-attributes/#8-integrity-checks">09-attributes.md §8</a> read from this side — the same assertion,
-  not a second one. <strong>Second, and a different assertion, which only exists because values are logged
+  not a second one.
+  <strong>Second, and its shape is the opposite on purpose: <code>event_answer</code>.</strong> A redacted person with an answer row
+  still carrying a <code>value</code> is an erasure that stopped short of the event tables. Those rows are <strong>not</strong>
+  deleted — nothing about an event goes on a schedule, and an answer outlives its event indefinitely — so
+  erasure <strong>overwrites</strong>: <code>value</code> emptied, and <code>answered_at</code>, <code>answered_by</code> and the row itself kept, because
+  <em>they were asked and they answered</em> is the event's fact while <em>this is what they said</em> is the person's
+  (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>).
+  <strong><code>value</code> is the whole of the content here</strong>, since an answer is one typed value rather than a column per
+  type (<a href="../08-events/#7-event_question-and-event_answer">08-events.md §7</a>) — there is no second field that
+  survives an emptied value by holding the answer in another shape, which is the trap a check like this
+  would otherwise set for itself. <strong><code>event_registration</code> is counted by nothing here, and that is not an
+  oversight:</strong> whether a person came is organizational history rather than something to withdraw,
+  <a href="../00-conventions/#8-personal-data-and-erasure">00 §8's item 2</a> says so by name, and a check that reported
+  surviving registrations would be reporting the design working.
+  <strong>Third, and a different assertion, which only exists because values are logged
   on purpose: for a redacted person, no <code>audit_log</code> row about one of their <code>person_attribute</code> changes
   may still carry content.</strong> Content means <code>value</code>, <code>value_option_id</code> or <code>recorded_note</code> inside
   <code>old_values</code> or <code>new_values</code>; <code>person_id</code>, <code>attribute_definition_id</code> and <code>source</code> are not content and
@@ -3089,7 +3134,9 @@ what the record said.</p>
   stop having. Note what the check structurally <em>cannot</em> see — a copy that is present, readable, and
   perfectly legal, held by somebody whose permission is graded below its contents — because that failure
   leaves no rows to count; it is the guard, and the guard is reviewed by a person.
-  <strong>This check, check 5 and check 7 are the three here that should alert rather than log.</strong> A redaction
+  <strong>This check, check 5, check 7 and check 8 are the four here that should alert rather than log</strong> — three
+  because a value that outlives the rule about it cannot wait for a monthly report, and check 8 because it
+  is the same failure wearing the other trail's clothes. A redaction
   property that is reported once a month is a redaction property that fails between the reports, and
   unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
   regulator asks what the table holds.
@@ -3110,7 +3157,32 @@ what the record said.</p>
   the job does, because a check holding one value and a job holding another reports clean forever, which
   is the exact failure this check exists to prevent and the one it can cause by itself.</p>
 <ul>
-<li><strong>A change the trail never saw: an audited row whose newest audit row predates its own <code>updated_at</code>.</strong>
+<li>
+<p><strong>An <code>access_log</code> row older than the window that is still there.</strong> Count rows whose <code>occurred_at</code> predates
+  the window and which still exist.
+  <strong><a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">This is check 7's sibling and deliberately not its copy</a>.</strong>
+  Check 7 counts payloads that should have been emptied out of rows that stay; this one counts <strong>rows that
+  should be gone</strong>, on the other trail. Same clock, opposite operation — and merging them into one
+  "anything past 24 months" report is how both are lost, because the two findings are repaired by two
+  different jobs, one of which is an update and the other a delete, and because a single count cannot say
+  which half of the retention policy stopped. <strong>The direction of failure is the same, and it is the reason
+  this one alerts rather than logs</strong>: a job that stopped leaves a trail that looks entirely sound from
+  inside it, since nothing about a growing table reads as a promise broken. The only difference between it
+  and a healthy one is rows accumulating past the date the design said they would not exist, and the person
+  who notices is the one asked what the system holds about them.
+  <strong>Count, do not sample</strong>, for exactly the reason check 7 gives: a job that stopped after the newest
+  partition keeps the oldest rows and passes any sample drawn from the top. <strong>And read the window from the
+  same configuration the job reads</strong> — this is the second check that can be permanently satisfied by a
+  disagreement between two copies of one number, and it is the failure mode each of them would cause alone.
+  <strong>What it cannot do is demonstrate that anything was ever deleted.</strong> It counts what remains, which is the
+  only thing a count over a table can see, so a job that deletes from the wrong table passes it; the
+  standing guarantee here is not this report but the one on the other side of it, that the change trail is
+  never pruned (<a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>). <strong>This delete is the third named
+  exception to <a href="../00-conventions/#4-deletion-policy">00 §4</a>,</strong> and the only one driven by a calendar rather
+  than by a person asking or a batch being reverted.</p>
+</li>
+<li>
+<p><strong>A change the trail never saw: an audited row whose newest audit row predates its own <code>updated_at</code>.</strong>
   For every table <a href="../06-audit-and-import/#21-the-trigger">06 §2.1</a> obligates, take each row's <code>updated_at</code>
   and the newest <code>occurred_at</code> among the audit
   rows naming that table and <code>record_id</code>, and report the rows where the change is newer than the trail's
@@ -3134,7 +3206,8 @@ what the record said.</p>
   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
   and a reduced row keeps its <code>occurred_at</code> — so 24 months after the values went, this check still has both
   timestamps to compare. Coverage outlives content by design, which is the one part of this list that gets
-  no worse with age.</li>
+  no worse with age.</p>
+</li>
 </ul>
 <p><strong>Check 5 is worth automating as a test</strong>, not just a nightly query — a test that reads the
 table list in these documents and asserts every business table on it appears on the audited list,

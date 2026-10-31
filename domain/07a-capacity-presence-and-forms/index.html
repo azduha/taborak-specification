@@ -2211,6 +2211,8 @@
       
         
       
+        
+      
     
     
     
@@ -2766,6 +2768,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3020,6 +3050,20 @@ with <code>was_present = false</code>. A child who turned up without registering
 the day — is not representable, deliberately: that child was not in the organization's care
 and must not silently appear to have been. Recording them means registering them, which
 means they have a guardian and the organizers have a name.</p>
+<p><strong>And presence is not a record class.</strong> It is a column of a registration and it inherits everything a
+registration is: the same retention — nothing about an event goes on a schedule, so this mark is readable for
+as long as the registration is (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>)
+— and the same codes that already reach the roster and the mark
+(<a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>).
+<strong>Refused on both halves:</strong> no <code>presence_record</code> table with a retention of its own, and no <code>presence.view</code>
+narrower than the roster's — the second would have been a permission whose whole purpose is to hide the fact of
+attendance from the people asking <em>because they were there</em>. <strong>This system keeps no safeguarding register:</strong>
+there are no background checks here (<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>)
+and no medical record (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
+and a column with a special clock and a special permission would have been the first wall of an archive this
+design has refused four times. <strong>The protection this column has is that it is boring</strong>, and the question <em>"who
+was there on 14 March"</em> is answered by a report over registrations — which is why the index behind
+<code>was_present</code> serves a report and no selector.</p>
 <p><strong>And presence is not an audience.</strong> The temptation to build <code>PRESENT(&lt;event&gt;)</code> on this
 column — to let "everyone who came" be a set a grant names — is refused, and
 <a href="../07-events/#7-the-people-connected-to-an-event">§7</a> states why:
@@ -3027,6 +3071,19 @@ the column is <code>NULL</code> until somebody takes a register, so an operand o
 depend on a volunteer's diligence, and it would turn a safeguarding record into an access
 control. Attendance for the purposes of a grant stops at <code>ATTENDED</code>, <code>PLACED</code>, <code>CONFIRMED</code>
 and <code>ON_WAITLIST</code>.</p>
+<p><strong>And there is no <code>WHITELISTED</code> beside those four.</strong> No <code>is_whitelisted</code> column, no fifth tier, no
+operand of that name, no reserved selector code waiting for one
+(<a href="../../decisions/round-20/#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are">D-148</a>).
+The word is what people reach for when they want an audience of <em>the ones we invited</em>, and <strong>anybody adding
+<code>is_whitelisted</code> is reimplementing grants badly</strong>: a tier is a state a registration is in, and an invitation is
+not about a registration at all — it is a grant aimed at a person, which is a row that already exists and says
+who aimed it at whom. The invited person who has not registered is described by <strong>the absence of a row</strong> until
+they do, and is <code>ON_WAITLIST</code> the moment they register onto a full event
+(<a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>);
+that is not a gap a fifth value fills, because <code>PLACED</code> <em>is</em> the capacity set, so a whitelist set beside it
+misdescribes everybody in it. <strong>What this costs is what every prose refusal costs:</strong> nothing in the database
+refuses a future <code>WHITELISTED</code> row in <code>selector_type</code>, so an operand with no state behind it is a deployment bug
+and not a type error — the same exposure an off-list actor label carries.</p>
 <hr />
 <h2 id="10-cancellation-and-why-there-is-no-status-column">10. Cancellation, and why there is no <code>status</code> column<a class="headerlink" href="#10-cancellation-and-why-there-is-no-status-column" title="Permanent link">&para;</a></h2>
 <p><strong>There is no lifecycle status.</strong> An event is a row with dates and a set of grants.</p>
@@ -3213,18 +3270,28 @@ child registers for", and it is recorded as such in
 with the reasoning, so that nobody later "fixes" the apparent duplication between the two
 stores by tightening this one.</p>
 <p><strong>Event answers are not the person's record.</strong> They are operational detail for one event, read by that
-event's organizers, and they end with the event — while the same fact, recorded on the person, is
-audited, curable and erased with them. Those two copies are <strong>the same class of data</strong>
+event's organizers — and <strong>they are kept</strong>: nothing about an event goes on a schedule, so an answer outlives
+its event, its organizers and the season that asked the question
+(<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>),
+while the same fact recorded on the person is audited, curable and erased with them. Those two copies are
+<strong>the same class of data</strong>
 (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>),
-which is what turns the retention question in §13 into
-a real one, and <a href="../../open-questions/#at-1--should-an-event-question-bind-to-an-attribute-code">AT-1</a>
-into the alternative: collect the fact once, confirm it at the door. See
-<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">data-model/08a §11</a> for the retention
-question, which is open.</p>
+and the retention question that used to sit between them — the same sentence of personal data kept forever in
+one table and quietly discarded in another — <strong>is closed by the two rules agreeing, not by a schedule</strong>: an
+erasure reaches both, and the only difference left is the shape of the reaching, a delete where the row <em>is</em> the
+value and an emptying where the row is also a fact about the event. What still differs between the copies is
+who may read them, which is the widening the paragraphs above record. See
+<a href="../../open-questions/#at-1">AT-1</a> for the alternative this round took up instead of choosing between the two
+stores: <strong>collect the fact once and confirm it at the door</strong> — a bound question prefills from the stored value
+as a suggestion and writes back a fresh dated one
+(<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>).</p>
 <hr />
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
-<p>Moved to <a href="../../open-questions/">../open-questions.md</a> under <strong>G. Events</strong>, where they are
-tracked with the rest. The ones this module raises:</p>
+<p>Tracked with the rest in <a href="../../open-questions/">../open-questions.md</a>: the answered ones under
+<strong>R. Resolved</strong>, each carrying the decision that answered it, and the live ones where the module map points.
+<strong>Four of the seven below are settled and say so rather than reading as still open</strong> — that is deliberate,
+because a list of open issues that keeps asking an answered question is how a design gets reopened by a
+newcomer who reads the list and not the log. The ones this module raises:</p>
 <ul>
 <li><strong>The age ceiling on an open event — settled: accepted as a risk.</strong> The grant is the rule, and a
   ceiling is writable today as <code>event.register_self</code> aimed at <code>MEMBERS * YOUNGER(15)</code>
@@ -3247,24 +3314,30 @@ tracked with the rest. The ones this module raises:</p>
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
   as written; whether the editor should warn at the audience instead is unsettled
   (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>).</li>
-<li><strong><code>WHITELISTED</code>.</strong> No stored state to name it, so it is not a selector
-  (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>) — a question about
-  whether the feature is wanted, and not one about whether the language could hold it: a
-  predicate over a column is an ordinary operand now
-  (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>).</li>
-<li><strong>Event answer retention</strong> (§12). Answers end with the event — but a dietary answer naming a
-  condition is data of exactly the same class as what the person record holds, held under weaker rules
-  and fresher. No policy yet; see
-  <a href="../../open-questions/#ev-2--retention-of-event_answer">EV-2</a>.</li>
+<li><strong><code>WHITELISTED</code> — settled: refused.</strong> No stored state to name it, so it is not a selector, and there will be
+  no fifth presence tier, no <code>is_whitelisted</code> column and no reserved name
+  (<a href="../../decisions/round-20/#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are">D-148</a>).
+  It was a question about whether the feature is wanted rather than about whether the language could hold it —
+  a predicate over a column is an ordinary operand now
+  (<a href="../../decisions/round-11-12/#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded">D-107</a>)
+  — <strong>and the need it was reached for is met by rows that already exist</strong>, which §9 states.</li>
+<li><strong>Event answer retention — settled: nothing expires, and erasure empties rather than deletes</strong> (§12).
+  A dietary answer naming a condition <em>was</em> data of exactly the same class as what the person record holds,
+  held under weaker rules and fresher; <strong>the two rules now agree, so the asymmetry is gone rather than
+  mitigated</strong> (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>,
+  <a href="../../open-questions/#ev-2">EV-2</a>).</li>
 <li><strong>Cancelled events and fees</strong> (§10–11). Cancelling keeps the registrations; whether it
   releases the obligations, refunds them, or neither is the finance module's call.</li>
-<li><strong>Presence for minors and the safeguarding record</strong> (§9). <code>was_present</code> is the "who was in
-  our care" record. Whether it needs its own retention or its own permission is unresolved —
-  and <a href="../07-events/#7-the-people-connected-to-an-event">§7</a>'s refusal of <code>PRESENT</code> is the sharp edge of
-  why that matters.</li>
+<li><strong>Presence for minors and the safeguarding record — settled: it stays a column of the registration</strong> (§9).
+  No retention of its own, no permission of its own, no <code>presence_record</code> table, <strong>and no safeguarding register
+  behind any of it</strong> (<a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>,
+  <a href="../../open-questions/#ev-4">EV-4</a>). <a href="../07-events/#7-the-people-connected-to-an-event">§7</a>'s refusal of
+  <code>PRESENT</code> is the surviving sharp edge, and it is the reason no permission of its own was needed: the column is
+  a record of what happened, and not a set anybody is granted over.</li>
 </ul>
 <hr />
-<p><em>Decisions behind this page: D-023, D-040, D-044, D-061, D-064, D-065, D-067, D-070, D-074, D-079, D-083, D-097, D-102, D-107.</em></p>
+<p><em>Decisions behind this page: D-023, D-040, D-043, D-044, D-059, D-061, D-064, D-065, D-067, D-070, D-074,
+D-079, D-083, D-097, D-102, D-107, D-139, D-140, D-147, D-148.</em></p>
 
 
 

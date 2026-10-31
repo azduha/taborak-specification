@@ -2258,6 +2258,8 @@
       
         
       
+        
+      
     
     
     
@@ -2813,6 +2815,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3213,16 +3243,6 @@ and the copy ages out. If a case ever needs the long version, the fix is tempora
 on the value — <a href="../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
 reversed — and not a longer trail. No <code>valid_from</code> / <code>valid_to</code>, deliberately
 (<a href="../data-model/09-attributes/#3-person_attribute--a-value-one-person-has">data-model/09 §3</a>).</p>
-<p><strong>Proposed code</strong> — A definition that came into existence because somebody recorded a
-value against a code that did not exist. It waits in the curation queue: kept out of data
-entry forms and reports, yet <strong>readable by anyone already entitled to read the person</strong>,
-because the organization's data quality problem is not the family's confidentiality
-problem. It is where an improvised need at 23:00 goes instead of into a notes box that
-nobody will read again — <strong>improvised by a person at a desk</strong>, which is the whole meaning.
-It is emphatically <em>not</em> "whatever the legacy import did not understand": the codes a
-batch's column→code map names arrive <code>live</code>, because a curator read that map as one
-object before the batch applied, and several hundred proposals landing on day one would
-make this queue's age signal meaningless before it had ever meant anything.</p>
 <p><strong>Retired code</strong> — A definition taken out of data entry and left alone everywhere else:
 readable, reportable, revivable, its values untouched. <strong>Deleting a label must never
 delete the facts filed under it</strong>, or the badly-named label is never retired and the
@@ -3250,13 +3270,20 @@ of rows about a named person has a legal basis — organizational history plus a
 obligations, against a redacted person row that keeps the skeleton non-identifying — is
 unverified, and a decision log is not the document that grants it. The audit trail runs
 the opposite direction: rows forever, payloads for 24 months. Erasure sits outside both,
-immediate and absolute. The same window is <em>proposed</em> for <code>access_log</code> and is not yet
-confirmed (<a href="../open-questions/#f-8">F-8</a>).</p>
+immediate and absolute. <strong><code>access_log</code> is a third thing and neither clock:</strong> its <strong>rows are deleted</strong> 24
+months after they are written, by a scheduled job, because what was <em>read</em> stops being answerable and no
+skeleton of it is kept — the two trails now differ in <strong>kind</strong> and not only in length
+(<a href="../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>).
+<strong>Three exceptions to "nothing is hard-deleted", then:</strong> a staging truncate, the delete an erasure has to
+make, and this trail ending on a calendar (<a href="../data-model/00-conventions/#4-deletion-policy">data-model/00 §4</a>).</p>
 <p><strong>Curation</strong> — Keeping the vocabulary meaning one thing: merging near-duplicates,
-promoting or discarding proposals, retiring codes nobody uses, and writing the
+retiring codes nobody uses, and writing the
 description that stops one code meaning four things to four people. It is
-<code>attribute.define</code> plus somebody who reads what they are given, and the documents treat
-it as a job rather than an outcome — an open vocabulary left unwatched decays into
+<code>attribute.define</code> plus somebody who reads what they are given — <strong>the permission is the curator</strong>, there
+being no proposal stage and no queue between a save and the record
+(<a href="../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>),
+which is also why curation has no age signal any more: what notices a rotting vocabulary is a report, not a
+waiting list. The documents treat it as a job rather than an outcome — an open vocabulary left unwatched decays into
 <code>allergy</code>, <code>Allergy</code>, <code>alergie</code> and <code>allergies (2)</code>, after which the layer still stores
 everything and answers nothing.</p>
 <p><em>Not to be confused with</em> <strong>identity</strong>, which stays structured in its own tables: a fact
@@ -3505,7 +3532,7 @@ to. From widest to narrowest:</p>
 full event says yes to more people than it can seat, and <code>CONFIRMED</code> is narrower than
 <code>PLACED</code> because a seat is not a headcount. <strong><code>WHITELISTED</code> is not one of these</strong>, and is
 not a selector at all — see
-<a href="../open-questions/#ev-6--whitelisted--the-word-people-reach-for-with-no-stored-state-to-name">EV-6</a>.</p>
+<a href="../open-questions/#ev-6">EV-6</a>.</p>
 <hr />
 <h2 id="money">Money<a class="headerlink" href="#money" title="Permanent link">&para;</a></h2>
 <p><strong>Payment request</strong> — A liability rendered payable: an amount, a recipient account, a

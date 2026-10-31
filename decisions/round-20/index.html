@@ -1,0 +1,3846 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/decisions/round-20/">
+      
+      
+        <link rel="prev" href="../round-19/">
+      
+      
+        <link rel="next" href="../../open-questions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Round 20 - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#decision-log--refinement-round-20-d-137--d-149" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Round 20
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06a-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Import Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-a-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-b-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-a-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog: the codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-b-roles-and-open-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/removed-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-137 — A guardian may appoint a guardian, and nobody at the organization is told
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-138 — One permission guards the whole audit trail, and the widening is on the record
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-139 — An event question may bind to a stored value: it prefills as a suggestion and writes back as an answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-140 — Nothing about an event is deleted on a schedule, and erasure empties an answer without deleting it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-141 — A definition is live at the save; the proposal stage, its queue and its check are deleted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-142 — The displayed name stays a copy, and the check that counts its drift is named at last
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-143 — A delegation is validated once, when it is written, and stands to its own end date
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-144 — right_kind is a note: required by the schema, checked against nothing, and no longer claiming to be checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-145 — access_log rows are deleted at 24 months, and the job that does it has a name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-146 — An outbound call is a person's act or a job, and nothing about it is designed yet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-147 — Presence stays on the registration: no clock of its own, no permission of its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-148 — There is no WHITELISTED, and the refusal is written where the tiers are
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-149 — Words are stored in one language, and a label is not translated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-round-did-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the round did not do
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-137 — A guardian may appoint a guardian, and nobody at the organization is told
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-138 — One permission guards the whole audit trail, and the widening is on the record
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-139 — An event question may bind to a stored value: it prefills as a suggestion and writes back as an answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-140 — Nothing about an event is deleted on a schedule, and erasure empties an answer without deleting it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-141 — A definition is live at the save; the proposal stage, its queue and its check are deleted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-142 — The displayed name stays a copy, and the check that counts its drift is named at last
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-143 — A delegation is validated once, when it is written, and stands to its own end date
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-144 — right_kind is a note: required by the schema, checked against nothing, and no longer claiming to be checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-145 — access_log rows are deleted at 24 months, and the job that does it has a name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-146 — An outbound call is a person's act or a job, and nothing about it is designed yet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-147 — Presence stays on the registration: no clock of its own, no permission of its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-148 — There is no WHITELISTED, and the refusal is written where the tiers are
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-149 — Words are stored in one language, and a label is not translated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-round-did-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the round did not do
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/decisions/round-20.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/decisions/round-20.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="decision-log--refinement-round-20-d-137--d-149">Decision Log — Refinement round 20 (D-137 … D-149)<a class="headerlink" href="#decision-log--refinement-round-20-d-137--d-149" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Thirteen open questions answered in one sitting: the attribute vocabulary loses its proposal stage and its queue, <code>access_log</code> rows are deleted at 24 months while the audit trail keeps its shape, a delegation is validated once and stands, a display name's drift gets the check it already had, and four words — <code>WHITELISTED</code>, a translated label, an expired registration, a notification nobody receives — are refused in writing. Four questions survive the round untouched and a fifth arrives with it; not one of the five is 🟡.</p>
+</blockquote>
+<p><a href="../round-19/">Refinement round 19 (D-133 … D-136) ←</a> | <a href="../">All decisions</a></p>
+<p><strong>What was asked.</strong> Put the open questions, in batches, and write down what came back. Seventeen were on
+the page; thirteen were put and answered, and four were left where they are (<a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4's remainder</a>,
+<a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a>, <a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row">F-9</a>, <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>) because
+answering them needs a document or a lawyer rather than a ruling. <strong>Every 🟡 on that page was answered this
+round</strong> — all six of them — which is why the page now reads as a list of things that can be deferred, and why
+<a href="../../open-questions/#f-33">§ J</a> emptied itself and was
+deleted the way sections B, C and D were.</p>
+<p><strong>What the round found while answering, which is again the part worth reading.</strong> Four of the thirteen
+questions arrived with a premise the corpus had already invalidated, and in one case the premise and the
+answer were on opposite sides of a contradiction the corpus was living inside.</p>
+<ul>
+<li><strong>F-32 was not a choice between two policies; it was a contradiction with one side already implemented.</strong>
+  The question asked whether a stale delegation should be <em>reported</em> or left invisible, presuming the design
+  re-checks it. <a href="../../domain/06-authorization-model/#9-delegation">domain/06 §9</a> does promise that — "validate
+  at grant time <strong>and re-check at use time</strong>" — and
+  <a href="../../data-model/05-authorization/#6-access_grant--the-per-item-layer">05 §6</a> says flatly the opposite:
+  "<strong>nothing about the person who lent it is re-validated when a check runs</strong>". <a href="../../appendix/removed-concepts/">removed-concepts</a>
+  records why: the column that made a use-time re-check possible was deleted, "and with it the second half of
+  the guard — there is no source row left to re-validate". So two pages promised a thing two other pages say
+  cannot happen, and the invariant register said the rule was enforced twice, once of them silently. <strong>The
+  ruling picked the side the data model was already on</strong>, which makes this entry a repair with a reason
+  attached rather than a change of behaviour.</li>
+<li><strong>F-28's register row claimed a rule had no report beneath it. The report was already written.</strong>
+  <a href="../../data-model/01b-merges-views-and-checks/#10-integrity-checks">01b §10</a> counts persons whose
+  <code>given_name</code>/<code>family_name</code> differ from the open <code>person_name</code> row — the exact check the open question
+  offered as "cheap to write" — and closes by saying the check exists and that what is undecided is whether a
+  report is the right thing or the copy is the wrong one. Round 18 minted that row beside the inventory, and
+  its <code>**none**</code> was wrong <strong>in the understating direction</strong>: the table said nothing watches a rule that
+  something watches. <a href="../round-19/">Round 19</a> found a register row claiming more than its page said; this
+  round found the mirror image, and <a href="../round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a>
+  catches both — <strong>a register row is a claim about a page, and <code>none</code> is as much a claim as a citation.</strong></li>
+<li><strong>AT-2's proposal stage was a third status no decision had granted.</strong>
+  <a href="../round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a> settled the
+  vocabulary in one sentence — "a status of <strong>live or retired</strong>" — and the pages and the inventory carried
+  <code>proposed</code> anyway, complete with a <code>proposed_by</code>, a <code>proposed_at</code>, an import fallback that writes it, and
+  <a href="../../data-model/09-attributes/#8-integrity-checks">an integrity check</a> whose whole job is to age it out.
+  A mechanism was built for a status that arrived by transcription.</li>
+<li><strong>E-6's answer had no addressee.</strong> The question's own recommendation asked for a "safeguarding contact" to
+  be notified, and no such office exists: <code>safeguarding_officer</code> is listed among the worked examples the
+  catalog marks as not shipping, and <a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
+  is about to delete the seed that would have offered one. A question that asks "who should be told" cannot be
+  answered by naming a person the design does not have, so the answer is the one that needs nobody: the trail
+  is the control.</li>
+<li><strong>One deletion moved ten citations, all of them ordinals.</strong> Deleting
+  <a href="../../data-model/09-attributes/#8-integrity-checks">09 §8</a>'s first check renumbers the six that follow it,
+  and ten sentences cite those checks by number: <strong>six inside the page that owns them</strong>, two in the invariant
+  register, one in <a href="../../data-model/01b-merges-views-and-checks/#10-integrity-checks">01b</a> and one in
+  <a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>. <strong>Two more citations died with the
+  thing they pointed at</strong> — both were the curation queue reaching for the age-out check that is now gone. All
+  ten were rewritten, and all ten were found <strong>by grepping the number rather than by remembering to look</strong>: a
+  checker aimed at the target of <code>§8 check 4</code> keeps passing after the list above it shrinks, because the
+  target still exists and still says check 4.
+  <strong>An ordinal is a pointer that moves when the list above it changes</strong>, which is the same failure this
+  corpus keeps hitting from the other end: a checker verifies a target and never a claim, and nothing at all
+  verifies a number beside a sentence. <strong>This round counted this list wrong while writing it</strong> — it said seven
+  sentences and then named eight — which is why the count here is stated as grepped, not as remembered.</li>
+</ul>
+<hr />
+<h2 id="d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137 — A guardian may appoint a guardian, and nobody at the organization is told<a class="headerlink" href="#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#e-6">E-6</a> asked what happens when a guardian adds a <em>second</em> guardian over
+a child. Guardianship is a channel with a <code>right_level</code> (<a href="../round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>),
+so the act is inside the model already: a person with <code>guardianship.assign</code> writes a row. What was undecided
+was whether the organization should <em>hear about it</em> — the page offered a notification to a safeguarding
+contact, a review queue, or silence, and it recommended the notification.</p>
+<p><strong>Answer.</strong> <strong>Attribution is enough. No notification, no queue, no addressee.</strong> The act is a write, the write
+is audited with the actor who made it and the person it was about, and that trail is the whole control.
+There is no office to notify and nothing in this design that would receive a notification at all.</p>
+<p><strong>Why the recommended option was the wrong one, not merely the expensive one.</strong> The recommendation named a
+"safeguarding contact" as if the design had one. It does not, and it cannot offer one without a grant aimed
+at a person or an office somebody writes — which is exactly the machinery
+<a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
+is going to delete from the seed. <strong>A notification whose recipient is a row somebody must remember to create
+is a control that is off by default and silent about being off</strong>, which is worse than the trail, because the
+trail is on whether or not anyone configured it. This is the same reasoning that refused a report for
+<a href="../round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">F-29</a>: a guard nobody reads is not a
+control, and a guard nobody configures is not one either.</p>
+<p><strong>What this costs, said plainly.</strong> Nothing will ever tell a parent, a second guardian, or an officer that a
+third adult was given authority over a child. The answer to "who added this person, and when" is excellent and
+the answer to "did anyone think about it" is <em>the person who did it, alone, at the moment they did it</em>. The
+mitigation that does exist is that <code>guardianship.assign</code> is one of the codes this corpus marks ⚠⚠ — the grant
+is the rare thing, not the act.</p>
+<p><strong>Changes no table and no column.</strong> The open question's recommendation is deleted with the question; the
+<code>guardianship.assign</code> row in <a href="../../appendix/permission-catalog-a-codes/#5-organization-and-positions">catalog-a §5</a>
+is unchanged.</p>
+<p><strong>See:</strong> <a href="../../domain/06-authorization-model/#1-the-three-channels-of-authority">domain/06 §1</a>,
+<a href="../../data-model/04-relationships/">04 §Guardianship</a>, and
+<a href="../../open-questions/#e-6">E-6</a> in § R.</p>
+<hr />
+<h2 id="d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138 — One permission guards the whole audit trail, and the widening is on the record<a class="headerlink" href="#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#at-4">AT-4</a> asked whether <code>audit.view</code> is enough to guard a trail that
+holds person data. The trail's payloads are values a person wrote — an old address, an allergy, a diagnosis —
+emptied 24 months later (<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
+but readable in full until then, and they are readable <strong>whether or not the reader may read the person they
+describe</strong>. <a href="../../data-model/06-audit-and-import/#23-history-query">06 §2.3</a> records that a per-entry "could
+this reader see this field" check was considered and left unimplemented; <a href="../round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>
+declined to stretch the trail for a report and explicitly did not answer this.</p>
+<p><strong>Answer.</strong> <strong><code>audit.view</code> is the whole gate. One permission, one check, no per-entry filter, now decided
+rather than merely unbuilt.</strong> The history view is a person-data surface and is treated as one: the code is
+granted rarely, it is marked, and what it opens is the entire trail.</p>
+<p><strong>What was refused, and what the refusal is really buying.</strong> The alternative was a check inside the history
+view comparing each entry's subject against the reader's own reach. It would have been <em>correct</em> and it would
+have been slow in the way D-114 says this system accepts — a check that resolves rather than caches — but it
+would also have made the trail's readability depend on the same audience expressions it exists to explain, so
+that a rule changed last week would silently rewrite what an officer can read about 2019.
+<strong>The trail's value is that it is legible without re-resolving history, and a per-entry check spends exactly
+that.</strong> The widening is therefore accepted as a property, stated in the pages that grant the code instead of
+being left to be discovered by whoever first opens the screen.</p>
+<p><strong>What this does not do.</strong> It does not widen anything. No behaviour changes: nothing in the corpus has ever
+implemented the per-entry check, so this decision turns an omission into a position and pays for it in a
+sentence. It is also not the same question as <a href="../../open-questions/#f-17">F-17</a> — whether "who could read this
+in 2023" is reconstructable at all — which stays open.</p>
+<p><strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/06-audit-and-import/#23-history-query">06 §2.3</a>,
+<a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05c §9</a>,
+<a href="../round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>,
+<a href="../round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>, and
+<a href="../../open-questions/#at-4">AT-4</a> in § R.</p>
+<hr />
+<h2 id="d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139 — An event question may bind to a stored value: it prefills as a suggestion and writes back as an answer<a class="headerlink" href="#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#at-1">AT-1</a> asked whether an <code>event_question</code> may be tied to an
+<code>attribute_definition</code> code, so that a camp form asking "do you take any medication" and the person's stored
+attribute are the same fact twice, or one fact asked twice. Two reasons had kept it open: the form's answer
+and the record's value would disagree with no rule saying which wins, and
+<a href="../../data-model/00-conventions/#4-deletion-policy">00 §4's erasure exception</a> had a condition on its face:
+"<strong>This exception is safe only while nothing references an attribute row, and nothing does today</strong>", naming
+this very binding as the thing that would break it.</p>
+<p><strong>Answer.</strong> <strong>The binding is allowed, in one direction, with both ends named.</strong> A question may hold a
+<code>bound_attribute_code</code> — nullable, pointing at the <strong>definition</strong>, never at a value row. The form
+<strong>prefills</strong> from the person's current value as a suggestion, which the answerer sees and may change; nothing
+is hidden from them and nothing is silently copied. On submit, <strong>the answer writes back</strong> to
+<code>person_attribute</code> as a new value, dated <strong>today</strong>, recorded as written by the person who submitted the form.
+The answer stays a row of the event either way; the write-back is a second act, not the same row twice.</p>
+<p><strong>Why the binding does not detonate the rule it was fenced off by.</strong> The condition in §4 protects erasure's
+one hard delete: redaction deletes <code>person_attribute</code> rows outright, and that delete is invisible only for as
+long as nothing points <em>at those rows</em>. <strong>A bound question points at the vocabulary, not at a value</strong> — at
+<code>attribute_definition.code</code>, which is never deleted, is retired instead, and survives the person entirely.
+So the reference edge §9 would have to walk does not exist: the question names a code, the value rows under it
+come and go with the person, and erasure's delete stays invisible. This is recorded here rather than left as a
+lucky consequence, because the next person to design a binding will reach for a value's key; a reference from
+an event row to a <code>person_attribute</code> <strong>row id</strong> remains exactly as forbidden as §4 says it is.</p>
+<p><strong>Which one wins, and when neither does.</strong> The person record wins as of today, because the write-back is dated
+today and the attribute's history is the record of what was believed when. An answer is not corrected when the
+record later changes, and the record is not corrected when an old answer said otherwise — <strong>they are two
+dated statements of the same fact at two moments, which is the shape this corpus already uses for a name.</strong>
+Where the answer contradicts the stored value, the difference is visible on the form (the prefill <em>shows</em> the
+stored value) and that is the intended repair route: a person who edits the prefill is editing the record.</p>
+<p><strong>What this costs.</strong> A form can now write to the person record, which is a new path into <code>person_attribute</code>
+and the first place outside the person's own editing where an attribute value arrives without a staff member
+in the middle of it. The write goes through the same <code>person.edit</code> permission the answering channel already
+uses, is audited with the answerer as its actor, and is refused — with the form still saving its answer — when
+that write is not permitted, so a form never half-writes a person. And a bound question now cannot be
+re-pointed at a different code without noticing that its past answers belong to the old one; they stay what
+they were.</p>
+<p><strong>Adds:</strong> one nullable column, <code>event_question.bound_attribute_code</code>, <strong>holding an <code>attribute_definition.code</code>
+by value and not a row id</strong> — which is what keeps <a href="../../data-model/00-conventions/#4-deletion-policy">00 §4</a>'s
+ban on row references intact, and what makes this decision answer a question shape 4 had never been asked.
+<strong>Because a code is now referenced, <a href="../round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>'s
+test reaches a vocabulary code for the first time: <code>attribute_definition.code</code> joins shape 4.</strong> A definition may
+still be retired, and may still be merged — the merge of two codes is exactly the deliberate re-point this entry
+already demands, and it carries the bound questions with it rather than orphaning them — but a code with a
+question bound to it may no longer be renamed, because a rename would silently re-answer every form that was
+asked under the old name. <strong>The register carries the row</strong>
+(<a href="../../data-model/00a-invariant-register/#4-a-value-that-may-never-change-once-set">00a §4</a>), and the register
+grew from six members to seven the day a form was allowed to point at a word.
+<strong>Retires:</strong> assumption 58's half that a form answer never reaches the person record.</p>
+<p><strong>See:</strong> <a href="../../data-model/09-attributes/#3-person_attribute--a-value-one-person-has">09 §3</a>,
+<a href="../../data-model/09-attributes/#4-who-may-read-and-who-may-write">09 §4</a>,
+<a href="../../data-model/08-events/#7-event_question-and-event_answer">08 §7</a>,
+<a href="../../data-model/00-conventions/#4-deletion-policy">00 §4</a>,
+<a href="../../domain/07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">domain/07a §12</a>, and
+<a href="../../open-questions/#at-1">AT-1</a> in § R.</p>
+<hr />
+<h2 id="d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140 — Nothing about an event is deleted on a schedule, and erasure empties an answer without deleting it<a class="headerlink" href="#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#ev-2">EV-2</a> asked how long an <code>event_answer</code> survives its event. Three
+pages said answers "end with the event" and none said when, what happens to them, or who does it; the same
+question noted that the identical fact recorded as a <code>person_attribute</code> is <strong>not</strong> deleted on a schedule at
+all, so the freshest copy of a health fact was the weakest-protected one.</p>
+<p><strong>Answer.</strong> <strong>There is no expiry for registrations or answers. Neither ends with its event, and neither ends
+on a clock.</strong> They follow the rule the accounting skeleton already follows: the row is a fact about a dated
+occasion, and it is kept. <strong>Erasure does reach them, and it empties them:</strong> a redacted person's
+<code>event_answer.value</code> is set to empty and the row survives, because "they answered that question" and "this is
+what they said" are two different facts and only the second one is theirs to withdraw. The rows of
+<code>event_registration</code> are kept as they are today; a cancelled event already keeps every registration
+(<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">08a §8, guard 2</a>), and a cancelled event with no registrations would be an
+event that demonstrably never happened.</p>
+<p><strong>Why this direction and not a schedule.</strong> The question's own sharpest point was the asymmetry: the same
+sentence of personal data, kept forever in one table and quietly discarded in another, with the discarded one
+being the copy a camp leader actually reads. A schedule would have had to be justified to the person it
+deletes from, and "we forget it after N years because that number is defensible" is a weaker answer than "we
+keep what happened and we erase what you ask us to". It also would have been the third retention clock in a
+system that has deliberately managed with two (<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).</p>
+<p><strong>What "empty the value, keep the row" costs.</strong> An emptied answer still says something — that a question was
+asked and answered, by whom, on what date — and that residue is deliberate, the same residue D-088 leaves in
+an audit payload. It is also a rule that store has to implement rather than one the schema enforces:
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure">00 §8</a> now lists <code>event_answer</code> beside
+<code>person_attribute</code> among the places erasure has to reach, and
+<a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>'s erasure check counts emptied-value
+answers the way it counts surviving names, so an erasure that forgot the event tables stops passing a check.</p>
+<p><strong>Deletes:</strong> the phrase "answers end with the event" wherever it stands as a policy, and <code>event_answer</code>'s
+open retention item from two open-issue lists. <strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/08-events/#7-event_question-and-event_answer">08 §7</a>,
+<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">08a §11</a>,
+<a href="../../domain/07a-capacity-presence-and-forms/#12-the-forms-questions-and-answers">07a §12</a>,
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure">00 §8</a>,
+<a href="../round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>, and
+<a href="../../open-questions/#ev-2">EV-2</a> in § R.</p>
+<hr />
+<h2 id="d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141 — A definition is live at the save; the proposal stage, its queue and its check are deleted<a class="headerlink" href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#at-2">AT-2</a> asked who curates the attribute vocabulary and how long a
+proposed definition may sit before somebody rules on it. The pages described a two-stage life: an
+<code>attribute_definition</code> could be <code>proposed</code>, carrying <code>proposed_by</code> and <code>proposed_at</code>, waiting in a curation
+queue for a curator to make it live — and an import column nobody had mapped arrived there by itself, so the
+corpus could acquire vocabulary through nobody deciding anything.</p>
+<p><strong>Answer.</strong> <strong>There is no proposal, and every field must be defined beforehand.</strong> <code>attribute.define</code> is the
+curating permission and a definition <strong>is live at the save</strong>: the same person's write that names a code
+publishes it. <code>status</code> keeps the two values <a href="../round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>
+granted it — <code>live</code> and <code>retired</code> — and nothing else. <code>proposed_by</code> and <code>proposed_at</code> are deleted, there is no
+review list, no waiting, no age-out, and no curator role: <strong>the permission is the curator.</strong></p>
+<p><strong>Refused:</strong> a value inventing a code. A person recording a value under <code>person.edit</code> cannot create
+vocabulary by typing something adjacent to it, and the mechanism that made that possible — writing the
+unknown as a <code>proposed</code> definition and letting it wait — is gone. <strong>An import column that maps to no defined
+attribute is an error at apply time, not a proposal.</strong> A row that would need a new code either has one
+already written by someone holding <code>attribute.define</code>, or it does not import and the batch says so. That is
+the strictest of the options on the question's page and it was chosen for the reason the answer gave: a
+vocabulary is the one registry where an unreviewed addition is permanent in effect even if it is deletable in
+principle, because every value recorded against a bad code inherits it.</p>
+<p><strong>What this exposes, stated rather than smoothed over.</strong> <code>attribute.define</code> is held by nothing at day one —
+the seed that would have held it is deleted by
+<a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>,
+and the vocabulary therefore starts empty and stays empty until a person with the code writes it. Day one has
+exactly one account, holding <code>system.admin</code>, so day one's vocabulary is written by that account; after that,
+whoever the organization aims the code at. Two pages had been asserting a "named curator" as a role that
+reads what it is given; both are corrected, because a role is an office that confers nothing
+(<a href="../round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>) and
+the only thing here that curates is a permission.</p>
+<p><strong>What a bad code costs now.</strong> It is live the moment it is saved, with no gate in front of it, and the values
+recorded against it are real values on real people from that moment. The defence is three things and no more:
+saving a definition needs a permission, the trail records every save, and a code can be <code>retired</code> — which
+keeps its values and stops new ones (<a href="../round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>'s
+rule for anything a rule names).</p>
+<p><strong>Deletes:</strong> the <code>proposed</code> status, <code>proposed_by</code>, <code>proposed_at</code>, the curation queue, the "Proposed code"
+glossary entry, the import's unmapped-column fallback, and
+<a href="../../data-model/09-attributes/#8-integrity-checks">09 §8 check 1</a> — which ages out a status that no longer
+exists. <strong>Renumbering</strong> §8's remaining six checks moves six ordinal citations in other pages and four more in
+the same page; all ten are recomputed, not remembered. <strong>Changes one table</strong> (<code>attribute_definition</code>: one
+status value and two columns gone; <code>event_question</code> gains <a href="#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>'s
+column in the same round, so the vocabulary and its first consumer move together).</p>
+<p><strong>See:</strong> <a href="../../data-model/09-attributes/#2-attribute_definition--the-vocabulary">09 §2</a>,
+<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">09 §7</a>,
+<a href="../../data-model/06a-import/">06a</a>,
+<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">08a §11</a>,
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#12-open-issues">catalog-b §12</a>,
+<a href="../round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>, and
+<a href="../../open-questions/#at-2">AT-2</a> in § R.</p>
+<hr />
+<h2 id="d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last">D-142 — The displayed name stays a copy, and the check that counts its drift is named at last<a class="headerlink" href="#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#f-28">F-28</a> asked whether the denormalised <code>given_name</code>/<code>family_name</code> on
+<code>person</code> is a copy to keep in step with <code>person_name</code>, or a field to delete so that the displayed name is
+always read from the history. The register carried the rule "the denormalised name agrees with the name
+history" with <strong>no report beneath it at all</strong>.</p>
+<p><strong>Answer.</strong> <strong>The copy stays, and the drift is reported.</strong> <code>person.given_name</code>/<code>family_name</code> remain, written
+in the same transaction that writes the name history, and the check that counts the persons where they have
+driven apart is named as the rule's backstop: <a href="../../data-model/01b-merges-views-and-checks/#10-integrity-checks">01b §10</a>
+counts persons whose two columns differ from the <code>person_name</code> row with no <code>valid_to</code>. <strong>That check already
+existed</strong> — see the lede — so what this decision changes is which page admits it.</p>
+<p><strong>Why keep a denormalised copy at all, in a corpus that has deleted several.</strong> Because the name a reader must
+be able to print for a person who has never been opened as a record — a roster printed at a door, a label, a
+search hit — should not depend on walking a history table to find the open row. The alternative was a view,
+and a view is what this design already has: the copy is the <em>materialised</em> half of it, and the drift check is
+the price of materialising anything, paid in the open. The display rule is unchanged —
+<code>preferred_name ?? given_name</code>, from <a href="../../data-model/01-identity/#2-person">01 §2</a>.</p>
+<p><strong>What it costs:</strong> a name can be wrong in one place while right in another, and only a report will notice.
+That is what a denormalised column is; the design declines to be surprised by it.</p>
+<p><strong>Deletes:</strong> nothing but a sentence in 01b §10 that was still asking the question the check beside it had
+answered, and one <code>**none**</code> in <a href="../../data-model/00a-invariant-register/">00a</a> — the second of the seven to
+go, and the first that was wrong because it understated what the design already does.</p>
+<p><strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/01-identity/#2-person">01 §2</a>,
+<a href="../../data-model/01b-merges-views-and-checks/#10-integrity-checks">01b §10</a>,
+<a href="../../data-model/00a-invariant-register/">00a</a>,
+<a href="../round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a>, and
+<a href="../../open-questions/#f-28">F-28</a> in § R.</p>
+<hr />
+<h2 id="d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143 — A delegation is validated once, when it is written, and stands to its own end date<a class="headerlink" href="#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#f-32">F-32</a> asked whether a delegation whose delegator has lost the code
+should be reported or left invisible, on the understanding that the design re-checks the delegator at use
+time, so that a loan stops working the instant it goes stale and the delegatee gets an ordinary denial that
+explains nothing.</p>
+<p><strong>Answer.</strong> <strong>The delegator is checked once, at grant time, and never again. No report is written, nothing
+cascades, and the delegation stands until its own <code>valid_to</code> or a revocation.</strong> "You may not lend more than you
+hold" is a set-membership test on the person writing the grant
+(<a href="../../domain/06-authorization-model/#9-delegation">domain/06 §9</a>); it is true of the moment it is checked and
+it is not a promise about the term. <strong>The check was simplified as well as scoped</strong>: the register's layer
+column no longer claims the rule is enforced twice a day, once of them silently.</p>
+<p><strong>Why this is a repair and not a policy choice.</strong> Because the design was already this way and one page had not
+noticed — see the lede. <a href="../../data-model/05-authorization/#6-access_grant--the-per-item-layer">05 §6</a> states
+that nothing about the lender is re-validated when a check runs and draws the consequence itself: <em>that is
+why a delegation must expire</em>. <a href="../../appendix/removed-concepts/">removed-concepts</a> records that the column
+which made the re-check possible is gone with the table it named. <strong>Keeping domain/06's promise would have
+been a design change</strong>; deleting it is the cheapest correct answer available, and the user's ruling said to
+simplify the check rather than to build it.</p>
+<p><strong>The two bounds that survive, which are what makes this tolerable rather than merely cheap.</strong>
+<strong>A delegation must expire</strong> — <code>valid_to</code> is required on a delegated grant and
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">integrity check 11</a> reports one that does not — and <strong><code>system.admin</code>
+may not be delegated at all</strong>. So the failure this ruling permits has a shape: a person keeps an authority
+their lender no longer holds, <strong>for a term somebody fixed in advance and cannot exceed</strong>, and the trail says
+who lent it to whom. What it does not permit is a permanent loan of the only code that can restructure the
+system.</p>
+<p><strong>What it costs.</strong> A delegate may be doing something they should no longer be able to do, and nothing will
+tell anybody until the loan's own date arrives or someone notices and revokes it. The corpus previously
+promised the opposite and promised it <em>silently</em> — a stale loan would stop with an ordinary denial, indistinguishable
+from never having had it, which is the kind of guarantee that reads as safety and is actually a person
+wondering why their tool broke. A bound that is visible and ends is a better object than an invisible one that
+might never end.</p>
+<p><strong>Deletes:</strong> the use-time half of the delegation rule in <a href="../../domain/06-authorization-model/#9-delegation">domain/06 §9</a>,
+the register's second enforcement point for that row, and F-32's report option. <strong>Changes no table and no
+column</strong> — and no code, since the resolver never had the second check to remove.</p>
+<p><strong>See:</strong> <a href="../../domain/06-authorization-model/#9-delegation">domain/06 §9</a>,
+<a href="../../data-model/05-authorization/#6-access_grant--the-per-item-layer">05 §6</a>,
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 11</a>,
+<a href="../../appendix/removed-concepts/">removed-concepts</a>, and
+<a href="../../open-questions/#f-32">F-32</a> in § R.</p>
+<hr />
+<h2 id="d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked">D-144 — <code>right_kind</code> is a note: required by the schema, checked against nothing, and no longer claiming to be checked<a class="headerlink" href="#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#f-33">F-33</a> asked whether a permission's <code>right_kind</code> has to agree with
+what the code says — <code>event.answer.view</code> being <code>view</code> — or whether it is a description that the row keeps for
+its reader. The register carried "a code's <code>right_kind</code> matches what the code says" against the save path,
+with no report beneath it.</p>
+<p><strong>Answer.</strong> <strong>It stays required and it agrees with nothing.</strong> No constraint, no check, no report. The column
+is required because a row in <code>permission</code> is read by a person deciding what to grant, and a code whose
+declared kind reads oddly is worth noticing <strong>while reading</strong>; not because anything will ever tell anybody.
+It is admitted as a note, which is what <a href="../../appendix/permission-catalog-a-codes/">catalog-a §8b</a> has been
+saying all along with its sentence that the marking changes no answer and is filled in because the column is
+required.</p>
+<p><strong>Why keep a required column that nothing checks, when deletion was on the table.</strong> Deleting it was the tidy
+answer and it was refused, for a reason worth keeping: the code's naming grammar (<a href="../round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>)
+is enforced by a hand-run diff, and a second, independently written word for the same fact is where that kind
+of drift surfaces in a human reading rather than in a script. <strong>The column's whole job is to be legible.</strong>
+The cost is symmetrical and is now stated in the page rather than hidden in a column comment: <strong>a
+<code>right_kind</code> can contradict its code forever, and only a reader will notice.</strong></p>
+<p><strong>What this corrected as it went.</strong> The register row is <strong>withdrawn, not repaired</strong> —
+<a href="../round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> again, the third row
+this register has had to lose. No page enforces the match; no page claims to; the row was a claim about a save
+path that has no such rule. <strong>This is the third of the register's eleven <code>none</code> rows to be resolved, and the
+only one resolved by deletion.</strong></p>
+<p><strong>Deletes:</strong> one row of <a href="../../data-model/00a-invariant-register/">00a</a> and one shape-3 rule from its count.
+<strong>Changes no table and no column</strong> — <code>permission.right_kind</code> remains required exactly as it was.</p>
+<p><strong>See:</strong> <a href="../../data-model/05-authorization/#2-permission">05 §2</a>,
+<a href="../../appendix/permission-catalog-a-codes/">catalog-a §8b</a>,
+<a href="../../data-model/00a-invariant-register/">00a</a>,
+<a href="../round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a>, and
+<a href="../../open-questions/#f-33">F-33</a> in § R.</p>
+<hr />
+<h2 id="d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145 — <code>access_log</code> rows are deleted at 24 months, and the job that does it has a name<a class="headerlink" href="#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#f-8">F-8</a> asked whether the access trail is bounded at all. The page that
+owns the table had already reversed its own original "never deletion" and put forward the same 24 months
+<code>audit_log</code>'s payloads get — <strong>as a proposal awaiting a person</strong>, saying so in as many words, with rows <em>kept</em>
+and their state columns emptied. <a href="../../open-questions/#i-assumption-index">Assumption 50</a> registered the
+legal premise under it.</p>
+<p><strong>Answer.</strong> <strong>Confirmed, with the rows going rather than the contents: an <code>access_log</code> row older than 24
+months is deleted.</strong> <code>audit_log</code> is untouched and keeps <a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>'s
+opposite shape — rows for the life of the system, payloads emptied at 24 months. <strong>The two clocks now differ
+in kind as well as in length:</strong> one trail shrinks and stays, the other disappears. Monthly partitioning
+survives as the mechanism, because dropping a partition is how a row deletion of this size is done without
+locking the table.</p>
+<p><strong>The corpus-wide consequence, which is the reason this entry is long.</strong>
+<a href="../../data-model/00-conventions/#4-deletion-policy">00 §4</a> says "Nothing is hard-deleted. There is no
+<code>deleted_at</code> and no delete for business data," and then names <strong>two</strong> exceptions — a staging truncate and the
+delete erasure has to make. <strong>This is the third</strong>, and it is named in §4 rather than excepted in a corner,
+because a page that quietly deletes rows while the conventions page promises none is the kind of page that
+gets "fixed" back. The exception is narrow in exactly the way §4 wants its exceptions narrow: <strong>it reaches no
+business row</strong>, it deletes only <code>access_log</code>, only by age, only forward from the write, and it is the third
+writer the append-only guard must let through beside erasure and payload reduction. "Append-only" continues to
+mean <em>no application writes or removes these rows</em>, which is what it always protected.</p>
+<p><strong>What dies with a row.</strong> Everything the row could answer after its 24th month: that a person opened a record,
+that a screen was reached, which channel and which grant answered it. <code>audit_log</code> answers what was <em>changed</em>,
+and answers it forever; nothing answers what was <em>read</em> beyond two years. The register and the inventory say
+so plainly instead of letting the reader infer permanence from the word "trail", and
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a> — which walks this table's
+three keyless columns, with the legal-absence rule beside them — keeps working unchanged, because a deleted
+row cannot be an orphan. It also gains nothing: <strong>the age-out gets its own check</strong>, the sibling of the one that
+counts audit rows past their window still holding a payload, because
+<a href="../round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>'s reasoning cuts both ways —
+a reduction nobody verifies is a reduction that quietly stops happening, and here the failure direction is
+<em>data kept too long</em>, which is the failure the window exists to prevent.</p>
+<p><strong>Adds:</strong> a <strong>sixth</strong> actor label, <code>system:log-reduction</code>, to the fixed vocabulary in
+<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00 §7a</a>. A job that deletes rows must be
+nameable, and an empty actor column that could mean the renewal sweep, the bank pull, the payload reduction or
+a migration is not an answer to "who deleted my access history". <strong>Every sentence in the corpus stating that
+the list has five labels is corrected to six</strong> — five pages, one of them the register row for
+<a href="../../open-questions/#f-25">F-25</a>, which is the live record of that decision and is amended rather than left
+to be contradicted.</p>
+<p><strong>Refused:</strong> emptying the rows instead, which the proposal on the page preferred. It is the weaker rule with
+the better story — it keeps "the table never loses a row" — and it was declined because a row that says <em>this
+record was read on this date by this person</em> is itself the personal data the window was asked about, not a
+skeleton worth keeping.</p>
+<p><strong>Changes no table and no column.</strong> <strong>Deletes:</strong> the "rows are never deleted" position in three pages, the
+proposal framing in two, and assumption 50, which is now a decision.</p>
+<p><strong>See:</strong> <a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05c §9</a>,
+<a href="../../data-model/00-conventions/#4-deletion-policy">00 §4</a>,
+<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00 §7a</a>,
+<a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>,
+<a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a>,
+<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>,
+<a href="../round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
+<a href="../round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>, and
+<a href="../../open-questions/#f-8">F-8</a> in § R.</p>
+<hr />
+<h2 id="d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146 — An outbound call is a person's act or a job, and nothing about it is designed yet<a class="headerlink" href="#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#f-27">F-27</a> asked what happens when this system calls <em>out</em> — everything
+designed so far is a person calling in, or one of two inbound jobs pulling data — so who is the actor of an
+outbound write, and against what is it authorized?</p>
+<p><strong>Answer.</strong> <strong>No outbound integration is designed, and no third kind of actor will be invented when one is.</strong>
+An outbound call is either <strong>a person acting</strong> — the actor column holds them, their permission is checked, and
+the trail shows them the way every other act shows them — or <strong>this system acting on its own</strong>, which is the
+empty actor column and a label from the fixed vocabulary (<a href="../round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
+There is no service identity, no key acting as a person, no "the integration did it". If a future integration
+needs a caller that is not a person and is not this system, that is <a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>'s
+successor conversation, not a column added in passing.</p>
+<p><strong>What was refused with it.</strong> An <code>api_key</code> acting as its own actor for outbound calls. Keys were given a
+careful, narrow shape last round (<a href="../round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>):
+a key is a caller <em>into</em> this system, is never inside an expression, and is refused five codes by equality.
+Making the same object mean "the thing we call out to" as well would put the accountability of an outbound
+write on a secret instead of on a person or a job, and a secret is exactly the thing that leaks.</p>
+<p><strong>What this costs.</strong> A real integration, when it comes, will have to make one of the two choices explicitly
+and will probably find the choice uncomfortable: a person acting means their permission gates a third party's
+system, and a job means an empty actor column on a write the organization cannot pin on anybody. <strong>Both are
+answerable; neither is answered here</strong>, and the point of deciding now is that the answer must be one of the
+two, so the vocabulary of five labels becoming six
+(<a href="#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>) is the only
+growth this axis gets by accident.</p>
+<p><strong>Changes no table, no column, no code.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00 §7a</a>,
+<a href="../../data-model/05e-keys-and-callers/">05e §A key</a>,
+<a href="../round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
+<a href="../round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>,
+and <a href="../../open-questions/#f-27">F-27</a> in § R.</p>
+<hr />
+<h2 id="d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147 — Presence stays on the registration: no clock of its own, no permission of its own<a class="headerlink" href="#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#ev-4">EV-4</a> asked whether <code>was_present</code> — the three-valued mark of who
+actually turned up (<a href="../round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>) — needs
+its own retention rule or its own permission, because "who was in our care on that day" is the sentence a
+safeguarding question would be asked with.</p>
+<p><strong>Answer.</strong> <strong>Neither. Presence is a column of a registration and inherits everything a registration is:</strong> the
+same retention <a href="#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>
+just settled for registrations, and the same two codes that already reach the roster and the mark. <strong>It is not
+a record class and this system does not keep a safeguarding register.</strong> There are no background checks here
+(<a href="../round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>) and no medical record
+(<a href="../round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>); a column with
+a special clock and a special permission would be the first wall of an archive this design has refused four
+times.</p>
+<p><strong>What stands in its place, since the need is real.</strong> The question "who was there on 14 March" is answered by
+a report over registrations — which is why the index behind it exists and why it serves a report and no
+selector — and the answer is legible for as long as the registrations are, which is now <em>indefinitely</em> rather
+than until somebody's retention number. <strong>The protection this column has is that it is boring:</strong> readable only
+with the codes that reach the event, erased by nothing except the person's own erasure, which reaches a
+registration the way it reaches an answer.</p>
+<p><strong>Refused</strong> both halves — a <code>presence.retention</code> shorter than the event's, and a <code>presence.view</code> narrower than
+the roster's. The second would have been a permission whose whole purpose is to hide a fact from the people
+who are asking because they were there.</p>
+<p><strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../domain/07a-capacity-presence-and-forms/#9-presence-what-actually-happened">07a §9</a>,
+<a href="../../data-model/08a-event-guards-and-checks/#11-open-issues">08a §11</a>,
+<a href="../round-05/#d-067--presence-is-a-three-valued-fact-on-the-registration">D-067</a>,
+<a href="#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>,
+and <a href="../../open-questions/#ev-4">EV-4</a> in § R.</p>
+<hr />
+<h2 id="d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are">D-148 — There is no <code>WHITELISTED</code>, and the refusal is written where the tiers are<a class="headerlink" href="#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#ev-6">EV-6</a> named the word people reach for: an audience for "the ones we
+invited". The language has four attendance tiers and <code>ORGANIZERS</code>, and refuses <code>PRESENT(&lt;event&gt;)</code> outright
+because <code>was_present</code> is <code>NULL</code> until somebody takes a register — a volunteer's forgotten tick would revoke a
+child's own photos. <code>WHITELISTED</code> was never seeded, was described as having no stored state to evaluate, and
+was asked about in the open questions because the word kept coming up in the corpus as a refusal without a
+home: the question's own instruction was that "no <code>WHITELISTED</code>" is a sentence that has to exist somewhere, in
+the same paragraph that refuses <code>PRESENT</code>.</p>
+<p><strong>Answer.</strong> <strong>Refused, in writing, where the tiers are listed.</strong> No <code>is_whitelisted</code> column, no fifth tier, no
+operand, and no reserved name. <strong>Anyone adding <code>is_whitelisted</code> is reimplementing grants badly</strong>, and the
+sentence now appears beside the presence refusal in the one place that named a PRESENT refusal without it
+(<a href="../../domain/07a-capacity-presence-and-forms/#9-presence-what-actually-happened">domain/07a §9</a>).</p>
+<p><strong>Why the answer is free here, which is worth noticing.</strong> The refusal already existed four times over —
+<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">08a §8</a>,
+<a href="../../domain/07-events/">domain/07</a>, <a href="../../domain/06a-audiences-and-selectors/">domain/06a §Event sets</a>,
+<a href="../../data-model/05a-audience-and-grammar/">05a</a> and the catalog all state it, and three of those passages
+already pair it with the presence refusal. <strong>The count of refused operands does not move</strong>: <code>WHITELISTED</code> is
+already one of "three operands not in this table" and of the two event sets refused in domain/06a. What was
+missing was a sentence with the word in it in the presence section, and that is a paragraph, not a design.</p>
+<p><strong>The need underneath, which is not denied.</strong> An invited person who has not registered is, at capacity,
+<code>ON_WAITLIST</code> if they register onto a full event and described by <strong>the absence of a row</strong> if they never
+register (<a href="../round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>) —
+and they are <em>invited</em> by a grant aimed at them, which is a row that exists and says who. <strong>A tier is a state
+of a registration; an invitation is not about a registration at all.</strong> That is the argument the refusal rests
+on, and it is why the fifth tier would have cost the meaning of the four that exist: <code>PLACED</code> is the capacity
+set, so an invited person who registers onto a full event is already misdescribed the moment a whitelist set
+is added beside it.</p>
+<p><strong>What this costs:</strong> the same thing every prose refusal costs — <strong>nothing in the database refuses a future
+<code>WHITELISTED</code> row in <code>selector_type</code></strong>, so an operand with no state behind it is a deployment bug rather than a
+type error, exactly as an off-list actor label is. That is D-125's cost again, on the vocabulary side.</p>
+<p><strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../domain/06a-audiences-and-selectors/">domain/06a §Event sets</a>,
+<a href="../../data-model/05a-audience-and-grammar/">05a</a>,
+<a href="../../data-model/08a-event-guards-and-checks/#8-projections-and-guards">08a §8</a>,
+<a href="../../domain/07a-capacity-presence-and-forms/#9-presence-what-actually-happened">07a §9</a>,
+<a href="../round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>,
+<a href="../../open-questions/#f-20">F-20</a>, and <a href="../../open-questions/#ev-6">EV-6</a> in § R.</p>
+<hr />
+<h2 id="d-149--words-are-stored-in-one-language-and-a-label-is-not-translated">D-149 — Words are stored in one language, and a label is not translated<a class="headerlink" href="#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> applied.</p>
+<p><strong>Question.</strong> <a href="../../open-questions/#at-3">AT-3</a> asked whether <code>attribute_definition</code> and <code>attribute_option</code>
+labels need a second language, because a form that asks a question in a language the family reads is the whole
+point of a form.</p>
+<p><strong>Answer.</strong> <strong>One language: the one the organization writes in.</strong> No <code>label_cs</code>/<code>label_en</code> pair, no translation
+table, no per-language row, no locale column anywhere in the attribute vocabulary. The vocabulary is the
+organization's own words, written at runtime by whoever it hands the curating permission to
+(<a href="../round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>), and the page that owns the
+table describes a <code>label</code> in four words: <em>what a human sees</em>
+(<a href="../../data-model/09-attributes/#2-attribute_definition--the-vocabulary">09 §2</a>). <strong>A label is not a rendering of
+something more authoritative underneath it</strong> — and a second language would need one, because a row holding
+<code>label_cs</code> and <code>label_en</code> has to be asked which of the two the record is, and whichever answer is chosen demotes
+the other to a translation of it.</p>
+<p><strong>What happens to a translated form, since the need is real.</strong> The people who need another language are served
+by the person reading the question aloud or writing it down, which is how a Scout organisation has always done
+it, and by an event form's own question text — a question's <code>text</code> is free text somebody types in whichever
+language the event is run in, and it is not a vocabulary item. <strong>The vocabulary is for the record; the form is
+for the conversation</strong>, and only one of the two has to be stable enough to query.</p>
+<p><strong>What this costs:</strong> an imported label arrives in whatever language the paper form was in and stays there,
+which makes correcting it a curation act under <code>attribute.define</code> — live at the save, per
+<a href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a> — and
+means an organisation that genuinely runs in two languages will have two codes for one fact, which is a
+misery the design does not prevent and does not pretend to.</p>
+<p><strong>Changes no table and no column.</strong></p>
+<p><strong>See:</strong> <a href="../../data-model/09-attributes/#2-attribute_definition--the-vocabulary">09 §2</a>,
+<a href="../../data-model/09-attributes/#5-what-this-design-cannot-do">09 §5</a>,
+<a href="../round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>, and
+<a href="../../open-questions/#at-3">AT-3</a> in § R.</p>
+<hr />
+<h2 id="what-the-round-did-not-do">What the round did not do<a class="headerlink" href="#what-the-round-did-not-do" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>It did not apply <a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>.</strong>
+  That sweep — the seeded roles, the seeded audiences, the seeded <code>event.answer.view</code> grant, the
+  worked-example offices presented as seed, <code>role.is_system</code>, <code>audience.is_system</code> — is a cleanup with its
+  decision already written, and it was deliberately kept out of this round so that thirteen answers and one
+  twenty-five-page sweep would not be committed together. It is <strong>round 21</strong> and it is the next thing this
+  repository owes itself. <a href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>
+  and <a href="#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a> both
+  reach across to it, and both are written so that the sweep has to read them rather than the other way round.</li>
+<li><strong>It did not answer the four that survive,</strong> and did not manufacture answers for them: F-9 and F-11 turn on
+  a decision about what a membership type is for, E-3 turns on how this organisation reads its own civil
+  code, and A-4's remainder is the calendar. None is 🟡.</li>
+<li><strong>It did not answer the question it raised — <a href="../../open-questions/#f-34">F-34</a>.</strong>
+  <a href="#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>
+  deleted the proposal stage without noticing that it was also the answer to a scheduling question: the
+  vocabulary the legacy import needs has to exist <strong>before</strong> the import applies, because an unmapped column is
+  now an error at apply time rather than a row that arrives <code>proposed</code> and waits. So several hundred
+  definitions must be authored by holders of <code>attribute.define</code> in advance, while
+  <a href="../round-18/#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization">D-132</a>
+  is about to delete the seed that hands that code to anybody. <strong>Who writes them, when, and who holds the code
+  afterwards is a real hole with no answer in it yet,</strong> and answering it here would have been a ruling wearing
+  a question's clothes — the same mistake this round refused to make about a safeguarding contact. It is
+  recorded in <a href="../../domain/03-identity-and-legacy/">domain/03 §9</a> and in
+  <a href="../../appendix/permission-catalog-b-roles-and-open-issues/">the catalog's open issues</a>, and it is 🟢 only
+  because the first import is not next week.</li>
+<li><strong>It did not touch the legal review,</strong> which is the largest unowned risk in this corpus and now has a third
+  policy in front of it: named membership and fee rows kept indefinitely, audit payloads emptied at 24 months,
+  <strong>and access rows deleted at 24 months</strong> (assumption 49; <a href="#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>).
+  That review is the organisation's job, not a question this register can close.</li>
+<li><strong>It added no check it could not point at a page.</strong> The check this round adopted — the age-out count over
+  <code>access_log</code> — is named in <a href="../../data-model/05c-access-log-and-resolver/#9-access_log">05c §9</a> and given to
+  <a href="../../data-model/06b-redaction-and-checks/#5-integrity-checks">06b §5</a>, where the audit sibling already
+  lives. The register's <code>**none**</code> count goes from seven to <strong>five</strong>, and every one of the five is a rule whose
+  answer is "nothing, by decision".</li>
+</ul>
+<p><strong>The gate ran, and it was not free.</strong> <code>scripts/check-registries.py</code> finishes this round at <strong>no unbaselined
+finding</strong>, and <code>mkdocs build --clean --strict</code> is clean with no link reported. Two of this round's edits touch
+pages the checker reads — the attribute statuses in <a href="../../appendix/erd-b-inventory/">erd-b</a> and the label
+vocabulary in <a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">00 §7a</a> — so the run was made
+<em>after</em> them, not before. <strong>Three findings had to be met, and each was met on the page rather than in the
+baseline:</strong> <a href="../../data-model/04-relationships/#1-guardianship">04 §1</a> had stopped naming
+<code>guardianship.assign</code> when this round deleted the notification sentence that named it, so the page now names the
+code itself, which is the stronger sentence and clears the finding
+(<a href="#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a> is an argument about
+that one permission); <code>presence.view</code>, spelled twice in order to say it does not exist, is the one line this
+round added to <code>scripts/registry-baseline.txt</code> with its reason beside it; and the third was
+the same <code>presence.view</code> from the other file. <strong>The habit worth keeping from this:</strong> a refusal is a sentence the
+checker cannot tell from a mistake, so the baseline is where a round writes down that it read the sentence and
+meant it — and a baseline line without a reason after the <code>#</code> is that mechanism failing quietly, not a formality.</p>
+<p><strong>What the link pass swept up on the way, counted as grepped rather than as remembered.</strong> Six of the thirteen
+closed questions were cited from elsewhere by their <strong>heading slug</strong> rather than by the short id § R would
+later carry, and deleting an entry deletes the slug it derived. <strong>Twenty-six links</strong> had to move: <code>AT-4</code> ten,
+<code>AT-2</code> four, <code>AT-1</code> four, <code>E-6</code> three, <code>EV-2</code> three, <code>EV-6</code> two. All twenty-six now point at the short anchors
+§ R carries, which is what they should have pointed at when the convention was written. <strong>Two lessons, and the
+second is about this paragraph.</strong> First: <strong>a derived slug has to be recomputed, not remembered</strong> — the old
+<code>EV-2</code> heading was <code>### EV-2 🟡 Retention of \</code>event_answer`<code>and its slug was</code>ev-2--retention-of-event_answer<code>, with the emoji gone, the backticks gone and the **underscore kept**, which is
+three rules in one string and none of them obvious. This entry stated the slug as</code>ev-2--retention-of-event<code>,
+cut off at the code span, and that was wrong; round 19 wrote the sentence about</code><a id><code>tags and this round
+needed it about inline code. Second: **the first pass said twenty-two and named six questions whose counts did
+not add up, and it missed three live links** — [round-07-08](round-07-08.md), [round-19](round-19.md) and
+§ R's own</code>F-29<code>row all still pointed at</code>AT-4<code>'s dead slug, and nothing I ran told me so until</code>mkdocs build --strict` printed it as an INFO line beneath a successful build. <strong>A link that resolves to
+nothing is reported at the same volume as a file being copied</strong>, and the count that was wrong was the one I had
+written down instead of the one I had grepped.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../round-19/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 19">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Round 19
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../open-questions/" class="md-footer__link md-footer__link--next" aria-label="Next: Open Questions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Open Questions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>

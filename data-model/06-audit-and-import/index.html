@@ -2189,6 +2189,8 @@
       
         
       
+        
+      
     
     
     
@@ -2744,6 +2746,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3003,7 +3033,7 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 <tr>
 <td><code>actor_label</code></td>
 <td>text, optional</td>
-<td><strong>Not free text: a value from the label list of <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a></strong> — <code>system:renewal-sweep</code>, <code>system:payload-reduction</code>, <code>system:bank-pull</code>, <code>migration:0042</code>, <code>import_batch:17</code> are instances of its rows, and bare <code>system</code> is retired, because it means "one of the above, and I am not saying which" (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). It exists for the writers that have no row of their own, and <strong>a writer that is not on that list joins it there before it writes</strong> — the list is prose, so nothing in the database refuses a label outside it and check 4 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> is what notices. A caller that is not a person is a row in <code>api_key_id</code>, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none</td>
+<td><strong>Not free text: a value from the label list of <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a></strong> — <code>system:renewal-sweep</code>, <code>system:payload-reduction</code>, <code>system:log-reduction</code>, <code>system:bank-pull</code>, <code>migration:0042</code>, <code>import_batch:17</code> are instances of its rows, and bare <code>system</code> is retired, because it means "one of the above, and I am not saying which" (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). It exists for the writers that have no row of their own, and <strong>a writer that is not on that list joins it there before it writes</strong> — the list is prose, so nothing in the database refuses a label outside it and check 4 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> is what notices. A caller that is not a person is a row in <code>api_key_id</code>, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none</td>
 </tr>
 <tr>
 <td><code>operation</code></td>
@@ -3167,8 +3197,11 @@ not repair the grading; it <strong>shortens the period during which a wrong grad
 organization of this size is the only control that will ever actually be in place
 (<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>
 is the decision that named the exposure, and the strongest argument
-<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>
-will receive is that the payload is temporary rather than that the guard is good). It does not retire the
+<a href="../../open-questions/#at-4">AT-4</a>
+ever put up for it is that the payload is temporary rather than that the guard is good — an argument that
+outlived the question it was made against, since
+<a href="../../decisions/round-20/#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138</a>
+settled that one code is the gate and a window can only bound how long it reads for, never how far). It does not retire the
 mark either. A reduced row about a <code>person_attribute</code> change still names the table, the record id, the
 field that changed, the actor and the moment — which is to say it still says <em>this child had a value of
 this kind recorded, here, by this person</em>, and that is a statement about a child even with the value
@@ -3369,10 +3402,12 @@ only one of them is anybody's right.</strong></p>
 </table>
 <p><strong>What none of the three ever does is delete an <code>audit_log</code> row.</strong> The rows are the permanent half; a
 reduction that pruned rows would quietly delete the answer to <em>"who changed this, and when"</em>, which is
-the half D-088 chose to keep. The two deletes that exist near this table are elsewhere and are about
-other tables: a revert (§3) hard-deletes <em>business</em> rows a batch created and writes audit entries for
-having done so, and an erasure (§4) deletes <code>person_attribute</code> rows and records that in
-<code>redaction_log</code> rather than one entry per value.</p>
+the half D-088 chose to keep. Every delete near this table is on some other table: a revert (§3)
+hard-deletes <em>business</em> rows a batch created and writes audit entries for having done so; an erasure (§4)
+deletes <code>person_attribute</code> rows and records that in <code>redaction_log</code> rather than one entry per value; and
+since round 20 a scheduled job deletes <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name"><code>access_log</code> rows whole at 24
+months</a>
+— <strong>a delete on the other trail, which is precisely the distinction the two clocks were drawn to make.</strong></p>
 <p><strong>All three operations are updates, and an append-only guard has to be written knowing that.</strong> Nothing in
 this repository defines an append-only trigger (<a href="../../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>), but the property is
 still asserted in prose, and the neighbouring trail states it as a literal refusal of updates
@@ -3406,11 +3441,17 @@ the corpus now states, as an <strong>assumption pending review</strong> rather t
 history plus accounting obligations, held up by a redacted person row that keeps the skeleton
 non-identifying — and the review is the one <a href="../../open-questions/#b-3">B-3</a>
 already asked for, now with a concrete policy in front of it instead of a blank (§6).</p>
-<p><strong>The neighbouring trail takes the same window, as a proposal rather than a decision.</strong> <code>access_log</code> is
-proposed at the same 24 months under
-<a href="../../open-questions/#f-8">F-8</a>, which still needs confirming; it is a
-weaker question than this one because that table keeps the payloads of <em>reads</em> out of itself to begin
-with (<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>).</p>
+<p><strong>The neighbouring trail takes the same window and the opposite shape.</strong> <code>access_log</code> sits at the same 24
+months, and it was <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">decided there by round 20</a>:
+<strong>its rows are deleted rather than emptied</strong>
+(<a href="../05c-access-log-and-resolver/#9-access_log">05c-access-log-and-resolver.md §9</a>). Same clock, different kind. The
+reduction above may never touch a row, because <em>what changed</em> is the half D-088 chose to keep forever; on the
+read trail nobody needs the row at year three, the payloads of reads are not held there anyway, and a row that
+answers nothing identifiable is not worth the exception. <strong>This is the third named exception to
+<a href="../00-conventions/#4-deletion-policy">00 §4</a>'s "nothing is hard-deleted", and the only one driven by a clock</strong> —
+the other two exceptions that page names are a staging truncate between batches and a delete a person asked
+for. <strong>Mechanism three above is a job too, and the difference between them is the difference the corpus keeps
+insisting on: mechanism three empties a row that stays, this one deletes the row.</strong></p>
 <p><strong>No free-text field about a person is on the credential list, and none is being added to it.</strong> The list
 once carried <code>notes</code>, <code>custody_arrangement</code>, <code>termination_note</code>, <code>rejection_note</code> and <code>status_note</code> beside
 <code>secret_hash</code>, on the theory that free text is where a diagnosis hides. All of them are logged with their
@@ -3461,7 +3502,7 @@ relied on; a per-entry <em>"could this reader see this field"</em> check inside 
 considered and left unimplemented, because it would mean running the resolver per audit row against a
 value that no longer exists anywhere as a row to resolve against. It is a registered question rather
 than an omission now:
-<a href="../../open-questions/#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data">AT-4</a>.</p>
+<a href="../../open-questions/#at-4">AT-4</a>.</p>
 
 
 

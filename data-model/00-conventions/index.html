@@ -2325,6 +2325,8 @@
       
         
       
+        
+      
     
     
     
@@ -2880,6 +2882,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3307,9 +3337,12 @@ interfaces; keep <code>id</code> internal.</strong> An ORM that marshals entitie
 published the internal counter.</p>
 <hr />
 <h2 id="4-deletion-policy">4. Deletion policy<a class="headerlink" href="#4-deletion-policy" title="Permanent link">&para;</a></h2>
-<p><strong>Nothing is hard-deleted.</strong> There is no <code>deleted_at</code> and no delete for business data. <strong>Two
-exceptions are named below</strong> — a staging truncate, and one delete that erasure has to make — and both
-are narrow enough to prove the rule rather than erode it.</p>
+<p><strong>Nothing is hard-deleted.</strong> There is no <code>deleted_at</code> and no delete for business data. <strong>Three
+exceptions are named below</strong> — a staging truncate, one delete that erasure has to make, and one trail that
+ends on a clock — and each is narrow enough to prove the rule rather than erode it. **Two of the three reach
+no business row anyone would miss — a staging table between two batches, and a trail of reads — <strong>and the one
+that does reach a person's values does it for the only reason that has ever justified deleting anything: they
+asked.</strong></p>
 <table>
 <thead>
 <tr>
@@ -3339,6 +3372,10 @@ are narrow enough to prove the rule rather than erode it.</p>
 <td>Set <code>person_group.valid_to</code>; its member rows remain</td>
 </tr>
 <tr>
+<td>An <code>access_log</code> row passes 24 months</td>
+<td><strong>Deleted</strong>, by a scheduled job — the third exception below. The only rows in this design that age out, and the only ones that ever did</td>
+</tr>
+<tr>
 <td>GDPR-style erasure requested</td>
 <td><strong>Redact</strong> field values; do not delete rows — see §8. <strong>One table is deleted rather than redacted; the exception below names it and why</strong></td>
 </tr>
@@ -3361,11 +3398,26 @@ and the dates they were first recorded. Retiring the <em>code</em> is not the an
 explicit that retirement must never destroy values — retirement is an act about the vocabulary,
 erasure is an act about the person, and the two point in opposite directions on purpose
 (<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a>).
-<strong>This exception is safe only while nothing references an attribute row, and nothing does today.</strong>
-Should a future table ever point at one — an event question bound to a stored value is the obvious
-candidate, and it is open as AT-1 — that table must be designed around this rule rather than
-discovering it, because at that point the delete stops being invisible and becomes the referential
-integrity problem §9 exists to prevent.</p>
+<strong>This exception is safe only while nothing references an attribute row, and nothing still does.</strong> The
+candidate this paragraph named arrived in <a href="../../decisions/round-20/">round 20</a>: an event question may now be
+bound to a stored value (<a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>),
+and it was designed around this rule rather than discovering it. <strong>The binding names a definition, never a
+value row</strong> — <code>event_question.bound_attribute_code</code> points at <code>attribute_definition.code</code>, which is never
+deleted and is retired instead, and so outlives the person whose values sit under it. That is what keeps the
+delete invisible: there is no edge for §9 to walk. <strong>A reference from any table to a <code>person_attribute</code> row id
+remains forbidden by this paragraph</strong>, and would have to be argued for against it, not merely written.</p>
+<p><strong>The third exception is a trail, and it is the newest.</strong> <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
+confirms what <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a> had only proposed: <strong>an <code>access_log</code> row
+older than 24 months is deleted</strong>, by a scheduled job, because that is what the organization decided its
+access trail is worth. It is an exception in the shape this section wants: <strong>no business row is touched, no
+table holding a person's record is in its scope, it moves only forward from a row's own write, and it is one
+named job</strong> — <code>system:log-reduction</code> in <a href="#7a-what-an-empty-actor-column-means">§7a</a>, with a check counting the
+rows that should have gone and are still there. <code>audit_log</code> is <strong>not</strong> in its scope and keeps the opposite
+shape (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
+rows for the life of the system, payloads emptied. <strong>Read "append-only" in this corpus as <em>no application
+writes or removes these rows</em>, which is what it always protected</strong> — not as a promise that a row survives its
+own retention window. What the two trails answer differs after the window, and nothing pretends otherwise:
+what was <em>changed</em> is answerable forever, what was <em>read</em> stops being answerable at two years.</p>
 <p><strong>This rule is now carried entirely by discipline, and that is worth saying out loud.</strong> A
 <code>ON DELETE RESTRICT</code> default, a revoke of <code>DELETE</code> from the application role, an ORM whose delete
 method nobody has ever called — those were enforcement. What remains is an instruction to whoever
@@ -3669,6 +3721,11 @@ what turns <em>"the system"</em> from a shrug into a claim.</p>
 <td>Emptying <code>old_values</code> and <code>new_values</code> once a row passes the payload window (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)</td>
 </tr>
 <tr>
+<td><code>system:log-reduction</code></td>
+<td>the access trail's age-out</td>
+<td><strong>Deleting</strong> <code>access_log</code> rows once they pass their 24 months (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to <em>who deleted my access history</em>. <strong>Not to be confused with <code>system:payload-reduction</code> above</strong>, which empties columns of the other trail and deletes nothing</td>
+</tr>
+<tr>
 <td><code>system:bank-pull</code></td>
 <td>the bank statement fetch</td>
 <td>The <code>bank_transaction</code> and <code>payment</code> rows that answer a variable symbol (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>). <strong>For the run with nobody in the room</strong> — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does</td>
@@ -3715,7 +3772,16 @@ in one place instead of inferred in four.</p>
    one place in this system where erasure deletes rather than overwrites, and
    <a href="#4-deletion-policy">§4</a> says why it is the only row that can be handled that way. A redacted
    person with attribute values attached is a redaction that did not happen. A <code>redaction_log</code>
-   records what was redacted and when.</li>
+   records what was redacted and when.
+   <strong>It also reaches an event's answers, and there it overwrites rather than deletes:</strong> an
+   <code>event_answer</code> row belonging to a redacted person has its <code>value</code> emptied and <strong>the row remains</strong>
+   (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>).
+   The two shapes are one decision, not an inconsistency: a descriptive value has no row worth keeping
+   because the row <em>is</em> the value, while an answer is a fact that a question was answered on a dated
+   occasion, and that fact belongs partly to the event. <strong><code>event_registration</code> is not in either shape:</strong>
+   whether a person came is organizational history under item 3, and this is stated because
+   <a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>
+   declined to make it a record class of its own.</li>
 <li><strong>Some data must not be redacted, and the reason is now stated rather than left unopposed</strong> —
    membership periods, unit participations, fee obligations, payments and position assignments are
    organizational history rather than personal data, and removing them would falsify records that the

@@ -2209,6 +2209,8 @@
       
         
       
+        
+      
     
     
     
@@ -2751,6 +2753,34 @@
     
   
     Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
   
 
     
@@ -3399,12 +3429,17 @@ contains no office grants at all</strong> (<a href="#what-the-seed-ships">What t
    organization's decision, and an appendix that quietly hands it to <code>leaders</code> would be making a
    safeguarding choice on someone else's behalf (§12).</li>
 <li><strong><code>attribute.define</code> is held by nothing here, and an office is the wrong shape for the answer.</strong>
-   <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">open-questions AT-2</a>
-   points at this section as the place the question gets answered, and the honest answer for a volunteer
+   <a href="../../open-questions/#at-2">open-questions AT-2</a> points at this section as the place the question gets
+   answered, and the honest answer for a volunteer
    organization is one or two people rather than an office: <strong>a grant aimed at <code>PERSON(x)</code></strong> (§1) is the
    form that fits, with a date on it, and an office would only be a way of making one person's job
-   look like a policy. What is <em>not</em> the answer is leaving it unheld while proposals keep arriving
-   through ordinary data entry (§12).</li>
+   look like a policy — a role confers nothing a grant does not already confer
+   (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
+   <strong>What changed under this property is the shape of the risk, and it got sharper rather than softer.</strong>
+   There is no proposal stage left, so nothing arrives in a queue to be noticed later
+   (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>):
+   <strong>an office that holds no <code>attribute.define</code> is an office that cannot name a new thing at all</strong>, because a
+   value recorded against a code nobody has defined is refused rather than filed. §12 states what that costs.</li>
 <li><strong>An office name is load-bearing, because names are one namespace.</strong>
    A bare name in an expression resolves against <code>role</code> and <code>person_group</code> together, so an office
    called <code>leaders</code> and a group called <code>leaders</code> cannot both exist, and the collision is caught on the
@@ -3588,8 +3623,10 @@ contains no office grants at all</strong> (<a href="#what-the-seed-ships">What t
   written once in §1, and who may create a group, which is <code>person_group.create</code> (§5a).
   <strong>No operand names a person's guardians:</strong> the channel carries a level over a child, not a set
   (<a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>),
-  which closes the last part of F-5; and <code>WHITELISTED</code>, the one name still without stored state, is
-  <a href="../../open-questions/#f-20">F-20</a>'s question and not a gap in the registry.</li>
+  which closes the last part of F-5; and <code>WHITELISTED</code>, the one name with no stored state behind it, is
+  <strong>refused rather than pending</strong>
+  (<a href="../../decisions/round-20/#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are">D-148</a>)
+  and so is not a gap in the registry — <strong>no operand may be added for it, and nothing reserves its name</strong>.</li>
 <li><strong>Which office may put a person on a group's roster is unanswered, and on the shipped seed nobody
   may.</strong> <code>person_group.member.manage</code> is the whole of the right to place a person in a set: one code,
   <code>applies_to = unit_and_item</code>, never self-scoped, and the only thing between a person and a roster
@@ -3640,21 +3677,29 @@ contains no office grants at all</strong> (<a href="#what-the-seed-ships">What t
   <strong>If door scanning is ever wanted it arrives as an open question and then a decision entry naming the
   permission, the artifact that rotates and who may reprint it — not as a code beside a paragraph about
   a door.</strong></li>
-<li><strong><code>attribute.define</code> is in the catalog and in no seed office, and that gap is the open half of the
-  design.</strong> The permission and its rules are settled (§2); who holds it, and how long a <code>proposed</code>
-  code may sit before it is an embarrassment rather than a queue, are not — tracked as <strong>AT-2</strong> in
-  <a href="../../open-questions/#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit">../open-questions.md</a>,
-  and §11 property 7 records the shape the answer should take (a dated grant aimed at one person, not an
-  office). The risk of leaving it unheld is specific and slow:
-  proposals keep arriving through ordinary data entry, and a vocabulary nobody curates stops
-  answering questions while still storing everything
-  (<a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>).
-  <strong>The import half of this is now answered</strong>, and only that half: the codes the legacy batch's
-  column→code map names arrive <code>live</code>, because a curator reads the map as one object before the batch
-  applies, so the queue does not open several-hundred-deep on day one
-  (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
+<li><strong><code>attribute.define</code> is in the catalog and in no seed office, and that gap is now the whole of the open
+  half.</strong> The permission and its rules are settled (§2), and so is the second half of what AT-2 asked: <strong>there
+  is no proposal, so there is no age for a proposal to reach</strong>
+  (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>).
+  <strong>Who holds the code is what remains</strong> — tracked as <strong>AT-2</strong> in
+  <a href="../../open-questions/#at-2">../open-questions.md</a>, and §11 property 7 records the shape the answer should
+  take (a dated grant aimed at one person, not an office). <strong>The risk of leaving it unheld changed kind and got
+  worse.</strong> While a proposal stage existed, an office without the permission was a slow leak: values arrived
+  against invented codes, sat in a queue, and the vocabulary rotted while still storing everything. Now a value
+  recorded against a code nobody has defined is <strong>refused at the write</strong>: an office that cannot name a new
+  thing writes it into <code>person.notes</code> or does not write it at all, which is the exact failure the whole
+  attribute layer exists to prevent, arriving as a wall rather than as a leak. The checks that notice a
+  vocabulary rotting are in <a href="../../data-model/09-attributes/#8-integrity-checks">../data-model/09-attributes.md §8</a>,
+  and none of them can fire on codes nobody was able to create.
+  <strong>The import half is answered, and only that half:</strong> every code the legacy batch's column→code map names must
+  already be defined and <code>live</code> when the batch applies, and an unmapped column stops the batch — so the
+  vocabulary is authored <em>before</em> the import that looks like it produces it, and day one does not arrive with
+  several hundred codes nobody has read
+  (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>,
+  <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
   <a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline">../domain/03-identity-and-legacy.md §7</a>).
-  Who holds the permission afterwards, day to day, is still what is open.
+  <strong>Who writes those first few hundred definitions, and when, is a question this round raised rather than
+  answered</strong> (<a href="../../open-questions/#f-34">F-34</a>).
 <strong>Settled, so that nobody reopens them from the shape of this page.</strong> A grant carries one code, and there
 is neither a level nor a "nearest scope wins" ordering to pair with it
 (<a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>);
