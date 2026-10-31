@@ -108,8 +108,6 @@ erDiagram
         integer sort_order
         boolean allow_multiple
         string status
-        string proposed_by
-        datetime proposed_at
         datetime retired_at
     }
     ATTRIBUTE_OPTION {

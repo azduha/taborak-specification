@@ -268,8 +268,19 @@ above can express.
 - **A person whose displayed name is not their current one.** Count persons whose
   `given_name`/`family_name` differ from the `person_name` row with no `valid_to` for the same
   `name_type`; the copy is what every list view shows, and it is [an obligation on the writing
-  transaction](01-identity.md#2-person) with nothing downstream that noticed. [F-28](../open-questions.md#f-28)
-  asks whether a report is the right thing or the copy is the wrong one.
+  transaction](01-identity.md#2-person) that nothing enforces.
+  **This bullet is the answer to what F-28 asked, and the answer is: the copy stays, and this is the report
+  that keeps it honest**
+  ([D-142](../decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)).
+  **Delete the copy and read the name from the history** was the other option, and it was refused because the
+  name a reader must be able to print for somebody who has never been opened as a record — a roster printed at
+  a door, a label, a search hit — should not depend on walking a history table for the open row. The view that
+  would replace the copy is the same query; the copy is its materialised half, and **a drift check is the
+  price of materialising anything, paid in the open.** What this bullet had
+  never carried was the admission that it existed — the invariant register said for two rounds that no report
+  counted this drift, in a column where a claim of absence is as checkable as a citation
+  ([D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)), and
+  the register now names this bullet as that rule's backstop.
 - **A tombstoned person with no merge record.** Count persons whose merge pointer is set but
   who do not appear as the merged person of any un-reversed `person_merge` row; non-zero
   means a pointer was written without the record that explains it, which is the case the
@@ -326,7 +337,7 @@ above can express.
   The reading in between is void on its own terms: the participation table it named is deleted
   ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)).
   What survived both reversals is the test, which is why the row is read as a ratio and not as a count.
-- **A redacted person with descriptive values still attached.** Stated where the rows are, as check 6
+- **A redacted person with descriptive values still attached.** Stated where the rows are, as check 5
   of [09-attributes.md §8](09-attributes.md#8-integrity-checks) — attribute rows belonging to a
   redacted person, and attribute values still present in `audit_log`. It is named here because the
   redaction checks above are the same erasure guarantee read from the identity side, and a half-finished

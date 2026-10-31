@@ -182,12 +182,27 @@ what the record said.
   reconstructed later." 
 - **Redacted people with surviving personal data.** Count redacted people whose names are
   not the redaction marker and who still have a current contact point whose value is not
-  redacted; non-zero means an erasure was left half done. **The count now reaches two more places.**
+  redacted; non-zero means an erasure was left half done. **The count now reaches three more places, and the three
+  fail in two different shapes.**
   First, `person_attribute`: a redacted person with **any** attribute row is an erasure that did not
   happen, since those rows are deleted rather than overwritten
-  ([00-conventions §4](00-conventions.md#4-deletion-policy)). That is check 6 of
+  ([00-conventions §4](00-conventions.md#4-deletion-policy)). That is check 5 of
   [09-attributes.md §8](09-attributes.md#8-integrity-checks) read from this side — the same assertion,
-  not a second one. **Second, and a different assertion, which only exists because values are logged
+  not a second one.
+  **Second, and its shape is the opposite on purpose: `event_answer`.** A redacted person with an answer row
+  still carrying a `value` is an erasure that stopped short of the event tables. Those rows are **not**
+  deleted — nothing about an event goes on a schedule, and an answer outlives its event indefinitely — so
+  erasure **overwrites**: `value` emptied, and `answered_at`, `answered_by` and the row itself kept, because
+  *they were asked and they answered* is the event's fact while *this is what they said* is the person's
+  ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)).
+  **`value` is the whole of the content here**, since an answer is one typed value rather than a column per
+  type ([08-events.md §7](08-events.md#7-event_question-and-event_answer)) — there is no second field that
+  survives an emptied value by holding the answer in another shape, which is the trap a check like this
+  would otherwise set for itself. **`event_registration` is counted by nothing here, and that is not an
+  oversight:** whether a person came is organizational history rather than something to withdraw,
+  [00 §8's item 2](00-conventions.md#8-personal-data-and-erasure) says so by name, and a check that reported
+  surviving registrations would be reporting the design working.
+  **Third, and a different assertion, which only exists because values are logged
   on purpose: for a redacted person, no `audit_log` row about one of their `person_attribute` changes
   may still carry content.** Content means `value`, `value_option_id` or `recorded_note` inside
   `old_values` or `new_values`; `person_id`, `attribute_definition_id` and `source` are not content and
@@ -200,7 +215,9 @@ what the record said.
   stop having. Note what the check structurally *cannot* see — a copy that is present, readable, and
   perfectly legal, held by somebody whose permission is graded below its contents — because that failure
   leaves no rows to count; it is the guard, and the guard is reviewed by a person.
-  **This check, check 5 and check 7 are the three here that should alert rather than log.** A redaction
+  **This check, check 5, check 7 and check 8 are the four here that should alert rather than log** — three
+  because a value that outlives the rule about it cannot wait for a monthly report, and check 8 because it
+  is the same failure wearing the other trail's clothes. A redaction
   property that is reported once a month is a redaction property that fails between the reports, and
   unlike a missing audit row, a value that outlives its erasure is not something anyone notices until a
   regulator asks what the table holds.
@@ -220,6 +237,29 @@ what the record said.
   the oldest rows full and looks entirely healthy to a sample. And read the window from the same place
   the job does, because a check holding one value and a job holding another reports clean forever, which
   is the exact failure this check exists to prevent and the one it can cause by itself.
+
+- **An `access_log` row older than the window that is still there.** Count rows whose `occurred_at` predates
+  the window and which still exist.
+  **[This is check 7's sibling and deliberately not its copy](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name).**
+  Check 7 counts payloads that should have been emptied out of rows that stay; this one counts **rows that
+  should be gone**, on the other trail. Same clock, opposite operation — and merging them into one
+  "anything past 24 months" report is how both are lost, because the two findings are repaired by two
+  different jobs, one of which is an update and the other a delete, and because a single count cannot say
+  which half of the retention policy stopped. **The direction of failure is the same, and it is the reason
+  this one alerts rather than logs**: a job that stopped leaves a trail that looks entirely sound from
+  inside it, since nothing about a growing table reads as a promise broken. The only difference between it
+  and a healthy one is rows accumulating past the date the design said they would not exist, and the person
+  who notices is the one asked what the system holds about them.
+  **Count, do not sample**, for exactly the reason check 7 gives: a job that stopped after the newest
+  partition keeps the oldest rows and passes any sample drawn from the top. **And read the window from the
+  same configuration the job reads** — this is the second check that can be permanently satisfied by a
+  disagreement between two copies of one number, and it is the failure mode each of them would cause alone.
+  **What it cannot do is demonstrate that anything was ever deleted.** It counts what remains, which is the
+  only thing a count over a table can see, so a job that deletes from the wrong table passes it; the
+  standing guarantee here is not this report but the one on the other side of it, that the change trail is
+  never pruned ([05c §9](05c-access-log-and-resolver.md#9-access_log)). **This delete is the third named
+  exception to [00 §4](00-conventions.md#4-deletion-policy),** and the only one driven by a calendar rather
+  than by a person asking or a batch being reverted.
 
 - **A change the trail never saw: an audited row whose newest audit row predates its own `updated_at`.**
   For every table [06 §2.1](06-audit-and-import.md#21-the-trigger) obligates, take each row's `updated_at`

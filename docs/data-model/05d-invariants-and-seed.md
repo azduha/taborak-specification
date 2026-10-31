@@ -624,7 +624,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   in the same tier as reading a person. **D-088 bounds the exposure to 24 months and fixes nothing**,
   and the bound is the realistic control for an organization of this size rather than an argument that
   the mark is right — see §9 and
-  [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)
+  [AT-4](../open-questions.md#at-4)
   for why two years is not a short interval when the question is about a child.
 - **`attribute.define` is the narrow half of a deliberate pair**: values are open to anyone who may
   already edit the person, so that the fact gets recorded, and codes are held by few people, because
@@ -671,7 +671,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 
 - **One question left about callers that are not people.** Round 16 designed the arriving integration and
   stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
-  system acting on its own, with a five-label vocabulary instead of free text
+  system acting on its own, with a six-label vocabulary instead of free text
   ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
   and check 9 above is its sibling) and the case where nobody who could hold `system.admin` can reach a screen
   is a report and a written procedure rather than a mechanism

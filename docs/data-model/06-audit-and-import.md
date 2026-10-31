@@ -51,7 +51,7 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 | `transaction_id` | integer, required | Default: the id of the enclosing transaction. Groups all changes made in one transaction, so a multi-table operation (approve a request → create a membership) reads as one event rather than two unrelated ones. |
 | `actor_person_id` | reference to person, optional | Taken from the request context, not from the row. `NULL` when an integration made the call — `api_key_id` below carries the actor then — and `NULL` for the writers that have no request context at all: a migration, the yearly expiry sweep, a run of the import pipeline, whose person is in `import_batch.created_by` and not here. [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) reads that empty as **this system acting on its own**, which is an answer and not a missing one. **A correction made by hand through the application is not one of those writers** — somebody was in front of a screen, and their name goes in this column |
 | `api_key_id` | reference to `api_key`, optional | Which registered integration made the call, when the request authenticated as a caller rather than as a person ([05e-keys-and-callers.md §14](05e-keys-and-callers.md)). **Set together with `actor_person_id` never**: a request is made by a person or by a key, and a row naming both answers *who did this* twice, which is the impersonation this design refuses at the resolver instead ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). It names the caller and nothing beside it — not the person who installed that key, whose column is attribution for an act and never an actor here |
-| `actor_label` | text, optional | **Not free text: a value from the label list of [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)** — `system:renewal-sweep`, `system:payload-reduction`, `system:bank-pull`, `migration:0042`, `import_batch:17` are instances of its rows, and bare `system` is retired, because it means "one of the above, and I am not saying which" ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). It exists for the writers that have no row of their own, and **a writer that is not on that list joins it there before it writes** — the list is prose, so nothing in the database refuses a label outside it and check 4 of [06b §5](06b-redaction-and-checks.md#5-integrity-checks) is what notices. A caller that is not a person is a row in `api_key_id`, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none |
+| `actor_label` | text, optional | **Not free text: a value from the label list of [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means)** — `system:renewal-sweep`, `system:payload-reduction`, `system:log-reduction`, `system:bank-pull`, `migration:0042`, `import_batch:17` are instances of its rows, and bare `system` is retired, because it means "one of the above, and I am not saying which" ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). It exists for the writers that have no row of their own, and **a writer that is not on that list joins it there before it writes** — the list is prose, so nothing in the database refuses a label outside it and check 4 of [06b §5](06b-redaction-and-checks.md#5-integrity-checks) is what notices. A caller that is not a person is a row in `api_key_id`, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none |
 | `operation` | text, required | One of: `insert`, `update`, `delete` |
 | `table_name` | text, required | |
 | `record_id` | surrogate id, required | The row that changed. No reference: the table is named per row, so it points at any table in the database |
@@ -178,8 +178,11 @@ not repair the grading; it **shortens the period during which a wrong grading is
 organization of this size is the only control that will ever actually be in place
 ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)
 is the decision that named the exposure, and the strongest argument
-[AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)
-will receive is that the payload is temporary rather than that the guard is good). It does not retire the
+[AT-4](../open-questions.md#at-4)
+ever put up for it is that the payload is temporary rather than that the guard is good — an argument that
+outlived the question it was made against, since
+[D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)
+settled that one code is the gate and a window can only bound how long it reads for, never how far). It does not retire the
 mark either. A reduced row about a `person_attribute` change still names the table, the record id, the
 field that changed, the actor and the moment — which is to say it still says *this child had a value of
 this kind recorded, here, by this person*, and that is a statement about a child even with the value
@@ -363,10 +366,12 @@ only one of them is anybody's right.**
 
 **What none of the three ever does is delete an `audit_log` row.** The rows are the permanent half; a
 reduction that pruned rows would quietly delete the answer to *"who changed this, and when"*, which is
-the half D-088 chose to keep. The two deletes that exist near this table are elsewhere and are about
-other tables: a revert (§3) hard-deletes *business* rows a batch created and writes audit entries for
-having done so, and an erasure (§4) deletes `person_attribute` rows and records that in
-`redaction_log` rather than one entry per value.
+the half D-088 chose to keep. Every delete near this table is on some other table: a revert (§3)
+hard-deletes *business* rows a batch created and writes audit entries for having done so; an erasure (§4)
+deletes `person_attribute` rows and records that in `redaction_log` rather than one entry per value; and
+since round 20 a scheduled job deletes [`access_log` rows whole at 24
+months](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)
+— **a delete on the other trail, which is precisely the distinction the two clocks were drawn to make.**
 
 **All three operations are updates, and an append-only guard has to be written knowing that.** Nothing in
 this repository defines an append-only trigger ([D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)), but the property is
@@ -405,11 +410,17 @@ history plus accounting obligations, held up by a redacted person row that keeps
 non-identifying — and the review is the one [B-3](../open-questions.md#b-3)
 already asked for, now with a concrete policy in front of it instead of a blank (§6).
 
-**The neighbouring trail takes the same window, as a proposal rather than a decision.** `access_log` is
-proposed at the same 24 months under
-[F-8](../open-questions.md#f-8), which still needs confirming; it is a
-weaker question than this one because that table keeps the payloads of *reads* out of itself to begin
-with ([05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log)).
+**The neighbouring trail takes the same window and the opposite shape.** `access_log` sits at the same 24
+months, and it was [decided there by round 20](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name):
+**its rows are deleted rather than emptied**
+([05c-access-log-and-resolver.md §9](05c-access-log-and-resolver.md#9-access_log)). Same clock, different kind. The
+reduction above may never touch a row, because *what changed* is the half D-088 chose to keep forever; on the
+read trail nobody needs the row at year three, the payloads of reads are not held there anyway, and a row that
+answers nothing identifiable is not worth the exception. **This is the third named exception to
+[00 §4](00-conventions.md#4-deletion-policy)'s "nothing is hard-deleted", and the only one driven by a clock** —
+the other two exceptions that page names are a staging truncate between batches and a delete a person asked
+for. **Mechanism three above is a job too, and the difference between them is the difference the corpus keeps
+insisting on: mechanism three empties a row that stays, this one deletes the row.**
 
 **No free-text field about a person is on the credential list, and none is being added to it.** The list
 once carried `notes`, `custody_arrangement`, `termination_note`, `rejection_note` and `status_note` beside
@@ -466,4 +477,4 @@ relied on; a per-entry *"could this reader see this field"* check inside the his
 considered and left unimplemented, because it would mean running the resolver per audit row against a
 value that no longer exists anywhere as a row to resolve against. It is a registered question rather
 than an omission now:
-[AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data).
+[AT-4](../open-questions.md#at-4).

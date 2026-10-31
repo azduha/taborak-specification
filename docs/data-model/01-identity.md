@@ -132,9 +132,12 @@ about a person" from quietly turning four enforced rules into four hopes.
 
 **One consequence names itself.** `person.notes` is the last free text about a person kept outside the
 vocabulary, and it is the column a reviewer should ask about: a sentence typed there is invisible to
-the curation queue, to any report on a code, and to the screen a first aider reads at 23:00, while the
-same sentence recorded as a value against a `proposed` code is visible to all three
-([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). Whether the column
+to any report on a code, and to the screen a first aider reads at 23:00, while the same sentence recorded as a
+value against a code is visible to both — **and recording it that way is now one act by one person rather than
+a request waiting for somebody with time**, since a definition is live at the save of whoever holds
+`attribute.define` and there is no queue left to wait in
+([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
+[09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). Whether the column
 should exist at all is open and already argued
 ([06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues)); what is settled is that it
 carries no protection the attribute layer does not carry, and less readability.

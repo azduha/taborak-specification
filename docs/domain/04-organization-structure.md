@@ -75,7 +75,8 @@ They are not argued away.
 a column that may not change once set, whose violation leaves every row individually valid — and
 `parent_unit_id` was the only member anybody had pointed at. **Empty and unnamed are two different claims**,
 and [D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)
-found the shape has six members: this deletion removed one of them, not the class.
+found the shape had six members, and [round 20](../decisions/round-20.md) made it seven: this deletion removed
+one of them, not the class.
 
 **It is not a two-way door.** This is the deletion of a dimension, not a flag. Adding structure back is a
 decision with a reason attached — most plausibly "the organization has outgrown one center's visibility" —

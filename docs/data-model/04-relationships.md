@@ -128,12 +128,22 @@ Being a party grants the act; not being one leaves the actor's own `guardianship
 permissions to be tried, which is how staff in the table above get their ✅s. An explicit deny still
 runs first and beats both.
 
-**The asymmetry, stated plainly.** A guardian may appoint a guardian: anyone with authority over
-a child can give a second person that same authority with no approval from the organization. The
+**The asymmetry, stated plainly.** A guardian may appoint a guardian: the act is one code —
+`guardianship.assign`, which [the catalog marks ⚠⚠](../appendix/permission-catalog-a-codes.md#5-organization-and-positions),
+second only to reading a person — and **anyone holding it over a child gives a second person that same
+authority, with no approval from the organization and no second signature anywhere.** The
 ordinary case is a mother adding the father. The design does not prevent the non-ordinary case;
-it **attributes** it instead — who added whom, when, from which account, is audited, and the other
-party is notified. That is a deterrent and an evidence trail, not a wall. See
-[E-6](../open-questions.md#e-6--a-guardian-may-appoint-a-guardian).
+it **attributes** it instead — who added whom, when, from which account, is audited, **and that is the whole of
+the control**. **Nothing notifies anybody.** There is no office to notify and nothing in this design that would
+receive a notification at all, and the notice-to-a-"safeguarding-contact" option this page once recommended was
+**refused rather than left un-built**: a control whose recipient is a row somebody must remember to create is
+off by default and silent about being off, which is worse than a trail that is on whether or not anyone
+configured it ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)).
+That is a deterrent and an evidence trail, not a wall, **and the cost is the one that decision states plainly:
+nothing will ever tell a parent, a second guardian, or an officer that a third adult was given authority over a
+child** — the answer to *who added them* is excellent, and the answer to *did anyone think about it* is the
+person who did it, alone, at the moment they did it. See
+[E-6](../open-questions.md#e-6).
 
 **The system does not notice birthdays in this connection.** No job, no review queue, no computed
 candidate date ([D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority),
@@ -461,8 +471,11 @@ with no postal address behind it, which is a finance problem
 
 ## 7. Open issues
 
-- **A guardian may appoint a guardian, with no approval from the organization.** Attributed and notified,
-  not prevented. [E-6](../open-questions.md#e-6--a-guardian-may-appoint-a-guardian).
+- **A guardian may appoint a guardian, with no approval from the organization. — settled: attributed, and
+  nothing more.** Audited, notified to nobody, not prevented; the recommendation this page made for a notice to
+  a safeguarding contact is deleted with the question, for the reason D-137 gives
+  ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told),
+  [E-6](../open-questions.md#e-6)). **§1 states what that costs, and the cost is not closed by the decision.**
 - **One right level cannot separate the health facts from the rest of the record** — the arrangement the
   per-code model existed for. [E-7](../open-questions.md#e-7), and §2 states what it costs.
 - Whether a guardian may act for a dependent who is also a member in their own right — e.g.

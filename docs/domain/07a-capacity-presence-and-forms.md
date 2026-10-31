@@ -69,6 +69,21 @@ the day — is not representable, deliberately: that child was not in the organi
 and must not silently appear to have been. Recording them means registering them, which
 means they have a guardian and the organizers have a name.
 
+**And presence is not a record class.** It is a column of a registration and it inherits everything a
+registration is: the same retention — nothing about an event goes on a schedule, so this mark is readable for
+as long as the registration is ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it))
+— and the same codes that already reach the roster and the mark
+([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)).
+**Refused on both halves:** no `presence_record` table with a retention of its own, and no `presence.view`
+narrower than the roster's — the second would have been a permission whose whole purpose is to hide the fact of
+attendance from the people asking *because they were there*. **This system keeps no safeguarding register:**
+there are no background checks here ([D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system))
+and no medical record ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
+and a column with a special clock and a special permission would have been the first wall of an archive this
+design has refused four times. **The protection this column has is that it is boring**, and the question *"who
+was there on 14 March"* is answered by a report over registrations — which is why the index behind
+`was_present` serves a report and no selector.
+
 **And presence is not an audience.** The temptation to build `PRESENT(<event>)` on this
 column — to let "everyone who came" be a set a grant names — is refused, and
 [§7](07-events.md#7-the-people-connected-to-an-event) states why:
@@ -76,6 +91,20 @@ the column is `NULL` until somebody takes a register, so an operand over it make
 depend on a volunteer's diligence, and it would turn a safeguarding record into an access
 control. Attendance for the purposes of a grant stops at `ATTENDED`, `PLACED`, `CONFIRMED`
 and `ON_WAITLIST`.
+
+**And there is no `WHITELISTED` beside those four.** No `is_whitelisted` column, no fifth tier, no
+operand of that name, no reserved selector code waiting for one
+([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).
+The word is what people reach for when they want an audience of *the ones we invited*, and **anybody adding
+`is_whitelisted` is reimplementing grants badly**: a tier is a state a registration is in, and an invitation is
+not about a registration at all — it is a grant aimed at a person, which is a row that already exists and says
+who aimed it at whom. The invited person who has not registered is described by **the absence of a row** until
+they do, and is `ON_WAITLIST` the moment they register onto a full event
+([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values));
+that is not a gap a fifth value fills, because `PLACED` *is* the capacity set, so a whitelist set beside it
+misdescribes everybody in it. **What this costs is what every prose refusal costs:** nothing in the database
+refuses a future `WHITELISTED` row in `selector_type`, so an operand with no state behind it is a deployment bug
+and not a type error — the same exposure an off-list actor label carries.
 
 ---
 
@@ -259,21 +288,31 @@ with the reasoning, so that nobody later "fixes" the apparent duplication betwee
 stores by tightening this one.
 
 **Event answers are not the person's record.** They are operational detail for one event, read by that
-event's organizers, and they end with the event — while the same fact, recorded on the person, is
-audited, curable and erased with them. Those two copies are **the same class of data**
+event's organizers — and **they are kept**: nothing about an event goes on a schedule, so an answer outlives
+its event, its organizers and the season that asked the question
+([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)),
+while the same fact recorded on the person is audited, curable and erased with them. Those two copies are
+**the same class of data**
 ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
-which is what turns the retention question in §13 into
-a real one, and [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code)
-into the alternative: collect the fact once, confirm it at the door. See
-[data-model/08a §11](../data-model/08a-event-guards-and-checks.md#11-open-issues) for the retention
-question, which is open.
+and the retention question that used to sit between them — the same sentence of personal data kept forever in
+one table and quietly discarded in another — **is closed by the two rules agreeing, not by a schedule**: an
+erasure reaches both, and the only difference left is the shape of the reaching, a delete where the row *is* the
+value and an emptying where the row is also a fact about the event. What still differs between the copies is
+who may read them, which is the widening the paragraphs above record. See
+[AT-1](../open-questions.md#at-1) for the alternative this round took up instead of choosing between the two
+stores: **collect the fact once and confirm it at the door** — a bound question prefills from the stored value
+as a suggestion and writes back a fresh dated one
+([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
 
 ---
 
 ## 13. Open issues
 
-Moved to [../open-questions.md](../open-questions.md) under **G. Events**, where they are
-tracked with the rest. The ones this module raises:
+Tracked with the rest in [../open-questions.md](../open-questions.md): the answered ones under
+**R. Resolved**, each carrying the decision that answered it, and the live ones where the module map points.
+**Four of the seven below are settled and say so rather than reading as still open** — that is deliberate,
+because a list of open issues that keeps asking an answered question is how a design gets reopened by a
+newcomer who reads the list and not the log. The ones this module raises:
 
 - **The age ceiling on an open event — settled: accepted as a risk.** The grant is the rule, and a
   ceiling is writable today as `event.register_self` aimed at `MEMBERS * YOUNGER(15)`
@@ -296,22 +335,28 @@ tracked with the rest. The ones this module raises:
   being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
   as written; whether the editor should warn at the audience instead is unsettled
   ([§7](07-events.md#7-the-people-connected-to-an-event)).
-- **`WHITELISTED`.** No stored state to name it, so it is not a selector
-  ([§7](07-events.md#7-the-people-connected-to-an-event)) — a question about
-  whether the feature is wanted, and not one about whether the language could hold it: a
-  predicate over a column is an ordinary operand now
-  ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
-- **Event answer retention** (§12). Answers end with the event — but a dietary answer naming a
-  condition is data of exactly the same class as what the person record holds, held under weaker rules
-  and fresher. No policy yet; see
-  [EV-2](../open-questions.md#ev-2--retention-of-event_answer).
+- **`WHITELISTED` — settled: refused.** No stored state to name it, so it is not a selector, and there will be
+  no fifth presence tier, no `is_whitelisted` column and no reserved name
+  ([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).
+  It was a question about whether the feature is wanted rather than about whether the language could hold it —
+  a predicate over a column is an ordinary operand now
+  ([D-107](../decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded))
+  — **and the need it was reached for is met by rows that already exist**, which §9 states.
+- **Event answer retention — settled: nothing expires, and erasure empties rather than deletes** (§12).
+  A dietary answer naming a condition *was* data of exactly the same class as what the person record holds,
+  held under weaker rules and fresher; **the two rules now agree, so the asymmetry is gone rather than
+  mitigated** ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it),
+  [EV-2](../open-questions.md#ev-2)).
 - **Cancelled events and fees** (§10–11). Cancelling keeps the registrations; whether it
   releases the obligations, refunds them, or neither is the finance module's call.
-- **Presence for minors and the safeguarding record** (§9). `was_present` is the "who was in
-  our care" record. Whether it needs its own retention or its own permission is unresolved —
-  and [§7](07-events.md#7-the-people-connected-to-an-event)'s refusal of `PRESENT` is the sharp edge of
-  why that matters.
+- **Presence for minors and the safeguarding record — settled: it stays a column of the registration** (§9).
+  No retention of its own, no permission of its own, no `presence_record` table, **and no safeguarding register
+  behind any of it** ([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own),
+  [EV-4](../open-questions.md#ev-4)). [§7](07-events.md#7-the-people-connected-to-an-event)'s refusal of
+  `PRESENT` is the surviving sharp edge, and it is the reason no permission of its own was needed: the column is
+  a record of what happened, and not a set anybody is granted over.
 
 ---
 
-*Decisions behind this page: D-023, D-040, D-044, D-061, D-064, D-065, D-067, D-070, D-074, D-079, D-083, D-097, D-102, D-107.*
+*Decisions behind this page: D-023, D-040, D-043, D-044, D-059, D-061, D-064, D-065, D-067, D-070, D-074,
+D-079, D-083, D-097, D-102, D-107, D-139, D-140, D-147, D-148.*

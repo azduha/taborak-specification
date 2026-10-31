@@ -355,8 +355,11 @@ argument standing in the way, and it holds on its own
 **`WHITELISTED` does not exist, and is not a selector.** The nearest stored facts are
 `source = 'staff'` (an organizer entered them) and promotion off the waitlist. Either the
 word is to mean one of those or it names a new column on `event_registration`, which is an
-events decision and not a selector decision — so it stays an open question rather than being
-implied by a word in a grammar. Nothing in this module reserves the name.
+events decision and not a selector decision — **and the events decision is now made: refused**
+([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).
+**Nothing here reserves the name**, and the refusal is written where the presence tiers are listed
+([07a §9](07a-capacity-presence-and-forms.md#9-presence-what-actually-happened)) rather than being implied by a
+word in a grammar.
 
 ### The screen must say which event it is talking about
 

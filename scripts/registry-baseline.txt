@@ -19,6 +19,7 @@ code-shape event.admin              # glossary-authorization, Authorization: `ev
 code-shape event.answers.view       # 08a §8: names the plural misspelling of `event.answer.view` precisely to say it is not a code
 code-shape membership.manage        # permission-catalog §1 and catalog-b §12: the sentences recording that five pages used a code that never existed
 code-shape person.admin             # 05d §12, glossary-authorization and F-4: the per-resource admin code D-068 refuses, and F-4 asks about it by name
+unknown-action presence.view        # 08a §10 and domain/07a §9, read in round 20: both spell `presence.view` only to record that D-147 refused a permission narrower than the roster's over the presence column — a code whose whole job would be hiding a fact from the people who were there
 
 selector GUARDIANS                  # 06a "The selectors", 07-events and 05d §12: `GUARDIANS` is spelled as an operand only to state that it is not a selector, which is what D-113 had to name to delete
 

@@ -73,8 +73,14 @@ The catalog's whole involvement in that is one code added and none removed:
 - **`attribute.define` is the one code, and it is the narrow one**
   ([D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)): it
   creates, renames, merges and retires a definition — deciding what the organization *collects*, which is
-  what makes the data queryable. Recording a value against a definition that does not exist needs no such
-  permission: it saves as a `proposed` definition and waits in the curation queue. Its sensitivity column
+  what makes the data queryable. **Recording a value against a definition that does not exist is refused, and
+  it creates nothing**: a value may not invent a code, so the vocabulary grows only by a save from a person
+  holding this code, and it is live at that save
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted))
+  — **the permission is the curator**, there being no queue left to hold a proposal and no office that would
+  confer the reading of one
+  ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)).
+  Its sensitivity column
   stays empty because it reads nobody's data — the vocabulary is rows about codes, and the values
   underneath it are reached through `person.view` like anything else.
 - **`person.view` carries ⚠⚠** because the marker grades what a grant *exposes*, and this one exposes
@@ -316,6 +322,16 @@ difference is the whole reason there are two tables — and the office codes are
 > answer already decided by nobody. Nothing else could have used this comparison — since
 > [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
 > a grant carries no level to compare a code against.
+>
+> **Required, agreeing with nothing, checked by nothing: `right_kind` is a note, and it stays required.**
+> Nothing in the schema or the write path asks whether a code typed `read` really is one, and no report counts
+> the codes where the two disagree — so **a `right_kind` can contradict its code forever, and only a reader
+> will notice** ([D-144](../decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked)).
+> **That is what the column is for.** A code whose declared kind reads oddly next to its name is worth noticing
+> *while reading a catalog*, which is what this page is; the alternative was a validation rule that would have
+> had to hold, somewhere, a second list of which codes are reads — a copy of this column in prose, and the one
+> defect this corpus keeps hitting is a copy that drifted. Every marking in the tables below is therefore an
+> author's statement, filled in because the column cannot be left empty.
 
 ## 7. Permissions administration
 
@@ -432,6 +448,15 @@ difference is the whole reason there are two tables — and the office codes are
 > protects the trail is the guard on it — scope, this mark, and who holds it — exactly as the guard on
 > `person.view` protects the record. *Why: the mark follows what a grant exposes, not the table a code
 > names — [D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads).*
+>
+> **And this one code is the whole gate, with no per-entry filter behind it — now decided rather than merely
+> unbuilt.** [06 §2.3](../data-model/06-audit-and-import.md#23-history-query) records the per-entry check as
+> considered and left unimplemented, and
+> [D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)
+> is the decision that says so: what an officer can read about 2019 does not depend on an expression changed
+> last week, which is the legibility the trail exists to provide. The widening above is therefore a
+> **stated property of one grant** and not a bug waiting for a filter — which is also what makes ⚠⚠ and the
+> question of who holds this code the whole of the control.
 
 > **The contents expire, which bounds that exposure without removing it.** A row lives for the life of
 > the system; its `old_values`/`new_values` are emptied **24 months after they were written**, by a
@@ -464,10 +489,15 @@ difference is the whole reason there are two tables — and the office codes are
 > does not recall the copy, and a later redaction cannot reach it. It is graded by where the data
 > goes, not by what the code is allowed to see.
 >
-> **Whether one permission is enough of a guard for all that is itself open** — tracked as **AT-4**
-> ([../open-questions.md](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)).
-> The grading above is what is settled: the trail is read with the guard of person data, whichever
-> permission or combination of permissions that guard turns out to be.
+> **One permission is the guard, and that is now decided rather than open**: `audit.view` is the whole gate,
+> with no per-entry filter behind it
+> ([D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record),
+> answering **AT-4** ([../open-questions.md](../open-questions.md#at-4))). The grading above is what the
+> decision rests on: the trail is read with the guard of person data, and the widening that comes with one code
+> over a second copy of the record is written here as a property rather than left to be discovered. **What the
+> decision spends is exactly what it names:** a history screen over the trail is a person-data surface, so
+> ⚠⚠ and the question of who holds this code are the whole of the control, and a grant to a wider audience
+> widens reading about every year at once.
 
 ## 8a. Events
 

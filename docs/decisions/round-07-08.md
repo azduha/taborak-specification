@@ -335,7 +335,7 @@ handed to thirty volunteers is now visible at a glance.
 **Where this is enforced: nowhere.** A sensitivity mark is a line in
 [the catalog](../appendix/permission-catalog.md#1-conventions), reviewed by a human, and
 the check that a payload's contents match its code's mark does not exist and cannot be written against a
-runtime vocabulary — see [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
+runtime vocabulary — see [AT-4](../open-questions.md#at-4),
 which asks whether one permission is the right shape for a trail that holds person data at all.
 
 **See:** [appendix/permission-catalog.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system),

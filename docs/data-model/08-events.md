@@ -249,6 +249,30 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
   `presence_marked_at` are either all present or all absent, and `was_present` absent is the
   same condition as the other two absent. A partially-set trio is a bug, not a state.
 
+**Nothing in this table ages out.** A registration is a fact about a dated occasion and the row is
+kept: no expiry when the event ends, no clock on it, and no job that forgets people — the rule the
+accounting skeleton already follows, for the same reason
+([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it),
+[D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+A cancelled event keeps every registration (guard 2 in §8), and a cancelled event with no
+registrations would be an event that demonstrably never happened.
+
+**`was_present` inherits that retention rather than getting one of its own** — no retention shorter
+than the event's, no permission narrower than the roster's, no `presence_record` table, no
+safeguarding register behind it. The mark is read with the codes that already reach the event and
+written by whoever holds `event.presence.mark`, which is all the protection a column can be given
+that is also a fact an organizer needs
+([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)).
+Erasure reaches a registration the way it reaches organizational history: the person stops being
+identifiable, the row stays, and the mark on it stays
+([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)). **What that costs is stated
+rather than left to be found:** a 1998 camp roster holds a mark of who was in the organization's care
+for as long as the database exists, readable by whoever reaches that event. The alternative was a
+column with a clock of its own and a permission of its own, which is the first wall of an archive
+this design has refused four times and would record a fact this system does not keep — there are no
+background checks here ([D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system))
+and no medical record ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
+
 **Indexes**
 
 - **The set the capacity test counts** — an event's registrations whose `response` is
@@ -449,6 +473,7 @@ would be a state with no meaning.
 | `choices` | list of text, optional | For `choice` and `multichoice` only. An ordered list on the question rather than a child table: the options are a property of the question, they are ordered, and they are never referenced by anything else |
 | `is_required` | boolean, required | Default false. The person REGISTERING must answer. Not a gate on registration itself: a form that blocks sign-up is a form nobody completes, and the organizer would rather have the registration and chase the answer |
 | `applies_to` | enum: `attendee` / `organizer` / `all`, required | Default `attendee`. Who is asked. Organizers may be asked things attendees are not (T-shirt size for the leaders' shirts) and vice versa |
+| `bound_attribute_code` | reference to attribute definition, optional | `NULL` = an ordinary question, which most are. Set = this question asks about the fact stored under that **definition code**: the form prefills from the person's current value as a *suggestion* the answerer confirms or edits, and submitting writes a fresh value back to the person record dated today. **It names `attribute_definition.code` and never a `person_attribute` row id** — that distinction is what keeps erasure's one hard delete invisible ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer), [00-conventions §4](00-conventions.md#4-deletion-policy)). See *A question bound to a stored value* below |
 | `valid_from` | date, required | Default today |
 | `valid_to` | date, optional | `NULL` = still asked. A question can be retired after people have answered it. Answers survive (an answer is never removed with its question), because "what did they say?" must outlive "do we still ask this?" |
 | `created_at` | timestamp, audit time | |
@@ -501,6 +526,53 @@ them from having to agree. This is the shape
 [D-044](../decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)
 refused for membership requirements, and it is refused here for the same reason.
 
+### A question bound to a stored value
+
+**One nullable column, `bound_attribute_code`, and it points at the vocabulary.** Set, it says *this
+question asks about the fact stored under that code* — nothing more. It never names whose value, and
+it never names a row. **The code has to be one the vocabulary holds, checked on the save path like any other
+reference by value**, and because a definition is retired rather than deleted, the refusal this column can
+ever need is for a code nobody ever wrote — a typo, or a name invented at a desk. **A retired code is legal
+to bind** and binding it is not an error: the questions that were asked under it stay asked, which is what
+retirement has always meant here.
+
+**It prefills as a suggestion.** The form shows the person's current value inside the question, and
+the answerer sees that they are being shown it: they confirm it or they change it, and either way
+they are the one answering. **Nothing is hidden from them and nothing is copied silently**, which is
+the half of the design that makes a stale fact safe to display at all — a value that arrives
+unasked-for and looks authoritative is worse data than a question, and a value that arrives labelled
+*"this is what we have, is it still right?"* is the same value doing good
+([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
+
+**Submitting writes back, as a second act.** A confirmed or edited answer writes a **fresh**
+`person_attribute` value dated today, recorded as written by the person who submitted the form,
+through the same `person.edit` the answering channel already uses, and audited with that person as
+its actor ([09-attributes §4](09-attributes.md#4-who-may-read-and-who-may-write)). The answer itself
+stays a row of the event either way: **the write-back is a second act, not the same row twice**, and
+what lands in the person record is a fresh statement, not a second home for the stored value. Where
+that write is not permitted it is refused **and the answer still saves** — a form never half-writes a
+person.
+
+**Which one wins: neither, and that is the shape.** The person record wins as of today, because the
+write-back is dated today and the attribute's history is the record of what was believed when. An
+answer is not corrected when the record later changes, and the record is not corrected because an old
+answer said otherwise — they are two dated statements of one fact at two moments, which is how this
+corpus already treats a name. Where the answer contradicts the stored value the difference is on the
+screen, in the prefill, and a person who edits the prefill is editing the record: that is the repair
+route, and it is why the binding is not the silent disagreement the question feared.
+
+**What the binding may never become.** Not a reference to a `person_attribute` **row id** —
+[00-conventions §4](00-conventions.md#4-deletion-policy) forbids one from any table, and this binding
+stays legal precisely because `attribute_definition.code` is never deleted, is retired instead, and so
+outlives the person whose values sit under it; a value's key would have made erasure's one hard delete
+visible. Not a copy in either direction without a person in the loop: no write-back the answerer did
+not see, and no back-filling of an old answer when the record moves. And not a link that survives a
+change of mind unnoticed: re-pointing a bound question at a different code is an act somebody must
+take deliberately, because the answers already given belong to the old code and stay exactly what they
+were. **What this costs** is a new path into `person_attribute` — the first place outside a person's
+own editing where an attribute value arrives with no staff member in the middle of it — which is why
+the column is per question, per event, and `NULL` by default.
+
 ### Health facts, and the discipline this requires
 
 > **An event form is how the people running an event find out what they need to know about the
@@ -522,10 +594,13 @@ the contrary is making a privacy promise the model does not keep
 
 **What the form is for:** it asks *now*, about *this* event, of a person who may not be in the
 system at all, and its answer carries a date. That is a genuine property the record does not
-have — a recorded attribute says what somebody believed, once, at no particular time. Whether
-the two should meet at all is [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code),
-and the recommendation there is a confirmation pass rather than a silent prefill, precisely because
-a stale health fact that arrives looking authoritative is worse data than an asked question.
+have — a recorded attribute says what somebody believed, once, at no particular time. **The two do
+meet, and they meet by code, not by copy:** a question may be bound to an attribute definition, and
+the meeting is the confirmation pass — a prefill the answerer sees and may change, and a write-back
+dated today — never a silent prefill
+([AT-1](../open-questions.md#at-1),
+[D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
+Bound or not, the answer stays the dated statement, and that is what the record cannot be.
 
 **Nothing in the data model distinguishes a preference from a condition, and nothing *could*:**
 [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
@@ -542,15 +617,29 @@ not an enforced constraint**:
 Asking a returning camper to restate a recorded allergy at every event is not a privacy measure; it
 is the same fact, fresher in one table and unmanaged in it. **The event answer is where a health
 fact lands when the organization has not collected it properly** — and the fix is the record plus
-a confirmation pass, not a cleverer form.
+a confirmation pass, not a cleverer form, which is what a bound question is: the record shown so it
+can be corrected, by the person who owns it.
 
-**Open:** the retention policy for answers. A dietary answer citing a medical condition is data of
-exactly the same class as everything else the organization holds about a person: there is no
-specially-sensitive category, which is not the same as this data being insignificant — and
-there is no policy for how long answers survive their event. See
-**[EV-2](../open-questions.md#ev-2--retention-of-event_answer)**, which notes that until it is
-answered the weakest-protected copy of a health fact is the freshest one.
+**Nothing about an answer expires.** No expiry when the event ends, and no clock on it: the row is a
+fact about a dated occasion and it is kept, exactly as the registration beside it is (§4) and exactly
+as a cancelled event keeps its registrations (guard 2 in §8). **Erasure reaches it, and empties it
+rather than deleting it** — a redacted person's `event_answer.value` is set to empty and the row
+survives, because *"they answered that question"* and *"this is what they said"* are two different
+facts and only the second one is theirs to withdraw
+([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it),
+[00-conventions §8](00-conventions.md#8-personal-data-and-erasure)). **So the asymmetry is gone:** a
+dietary answer naming a condition and the same sentence recorded as a `person_attribute` are data of
+one class — there is no specially-sensitive category, which is not the same as this data being
+insignificant ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data))
+— and they now follow one rule, so the copy a camp leader actually reads is no longer the
+weakest-protected one. **What it costs:** an emptied answer still says something — that a question was
+asked and answered, by whom, on what date — and that residue is deliberate, the same residue
+[D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
+leaves in an audit payload;
+and it is a rule the store implements rather than one the schema enforces, which is why the erasure
+check in [06b §5](06b-redaction-and-checks.md#5-integrity-checks) counts emptied-value answers the way
+it counts surviving names ([EV-2](../open-questions.md#ev-2)).
 
 ---
 
-*Decisions behind this page: D-005, D-023, D-037, D-040, D-044, D-056, D-057, D-061, D-062, D-065, D-083, D-090, D-095, D-098, D-099, D-102.*
+*Decisions behind this page: D-005, D-023, D-037, D-040, D-043, D-044, D-056, D-057, D-061, D-062, D-065, D-083, D-088, D-090, D-095, D-098, D-099, D-102, D-139, D-140, D-147.*

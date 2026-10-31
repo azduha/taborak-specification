@@ -1,12 +1,14 @@
 # Open Questions
 
-Everything still unresolved — seventeen questions, each with its **schema impact**, what changes
-once you answer, ordered roughly by how much they block. Three of them came out of
-[round 18](decisions/round-18.md)'s work writing down who enforces each invariant
-([§ J](#j-opened-by-writing-down-who-enforces-each-invariant)), and they are a different kind of item: none is
-a design question, and each names a rule this corpus states with no report beneath it. **Three of that
-section's six were answered in [round 19](decisions/round-19.md)**, which is the first round where the section
-gave answers back rather than only questions.
+Everything still unresolved — **five questions**, each with its **schema impact**, what changes once you
+answer, ordered roughly by how much they block. **Thirteen of the seventeen questions that were on this page
+were answered by [round 20](decisions/round-20.md)**, every 🟡 among them, and that round also took the last
+three of § J — what remained of the section [round 18](decisions/round-18.md) raised by writing down who
+enforces each invariant. **The round also left one behind it: [F-34](#f-34)**, raised by the answer it gave to
+[AT-2](#at-2) rather than found on this page: deleting the attribute proposal stage turned out to delete a
+schedule nobody had written down. **It is filed under § F with the questions it resembles, not in a section of
+its own** — a question a ruling raised is an ordinary open question once it exists. **§ J is therefore gone**, emptied by being answered rather than by being reversed,
+which is the first time this register has closed a section that way.
 
 Marked: 🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred.
 
@@ -16,9 +18,19 @@ that settled it and what the answer cost, and the reasoning lives in that decisi
 is silently dropped: a row in § R carries a short anchor, so a link written years ago against
 `F-7` still lands somewhere true.
 
-**The section letters are names, not a sequence.** Sections B, C and D held only closed questions
-and are gone, but the ids they held — `B-2`, `C-5`, `D-9` — are still how § R means them, and `E-6`
-is still the question it was when it was filed.
+**What the five survivors are, since that is short enough to say here:** [A-4's remainder](#a-4-remainder--the-organizational-calendar)
+is the organizational calendar, [E-3](#e-3--guardian-acting-for-an-adult-child) is how this organisation reads
+its own civil code, and [F-9](#f-9--should-membership_type-stay-a-table-with-one-row) and
+[F-11](#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim) both turn on what a
+membership type is for. [F-34](#f-34) is the odd one: **nothing in the schema waits on it** — it asks who does a
+job and when, which no ruling can decide alone because the answer is a person's name and a date.
+**Not one of the five is 🟡.**
+
+**The section letters are names, not a sequence.** Sections B, C and D held only closed questions and are
+gone; § J joined them in round 20, emptied by answering it, and § G (events) and § Ga (attributes) went the
+same way when their seven questions were answered. **The modules they framed are unaffected** — both are
+designed, and [§ H](#h-not-yet-designed) still links them. The ids those sections held — `B-2`, `C-5`, `D-9`,
+`EV-2`, `AT-4` — are still how § R means them, and `E-6` is still the question it was when it was filed.
 
 [§ I](#i-assumption-index) lists every assumption the documentation is standing on;
 [§ How to answer](#how-to-answer) says which of these is worth answering next.
@@ -47,25 +59,6 @@ come from the row?*
 
 ## E. Guardianship
 
-### E-6 🟡 A guardian may appoint a guardian
-
-**Raised by closing E-5.** D-073 lets a guardian add another guardian, so anyone with authority
-over a child can hand that same authority to a second person **with no approval from the
-organization**. The ordinary case is a mother adding the father. The design does not prevent the
-non-ordinary case; it attributes it — who added whom, when, from which account, audited, with the
-other party notified.
-
-**The open question is whether attribution is enough**, and specifically whether adding a guardian
-over a **minor** should also notify somebody at the organization beyond the audit log. A child
-gaining a second legal stranger with `write` over their records is not the same kind of event as an
-adult adding a co-parent.
-
-**Recommendation.** Notify a safeguarding contact on `guardianship.assign` where the subject is a
-minor, and nothing else. Notification is visibility, not approval, so the parties still do not need
-the organization's permission — which is the whole point of D-073.
-
-**Impact.** One notification rule. No schema change.
-
 ### E-3 🟢 Guardian acting for an adult child
 
 **Question.** Can a parent register their adult child for an event, with the child's consent?
@@ -81,45 +74,6 @@ without touching guardianship at all. What remains is the individual case.
 ---
 
 ## F. Authorization
-
-### <a id="f-8"></a>F-8 🟢 Retention policy for `access_log`
-
-**Question.** How long do the login and authorization-decision rows live?
-
-**This entry used to answer itself, in the wrong direction.** It said: partition monthly, archive to
-cold storage, **never deletion**. That is right about the *rows* and wrong about everything else, and
-the mistake is the same one [D-088](decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
-made salient for `audit_log`: a retention policy stated as one number silently decides what the row
-*contains*, which is the part with the person data in it.
-
-**Proposed — and it is a proposal awaiting you, not a position these documents hold:** `access_log`
-takes the **same window as `audit_log`'s payloads, 24 months**, with rows kept and their contents
-emptied on the same schedule, because a trail of *who was allowed to see what* that outlives the trail
-of *what was actually changed* answers the interesting half of an incident and not the other half.
-Monthly partitioning survives as the mechanism; it is how the window gets applied cheaply, and it was
-recommended long before anybody decided on a window.
-
-**Why the question is structurally weaker here than it is for `audit_log`.**
-[05-authorization §9](data-model/05c-access-log-and-resolver.md#9-access_log) keeps the *contents* of a read out of
-this table to begin with — it records that a permission was exercised, not what was on the screen — so
-there is no payload-expiry argument and no long-history loss to weigh. What remains is the ordinary
-tension: a security review wants the login trail back to the start of the system, and a privacy review
-wants a record of somebody's late-night browsing to stop existing eventually.
-**Inverting the arithmetic is worth noticing:** the original "never deletion" made this table outlive
-the person record it describes; the proposal makes it shorter-lived than the business rows, which is a
-different objection and a defensible one.
-
-**Needed.** Your confirmation of the 24 months, and the same legal review assumption 49 registers —
-which now has both clocks in front of it rather than one.
-
-**Impact if unanswered.** Neither table can be shrunk afterwards without a migration over the two
-largest tables in the system, and the first time anybody wants to answer "how long have people been
-able to read this?" the honest answer is that nobody wrote down when the logging started.
-
-**See:** [data-model/05 §9](data-model/05c-access-log-and-resolver.md#9-access_log),
-[D-088](decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short).
-
----
 
 ### F-9 🟢 Should `membership_type` stay a table with one row?
 
@@ -168,262 +122,64 @@ membership, not a new code invented at a desk.
 
 ---
 
-### <a id="f-27"></a>F-27 🟢 The integration that this system calls
+### F-34 🟢 Who writes the vocabulary the first import needs, and who holds `attribute.define` afterwards?
 
-**Everything round 16 designed is inbound.** A key is a caller arriving
-([05e](data-model/05e-keys-and-callers.md)); an accounting export, a refund request, a bank statement pull
-and any webhook are this system leaving, and nothing describes who authorizes that. **There is no webhook
-endpoint anywhere to authenticate**, because webhooks left the design with the card gateway
-([07-finance §2b](data-model/07-finance.md)).
+<a id="f-34"></a>
 
-**Question.** Does an outbound call need a permission code and an actor at all, or is it a job — which
-would make it [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
-the answer round 17 gave to the writers that stay inside this system, wearing a different hat?
+**Question.** [Round 20](decisions/round-20.md) deleted the attribute proposal stage: a definition is live at
+the save of whoever holds `attribute.define`, and the legacy import **refuses at apply time** on a mapped
+column naming a code that is not already defined and `live`
+([D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
+[data-model/09 §7](data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from)).
+So the several hundred definitions the first real batch needs have to be authored **before** the batch that
+looks like it produces them. Who writes them, over what period, and who holds the code once the import is
+done?
 
-**Why it might be nothing.** A person performing an export in a screen is already an ordinary checked
-action, audited like any other write; a scheduled pull is a job, and jobs have no codes by doctrine. The
-secret the remote system holds is not this system's authorization state and never was.
+**Why this is a question now and was not one before.** `proposed` was the answer while it existed: the import
+could write codes nobody had read and the queue was where the reading happened. It was a bad answer — a third
+status no decision had granted, with a check whose whole job was to age it out — but it carried a schedule
+inside it, and deleting the status deleted the schedule with it. This is the one place in the round where
+**deleting a mechanism removed the answer to a question nobody had written down**, and the round noticed only
+afterward.
 
-**Why it might be something.** Two decisions elsewhere cited "a second integration with its own
-authorization" as a *reason to refuse* a mechanism — and round 16 built the mechanism those decisions
-assumed would never exist, so their refusals now rest on a thing that has a table, codes and a trail. An
-outbound call that changes money is a write with no `access_grant` behind it anywhere.
-
-**Positions.** Treat every outbound call as either a person's checked action or a job (no new design, and
-F-25 decides the second half); or give the outbound direction its own credential store, which is a module,
-not a column, and belongs in the decision log with an argument rather than here as a hint.
-
-**Schema impact.** Either zero, or a table for remote credentials beside `api_key` and a code per act —
-which is the same four things a new resource owes the catalog
-([permission-catalog-b §10](appendix/permission-catalog-b-roles-and-open-issues.md)).
-
-**Needed.** When the first outbound integration is scheduled. Nothing in the current design is blocked by
-it.
-
----
-
-## G. Events — designed, with three things left open
-
-The module is written: [domain/07-events.md](domain/07-events.md) and
-[data-model/08-events.md](data-model/08-events.md). Fifteen questions have been answered
-(D-058 … D-067, plus EV-1 and EV-5 in a later round); what remains below is what those answers
-did **not** settle. None of it blocks implementation.
-
-### EV-2 🟡 Retention of `event_answer`
-
-**The question, restated once so it stays answerable.** It used to read "a dietary answer citing a
-medical condition is health data, and health data has a retention obligation" — and
-[D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-removed the second half of that sentence's subject: there is no class of health data with its own
-obligation, only personal data, of which a dietary answer is one instance. **The question survives, and
-it is now the ordinary version of a question this system has not answered anywhere**: event answers end
-with the event, "end" is not a defined policy, and a fact recorded on a form is the same kind of fact as
-the same sentence recorded as a `person_attribute` ([data-model/09-attributes.md](data-model/09-attributes.md)),
-which raises the sharper form of the question — **should an answer about a child be deleted on a
-schedule at all, when the same information held as an attribute is kept until someone retires it?** The
-paragraph at the end of this item is where that doubling is worked out; what changed here is only that
-the question can no longer be filed under a category of data that no longer exists.
-
-**Why it is not trivial.** [D-061](decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)
-made an event form the route by which a camp leader learns a child has a nut allergy. That is
-a deliberate widening, and it puts health-adjacent data in a table whose protections are weaker
-than the health record's — **and in round 6 that gap widened twice over**: there is no longer a
-`dependent.medical.*` code marking which data is the sensitive kind (**E-7**), and the audience
-entitled to read an answer is whoever runs that event, a set sized by whoever creates it.
-The retention policy is the remaining half of that trade.
-
-**Needed.** Legal input, of the same kind B-3's indefinite retention still needs. The technical question — where does it live, who may read
-it — is answered; whether it must be deleted, kept, or archived is not.
-
-**Changed in round 7, in a way that strengthens the case rather than settling it.** [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
-made every fact about a person one class of data held on the person, so an event answer naming an
-allergy is now **the same kind of fact stored in two places by two different rules** — one on the
-person, where it is audited, curable and erased with the person; one in an event's table, readable by
-whoever runs that event, with no retention policy. **The retention question and [AT-1](#at-1--should-an-event-question-bind-to-an-attribute-code)
-are the same question from two directions**: an answer worth keeping is an attribute that was
-collected at the wrong address, and an answer not worth keeping should be deleted on a schedule rather
-than surviving because nobody wrote a policy. Until one of the two is decided, the weakest-protected
-copy of a health fact is the one that is freshest.
-
-### EV-4 🟢 `was_present` as a safeguarding record
-
-**The question.** Presence is the record of who was actually in the organization's care
-([D-067](decisions/round-05.md#d-067--presence-is-a-three-valued-fact-on-the-registration)).
-Does it need its own retention, or its own permission?
-
-**Why it might.** It is the record that answers "was this child at camp on the day of the
-incident" — the question insurance and any safeguarding review will ask. That is a heavier
-thing than "who said they were coming", and it currently shares both a table and a permission
-with the registration.
-
-**Why it might not.** It is meaningless without the registration it belongs to, and splitting
-it would put two rows in two places describing one fact.
-
-**Impact.** Splitting it is a table; keeping it is nothing. The argument for splitting is
-permissions — a volunteer who takes the register at camp is not the same trust as one who may
-alter the roster. See EV-5, which is the same tension.
-
-### EV-6 🟡 `WHITELISTED` — the word people reach for, with no stored state to name
-
-**Question.** [D-102](decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)
-named four attendance tiers a grant may bind to and refused a fifth (`PRESENT`, refused because
-`was_present` is `NULL` until somebody marks it). `WHITELISTED` keeps coming up in the same sentence and
-**there is nowhere in the model for it to read from**: no flag on `event_registration`, no roster on `event`
-besides organizers, no column anywhere that says *this person was let in*. Should the language refuse the
-word, or should the model give it state?
-
-**The half that is already answered, and should be said before anything is built.** "These named people may
-register for this event" needs no new anything: it is an **allow grant on the event** naming
-`event.register_self`, aimed at an audience whose expression is the hand-typed `PERSON(a) + PERSON(b)` or names
-a `GROUP` — one row per sentence, revocable, audited, and **dated by the grant rather than by the names**,
-since the dated rows those names used to live in are deleted (D-099, D-102, and
-[D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
-for the deletion; [F-20](#f-20) settles
-which of the two spellings a given sentence wants, and this entry does not). That is the D-102 answer to the
-sentence, and it is better than a flag because a flag cannot be aimed at a group, cannot expire, and cannot be
-refused by a deny. **Anyone adding `is_whitelisted` is
-reimplementing grants badly.**
-
-**The half that is not answered.** There is a different sentence that sounds identical and is not about
-permission: *"she was invited, ahead of the public opening, and she has not answered yet."* That is a **fact
-about a person's standing on one event**, and the model cannot state it. Worse, the tiers actively misreport
-it: `PLACED` is the capacity set, so an invited person who registers onto a **full** event is
-`ON_WAITLIST` — the model says *waiting* where the organizer's head says *has a place, we made room* — and
-D-065 records an organizer exceeding capacity **by report, not by state**. So the overrun is real, visible in
-a report, and invisible to any selector, which means a grant aimed at "the people we actually have room for"
-and a grant aimed at "the people we invited" are the same four tiers stretched over two different questions.
+**Impact.** **None on the schema** — no column turns on this, and no invariant is stated about it. It is a
+sequencing risk on the single most fragile operation in the corpus. Day one does not block: [D-132's
+one account](decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization)
+holds `system.admin`, which satisfies every code including this one, so the first definitions are writable on
+day one by the only person who is there. **What is undecided is the work and the handover:** who reads the
+column map, whose job it is to write several hundred codes and their value vocabularies before a batch is
+scheduled, and who holds `attribute.define` afterwards — because one holder is not curation, and the queue
+that used to make an uncurated vocabulary visible is gone
+([data-model/09 §8](data-model/09-attributes.md#8-integrity-checks) is what notices rot now, and it can only
+fire on codes that exist).
 
 **Positions.**
-- **Refuse the word** — say plainly, where the tiers are listed, that there is no `WHITELISTED` and that the
-  sentence it wants is a grant. Consistent with D-102's refusal of `PRESENT`, costs nothing, and leaves the
-  invited-but-unanswered person described the way `unanswered` already is: **by the absence of a row**
-  (D-059). **This is the default these documents hold today.**
-- **Give it state** — a boolean or small status on `event_registration`, which makes it a **fifth tier** and
-  forces the tier algebra to be restated: is an invited person `PLACED` by right, or only once capacity lets
-  them through? Whatever is chosen, `PLACED`'s definition — *the set the capacity let through*, the one the
-  index already serves — stops being one predicate, and that is the cost, not the new column.
-- **Make it a group** — the invitation list is a `person_group` (D-098), named, dated, and separately
-  answerable across time. This is cheap and it is *almost* right: it says who was invited, which is the fact
-  people actually ask for later, and it is answerable on 1 June 2024 in a way an audience never is. It is
-  wrong for the per-event case, because it makes an invitation a thing with its own lifetime.
+- **The map and the vocabulary are one artefact, written in one sitting.** This is what
+  [domain/03 §7](domain/03-identity-and-legacy.md#7-legacy-import-pipeline) already assumes: whoever authors
+  the column→code map authors the codes, and having held the permission while reading the list *is* the
+  endorsement the old status was invented to express. Cheapest, and it makes the import a two-part job done by
+  one person.
+- **A definitions file imported before the person batch.** Turns the vocabulary into a second import format —
+  real design work that does not exist in these pages, and it would need its own refusals. **Not proposed
+  here.**
+- **Distribute `attribute.define` first and let the curators write it together.** The honest answer to "one
+  holder is not curation", and it is a decision about who may decide what the organization knows about people,
+  which is exactly the kind of thing this catalog refuses to decide in passing.
 
-**Needed.** Not before implementation, and not before someone asks — but **the word should be refused in
-writing now**, in the same paragraph that refuses `PRESENT`, because "no `WHITELISTED`" is a sentence that has
-to exist somewhere before the first person implements it as a column. The `PRESENT` refusal is the precedent
-to copy: it was refused for a *representable* reason (nothing is stored until a person marks it), and this one
-needs its reason stated rather than inherited.
+**Recommendation.** Take the first position and write it down as a plan rather than a ruling: the import is
+scheduled *after* the vocabulary exists, the map is reviewed top to bottom by the person who wrote it, and
+`attribute.define` is named to a person — not to an office, since an office confers nothing
+([D-100](decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+— before the first batch is attempted. **The wrong answer is a new status or a new queue**, which is the thing
+this round just spent an entry deleting.
 
-**Impact.** Refusing costs a paragraph. The column costs a restated `PLACED`, a re-derived index, and a
-report that now has two ways to be full.
+**Needed.** Nothing before implementation. **Needed before the first real import is scheduled:** a named holder
+of `attribute.define`, and the codes the map names committed somewhere a second pair of eyes can read them.
 
----
-
-## Ga. Personal attributes — designed, with four things left open
-
-The module exists: [domain/08-person-data.md](domain/08-person-data.md) and
-[data-model/09-attributes.md](data-model/09-attributes.md), decided by
-[D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
-[D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) and
-[D-085](decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).
-It arrived instead of the health-records module, because the question "what is a health record here"
-answered itself a size larger: everything about a person except name, gender and age is one class of
-data, defined by the organization at runtime, with no privileged subset.
-
-### AT-1 🟡 Should an event question bind to an attribute code?
-
-**Raised by [D-085](decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity),
-which made the event form the fallback rather than the ceiling.**
-
-**The situation.** A returning camper types their allergy into every event form, every season, and
-the answer lives in `event_answer.value` for that event only. Meanwhile the organization may already
-hold the same fact as an attribute on the person, with a name, a `value_type`, and a recorded author.
-Nothing connects them.
-
-**Why this is a question and not an obvious improvement.** Prefilling an answer from the record makes
-the **record the thing a leader relies on**, and the record is: whatever was typed, by whoever,
-possibly two years ago, with no obligation on anyone to update it. Today's arrangement is worse data
-and better epistemics — *the form asks now, about this event, and the answer is dated today*. Bind
-the two and an out-of-date attribute becomes a wrong answer that looks authoritative, which is the
-one failure mode a health fact has that makes it dangerous.
-
-**Recommendation.** Prefill as a **suggestion the registrant confirms or corrects on the way in**, and
-write the confirmed value back to the attribute with today's date and this person as its author. Then
-the form stays the authority for the event, the record gets refreshed by the act of using it, and
-nobody ever relies on a two-year-old entry without a human having just looked at it. **The variant to
-reject** is reading the attribute directly into the organizer's view without the registrant's
-confirmation pass — that is the same convenience with the safety removed.
-
-**Impact.** One binding on the question definition, one write-back rule, and a rule about which is
-authoritative when they disagree. No new permission.
-
-**See:** [D-061](decisions/round-05.md#d-061--event-answers-are-read-by-that-events-organizers)
-(as amended), [data-model/08 §7](data-model/08-events.md#health-facts-and-the-discipline-this-requires).
-
-### AT-2 🟡 Who curates the vocabulary, and how long may a proposal sit?
-
-**Raised by [D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime),
-which made `attribute.define` a permission instead of a release.**
-
-An open vocabulary is only as good as somebody tending it, and "somebody" is currently nobody in
-particular. Two halves:
-
-- **Who holds `attribute.define`.** The starting role set
-  ([permission-catalog §11](appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)) is the place
-  this gets answered, and the honest answer is that a volunteer organization has one or two people who
-  will do this and not a committee. Too narrow and the proposal queue is a bottleneck that teaches
-  people to file facts into notes instead; too wide and it is not a curation.
-- **How long a proposal may sit** before it is promoted, merged or discarded. The check exists
-  ([09-attributes §8](data-model/09-attributes.md#8-integrity-checks) checks 1 and 2) and the number
-  does not. A quarter is a defensible default: long enough that a seasonal field is not judged off a
-  single use, short enough that a proposal is answered inside the season that produced it.
-
-**Recommendation.** One named role, a stated age limit on proposals, and a standing decision that an
-expired proposal's **values stay** — the curation is about the name, never about deleting what was
-recorded.
-
-**Impact.** Configuration and one role, no schema change. The thing it prevents is the slow failure:
-a vocabulary nobody curates stops being queryable and the layer keeps storing everything, which looks
-like success for years.
-
-### AT-3 🟢 Do attribute labels need translation?
-
-Inherited from the multi-language row in [§H](#h-not-yet-designed), and sharper here than anywhere
-else because the vocabulary is runtime data: if a code's label is Czech-only, a Slovak-speaking
-volunteer cannot pick the field at all. Whether the answer is a translation column on
-`attribute_definition`, a separate label-per-language table, or "the organization is
-single-language, stop asking" is unrecorded. **The cost of not answering is asymmetric** — a label
-table added later is a migration; a body of codes accumulated with one label each is a data-cleaning
-project.
-
-### AT-4 🟡 Is one permission enough to guard a trail that holds person data?
-
-**Raised by the reversal recorded in
-[D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
-which decided the audit trail *does* hold a person's descriptive values** — because
-[D-085](decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
-made that trail the only history such values have, and stripping them would have made the history empty
-while quietly grading health-shaped fields above a change of address. What protects the copy is then one
-thing: `audit.view`, graded ⚠⚠ beside `person.view`
-([permission-catalog §8](appendix/permission-catalog-a-codes.md#8-audit-and-system)). Three positions exist and
-none is recorded as taken:
-
-- **The guard is enough** (current documents). One permission, marked honestly, and a rule that whoever
-  holds it is reading person data. Simple, and it makes the auditor role — which has `audit.view` and
-  not `person.view` — a reader of the entire person record
-  ([permission-catalog §11 note 3](appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--proposed-seed-set)).
-- **Per-entry filtering in the history view:** show an audit row's values only where the reader could
-  also see the live field. Consistent with everything §9 of
-  [data-model/05c-access-log-and-resolver.md](data-model/05c-access-log-and-resolver.md#9-access_log) says about channels, and
-  it was considered and left unimplemented, because it means running the resolver per audit row against
-  rows that may no longer exist — a grant withdrawn last year is exactly the case a history is read for.
-- **Split the permission:** the trail's shape (who changed which table, when) apart from its payloads.
-  Honest about what an auditor usually needs, and it is the option that reintroduces a sensitive subset
-  through the back of the catalog — which is why the documents do not recommend it.
-
-**The cost of not answering is asymmetric in the uncomfortable direction:** the first position is
-already implemented by default, so leaving the question open *is* choosing it, and the choice is made
-invisible — nobody signs off on "volunteers with `audit.view` can read children's medical history"
-because there is no moment at which anybody has to say it.
+**See:** [D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
+[AT-2](#at-2) (the question this one replaces),
+[domain/03 §7](domain/03-identity-and-legacy.md#7-legacy-import-pipeline),
+[permission-catalog §12](appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues).
 
 ---
 
@@ -432,135 +188,22 @@ because there is no moment at which anybody has to say it.
 Each of these is referenced by the schema and has hooks left for it. Two rows carry a ✅ because the
 area needed no new module: events was designed in round 5, and the medical record was answered out of
 existence in round 7 — what a reader who says "the medical record" is pointing at is the attribute
-vocabulary of [§ Ga](#ga-personal-attributes--designed-with-four-things-left-open), one class of
+vocabulary of [data-model/09](data-model/09-attributes.md), one class of
 person data with no privileged subset ([D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)).
 
 | Area | Hooks already in place | Notes |
 |------|------------------------|-------|
-| **Events** ✅ | **Designed** — [domain/07](domain/07-events.md), [data-model/08](data-model/08-events.md) | Fifteen questions answered; three left in § G above. |
+| **Events** ✅ | **Designed** — [domain/07](domain/07-events.md), [data-model/08](data-model/08-events.md) | Fifteen questions answered, **and the three that were still open — EV-2, EV-4 and EV-6 — were answered in [round 20](decisions/round-20.md)**. Nothing about events is open on this page. |
 | **Fees and payments** | [data-model/07-finance.md](data-model/07-finance.md) — **architecture settled, policy open** | **Nine open questions**, of which one is new. Round 6 closed the architectural ones: money arrives by **bank API**, is requested by **variable symbol + QR code**, there is **no card gateway**, and unmatched money **queues** ([D-075](decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code), [D-076](decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person)). What remains needs somebody in the organization asked: proration, discounts, insurance, waivers, invoices. |
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | No `dependent.consent.*` any more — a guardian at `write` may give and manage consents ([D-074](decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). **`is_legal_decision_maker` on the guardianship row is the existing hook for "who may sign" — and it is now the only place that distinction lives**, since the right level cannot express it. |
-| **Health records** ✅ | **Designed — as [domain/08](domain/08-person-data.md) and [data-model/09](data-model/09-attributes.md)** | **There was no medical record to design.** [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) ruled that everything about a person except name, gender and age is one class of data, held as fields in a vocabulary the organization defines at runtime ([D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). Reading is `person.view`, writing is `person.edit`, and only the vocabulary needs a code of its own. What is left undesigned is policy around one class rather than a second module: what happens to the history of a value once the audit payloads expire, and whether `attribute.define` is a sufficient gate for a vocabulary free to invent a "health" category tomorrow — which is [AT-4](#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data). |
+| **Health records** ✅ | **Designed — as [domain/08](domain/08-person-data.md) and [data-model/09](data-model/09-attributes.md)** | **There was no medical record to design.** [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) ruled that everything about a person except name, gender and age is one class of data, held as fields in a vocabulary the organization defines at runtime ([D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). Reading is `person.view`, writing is `person.edit`, and only the vocabulary needs a code of its own. What is left undesigned is policy around one class rather than a second module: what happens to the history of a value once the audit payloads expire. **The other half of that sentence is now answered** — whether `attribute.define` is a sufficient gate for a vocabulary free to invent a "health" category tomorrow, which round 20 settled by deciding **there is no second gate**: a definition is live at the save of whoever holds the code ([D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)), and the widening is a stated property of that code rather than a queue in front of it. The trail side of the same worry is [AT-4](#at-4). |
 | **Communication** | `message.send_direct`, `message.broadcast` (scoped) — shape decided, detail undesigned | **Shape decided by [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel):** internal first, external channels are delivery; everyone may send direct; `broadcast` is one scoped permission; **the recipient picks the channel.** Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was **declined as a sender restriction** and replaced by mirroring — see [MSG-1](#msg-1). |
 | **Reporting** | `report.*` permissions sketched | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-back-to-the-paper--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year, as far back as the records reach) is the acceptance test. |
-| **API and UI** | `api_key` and its four codes: who may call in is **designed** ([05e](data-model/05e-keys-and-callers.md), [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)); the resolver's `at` parameter exists partly for this | **The caller is designed; the wire is not.** What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and [D-072](decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). One question stands here: calls going out ([F-27](#f-27)). Beside it, three things are settled rather than open — this system's own writers are an empty actor column read as the system acting on its own and named by a fixed label list ([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)), a lockout is a report plus a written procedure rather than a mechanism ([D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)), and everything a caller sends over the wire is API work, not schema work. |
+| **API and UI** | `api_key` and its four codes: who may call in is **designed** ([05e](data-model/05e-keys-and-callers.md), [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)); the resolver's `at` parameter exists partly for this | **The caller is designed; the wire is not.** What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and [D-072](decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). Calls going out were answered in round 20 **without being designed**: an outbound call is a person's act or this system's job, never a third kind of actor ([F-27](#f-27), [D-146](decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet)). Beside it, three things are settled rather than open — this system's own writers are an empty actor column read as the system acting on its own and named by a fixed label list ([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)), a lockout is a report plus a written procedure rather than a mechanism ([D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)), and everything a caller sends over the wire is API work, not schema work. |
 | **Notifications** | — | Expiring roles, members inside the renewal window, unpaid fees. Note the renewal window makes this *dated* rather than status-driven — a nightly job over `in_renewal_window()`. |
 | **Payment gateway** | — | **Answered, so this row is now narrower than it was.** The organization collects via **bank API**, not a card gateway ([D-075](decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)): no webhooks, no disputes, no processor reconciliation. What remains undesigned is the **statement import** itself — file formats, the idempotency key, and what happens to an account the bank revises. |
-| **Multi-language** | — | Unit names and permission display names are all in the database. Whether they need translation columns is unanswered. |
-
----
-
-## J. Opened by writing down who enforces each invariant
-
-**Three left, and all six were found the same way.** [Round 18](decisions/round-18.md) wrote
-[00a](data-model/00a-invariant-register.md), one row per invariant stating which layer carries it and which
-report would notice a breach, and eleven rows came back with **no report named at all**, every one of them a
-rule whose only enforcement is a line of code. Six of the eleven became questions. **Three were answered by
-[round 19](decisions/round-19.md)** — what a report may see after the payload window ([F-29](#f-29)), which
-polymorphic columns get an orphan scan ([F-30](#f-30)), and whether finance and import get check sections at
-all ([F-31](#f-31)) — and they are in
-[§ R](#r-resolved--moved-to-the-decision-log) with the rest. **What answering them changed was not the shape
-of the model but the honesty of the table that lists them:** one 00a row had to be deleted because it
-described a rule no page states, and two pages gained the section they had been arguing they did not need.
-
-**None of the three that remain changes the shape of the model.** That is why they are 🟢 and not 🔴, and it is
-also why they are worth a moment rather than a meeting: each is a question about what a report is *able* to
-see, asked by a design that has just admitted, in one table, how often the answer is "nothing".
-
----
-
-### <a id="f-28"></a>F-28 🟢 Is the displayed name a copy to keep in step, or a field to delete?
-
-**Question.** [01 §2](data-model/01-identity.md#2-person) carries `given_name` and `family_name` on the
-`person` row as well as the `person_name` history, so that a list view renders without a join. The copy is
-kept in step by the writing transaction, and **nothing downstream has ever noticed when it is not**: a
-person whose current `person_name` row and whose `person` row disagree shows one name in every list and
-another in their own record.
-
-**Why the register made this a question.** It is the only row in
-[00a §3](data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph) whose
-layer is "the same transaction" and whose backstop is nothing — the other rows in that column at least have
-a report that would see the drift. The count is cheap to write (`01b §10` will take it in one bullet); what
-the answer really chooses is whether the copy is load-bearing.
-
-**Positions.** **A report** — cheapest, and it keeps the join-free list views. **Derive the displayed name**
-— a view, or the current `person_name` row resolved at read, which deletes the rule entirely and puts a
-join into every roster in the system. **A constraint** — there is none that can span the two tables with a
-condition on `valid_to` being absent, which is the whole reason this row is in shape 3.
-
-**Needed.** One of the three, and the report if the answer is the first.
-
-**Impact if unanswered.** A drift nobody sees until a parent phones about a name that is wrong on a
-consent form, and then it is a data-cleanup over every person whose name was edited.
-
-**See:** [01 §2](data-model/01-identity.md#2-person),
-[00a §3](data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph).
-
----
-
-### <a id="f-32"></a>F-32 🟢 A delegation the delegator has lost — reported, or invisible?
-
-**Question.** A delegation is an ordinary grant with provenance
-([domain/06 §9](domain/06-authorization-model.md)), and the rule is that **it cannot exceed the delegator's
-own authority**: validated at grant time, and re-checked at use time, because the delegator may have lost
-the code in the meantime. The re-check means a stale delegation stops working the moment it becomes stale.
-**Nothing means anybody finds out.**
-
-**Why the register flags it.** It is the only shape-3 row whose enforcement is deliberately twice-daily
-rather than once — the same question asked at two times, the second time silently. The person holding the
-delegation does not get a refusal that says *my lender lost this*; they get an ordinary denial, indistinguishable
-from never having had it.
-
-**Positions.** **A report** — live delegations whose delegator no longer resolves to the code, which is one
-query over grants. **Tell the delegate** — the denial names the reason, which is the more useful answer and
-also a disclosure of somebody else's authority changes. **Say nothing**, which is what the design does today
-and is not indefensible: an authority that quietly stops is the correct safety direction, and the report is
-about comfort rather than correctness.
-
-**Needed.** Whether the delegate may be told, which is a question about
-[D-121](decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)'s neighbours rather than about
-the schema.
-
-**Impact if unanswered.** A volunteer who cannot do the thing they were lent the ability to do, and a
-support conversation that starts from zero every time.
-
-**See:** [domain/06 §9](domain/06-authorization-model.md),
-[00a §3](data-model/00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph).
-
----
-
-### <a id="f-33"></a>F-33 🟢 Does a code's `right_kind` have to match the code, or is it a note?
-
-**Question.** `right_kind` is a required enum of two values with, as
-[05 §2](data-model/05-authorization.md#right_kind-a-column-with-exactly-one-customer) puts it, exactly one
-customer: the guardianship channel's `none` / `view` / `write`. Every other code carries the column because
-it is required, and [catalog §8b](appendix/permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody)
-says the quiet part of that out loud for the four key codes: **the marking changes no answer, and is filled
-in because the column is required**. So: is there any rule that a code whose last segment is `view` is
-marked `read`, or is the column documentation that happens to be mandatory?
-
-**Why the registry diff cannot answer it, which is new.** [D-127](decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round)
-checks that a name in prose is a row, and that a row is named. It cannot check a **pairing** — `view` next to
-`write` is two registered values, each individually legal, and only the meaning of the code says they do not
-belong together. This is the first question in this file whose answer is "a check the script cannot grow",
-which is worth knowing before the script is trusted too widely.
-
-**Positions.** **A rule and a report** — codes ending in `view`, or whose `applies_to` says the item is read,
-must be `read`; report the exceptions, of which the catalog may already have some. **A rule, no report** —
-enforced on the save of a new code, where the cost is one comparison. **Accept it as a note**, and edit the
-catalog's sentence so a reader is not invited to audit a column nobody reads.
-
-**Needed.** One of the three; if the third, a sentence changed rather than a check added, and the
-requiredness of the column itself reconsidered.
-
-**Impact if unanswered.** Small, and stated as small: the column is wrong in silence, and today only the
-guardianship channel would notice — which is exactly how a column that nothing reads stays wrong for eight
-rounds.
-
-**See:** [05 §2](data-model/05-authorization.md#right_kind-a-column-with-exactly-one-customer),
-[catalog §8b](appendix/permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody),
-[D-074](decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular).
+| **Multi-language** | — | **Answered for the attribute vocabulary by [D-149](decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated): one language, no translation columns.** The same reasoning covers the other words the database holds — nothing else on it was asked about separately — because a row holding two labels has to be asked which of the two the record is. **The example this row was written with has itself gone:** there is no unit left whose name could be translated ([D-097](decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). |
 
 ---
 
@@ -626,7 +269,20 @@ rather than finding it silently deleted.
 | — | How is an audience stored? | [D-101](decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree) | As an **expression tree** over named sets — `+ - *`, brackets, fully-bracketed canonical form, cycles refused at save, the language seeded as `selector_type`. Semantic equality given up (see F-14). |
 | — | Who owns an event, and whom does a grant about it reach? | [D-102](decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it) | **Nobody owns it.** `event.org_unit_id`, `can_event()` and the artifact rule are deleted; four attendance tiers and `ORGANIZERS` **bind to the item**, and the answer-view grant is a seeded template instantiated per event. |
 | — | May a rule be reused by name? | [D-103](decisions/round-10b.md#d-103--an-audience-may-name-another-audience) | Yes: `AUDIENCE(code)`, referenced by code, one namespace with roles and groups, cycles refused across audiences at save, and an audience named by a live grant may not be ended. Its past reach is not reconstructable (see F-17). **Amended in the same round:** the same refusal now extends to a **group** named by a live grant — see [assumption 63](#i-assumption-index). |
-| <a id="f-19"></a>F-19 | A permission code is a row, prose names codes, and nothing checks the two | [D-104](decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) | The class is real — **four instances in ten rounds, in two different registries.** The naming grammar is now three rules (action-final; a middle segment names stored state; no grade words, no prefix) with `system.admin` the single named exception. **The event QR capability never existed**: invented in prose, deleted in prose, no decision entry at either end. The check adopted is a **hand-run diff report** — a convention, not a guard. **(Round 18 made it executable, and made it a gate: `scripts/check-registries.py` reads the six registries out of the pages that hold them, exits non-zero on a finding nobody has read, and keeps what it was told to keep in `scripts/registry-baseline.txt`, one reason per line — [D-127](decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round).)
+| <a id="f-19"></a>F-19 | A permission code is a row, prose names codes, and nothing checks the two | [D-104](decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction) | The class is real — **four instances in ten rounds, in two different registries.** The naming grammar is now three rules (action-final; a middle segment names stored state; no grade words, no prefix) with `system.admin` the single named exception. **The event QR capability never existed**: invented in prose, deleted in prose, no decision entry at either end. The check adopted is a **hand-run diff report** — a convention, not a guard. **(Round 18 made it executable, and made it a gate: `scripts/check-registries.py` reads the six registries out of the pages that hold them, exits non-zero on a finding nobody has read, and keeps what it was told to keep in `scripts/registry-baseline.txt`, one reason per line — [D-127](decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round).)|
+| <a id="e-6"></a>E-6 | A guardian may appoint a guardian — notify anyone? | [D-137](decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told) | **Attribution is enough: no notification, no queue, no addressee.** The act is a write, the write is audited, and the trail is the control. The recommendation on the page named a "safeguarding contact" and no such office exists — `safeguarding_officer` is a worked example the catalog marks as not shipping, and [D-132](decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) deletes the seed. **What it costs:** nothing tells anyone that a third adult gained authority over a child. The answer to *who added them* is excellent, and the answer to *did anybody think about it* is the person who did it, alone, at the moment they did it. |
+| <a id="f-8"></a>F-8 | Retention policy for `access_log` | [D-145](decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name) | **Confirmed, and stricter than the proposal: rows are deleted at 24 months**, not emptied. `audit_log` keeps the opposite shape — rows for life, payloads emptied — so [D-088](decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)'s two clocks now differ in **kind** as well as in length. This is the **third** named exception to [00 §4](data-model/00-conventions.md#4-deletion-policy)'s "nothing is hard-deleted"; the job that does it gets a **sixth** actor label, `system:log-reduction`, and the age-out gets a check of its own. **Assumption 50 is retired by this row.** |
+| <a id="f-27"></a>F-27 | The integration that this system calls | [D-146](decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet) | **Nothing is designed, and no third kind of actor will be invented when something is.** An outbound call is either a person acting — the actor column holds them and their permission is checked — or this system acting on its own: an empty column and a label from the fixed list ([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). **Refused:** an `api_key` as the actor of an outbound write, because a secret must not carry the accountability of an act. |
+| <a id="ev-2"></a>EV-2 | Retention of `event_answer` | [D-140](decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it) | **No expiry for registrations or answers.** Neither ends with its event and neither ends on a clock; "answers end with the event" is deleted as a policy. **Erasure reaches answers and empties them:** `event_answer.value` is set to empty and the row survives. The asymmetry this question was built on — the same fact kept forever as an attribute and quietly discarded as an answer — is closed by making the two rules agree. |
+| <a id="ev-4"></a>EV-4 | `was_present` as a safeguarding record | [D-147](decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own) | **Neither.** Presence is a column of a registration and inherits its retention — just settled, indefinitely — and the codes that already reach the roster. **This system keeps no safeguarding register:** no background checks ([D-043](decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system)), no medical record ([D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)). A column with a clock and a permission of its own would have been the first wall of an archive this design has refused four times. |
+| <a id="ev-6"></a>EV-6 | `WHITELISTED` — the word people reach for | [D-148](decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are) | **Refused, in writing, where the tiers are listed.** No `is_whitelisted`, no fifth tier, no operand, no reserved name: **anyone adding `is_whitelisted` is reimplementing grants badly.** The need is real and is met by rows that already exist — an invitation is a grant aimed at a person, and a person who never registered is described by [the absence of a row](decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values). **The refusal already existed four times over;** what was missing was the sentence, and it was missing in [domain/07a §9](domain/07a-capacity-presence-and-forms.md#9-presence-what-actually-happened). |
+| <a id="at-1"></a>AT-1 | Should an event question bind to an attribute code? | [D-139](decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer) | **Yes — bound to the code, never to a value row.** The form **prefills** from the stored value as a suggestion the answerer confirms or edits, and submitting it performs a **write-back**: a new `person_attribute` value dated today, recorded as written by the answering person. The condition that fenced this binding off — [00 §4](data-model/00-conventions.md#4-deletion-policy)'s "safe only while nothing references an attribute row" — is not detonated, because the binding names a **definition**, which is never deleted and is retired instead. A reference to a `person_attribute` **row id** stays exactly as forbidden as that paragraph says. |
+| <a id="at-2"></a>AT-2 | Who curates the vocabulary, and how long may a proposal sit? | [D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted) | **There is no proposal.** A definition is **live at the save** of whoever holds `attribute.define`; `proposed`, `proposed_by`, `proposed_at`, the curation queue and the check that aged them out are all deleted — `proposed` was a third status no decision had granted ([D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) says *live or retired*). **A value may not invent a code:** an import column that maps to nothing is an error at apply time, not a proposal waiting for a curator. **The permission is the curator** — a role would confer nothing ([D-100](decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)). **The mechanism is settled; the schedule it used to carry is not, and that is [F-34](#f-34).** |
+| <a id="at-3"></a>AT-3 | Do attribute labels need translation? | [D-149](decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated) | **No.** One language, the one the organization writes in: no `label_cs`/`label_en` pair, no translation table, no locale column. A row holding two labels has to be asked **which of the two the record is**, and whichever answer is chosen demotes the other to a translation of it. The form is for the conversation and the vocabulary is for the record; only one of them has to be stable enough to query. |
+| <a id="at-4"></a>AT-4 | Is one permission enough to guard a trail that holds person data? | [D-138](decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record) | **`audit.view` is the whole gate** — one permission, no per-entry filter, now **decided** rather than merely unbuilt: [06 §2.3](data-model/06-audit-and-import.md#23-history-query) records the per-entry check as considered and left unimplemented. A history screen over the trail is a person-data surface, granted rarely and marked. **A per-entry check would have made what an officer can read about 2019 depend on an expression changed last week** — and that legibility is the whole reason the trail exists. |
+| <a id="f-28"></a>F-28 | Is the displayed name a copy to keep in step, or a field to delete? | [D-142](decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last) | **The copy stays and the drift is reported.** **The register's `none` was wrong in the understating direction:** [01b §10](data-model/01b-merges-views-and-checks.md#10-integrity-checks) already counts persons whose `given_name`/`family_name` differ from the open `person_name` row — the very check this question offered as "cheap to write". **What closed was the admission, not the check**, and it is the mirror image of round 19's phantom row: `none` is as much a claim about a page as a citation is ([D-129](decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)). |
+| <a id="f-32"></a>F-32 | A delegation the delegator has lost — reported, or invisible? | [D-143](decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date) | **At grant time only, and the delegation stands** — to its own `valid_to`, or to a revocation. No use-time re-check, no report, nothing cascades, **which is what the data model already said** ([05 §6](data-model/05-authorization.md#6-access_grant--the-per-item-layer): "nothing about the person who lent it is re-validated when a check runs") while [domain/06 §9](domain/06-authorization-model.md#9-delegation) promised the opposite and the register recorded the rule as enforced twice. **Two bounds survive:** a delegation must expire (integrity check 11), and `system.admin` cannot be delegated at all. |
+| <a id="f-33"></a>F-33 | Does a code's `right_kind` have to match the code, or is it a note? | [D-144](decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked) | **A note: required, agreeing with nothing, checked by nothing** — and kept required, because a code whose declared kind reads oddly is worth noticing *while reading*, and that is the column's whole job. **The register row claiming the save enforces the match is withdrawn, not repaired** ([D-129](decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)): no page states such a rule, and no page claims to. **A `right_kind` can contradict its code forever, and only a reader will notice.** |
 
 ---
 
@@ -691,12 +347,12 @@ the entry, and this index is a register, not a second copy of it.
 | 47 | Payment confirms a place; free events confirm immediately (D-066) † | [data-model/08](data-model/08-events.md#6-payments-and-confirmation) |
 | 48 | Presence is a three-valued fact, not a boolean (D-067) † | [data-model/08](data-model/08-events.md#4-event_registration) |
 | 49 | Keeping named membership and fee rows **indefinitely** after an erasure request has a legal basis (D-088) — **unverified, and commissioning the review is the organization's job** | [data-model/00](data-model/00-conventions.md#8-personal-data-and-erasure) |
-| 50 | `access_log` needs the same window as audit payloads, neither longer nor shorter (proposed, **F-8**) | [data-model/05](data-model/05c-access-log-and-resolver.md#9-access_log) |
+| 50 | **Retired by [D-145](decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name), and retired wrongly as worded.** `access_log` did take the same 24 months as the audit payloads — but **not the same treatment**: its rows are deleted, while audit rows live on and only their payloads are emptied. The number was right and the shape was not, and the shape is the part a data subject is asking about | [data-model/05](data-model/05c-access-log-and-resolver.md#9-access_log) |
 | 51 | **Audience** membership is recomputed at check time and never stored, so "who could read this in 2023" may be unanswerable once the audit payloads expire (D-091, restated for D-098/D-101) † — **the half of this that used to be true of roles is no longer at risk**: an office is a dated `role_holder` row and a group is a dated roster, both stored, and F-12 closed on exactly that ground. What remains exposed is the expression, and it is now a question with a number: [F-17](#f-17) | [data-model/05](data-model/05b-expression-tree.md#three-named-sets-and-the-one-question-nesting-cannot-answer) |
 | 52 | The historical record contains no sub-unit participation, because the corpus names no units (D-092) † — **now true for a second, stronger reason**: even if the corpus had named them there would be nowhere to put the answer (D-097). The finding about the *source* is what matters and is unchanged | [data-model/06](data-model/06a-import.md#31-what-a-source-row-actually-evidences) |
 | 53 | An imported membership carries no fee obligation, and its `outstanding_balance` is NULL rather than zero (D-093) † | [data-model/07](data-model/07-finance.md#3-keeping-membershipoutstanding_balance-honest) |
 | 54 | A bare name in an expression resolves to a **role or a group only**, never to an audience — and the one-namespace rule across `role`, `person_group` and `audience.code`, with every `selector_type.code` reserved, is carried by the write path with **no constraint spanning three tables** (D-101, D-103) † | [data-model/05](data-model/05b-expression-tree.md#names-are-one-namespace-and-reserved-words-are-the-other-half) |
-| 55 | Delegation is a set-membership test, and `role.is_delegatable` does not exist — the model has no column that says an office may delegate (*no decision; domain/06 carries it as an assumption*) | [domain/06](domain/06-authorization-model.md#11-open-issues) |
+| 55 | Delegation is a set-membership test, and `role.is_delegatable` does not exist — the model has no column that says an office may delegate (*still no decision on the test itself — but [D-143](decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date) has fixed **when** it is applied: at grant time, once, and domain/06's promised second application is deleted rather than built*) | [domain/06](domain/06-authorization-model.md#11-open-issues) |
 | 56 | Finding **which grants name an audience, and at what depth**, is cheap enough to show before saving an edit to a referenced audience (D-103) — **stated as an assumption in the decision itself and measured by nobody** | [F-16](#f-16) |
 | 57 | A grant's scope is the unit **or exactly one item**, so the seeded answer-view grant is a **template instantiated per event** rather than one row for every event (D-102) † | [data-model/08](data-model/08a-event-guards-and-checks.md#selectors-that-bind-to-an-event) |
 | 58 | ~~The `PERSON(x)` appearing in D-100's and D-101's worked expressions is **shorthand** for a second grant row, not a missing seeded operand~~ (D-101's registry amendment, class in D-104) † — **the opposite: it was seeded**, as the thirteenth `selector_type` row, and one of the twelve that remained once [D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) deleted `LIST`. **This row recorded the wrong answer, and the error is the point: the registry was checked against nothing.** Two decision entries wrote the registry while the seeded table was copied from the evaluator's arm list, so `MEMBERS * ROLE(x) + PERSON(y)` did not parse for a whole round, and the repair already circulating read `PERSON(y)` as `LIST` — which subtracts everybody on the list, and is now impossible to write. The instance is told in [the catalog's open issues](appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues) and in [F-5](#f-5); the rule it produced is that an operand's registry row and its seed are one fact, not two. | [D-101](decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree), [F-5](#f-5) |
@@ -725,14 +381,14 @@ the entry, and this index is a register, not a second copy of it.
 | <a id="f-21"></a>F-21 | Who reads the report about what an expression names and what it costs? | [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) | Nobody, because there is nothing to read. [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) retires the standing reports *about rules* with one tab on the permissions page — **Broken** lists every live rule naming a deprecated, hidden or disabled thing or failing to resolve — and [D-112](decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event) is what made the cost acceptable. Reports outside the expression language survive it: the dead-deny line in *Deny*, and [D-071](decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s report of assignments nobody forced to end. |
 | <a id="f-22"></a>F-22 | May the editor fold and flatten an expression for display? | [D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) | Yes, with one hard limit: **display is free, storage is not.** The editor may fold a sum of same-kind leaves onto one line; it may not change the stored canonical string, because the cycle walk, the reserved-name rule and the listing of what names an audience all reason over the stored form ([D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)). |
 | <a id="f-23"></a>F-23 | Is a resolved audience stored as the record of whom a grant reached? | [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached) | "Words only — the expression is the record." [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached). The preview still prints a resolved set before a save, and the log calls it *a rendering on a date*, not a statement of members. The middle position — a reach query — is **not adopted either**, which is the part a skimming reader gets wrong. |
-| <a id="f-25"></a>F-25 | What is this system's own name when it writes to itself? | [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | **It has no name, and none is owed.** An empty actor column is read as *this system acting on its own* and is a complete answer to *who did this* — no row, no code, no secret, because a permission for a sweep would imply a person choosing not to run it. Where the trail keeps a label column the label comes from a fixed list of five (`system:renewal-sweep`, `system:payload-reduction`, `system:bank-pull`, `migration:<id>`, `import_batch:<id>`) and bare `system` is retired; the rule is stated once, in [00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means). Zero schema. What it costs: **nothing in the database refuses an off-list label**, so a guessed one looks plausible until a person compares it against the list. |
+| <a id="f-25"></a>F-25 | What is this system's own name when it writes to itself? | [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | **It has no name, and none is owed.** An empty actor column is read as *this system acting on its own* and is a complete answer to *who did this* — no row, no code, no secret, because a permission for a sweep would imply a person choosing not to run it. Where the trail keeps a label column the label comes from a fixed list — **six since round 20** (`system:renewal-sweep`, `system:payload-reduction`, `system:log-reduction`, `system:bank-pull`, `migration:<id>`, `import_batch:<id>`) and bare `system` is retired; the rule is stated once, in [00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means). Zero schema. What it costs: **nothing in the database refuses an off-list label**, so a guessed one looks plausible until a person compares it against the list. |
 | <a id="f-26"></a>F-26 | When nobody who can hold `system.admin` can sign in, what happens? | [D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism) | A **report and a written procedure**, not a mechanism. Integrity check 9 already listed the holders; it now says for each whether they can sign in, and **an empty second column is the alert**. The procedure lives in [domain/02 §3](domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in): one named person written down in advance, and **the recovery performed on an account, never on a grant** — so everything after it carries `granted_by`, a channel and an audit row like anybody else's. A sealed `recovery` key, a time-boxed self-service path and a seeded minimum number of holders are all refused. Residual risk, accepted out loud: the recovery is a database edit no schema distinguishes from an intrusion, and whoever can make it can write an audit row by hand. |
-| <a id="f-10"></a>F-10 | Which invariants the ORM cannot express, and who writes those? | [D-130](decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | Answered **per instance, not per shape**, because that is the question a migration writer has: the register it created has grown to **71 rows** — it opened at 69 — each naming the page that owns the rule, the layer, the report that would notice, and what a breach looks like — 4 temporal exclusions (a hand-written constraint), 15 conditioned uniques (a partial index), 45 that read another table (the write path), and shape 4, which was called empty and turns out to have six members with `audience.code` explicitly *not* among them ([D-131](decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)). **The count was what was wrong about this question:** the page said "dozens" and named about fifteen; listing them found eleven rows with no report at all, six of which became [F-28](#f-28)–[F-33](#f-33); [round 19](decisions/round-19.md) answered three of those and gave two pages the check sections they lacked, so the register now says **seven** where it said eleven — and one of the eleven came off for the worse reason, a row describing a rule no page states. |
+| <a id="f-10"></a>F-10 | Which invariants the ORM cannot express, and who writes those? | [D-130](decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | Answered **per instance, not per shape**, because that is the question a migration writer has: the register it created has grown to **73 rows** — it opened at 69 — each naming the page that owns the rule, the layer, the report that would notice, and what a breach looks like — 4 temporal exclusions (a hand-written constraint), 15 conditioned uniques (a partial index), 46 that read another table (the write path), and shape 4, which was called empty and turns out to have members with `audience.code` explicitly *not* among them — six when [D-131](decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) counted them and **seven since round 20 bound an event question to a vocabulary code, which made that code referenced and therefore a member by D-131's own test** ([D-139](decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)). **The count was what was wrong about this question:** the page said "dozens" and named about fifteen; listing them found eleven rows with no report at all, six of which became [F-28](#f-28)–[F-33](#f-33); [round 19](decisions/round-19.md) answered three of those and gave two pages the check sections they lacked, and [round 20](decisions/round-20.md) answered one more and deleted a row that described a rule no page states — **so the register now says five where it said eleven.** Two of the eleven came off for the worse reason, a row describing a rule no page states ([D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud), [D-144](decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked)), **and one said `none` while the report had been sitting in [01b §10](data-model/01b-merges-views-and-checks.md#10-integrity-checks) the whole time** ([D-142](decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)). **The remaining five are all shape-3 rows, and two of the five are blanks that were chosen out loud** ([D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud), [D-143](decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)). |
 
 | <a id="ev-3"></a>EV-3 | What happens to outstanding payment requests when an event is cancelled? | [D-076](decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person) | Cancelling voids the event's outstanding payment requests, recording why, and money already received becomes a queue item — answered in the finance module rather than here, by [D-076](decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person). |
 | <a id="h-0"></a>H-0 | What is *the medical record*, which five files cited and none defined? | [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) | Found while starting the health-records module, and it changed what that module is: the referent was not missing, the **category** was. Everything about a person except name, gender and age is one class of data, held as fields — [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), with the shape of the layer in [D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime) and the boundary in [D-085](decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity). The three options this entry offered are recorded nowhere else, which is right: they were the shape of the question, not of the answer. |
 | <a id="msg-1"></a>MSG-1 | May a volunteer message a minor directly? | [D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians) | Yes — mirror it to the minor's guardians, tell the sender, block nothing ([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)). Raised by [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel), which declined the restriction rather than forgetting it; three details were settled with it, because "mirror it to the guardians" does not by itself say who the guardians are *to this message*. |
-| <a id="f-29"></a>F-29 | What can a report see about a trail whose payload has expired? | [D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) | **Nothing, and the design now says so on the page that states the rule** rather than leaving the reader to assume a trail with this much prose beside it checks itself. **The premise did not survive being written down:** the payload window was never what blocked the first check — `api_key.valid_to`, `api_key.revoked_at` and `audit_log.occurred_at` are all accounting skeleton, and a report over them would work in year thirty ([06b §5](data-model/06b-redaction-and-checks.md#5-integrity-checks)). So the answer is not "cannot" but "will not", and what the design gives up is stated: nobody will ever be able to demonstrate that no write was audited against a key that had already ended. **The question's other half was not a rule at all** — the register row minted beside it asserted that which audit views a holder may open follows the payload window, citing [06 §2](data-model/06-audit-and-import.md#2-audit_log), and no page in the corpus says any such thing; [06 §2.3](data-model/06-audit-and-import.md#23-history-query) says close to the opposite, that a per-entry check inside the history view was considered and left unimplemented, which is [AT-4](#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)'s subject and already registered there. Under [D-129](decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) a register row is a claim about a page, so the row is withdrawn rather than repaired. **Costs:** one paragraph in 06b §5, one 00a row deleted, one `none` that no longer reads as temporary. |
+| <a id="f-29"></a>F-29 | What can a report see about a trail whose payload has expired? | [D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) | **Nothing, and the design now says so on the page that states the rule** rather than leaving the reader to assume a trail with this much prose beside it checks itself. **The premise did not survive being written down:** the payload window was never what blocked the first check — `api_key.valid_to`, `api_key.revoked_at` and `audit_log.occurred_at` are all accounting skeleton, and a report over them would work in year thirty ([06b §5](data-model/06b-redaction-and-checks.md#5-integrity-checks)). So the answer is not "cannot" but "will not", and what the design gives up is stated: nobody will ever be able to demonstrate that no write was audited against a key that had already ended. **The question's other half was not a rule at all** — the register row minted beside it asserted that which audit views a holder may open follows the payload window, citing [06 §2](data-model/06-audit-and-import.md#2-audit_log), and no page in the corpus says any such thing; [06 §2.3](data-model/06-audit-and-import.md#23-history-query) says close to the opposite, that a per-entry check inside the history view was considered and left unimplemented, which is [AT-4](#at-4)'s subject and already registered there. Under [D-129](decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) a register row is a claim about a page, so the row is withdrawn rather than repaired. **Costs:** one paragraph in 06b §5, one 00a row deleted, one `none` that no longer reads as temporary. |
 | <a id="f-30"></a>F-30 | Five polymorphic columns, and the orphans that are the design working | [D-134](decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never) | **Four get a scan; the audit row never will.** `field_conflict.entity_id` is scanned outright — a conflict naming a row that is not there is a broken import, and the sentence saying so had never been written. `access_log`'s three are scanned with the legal-absence rule beside them, because a target that is gone because a person was erased on purpose is not an integrity failure. `audit_log.record_id` is the deliberate exception and the interesting half of the answer: an audit row that outlives the row it described is *what a redaction looks like afterwards* ([D-088](decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)), so a check counting those orphans as breaches would report the erasure path's own correct output as a failure — worse than no check, because the first false alarm teaches people to ignore the real one. **Costs:** a new check beside check 2 in [05d §11](data-model/05d-invariants-and-seed.md#11-invariants-to-verify); [00 §9](data-model/00-conventions.md#9-referential-integrity-rules) and [erd-b](appendix/erd-b-inventory.md) corrected, both of which still said there were exactly two reference-less keys; and 00a's row re-pointed at the page that owns the rule instead of at an appendix. **The question's own arithmetic was wrong when it was filed:** its positions offered to "scan the two a person can cause" and then named four columns. |
 | <a id="f-31"></a>F-31 | The two modules with no check list of their own | [D-135](decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each) | **Yes — three checks each.** [07-finance](data-model/07-finance.md#4a-integrity-checks) is asked to recompute the balance from §3's definition, to count a payment whose allocations do not account for its amount, and to find money nobody ever asked for; [06a-import](data-model/06a-import.md#4-integrity-checks) is asked whether an imported membership is bounded at both ends, whether one occasion became one event, and whether a batch can account for what it did. **The import page turns out to have had the strongest of the three in it already and never knew:** an unbounded imported `membership` satisfies `is_current_member()`, so that row is the one place in the whole register where a data defect reaches the permission gate. **Costs:** a section on each page, three new 00a rows for rules both pages had stated and never registered, one dangling citation repaired (§3.1 had been citing "check 1 in §5" in a page with no §5), and 00a's *What the register cannot say* losing the structural excuse it had been giving for its own blanks. |
 | <a id="f-18"></a>F-18 | Does a role record elected versus appointed, and what does an election write? | [D-136](decisions/round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people) | **It records neither, and a role holds only the people.** An election is run outside this system — nominations, a ballot, a quorum, minutes — and what arrives is the outcome: one `role_holder` row, two dates, `note` for whoever wants the reason beside the fact ([domain/04 §6](domain/04-organization-structure.md#6-appointments), [05 §4](data-model/05-authorization.md#4-role_holder--who-holds-an-office)). `granted_by` is not the answer to "was she elected?" and never claimed to be: it names whoever wrote the row, which for an election is a secretary. **The refusals and their reasons:** a flag would make the distinction queryable and guard nothing, and a field that looks like a control where no control is wanted is worse than the absence, because someone comes to rely on it; an election table would describe a process this system does not run, on D-043's ground; and the distinction has nowhere to bite, because **an office confers nothing by being held**. **The cost, said plainly:** nothing here will ever refuse to appoint someone to an office the bylaws reserve for a vote. **Also worth recording:** two of this question's load-bearing facts had already gone while it sat open — `role.max_term_months` is deleted, and `is_system` is deleted by [D-132](decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization). |
@@ -743,39 +399,35 @@ the entry, and this index is a register, not a second copy of it.
 
 **Nothing here blocks anything.** No question on this page is marked 🔴, and none has been since round 4:
 the model is settled enough that most answers here change data rather than structure, which is what makes
-them worth a moment rather than a decision meeting. Six are marked 🟡 and eleven 🟢. **Round 19 took four
-out of the front of this list** — the two trail blanks and the check-list question that led it, and F-18 —
-and left the list looking the way it did before § J existed: design questions again, with the register's
-leftovers behind them. **Still not a question, and still owed:**
-[D-132](decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization)
-deletes the seeded roles, audiences and grants, and the sweep that applies it is unwritten — a piece of
-cleanup, not a decision, and it happens whatever is answered here.
+them worth a moment rather than a decision meeting. **Five questions are left and every one of them is 🟢** —
+[round 20](decisions/round-20.md) answered thirteen, and all six 🟡 on the page went with them. **Four of the
+five are left for a reason, not for a lack of priority:** A-4's remainder is the organizational calendar, E-3 is
+a reading of this country's civil code, and [F-9](#f-9--should-membership_type-stay-a-table-with-one-row) and
+[F-11](#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim) are one question seen
+twice — what a membership type is *for*. **The fifth is [F-34](#f-34), and it is new:** round 20 raised it by
+answering [AT-2](#at-2), and it is 🟢 for one reason only — the first real import is not next week. **None of
+the five closes on a ruling alone**, and F-34 least of all, because its answer is a person's name and a date
+rather than a rule.
 
-1. **E-6** — the only remaining 🟡 whose answer changes what the system *does* rather than what a report
-   can see: whether a guardian adding a second guardian over a **minor** should notify anyone at the
-organization, or whether attribution in the trail is enough ([E-6](#e-6--a-guardian-may-appoint-a-guardian)).
-   **One thing to know before answering it:** the recommendation on the page names a "safeguarding
-   contact", and no such office ships — `safeguarding_officer` is one of the worked examples the catalog
-   lists under "None of the following ships", and D-132 is about to delete the seed entirely. So the answer
-   needs an addressee, and the only addressee this design can offer is a grant aimed at a person or an
-   office somebody writes.
-2. **AT-2 / AT-4** — who curates the attribute vocabulary day to day, and whether one permission is trusted to
-   guard a trail that holds person data. These are one question seen from two ends: the data that lands in the
-   trail arrives through the vocabulary.
-3. **EV-2** — how long an event answer is kept once the event it answered is gone. A sharper question since
-   the audit payloads that also held those values were given a clock (see [B-3](#b-3)), and sharper again
-   since [D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) settled that
-   the trail says what it says and does not stretch for a report.
-4. **F-28, F-32 and F-33** — the three § J questions that survived the round, and a single sitting still
-   closes them: whether the denormalised displayed name is a copy to defend or a field to delete, whether a
-   delegate may be *told* that the person who lent them an authority has lost it, and whether `right_kind` has
-   to agree with the code beside it or should be admitted as a note.
-5. **The legal review**, which is not a question this register can answer and which now has a concrete policy
-   in front of it: named membership and fee rows kept indefinitely, audit payloads kept 24 months. Assumption
-   49 is its subject — and since
-   [D-093](decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) the
-   indefinitely-kept population includes thousands of imported people who never used the system, which is the
-   same judgement at a scale the review has not yet been shown.
+**What this repository owes instead is two things, and neither of them is a question.**
+
+1. **Round 21, which is a sweep and not a decision.**
+[D-132](decisions/round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization)
+was ruled two rounds ago and is still unapplied: the seeded roles, the seeded audiences, the seeded
+`event.answer.view` grant, the worked-example offices presented as seed, `role.is_system` and
+`audience.is_system`. Round 20 deliberately kept it out, so that thirteen answers and a twenty-five-page
+sweep would not land together, and two of its entries — [D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)
+and [D-143](decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date) —
+are written so that the sweep has to read them. **It happens whatever is answered here.**
+2. **The legal review**, which is not a question this register can answer and which now has **three** policies
+in front of it instead of two: named membership and fee rows kept indefinitely, audit payloads emptied at
+24 months, and — new since round 20 — **`access_log` rows deleted outright at 24 months**
+([D-145](decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)).
+Assumption 49 is its subject — and since
+[D-093](decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) the
+indefinitely-kept population includes thousands of imported people who never used the system, which is the
+same judgement at a scale the review has not yet been shown.
+
 Everything else can be answered as we go.
 
 **What happened to the questions that are not here is in the decision log, not here.**

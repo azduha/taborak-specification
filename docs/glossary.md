@@ -156,17 +156,6 @@ on the value — [D-085](decisions/round-07-08.md#d-085--the-identity-machinery-
 reversed — and not a longer trail. No `valid_from` / `valid_to`, deliberately
 ([data-model/09 §3](data-model/09-attributes.md#3-person_attribute--a-value-one-person-has)).
 
-**Proposed code** — A definition that came into existence because somebody recorded a
-value against a code that did not exist. It waits in the curation queue: kept out of data
-entry forms and reports, yet **readable by anyone already entitled to read the person**,
-because the organization's data quality problem is not the family's confidentiality
-problem. It is where an improvised need at 23:00 goes instead of into a notes box that
-nobody will read again — **improvised by a person at a desk**, which is the whole meaning.
-It is emphatically *not* "whatever the legacy import did not understand": the codes a
-batch's column→code map names arrive `live`, because a curator read that map as one
-object before the batch applied, and several hundred proposals landing on day one would
-make this queue's age signal meaningless before it had ever meant anything.
-
 **Retired code** — A definition taken out of data entry and left alone everywhere else:
 readable, reportable, revivable, its values untouched. **Deleting a label must never
 delete the facts filed under it**, or the badly-named label is never retired and the
@@ -196,14 +185,21 @@ of rows about a named person has a legal basis — organizational history plus a
 obligations, against a redacted person row that keeps the skeleton non-identifying — is
 unverified, and a decision log is not the document that grants it. The audit trail runs
 the opposite direction: rows forever, payloads for 24 months. Erasure sits outside both,
-immediate and absolute. The same window is *proposed* for `access_log` and is not yet
-confirmed ([F-8](open-questions.md#f-8)).
+immediate and absolute. **`access_log` is a third thing and neither clock:** its **rows are deleted** 24
+months after they are written, by a scheduled job, because what was *read* stops being answerable and no
+skeleton of it is kept — the two trails now differ in **kind** and not only in length
+([D-145](decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)).
+**Three exceptions to "nothing is hard-deleted", then:** a staging truncate, the delete an erasure has to
+make, and this trail ending on a calendar ([data-model/00 §4](data-model/00-conventions.md#4-deletion-policy)).
 
 **Curation** — Keeping the vocabulary meaning one thing: merging near-duplicates,
-promoting or discarding proposals, retiring codes nobody uses, and writing the
+retiring codes nobody uses, and writing the
 description that stops one code meaning four things to four people. It is
-`attribute.define` plus somebody who reads what they are given, and the documents treat
-it as a job rather than an outcome — an open vocabulary left unwatched decays into
+`attribute.define` plus somebody who reads what they are given — **the permission is the curator**, there
+being no proposal stage and no queue between a save and the record
+([D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)),
+which is also why curation has no age signal any more: what notices a rotting vocabulary is a report, not a
+waiting list. The documents treat it as a job rather than an outcome — an open vocabulary left unwatched decays into
 `allergy`, `Allergy`, `alergie` and `allergies (2)`, after which the layer still stores
 everything and answers nothing.
 
@@ -468,7 +464,7 @@ They are **not** one set with flags: `ATTENDED` is wider than `PLACED` precisely
 full event says yes to more people than it can seat, and `CONFIRMED` is narrower than
 `PLACED` because a seat is not a headcount. **`WHITELISTED` is not one of these**, and is
 not a selector at all — see
-[EV-6](open-questions.md#ev-6--whitelisted--the-word-people-reach-for-with-no-stored-state-to-name).
+[EV-6](open-questions.md#ev-6).
 
 ---
 

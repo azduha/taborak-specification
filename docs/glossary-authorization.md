@@ -208,7 +208,7 @@ either written into the expression or it is nowhere
 Refused, and worth naming because a reader reaches for them: `PRESENT(e)` — a predicate
 over the check-in box would revoke a leader's access to their own camp photos whenever
 somebody forgot to tick it; `WHITELISTED` — no stored state to evaluate
-([EV-6](open-questions.md#ev-6--whitelisted--the-word-people-reach-for-with-no-stored-state-to-name)).
+([EV-6](open-questions.md#ev-6)).
 Both are refusals rather than type errors, and neither is seeded
 ([D-107](decisions/round-11-12.md#d-107--the-grammar-opens-an-attribute-may-be-an-operand-and-the-vocabulary-stays-seeded)).
 

@@ -61,15 +61,14 @@ their answers ([08-events](08-events.md)), authority
 |---|---|---|
 | `id` | surrogate id | |
 | `code` | text, required | The stable handle. **Stored as typed, compared normalized** — see the rules below. |
-| `label` | text, required | What a human sees. |
+| `label` | text, required | What a human sees. One language, and see the note on the vocabulary below ([D-149](../decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated)). |
 | `description` | free text, optional | *What belongs in this field and what does not.* Cheap to write, and the only defence against a code meaning four things to four people. |
 | `value_type` | text, required | One of: `text`, `long_text`, `number`, `date`, `yes_no`, `one_of`, `date_year`. Governs the input drawn and the warning given — **not** what may be saved (§4 of this file's rules, [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). |
 | `value_unit` | text, optional | Display suffix — `kg`, `cm`. Rendering only. |
 | `allow_multiple` | boolean, required, default false | Whether more than one value may be current at once. Allergies: yes. Blood type: no. |
-| `status` | text, required | One of: `proposed`, `live`, `retired`. See the status rules. |
+| `status` | text, required | One of: `live`, `retired`. **Two values, no third** ([D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime), [D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)) — a definition is live at its save and retired is the only other thing it can be. See the status rules. |
 | `category` | text, optional | Display grouping — `health`, `contact-admin`, `program`. **Grouping only: it grants nothing and restricts nothing**, and any sentence that says otherwise is reintroducing the sub-resource [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed. |
 | `sort_order` | integer, optional | |
-| `proposed_by`, `proposed_at` | person, timestamp | Set when a value arrived for a code that did not exist. |
 | `retired_at`, `retired_reason` | timestamp, free text | Retiring is an administrative act and is explained. |
 | Standard columns | | [00-conventions §7](00-conventions.md#7-standard-columns). |
 
@@ -78,18 +77,40 @@ their answers ([08-events](08-events.md)), authority
 options are renamed, retired and re-ordered, and a retired option must keep meaning what it meant
 on the day it was chosen — a value stored against it is a historical fact.
 
+**Words are stored in one language: the one the organization writes in**
+([D-149](../decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated)).
+No `label_cs`/`label_en` pair, no translation table, no per-language row, no locale column in either
+table above. The refusal is about what a label *is*: `label` is *what a human sees*, and a label is
+not a rendering of something more authoritative underneath it — a row holding two labels would have
+to be asked **which of the two the record is**, and whichever answer was chosen would demote the
+other to a translation of it. The families who read another language are served by whoever reads the
+question aloud or writes it down, and by an event form's own question text, which is free text typed
+in whichever language the event is run in and is not a vocabulary item: **the vocabulary is for the
+record, the form is for the conversation**, and only one of the two has to be stable enough to query.
+What it costs: an imported label arrives in whatever language the paper form was in and stays there,
+so correcting it is a curation act under `attribute.define` and not a locale switch — and an
+organization that genuinely runs in two languages will hold two codes for one fact, a misery this
+design does not prevent and does not pretend to.
+
 **Rules**
 
 - **Codes are unique in normalized form.** Before comparison a code is trimmed, case-folded and
   has internal whitespace collapsed. `Allergy`, `allergy` and `allergy ` are one code, and the
   second one is refused on write. This is the only anti-duplication rule the *database* can still
   enforce here, which is exactly why it is stated as a rule and not as a convention.
-- **`proposed` is a real status with real behaviour.** A value recorded against a code that does
-  not exist creates a definition in `proposed`, owned by whoever proposed it. Proposed definitions
-  appear nowhere in data entry, appear in the curation queue (§8 check 1), and their values are
-  readable by anyone entitled to read the person — the person's data is not hidden from the
-  organization because a label is waiting for approval. Curation promotes, merges, renames or
-  discards it.
+- **A definition is live at the save.** `attribute.define` is the curating permission, and the
+  same person's write that names a code publishes it — no review list, no waiting, no age-out, and
+  no curator role: **the permission is the curator**
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)),
+  because a role is an office that confers nothing
+  ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+  and the only thing here that curates is a permission. **A value may not invent a code**: a value
+  recorded for a code that does not exist is an error at the write, not a definition waiting for
+  somebody. What this costs is stated rather than smoothed over — a bad code is live the moment it
+  is saved, and every value recorded against it, a real value on a real person, inherits it from
+  that moment. The defence is three things and there is no fourth: the save needs a permission, the
+  trail records every save, and the code can be `retired` — which keeps its values and stops new
+  ones ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
 - **Retiring keeps the values.** A retired code leaves data entry and stays readable, reportable
   and revivable. **Deleting the label must never delete the fact underneath it**: a code discovered
   to have been named badly is an administrative event, and if retiring it destroyed nine years of
@@ -104,11 +125,20 @@ on the day it was chosen — a value stored against it is a historical fact.
   history is not the display's to correct.
 - **`allow_multiple` may go false → true freely, and true → false only with a report.** Turning it
   off does not merge existing multiples; it leaves the database holding a shape the definition
-  forbids, which §8 check 4 will then report forever. Ask first whether the multiples are real.
+  forbids, which §8 check 3 will then report forever. Ask first whether the multiples are real.
 
 **Permission.** Creating, renaming, merging or retiring a definition needs **`attribute.define`**
 ([permission catalog](../appendix/permission-catalog.md)). Recording a value needs no new
-permission — see §4.
+permission — see §4. **One of those four acts stopped being freely available in round 20, and it is the
+rename:** a definition whose code an event question is bound to is now a code something references, and
+[a code that is referenced may not be renamed](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)
+— a rename would silently re-answer every form that was asked under the old name, leaving no row in the wrong
+state for a report to find, which is the shape this rule exists for
+([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
+**A merge is still a merge, and it is the deliberate half:** merging two codes carries the questions bound to
+the disappearing one over to the surviving one as part of the act, because an answer recorded under a code has
+to keep meaning what it meant when it was given. Retiring was never affected: a retired definition keeps its
+code, and a bound question asked against a retired code is the design working, not a dangling reference.
 
 ---
 
@@ -155,15 +185,28 @@ costs is listed in §5 rather than discovered later.
   One row per pair, because there is no history — so the rule is a plain uniqueness rule *except*
   that whether it applies depends on a column in another table, which no constraint can express:
   [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph).
-  **Check inside the writing transaction, and report the survivors** (§8 check 4). A partial unique
+  **Check inside the writing transaction, and report the survivors** (§8 check 3). A partial unique
   index would be the right tool for the single-valued definitions and the wrong tool for the rest;
   choosing per definition is how this rule becomes a report instead of a guarantee.
 - **Overwriting is an update, not a delete-and-insert.** The row keeps its `created_at` — that is
   when this fact first entered the system, which is a question someone asks — and the changed value
   with its author lands in the audit trail.
-- Values recorded against a `proposed` definition are hidden from forms and reports until curation,
-  and are **not** hidden from anyone with read access to the person. The organization's data quality
-  problem is not the family's confidentiality problem.
+
+**A bound event question may prefill from this table and write back into it.** The binding lives on
+the question, not here: `event_question.bound_attribute_code`, nullable, pointing at a **definition
+code** and never at a `person_attribute` row ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
+The form **prefills** the person's current value as a *suggestion* the answerer confirms or edits —
+nothing is hidden from them and nothing is silently copied — and submitting performs a **second act**:
+a new value in this table, dated **today**, recorded as written by the person who answered, while the
+answer itself stays a row of the event. The binding survives everything it could be accused of
+because of what it names: a definition code is never deleted and is retired instead, so it outlives
+the person whose values sit under it, and [00-conventions §4](00-conventions.md#4-deletion-policy)'s
+rule that nothing may reference a `person_attribute` **row** — the condition on which erasure's one
+hard delete stays invisible — is untouched. **What the binding may never become**: a reference to a
+row id, which stays exactly as forbidden as §4 says it is, and a second home for the value, which it
+is not — prefill is a suggestion, the write-back is a fresh value, and a form answer and a stored
+value are two dated statements of one fact at two moments, the same shape this corpus already uses
+for a name.
 
 **Indexes** — on `person_id` (every read is per person), on `attribute_definition_id` (every report
 is per code), and the per-`(person, definition)` rule above.
@@ -191,8 +234,17 @@ scope, not a new code with a suggestive name
 **Write: `person.edit` for values, `attribute.define` for the vocabulary.** That split is the design:
 data entry is open to anyone who can already edit the person, because the alternative is the fact
 never getting recorded; the vocabulary is narrow, because the vocabulary is what makes the data
-queryable. An improvised need saves as a proposal, which is the one path out of the failure where a
-leader types a drug name into a `notes` field at 23:00 and it is never seen by a report again.
+queryable. **What the split no longer offers is an escape valve.** A value arriving for a code that
+does not exist is an error at the write, not a proposal waiting for somebody
+([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)):
+the leader with a drug name at 23:00 either types it under a code that exists or says nothing, and
+that failure — the fact buried in a `notes` value, or the fact absent — is the price the strict rule
+pays on purpose, because a vocabulary is the one registry where an unreviewed addition is permanent
+*in effect* even where it is deletable *in principle*. **The write-back of a bound form question is
+not a third path either**: it goes through the same `person.edit` the answering channel already
+uses, is audited with the answerer as its actor, and is refused — the form still saving its answer —
+where the write is not permitted, so a form never half-writes a person
+([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)).
 
 ---
 
@@ -206,12 +258,13 @@ was taken with them in view rather than in the abstract.
 | Cannot | Why | What is done instead |
 |---|---|---|
 | Constrain a value | No constraint can reference the contents of a row chosen at runtime | The definition's type drives a **warning**; a human may always save |
-| Type-check at the database | Values are one text column | ISO-format by convention, and §8 check 7 reports a type that is wrong for the whole definition |
+| Type-check at the database | Values are one text column | ISO-format by convention, and §8 check 6 reports a type that is wrong for the whole definition |
 | Compare or aggregate safely | `12` and `12 kg` and `twelve` are three strings | Report on the `one_of` codes; treat free text as a list to read, not a number |
-| Express the one-value rule as a constraint | The rule reads another table ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 4 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
+| Express the one-value rule as a constraint | The rule reads another table ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)) | **Enforced in the writing transaction** (§3), which is a guard and not a constraint; §8 check 3 reports what got past it. The two are not alternatives — one stops it, the other notices it did not |
 | Answer "what did we believe in 2019" from business data | Rows hold the current belief only | `audit_log`, which holds the values themselves (§6) and which [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) records as the corpus's weakest control. **This is the accepted risk, not a footnote: the history is real and nothing but an omitted line of code stands between it and being empty** — and since [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), **nothing at all** stands between it and being empty after the payload window closes (§6) |
 | Restrict one field to some readers | [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) refused a privileged subset | One scope over one record; a court-ordered exception is a decision entry, not a code |
-| Trust that a code means one thing | Codes are typed by humans | Normalized uniqueness, `description` on every definition, §8 check 2, and a named curator |
+| Trust that a code means one thing | Codes are typed by humans | Normalized uniqueness, `description` on every definition, §8 check 1, and a save that needs `attribute.define` — the permission is the curator ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)) |
+| Keep a bound form's answer and the stored value equal | A bound question prefills from the value and writes a new one back ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)); the two are one fact stated at two dated moments, and nothing reconciles them | The value wins as of today, because it is the row dated today; the prefill is where a disagreement shows itself, and neither row is rewritten when the other changes |
 
 ---
 
@@ -223,7 +276,7 @@ was taken with them in view rather than in the abstract.
 - **Redacting a person** is legal and erases values. When a person is anonymised
   ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)), every row in this table
   belonging to them is deleted. **A redacted person with attribute values attached is a redaction
-  that did not happen** — §8 check 6, and the one check here that should alert rather than log.
+  that did not happen** — §8 check 5, and the one check here that should alert rather than log.
 
 **The trail holds these values, and that is the load-bearing consequence of the whole module.**
 An audit entry about a `person_attribute` carries the before and after images, as it does for a contact
@@ -241,12 +294,15 @@ reading them as a dependency rather than as reassurance:
   sensitive as the person data it quotes, which is written as a requirement on `audit.view` in
   [appendix/permission-catalog-a-codes.md §8](../appendix/permission-catalog-a-codes.md#8-audit-and-system) and
   argued in [05-authorization §9](05c-access-log-and-resolver.md#9-access_log) — where the case against copying
-  data into a less-guarded place is, in this table, a description of the table itself. **Whether that
-  single guard is the right shape is not settled here**: filtering history per entry, or splitting the
-  permission into the trail's shape and its payloads, are both live options and both have costs
-  ([AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data)),
-  the largest being that one of the three is already built, so declining to choose is a choice nobody has
-  to sign.
+  data into a less-guarded place is, in this table, a description of the table itself. **That single
+  guard is a decision, not an omission: `audit.view` is the whole gate** — one permission, one check,
+  no per-entry filter ([D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)).
+  The alternative was a per-entry check inside the history view asking whether this reader could see
+  this field; it would have been correct, and it would have made what an officer can read about 2019
+  depend on an audience expression changed last week — and the trail's value is that it is legible
+  without re-resolving the past, which is exactly what such a check spends. **The widening is
+  therefore a stated property of the code rather than something left to be discovered: it opens the
+  entire trail, it is granted rarely, and it is marked.**
 
 **Those payloads now expire, which is a consequence of [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
 and not a detail of it.** Audit rows live as long as the system; their `old_values`/`new_values` are
@@ -256,11 +312,10 @@ years.** The honest description of what §5's row costs is therefore not "no tem
 long history** — three decisions stacked, none of them wrong on its own: values live in one row that is
 overwritten, the copy of them depends on a write path remembering to log, and the copy ages out.
 
-That is also the cheapest thing this module will ever do about
-[AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
-and it should be read that way rather than as a resolution: a wrongly-graded `audit.view` can still read
-a child's descriptive values, but only for as long as they are recent. **If the long history is ever
-actually needed — by a safeguarding review, or by a dispute about what was known and when — the fix is
+**The window is not a mitigation of that property, and it is not the guard either.** It bounds how
+long a value sits where a holder of `audit.view` can read it, not who can read it while it sits.
+**If the long history is ever actually needed — by a safeguarding review, or by a dispute about what
+was known and when — the fix is
 temporal columns on the value, which reverses
 [D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity).**
 It is *not* a longer payload window, because stretching the window stretches exactly the guard
@@ -294,17 +349,20 @@ organization's descriptive vocabulary in it, and it changes how the mapping has 
 - **Every raw field name in a batch must map to a code, be mapped to `discarded` with a reason, or
   stop the batch.** Silently dropping an unmapped column is how a decade of a fact the organization
   collected disappears on a Tuesday.
-- **An unmapped column maps to a `proposed` code**, named from the raw column, not to an existing
-  code by similarity. A human merges near-duplicates afterwards; nothing guesses at import time,
-  because an import-time merge is invisible and unreviewable.
-- **At this scale, `proposed` is the last resort and not the outcome.** The map is authored and read
-  *before* the batch applies — it is one artefact, top to bottom — so a column that survives that
-  reading has been named by a human and its codes arrive **`live`**. `proposed` is for what a person at
-  a desk improvises later. If several hundred codes arrive `proposed` instead, check 1 opens full, its
-  age signal means nothing from the first day, and the first lesson the organization learns about this
-  layer is that its warning queue is noise. That is a real risk of this corpus and is the honest half
-  of an answer to [AT-2](../open-questions.md#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit),
-  which stays open for the runtime case.
+- **An unmapped column is an error at apply time.** The batch refuses and names the column; a value
+  may not invent a code, and a column may not borrow one by similarity either. Nothing guesses at
+  import time, because an import-time merge is invisible and unreviewable — merging near-duplicates
+  is a curation act afterwards, by a human holding `attribute.define`, where the trail can see it
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
+- **The map is authored against a vocabulary that already exists.** The import does not bootstrap the
+  vocabulary, it fills it in: every code the map names must be defined and `live` before the batch
+  applies, or the batch refuses. This is not a trap but the shape the largest single event in this
+  layer's life actually has — the map is authored and read *before* the batch applies, as one
+  artefact, top to bottom, so whoever wrote the map wrote the vocabulary first, and the codes arrive
+  `live` because they were `live` before the batch was ever typed. The cost is stated plainly: the
+  first few hundred definitions are a writing job under `attribute.define` that must happen *before*
+  the import that seemingly produces them, and a batch held at the door for an undefined column is
+  this design working, not failing.
 - **The mapping is recorded on the batch**, in `import_batch.field_mapping`, one entry per raw column
   ([06-audit §3](06a-import.md#3-import-pipeline) explains why the grain is a column and not a
   staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
@@ -316,37 +374,44 @@ organization's descriptive vocabulary in it, and it changes how the mapping has 
 
 **Invariants to verify**
 
-1. **Values recorded against a `proposed` definition, by age.** The curation queue. Non-empty is
-   normal; *old* is the finding: a proposal nobody has looked at for a quarter is a fact the
-   organization is storing in a private language.
-2. **Codes close enough to be the same thing** — same normalized form after stripping punctuation
+1. **Codes close enough to be the same thing** — same normalized form after stripping punctuation
    and collapsing plural forms, or the same label. A list to read, not a failure, and the
    continuous cost of an open vocabulary.
-3. **A live definition with no values ever recorded.** Retirable. Worth knowing: a dead code in a
+2. **A live definition with no values ever recorded.** Retirable. Worth knowing: a dead code in a
    picker is a small tax paid by everyone who opens the form.
-4. **More than one current value for a definition that forbids multiples.** The bypass of §3's
+3. **More than one current value for a definition that forbids multiples.** The bypass of §3's
    cross-table rule — an import, a hand-fix, a path that skipped the check. Non-zero means the
    guard is missing, not that the data is odd.
-5. **A value that is blank, whitespace, or longer than the type could have produced.** A
+4. **A value that is blank, whitespace, or longer than the type could have produced.** A
    `yes_no` code with a three-sentence value is a definition being used as a note field, and the
    report is a conversation about which one it should have been.
-6. **A redacted person with attribute rows, or with attribute values still present in `audit_log`.**
+5. **A redacted person with attribute rows, or with attribute values still present in `audit_log`.**
    Should never be non-empty; this is the erasure guarantee and it alerts.
-7. **A definition whose values contradict its declared type wholesale** — a `date` code where
+6. **A definition whose values contradict its declared type wholesale** — a `date` code where
    nothing parses as a date. The type is advisory for one value and a signal for all of them: at
    that point the definition is wrong, not the data.
 
-**Check 1 and check 6 are the two that matter.** One is the vocabulary rotting; the other is a
-person's data outliving their erasure. Everything else on this list is housekeeping.
+**Check 5 is the one that alerts:** a person's data outliving their erasure. **Check 3 is the one
+that indicts the code rather than the data:** non-zero there means some write path skipped §3's
+guard, and the fix is the path, not the rows. **Check 1 is the vocabulary talking** — never a
+failure, only the permanent cost of an open vocabulary, and the list worth reading before saving a
+near-duplicate. Everything else on this list is housekeeping.
 
 ---
 
 ## 9. Open issues
 
-Four, all registered in [open-questions.md](../open-questions.md): whether event questions should
-bind to codes so a returning camper's allergy is prefilled rather than re-typed
-(**AT-1**), who holds `attribute.define` in the starting role set and how long a proposal may sit
-(**AT-2**), whether definition labels need translation (**AT-3**, inherited from the
-multi-language question in §H), and — the one this document cannot settle — **whether one permission is
-enough to guard a trail that holds a child's values** (**AT-4**), which is §6's weakest link stated as a
-question rather than as a design.
+**None registered.** The questions this layer raises most are answered by design on the page rather
+than left in [open-questions.md](../open-questions.md): an event question may bind to a code and
+prefill from it, as a suggestion the answerer confirms and a fresh dated value on submit, never as a
+copy or a reference to a value row ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer));
+a definition is live at the save of whoever holds `attribute.define`, and that permission is the
+curator, so no proposal may sit anywhere because none can exist
+([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted));
+the vocabulary is in one language and a label is not translated
+([D-149](../decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated));
+and one permission, granted rarely and marked, is the whole guard on the trail that holds a child's
+values — a position, not an omission
+([D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)).
+What remains unknown here is not a question with an owner but the cost §6 states: the history of a
+value is a copy that depends on a write path remembering to log, and that copy ages out.

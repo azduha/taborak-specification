@@ -296,9 +296,10 @@ re-grant, one code at a time, what that channel grants whole
 - **`WHITELISTED` is not seeded, and the reason is that there is nothing to evaluate.** The nearest
   facts are `source = staff` (an organizer entered them) and promotion off the waitlist. Either it
   means one of those or it is a new column on `event_registration`, which is an events decision and
-  not a selector decision, so it stays [an open question](../open-questions.md) rather than being
-  implied by a word in a grammar. **An operand that reads no state is not a vocabulary item but a
-  syntax error wearing one's clothes.** [F-20](../open-questions.md#f-20)
+  not a selector decision, and **the events decision has been made: refused**
+  ([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)),
+  so this is no longer a question waiting on a word in a grammar. **An operand that reads no state is not a
+  vocabulary item but a syntax error wearing one's clothes.** [F-20](../open-questions.md#f-20)
   is a question about whether the *feature* is wanted, not about whether the language could hold
   the word.
 

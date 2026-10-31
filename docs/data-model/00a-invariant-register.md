@@ -26,18 +26,30 @@ visible instead of being a sentence on page 412 that nobody re-reads.
 
 **How to read the two right-hand columns.** *Backstop* names the report that would list a breach, by
 the page and number where that report is written. **`none` in bold** is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. Seven rows are in
-that state and **all seven are shape-3 rows**, whose only enforcement is a line of code. The seven are
-not one kind of blank. Three are open questions this register raised and left open —
-[F-28](../open-questions.md#f-28), [F-32](../open-questions.md#f-32) and
-[F-33](../open-questions.md#f-33); one is [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) deciding that a rule gets
-no report, and saying so on the page that owns the rule rather than only here; one is a promise with an
-address, because D-130's identifier row names the section the report will be added to, so that `none` is
-dated rather than permanent; and the last two are blanks this page is not allowed to fill by inventing a
-check nobody asked for. **The count came down from eleven for two reasons, both of them work rather than a
-re-reading**: two pages were given the check sections they lacked ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)), and one row here
-turned out to describe a rule no page states at all, so it is gone ([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)) — which is the
-one of the two this page should be embarrassed by. *Breach* is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
+slur on the rule: it means the corpus names no such report anywhere, which is the finding. **Five rows are in
+that state and all five are shape-3 rows**, whose only enforcement is a line of code. The five are not one
+kind of blank, and the kinds are worth naming because they fail differently.
+**Two are rulings**: [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)
+decided that a rule about an ended key gets no report, and
+[D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)
+decided the same about a delegation outliving the permission behind it — in both cases the absence was chosen,
+and said on the page that owns the rule rather than only here.
+**One is a promise with an address**: D-130's identifier row names the section the report will be added to, so
+that `none` is dated rather than permanent. **Two are blanks this page is not allowed to fill by inventing a
+check nobody asked for.**
+**The count came down from eleven — seven after round 19, five after round 20 — and none of the six losses was
+a re-reading.** Two
+pages were given the check sections they lacked ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)).
+Two rows here turned out to describe a rule no page states at all, so they are gone rather than repaired
+([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud),
+[D-144](../decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked))
+— which is the half of this page's history it should be embarrassed by. **And one `none` was simply false in
+the other direction**: the displayed-name row said no report existed while the report had been sitting in
+[01b §10](01b-merges-views-and-checks.md#10-integrity-checks) since the page that owns the check was written
+([D-142](../decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)).
+**That is the reason this column is worth the trouble it costs**: a citation can be checked and a claim of
+absence cannot, so a blank is as much a claim about the corpus as a link is, and it can be wrong while looking
+humble. *Breach* is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
 breach both read as "two rows" and only one of them is a duplicate.
 
 **Nine numbered checks, on three pages, are assertions about the code rather than reports over data**
@@ -103,7 +115,9 @@ and answers — is a plain unique constraint and is not listed here at all.
 
 ## 3. The answer reads another table, a resolver, or a graph
 
-Forty-one rules. **In this shape the layer is always the write path** — no constraint spans two tables —
+Forty-six rules, **counted off the table below rather than carried down from the last round that touched it** —
+this sentence said forty-one while the register's own summary elsewhere in the corpus said forty-five, and both
+were describing one table. **In this shape the layer is always the write path** — no constraint spans two tables —
 so the layer column is gone from this table and only two columns remain. **The report column is the one
 worth reading**: `none` means a rule that holds until somebody edits the write path and nothing
 downstream ever says so.
@@ -111,10 +125,10 @@ downstream ever says so.
 | The rule | Stated in | Save-time check | Report |
 |---|---|---|---|
 | An identifier is unique only for schemes that say so | [01a §7](01a-accounts-and-contacts.md#7-person_identifier) | the write path | **none — and [00 §6a](00-conventions.md#6a-who-enforces-an-invariant-now) promises one, which is why D-130 adds it to [01b §10](01b-merges-views-and-checks.md#10-integrity-checks)** |
-| One current attribute value, unless the definition allows several | [09 §3](09-attributes.md#3-person_attribute--a-value-one-person-has) | inside the writing transaction | [09 §8 check 4](09-attributes.md#8-integrity-checks) |
+| One current attribute value, unless the definition allows several | [09 §3](09-attributes.md#3-person_attribute--a-value-one-person-has) | inside the writing transaction | [09 §8 check 3](09-attributes.md#8-integrity-checks) |
 | A value is the type its definition declares | [09 §5](09-attributes.md#5-what-this-design-cannot-do) | a warning; a human may always save | none, deliberately |
-| `allow_multiple` may go true only freely | [09 §2](09-attributes.md#2-attribute_definition--the-vocabulary) | a confirmation report at the save | [09 §8 check 4](09-attributes.md#8-integrity-checks) |
-| The denormalised name agrees with the name history | [01 §2](01-identity.md#2-person) | same transaction | **none** — [F-28](../open-questions.md#f-28) |
+| `allow_multiple` may go true only freely | [09 §2](09-attributes.md#2-attribute_definition--the-vocabulary) | a confirmation report at the save | [09 §8 check 3](09-attributes.md#8-integrity-checks) |
+| The denormalised name agrees with the name history | [01 §2](01-identity.md#2-person) | same transaction | [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) counts persons whose displayed name differs from the open name row — **the `none` here was wrong in the understating direction, and the copy stays anyway** ([D-142](../decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)) |
 | A name belongs to one of office, group or audience | [02 §1](02-organization.md#1-person_group) | the write path, including the reserved-word half | [05d §11 check 12](05d-invariants-and-seed.md#11-invariants-to-verify) — a save-refusal, so it asserts the guard still exists |
 | An office's code is not a group's name | [05 §3](05-authorization.md#3-role--an-office) | the write path | same check |
 | An operand's arity and binding match its registry row | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | one of six checks in one transaction | [05d §11 checks 3 and 4](05d-invariants-and-seed.md#11-invariants-to-verify) |
@@ -136,6 +150,8 @@ downstream ever says so.
 | A guardian's right agrees with its open history row | [04 §1](04-relationships.md#1-guardianship) | none — the row wins on disagreement | [04 §6 check 6](04-relationships.md#6-invariants-to-verify) |
 | No live row points at a merged-away person | [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) | the reassignment table | the same section |
 | An audit row holds no unredacted payload | [05c §9](05c-access-log-and-resolver.md#9-access_log) | the application's obligation, in order | none reaches the ordering |
+| Erasure reaches every place a person's values were kept | [00 §8's item 2](00-conventions.md#8-personal-data-and-erasure) | the erasure procedure; no constraint reaches any of it | [06b §5](06b-redaction-and-checks.md#5-integrity-checks)'s erasure check, which counts a redacted person's surviving attribute rows, surviving answer values and surviving payloads — **two shapes, because one place is deleted and one is overwritten** ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)) |
+| An `access_log` row does not outlive the window | [00 §4](00-conventions.md#4-deletion-policy), [05c §9](05c-access-log-and-resolver.md#9-access_log) | a scheduled job — **the only rule in this register carried by a clock rather than by a write** | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) counts a row still present past the window; the delete is the third exception to "nothing is hard-deleted" ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)) |
 | Every audited table is in fact audited | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | the write itself | the check of a change the trail never saw, whose ceiling is stated there |
 | An actor label is on the vocabulary | [00 §7a](00-conventions.md#7a-what-an-empty-actor-column-means) | nothing refuses one | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) |
 | A write is not audited against a key that was already ended | [06b §5](06b-redaction-and-checks.md#5-integrity-checks) | none | **none, and now by ruling rather than by omission** — the window is not the obstacle and [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) says so on the page that owns the rule |
@@ -152,9 +168,8 @@ downstream ever says so.
 | An operand that resolves to nothing is said out loud | [05b](05b-expression-tree.md) | none — no save is refused | the report of audiences that reach nobody, with an owner |
 | An expression tree stays a size that resolves | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | none, by design | a report the corpus says has nothing behind it |
 | A compilation is invalidated by exactly the right edits | [05c §10](05c-access-log-and-resolver.md#10-the-resolver) | the write path, `audience_operand` plus `selector_type` | **none** — the listing it depends on is itself unmeasured |
-| A delegation does not exceed the delegator | [domain/06](../domain/06-authorization-model.md) | grant time, and again at use | **none** — [F-32](../open-questions.md#f-32) |
+| A delegation does not exceed the delegator | [domain/06 §9](../domain/06-authorization-model.md#9-delegation) | grant time only, and nothing afterwards re-validates it | **none, and now by ruling rather than by omission** — the delegation stands to its own end date, nothing cascades, and [D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date) says so on the page that owns the rule |
 | Every selector row has a resolver behind it | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | release engineering | none can: it is program text, and it surfaces as an empty set |
-| A code's `right_kind` matches what the code says | [05 §2](05-authorization.md#2-permission) | the save | **none** — [F-33](../open-questions.md#f-33) |
 
 **`none` in this table is not an indictment of the rule.** Four of them are `none` because the design
 refused a guard on purpose — eligibility is capability, a warning is not an error, a size rule would be
@@ -166,7 +181,11 @@ a limit nobody asked for, and a resolver arm is code. The register keeps those r
 **This shape is not empty.** It was described as empty on the strength of one deleted instance; four live
 ones were already in these pages, and the test that separates them from a column nobody would think to
 rename is the same test that made the two named candidates worth naming: **a rename rewrites what
-references it, and nothing leaves a row in the wrong state for a report to find.**
+references it, and nothing leaves a row in the wrong state for a report to find.** **Eight rows are below and
+seven of them are members**, counted off the table rather than carried down: the audience row is the eighth and
+is the correction, not a member. **The seventh arrived in round 20 without anyone looking for it** — a decision
+about event forms made a vocabulary code referenced, and the shape grew by whatever the corpus references,
+which is the one property of this shape that does not need a checker.
 
 | The value | Stated in | What references it | What carries the rule |
 |---|---|---|---|
@@ -176,6 +195,7 @@ references it, and nothing leaves a row in the wrong state for a report to find.
 | A permission's `code` | [05 §2](05-authorization.md#2-permission) | every `access_grant` row, and the seeded roles, which list codes by value | **stated twice and enforced nowhere**; now a rule with a referrer listing behind it ([D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)) |
 | A selector's `code` | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | every stored expression, through `selector_kind` | the same rule; **this is the instance the register was looking for and the candidate list did not carry** |
 | A key's `code` | [05e §14](05e-keys-and-callers.md#14-api_key--a-caller-that-is-nobody) | grants, audit rows, and the report of who called | the same rule ([D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed)) |
+| A definition's `code` | [09 §2](09-attributes.md#2-attribute_definition--the-vocabulary) | `event_question.bound_attribute_code` from round 20 on — **the first table that ever named a vocabulary code by value** | the same rule, arrived at by D-131's own test rather than by looking for it: a merge may carry the bound questions, a rename would silently re-answer every form asked under the old name ([D-131](../decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed), [D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)) |
 | An audience's `code` | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | **nothing, after the save** — `AUDIENCE(x)` resolves once, into `selector_arg_id` | **not immutable, and this row is the correction**: a rename rewrites no grant, which is what §5 of the name namespace promises out loud and what [the candidate list F-10 carried had forgotten](../open-questions.md#f-10) |
 
 ---

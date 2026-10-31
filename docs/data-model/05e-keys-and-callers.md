@@ -201,7 +201,7 @@ Stated because a reader will otherwise assume the nearest mechanism applies.
 - **What this system does to itself is not a caller and has no row.** The 1 January membership sweep, payload
   reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
   the system acting on its own and is a complete answer to *who did this*; where the audit trail keeps a
-  label, it is one of five from a list rather than free text
+  label, it is one of six from a list rather than free text
   ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means),
   [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
   **`api_key` was deliberately not stretched to cover them**: a sweep is not a caller, and a table whose rows

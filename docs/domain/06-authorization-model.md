@@ -734,9 +734,18 @@ permission code**, "do not lend more than you hold" is a set-membership test
 Rules:
 
 - **A delegation always has an end date.** Enforced on the write path.
-- **A delegation cannot exceed the delegator's own authority** — validate at grant time that the code
-  being delegated is one the delegator currently resolves to, and re-check at use time, because the
-  delegator may lose it mid-delegation.
+- **A delegation cannot exceed the delegator's own authority, and it is checked once: when it is
+  written.** The save resolves the delegator and refuses a code they do not hold at that moment
+  ([05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer)). **Nothing re-checks it at
+  use time**, and the page that carries this rule used to promise that it did
+  ([D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)).
+  **That was not a gap waiting for an implementation but a second rule the data model denies**: a grant row
+  records who lent it and never what the lender can currently do, so a use-time check would have had to
+  resolve a person who is not party to the check, and it would have made a delegatee's access depend on
+  somebody else's history. **A delegation therefore stands to its own `valid_to`, or to a revocation** —
+  the delegator losing the code mid-delegation changes nothing, which is the cost of this rule and is said
+  out loud rather than left to be discovered. **Two bounds remain:** a delegation must carry an end date
+  (the check above), and `system.admin` cannot be delegated at all.
 - **The provenance is recorded**, so an audit can answer "who really had this authority on that date?"
   — it lists both the holder and the delegator.
 - **A deny cannot be lent and cannot be lent around.** A delegation is an allow; the delegatee's

@@ -74,10 +74,19 @@ keeping it out of the selector language is what keeps it meaning "a person recor
 rather than "this is who may see things". Where presence is needed it is needed as a report
 (§9), and the report is honest about the rows it does not have.
 
-**`WHITELISTED` does not exist.** There is no stored state to name: the nearest facts are
-`source = 'staff'` (an organizer entered them) and promotion off the waitlist. Until the
-organization decides which of those it means, or adds a column, the operand is not available
-and the name is not reserved (§11).
+**`WHITELISTED` does not exist, and nothing reserves the name.** There is no stored state to name:
+the nearest facts are `source = 'staff'` (an organizer entered them) and promotion off the waitlist.
+**A tier is a state of a registration, and an invitation is not about a registration at all** —
+*invited* is a grant aimed at that person, a person who never registered is described by the absence
+of a row ([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)),
+and one who registers onto a full event is already `ON_WAITLIST`. So the need is met by rows that
+exist and this is settled rather than pending: no `is_whitelisted` column, no fifth tier, no operand,
+and **anyone adding `is_whitelisted` is reimplementing grants badly**. The sentence belongs where the
+tiers are listed, beside the `PRESENT` refusal, and it stands there in
+[../domain/07a §9](../domain/07a-capacity-presence-and-forms.md#9-presence-what-actually-happened)
+([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).
+**The count of operands refused here does not move**: `WHITELISTED` was already one of the operands
+this table does not hold.
 
 **Two binding rules, both refused when the grant is saved, both naming the operand in the
 message:**
@@ -250,6 +259,24 @@ and it is the reason `was_present` is three-valued rather than a boolean default
 computes over `was_present`, so no grant can reach fewer people because the register was
 never taken. §8 states the refusal; this query is the reason it matters.
 
+**Nor does the column have a clock of its own or a permission of its own, and that is a ruling.**
+Presence is a column of a registration and inherits everything a registration is: the retention
+registrations have, which is no expiry and no clock, and the codes that already reach the roster and
+the mark ([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)).
+A `presence.retention` shorter than the event's was refused because it would delete the answer to this
+query on somebody's number, and a `presence.view` narrower than the roster's was refused because it
+would be a permission whose whole purpose is to hide a fact from the people who are asking because
+they were there. **There is no `presence_record` table and nothing behind this roster is a register:**
+this system keeps no safeguarding register — no background checks are recorded
+([D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system))
+and there is no medical record
+([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data))
+— and a column with a special clock and a special permission would have been the first wall of an
+archive this design has refused four times. **What protects the column is that it is boring:** the
+index behind this query (§4) serves a report and no operand, the rows are readable with the codes that
+reach the event, and erasure reaches them the way it reaches organizational history — the person stops being
+identifiable and the mark stays ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)).
+
 ---
 
 ## 10. Integrity checks
@@ -296,9 +323,10 @@ never taken. §8 states the refusal; this query is the reason it matters.
    convention, not a guarantee.
 
 9. **A registration outside its event's registration window.** Counts registrations whose
-   `registered_at` falls before the window opens or after it closes, excluding the ones an
-   organizer recorded deliberately (`source = 'staff'`, whose window is the event's own
-   period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
+   `created_at` — the moment the row was written, which is the moment Guard 1 governs, and not
+   `responded_at`, which is when the answer was given — falls before the window opens or after it
+   closes, excluding the ones an organizer recorded deliberately (`source = 'staff'`, whose window is
+   the event's own period). Guard 1 in §8 is supposed to make the first two shapes impossible, and
    **there is no constraint behind that guard** — a window spans two columns of two tables, so
    the check runs inside the writing transaction or nowhere
    ([shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph)).
@@ -349,22 +377,31 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
   not settled, and this module has not seeded more on its own initiative (§3, §8).
 - **Who writes the per-event seeded grant.** Read as a template the creation path and the
   import both instantiate; D-102 does not say (§8, check 2).
-- **`WHITELISTED`.** No stored state to name, so no operand and no reserved name (§8).
-- **Retention of `event_answer`.** Answers end with the event and there is no policy saying when (§7).
-  An answer is personal data of the same class as any other
-  ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)),
-  which makes the question ordinary rather than answered — and sharper, since the same fact
-  recorded as a `person_attribute` follows a different retention rule on purpose
-  ([EV-2](../open-questions.md#ev-2--retention-of-event_answer)).
+- **Retention of `event_answer` — settled: nothing expires, and erasure empties the value.** Neither a
+  registration nor an answer ends with its event, and neither ends on a clock; what reaches an answer
+  is erasure, which sets `value` to empty and leaves the row (§7,
+  [00-conventions §8](00-conventions.md#8-personal-data-and-erasure)). The asymmetry this question
+  rested on — the same fact kept indefinitely as a `person_attribute` and quietly discarded as the
+  answer a camp leader reads — is closed by making the two rules agree, which is the stronger answer
+  than the clock it replaces ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
+  [D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it);
+  [EV-2](../open-questions.md#ev-2)).
 - **Cancelled events and fees.** Cancelling keeps the registrations. What it does to the
   obligations is the finance module's (§6), and for events it has an answer
   ([D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person)):
   cancelling voids the outstanding requests, and money that already arrived waits in the
   unmatched queue ([07-finance.md §2b](07-finance.md#2b-money-that-cannot-be-matched)).
-- **`was_present` as a safeguarding record.** Whether presence needs its own retention or its
-  own permission, given what it is (§9 of the domain doc). `PRESENT` is refused, so presence
-  governs nothing about access — which is either why it needs no permission of its own or why
-  its retention is all that is left.
+- **`was_present` as a safeguarding record — settled: it stays a column of the registration.** No
+  retention of its own and no permission of its own: it inherits both from the registration, and the
+  codes that already reach the roster are the codes that read it (§9). `PRESENT` stays refused, so
+  presence governs nothing about access, and no `presence_record` table is coming either, because
+  **this system keeps no safeguarding register** — no background checks are recorded
+  ([D-043](../decisions/round-02-03.md#d-043--no-background-checks-are-recorded-in-this-system)),
+  no medical record exists
+  ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data))
+  — and a clock plus a permission would have been the first wall of one
+  ([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own);
+  [EV-4](../open-questions.md#ev-4)).
 - **Whether organizers should be `access_grant`s after all.** The mechanism is settled —
   a set named by a selector, aimed at by grants — and D-062's answer stands: the roster is not
   itself a grant. What remains open is whether more codes should be seeded to `ORGANIZERS`,
@@ -375,4 +412,4 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
 
 ---
 
-*Decisions behind this page: D-013, D-061, D-062, D-067, D-070, D-074, D-076, D-081, D-083, D-099, D-101, D-102, D-112, D-113, D-114.*
+*Decisions behind this page: D-013, D-043, D-059, D-061, D-062, D-067, D-070, D-074, D-076, D-081, D-083, D-099, D-101, D-102, D-112, D-113, D-114, D-140, D-147, D-148.*

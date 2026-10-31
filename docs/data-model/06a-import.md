@@ -163,9 +163,15 @@ deliberate act of design ([09-attributes.md §7](09-attributes.md#7-the-legacy-i
 owns the rule, and states why; what follows is only what the pipeline has to obey).
 
 - **Every raw field name in a batch maps to a code, or is mapped to `discard` with a reason, or the
-  batch stops.** An unmapped column maps to a **`proposed`** code named from the raw column — never to
-  an existing code picked by similarity, because an import-time merge is invisible and unreviewable
-  and a human makes that judgement afterwards, with both codes in front of them.
+  batch stops.** **An unmapped column is an error at apply time: the batch refuses and names the column**
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
+  It does not invent a code named from the raw column header, and it is never mapped to an existing code
+  picked by similarity — an import-time merge is invisible and unreviewable, and a human makes that judgement
+  afterwards with both codes in front of them. **What changed is which side of the batch the refusal lands
+  on:** a column that maps to nothing used to arrive as a definition waiting for curation, which meant a
+  person at a desk could grow the vocabulary by typing a header, and an import could land several hundred
+  codes nobody had read. **Creating a code is the act of whoever holds `attribute.define`, and the batch has
+  nobody holding anything** ([09-attributes.md §7](09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from)).
 - **The mapping is recorded on the batch**, in `import_batch.field_mapping`, so a mapping later found
   wrong can be re-run rather than reverse-engineered from the damage it did. The mapping is not the
   schema: changing it is an act of curation with an audit entry, not a migration.

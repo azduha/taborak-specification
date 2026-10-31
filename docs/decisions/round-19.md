@@ -25,7 +25,7 @@ arrived with a premise that did not survive being checked against the page that 
   [06 §2](../data-model/06-audit-and-import.md#2-audit_log). No page in the corpus says any such thing;
   [06 §2.3](../data-model/06-audit-and-import.md#23-history-query) says close to the opposite — a
   per-entry check inside the history view was considered and left unimplemented — and that question is
-  [AT-4](../open-questions.md#at-4--is-one-permission-enough-to-guard-a-trail-that-holds-person-data),
+  [AT-4](../open-questions.md#at-4),
   already open. Under [D-129](round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong)
   a register row is a claim about a page and is verified against it, never asserted, so the row is withdrawn.
   **It got into the register in round 18 by the route D-129 warns about**: the inventory was written from the

@@ -55,13 +55,24 @@ layer still stores everything and answers nothing. Three defences, none clever:
 - **Recording a value is open; naming a thing is not.** Anyone who can edit a person can write down
   what the doctor said tonight. Creating a code — deciding that this is now a thing the organization
   knows about people — takes a permission and a person who reads what they are given.
-- **An improvised need becomes a proposal, not a workaround.** The failure this is aimed at is
+- **An improvised need has somewhere to go, and it is not a queue.** The failure this is aimed at is
   specific and familiar: at 23:00 on a Friday, there is no field for "carries an adrenaline
-  auto-injector", so the leader types it into a notes box, and it is never read by anyone again. A
-  proposal is visible, queued and curable; a notes box is neither.
+  auto-injector", so the leader types it into a notes box, and it is never read by anyone again.
+  **The answer is blunter than the proposal stage it replaced:** naming the code is the act of whoever holds
+  `attribute.define`, and it is live the moment they save it — **the permission is the curator**, and a person
+  holding a permission is faster than a review list
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
+  **The leader at 23:00 does not hold it, and this design no longer pretends otherwise**; what it keeps is that
+  a notes box is the worse of the two remaining options, and that a value recorded against a code *does* exist
+  reaches the screen that gets read at 23:00
+  ([../data-model/09-attributes.md §4](../data-model/09-attributes.md#4-who-may-read-and-who-may-write)).
 
-**Curation is a job, and the documents say so rather than assuming it happens.** An unwatched proposal
-queue is the same information loss arriving slowly instead of all at once
+**Curation is a job, and the documents say so rather than assuming it happens.** The queue that used to make
+the job visible is gone, and with it the age signal that said nobody had read the vocabulary in a month. What
+carries it now is narrower: `attribute.define` is held by few people, **every definition they save is live at
+once with nobody between the save and the record**, and the report that notices a vocabulary rotting is the one
+that lists a live code whose values contradict its type, a live code nobody ever used, and two codes close
+enough to be the same thing
 ([../data-model/09-attributes.md §8](../data-model/09-attributes.md#8-integrity-checks)).
 
 ---
@@ -73,7 +84,7 @@ queue is the same information loss arriving slowly instead of all at once
 | **A leader** | The allergies and instructions for the children they lead, tonight, without asking permission | **Whatever the organization has granted them, and nothing more** — with the cost attached: there is no scope smaller than *the whole organization* except a single item, so "the children in their unit" has no scope to be granted *as such*. A `person.view` at unit scope hands over **every member's entire record, allergy lists included**; the narrower thing a leader actually wanted is a group roster or an event. The starting grant set gives leadership rosters and events but **not** a read over the person record |
 | **A guardian** | Everything about their child, or nothing, depending on what the organization decided | The guardian right level — `none`, `view`, `write` — over the whole record ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) |
 | **The person themselves** | Their own data | Their own record, which is not a special case in the resolver — "about you" is already a channel |
-| **An event organizer** | What matters on the day, for the people who registered | The registration, and the event form that asks. Where the organization already recorded a fact, [AT-1](../open-questions.md#at-1--should-an-event-question-bind-to-an-attribute-code) asks whether the form should prefill from it rather than re-asking every camper every season |
+| **An event organizer** | What matters on the day, for the people who registered | The registration, and the event form that asks. Where the organization already recorded a fact, **the form prefills it as a suggestion the answerer confirms or edits, and confirming writes a fresh value back dated today** — the question binds to the definition and never to a stored row ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer), [AT-1](../open-questions.md#at-1)) |
 | **A first aider at a camp** | The short list: what is this child allergic to, what do they take, what should we do | The values are fields, so a list can be produced — which is the argument for fields over documents |
 
 **Read the leader row twice: it is the sharpest edge in this module.** There is no privileged subset of

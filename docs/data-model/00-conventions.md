@@ -99,9 +99,12 @@ published the internal counter.
 
 ## 4. Deletion policy
 
-**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data. **Two
-exceptions are named below** — a staging truncate, and one delete that erasure has to make — and both
-are narrow enough to prove the rule rather than erode it.
+**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data. **Three
+exceptions are named below** — a staging truncate, one delete that erasure has to make, and one trail that
+ends on a clock — and each is narrow enough to prove the rule rather than erode it. **Two of the three reach
+no business row anyone would miss — a staging table between two batches, and a trail of reads — **and the one
+that does reach a person's values does it for the only reason that has ever justified deleting anything: they
+asked.**
 
 | Situation | Mechanism |
 |-----------|-----------|
@@ -110,6 +113,7 @@ are narrow enough to prove the rule rather than erode it.
 | A grant revoked | Set `access_grant.valid_to`; keep the row |
 | Two people merged | Tombstone: set `merged_into_person_id`; row remains |
 | A group ended | Set `person_group.valid_to`; its member rows remain |
+| An `access_log` row passes 24 months | **Deleted**, by a scheduled job — the third exception below. The only rows in this design that age out, and the only ones that ever did |
 | GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8. **One table is deleted rather than redacted; the exception below names it and why** |
 
 This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
@@ -131,11 +135,27 @@ and the dates they were first recorded. Retiring the *code* is not the answer ei
 explicit that retirement must never destroy values — retirement is an act about the vocabulary,
 erasure is an act about the person, and the two point in opposite directions on purpose
 ([09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)).
-**This exception is safe only while nothing references an attribute row, and nothing does today.**
-Should a future table ever point at one — an event question bound to a stored value is the obvious
-candidate, and it is open as AT-1 — that table must be designed around this rule rather than
-discovering it, because at that point the delete stops being invisible and becomes the referential
-integrity problem §9 exists to prevent.
+**This exception is safe only while nothing references an attribute row, and nothing still does.** The
+candidate this paragraph named arrived in [round 20](../decisions/round-20.md): an event question may now be
+bound to a stored value ([D-139](../decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)),
+and it was designed around this rule rather than discovering it. **The binding names a definition, never a
+value row** — `event_question.bound_attribute_code` points at `attribute_definition.code`, which is never
+deleted and is retired instead, and so outlives the person whose values sit under it. That is what keeps the
+delete invisible: there is no edge for §9 to walk. **A reference from any table to a `person_attribute` row id
+remains forbidden by this paragraph**, and would have to be argued for against it, not merely written.
+
+**The third exception is a trail, and it is the newest.** [D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)
+confirms what [05c §9](05c-access-log-and-resolver.md#9-access_log) had only proposed: **an `access_log` row
+older than 24 months is deleted**, by a scheduled job, because that is what the organization decided its
+access trail is worth. It is an exception in the shape this section wants: **no business row is touched, no
+table holding a person's record is in its scope, it moves only forward from a row's own write, and it is one
+named job** — `system:log-reduction` in [§7a](#7a-what-an-empty-actor-column-means), with a check counting the
+rows that should have gone and are still there. `audit_log` is **not** in its scope and keeps the opposite
+shape ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
+rows for the life of the system, payloads emptied. **Read "append-only" in this corpus as *no application
+writes or removes these rows*, which is what it always protected** — not as a promise that a row survives its
+own retention window. What the two trails answer differs after the window, and nothing pretends otherwise:
+what was *changed* is answerable forever, what was *read* stops being answerable at two years.
 
 **This rule is now carried entirely by discipline, and that is worth saying out loud.** A
 `ON DELETE RESTRICT` default, a revoke of `DELETE` from the application role, an ORM whose delete
@@ -391,6 +411,7 @@ what turns *"the system"* from a shrug into a claim.
 |---|---|---|
 | `system:renewal-sweep` | the 1 January renewal sweep | Expiring memberships whose window closed — and nothing else; a guardianship's `valid_to` is **never set by a job** ([04 §1](04-relationships.md)) |
 | `system:payload-reduction` | payload reduction | Emptying `old_values` and `new_values` once a row passes the payload window ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) |
+| `system:log-reduction` | the access trail's age-out | **Deleting** `access_log` rows once they pass their 24 months ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to *who deleted my access history*. **Not to be confused with `system:payload-reduction` above**, which empties columns of the other trail and deletes nothing |
 | `system:bank-pull` | the bank statement fetch | The `bank_transaction` and `payment` rows that answer a variable symbol ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)). **For the run with nobody in the room** — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does |
 | `migration:<id>` | a named migration | Any structural change, **and any one-off correction** — a fix that is not in a migration is a fix nobody can attribute |
 | `import_batch:<id>` | a run of the import pipeline | Not anonymous and never was: `import_batch.created_by` names the person who uploaded the file |
@@ -431,6 +452,15 @@ Requirements the design must satisfy:
    [§4](#4-deletion-policy) says why it is the only row that can be handled that way. A redacted
    person with attribute values attached is a redaction that did not happen. A `redaction_log`
    records what was redacted and when.
+   **It also reaches an event's answers, and there it overwrites rather than deletes:** an
+   `event_answer` row belonging to a redacted person has its `value` emptied and **the row remains**
+   ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)).
+   The two shapes are one decision, not an inconsistency: a descriptive value has no row worth keeping
+   because the row *is* the value, while an answer is a fact that a question was answered on a dated
+   occasion, and that fact belongs partly to the event. **`event_registration` is not in either shape:**
+   whether a person came is organizational history under item 3, and this is stated because
+   [D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)
+   declined to make it a record class of its own.
 3. **Some data must not be redacted, and the reason is now stated rather than left unopposed** —
    membership periods, unit participations, fee obligations, payments and position assignments are
    organizational history rather than personal data, and removing them would falsify records that the

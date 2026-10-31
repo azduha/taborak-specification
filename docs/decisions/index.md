@@ -5,7 +5,7 @@ re-litigated from scratch — and so that when a decision is reversed, the reaso
 original choice is visible.
 
 **How this log is filed.** The entries live in the round that took them; this page indexes all
-136 of them and lists the reversals. Read the round you are curious about — each one says what was
+149 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a `D-` number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.
 
@@ -171,11 +171,24 @@ which carries the reasoning; the round is the page that entry sits on.
 | [D-129](round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) | Where the register and the page disagree, the page is wrong | decided (found while writing the register) | round 18 |
 | [D-130](round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | One register answers who enforces each invariant, and F-10 closes | decided | round 18 |
 | [D-131](round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) | Shape 4 is not empty, and a code that is referenced may not be renamed | decided (found by writing the register) | round 18 |
-| [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **not applied until round 19** | round 18 |
+| [D-132](round-18.md#d-132--day-one-is-one-account-holding-systemadmin-and-every-role-after-it-is-written-by-the-organization) | Day one is one account holding `system.admin`; every role after it is written by the organization | decided (from your answer) — **decided in round 18, still unapplied; deferred twice and now round 21's** | round 18 |
 | [D-133](round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud) | Two trail rules stay unchecked, and say so out loud | decided (from your answer) | round 19 |
 | [D-134](round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never) | Four more polymorphic columns get an orphan scan; the audit row never gets one | decided (from your answer) | round 19 |
 | [D-135](round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each) | The two modules with no check list get one each | decided (from your answer) | round 19 |
 | [D-136](round-19.md#d-136--an-election-is-not-recorded-a-role-holds-only-the-people) | An election is not recorded; a role holds only the people | decided (from your answer) | round 19 |
+| [D-137](round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told) | A guardian may appoint a guardian, and nobody at the organization is told | decided (from your answer) | round 20 |
+| [D-138](round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record) | One permission guards the whole audit trail, and the widening is on the record | decided (from your answer) | round 20 |
+| [D-139](round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer) | An event question may bind to a stored value: it prefills as a suggestion and writes back as an answer | decided (from your answer) | round 20 |
+| [D-140](round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it) | Nothing about an event is deleted on a schedule, and erasure empties an answer without deleting it | decided (from your answer) | round 20 |
+| [D-141](round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted) | A definition is live at the save; the proposal stage, its queue and its check are deleted | decided (from your answer) — **and it raises [F-34](../open-questions.md#f-34)** | round 20 |
+| [D-142](round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last) | The displayed name stays a copy, and the check that counts its drift is named at last | decided (from your answer) — **the check it asked for already existed** | round 20 |
+| [D-143](round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date) | A delegation is validated once, when it is written, and stands to its own end date | decided (from your answer) — **and it settled a contradiction two pages were living inside** | round 20 |
+| [D-144](round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked) | `right_kind` is a note: required by the schema, checked against nothing, and no longer claiming to be checked | decided (from your answer) | round 20 |
+| [D-145](round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name) | `access_log` rows are deleted at 24 months, and the job that does it has a name | decided (from your answer) — **the third named exception to "nothing is hard-deleted"** | round 20 |
+| [D-146](round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet) | An outbound call is a person's act or a job, and nothing about it is designed yet | decided (from your answer) | round 20 |
+| [D-147](round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own) | Presence stays on the registration: no clock of its own, no permission of its own | decided (from your answer) | round 20 |
+| [D-148](round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are) | There is no `WHITELISTED`, and the refusal is written where the tiers are | decided (from your answer) | round 20 |
+| [D-149](round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated) | Words are stored in one language, and a label is not translated | decided (from your answer) | round 20 |
 
 ## Reversed decisions
 

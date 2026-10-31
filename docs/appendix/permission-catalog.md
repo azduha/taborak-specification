@@ -247,8 +247,10 @@ out of the registry for what it is**, so every refusal here is an argument about
 - **`WHITELISTED` is not seeded because there is nothing stored to evaluate**
   ([F-20](../open-questions.md#f-20)):
   an operand with no argument, nothing bound to the checked item and no column behind it is a word pointing at
-  a state this system does not keep. The feature it was wanted for arrives as grants anyway; whether it is
-  wanted at all is an events question, which is where it now lives.
+  a state this system does not keep. The feature it was wanted for arrives as grants anyway, and the events
+  question it was handed to is now **answered: refused**, with no column, no fifth presence tier and no
+  reserved name ([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are),
+  [F-20](../open-questions.md#f-20)).
 - **A bare name is one namespace across roles and groups**
   ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)),
   which makes §11's office names a load-bearing vocabulary and makes every selector code a reserved name: an

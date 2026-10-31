@@ -287,9 +287,10 @@ and keeping it out of this language is what keeps it meaning *"a person recorded
 **`WHITELISTED` does not exist — there is no stored state to name.** The nearest facts are
 `source = staff` (an organizer entered them) and promotion off the waitlist. Either it means one of
 those or it is a new column on `event_registration`, which is an events decision and not a selector
-decision, so it stays unseeded and the question lives in
-[../open-questions.md](../open-questions.md) (F-20) **rather than being implied by a word in a
-grammar.**
+decision — **and that decision is made: refused, with no reserved name**
+([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).
+It stays unseeded **rather than being implied by a word in a grammar**, and the refusal lives where the
+presence tiers are listed ([07a §9](07a-capacity-presence-and-forms.md#9-presence-what-actually-happened)).
 
 ### The rules that make the tree safe
 

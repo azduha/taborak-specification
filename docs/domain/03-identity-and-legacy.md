@@ -446,16 +446,18 @@ three consequences follow from arriving all at once.
 - **A raw column that maps to no code stops the batch**, unless someone maps it or marks it
   `discarded` with a reason. An unmapped column is a decade of something the organization used to
   collect vanishing quietly.
-- **A column nobody recognises becomes a code named from the column**, never a guess at an existing
-  code: an import-time merge is invisible and unreviewable, and the review queue above is for people,
-  not for vocabulary. **The codes the map names arrive `live`.** A curator has just read every name in
-  the map, which is exactly the endorsement `proposed` withholds. `proposed` keeps its meaning of
-  *improvised later by a person at a desk* — a fact with no code yet — and not "whatever the import did
-  not understand". Several hundred codes landing `proposed` on day one would open the curation queue
-  full, make its age signal meaningless before it had ever meant anything, and teach the organization
-  that the attribute layer's warning queue is noise. Who holds `attribute.define` day to day, and how
-  long a runtime proposal may sit, stays open
-  ([AT-2](../open-questions.md#at-2--who-curates-the-vocabulary-and-how-long-may-a-proposal-sit)).
+- **A column nobody recognises stops the batch**, and it never becomes a code named from the column header
+  either. **A value may not invent a code, and a column may not borrow one by similarity**: an import-time
+  merge is invisible and unreviewable, and the review queue above is for people, not for vocabulary
+  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
+  **Every code the map names is already defined and `live` before the batch applies, or the batch refuses** —
+  which is not a trap but the actual shape of this event: the map is authored and read top to bottom as one
+  artefact, so whoever wrote the map wrote the vocabulary first, and the endorsement the old `proposed` status
+  was invented to express is now simply *having held the permission while reading the list*. **The cost is the
+  first few hundred definitions being a writing job under `attribute.define` that must happen before the import
+  that looks like it produces them.** Who holds `attribute.define` day to day, and who writes that vocabulary
+  before the first batch, is open and is the shape the answer has to take — a permission and a named person,
+  not a queue ([AT-2](../open-questions.md#at-2), and the new [F-34](../open-questions.md#f-34)).
 
 ### What each source row lands on
 
