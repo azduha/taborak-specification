@@ -1651,8 +1651,6 @@
       
         
       
-        
-      
     
     
     
@@ -1710,34 +1708,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2220,6 +2190,8 @@
       
         
           
+        
+      
         
       
         
@@ -2903,6 +2875,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3201,8 +3201,17 @@ person record, because none of it is a different kind of object.
 Specified in <a href="../data-model/01-identity/#2-person">data-model/01 §2</a>.</p>
 <p><strong>Account</strong> — Credentials and login state for a person. A person may have zero or
 more accounts over their lifetime (a childhood account abandoned in 2010, a new one
-created in 2024), <strong>but at most one live one</strong> — closed rows aside. Accounts are never
-shared between people, not even between a parent and child.</p>
+created in 2024), <strong>but at most one live one</strong> — closed rows aside. A person signs in with
+<strong>Google or an e-mail address and a password</strong>, and every person may have their own; one
+live external identity backs exactly one account, refused at the save, so a parent's Google
+cannot become a family's shared login
+(<a href="../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>).
+Accounts are never shared between people, not even between a parent and child — and a child
+with no login of their own is not given a worse one: the way an adult acts for them is the
+guardianship row (<a href="../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>),
+and an account staff open for a person who has not signed up waits at <code>pending_verification</code>
+until that person, or their guardian, sets a credential
+(<a href="../decisions/round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>).</p>
 <p><strong>Account activation gate</strong> — The rule that an account may not reach <code>active</code> while an
 unresolved identity hypothesis names its person. A sign-up that <em>strong</em>-matches an
 existing person — exact legacy member number, or exact birth date together with a
@@ -3225,9 +3234,11 @@ migration. Each has a <code>type</code>, a <code>purpose</code>, and a verificat
 address is a contact point of type <code>postal</code>: two people at one address are related by a
 query, not by a table, and a shared address grants nothing to anybody.</p>
 <p><strong>Identity hypothesis</strong> — A <em>proposed</em> but unconfirmed link between two <code>person</code> rows
-that may actually be the same human. Created during legacy import, by the nightly
+that may actually be the same human. Created by the nightly
 matcher, when someone registers claiming a historical identity, or by a sign-up that
-strong-matches a person who already exists. Confirming one triggers a merge; while one
+strong-matches a person who already exists — <strong>and not by the legacy load</strong>, which writes through
+the application with a key and leaves proposals to the matcher
+(<a href="../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>, <a href="../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>). Confirming one triggers a merge; while one
 is unresolved it also holds the account of any person it names out of <code>active</code> — see
 <strong>account activation gate</strong>.</p>
 <p><strong>Merge</strong> — The act of declaring two person rows to be one human, and collapsing them.
@@ -3252,8 +3263,10 @@ the same act as making one, so it is <code>person.merge</code>.</p>
 <p><strong>Membership export</strong> — <strong>One of the two files the legacy corpus actually is</strong>, and
 neither of them is a roster. A row says: a person, a birth date, and <strong>the period they
 were a member of the unit</strong>. A people batch turns it into <code>person</code> rows and <strong>bounded</strong>
-<code>membership</code> rows — both ends dated, <code>data_confidence = 'low'</code>, batch id set — and <strong>no
-fee obligation of any kind</strong>. <strong>It names no group either</strong>, so it answers neither
+<code>membership</code> rows — both ends dated, <code>data_confidence = 'low'</code>, <code>record_origin</code> saying an import wrote them —
+and <strong>no fee obligation of any kind</strong>. <strong>Nothing on the row names the run that created it</strong>: the load is one
+script posting through a registered key, and the key's trail is the record of it
+(<a href="../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). <strong>It names no group either</strong>, so it answers neither
 <em>"who was in the Thursday group in 2011"</em> nor <em>"were they a child or a rover"</em>, and
 nothing is created in <code>person_group</code> from it: a corpus that names no groups means every
 roster row is typed by a person, which is also the only way one can be true.</p>
@@ -3317,8 +3330,10 @@ on-behalf-of, operation, table, record id, changed fields, transaction, session,
 channel. The trail goes on answering <em>who changed this row, when, and were they allowed
 to</em> for the life of the system, and stops answering <em>and to what</em> after two years; twelve
 months is the floor the window may be set to. <strong>Not redaction</strong>, which is a named
-person's erasure, immediate and absolute, and reaches payloads of any age; <strong>not an
-import revert</strong>, which deletes the rows a batch created. Reduction is the one case in
+person's erasure, immediate and absolute, and reaches payloads of any age. <strong>The third thing
+that used to be contrasted here — an import revert, which deleted the rows a batch had created — no longer
+exists</strong>, so this design names two deletions and not three, and both are
+<a href="../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>. Reduction is the one case in
 this design that deliberately unwrites <em>later</em> than the write, so its failure mode is not
 running at all — hence a scheduled job with a check that reports any row past its
 window still carrying a payload
@@ -3384,7 +3399,15 @@ item</strong> (registered in <code>grant_scope_type</code>), so <em>"these two m
 is a grant on one group. Its two dated facts are <strong>different facts</strong>: the group's own
 period says it existed, the member rows say who was in it, and <em>"who was in
 <code>schuzka2026-1</code> on 14 March 2026"</em> is a point-in-time read over the roster — which is why
-the rows are dated, and why that answer survives the audit trail's payload expiry.
+the rows are dated, and why that answer survives the audit trail's payload expiry. A member row must
+<strong>meet</strong> its group's period rather than lie inside it: the save refuses two periods that never overlap,
+and the resolver reads only the intersection when a check runs
+(<a href="../decisions/round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a>).
+An ended group appears in <strong>no picker</strong> and is never reopened — <code>valid_to</code> is set by a person and never
+cleared, which is what keeps the naming rule singular: a returning name is a <strong>new group</strong>, and that two
+groups are the same group is said, not stored
+(<a href="../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>,
+<a href="../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>).
 <strong>A group is not an audience</strong>: a group <em>states</em> its members and an audience <em>picks</em> them
 (<a href="./#authorization">Audience</a>). <strong>Nobody writes themselves onto a roster</strong> —
 <code>person_group.member.manage</code> has no self-scoped variant and none will be added, and <strong>no
@@ -3452,7 +3475,11 @@ Directional: guardian → dependent. Carries relationship kind (<code>parent</co
 <code>legal_guardian</code>, <code>foster_parent</code>, <code>step_parent</code>, <code>grandparent</code>, <code>sibling</code>, <code>other</code>) and
 an end date that <strong>a person sets</strong>. <strong>Not a birthday</strong>: the system takes no position on
 majority, and no job ends one
-(<a href="../decisions/round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>).</p>
+(<a href="../decisions/round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>).
+<strong>The dependent may be an adult</strong> — nothing restricts the row to a minor and nothing happens at 18; the
+row ends when the guardian ends it or when the adult named in it does, and a parent at <code>write</code> may act
+for an adult child because that is what <code>write</code> says
+(<a href="../decisions/round-23/#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185</a>).</p>
 <p><strong>Party to a guardianship</strong> — The guardian and the subject, both. <strong>They, and not staff,
 run the arrangement:</strong> either may end it, a guardian may add another guardian, and no
 request has to go through the organization
@@ -3600,11 +3627,13 @@ not a selector at all — see
 <p><strong>Payment request</strong> — A liability rendered payable: an amount, a recipient account, a
 start, and an optional expiry. <strong>The request, not the payment, is the entity the finance
 module is built around</strong>, because it is the only thing that connects "we expect money" to
-"money arrived". It is not an invoice; the organization may also owe people invoices, which
-is still open
+"money arrived". <strong>It is not an invoice, and an invoice now exists</strong>: its own table, its own sequence, no
+state of its own, issued over a request because a payer asked for one (<a href="../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). What a
+Czech invoice must contain is a legal question, not a schema one.
 (<a href="../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>).</p>
 <p><strong>Variable symbol</strong> — The number a payer types into their bank, and the number the bank
-reports back against the money. <strong>Unique across every symbol ever issued, not merely across
+reports back against the money. <strong>Every payable has one</strong>, membership fees and camp fees alike, one live
+request per liability and never one per person (<a href="../decisions/round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a>). <strong>Unique across every symbol ever issued, not merely across
 live ones</strong>, and taken from a sequence — never derived from a birth date, a member number,
 or anything else a stranger could guess. Anyone can type eleven digits into a payment form;
 guessing a symbol puts a stranger's money into a child's financial record.</p>
@@ -3613,12 +3642,18 @@ that already exist. Nothing stores it and nothing invalidates it.</p>
 <p><strong>There is no card gateway.</strong> The organization <strong>collects</strong>, but by bank API rather than
 checkout: no card tokens, no disputes, no chargebacks, no processor reconciliation, and
 <strong>no <code>pending</code> or <code>failed</code> payment status</strong> — a bank transfer the bank has reported does not
-later fail. A refund is a second payment going the other way, never a reversal of the first.</p>
-<p><strong>Unmatched money</strong> — A transfer whose symbol resolves to nothing live: mistyped, belonging
-to a cancelled event, already settled, or the wrong amount. It <strong>waits for a person</strong>. It is
-never auto-applied by payer identity — <em>a parent with two children pays one amount</em> is the
-normal case, not the edge case, and the fallback would be wrong on the common path
-(<a href="../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>).</p>
+later fail. <strong>A refund happens at the bank:</strong> the organization performs no refund operation, and the money
+comes back as a negative <code>payment</code> on the next pull, which is why there is no <code>refunded</code> status
+(<a href="../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>).</p>
+<p><strong>Unmatched money</strong> — A <code>bank_transaction</code> with no live request behind its symbol: mistyped, belonging
+to a cancelled event, already settled, or an amount that does not fit. <strong>It waits for nobody and nothing
+counts it.</strong> An unmatched row is the <em>absence</em> of a match rather than a queue position, there is no list a
+person is expected to clear, and the reason is arithmetic rather than optimism: most money arriving at this
+account was never a member's (<a href="../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>). <strong>What D-076 still rules is the other half</strong> — it is never
+auto-applied by payer identity, because <em>a parent with two children pays one amount</em> is the normal case and
+that fallback would be wrong on the common path
+(<a href="../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>). What a payment that
+does not fit settles, if anything, is the finance module's open question.</p>
 <hr />
 <h2 id="communication">Communication<a class="headerlink" href="#communication" title="Permanent link">&para;</a></h2>
 <p><strong>Direct message</strong> — One person to one person. <strong>Everyone can send one</strong>; there is no
@@ -3743,7 +3778,7 @@ as-of 1990–2010 and audit time 2026. Do not conflate them.</p>
 </tbody>
 </table>
 <hr />
-<p><em>Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113, D-116, D-117.</em></p>
+<p><em>Decisions behind this page: D-060, D-062, D-064, D-065, D-069, D-071, D-073, D-074, D-075, D-076, D-077, D-082, D-083, D-085, D-088, D-089, D-093, D-097, D-098, D-100, D-102, D-113, D-116, D-117, D-171, D-172, D-173, D-176, D-178, D-179, D-185.</em></p>
 
 
 

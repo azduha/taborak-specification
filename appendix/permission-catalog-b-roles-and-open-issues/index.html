@@ -1470,8 +1470,6 @@
       
         
       
-        
-      
     
     
     
@@ -1529,34 +1527,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2171,6 +2141,8 @@
       
         
           
+        
+      
         
       
         
@@ -2854,6 +2826,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3117,8 +3117,13 @@ established before anyone invents an inconsistent one.</p>
 </tr>
 <tr>
 <td><code>payment</code></td>
-<td><code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code></td>
-<td></td>
+<td><code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code></td>
+<td><code>payment.match</code> is new since <a href="../../decisions/round-23/">round 23</a> and is the hand half of matching money to an ask; the automatic half is <code>system:bank-pull</code>'s and is nobody's permission (<a href="../../decisions/round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>). <strong>Whether this row is still honest as a <em>deferred</em> namespace is <a href="../../open-questions/#k-10--are-the-money-permission-codes-still-deferred">K-10</a></strong> — the finance module is designed, and these codes are used in the worked examples below.</td>
+</tr>
+<tr>
+<td><code>invoice</code></td>
+<td><code>invoice.issue</code></td>
+<td>One code, one document: issued over a <code>payment_request</code> because a payer asked for it (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). Deliberately not folded into <code>payment.record</code> — the person who may type in a number is not automatically the person who may produce a document with a legal shape.</td>
 </tr>
 <tr>
 <td><code>report</code></td>
@@ -3263,7 +3268,7 @@ requirement, and do not expect the list to survive contact with the organization
 </tr>
 <tr>
 <td><code>registrar</code></td>
-<td><code>person.view</code> ⚠⚠, <code>person.create</code>, <code>person.edit</code> ⚠, <code>person.contact.view</code> ⚠, <code>person.contact.edit</code> ⚠, <code>account.view</code> ⚠, <code>account.create</code>, <code>account.suspend</code> ⚠, <code>account.close</code> ⚠, <code>account.credential.reset</code> 🔒, <code>membership.view</code> ⚠, <code>membership.request.create</code>, <code>membership.request.review</code> ⚠, <code>membership.activate</code>, <code>membership.backdate</code> ⚠, <code>import.view</code> ⚠, <code>import.stage</code>, <code>import.apply</code> 🔒, <code>import.revert</code> 🔒 — <strong>nineteen rows</strong></td>
+<td><code>person.view</code> ⚠⚠, <code>person.create</code>, <code>person.edit</code> ⚠, <code>person.contact.view</code> ⚠, <code>person.contact.edit</code> ⚠, <code>account.view</code> ⚠, <code>account.create</code>, <code>account.suspend</code> ⚠, <code>account.close</code> ⚠, <code>account.credential.reset</code> 🔒, <code>membership.view</code> ⚠, <code>membership.request.create</code>, <code>membership.request.review</code> ⚠, <code>membership.activate</code>, <code>membership.backdate</code> ⚠ — <strong>fifteen rows</strong></td>
 <td><code>MEMBERS * ROLE(registrar)</code></td>
 <td>staff working the organization's own records; the office stops when the fee lapses</td>
 </tr>
@@ -3299,7 +3304,7 @@ requirement, and do not expect the list to survive contact with the organization
 </tr>
 <tr>
 <td><code>identity_reviewer</code></td>
-<td><code>person.merge</code> 🔒, <code>import.view</code> ⚠, <code>import.apply</code> 🔒</td>
+<td><code>person.merge</code> 🔒</td>
 <td><code>MEMBERS * ROLE(identity_reviewer)</code></td>
 <td>and <strong>no <code>person.view</code></strong> — property 5</td>
 </tr>
@@ -3482,7 +3487,8 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
    <code>MEMBERS</code> — <strong>which is how the organization notices, and the resolver is still not how it punishes</strong>. See
    <a href="../../domain/06-authorization-model/#4-roles-are-offices-groups-are-company">../domain/06-authorization-model.md §4</a>.</li>
 <li><strong><code>identity_reviewer</code> decides identity questions about children without a read over the person
-   record.</strong> The office carries three rows — <code>person.merge</code>, <code>import.view</code>, <code>import.apply</code> — and
+   record.</strong> The office carries one row — <code>person.merge</code>, and it has carried nothing else since the import
+   pipeline was deleted (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>) — and
    <strong><code>person.view</code> is not among them</strong>: the reviewer works from the candidate pair, the
    <code>match_signals</code> recorded against it, and the names and dates those signals compare. That is
    deliberate as it stands — the question being decided is whether two rows are one human, and the

@@ -1472,8 +1472,6 @@
       
         
       
-        
-      
     
     
     
@@ -1531,34 +1529,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2256,6 +2226,8 @@
       
         
       
+        
+      
     
     
     
@@ -2882,6 +2854,34 @@
     
   
     Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
   
 
     
@@ -3536,8 +3536,9 @@ is wrong, and the fix is to change the number rather than to start refusing peop
 <li><strong>Cancelled events and fees.</strong> Cancelling keeps the registrations. What it does to the
   obligations is the finance module's (§6), and for events it has an answer
   (<a href="../../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>):
-  cancelling voids the outstanding requests, and money that already arrived waits in the
-  unmatched queue (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>).</li>
+  cancelling voids the outstanding requests, and money that already arrived <strong>stays where it is</strong>:
+  unmatched, uncounted, and not in a queue, because there is none
+  (<a href="../07-finance/#2b-money-that-cannot-be-matched">07-finance.md §2b</a>, <a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>).</li>
 <li><strong><code>was_present</code> as a safeguarding record — settled: it stays a column of the registration.</strong> No
   retention of its own and no permission of its own: it inherits both from the registration, and the
   codes that already reach the roster are the codes that read it (§9). <code>PRESENT</code> stays refused, so

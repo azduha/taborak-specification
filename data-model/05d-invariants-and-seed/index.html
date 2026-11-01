@@ -1554,8 +1554,6 @@
       
         
       
-        
-      
     
     
     
@@ -1613,34 +1611,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2123,6 +2093,8 @@
       
         
           
+        
+      
         
       
         
@@ -2806,6 +2778,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3323,27 +3323,29 @@ lesson about what a check is allowed to be).</p>
   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
 </li>
 </ul>
-<p><strong>Which absences are legal, and where the pages stop short of saying so.</strong> Two paths in this design remove a
-  business row outright, and neither can take a trail row with it: <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>
+<p><strong>Which absences are legal, and where the pages stop short of saying so.</strong> <strong>One</strong> path in this design removes
+  a business row outright, and it cannot take a trail row with it: <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>
   permits only the erasure and the reduction to change a row of that trail, permits them to touch only the
-  state columns, and calls every other field on it immutable. <strong>The import's revert</strong> removes the
-  <code>event_registration</code>, <code>event</code>, <code>membership</code> and <code>person</code> rows a batch created
-  (<a href="../06a-import/#reversibility">06a §3, Reversibility</a>), and <strong>the erasure</strong> deletes the person's
+  state columns, and calls every other field on it immutable. <strong>The erasure</strong> deletes the person's
   <code>person_attribute</code> rows (<a href="../00-conventions/#4-deletion-policy">00-conventions §4</a>,
-  <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a>). <strong>So the exception is a rule about the target table
-  plus a demand for evidence, never a list of tolerated ids:</strong> an absence is legal exactly when the table the
-  row names is one of those five <em>and</em> the trail shows the removal — a revert writes one audit entry per row it
-  deleted, naming the batch, and an erasure writes one <code>redaction_log</code> row naming <code>person_attribute</code> in
-  <code>redacted_tables</code>. Everything else is a defect, including a row inside those five tables with no removal
-  recorded against it — and revert's pre-flight is stated as a check for references
-  (<a href="../06a-import/#reversibility">06a §3</a>) and never as one that reads a column with no foreign key in front of
-  it, which is what makes an absence under these three columns an expected outcome rather than a surprise.</p>
+  <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a>) and removes the <code>audience_operand</code> leaves that named
+  them. <strong>So the exception is a rule about the target table plus a demand for evidence, never a list of
+  tolerated ids:</strong> an absence is legal exactly when the table the row names is one of those two <em>and</em>
+  <code>redaction_log</code> shows the removal — one row naming <code>person_attribute</code> in <code>redacted_tables</code>. <strong>This is the one
+  part of the check that got sharper rather than softer:</strong> while an import could be reverted, an id naming a
+  removed <code>person</code>, <code>membership</code>, <code>event</code> or <code>event_registration</code> row was an expected outcome with a per-row
+  audit entry beside it, and this check had to hold that; with the revert gone
+  (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+  <strong>an orphan under these three columns has exactly one lawful author, and whoever reads the report no longer
+  has to weigh which of two removal paths produced it.</strong></p>
 <p><strong>Erasure on its own accounts for none of them:</strong> what it deletes is attribute rows, plus the expression
   leaves naming the person where it removes one rather than rewriting it, while an erased person's <code>scope_id</code>
   names a scope — an event, a group or an office, and nothing at all where the check was at the unit — and
   their <code>authorization_ref_id</code> names an <code>access_grant</code> or a
   <code>guardianship_permission</code> row, none of which erasure touches. So an orphan under <code>authorization_ref_id</code> has
-  no lawful explanation at all, and one under <code>scope_id</code> has exactly one: revert removing an <code>event</code>. <strong>One
+  no lawful explanation at all, and <strong>neither has one under <code>scope_id</code> any more</strong> — the revert that used to
+  explain a vanished <code>event</code> is gone, and nothing else in this design removes an event, a group or an office,
+  so an orphan there is a finding now rather than a tolerated shape. <strong>One
   shape beside these is neither a finding nor clean:</strong> a row whose <code>authorization_channel</code> is outside the six
   values 05c §9 lists keeps its word and loses its table, so there is nothing for the id to be counted against,
   and it is reported separately rather than as an orphan. Of the
@@ -3364,23 +3366,30 @@ lesson about what a check is allowed to be).</p>
   to the other), so a removal in a business table <em>must</em> leave a reference behind; and the orphan is not merely
   tolerated down there, it is <strong>load-bearing</strong> — <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5's check that a redacted person's payloads are empty</a>
   finds the rows it exists to test by their <code>table_name</code> and <code>record_id</code> precisely because those two survive
-  the erasure that deleted the row behind them, and revert's entries name a deleted row by design. A count over
-  this column would report both erasure and revert as integrity failures, <strong>which is worse than no check at
-  all, because the first false alarm teaches whoever reads the report to ignore the real one.</strong> What stands in
+  the erasure that deleted the row behind them, and an erasure's own entries name rows it deleted by design. A
+  count over this column would report that erasure as an integrity failure, <strong>which is worse than no check at
+  all, because the first false alarm teaches whoever reads the report to ignore the real one.</strong> A count would
+  have reported the import revert's deletions in exactly the same light, and that second example left with the
+  revert (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>);
+  the argument never depended on it, and it now rests on erasure alone. What stands in
   its place is the pair of checks that read the property the column was ever a proxy for: that an erased
   person's payloads are empty, and that nothing past the window still carries one.</p>
 <p><strong>The dangerous one of the four is <code>field_conflict.entity_id</code>,</strong> and it is dangerous for a reason the other
   three do not share. A conflict row is a question put to a person — one field a merge could not decide,
   sitting <code>unresolved</code> in the queue <a href="../01b-merges-views-and-checks/#10-integrity-checks">01b §10</a> ages at
   thirty days — and an <code>entity_id</code> naming nothing is that
-  question being unanswerable. <strong>The reading nobody has written down before now is the likeliest one: the
-  import recorded a conflict against a row that is not there</strong>, and every decision taken on the strength of
-  that conflict inherited the mistake. Revert explains some of them, since <code>entity_table</code> holds <code>person</code> and
-  <code>membership</code> and revert removes both, and its per-row entries settle which of the two paths was here; a row
-  outside those two tables, or with no removal behind it, is not untidiness but a merge that decided something
-  about a record that never existed. <strong>None of this belongs on the permissions tab:</strong> the tab lists rules, and
-  not one of these four columns is a rule — and putting a legal absence on a page about broken things is how a
-  broken one comes to be read past.</p>
+  question being unanswerable. <strong>The likeliest reading is now also the only
+  one: a merge recorded the conflict against a row that is not there</strong>, and every decision taken on the strength
+  of that conflict inherited the mistake. <strong>Nothing in this design explains it away any more.</strong> <code>entity_table</code>
+  holds <code>person</code> and <code>membership</code>, and the import revert that used to remove both — leaving one audit entry per
+  row it deleted, which settled which path had been here — is gone
+  (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+  while erasure deletes neither of those two tables. So a conflict naming a missing <code>person</code> or <code>membership</code> row
+  is not an expected absence: it is a merge that decided something about a record that never existed, or a write
+  made from outside the application, and both are findings. <strong>None of this belongs on the permissions tab:</strong> the tab lists rules, and
+  not one of these four columns is a rule — and putting an absence with a lawful author on a page about broken
+  things is how a broken one comes to be read past. <strong>Which authors are lawful is stated once, above, and it is
+  now one path long, so the tolerance this bullet used to need has shrunk with it.</strong></p>
 <p><strong>Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and
 no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the report
 rather than a message.</strong> <em>Why that is said here rather than assumed:</em> a sentence wiring five checks and half
@@ -3554,7 +3563,7 @@ branch (§2).</p>
 platform ships three vocabularies and the enums, and no configuration:</p>
 <ul>
 <li><strong>The permission vocabulary</strong>, spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
-  legacy import, reporting, the thirteen <code>event.*</code> codes, messaging, and the four <code>api_key.*</code> codes of <a href="../05e-keys-and-callers/">05e §15</a> —
+  reporting, the thirteen <code>event.*</code> codes, messaging, and the four <code>api_key.*</code> codes of <a href="../05e-keys-and-callers/">05e §15</a> —
   <code>api_key.view</code>, <code>api_key.create</code>, <code>api_key.rotate</code>, <code>api_key.end</code>, every one <code>applies_to = unit</code>. <strong>The one complete list is
   <a href="../../appendix/permission-catalog/">../appendix/permission-catalog.md</a></strong>; this document keeps no second
   copy of it, because two copies drift for exactly the reason above.</li>
@@ -3712,7 +3721,8 @@ the assertion that it stays the only one).</p>
 <ul>
 <li><strong>One question left about callers that are not people.</strong> Round 16 designed the arriving integration and
   stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
-  system acting on its own, with a six-label vocabulary instead of free text
+  system acting on its own, with a fixed vocabulary instead of free text — five labels on the list now
+  (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>)
   (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
   and check 9 above is its sibling) and the case where nobody who could hold <code>system.admin</code> can reach a screen
   is a report and a written procedure rather than a mechanism
@@ -3818,7 +3828,7 @@ the assertion that it stays the only one).</p>
   compilations that embed a changed expression
   (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>)
   needs this listing run in its <strong>reverse</strong> direction, transitively rather than one hop at a time (§10).
-  If the import corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
+  If the legacy corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
   is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.</li>
 <li><strong>A nested audience's past reach is not reconstructable, and that is the answer (§8, <em>Three named
   sets</em>):</strong> the record of whom a grant reached <strong>is the expression</strong>

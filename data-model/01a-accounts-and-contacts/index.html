@@ -1565,8 +1565,6 @@
       
         
       
-        
-      
     
     
     
@@ -1624,34 +1622,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2134,6 +2104,8 @@
       
         
           
+        
+      
         
       
         
@@ -2817,6 +2789,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3072,6 +3072,18 @@ them by number and their anchors are built from them:
   closed. A closed account releases its username for someone else to take. It covers live
   rows only, not all rows.</li>
 <li>An account may not reach <code>active</code> while <code>verified_at</code> is absent.</li>
+<li><strong>Staff may create an account for a person who has not signed up</strong> — the useful case being a camp
+  office with a paper list. The row sits at <code>pending_verification</code>, which is already its default, and it
+  <strong>cannot authenticate until the person it belongs to, or that person's guardian, sets a credential</strong> —
+  the same shape as the gate above: the row is worth having before it can be used, because it is what a
+  registration attaches to, and refusing the insert would push staff into recording a child somewhere
+  worse than the database (<a href="../../decisions/round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>).
+  Said the other way round: <strong>nobody ever holds a child's password</strong>. What this does <em>not</em> refuse is a
+  staff member setting a password at the moment of creating the row; the write is audited, the gate that
+  allows it names who holds it, and the control is the trail
+  (<a href="../../decisions/round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>).
+  An organization that wants that pattern impossible rather than visible wants an explicit <code>deny</code> on the
+  write that sets a credential for somebody who is not you.</li>
 <li><strong>An account may not reach <code>active</code> while an unresolved <code>identity_hypothesis</code> names its person</strong> —
   a hypothesis sitting in <code>proposed</code> or <code>needs_review</code>, on either side of the pair. This is the second
   gate on the same transition and <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>
@@ -3096,7 +3108,13 @@ new account can reach is nothing until somebody writes a row about its person �
 a membership — which is what every new account is anyway, not a defence built for this case. <strong>If the
 organization wants a guardian's answer on record</strong>, it goes on the guardianship relationship, where an
 adult's authority over a child is already written, dated, revocable and carrying its own <code>right_level</code>
-(<a href="../04-relationships/#2-the-guardians-right-none-view-or-write">04 §2</a>); no column returns here for it.</p>
+(<a href="../04-relationships/#2-the-guardians-right-none-view-or-write">04 §2</a>); no column returns here for it.
+<strong>Every person may have their own login</strong> — a person signs in with Google or an e-mail address and a
+password (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>)
+— <strong>and a child with no Google account and no e-mail of their own has no account, which the model must not
+be read as needing.</strong> Such a child is not given a second-class credential, a shared mailbox or a login
+held by staff; the way an adult acts for them is the guardianship row, and an account staff open for them
+waits to be claimed (Rules above; <a href="../../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).</p>
 <p><strong>A colliding sign-up files a claim and brings nothing into the world that a human has not approved.</strong>
 This is the case the second gate above exists for
 (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>):
@@ -3218,7 +3236,7 @@ The schema enforces this by simply not linking them.</p>
 <tr>
 <td><code>credential_type</code></td>
 <td>text, required</td>
-<td>One of: <code>password</code>, <code>passkey</code>, <code>totp</code>, <code>oauth</code>, <code>staff_link</code>. Multiple methods per account. <code>oauth</code> supports a national Scout identity provider; <code>staff_link</code> supports a one-time link issued to a member who cannot self-serve</td>
+<td>One of: <code>password</code>, <code>passkey</code>, <code>totp</code>, <code>oauth</code>, <code>staff_link</code>. Multiple methods per account. <code>oauth</code> is <strong>Google</strong>, which vouches for an e-mail address and not for membership — it does not know the organization exists; <code>staff_link</code> supports a one-time link issued to a member who cannot self-serve. The list is written in the program and in this row — see below for what adding a method costs</td>
 </tr>
 <tr>
 <td><code>secret_hash</code></td>
@@ -3228,12 +3246,12 @@ The schema enforces this by simply not linking them.</p>
 <tr>
 <td><code>external_ref</code></td>
 <td>text, optional</td>
-<td>OAuth subject id, or WebAuthn credential id</td>
+<td>OAuth subject id — with Google, the subject behind one e-mail address — or WebAuthn credential id</td>
 </tr>
 <tr>
 <td><code>external_issuer</code></td>
 <td>text, optional</td>
-<td>OAuth issuer</td>
+<td>OAuth issuer. The <code>(external_issuer, external_ref)</code> pair is an <strong>external identity</strong>: exactly one account may hold a live one (Rules)</td>
 </tr>
 <tr>
 <td><code>valid_from</code></td>
@@ -3269,7 +3287,13 @@ The schema enforces this by simply not linking them.</p>
   nothing to check against cannot exist.</li>
 <li><code>valid_to</code> is either absent or later than <code>valid_from</code>.</li>
 <li>One current credential per <code>(external_issuer, external_ref)</code> pair among <code>oauth</code> rows that
-  are still current. It covers open rows only — an expired credential does not hold its
+  are still current — <strong>one external identity, one account</strong>. A second account offering a pair a live
+  credential already holds is <strong>refused at the save</strong>: with self-service sign-up on a public provider,
+  this and §4's one-live-account rule are the same wall seen from either side, and the refusal is the
+  enforcement the invariant register had recorded as absent
+  (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>,
+  <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>).
+  It covers open rows only — an expired credential does not hold its
   external identity back.</li>
 </ul>
 <p><strong>Indexes</strong></p>
@@ -3278,9 +3302,30 @@ The schema enforces this by simply not linking them.</p>
 <li>The <code>oauth</code> uniqueness above, which is itself a lookup: given an issuer and a subject id,
   which account is this.</li>
 </ul>
-<p><strong>Why credentials are not columns on <code>account</code>.</strong> Adding passkeys, an organizational SSO,
-or a one-time-link flow later must not require restructuring <code>account</code> and migrating every
-existing password. Keeping <code>secret_hash</code> off the <code>account</code> table also means the common
+<p><strong>The issuer is Google, and what that costs is the ordinary sign-up path, not a corner.</strong> Google vouches
+for an e-mail address; it does not know the organization exists and cannot vouch for membership, and the
+case the constraint above exists for is the commonest one in the building: a parent has one Google account
+and three children do not. Before the refusal, an issuer login landing on "whichever credential the index
+happened to keep" was a tidy-up problem behind an issuer nobody had ever seen — a national Scout identity
+provider whose subject id would have meant <em>this member</em>; after it, a second account wearing the parent's
+identity is simply refused, and the family's answer is the child's own credential or the guardianship row
+(<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>,
+<a href="../../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).</p>
+<p><strong>The list of methods is written in the program and in this document.</strong> The five values of
+<code>credential_type</code> are behaviour, not a vocabulary: a new method — a magic link, an SMS code — is a
+<strong>release</strong> in which the code that authenticates against it and the value naming it ship together, no
+table lists the methods, and no screen can offer one that has not been written
+(<a href="../../decisions/round-23/#d-177--the-list-of-login-methods-is-written-in-the-program">D-177</a>). This is
+the corpus's line for vocabularies read from the other side: the principle is not <em>anything enumerable is
+a row</em> but <em>anything the organization may decide is a row</em>, and nobody has ever changed their mind about
+whether the software speaks SMS — where the one-row <a href="../03-membership/#1-membership_type--one-row-kept-as-a-table"><code>membership_type</code></a>
+holds a thing a person could genuinely change their mind about. A row the software cannot honour is a
+login screen that breaks on the first click. <code>staff_link</code> stays what it says it is: a link a staff member
+issues; the day a member may issue themselves one is the day the list grows.</p>
+<p><strong>Why credentials are not columns on <code>account</code>.</strong> When a new method ships, nothing must restructure
+<code>account</code> or migrate every existing password — one row per method, each with its own period and
+revocation history, makes the arrival of a magic link a write and not a schema change. Keeping
+<code>secret_hash</code> off the <code>account</code> table also means the common
 "show me the user" query never touches credential material.</p>
 <p><strong><code>valid_to</code> on a credential is how password history and revocation are expressed.</strong> A
 revoked credential stays as a row, so "was this account ever accessed with a credential
@@ -3361,11 +3406,6 @@ that has since been revoked?" is answerable.</p>
 <td><code>source</code></td>
 <td>text, optional</td>
 <td><code>self</code>, <code>staff</code>, <code>legacy_import</code></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td></td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -3453,11 +3493,6 @@ the legacy importer must be case-insensitive, and a plain index cannot serve tha
 <tr>
 <td><code>source</code></td>
 <td>text, optional</td>
-<td></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
 <td></td>
 </tr>
 <tr>

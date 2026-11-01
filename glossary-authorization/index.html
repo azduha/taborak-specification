@@ -1530,8 +1530,6 @@
       
         
       
-        
-      
     
     
     
@@ -1589,34 +1587,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2099,6 +2069,8 @@
       
         
           
+        
+      
         
       
         
@@ -2782,6 +2754,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2979,7 +2979,7 @@ complete answer to "who did this" rather than a missing one.</strong> It is <str
 answered about a person or a key (see <strong>Caller</strong> above) — and this system holds no grants, is
 named by no grant and appears in no <code>role_holder</code> row; nothing in a permission check reads an
 empty actor column to decide an answer. Two limits keep it narrow: <strong>only where empty is legal</strong>
-(<code>import_batch.created_by</code> and <code>api_key.created_by</code> are required, and a grant's <code>granted_by</code>
+(<code>api_key.created_by</code> is required, because installing an integration is a person's act, and a grant's <code>granted_by</code>
 names a person) and <strong>only in an actor column</strong> — an absent <code>scope_id</code> is a check at the unit,
 not a writer. <strong>Where the trail has a label column, the writer's name comes from a fixed list</strong>,
 so a label such as <code>system:renewal-sweep</code> is one of the few names this system signs its own

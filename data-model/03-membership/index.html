@@ -1746,8 +1746,6 @@
       
         
       
-        
-      
     
     
     
@@ -1805,34 +1803,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2315,6 +2285,8 @@
       
         
           
+        
+      
         
       
         
@@ -2998,6 +2970,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3430,6 +3430,15 @@ is a <strong>role</strong>, never a type (<a href="../../decisions/round-10a/#d-
 </ol>
 <p>The cost is honest and small: an FK that currently always holds one value. Recorded here
 rather than hidden.</p>
+<p><strong>And what the table <em>is</em> was settled in round 23, which the two reasons above stop short of saying</strong> (<a href="../../decisions/round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a>):
+it is <strong>settings wearing a vocabulary's clothes</strong>. The vocabulary half is the part that will never grow — one
+kind of membership is a ruling (D-037) and not an absence of imagination — and the settings half is the live
+part: three columns of organizational calendar somebody tunes once a year, which is precisely the thing this
+document refuses to hardcode anywhere else. Read that way, the single row is not a vestigial table waiting for
+its second member. <strong>The table is where the calendar lives</strong>, and it is a vocabulary too because the schema has
+that habit and the foreign key had to point somewhere. <a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row">F-9</a>
+asked whether it should collapse into a constant. It should not, and the reason is the second bullet rather than
+the first: a principle about vocabularies would not be worth an FK, a place for four tunable dates is.</p>
 <h3 id="what-is-deliberately-not-on-this-table">What is deliberately not on this table<a class="headerlink" href="#what-is-deliberately-not-on-this-table" title="Permanent link">&para;</a></h3>
 <p><strong>The type says nothing about who may join, and nothing about what they pay.</strong> No age floor,
 ceiling, or automatic age-out: membership is ageless and age is a fact about the person
@@ -3589,8 +3598,11 @@ preference on the request.</strong></p>
 <p><strong>A rejection requires a reason</strong> (<code>ck_request_rejection_reason</code> is the rule's name): no
 rejected request may be written without one. Two columns of the same row, so a migration can state
 it directly as a check on the row — and it belongs there rather than only in the model layer,
-because the two paths that most need catching, an import and a hand-corrected row, never reach a
-model-layer guard. "Why was this
+because the two paths that most need catching, a migration and a row corrected straight in the
+database, never reach a model-layer guard — and not the load of the legacy export, because that writes
+through the application as a key and a model-layer check would see it
+(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+"Why was this
 application turned down?" is asked months later, sometimes by the family. A rejection with
 no recorded reason is an answerable question made unanswerable.</p>
 <p><strong><code>previous_membership_id</code></strong> is what makes the returning-member chain explicit rather than
@@ -3630,7 +3642,7 @@ inferred from date arithmetic.</p>
 <tr>
 <td><code>status</code></td>
 <td>text, required</td>
-<td>One of <code>pending_payment</code>, <code>active</code>, <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code>. No default — the state is always chosen deliberately. <strong><code>completed</code> has exactly one writer: the legacy import marks every closed period it inserts <code>completed</code></strong>, because none of the six means <em>a source stated this and nobody here decided</em>, and <code>completed</code> is the second-worst of the two readings available (<a href="../../decisions/round-22/#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page">D-162</a>); <code>low</code> in the column below is what makes it survivable.</td>
+<td>One of <code>pending_payment</code>, <code>active</code>, <code>suspended</code>, <code>lapsed</code>, <code>terminated</code>, <code>completed</code>. No default — the state is always chosen deliberately. <strong><code>completed</code> has exactly one writer: the one-off load of the legacy exports marks every closed period it inserts <code>completed</code></strong>, because none of the six means <em>a source stated this and nobody here decided</em>, and <code>completed</code> is the second-worst of the two readings available (<a href="../../decisions/round-22/#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page">D-162</a>); <code>low</code> in the column below is what makes it survivable.</td>
 </tr>
 <tr>
 <td><code>valid_from</code></td>
@@ -3640,7 +3652,7 @@ inferred from date arithmetic.</p>
 <tr>
 <td><code>valid_to</code></td>
 <td>date, optional</td>
-<td>NULL = open / current. <strong>Never NULL on an imported row</strong> — both ends are what makes an imported membership safe, and check 1 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06-audit-and-import.md §5</a> counts the rows that broke it (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).</td>
+<td>NULL = open / current. <strong>Never NULL on an imported row</strong> — both ends are what makes an imported membership safe, since an open row satisfies <code>is_current_member()</code> and so walks through the permission gate; the date that closes it is the end of the calendar year the person was last seen in (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>, <a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>). <strong>No report counts the rows that broke this any more:</strong> the check that did was written over staged rows and died with the pipeline, and <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> now says so where the check stood (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).</td>
 </tr>
 <tr>
 <td><code>joined_via_request_id</code></td>
@@ -3681,11 +3693,6 @@ inferred from date arithmetic.</p>
 <td><code>data_confidence</code></td>
 <td>text, required, defaults to <code>high</code></td>
 <td>One of <code>high</code>, <code>medium</code>, <code>low</code>.</td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to the import batch, optional</td>
-<td>Set on imported rows.</td>
 </tr>
 <tr>
 <td><code>notes</code></td>
@@ -3759,7 +3766,7 @@ real.</p>
 <code>terminated</code>/<code>lapsed</code>/<code>completed</code> row is excluded, so a new membership can be created with
 a <code>valid_from</code> inside an old one's period without violating the constraint. <strong>This is
 deliberate</strong> — a returning member's new membership may legitimately overlap the tail of a
-lapsed one if the dates were entered imprecisely. Historical imports rely on this.</p>
+lapsed one if the dates were entered imprecisely. The load of the legacy exports relies on this.</p>
 <p><strong>Consequence:</strong> the constraint does not prevent two <em>active</em> memberships with overlapping
 periods if one was inserted while in another status and then transitioned. A status update
 re-evaluates the constraint (PostgreSQL does check exclusion constraints on UPDATE), so
@@ -3772,11 +3779,15 @@ is only a violation if the constraint is in the database, and no ORM emits an ex
 period assembled from <code>valid_from</code> and <code>valid_to</code> scoped to three statuses — the migration writes
 it, as <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00-conventions.md §6a</a> requires. The
 same check performed in the model layer returns a friendlier message a moment earlier and
-guarantees nothing: a batch that imports the legacy people export writes memberships by the thousand
+guarantees nothing. <strong>The one-off load of the legacy people export is not the example this paragraph used to
+reach for:</strong> it writes by the thousand, but it writes <em>through</em> the application as a key, so a model-layer
+check would see it
 (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
-<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>),
-and a hand-corrected row never passes through the model layer either. Both meet the constraint in the
-database; neither would ever meet a model-layer check.</p>
+<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>,
+<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+<strong>The writers that decide the question are the ones nobody wrote yet:</strong> a migration, a row corrected straight
+in the database, a future second client. The invariant has to hold for those, and a model-layer rule is not
+where it lives.</p>
 <h3 id="why-valid_to-is-null-and-not-a-sentinel">Why <code>valid_to IS NULL</code> and not a sentinel<a class="headerlink" href="#why-valid_to-is-null-and-not-a-sentinel" title="Permanent link">&para;</a></h3>
 <p>Repeated from the conventions because it is the mistake most likely to be made here.
 A <code>'9999-12-31'</code> sentinel breaks <code>IS NULL</code> checks, makes <code>daterange</code> spans enormous, and
@@ -4234,8 +4245,9 @@ and a reference, a form or a photograph has never been a condition of joining.</
 hold several open memberships, when a membership activates, whether permissions follow membership
 state, the age questions, the grace period and the requirement mechanism are settled and stated — in
 §1, §3, §4 and §6. Whether the legacy import may create a membership is
-<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-and <a href="../06a-import/#31-what-a-source-row-actually-evidences">06a §3.1</a>. Two of those answers have a
+<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>,
+and what a source row evidences is restated at <a href="../06-audit-and-import/#3-import-pipeline--deleted">06 §3</a>.
+Two of those answers have a
 consequence worth keeping in view, because both are easy to undo: the roster is keyed on a <strong>person</strong>
 and never on a membership, so belonging survives where no membership record survives (§5), and a
 renewal inside the window opens its row at the previous expiry date, which is what makes a lapse

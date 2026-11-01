@@ -1470,8 +1470,6 @@
       
         
       
-        
-      
     
     
     
@@ -1529,34 +1527,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2099,6 +2069,8 @@
       
         
           
+        
+      
         
       
         
@@ -2782,6 +2754,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3006,6 +3006,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-22/#d-157--there-are-no-hardship-waivers">D-157</a></td>
 </tr>
 <tr>
+<td><code>fee_obligation.amount_discount</code></td>
+<td>a term in the balance holding a reduction to what somebody owed</td>
+<td>a reduction is an <code>amount_due</code> written smaller — the same act that writes any other amount — and a second term the balance has to sum, that reports have to agree with and that a matcher has to solve against, is the shape this module has now refused three times. <strong>What is genuinely lost is the count</strong>: no report will ever total what the discretion was used for</td>
+<td><code>amount_due</code>, edited in place. If a countable reduction is ever needed, the entry to reverse is the one that refuses an adjustment table</td>
+<td><a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a></td>
+</tr>
+<tr>
 <td><code>fee_schedule.valid_from</code>, <code>fee_schedule.valid_to</code></td>
 <td>a validity period on a price, so one schedule table could hold several prices without overwriting</td>
 <td>one live price, edited in place. Safe because the obligation snapshots <code>fee_schedule_id</code> and copies <code>amount_due</code>, so what a person owed was never read from here — which is also the price: there is no price history, and nobody can ask what the 2027 fee was going to be</td>
@@ -3034,11 +3041,46 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a></td>
 </tr>
 <tr>
+<td><code>import_batch</code>, <code>staging_import</code>, <code>staging_import_row</code>, and the <code>import_batch_id</code> column they were pointed at by</td>
+<td>one arrival of legacy data, its raw rows, its parsed rows, and the provenance column every imported row carried</td>
+<td>the load happens <strong>once</strong>, from one script, through the same write path everything else uses — so a batch is an event in the project's history, not a row in the organization's record. The script has a history of its own, the key it posted with is a row, and what it wrote <em>is</em> the record. The costs are named one by one in the decision: no revert, no page that says who ran it, no column that says which rows came from the legacy corpus</td>
+<td>nothing. The rows speak for themselves, and <code>data_confidence</code> says how far to trust them</td>
+<td><a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a></td>
+</tr>
+<tr>
+<td><code>import_job</code> (a value of <code>match_proposal.proposed_by</code>)</td>
+<td>the mark a legacy import pass left on a match hypothesis it had put in front of a reviewer</td>
+<td>an enumerated value claims that something in this system can be that thing, and after the pipeline was deleted nothing was; a rename to <code>legacy_load</code> would keep the claim and add a migration</td>
+<td><code>match_job</code> for anything the matcher scored, and the audit trail's key for anything the one-off load wrote</td>
+<td><a href="../../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a></td>
+</tr>
+<tr>
+<td><code>import.view</code>, <code>import.stage</code>, <code>import.apply</code>, <code>import.revert</code></td>
+<td>the four codes that drove the staged import screen, one per stage a person could press</td>
+<td>there is no screen and no stage to apply, so there is nothing to grant; a caller that is not a person holds the ordinary codes of what it writes and no code of its own (<a href="../permission-catalog-a-codes/#8b-keys--a-caller-that-is-nobody">catalog A §8b</a>)</td>
+<td>the codes of the tables the load writes, granted to the registered key that writes them</td>
+<td><a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a></td>
+</tr>
+<tr>
+<td><code>import_batch:&lt;id&gt;</code> as an actor label</td>
+<td>the sixth writer in the fixed list of who this system is when it writes with nobody's name on the row</td>
+<td>it left with the batch it named, which took the actor count in <a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">§7a</a> from six to five. A load that posts through a key is named <strong>by the key</strong>, and no person is inferred from it</td>
+<td>the key's own name, which is a row</td>
+<td><a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>, <a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a></td>
+</tr>
+<tr>
 <td><code>is_member</code>, <code>member_type</code>, <code>is_child</code>, <code>current_member_category()</code></td>
 <td>flags on the person row saying what kind of human this row was, and the function asking which category a member was in right now</td>
 <td>personhood is not a type, membership is ageless, and one person can be a member twice with a gap between</td>
 <td><code>membership</code> rows, and <code>is_current_member()</code> on the date asked about; <code>is_minor(person, as_of)</code> reads the person</td>
 <td><a href="../../decisions/round-01a/#d-001--person-account-and-membership-are-three-separate-things">D-001</a>, <a href="../../decisions/round-02-03/#d-038--membership-is-ageless">D-038</a></td>
+</tr>
+<tr>
+<td><code>unknown</code> as a <code>person.gender</code> value</td>
+<td>the value a form wrote when nobody picked one, and the reason the column could be called optional</td>
+<td>the column is how the system <strong>declines a verb</strong>, so it is required, and a form that cannot choose which verb to use is a form that has not asked the question yet. The reporting reason the column was filed under is falsified, not superseded</td>
+<td><code>male</code>, <code>female</code>, <code>other</code> — and after an erasure, the fourth value no screen offers</td>
+<td><a href="../../decisions/round-23/#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a>, <a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a></td>
 </tr>
 <tr>
 <td><code>permission.is_system</code>, <code>role.is_system</code>, <code>selector_type.is_system</code>, <code>audience.is_system</code></td>
@@ -3081,6 +3123,13 @@ its vocabulary.</p>
 <td>personal data is one class; sensitivity is graded by what a grant exposes, not by which table it reads</td>
 <td>the attribute layer, and <code>person.view</code> read with that cost in mind</td>
 <td><a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a></td>
+</tr>
+<tr>
+<td><code>person.notes</code></td>
+<td>free text about a person, on the person row, logged with its contents and deliberately left off the redactor's list</td>
+<td>it was the one column where <em>may contain a diagnosis</em> was a property of the design rather than of careless typing — and it survived an erasure that <strong>deletes</strong> <code>person_attribute</code> rows, so keeping it made erasure weaker, not stronger</td>
+<td>the attribute vocabulary for anything that is about a person. The boundary holds the other way too: a row <em>about</em> a person may still carry free text — a roster <code>note</code>, a <code>status_reason</code>, a <code>field_conflict</code></td>
+<td><a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a></td>
 </tr>
 <tr>
 <td>the membership gate, <code>role.requires_membership</code>, <code>system.gate_exempt</code>, <code>person_holds_gate_exempt</code></td>

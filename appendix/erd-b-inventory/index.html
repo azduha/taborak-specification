@@ -1470,8 +1470,6 @@
       
         
       
-        
-      
     
     
     
@@ -1529,34 +1527,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2121,6 +2091,8 @@
       
         
           
+        
+      
         
       
         
@@ -2804,6 +2776,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3360,25 +3360,39 @@ nothing at all, on their own.</p>
 <td>no</td>
 </tr>
 <tr>
-<td><code>import_batch</code></td>
-<td>One arrival of historical data, where it stands, which half of the corpus it carries (<code>people</code> or <code>events</code>), and the raw-column→code map a person read before it applied</td>
-<td><code>person</code> as creator, applier and reverting party</td>
-<td>One per batch; the map lives here as one object rather than per staged row, because it is one artefact a human reads top to bottom and the codes it names arrive <code>live</code> (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>, <a href="../../decisions/round-09/#d-092--the-corpus-is-people-and-events-and-it-names-no-units">D-092</a>); staging rows may be truncated once applied</td>
-<td>no</td>
+<td><strong>There is no import entity in this inventory.</strong> <code>import_batch</code>, <code>staging_import</code> and <code>staging_import_row</code> were</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td><code>staging_import</code></td>
-<td>A raw source row, verbatim, with its file and line</td>
-<td><code>import_batch</code></td>
-<td>One per source row per batch</td>
-<td>no</td>
+<td>deleted with the pipeline they belonged to: the legacy load is one script posting through a registered key, so</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td><code>staging_import_row</code></td>
-<td>That row parsed, plus what the parse could not decide, and what it eventually created</td>
-<td><code>staging_import</code>; <code>person</code> as resolver; and what it created — <code>person</code> and, on a people batch, the <code>membership</code> whose <strong>both ends</strong> the source stated (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>: a stated period may be imported, an open-ended one may not and one inferred from attendance may not), and on an events batch the <code>event</code> and the <code>event_registration</code></td>
-<td>One per staged row</td>
-<td>no</td>
+<td>there is no batch row to point at, no staging table to truncate, and no revert to undo</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). What survives the load is what it wrote — people, dated memberships, events and registrations —</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>and what says how much to trust them, <code>data_confidence</code>, which never needed the batch row beside it.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -3425,15 +3439,22 @@ nothing at all, on their own.</p>
 <tr>
 <td><code>payment_request</code></td>
 <td>The ask, carrying the variable symbol that ties a bank transfer back to it</td>
-<td><code>fee_obligation</code> — the amount is copied, never recomputed</td>
-<td>Several per obligation over time; <strong>at most one live</strong>; the symbol is unique over every symbol ever issued</td>
+<td><code>fee_obligation</code> — the amount is copied, never recomputed, and a changed ask is a void plus a new symbol rather than an edit (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>)</td>
+<td>Several per obligation over time; <strong>at most one live</strong>; the symbol is unique over every symbol ever issued. Every payable gets one (<a href="../../decisions/round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a>)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>invoice</code></td>
+<td>The document a payer asks for, issued over an ask that already exists</td>
+<td><code>payment_request</code>; the person who issued it</td>
+<td>One per issued document. <strong>No state</strong> — it exists or it does not, because a column meaning <em>somebody owes this person a document</em> is the queue that was just deleted (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). Numbered from its own sequence, separate from the variable symbol's</td>
 <td>no</td>
 </tr>
 <tr>
 <td><code>bank_transaction</code></td>
 <td>One incoming transfer as the bank reported it</td>
-<td><code>payment_request</code> when matched — absent means it is in the queue; <code>import_batch</code></td>
-<td>Unique per bank reference within an account; immutable once imported</td>
+<td><code>payment_request</code> when matched. <strong>Absent is the absence of a match, not a queue position</strong> — most money that arrives belongs to no member (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) — and which run wrote the row is in the row's actor column, <code>system:bank-pull</code>, because there is no batch to point at</td>
+<td>Unique per bank reference within an account; immutable once fetched</td>
 <td>no</td>
 </tr>
 </tbody>

@@ -1472,8 +1472,6 @@
       
         
       
-        
-      
     
     
     
@@ -1531,34 +1529,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2248,6 +2218,8 @@
       
         
       
+        
+      
     
     
     
@@ -2887,6 +2859,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3165,16 +3165,25 @@ need somewhere to read a due date from.</p>
 <li>Money out is recorded exactly like money in — <strong>a refund is a <code>payment</code> in the opposite
   direction</strong>, and nobody initiates one inside this system
   (<a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>).</li>
+<li><strong>What a person was asked to pay is never edited.</strong> A changed amount voids the live request and
+  issues a new one under a new variable symbol, because the old figure is already printed on a QR code
+  in somebody's hand; the liability underneath is edited in place, and no column holds a reduction —
+  <code>amount_discount</code> is gone, and the balance lost its term with it
+  (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>).</li>
+<li><strong>An invoice is a second row over the same ask</strong>, written only because a payer asked for one. A
+  <code>payment_request</code> is not an invoice and does not become one (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>).</li>
 </ul>
-<p><strong>Unspecified</strong> — family or sibling discounts beyond a per-person <code>amount_discount</code>, whether the
-organization owes people invoices, whether anything is exported to an accounting system, what the
-law of this country requires of a fee, and what gets a variable symbol. Each is in §5.</p>
+<p><strong>Unspecified</strong> — whether anything is exported to an accounting system, and what the law of this
+country requires of a fee, which is also what decides what an invoice must contain. Both are in §5,
+together with what a payment that does not fit its ask settles.</p>
 <p><strong>Settled, and the big one</strong> — the organization <strong>collects</strong>, but not through
 a card gateway: money is requested by <strong>variable symbol + QR code</strong> and <strong>arrives from the bank
 API</strong> already tagged (§2a, <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>).</p>
 <hr />
 <h2 id="2-minimal-provisional-shape">2. Minimal provisional shape<a class="headerlink" href="#2-minimal-provisional-shape" title="Permanent link">&para;</a></h2>
-<p>Four tables, deliberately small and easy to replace.</p>
+<p>Seven tables, deliberately small and easy to replace. This sentence printed <strong>four</strong> for two rounds while
+<strong>six</strong> were defined underneath it, which is what a typed count does; <code>invoice</code> is the seventh and the only
+one added since (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>).</p>
 <p><strong><code>fee_schedule</code></strong> — a price. One is live at a time, and it is edited in place when a billing year is
 reopened; there is no price history, and none is needed, because what a person owed was never in here.</p>
 <p><strong>Fields</strong></p>
@@ -3333,12 +3342,7 @@ and not a ruling inside it.</p>
 <tr>
 <td><code>amount_due</code></td>
 <td>money, required</td>
-<td></td>
-</tr>
-<tr>
-<td><code>amount_discount</code></td>
-<td>money, required</td>
-<td>Default 0</td>
+<td>The number this person owes, and it may be written again: editing it in place is how a fee is reduced, corrected, or negotiated, and nothing records that a reduction happened (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>)</td>
 </tr>
 <tr>
 <td><code>amount_paid</code></td>
@@ -3380,17 +3384,12 @@ and not a ruling inside it.</p>
 <td>reference to person, optional</td>
 <td></td>
 </tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td>Set on imported rows</td>
-</tr>
 </tbody>
 </table>
 <p><strong>Rules</strong></p>
 <ul>
 <li><code>period_to</code> is later than <code>period_from</code>.</li>
-<li><code>amount_due</code>, <code>amount_discount</code> and <code>amount_paid</code> are each zero or more.</li>
+<li><code>amount_due</code> and <code>amount_paid</code> are each zero or more.</li>
 <li>Exactly one of <code>membership_id</code>, <code>membership_request_id</code> and <code>event_registration_id</code> is
   set — one, not zero and not two. Every obligation is for exactly one thing: a membership
   period, a membership request, or one person's place at one event. The per-person choice
@@ -3520,11 +3519,6 @@ group with a period rather than a fake person (<a href="../04-relationships/#3-t
 <td></td>
 </tr>
 <tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td>Set on imported rows</td>
-</tr>
-<tr>
 <td><code>created_at</code></td>
 <td>timestamp, audit time</td>
 <td></td>
@@ -3618,14 +3612,18 @@ The system <strong>requests</strong> a payment and then <strong>reads</strong> o
 <p>The flow, in order:</p>
 <ol>
 <li>A liability exists — a membership period, a membership request, a place at an event.</li>
-<li>The system issues a <strong><code>payment_request</code></strong> carrying a <strong>variable symbol</strong> and an amount.</li>
+<li>The system issues a <strong><code>payment_request</code></strong> carrying a <strong>variable symbol</strong> and an amount. Every
+   payable gets one — the yearly fee and a camp fee alike — because a liability with no symbol has
+   money arriving against nothing and no list where that would show (<a href="../../decisions/round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a>).</li>
 <li>The payer is shown the symbol, the amount, and a <strong>QR code</strong> that encodes all three.</li>
 <li>The payer's own bank moves the money. The system is not involved and learns nothing yet.</li>
 <li>A <strong>bank import</strong> reads the account statement and produces a <strong><code>bank_transaction</code></strong> for each
    incoming transfer, with the variable symbol still attached.</li>
-<li>The symbol resolves to a live request. The import creates a <code>payment</code>, links it, and the
-   obligation's balance falls.</li>
-<li>If the symbol resolves to nothing live, the row goes to the <strong>queue</strong> (§2b).</li>
+<li>The symbol resolves to a live request. The fetch creates a <code>payment</code>, links it, and the
+   obligation's balance falls. Both rows belong to the fetch's own actor, <code>system:bank-pull</code>, because
+   resolving a symbol is not a human act (<a href="../../decisions/round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>).</li>
+<li>If the symbol resolves to nothing live, the transaction stays exactly as it arrived: <strong>unmatched,
+   which is not a queue</strong> (§2b) (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>).</li>
 </ol>
 <p><strong><code>payment_request</code></strong> — the liability rendered payable.</p>
 <p><strong>Fields</strong></p>
@@ -3708,10 +3706,76 @@ The system <strong>requests</strong> a payment and then <strong>reads</strong> o
 <li><code>amount</code> is a <strong>copy</strong>, not a live reference. What a person was asked to pay is a historical
   fact about the ask, and recomputing it from the current schedule would make every price change
   rewrite history.</li>
-<li>One obligation may have several requests over time — a first request expires, or the amount is
-  corrected — but <strong>at most one live request per obligation</strong>.</li>
-<li>A request is not an invoice. Nothing is delivered, nothing is numbered for a tax authority, and
-  whether the organization <em>also</em> owes people invoices is still an open question (§5).</li>
+<li>One obligation may have several requests over time — a first request expires, or the ask changes,
+  which is a void and a new symbol rather than an edit (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>) — but <strong>at most one live
+  request per obligation</strong>. <code>amount_due</code> on the obligation is edited in place; <code>amount</code> on a request
+  never is, because the figure has already been shown to somebody standing at their own bank.</li>
+<li>A request is not an invoice. Nothing is delivered, nothing is numbered for a tax authority. An
+  invoice is a separate row over the same ask, written only because a payer asked for it
+  (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>).</li>
+</ul>
+<p><strong><code>invoice</code></strong> — a document somebody asked for. It exists or it does not.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Kind</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>surrogate id</td>
+<td></td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>text, required</td>
+<td><strong>Unique, and never reused.</strong> Its own sequence, beside the variable symbol's and independent of it: a symbol resolves a payment to an ask, a number identifies a document to a tax authority, and nothing promises the two agree (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>)</td>
+</tr>
+<tr>
+<td><code>payment_request_id</code></td>
+<td>reference to payment request, required</td>
+<td>The ask it documents. Never a bare obligation, because the request is what the payer was shown</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>money, required</td>
+<td>Copied from the request, for the same reason the request copies it from the obligation: an edit to the liability must not rewrite a document that has already been handed over (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>)</td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>three-letter currency code, required</td>
+<td><code>CZK</code></td>
+</tr>
+<tr>
+<td><code>issued_at</code></td>
+<td>timestamp, required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>issued_by</code></td>
+<td>reference to person, required</td>
+<td>Whoever holds <code>invoice.issue</code>. Not the payer who asked, because there is no row for the asking</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules</strong></p>
+<ul>
+<li><strong>No state.</strong> No <code>requested</code>, no <code>sent</code>, no <code>delivered</code>. A column meaning <em>somebody owes this person
+  a document</em>, with nobody assigned to it and nothing counting it, is the queue this module just
+  deleted wearing a different coat (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>). The ask that precedes the row is a conversation
+  the organization had with the payer, held outside the database — the way two groups being the same
+  group is said and not stored (<a href="../../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>).</li>
+<li><strong>Nothing sends the invoice to anybody</strong> (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). It exists on a screen and is handed over
+  by a person, or printed by one.</li>
+<li>A voided request keeps its invoice. Both rows are permanent.</li>
+<li>Most obligations have no invoice at all, and no report is planned over the requests that have none.
+  If forgetting one turns out to be a real failure, the fix is that report, not a status
+  (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>).</li>
+<li>What else a document of this kind must contain is a legal question the design does not answer, and no
+  column is invented for it here (§5).</li>
 </ul>
 <p><strong><code>bank_transaction</code></strong> — one incoming transfer as the bank reported it.</p>
 <table>
@@ -3761,17 +3825,12 @@ The system <strong>requests</strong> a payment and then <strong>reads</strong> o
 <tr>
 <td><code>matched_payment_request_id</code></td>
 <td>reference to payment request, optional</td>
-<td>NULL means <strong>unmatched</strong>, which is the queue</td>
+<td>NULL means <strong>unmatched</strong>: the absence of a match, not a queue and not a piece of work (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>)</td>
 </tr>
 <tr>
 <td><code>imported_at</code></td>
 <td>timestamp, audit time</td>
-<td></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td></td>
+<td>When the fetch wrote the row. Which fetch is in that row's own actor column — <code>system:bank-pull</code> — and there is no batch to point at, because the batch table is gone (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -3798,14 +3857,23 @@ reported is confirmed on arrival, and there is no in-between state to model. Wha
 <p><strong>An unmatched transaction is a fact with no subject, so the absence gets stored rather than
 guessed at</strong> — the same discipline as "unanswered is the absence of a row"
 (<a href="../../decisions/round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>).
-<code>matched_payment_request_id IS NULL</code> <em>is</em> the queue; there is no separate worklist table to fall
-out of sync with the rows it describes.</p>
-<p><strong>How a transaction ends up there:</strong> the symbol matches no request. The symbol matches a request
+<code>matched_payment_request_id IS NULL</code> is the absence of a match and nothing besides — not a worklist,
+not a count, not a page somebody is expected to clear. <strong>There is no queue here</strong>
+(<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>): most money that lands in this account has nothing to do with a member at all —
+a grant, a donation, a shop's sponsorship — and an unmatched row is the ordinary shape of the
+statement rather than an exception to it. D-076's rule survives untouched: a row gets no subject
+assigned by a match on an amount and a date. What goes is the picture underneath the rule, that an
+unmatched row means a person is waiting somewhere behind it.</p>
+<p><strong>Why a transaction has no match:</strong> the symbol matches no request. The symbol matches a request
 that has been voided. The request is already settled. The amount is less than asked, or more.
 There is no symbol at all — cash-basis donors and people who type their own name in the wrong
 field.</p>
-<p><strong>What the system does with any of those: nothing.</strong> It records the money and waits.</p>
-<p><strong>A person decides, and there are exactly four outcomes:</strong></p>
+<p><strong>What the system does with any of those: nothing.</strong> It records the money. No page opens on it,
+nothing counts it, and nothing sends anything to anyone about it
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
+<p>When a person does decide to act, tying the transaction to a request is a write with a code of its
+own, <code>payment.match</code>, held at the organization's scope by whoever runs the accounting
+(<a href="../../decisions/round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>). <strong>There are exactly four outcomes they can choose between:</strong></p>
 <table>
 <thead>
 <tr>
@@ -3833,7 +3901,7 @@ field.</p>
 </tbody>
 </table>
 <p><strong>Why the tempting shortcut is refused.</strong> Falling back to the payer's identity when the symbol
-fails looks like it removes most of the queue. It removes most of the queue's <em>accuracy</em> instead:
+fails looks like it clears most of the unmatched rows. It clears most of their <em>accuracy</em> instead:
 <em>a parent with two children pays one amount against one symbol</em> is the normal case, not the edge
 case, and an identity fallback resolves it to whichever child the query reaches first. <strong>A fee
 recorded against the wrong child is a finance error and a membership that appears paid when it is
@@ -3845,8 +3913,11 @@ as inbound, which is a second integration with its own authorization; and it ret
 grandparent's attempt at a camp contribution. <strong>The first of those has changed kind while the refusal
 stands.</strong> Calls coming <em>in</em> are a designed thing now — a registered key, granted like any other caller
 (<a href="../05e-keys-and-callers/">05e</a>) — so "outbound is a second integration with its own authorization" is no
-longer an absence but a decision with a shape to copy, and the outbound direction itself is
-<a href="../../open-questions/#f-27">F-27</a>. The second reason was never a mechanism, and stands alone.</p>
+which is no
+longer an absence but a decision with a shape to copy. The outbound direction is answered, not
+designed: an outbound call is either a named person acting or this system's own job under a label from
+the fixed list, and nothing about it is built yet (<a href="../../decisions/round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>,
+<a href="../../open-questions/#f-27">F-27</a>). The second reason was never a mechanism, and stands alone.</p>
 <p><strong>Cancellation is where most of the volume comes from, and it is decided now rather than later.</strong>
 <a href="../../decisions/round-05/#d-064--there-is-no-event-status-visibility-is-the-permission-model">D-064</a>
 made cancellation a recorded fact rather than a state, so the event survives, the registrations
@@ -3854,18 +3925,24 @@ survive — and so would an outstanding request against an occasion that is not 
 So:</p>
 <ul>
 <li><strong>Cancelling an event voids its outstanding payment requests</strong>, recording why.</li>
-<li><strong>Money already received for a cancelled event becomes a queue item</strong>, for a person to refund or
-  to carry forward to a later event. It is not auto-refunded, for the reasons above.</li>
+<li><strong>Money already received for a cancelled event stays where it is</strong>, tied to the obligation that has
+  stopped meaning anything, for a person to refund by hand or carry forward to a later event. It is
+  not auto-refunded, for the reasons above.</li>
 </ul>
 <p><strong>This is EV-3's answer</strong>, which is why it is closed here rather than left parked in the events
-module. Nothing about the queue's shape changes, and nothing about its end does either: <strong>the queue is
-where the system stops and a person begins</strong>, and that person's next act is at the organization's bank,
-not on a screen in this design
+module. What has not changed since that answer was written is the seam: <strong>this is where the system
+stops and a person begins</strong>, and that person's next act is at the organization's bank, not on a screen
+in this design
 (<a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>).</p>
-<p><strong>The queue is not allowed to be silently ignored.</strong> It is a count on a dashboard, not a page
-nobody navigates to, and its oldest item is a number someone sees monthly. Unmatched money is the
-one finance backlog that gets worse by itself: the payer believes they have paid, and the
-organization believes they have not.</p>
+<p><strong>No page counts what nobody is looking at, and that is a cost being paid on purpose.</strong> A transfer
+aimed at a camp whose request nobody ties anything to can sit in this table forever, and nothing
+anywhere distinguishes it from a grant payment nobody needed to classify — after
+(<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) there is no list of rows that need looking at, and after
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>) nobody is told that money arrived. The alternative refused was a worklist whose
+first entry is always a sponsorship nobody wants to classify, and a worklist nobody clears is a lie
+about supervision. What makes the no-queue survivable is that the money is not lost, only
+unattributed, and every row is on the same screen in date order: the payer's belief and the
+organization's belief are reconciled by a person who was asked, not by a count.</p>
 <hr />
 <h2 id="3-keeping-membershipoutstanding_balance-honest">3. Keeping <code>membership.outstanding_balance</code> honest<a class="headerlink" href="#3-keeping-membershipoutstanding_balance-honest" title="Permanent link">&para;</a></h2>
 <p><a href="../03-membership/#3-membership">03-membership.md</a> has a denormalised
@@ -3902,9 +3979,11 @@ not a hot path, and a wrong balance produces either a wrongly-suspended member o
 wrongly-chased family. A wrong number here has a human consequence.</p>
 <p><strong>The definition, stated once, wherever it is implemented:</strong></p>
 <blockquote>
-<p><em>balance</em> = <code>amount_due</code> − <code>amount_discount</code> − the sum of allocations whose payment is
-<strong><code>confirmed</code></strong></p>
+<p><em>balance</em> = <code>amount_due</code> − the sum of allocations whose payment is <strong><code>confirmed</code></strong></p>
 </blockquote>
+<p>The discount term left with the column it was named after (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>): a reduced fee is a
+smaller <code>amount_due</code>, and a gap between what was asked and what is owed lives in the ask, not in a term
+beside it.</p>
 <p><strong>Only confirmed payments count.</strong> An obligation is not settled by money that has been promised,
 intended, described in an email, or reported by a payer who believes they sent it. <strong>There is no state for
 a transfer that is on its way</strong> (D-075): either the bank has reported it and it is confirmed, or the system
@@ -3977,11 +4056,13 @@ not new to this folder, it is what every other page here already had. The rules 
 somewhere above this heading — §2, §2a and §3 each state one and then said nothing about what would notice
 a breach.</p>
 <ol>
-<li><strong>The balance the system shows, recomputed from §3's definition.</strong> <code>amount_due</code> − <code>amount_discount</code> −
-   the sum of allocations whose payment is <strong><code>confirmed</code></strong>, per obligation, and the same sum rolled up
-   wherever a membership's balance is displayed. Two states put a row on this list: an allocation whose
-   payment has since been <code>reversed</code> still sitting in the total, and a discount recorded on the obligation
-   but not carried into the roll-up. <strong>What it cannot catch is the definition being wrong on both sides</strong> —
+<li><strong>The balance the system shows, recomputed from §3's definition.</strong> <code>amount_due</code> − the sum of
+   allocations whose payment is <strong><code>confirmed</code></strong>, per obligation, and the same sum rolled up
+   wherever a membership's balance is displayed. Three states put a row on this list: an allocation whose
+   payment has since been <code>reversed</code> still sitting in the total, an obligation whose <code>amount_due</code> was
+   edited in place while a request issued at the old amount is still live — a screen and an ask that
+   disagree is the state <a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a> exists to prevent — and a roll-up summing a different set of
+   allocations than the screen does. <strong>What it cannot catch is the definition being wrong on both sides</strong> —
    a screen and a report that each recompute <code>amount_due</code> − <code>amount_paid</code> agree perfectly and are both
    counting money that was only promised. <strong>If §3's recommendation is taken and the column becomes a view,
    this check does not retire.</strong> It moves from "the copy agrees with the sum" to "the view implements the
@@ -3990,7 +4071,7 @@ a breach.</p>
 <li><strong>A payment whose allocations do not account for its amount, and an obligation allocated past what it
    owes.</strong> <code>payment_allocation</code> is many-to-many in both directions and §2's rules constrain the pair and the
    sign of each amount, never the sums. So a payment with unallocated remainder is money that moved and was
-   never attributed to anything, and an obligation allocated beyond <code>amount_due</code> − <code>amount_discount</code> is an
+   never attributed to anything, and an obligation allocated beyond its <code>amount_due</code> is an
    overpayment that nobody has refunded. <strong>The layer here is the write path, and there is no constraint to
    sit beneath it</strong>: the sums span rows of two tables, which is
    <a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a>, so this
@@ -4005,11 +4086,12 @@ a breach.</p>
    upstream of that, an <code>event_registration</code> for an event carrying a <code>fee_schedule</code> with no
    <code>fee_obligation</code> behind it, which §2 already warned of in one sentence —
    <em>an event with a fee and no obligation is invisible until someone reconciles money against the roster</em>,
-   because nothing creates the obligation and no trigger could have been forgotten. <strong>Do not read this list
-   as the queue.</strong> An unmatched <code>bank_transaction</code> is money with no subject, and
-   <a href="../../decisions/round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a> rules that it
-   waits for a person, which is a correct state with a page of its own (§2b). This is the opposite case: a
-   liability with no ask attached, which is silent in both directions — nobody is chased and nobody pays.</li>
+   because nothing creates the obligation and no trigger could have been forgotten. <strong>This is not about
+   money that arrived and did not fit.</strong> An unmatched <code>bank_transaction</code> is money with no subject, most of
+   it never meant for a member at all, and the design keeps it that way on purpose (§2b,
+   <a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>). This is the other side of the same ledger: a liability with no ask
+   attached, silent in both directions — nobody is chased and nobody pays. It is the one failure on this list
+   that no unmatched row would ever reveal, because with no queue there is nowhere the two could meet.</li>
 </ol>
 <p><strong>Checks 1 and 2 are the two that matter, and §3 says why in one line: a wrong number here has a human
 consequence</strong> — either a wrongly-suspended member or a wrongly-chased family. Check 3 is the one that finds
@@ -4017,62 +4099,48 @@ a whole class of missing money rather than a wrong row, and it is the only one o
 non-empty because a feature was never written rather than because a row is wrong.</p>
 <hr />
 <h2 id="5-open-issues--the-whole-of-this-document-essentially">5. Open issues — the whole of this document, essentially<a class="headerlink" href="#5-open-issues--the-whole-of-this-document-essentially" title="Permanent link">&para;</a></h2>
-<p><strong>Five questions are open, and they are the five below.</strong> What this section used to ask that it no
-longer does, and the arithmetic of the list, are at the end of the page rather than inside the list.</p>
+<p><strong>Three questions are open, and they are the three below.</strong> Three that were here when this section last
+counted itself were answered while the round was running — who may reduce a fee, whether the organization
+issues invoices, and what gets a variable symbol — and each is listed at the end of the page beside the
+decision that closed it.</p>
 <ol>
-<li><strong>Are there family/sibling discounts?</strong> <code>amount_discount</code> exists but the rules are
-   unspecified. With a flat per-person fee (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>),
-   this is the only remaining fee variation, so it is worth a deliberate yes or no. A <strong>per-family</strong>
-   discount needs a grouping to be designed first — there is none
-   (<a href="../../decisions/round-04/#d-057--household-is-removed">D-057</a>) — so it is not a constraint change but a
-   shape. A <strong>per-person</strong> discount is unaffected and is just <code>amount_discount</code>.</li>
-<li><strong>Invoicing:</strong> does the organization issue invoices (legal requirement in some
-   jurisdictions)? If so, an <code>invoice</code> entity and a numbering sequence are needed. <strong>Sharper now:</strong>
-   a <code>payment_request</code> looks like an invoice, prints like one, and is not one — it has no
-   tax identity, no sequence required by law, and no delivery record. If invoices are legally
-   required, the honest answer is a second document over the same obligation, not a renaming of
-   this one.</li>
 <li><strong>Accounting integration:</strong> does anything need to be exported to an accounting system? <strong>What is
    open here is the direction.</strong> Who may call this system is designed (<a href="../05e-keys-and-callers/">05e</a>);
-   this system calling anyone else is <a href="../../open-questions/#f-27">F-27</a>.</li>
+   this system calling anyone else is answered and undesigned — an outbound call is a person's act or this
+   system's own job under a label from the fixed list, and no integration is built
+   (<a href="../../decisions/round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>, <a href="../../open-questions/#f-27">F-27</a>).</li>
 <li><strong>Jurisdiction.</strong> This is the half of an item that used to read "currency and jurisdiction", and only
    the currency half was answerable: the currency is koruna, on all four tables that carry one (§2)
    (<a href="../../decisions/round-22/#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so">D-155</a>).
    What is left is what the law of this country asks of a fee, which this design does not know and has no
-   column for: whether invoices of item 2's kind are compulsory rather than chosen, and whether the
+   column for: whether the invoices §2 now has a table for are compulsory rather than issued only when a
+   payer asks, and whether the
    organization owes anything about its money to anybody outside itself. This is the finance module's
    share of the same sitting that already holds the four data policies in front of a legal review
    (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>,
    <a href="../06b-redaction-and-checks/#6-open-issues">06b §6</a>).</li>
 <li>
-<p><strong>What gets a variable symbol, and one per what?</strong> — <strong>raised by
-    <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>
-    rather than left over.</strong> That decision fixed <em>how</em> money arrives and named the <code>payment_request</code>
-    that carries it, but not the two choices the module is actually built from.</p>
+<p><strong>What is a payment that does not fit?</strong> The item this sat inside asked three questions; the first
+    two are answered — <strong>every</strong> payable gets a symbol, and <strong>one live request per liability</strong>
+    (<a href="../../decisions/round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a>). What is left is the case neither of them reaches.</p>
 <ul>
-<li><strong>Scope.</strong> Do event fees get a symbol, or only membership fees? A camp fee is the same
-  mechanism, and a symbol is what lets a family pay for it at their own bank without staff
-  involvement. <strong>Recommendation: every payable</strong>, because the alternative is a second,
-  hand-recorded money path sitting beside an automatic one — and hand-recorded is what D-040's
-  renewal window just escaped.</li>
-<li><strong>Granularity.</strong> One live request per liability, matching the <code>fee_obligation</code> row exactly —
-  which is what §2a already assumes. Not per person, because a parent paying for two children in
-  one transfer is the ordinary case and per-person symbols make that impossible to match.
-  <strong>Not per person-year either</strong>: a camp is a separate liability from a fee and must never share
-  a symbol with one.</li>
-<li><strong>The amount mismatch, which D-076 defers and this question cannot.</strong> 500 sent against a 550
-  request goes to the queue, which is correct as a mechanism and silent as a policy. Whether
-  partial payment settles anything, whether 4.90 vs 5.00 is a shortfall, and whether the payer
-  finds out at all when their money lands and does not fit — nothing here sends anything to anyone
-  (<a href="../../decisions/round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>),
-  so <em>finds out</em> means a person telephoning them or a module that is not designed yet — those are
-  undecided, <strong>and the queue will show them at volume the first spring the import runs.</strong></li>
+<li>500 sent against a 550 request <strong>stays unmatched</strong>: the symbol resolves, the amount does not fit,
+  and nothing settles anything on its own. That is a mechanism with no policy under it. Whether a
+  partial payment settles a liability, whether 4.90 against 5.00 is a shortfall or noise, and whether
+  the shortfall is what the balance should read — none of it is decided, and <code>payment_allocation</code>
+  will happily hold the 500 and leave the row at <code>partially_paid</code> forever.</li>
+<li><strong>And nobody finds out.</strong> Nothing sends anything to anyone (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and after
+  <a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a> there is no list of unmatched rows for a person to notice it on. So <em>finds out</em>
+  means somebody telephoning the payer because they were asked to, which is a procedure and not a
+  design. The volume arrives the first spring the fetch runs, on a screen in date order, where it
+  looks exactly like the sponsorship payments that were never supposed to match anything.</li>
 </ul>
-<p><strong>Why this is not a footnote:</strong> it decides whether the module has one money path or two.</p>
+<p><strong>Why this is not a footnote:</strong> it is the one place the module can still end up with two money paths —
+the automatic one, and a hand-corrected one running beside it. §2b is the hand half already; this
+question decides how wide it gets.</p>
 </li>
 </ol>
-<p><strong>What this section used to ask, and where each answer lives.</strong> The list ran to eleven items; four are
-closed and one is narrowed to what is left of it. They are kept here in one line each, because for most
+<p><strong>What this section used to ask, and where each answer lives.</strong> The list below now runs to nine items. They are kept here in one line each, because for most
 of them this page is the only place the question was ever written:</p>
 <ul>
 <li><strong>The fee amount</strong> — the question this page asserted twice and never filed, which is why nothing could
@@ -4095,15 +4163,23 @@ of them this page is the only place the question was ever written:</p>
   which codes exist standing between the two; the problem is dissolved rather than solved, because there
   is nothing to see
   (<a href="../../decisions/round-22/#d-157--there-are-no-hardship-waivers">D-157</a>).</li>
+<li><strong>Family and sibling discounts</strong> — there is no discount column to grant one with. <code>amount_discount</code> is
+  deleted and a reduced fee is an <code>amount_due</code> written smaller, which is the same act that writes any other
+  amount and leaves no mark that a reduction happened; <strong>no report will ever count what that discretion was
+  used for</strong> (<a href="../../decisions/round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>).</li>
+<li><strong>Invoicing</strong> — an invoice is a document a payer asks for: its own table, its own sequence, no state,
+  and a <code>payment_request</code> still is not one (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). What the law requires of one is item 2.</li>
+<li><strong>What gets a variable symbol, and one per what</strong> — every payable, one live request per liability, never
+  per person and never per person-year. The remainder of that item is open issue 3 above
+  (<a href="../../decisions/round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a>).</li>
 <li><strong>Payment methods, and collecting rather than recording</strong> — both closed earlier by
   <a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>.
   <code>bank_transfer</code> arrives by import and <code>cash</code> is recorded by hand; <code>voucher</code> and <code>credit_note</code> stay in
   the enum until somebody says otherwise; there is no card and no direct debit (§2). What remained in
   those two items was maintenance, not a decision.</li>
 </ul>
-<p><strong>The count, recounted.</strong> <strong>Five questions are open</strong>: discounts, invoices, the accounting export,
-jurisdiction, and what gets a variable symbol — the last still three questions in a trenchcoat, because
-it decides whether the module has one money path or two. The number this section printed was <strong>nine
+<p><strong>The count, recounted.</strong> <strong>Three questions are open</strong>: the accounting export, jurisdiction, and what a
+payment that does not fit settles. The number this section printed was <strong>nine
 remaining open</strong>, and nine was right, while the list printed underneath it named <strong>seven</strong> of those nine and
 counted the variable-symbol item twice — eight printed, with <em>who may authorize a refund</em> and <em>currency</em>
 missing, which are the two this round closed. A summary that is right above a list that is wrong is worse than a
@@ -4111,18 +4187,23 @@ wrong summary: the summary is what a reader quotes, and the list is what a reade
 <em>amount</em> is unanswered named a question that was not on the list either, so it had to be filed before
 anything could answer it. A count next to a sentence is a claim, and the count was the part nobody had
 checked.</p>
-<p><strong>None of the five is architectural.</strong> The architecture is why they can be left open: how money arrives,
+<p><strong>None of the three is architectural.</strong> The architecture is why they can be left open: how money arrives,
 how it is requested, and what happens to money that does not match are all decided, so what remains is
 <strong>policy that requires somebody in the organization to be asked</strong> — discounts, invoices, the accounting
 export, jurisdiction, and the choices item 5 names. <em>This document does not need a rewrite; it needs
 answers.</em></p>
-<p><strong>None of the five is registered in <a href="../../open-questions/">the open-questions register</a>,</strong> and this page is why:
+<p><strong>None of the three is registered in <a href="../../open-questions/">the open-questions register</a>,</strong> and this page is why:
 the register's finance row reports a number of open questions and names none of them, so a reader who
 never opens this document finds no finance question at all. The questions settled along the way —
 activation on payment, the flat per-person fee, the absence of a household grouping, collecting rather
 than recording — are registered there with the decision that settled each, and nothing else on this page
-is. The five above are the finance module's own open issues until somebody registers them or says here why
-not.</p>
+is. The three above are the finance module's own open issues until somebody registers them or says here why
+not. One finance question <em>is</em> registered now, and it arrived this round: <a href="../../open-questions/#k-10--are-the-money-permission-codes-still-deferred">K-10</a>.
+This module's permission codes — <code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>,
+<code>payment.reverse</code>, <code>report.finance.view</code>, and now <code>payment.match</code> and <code>invoice.issue</code> — are listed in
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">the catalog's deferred namespaces</a>,
+which is the page for a namespace whose module does not exist yet, and this module's money already moves
+(<a href="../../decisions/round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>).</p>
 
 
 

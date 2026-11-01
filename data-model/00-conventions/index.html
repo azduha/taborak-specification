@@ -1718,8 +1718,6 @@
       
         
       
-        
-      
     
     
     
@@ -1777,34 +1775,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2287,6 +2257,8 @@
       
         
           
+        
+      
         
       
         
@@ -2970,6 +2942,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3397,12 +3397,13 @@ interfaces; keep <code>id</code> internal.</strong> An ORM that marshals entitie
 published the internal counter.</p>
 <hr />
 <h2 id="4-deletion-policy">4. Deletion policy<a class="headerlink" href="#4-deletion-policy" title="Permanent link">&para;</a></h2>
-<p><strong>Nothing is hard-deleted.</strong> There is no <code>deleted_at</code> and no delete for business data. <strong>Three
-exceptions are named below</strong> — a staging truncate, one delete that erasure has to make, and one trail that
-ends on a clock — and each is narrow enough to prove the rule rather than erode it. **Two of the three reach
-no business row anyone would miss — a staging table between two batches, and a trail of reads — <strong>and the one
-that does reach a person's values does it for the only reason that has ever justified deleting anything: they
-asked.</strong></p>
+<p><strong>Nothing is hard-deleted.</strong> There is no <code>deleted_at</code> and no delete for business data. <strong>Two
+exceptions are named below</strong> — one delete that erasure has to make, and one trail that ends on a clock — and
+each is narrow enough to prove the rule rather than erode it. <strong>One of the two reaches no business row anyone
+would miss: a trail of reads.</strong> The other reaches a person's values, and it does so for the only reason that
+has ever justified deleting anything: they asked. There was a third, a truncate of staging tables between the
+stages of a legacy import, and it left with the staging tables
+(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).</p>
 <table>
 <thead>
 <tr>
@@ -3433,7 +3434,7 @@ asked.</strong></p>
 </tr>
 <tr>
 <td>An <code>access_log</code> row passes 24 months</td>
-<td><strong>Deleted</strong>, by a scheduled job — the third exception below. The only rows in this design that age out, and the only ones that ever did</td>
+<td><strong>Deleted</strong>, by a scheduled job — the second exception below. The only rows in this design that age out, and the only ones that ever did</td>
 </tr>
 <tr>
 <td>GDPR-style erasure requested</td>
@@ -3444,9 +3445,7 @@ asked.</strong></p>
 <p>This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
 forever. A hard delete breaks the audit trail and, in a youth organization, the safeguarding
 record.</p>
-<p><strong>The first exception:</strong> staging tables (<code>staging_import*</code>) may be truncated after a batch is
-applied, subject to the project's retention policy.</p>
-<p><strong>The second exception is not convenience and it should be read as a decision, not an oversight.</strong>
+<p><strong>The first exception is not convenience and it should be read as a decision, not an oversight.</strong>
 Redacting a person <strong>deletes</strong> their <code>person_attribute</code> rows (<a href="#8-personal-data-and-erasure">§8 item
 2</a>). Everywhere else in this file, erasure means overwriting a value
 and keeping the row, because the row is what old references point at. A descriptive value is the one
@@ -3466,13 +3465,18 @@ value row</strong> — <code>event_question.bound_attribute_code</code> points a
 deleted and is retired instead, and so outlives the person whose values sit under it. That is what keeps the
 delete invisible: there is no edge for §9 to walk. <strong>A reference from any table to a <code>person_attribute</code> row id
 remains forbidden by this paragraph</strong>, and would have to be argued for against it, not merely written.</p>
-<p><strong>The third exception is a trail, and it is the newest.</strong> <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
+<p><strong>The second exception is a trail, and it is the newest.</strong> <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
 confirms what <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a> had only proposed: <strong>an <code>access_log</code> row
 older than 24 months is deleted</strong>, by a scheduled job, because that is what the organization decided its
 access trail is worth. It is an exception in the shape this section wants: <strong>no business row is touched, no
 table holding a person's record is in its scope, it moves only forward from a row's own write, and it is one
 named job</strong> — <code>system:log-reduction</code> in <a href="#7a-what-an-empty-actor-column-means">§7a</a>, with a check counting the
-rows that should have gone and are still there. <code>audit_log</code> is <strong>not</strong> in its scope and keeps the opposite
+rows that should have gone and are still there. <strong>The run is now attributable as well as nameable:</strong> every
+table the application writes owes an audit row (<a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>),
+this delete included, and it is recorded as <strong>one summary <code>audit_log</code> row per run</strong> — the actor label, how
+many rows went, the window that removed them — rather than one row per deleted row, which would either quote
+contents the deletion exists to destroy or pile up thousands of rows saying only that something was deleted.
+<code>audit_log</code> is <strong>not</strong> in its scope and keeps the opposite
 shape (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>):
 rows for the life of the system, payloads emptied. <strong>Read "append-only" in this corpus as <em>no application
 writes or removes these rows</em>, which is what it always protected</strong> — not as a promise that a row survives its
@@ -3546,9 +3550,13 @@ of it happen to look correct?</p>
    you will spend a day debugging it. This rule is invisible in a schema and cannot be inferred
    from column names; it must be written in whatever the ORM uses to express such a thing, and
    tested.</li>
-<li><strong>Overlap is prevented below the application, not inside it.</strong> An import script, a manual data
-   fix, a future API, and a bulk edit all bypass model-layer validation. The invariant must hold
-   for writers that were never written. → §6a.</li>
+<li><strong>Overlap is prevented below the application, not inside it.</strong> A manual data fix, a future API,
+   and a bulk edit that skips the model all bypass model-layer validation. The invariant must hold
+   for writers that were never written. → §6a. <strong>The one-off legacy load is deliberately <em>not</em> one of
+   those writers</strong>: it writes through the application as a registered key
+   (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+   so the model layer sees it — which is where D-141's invariant, that a value may not invent a code, now
+   binds it.</li>
 <li><strong><code>created_at</code> is audit time, not world time.</strong> It is distinct from <code>valid_from</code> — a membership
    backdated to 1990 during a 2026 import has <code>valid_from = 1990-09-01</code> and <code>created_at = 2026-…</code>.
    Never conflate them, and never derive one from the other. A system that sets <code>valid_from</code> from
@@ -3582,7 +3590,7 @@ not reject a row. Three layers could do it, and they are not equivalent:</p>
 <thead>
 <tr>
 <th>Layer</th>
-<th>Survives an import?</th>
+<th>Survives a script that skips the app?</th>
 <th>Survives a manual fix?</th>
 <th>Survives a second client?</th>
 </tr>
@@ -3679,7 +3687,7 @@ and "read once and accepted" is something a reader can look up.</p>
 <tr>
 <td><code>created_by</code></td>
 <td>person, optional</td>
-<td>Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). An import batch is not one of them: <code>import_batch.created_by</code> is <strong>required</strong> there (<a href="../06a-import/#3-import-pipeline">06a §3</a>), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the <strong>key</strong> there, and no person is inferred from it (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>).</td>
+<td>Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). A row an integration wrote is not one of them either — the one-off legacy load among them, since it writes through the application as a registered key: the audit trail names the <strong>key</strong> there, and no person is inferred from it (<a href="../../decisions/round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>, <a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).</td>
 </tr>
 <tr>
 <td><code>updated_at</code></td>
@@ -3691,14 +3699,15 @@ and "read once and accepted" is something a reader can look up.</p>
 <td>person, optional</td>
 <td>Who last changed it</td>
 </tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>import batch, optional</td>
-<td>Set on imported rows — the only way to undo a bad import</td>
-</tr>
 </tbody>
 </table>
 <p>Temporal entities additionally carry <code>valid_from</code> / <code>valid_to</code>.</p>
+<p><strong>Nothing on this list marks a row as imported, and no table carries such a column.</strong> The load wrote through
+a key, so <em>which key wrote this</em> is answered by the trail and stays answered for the life of the row; <em>what
+it wrote</em> is in the payload and expires on the usual window (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+A provenance flag on the row was refused for the same reason <code>is_system</code> was: what protects a fact here is a
+record of the act, not a column beside it
+(<a href="../../decisions/round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).</p>
 <p>Entities that record a <em>decision about a person</em> (terminations, rejections, rejections of identity
 hypotheses) additionally carry a reason:</p>
 <table>
@@ -3750,8 +3759,7 @@ a row, in <code>api_key_id</code>, and an empty actor column now means the write
 reductions, the migrations.</p>
 <p><strong>Two limits, because a rule about actors stated as a rule about NULLs gets misread everywhere.</strong></p>
 <ul>
-<li><strong>Only where empty is legal.</strong> <code>import_batch.created_by</code> is required
-  (<a href="../06a-import/#3-import-pipeline">06a §3</a>), <code>api_key.created_by</code> is required
+<li><strong>Only where empty is legal.</strong> <code>api_key.created_by</code> is required
   (<a href="../../decisions/round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>),
   and a grant's <code>granted_by</code> names a person. Those rows have no empty to interpret.</li>
 <li><strong>Only in an actor column.</strong> An absent <code>scope_id</code> is a check at the unit; an absent
@@ -3783,7 +3791,7 @@ what turns <em>"the system"</em> from a shrug into a claim.</p>
 <tr>
 <td><code>system:log-reduction</code></td>
 <td>the access trail's age-out</td>
-<td><strong>Deleting</strong> <code>access_log</code> rows once they pass their 24 months (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to <em>who deleted my access history</em>. <strong>Not to be confused with <code>system:payload-reduction</code> above</strong>, which empties columns of the other trail and deletes nothing</td>
+<td><strong>Deleting</strong> <code>access_log</code> rows once they pass their 24 months (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to <em>who deleted my access history</em>. It was a name on a list and on no row until <a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a> made every write auditable: the run now writes <strong>one summary <code>audit_log</code> row per run</strong> — this label, how many rows went, the window — and not one per deleted row. <strong>Not to be confused with <code>system:payload-reduction</code> above</strong>, which empties columns of the other trail and deletes nothing</td>
 </tr>
 <tr>
 <td><code>system:bank-pull</code></td>
@@ -3794,11 +3802,6 @@ what turns <em>"the system"</em> from a shrug into a claim.</p>
 <td><code>migration:&lt;id&gt;</code></td>
 <td>a named migration</td>
 <td>Any structural change, <strong>and any one-off correction</strong> — a fix that is not in a migration is a fix nobody can attribute</td>
-</tr>
-<tr>
-<td><code>import_batch:&lt;id&gt;</code></td>
-<td>a run of the import pipeline</td>
-<td>Not anonymous and never was: <code>import_batch.created_by</code> names the person who uploaded the file</td>
 </tr>
 </tbody>
 </table>
@@ -3823,11 +3826,15 @@ in one place instead of inferred in four.</p>
 <p>Requirements the design must satisfy:</p>
 <ol>
 <li><strong>A deletion request must not destroy the audit trail.</strong> Implement as <strong>redaction</strong>: set
-   <code>person.redacted_at</code>, overwrite names and contact points with a redaction marker, and keep the
+   <code>person.redacted_at</code>, overwrite names, <code>gender</code> and contact points with a redaction marker — <code>gender</code>
+   is required and the marker is therefore a value of its set, the one no screen offers
+   (<a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>) — and keep the
    row and its ids so historical references still resolve. The person is no longer identifiable;
    the record that <em>someone</em> was in Troop 12 in 2003 survives.</li>
-<li><strong>Redaction must cascade.</strong> It reaches contact points, identifiers, and free-text notes that may
-   contain personal data — and it <strong>deletes every <code>person_attribute</code> row belonging to the person</strong>
+<li><strong>Redaction must cascade.</strong> It reaches contact points, identifiers, and — since
+   <a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a> deleted <code>person.notes</code> — <strong>no
+   free text on the person row at all</strong>, so the third thing it reaches is the vocabulary: it
+   <strong>deletes every <code>person_attribute</code> row belonging to the person</strong>
    (<a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a>). That is the
    one place in this system where erasure deletes rather than overwrites, and
    <a href="#4-deletion-policy">§4</a> says why it is the only row that can be handled that way. A redacted
@@ -3880,14 +3887,18 @@ in one place instead of inferred in four.</p>
    is collected is decided at runtime: a code nobody can justify is retired
    (<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>), and retirement —
    which stops the collecting without destroying what was already recorded — is the mechanism.
-   Erasing what was recorded is item 2, and only item 2.</li>
+   Erasing what was recorded is item 2, and only item 2.
+   <strong>Why <code>gender</code> is on this page at all was re-read this round and the answer here had it wrong:</strong> the column is
+   not a reporting field, it is how the system agrees a verb with a person (<a href="../../decisions/round-23/#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a>), which is why it is
+   required and why <code>unknown</code> is not one of its values. The over-collection test survives intact and reads
+   differently on a grammatical column: what it governs is the per-code layer below, not this one.</li>
 <li><strong>Redaction is invisible in listings and visible in the database.</strong> A redacted person must not
    appear where people are listed, and must still resolve wherever an old record points at them
    (<a href="../01b-merges-views-and-checks/#9-views">01b-merges-views-and-checks.md §9</a>). These two requirements are one rule with two
    halves and the first version of that document had only one of them.</li>
 <li><strong>The trail is a second copy of the person record and has to be guarded like one.</strong> For a
    person's descriptive data the trail holds the <strong>value</strong> — the before and after image, exactly as
-   it does for a contact point or a note — because
+   it does for a contact point or an attribute value — because
    <a href="../../decisions/round-07-08/#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity">D-085</a>
    chose overwrite-in-place on the strength of the trail being the history there is, and a trail that
    records <em>a value existed</em> without recording which one answers neither of the two questions an
@@ -3933,8 +3944,8 @@ removed the subset, and what is left of the list is a set of arbitrary fields �
 value stored under a name nobody predicted</strong>, in an attribute layer whose whole purpose is that nobody can
 enumerate its names. So the list keeps exactly one class of value out of the trail: <strong>the values that must
 never be logged at all</strong> — credentials, tokens, the secret half of an integration — the only values where
-<em>being in a log</em> is itself the harm. Everything else, <code>notes</code>, the reason fields and an attribute value
-included, is logged in the clear and protected by <strong>who may read the log</strong> (item 7), because the answer to
+<em>being in a log</em> is itself the harm. Everything else — the reason fields, an attribute value, and what
+used to be <code>notes</code> until <a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a> moved that text into the vocabulary — included, is logged in the clear and protected by <strong>who may read the log</strong> (item 7), because the answer to
 <em>who may read a child's address</em> was never a list of field names. Read the list as a credential filter and it
 is a working mechanism; read it as the personal-data filter, notice that <code>allergy</code> is not in it, and conclude
 the payload is covered. <a href="../09-attributes/#6-erasure-retirement-and-the-audit-payload">09-attributes.md §6</a>
@@ -3973,7 +3984,7 @@ discovers from a regulator.</p>
 </tr>
 <tr>
 <td>There are <strong>seven</strong> reference-less keys: <strong>six are followed by a scan, and one is followed by nothing on purpose</strong></td>
-<td>Two were followed before this round — <code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>. Four more are followed now: <code>access_log.scope_id</code>, <code>access_log.authorization_ref_id</code>, <code>access_log.entity_id</code> and <code>field_conflict.entity_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, which also carries the exception <code>access_log</code>'s three need — some missing targets are legal, because two paths hard-delete business rows and a trail row may not be rewritten to follow them. <code>audit_log.record_id</code> is the seventh and is <strong>scanned by nothing, deliberately</strong>: an audit row outliving the row it described is what the erasure path and the revert path look like afterwards, and it is the reference the redaction check reads in order to run at all (<a href="../../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> is what found that the old count was the count of the ones somebody looked at; <a href="../../open-questions/#f-30">F-30</a> is settled by <a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>)</td>
+<td>Two were followed before this round — <code>access_grant.scope_id</code> and <code>audience_operand.selector_arg_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 2</a>. Four more are followed now: <code>access_log.scope_id</code>, <code>access_log.authorization_ref_id</code>, <code>access_log.entity_id</code> and <code>field_conflict.entity_id</code>, by <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11 check 23</a>, which also carries the exception <code>access_log</code>'s three need — some missing targets are legal, because <strong>one</strong> path hard-deletes a business row, the erasure, and a trail row may not be rewritten to follow it. <code>audit_log.record_id</code> is the seventh and is <strong>scanned by nothing, deliberately</strong>: an audit row outliving the row it described is what the erasure path looks like afterwards, and it is the reference the redaction check reads in order to run at all (<a href="../../decisions/round-18/#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong">D-129</a> is what found that the old count was the count of the ones somebody looked at; <a href="../../open-questions/#f-30">F-30</a> is settled by <a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>)</td>
 </tr>
 <tr>
 <td>Circular references are broken with an optional column, not a deferred constraint</td>
@@ -4047,7 +4058,7 @@ states the fields, rules, invariants and open issues for its part of the model.<
 </tr>
 <tr>
 <td><a href="../06-audit-and-import/">06-audit-and-import.md</a></td>
-<td><code>audit_log</code>, <code>field_conflict</code>, <code>redaction_log</code>, <code>import_batch</code>, <code>staging_import*</code></td>
+<td><code>audit_log</code>, <code>field_conflict</code>, <code>redaction_log</code> — and no import tables at all: the legacy load is a script run through a key, not a feature of this system (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>)</td>
 </tr>
 <tr>
 <td><a href="../07-finance/">07-finance.md</a></td>

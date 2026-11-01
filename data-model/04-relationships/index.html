@@ -1724,8 +1724,6 @@
       
         
       
-        
-      
     
     
     
@@ -1783,34 +1781,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2293,6 +2263,8 @@
       
         
           
+        
+      
         
       
         
@@ -2976,6 +2948,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3396,11 +3396,6 @@ the ORM decides how each rule is enforced.</p>
 <td>reference to person</td>
 <td></td>
 </tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch</td>
-<td>Legacy rows only</td>
-</tr>
 </tbody>
 </table>
 <p><strong>Rules</strong></p>
@@ -3413,6 +3408,15 @@ the ORM decides how each rule is enforced.</p>
   Past ones are unlimited and expected: a court order lapses and is renewed.</li>
 <li>A dependent may have <strong>any number</strong> of simultaneous guardians, each with its own row and its
   own <code>right_level</code>.</li>
+<li><strong>A dependent may be an adult.</strong> The dependent side of the row is a person, not a minor: nothing
+  restricts the column that way, and nothing happens to the row when the dependent's birth date passes
+  18 — a parent acting under a <code>write</code> level may register an adult child for an event because that is
+  what <code>write</code> says. The row ends when the guardian ends it, when the adult named in it ends it, or when
+  staff record either of those (<em>Guardianship ends</em> below; <a href="../../decisions/round-23/#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185</a>).
+  A delegated grant remains available to an adult who prefers it
+  (<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>),
+  and this rules no preference between the two — it refuses the premise that a second mechanism was
+  needed (<a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a>, closed).</li>
 <li><code>is_primary_contact</code> is not unique per dependent. A child can have two primary contacts.</li>
 </ul>
 <p><strong>Indexes</strong></p>
@@ -3825,6 +3829,18 @@ built for it rather than in a capability level.</p>
 <p>Asked about the <strong>guardianship row itself</strong> rather than through it, the same channel answers for a
 party to it, and only for the three acts in §1's table. That branch is not a fifth channel; it is
 this one, pointed the other way.</p>
+<p><strong>Which of two working mechanisms is meant, now settled.</strong> The model has two ways for an adult to act
+for another person, and the resolver reads both: this channel, and an ordinary grant aimed at the other
+person. For <strong>a person who cannot sign in</strong>, the guardianship row is the answer, and the grant route is
+for an adult who can (<a href="../../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).
+Nothing is added by that ruling — the row already carries the <code>right_level</code>, and the party direction
+already lets a party end it, add a guardian and change the level — but it fixes which mechanism an
+implementer builds first, which is the thing a document is for. The settled negative half belongs to the
+account model rather than this table: a child without their own external identity gets <strong>no second-class
+credential, no shared mailbox, and no login held by staff</strong>. The absence of a login is not a gap in the
+child's record; it is a record of an adult acting for them, which is what this table already is. What
+staff may do is open the account row itself, where it waits to be claimed
+(<a href="../01a-accounts-and-contacts/#4-account">01a §4</a>, <a href="../../decisions/round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>).</p>
 <hr />
 <h2 id="5-acting-on-behalf--recording-it">5. Acting on behalf — recording it<a class="headerlink" href="#5-acting-on-behalf--recording-it" title="Permanent link">&para;</a></h2>
 <p>Every operation performed for a dependent must record both parties. This is not optional:
@@ -3932,10 +3948,18 @@ with no postal address behind it, which is a finance problem
   <a href="../../open-questions/#e-6">E-6</a>). <strong>§1 states what that costs, and the cost is not closed by the decision.</strong></li>
 <li><strong>One right level cannot separate the health facts from the rest of the record</strong> — the arrangement the
   per-code model existed for. <a href="../../open-questions/#e-7">E-7</a>, and §2 states what it costs.</li>
-<li>Whether a guardian may act for a dependent who is also a member in their own right — e.g.
-  can a parent register their adult child for an event, if the child consents? Recommend an
-  explicit consent-based delegation rather than a guardianship, since the legal basis
-  differs. The <em>group</em> version of this is now answered by audiences
+<li><strong>Can a guardian act for a dependent who is a member in their own right — a parent registering an
+  adult child for an event, with the child's consent? — settled: the guardianship already says so, and a
+  delegation stays available.</strong> A dependent may be an adult (§1), <code>write</code> is what it says, and the row is
+  kept until someone ends it; nothing happens at 18
+  (<a href="../../decisions/round-23/#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185</a>,
+  <a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a>). This page's old recommendation —
+  prefer an explicit delegation because <em>the legal basis differs</em> — is dropped for the reason this corpus
+  gives: the system records no position on the legal basis of a relationship
+  (<a href="../../decisions/round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>),
+  so that cannot be a reason to prefer a mechanism; a delegated grant stands beside the guardianship for
+  an adult who prefers it (<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>).
+  The <em>group</em> version of this was answered long ago by audiences
   (<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
 <li>Whether <code>custody_arrangement</code> free text should be structured. Recommend not — custody
   orders vary too much to model, and a wrong model is worse than honest prose.</li>

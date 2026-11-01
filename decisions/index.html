@@ -1470,8 +1470,6 @@
       
         
       
-        
-      
     
     
     
@@ -1529,34 +1527,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2043,6 +2013,8 @@
       
         
           
+        
+      
         
       
         
@@ -2726,6 +2698,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2855,7 +2855,7 @@
 re-litigated from scratch — and so that when a decision is reversed, the reason for the
 original choice is visible.</p>
 <p><strong>How this log is filed.</strong> The entries live in the round that took them; this page indexes all
-170 of them and lists the reversals. Read the round you are curious about — each one says what was
+192 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a <code>D-</code> number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.</p>
 <p><strong>Status values:</strong> <code>decided</code> — settled, the data model reflects it <em>(since D-072: the documents, not a schema file)</em>. <code>proposed</code> — recommended,
@@ -3910,6 +3910,138 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 <td>The ceiling does not read the twelve a create writes</td>
 <td>decided (found in this round's own diff) — <strong>D-163 as worded refused D-151's bundle</strong>: the ceiling reads a writer who chose whom a grant names, and the create chose nobody</td>
 <td>round 22</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a></td>
+<td>A member row has to meet its group, and the resolver trims it to the group's life</td>
+<td>a member row need only <em>meet</em> its group's period; the resolver reads the intersection, and the register's <em>none — containment is assumed</em> is withdrawn</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a></td>
+<td>An ended group is in no picker and comes back never</td>
+<td>an ended group is not in a picker and <code>valid_to</code> is never cleared, so "a returning name is a new group" stays one rule</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a></td>
+<td>That two groups are the same group is said, not stored</td>
+<td>no edge, no carried number, no self-reference — D-098's refusal stands and the absence is written as chosen</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a></td>
+<td><code>person.gender</code> is how the system declines a verb, and it is required</td>
+<td>the column exists so Czech sentences agree with the person; set is <code>male</code>, <code>female</code>, <code>other</code>, <strong><code>unknown</code> deleted</strong>, required, and <strong>assumption 15's "needed for reporting" is falsified</strong></td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a></td>
+<td>An erased person's grammatical form goes with their names</td>
+<td>erasure overwrites it with the names, so the closed set gains one value no screen offers — the corpus's own <em>an absence is not a value</em> named as the tension</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a></td>
+<td>Google or a password, one identity one account, and the invariant finally has a check</td>
+<td>Google or e-mail + password; <strong>one external identity is one account, refused at the save</strong>; the <code>oauth</code> half was drawn around a national provider that vouches for membership, and Google vouches for an e-mail address</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-177--the-list-of-login-methods-is-written-in-the-program">D-177</a></td>
+<td>The list of login methods is written in the program</td>
+<td>a method is behaviour, not data — no table of credential types, and a magic link or SMS code arrives in a release</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a></td>
+<td>A child without a login is reached through the guardianship row</td>
+<td>a child who cannot sign in gets no worse login: the guardianship row's <code>right_level</code> is the answer, and the absence of an account is not a gap</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a></td>
+<td>Staff may open an account; only its person can start it</td>
+<td>the row may be written for them; it sits at <code>pending_verification</code> until they or their guardian set a credential — nobody holds a child's password</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a></td>
+<td>There is no queue for money that does not fit</td>
+<td>most money is not member money; <code>matched_payment_request_id IS NULL</code> stops being a worklist, <strong>D-076 keeps <em>waiting beats guessing</em> and loses the queue</strong>, and §5's reconciliation warning loses its left-hand term</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-181--every-payable-has-a-variable-symbol">D-181</a></td>
+<td>Every payable has a variable symbol</td>
+<td>membership and camp fee alike, one live request per liability and never per person — with no queue, a liability with no symbol has money nobody would see</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a></td>
+<td>Matching money is a code of its own, and the automatic half is <code>system:bank-pull</code>'s</td>
+<td>matching by hand is its own <code>unit</code>-scope code, because it can free a member without writing money; matching by symbol is what <code>system:bank-pull</code> already says it is for — <strong>and the money codes are registered in no catalog section, which this round found by trying to cite one</strong></td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a></td>
+<td>A changed ask is a voided request and a new symbol, and <code>amount_discount</code> goes</td>
+<td><code>amount_due</code> is edited in place (D-160), an ask is never edited — void it, issue a new symbol; <strong><code>amount_discount</code> deleted</strong> and the balance loses a term; no report will ever count a reduction</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a></td>
+<td>Every table is audited, and the delete carve-out names the moments that survive</td>
+<td><strong>assumption 17 becomes the rule</strong>: every table the application writes, the trails excepted; the delete carve-out loses revert with the pipeline, and <code>system:log-reduction</code> finally gets a row to be written on</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185</a></td>
+<td>A guardianship ends when a party ends it, and majority is not a party</td>
+<td>a dependent may be an adult, nothing happens at 18, and the subject may end the row without a grant — E-3 closes on the rule <code>04 §1</code> already held, adding the sentence nothing had said</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a></td>
+<td><code>membership_type</code> is settings wearing a vocabulary's clothes</td>
+<td>the one-row table stays and stops being called a vocabulary: it is the settings row holding the calendar knobs A-4 protects</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a></td>
+<td>An invoice is a document a payer asks for</td>
+<td>a payer asks and accounting issues one over the request, <code>invoice.issue</code> (<code>unit</code>) — <em>first answer said payee</em> — with no "requested" state, because that would be the queue D-180 deleted wearing a coat</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188</a></td>
+<td>The ceiling reads a grant and nothing else, and what it leaves open is written down</td>
+<td><strong>an expression edit or an office add widens a live grant and no ceiling reads it</strong> — refused anyway, because reading it means resolving a permission while defining one, so <code>audience.manage</code> must be granted like <code>access_grant.create</code></td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-189--one-author-writes-the-vocabulary-before-the-batch">D-189</a></td>
+<td>One author writes the vocabulary before the batch</td>
+<td>one named holder of <code>attribute.define</code> writes the definitions with the source's headers before the batch that would refuse them, and keeps the code after</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a></td>
+<td>The legacy import is a script and a key, and the pipeline is gone</td>
+<td><strong>the largest deletion since the unit hierarchy</strong> — <code>import_batch</code>, the staging tables and the deletion policy's first exception, the six stages, the revert, four codes, one actor label, three checks and the page <code>06a-import.md</code> all go; provenance moves from a column to the trail, and <em>the person who ran it</em> is the accountability this buys less of</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a></td>
+<td><code>person.notes</code> is deleted, and the vocabulary takes the job</td>
+<td><strong>the last privileged corner goes</strong> — free text about a person needs a definition to exist, and its erasure gets <em>stronger</em>: attribute rows are deleted, <code>person.notes</code> was untouched by a redaction</td>
+<td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a></td>
+<td><code>proposed_by</code> loses <code>import_job</code>, because a vocabulary value is a claim about who can write</td>
+<td><strong>the residue of a deletion is not the deleted page</strong> — one enum value went on naming the pipeline <code>D-190</code> had removed, and no gate reads a column's value set, so it was found only because the field table was opened to be swept; row-level provenance markers (<code>record_origin</code>, <code>source</code>, <code>data_confidence</code>) survive it untouched</td>
+<td>round 23</td>
 </tr>
 </tbody>
 </table>

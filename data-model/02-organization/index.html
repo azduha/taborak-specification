@@ -1607,8 +1607,6 @@
       
         
       
-        
-      
     
     
     
@@ -1666,34 +1664,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2176,6 +2146,8 @@
       
         
           
+        
+      
         
       
         
@@ -2859,6 +2831,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3104,7 +3104,7 @@ and the absence table below is the same list stated as columns.</p>
 <tr>
 <td><code>valid_to</code></td>
 <td>date, optional</td>
-<td>NULL = open. An ended group is never deleted: its member rows still answer the historical question (§4). <strong>Setting it is refused while a live grant, or a live audience reachable from one, names the group</strong> (§3).</td>
+<td>NULL = open. An ended group is never deleted: its member rows still answer the historical question (§4). <strong>It is set by a person and never cleared — an ended group comes back never</strong> (<a href="../../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>). <strong>Setting it is refused while a live grant, or a live audience reachable from one, names the group</strong> (§3).</td>
 </tr>
 <tr>
 <td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
@@ -3197,16 +3197,31 @@ the list is worth keeping next to the table:</p>
 </tbody>
 </table>
 <p><strong>Naming, and the rule that a name does not carry.</strong> A name that comes back after a decade is a <strong>new
-<code>person_group</code> row</strong>, unless somebody records the continuity
-(<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>,
-whose method is that continuity is <strong>asserted, never matched</strong>).
-The default is stated because an unstated one gets implemented by whoever writes the matching screen, and
-that screen matches on name. <strong>Where the assertion would be recorded is not decided</strong>: no group column
-carries it, so the enforceable half of the rule is the default and the rest is prose. The domain page states
+<code>person_group</code> row</strong> — this is the one rule, and it is unconditional
+(<a href="../../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>). The
+conditional this page used to carry — <em>"unless somebody records the continuity"</em>,
+<a href="../../decisions/round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>'s
+escape clause — is deleted: <strong>that two groups are the same group is said, not stored</strong>
+(<a href="../../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>).
+There is no self-reference on <code>person_group</code>, no carried number and no edge: D-098's refusal of
+group-to-group edges stands, the words <em>"the same troop, 1998"</em> live outside the database, and the person
+who wants the whole story of a troop reads two rosters. The rule is stated because an unstated one gets
+implemented by whoever writes the matching screen, and that screen matches on name. The domain page states
 the cost:
 <a href="../../domain/04-organization-structure/#4-a-name-carries-no-identity">../domain/04-organization-structure.md §4</a>.
-What <em>is</em> settled is that a rename is cheap and safe: a grant and an expression store <strong>kind + id</strong>, never
+Also settled is that a rename is cheap and safe: a grant and an expression store <strong>kind + id</strong>, never
 a name, so renaming a group never rewrites a grant (D-101).</p>
+<p><strong>An ended group is in no picker, which is the same fact as its being unreopenable.</strong> A group whose
+<code>valid_to</code> is set is not offered by a picker, and it is not offered <em>because</em> it may never be reopened —
+<code>valid_to</code> is set by a person and is not cleared (<a href="../../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>).
+A list of live groups is a list of groups that can be
+written to, and §3's refusal to end a group something live names has no opposite operation any more: what
+is ended is ended. Reopening a group by
+clearing <code>valid_to</code> would put two rules over the same name — <em>a returning name is a new group</em> and
+<em>sometimes it is the old one</em> — with nothing recording which. The ended group stays reachable as history
+(its member rows still answer the question D-098 built them for) and reachable by search, which is not a
+picker; a troop that sleeps for a year and restarts is a new row whose first roster is empty and gets
+written again.</p>
 <p><strong><code>person_group</code> is registered in <code>grant_scope_type</code></strong> — which is what makes a group an item, and is §3.</p>
 <hr />
 <h2 id="2-person_group_member">2. <code>person_group_member</code><a class="headerlink" href="#2-person_group_member" title="Permanent link">&para;</a></h2>
@@ -3277,10 +3292,21 @@ and which must not become the history of record for anything
   <code>is_primary</code> deciding which roster to show first.</li>
 <li><strong><code>group_id</code> and <code>person_id</code> are never edited on an existing row.</strong> Close the row and open a new one
   (§4).</li>
-<li><strong>A member row whose period lies outside its group's period is reported, not refused.</strong> The two periods
-  are two facts and D-098 keeps both without ruling that one contains the other, so containment is
-  assumed here and nowhere decided. <strong>Status:</strong> assumption — see integrity check 2, and
-  <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>.</li>
+<li><strong>A member row must <em>meet</em> its group's period; it need not lie inside it.</strong> The two periods must have
+  a non-empty intersection — an absent <code>valid_to</code> on either side reads as open — and a member row that
+  cannot overlap its group at all is <strong>refused at the save</strong> (<a href="../../decisions/round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a>).
+  Containment was the obvious rule and it is refused on purpose: a group's period is a fact about a body
+  and a member row's period is a fact about a person's belonging to it, dated by different people at
+  different moments, and refusing a row whose ends disagree would force whoever hit it to <em>invent an
+  earlier date</em> to get the write through — data corruption as a side effect of a validation rule. What
+  matters is not that the intervals agree but that <strong>nobody gains a right from a period the group does
+  not have</strong>, and that half is carried at resolution: during a permission check the membership
+  contributes only the part of itself inside the group's lifetime — <strong>the resolver reads the
+  intersection</strong>, not the row's own span. The cost, stated: a group's dates can silently shorten a
+  membership's effect — a row running to June in a group closed in March stops reaching anybody in
+  March, and no report says so, because nothing here sends anything to anybody
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). Integrity
+  check 2 is the net under the refusal.</li>
 </ul>
 <p><strong>Who enforces the overlap rule.</strong> <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
 makes a rule name its enforcement, so the answer is specific. <strong>The migration layer</strong>,
@@ -3516,10 +3542,12 @@ as data except the rosters, which became <code>person_group_member</code> (§2);
    migration as the enforcing layer, as
    <a href="../00a-invariant-register/#1-no-two-rows-overlap-in-time">shape 1</a> assigns it; this report is what
    notices if that migration was never written, which is the job the register names this check for.</li>
-<li><strong>A member row lying outside its group's own period</strong> (§2). A list to read rather than a breach: the two
-   periods are two facts and containment is assumed here, not ruled
-   (<strong>Status:</strong> assumption — <a href="../../domain/04-organization-structure/#8-open-issues">§8</a>). A large count means people are editing old rows
-   instead of opening new ones.</li>
+<li><strong>A member row meeting no part of its group's period</strong> (§2). Not untidy bookkeeping but a row that
+   says nothing and cannot be repaired by reading either end — <a href="../../decisions/round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a>
+   refuses it at the save, so this report is the net under that refusal, the half D-081 asks for:
+   <strong>a non-zero count is the refusal having leaked</strong>, not a style complaint. The old subject — a row
+   lying partly outside its group's period — is ordinary bookkeeping under the meet rule and is no
+   longer a finding at all.</li>
 <li><strong>A group name that collides</strong> — with another group, with a role, with a set <code>audience.code</code>, or with a
    reserved <code>selector_type.code</code> (§1). Reports the collisions the write path should have refused; a non-zero
    count means a path exists that bypasses it, which in a system with an import, a data fix and a second
@@ -3540,7 +3568,8 @@ as data except the rosters, which became <code>person_group_member</code> (§2);
    written <em>onto</em> a group that was already ended — a direction the rule needed saying twice, because a
    constraint on <em>ending</em> alone would leave this report full of behaviour that looked permitted
    (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a> refuses both). That
-   second cause is why the question about hiding ended groups from pickers (§8) is not cosmetic. Read the leaves sitting inside a subtraction first: <code>EVERYONE - GROUP(ended)</code> denies
+   second cause is why §1 keeps ended groups out of every picker: a picker that offers a group no live
+   grant may name invites exactly this row. Read the leaves sitting inside a subtraction first: <code>EVERYONE - GROUP(ended)</code> denies
    everybody, where the same ended group as a plain scope denies nobody.</li>
 <li><strong>An open group with no open member rows for a long period.</strong> A data-quality list: often legitimate (a
    project group between seasons), sometimes a group that ended and nobody set <code>valid_to</code>. Nothing should
@@ -3575,16 +3604,22 @@ lookup row in the authorization module, so there is no root row to create and no
 seeded that could contradict the runtime behaviour, which is the property D-054 was protecting above.</p>
 <hr />
 <h2 id="8-open-issues">8. Open issues<a class="headerlink" href="#8-open-issues" title="Permanent link">&para;</a></h2>
+<p><strong>This section held three questions and all three were answered in one round</strong>, each in the section that
+now carries the rule rather than here:</p>
 <ul>
-<li><strong>Where a claimed group continuity is recorded.</strong> §1 states the default (a returning name is a new
-  group) and D-096's method says the continuity is asserted, never matched — but no row on this page can
-  hold the assertion, and D-098 refuses group-to-group edges.</li>
-<li><strong>Whether a member row must lie inside its group's period.</strong> Assumed in §2, reported in §6 check 2, and
-  nowhere ruled. A one-sentence decision either way; left open rather than decided by a document.</li>
-<li><strong>Whether an ended group is hidden from pickers, and whether it may be reopened.</strong> An ended group has a
-  behaviour; <code>person_group</code> has a period and no rule about which screens read it. Reopening an ended
-  group by clearing <code>valid_to</code> would also collide with §1's rule that a returning name is a new group, so
-  the two questions are one question.</li>
+<li><strong>Must a member row lie inside its group's period?</strong> — answered: it must <strong>meet</strong> it, refused at the
+  save when the two periods do not overlap at all, and the resolver trims the membership to the group's
+  lifetime at check time (<a href="../../decisions/round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a>;
+  §2's rule, §6 check 2 the net beneath it).</li>
+<li><strong>Is an ended group hidden from pickers, and may it be reopened?</strong> — answered: it appears in no picker
+  and is never reopened — <code>valid_to</code> is set by a person and never cleared, which is what keeps the
+  naming rule singular: a returning name is a new group, and that stays the only rule
+  (<a href="../../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>; §1).</li>
+<li><strong>Where is a claimed continuity between two groups recorded?</strong> — answered: <strong>nowhere, deliberately, and
+  that is the decision rather than the gap</strong>. That two groups are the same group is said and not stored —
+  no self-reference, no carried number, no edge — so a search for a dead group does not find its
+  successor and the whole story of a troop is two rosters read in sequence
+  (<a href="../../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>; §1).</li>
 </ul>
 <p>The questions this page once wondered about, open and settled alike, are registered in
 <a href="../../open-questions/">../open-questions.md</a>; a settled one is listed there with the decision that settled

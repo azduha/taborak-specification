@@ -1593,8 +1593,6 @@
       
         
       
-        
-      
     
     
     
@@ -1652,34 +1650,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2162,6 +2132,8 @@
       
         
           
+        
+      
         
       
         
@@ -2845,6 +2817,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3084,8 +3084,8 @@ a well-meaning future change.</p>
 </tr>
 <tr>
 <td><code>gender</code></td>
-<td>text, optional</td>
-<td>One of: <code>male</code>, <code>female</code>, <code>other</code>, <code>unknown</code>. Included because youth organizations typically must report it. Remove if yours does not need it — do not collect what you cannot justify</td>
+<td>text, required</td>
+<td>One of: <code>male</code>, <code>female</code>, <code>other</code>. The column exists so the system can <strong>decline a verb</strong>: Czech inflects a past tense for the sex of the person being talked about, so <em>"your registration was accepted"</em> has more than one form and something has to pick one (<a href="../../decisions/round-23/#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a>). These are <strong>forms of address, not categories of person</strong>; <code>other</code> is the third grammatical option and, for anybody who did not choose it, the absence of a choice the system is not allowed to make for them. It is <strong>not a reporting category</strong> — no report groups on it, and the older reason for the column, that youth organizations must report it, is falsified and gone. <code>unknown</code> was deleted: an absence cannot be declined, and a required column has no room for one. The fourth value of the set is the redaction marker an erasure writes into this column along with the names — the only value no screen offers (<a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>). A load that cannot derive the value from its source supplies one: the organization's inference, written with the row's <code>data_confidence</code> low, the posture <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> already takes toward an inferred period</td>
 </tr>
 <tr>
 <td><code>preferred_name</code></td>
@@ -3115,12 +3115,7 @@ a well-meaning future change.</p>
 <tr>
 <td><code>redacted_at</code></td>
 <td>timestamp, audit time, optional</td>
-<td>Set when a GDPR-style erasure was performed. Names and contacts are overwritten and the person's <code>person_attribute</code> rows are deleted; the row and its id survive so historical references still resolve (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>)</td>
-</tr>
-<tr>
-<td><code>notes</code></td>
-<td>text, optional</td>
-<td>Free text about a person, and the only such text that lives outside the attribute vocabulary — see <em>What is deliberately not on this table</em> below. May contain anything, including a diagnosis sitting under a column nobody would call medical. <strong>It is logged with its contents, like every other field on this row, and it is deliberately <em>not</em> on the redactor's list</strong> — a column named as an exception is the field-name rule <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a> removed, and the protection is the guard on the trail (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8 item 7</a>). Whether the column should exist at all is argued below</td>
+<td>Set when a GDPR-style erasure was performed. Names, contact points and <code>gender</code> are overwritten with the redaction marker — the column is required, so the marker is a value of its set, and the only one no screen offers (<a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>) — and the person's <code>person_attribute</code> rows are deleted; the row and its id survive so historical references still resolve (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8</a>)</td>
 </tr>
 <tr>
 <td><code>created_at</code></td>
@@ -3141,11 +3136,6 @@ a well-meaning future change.</p>
 <td><code>updated_by</code></td>
 <td>reference to person, optional</td>
 <td></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td>Set on imported rows. Its link to <code>import_batch</code> can only be made once that table exists</td>
 </tr>
 </tbody>
 </table>
@@ -3199,8 +3189,10 @@ years, unenumerable in advance — and a permission that reads a person reads th
 whatever the shelf is called (<a href="../../domain/08-person-data/">domain/08-person-data.md</a>).</p>
 <p><strong><code>given_name</code>/<code>family_name</code>/<code>preferred_name</code>, <code>gender</code> and <code>birth_date</code> are the only descriptive
 facts that are columns here, and they are the last the model will accept.</strong> The test for keeping one
-is not sensitivity — <code>notes</code> sits in the field table above and is a worse exposure than most of what
-moved out. <strong>The test is whether a rule exists that an open layer physically cannot hold.</strong> <em>"One
+is not sensitivity — the free-text <code>notes</code> column that used to sit in the field table above was a worse
+exposure than most of what moved out, and sensitivity is exactly why it is gone now
+(<a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>).
+<strong>The test is whether a rule exists that an open layer physically cannot hold.</strong> <em>"One
 current name per person"</em>, <em>"exactly one primary postal contact among the open rows"</em>, <em>"a school id
 may repeat, a birth number may not"</em> — each is a constraint over a <strong>known set of columns</strong>, and a
 key/value layer has no known set of columns, which is the whole of what it is for. Folding
@@ -3215,17 +3207,21 @@ does not earn a column here, however reasonable it looks — that is the sentenc
 <code>is_deceased</code>'s cousins out. And a table already in this document does not lose its columns because
 the new layer looks tidier — that is the sentence that keeps a well-meaning unification of "everything
 about a person" from quietly turning four enforced rules into four hopes.</p>
-<p><strong>One consequence names itself.</strong> <code>person.notes</code> is the last free text about a person kept outside the
-vocabulary, and it is the column a reviewer should ask about: a sentence typed there is invisible to
-to any report on a code, and to the screen a first aider reads at 23:00, while the same sentence recorded as a
-value against a code is visible to both — <strong>and recording it that way is now one act by one person rather than
-a request waiting for somebody with time</strong>, since a definition is live at the save of whoever holds
-<code>attribute.define</code> and there is no queue left to wait in
-(<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>,
-<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>). Whether the column
-should exist at all is open and already argued
-(<a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a>); what is settled is that it
-carries no protection the attribute layer does not carry, and less readability.</p>
+<p><strong>The person row holds no free text, and plenty of rows about a person still do.</strong> That is the
+distinction <a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>
+drew, and this is the page that states it. A free-text column <em>on the person record</em> is gone for good:
+free text that is a <strong>fact</strong> about a person is an <code>attribute_definition</code> row, live at the save of whoever
+holds <code>attribute.define</code> (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>,
+<a href="../09-attributes/#2-attribute_definition--the-vocabulary">09-attributes.md §2</a>), read under the same
+<code>person.view</code> as the rest of the record. What stays is free text on <strong>rows about a person</strong> — each one a
+relationship or an act, not a column of this table: why a child joined a group is the <code>note</code> on a roster
+row (<a href="../02-organization/#2-person_group_member">02 §2</a>); why an account was suspended is its
+<code>status_reason</code> and <code>status_note</code> (<a href="../01a-accounts-and-contacts/#4-account">01a §4</a>); what a merge could
+not choose between is held in <code>field_conflict</code> (<a href="../01b-merges-views-and-checks/#8-identity_hypothesis-and-person_merge">01b §8</a>).
+The deletion fixed an erasure hole rather than opening one: the deleted column was kept off the
+redactor's list, so a diagnosis typed into it survived being asked to leave, while attribute rows are the
+one thing an erasure <strong>deletes</strong> (<a href="../00-conventions/#8-personal-data-and-erasure">00-conventions §8 item 2</a>,
+<a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>).</p>
 <h3 id="the-answer-to-who-is-a-member-is-never-on-this-table">The answer to "who is a member?" is never on this table<a class="headerlink" href="#the-answer-to-who-is-a-member-is-never-on-this-table" title="Permanent link">&para;</a></h3>
 <p>To be unambiguous, the two facts:</p>
 <ul>
@@ -3294,11 +3290,6 @@ are usually wrong.</p>
 <td><code>source</code></td>
 <td>text, optional</td>
 <td><code>self</code>, <code>staff</code>, <code>legacy_import</code></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td></td>
 </tr>
 </tbody>
 </table>

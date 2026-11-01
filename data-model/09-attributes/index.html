@@ -1618,8 +1618,6 @@
       
         
       
-        
-      
     
     
     
@@ -1677,34 +1675,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2187,6 +2157,8 @@
       
         
           
+        
+      
         
       
         
@@ -2870,6 +2842,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3536,28 +3536,40 @@ attribute layer — most of the first few hundred definitions arrive here rather
 act of design, because <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">the corpus you have</a>
 is thousands of roster rows with free-text columns beside them. <strong>That is one file arriving with the
 organization's descriptive vocabulary in it, and it changes how the mapping has to be reviewed.</strong></p>
+<p>There is no pipeline and no batch: the load is <strong>one script, run once, through a registered key</strong>
+(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+and what follows are the rules that survived it. <strong>The mechanism was where the schedule lived, and losing it
+cost this section something it should not pretend otherwise about.</strong></p>
 <ul>
-<li><strong>Every raw field name in a batch must map to a code, be mapped to <code>discarded</code> with a reason, or
-  stop the batch.</strong> Silently dropping an unmapped column is how a decade of a fact the organization
-  collected disappears on a Tuesday.</li>
-<li><strong>An unmapped column is an error at apply time.</strong> The batch refuses and names the column; a value
-  may not invent a code, and a column may not borrow one by similarity either. Nothing guesses at
-  import time, because an import-time merge is invisible and unreviewable — merging near-duplicates
-  is a curation act afterwards, by a human holding <code>attribute.define</code>, where the trail can see it
-  (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>).</li>
-<li><strong>The map is authored against a vocabulary that already exists.</strong> The import does not bootstrap the
-  vocabulary, it fills it in: every code the map names must be defined and <code>live</code> before the batch
-  applies, or the batch refuses. This is not a trap but the shape the largest single event in this
-  layer's life actually has — the map is authored and read <em>before</em> the batch applies, as one
-  artefact, top to bottom, so whoever wrote the map wrote the vocabulary first, and the codes arrive
-  <code>live</code> because they were <code>live</code> before the batch was ever typed. The cost is stated plainly: the
-  first few hundred definitions are a writing job under <code>attribute.define</code> that must happen <em>before</em>
-  the import that seemingly produces them, and a batch held at the door for an undefined column is
-  this design working, not failing.</li>
-<li><strong>The mapping is recorded on the batch</strong>, in <code>import_batch.field_mapping</code>, one entry per raw column
-  (<a href="../06a-import/#3-import-pipeline">06-audit §3</a> explains why the grain is a column and not a
-  staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
-  act of curation with an audit entry, not a migration.</li>
+<li><strong>Every raw column in the exports maps to a code, or is mapped to a discarded value with a reason, or the
+  load stops.</strong> Silently dropping an unmapped column is how a decade of a fact the organization collected
+  disappears on a Tuesday.</li>
+<li><strong>An unmapped column is an error, not a proposal, and the invariant binds the script exactly as hard as it
+  bound a stage.</strong> A value may not invent a code, and a column may not borrow one by similarity either.
+  Nothing guesses on the way in, because a merge done at load time is invisible and unreviewable — merging
+  near-duplicates is a curation act afterwards, by a human holding <code>attribute.define</code>, where the trail can see
+  it (<a href="../../decisions/round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>).
+  [D-141 deleted the proposal stage, and this round found the schedule that stage had been quietly carrying]
+  (../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted):
+  something had to make the vocabulary arrive <em>in time for</em> the load, and it was the stage doing it in silence.</li>
+<li><strong>One named person writes the vocabulary before the load runs, and this sentence is the schedule.</strong>
+  <a href="../../decisions/round-23/#d-189--one-author-writes-the-vocabulary-before-the-batch">D-189</a>
+  puts a person and a period where the deleted stage's queue used to be: whoever holds <code>attribute.define</code> sits
+  down with the source's column headers and writes the first few hundred definitions, which arrive <code>live</code>
+  because a definition is live at the save. There is no queue, no ageing and no curation stage, and nothing
+  reminds that person of the date — <a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>
+  forbids the reminder, which is precisely why the deadline is written on this page rather than held in
+  somebody's calendar. A load that stops on an undefined column is this design working, not failing.</li>
+<li><strong>The map is no longer a row of this database, and that is the price.</strong> It used to sit on the batch as
+  one entry per raw column, reviewed as one artefact top to bottom; it now lives in the script, which is not
+  in this repository and will not be read by whoever reads this page next. <strong>The rules survive; the place they
+  were readable does not.</strong> The mapping was never the schema either way — changing it is an act of curation
+  with an audit entry, not a migration — and the grain was always a column and never a row, because a
+  per-row map is how one legacy column quietly becomes two codes.</li>
+<li><strong>Provenance is no longer a column either.</strong> A value the load wrote is a <code>person_attribute</code> row whose
+  <code>source</code> says <code>legacy_import</code> and whose <code>data_confidence</code> says how much to believe it; past that, <em>which key
+  wrote it</em> is answered by the trail
+  (<a href="../06-audit-and-import/#3-import-pipeline--deleted">06 §3</a>).</li>
 </ul>
 <hr />
 <h2 id="8-integrity-checks">8. Integrity checks<a class="headerlink" href="#8-integrity-checks" title="Permanent link">&para;</a></h2>

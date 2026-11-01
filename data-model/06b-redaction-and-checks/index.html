@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://azduha.github.io/taborak-specification/data-model/06b-redaction-and-checks/">
       
       
-        <link rel="prev" href="../06a-import/">
+        <link rel="prev" href="../06-audit-and-import/">
       
       
         <link rel="next" href="../07-finance/">
@@ -1474,8 +1474,6 @@
       
         
       
-        
-      
     
     
     
@@ -1533,34 +1531,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2123,6 +2093,8 @@
       
         
           
+        
+      
         
       
         
@@ -2806,6 +2778,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2943,12 +2943,12 @@
 
 <h1 id="data-model--audit-and-import-the-redaction-log-the-integrity-checks-open-issues">Data Model — Audit and Import: the redaction log, the integrity checks, open issues<a class="headerlink" href="#data-model--audit-and-import-the-redaction-log-the-integrity-checks-open-issues" title="Permanent link">&para;</a></h1>
 <p><code>redaction_log</code>, the checks that run over both trails, and what is still outstanding. The trail the
-redaction writes into is <a href="../06-audit-and-import/#2-audit_log">§2</a>; the batches the checks watch are
-<a href="../06a-import/#3-import-pipeline">§3</a>.</p>
-<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite
+redaction writes into is <a href="../06-audit-and-import/#2-audit_log">§2</a>; where the legacy import pipeline used
+to be, and what replaced it, is <a href="../06-audit-and-import/#3-import-pipeline--deleted">§3</a>.</p>
+<p><strong>Section numbers are shared across the two parts</strong> and never renumbered, because other pages cite
 them by number and their anchors are built from them:
-<a href="../06-audit-and-import/">06-audit-and-import.md</a> holds §1–§2 (the two audit trails and the <code>audit_log</code>
-table), <a href="../06a-import/">06a</a> §3 (the legacy import pipeline), and
+<a href="../06-audit-and-import/">06-audit-and-import.md</a> holds §1–§3 (the two audit trails, the <code>audit_log</code>
+table, and a tombstone where the import pipeline was), and
 <a href="./">06b</a> §4–§6 (the redaction log, the integrity checks, open issues).</p>
 <hr />
 <h2 id="4-redaction-log">4. Redaction log<a class="headerlink" href="#4-redaction-log" title="Permanent link">&para;</a></h2>
@@ -3073,31 +3073,30 @@ what the record said.</p>
 <h2 id="5-integrity-checks">5. Integrity checks<a class="headerlink" href="#5-integrity-checks" title="Permanent link">&para;</a></h2>
 <p><strong>Invariants to verify</strong></p>
 <ul>
-<li><strong>Imported memberships with no end date.</strong> Count <code>membership</code> rows that carry an
-  <code>import_batch_id</code> and have no <code>valid_to</code>. Zero is the only acceptable answer: these are
-  the rows that silently satisfy the permission gate, so this is a security check as much as
-  a data-quality one (§3). <strong>Do not read this as a data-quality report any more, because since
-  <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
-  it is the only thing standing between an imported row and the membership gate.</strong> While imports made
-  participations this check was theoretical — there were no imported memberships to find — and it is now
-  the load-bearing one, since the corpus is expected to create thousands of rows that would each satisfy
-  <code>is_current_member()</code> if their end date were missing. <strong>And the zero has a route to it now:</strong> since
-  <a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>
-  a rule supplies the date, so a non-zero result means the inference did not run — it no longer means nobody
-  knew what belonged in the column, which is the finding this check used to be the only record of.
-  <strong>Its sibling is re-pointed rather than removed.</strong> The previous round's version, from
-  <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>,
-  read "an imported membership from a batch whose source is a roster, whatever its dates say", and that
-  finding no longer exists as a finding — imported memberships are expected now. What replaces it is the
-  surviving half of the same ban (§3.1): <strong>count a <code>membership</code> carrying an <code>import_batch_id</code> whose
-  <code>batch_kind</code> is <code>events</code>.</strong> An attendance export states presence, and a membership drawn from one is the
-  inference somebody re-enabled because they found a column that looked like dues. Run both halves on the
-  same report: the first catches a missing end date, the second catches the wrong kind of source.</li>
+<li><strong>No longer a count: an imported membership with no end date.</strong> Two counts stood here — a <code>membership</code>
+  carrying an <code>import_batch_id</code> with no <code>valid_to</code>, and its sibling, one whose batch was an events export — and
+  both die with the column and the batch
+  (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+  <strong>The rule underneath them is untouched.</strong> An imported membership is never open-ended and never inferred from
+  an attendance row; it ends with the calendar year the person was last seen in, and the value written is
+  1 January of the following year because every period here is half-open
+  (<a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>,
+  <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>).
+  <strong>What is gone is the report, and a hole whose report is gone should be written down rather than quietly
+  unstated.</strong> Its shape: a <code>membership</code> row with <code>valid_to</code> empty whose <code>audit_log</code> row names the load's key.
+  That is authority and not untidiness — an open membership satisfies <code>is_current_member()</code> and so walks
+  through the permission gate (<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>)
+  — and the answer to "who would notice" is: whoever reads the load's output, on the one occasion there will
+  be a load's output to read. Nothing reads it on their behalf, and nothing in this design would tell them if
+  it did (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</li>
 <li><strong>Imported people who were later merged away.</strong> Count people whose <code>record_origin</code> is
   <code>legacy_import</code> and whose merge pointer is set. Non-zero is probably fine and worth an eye.</li>
-<li><strong>Batches left in a non-terminal state for a long time.</strong> Count <code>import_batch</code> rows whose
-  status is none of <code>applied</code>, <code>reverted</code>, <code>failed</code> and which were created more than 30 days
-  ago; non-zero means a run somebody stopped steering.</li>
+<li><strong>No longer a count: a batch left in a non-terminal state.</strong> This bullet policed runs that had stalled
+  midway through six stages, and there are no stages, no statuses and no queue
+  (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+  <strong>The two bullets in this list that named the pipeline are emptied rather than deleted, and a later editor
+  should leave them standing:</strong> the checks below them keep the positions the rest of the corpus counts them
+  by, and an emptied bullet is a visible hole where a renumbering is an invisible one.</li>
 <li><strong>Audit rows whose actor names nothing.</strong> The trail has three ways to say <em>who did this</em>: a person, a
   registered integration (<a href="../05e-keys-and-callers/">05e-keys-and-callers.md §14</a>), and — for the writers
   that have no row of their own — a label from the list in
@@ -3106,8 +3105,11 @@ what the record said.</p>
   count every integration write as a finding until whoever reads it stopped reading. <strong>What it no longer
   counts as a gap is the shape it was built to count.</strong> A row naming no person and no key is not a row that
   failed to answer <em>who did this</em>: §7a reads it as this system acting on its own, and the renewal sweep,
-  payload reduction, the bank statement pull and a named migration write rows in exactly that shape,
-  correctly and by design (<a href="../00-conventions/#7-standard-columns">00-conventions §7</a>). Two things are
+  payload reduction, the access trail's age-out, the bank statement pull and a named migration write rows in
+  exactly that shape, correctly and by design (<a href="../00-conventions/#7-standard-columns">00-conventions §7</a>).
+  <strong>The age-out's row is new rather than always having been there</strong>, and it is one row per run rather than one
+  per deleted row (<a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>):
+  before it, <code>system:log-reduction</code> was a name on a vocabulary and on no row at all. Two things are
   reported instead. <strong>(a) A row whose <code>actor_label</code> is not one of the labels §7a lists, including a row
   naming no person, no key and no label at all</strong> — the vocabulary is a documented list and not a table, so
   nothing in the database refuses a label from outside it and this count is the only thing that ever notices
@@ -3116,7 +3118,7 @@ what the record said.</p>
   the list exists to catch. <strong>(b) A row on a write path that owed a person and named none</strong>, in the two
   shapes a reader can actually test: a transaction whose request context carried a <code>current_person_id</code>
   (<a href="../06-audit-and-import/#21-the-trigger">06 §2.1 step 1</a>) while <code>actor_person_id</code> stayed empty, and any audit row about one of the rows §7a names as
-  having no empty to interpret — <code>import_batch.created_by</code> and <code>api_key.created_by</code> are required and a
+  having no empty to interpret — <code>api_key.created_by</code> is required and a
   grant's <code>granted_by</code> names a person, so a business row that cannot lawfully be authorless cannot have
   been written by a writer that is.
   <strong>What this check cannot catch, said because two rows a reader would want are not among them.</strong> A row
@@ -3151,17 +3153,27 @@ what the record said.</p>
   guarantee needs a different instrument than this table: the trail is a record of what happened to people,
   and what an ended key did after it ended is tracked on the key's own page
   (<a href="../05e-keys-and-callers/">05e-keys-and-callers.md</a>).
-- <strong>Tables whose write path does not audit.</strong> Compare the business tables this system has —
-  staging tables excluded — against the maintained list of audited ones. Non-zero means a table is
-  writing history that is never recorded. <strong>Read this one carefully, because its meaning got worse
+- <strong>Tables whose write path does not audit.</strong> Take every table this system has, set the two trails aside —
+  <code>audit_log</code> and <code>access_log</code> are the only tables the obligation excludes — and report any table that has a
+  write path and produced no audit row. <strong>There is no maintained list of audited tables left to compare
+  against:</strong> <a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>
+  turned the obligation into a rule about writes, so one half of this comparison is the schema and the other is
+  the code. <strong>Read this one carefully, because its meaning got worse
   rather than weaker.</strong> While a trigger existed, a table was audited by being named in a trigger
   definition, and forgetting one was a decision somebody made in a migration and could see. Now a
-  table is audited because the code that writes it calls the audit entry point, so <strong>the list and
+  table is audited because the code that writes it calls the audit entry point, so <strong>the rule and
   the code are two artifacts that must agree and nothing forces them to</strong> — which makes this report
   the entire control over the completeness of the audit trail, and the one check here whose
   finding must not wait for the monthly run. If it ever reports a table, the finding is not
   "some history is missing"; it is "every change to that table since it was added is unrecorded, and
   that period cannot be reconstructed later."
+  <strong>Because the obligation is now a rule rather than a list, the assertion carries one enumerated list still:
+  the paths that may delete.</strong> <a href="../06-audit-and-import/#21-the-trigger">§2.1's carve-out</a> names two, and a
+  table-name comparison yields neither — <strong>erasure</strong>, which deletes <code>person_attribute</code> rows and audits nothing
+  per row, and <strong>the access trail's age-out</strong>, which deletes from a table the obligation excludes and yet
+  writes the one summary row. A delete reaching any other table is this report's finding even when that table
+  audits its inserts and updates perfectly, and it is the finding a test should assert rather than a query,
+  since nothing in the schema refuses the delete.
 - <strong>Redacted people with surviving personal data.</strong> Count redacted people whose names are
   not the redaction marker and who still have a current contact point whose value is not
   redacted; non-zero means an erasure was left half done. <strong>The count now reaches three more places, and the three
@@ -3243,9 +3255,11 @@ what the record said.</p>
   <strong>What it cannot do is demonstrate that anything was ever deleted.</strong> It counts what remains, which is the
   only thing a count over a table can see, so a job that deletes from the wrong table passes it; the
   standing guarantee here is not this report but the one on the other side of it, that the change trail is
-  never pruned (<a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>). <strong>This delete is the third named
-  exception to <a href="../00-conventions/#4-deletion-policy">00 §4</a>,</strong> and the only one driven by a calendar rather
-  than by a person asking or a batch being reverted.</p>
+  never pruned (<a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a>). <strong>This delete is one of the two named
+  exceptions to <a href="../00-conventions/#4-deletion-policy">00 §4</a>,</strong> and the only one driven by a calendar rather
+  than by a person asking — and since <a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>
+  it is also the only delete in the system that leaves a row in the other trail: one summary row per run,
+  naming <code>system:log-reduction</code>, the count and the window.</p>
 </li>
 <li>
 <p><strong>A change the trail never saw: an audited row whose newest audit row predates its own <code>updated_at</code>.</strong>
@@ -3257,10 +3271,12 @@ what the record said.</p>
   no audit row, and leaves a row that is live, referenced and invisible to every other check in this section
   (<a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02-actors.md §3</a>,
   <a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
-  <strong>It can see the recovery at all because <code>account</code> is a business table</strong>, and a business table owes an
-  audit row on every insert and update (<a href="../06-audit-and-import/#21-the-trigger">06 §2.1</a>); which tables
-  those are is a recommendation awaiting confirmation (§6), and that is this report's real ceiling —
-  <strong>a table nobody confirmed is a table this check reads as never changing.</strong>
+  <strong>It can see the recovery at all because <code>account</code> is a table the obligation covers</strong>, and every table the
+  application writes owes an audit row on every insert and update (<a href="../06-audit-and-import/#21-the-trigger">06 §2.1</a>).
+  <strong>The set it walks is no longer a recommendation waiting to be confirmed:</strong> §6's first bullet is closed, the
+  scope is every table the application writes except the two trails, and nothing stands between that rule and
+  this query. <strong>What is left as its ceiling is this bullet's own sentence about <code>updated_at</code>,</strong> which is a property
+  of the application rather than of this document.
   Nothing in the schema distinguishes a legitimate recovery from somebody editing a row they had no business
   editing, so this is a report and not a guard, like every item above it. <strong>What it cannot catch.</strong> An edit
   that also inserts its own audit row by hand — the trail is append-only to the application, not to whoever
@@ -3276,17 +3292,27 @@ what the record said.</p>
 </li>
 </ul>
 <p><strong>Check 5 is worth automating as a test</strong>, not just a nightly query — a test that reads the
-table list in these documents and asserts every business table on it appears on the audited list,
-since that is the nearest thing left to what asking the database used to answer. A new table
-added without being put on that list is a silent, permanent hole in the audit trail — and it will
+table list in these documents and asserts, for every table except the two trails, that whatever writes it
+reaches the audit entry point, since that is the nearest thing left to what asking the database used to answer.
+<strong>The assertion lost its list and kept its shape.</strong> It no longer asks <em>is this table on the audited list</em> —
+there is no such list to be off — it asks <em>does every write path to this table write the row</em>, and it carries
+the two enumerated delete paths beside it, because no enumeration of table names yields either. A new table
+whose writer was never wired is a silent, permanent hole in the audit trail — and it will
 be discovered only when someone needs the history that was never recorded.</p>
 <hr />
 <h2 id="6-open-issues">6. Open issues<a class="headerlink" href="#6-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Which tables must be audited. Recommend: all business tables. The cost is storage; the
-  cost of a gap is unbounded. Still open as a <em>decision</em>, closed as a <em>recommendation</em> — §2.1
-  already obligates every business table, so what is actually outstanding is somebody
-  confirming the list rather than deriving it.</li>
+<li><strong>✅ Closed — which tables must be audited: every table the application writes</strong>
+  (<a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>).
+  The bullet asked for somebody to read a list and say yes, and the answer instead retired the list: one
+  <code>audit_log</code> row per insert and update, on every path, from the day a table exists, with <strong>the two trails
+  themselves the only tables outside it</strong> — <code>audit_log</code> and <code>access_log</code> are the record, and a record of a
+  record would have to be recorded in its turn. <strong>A confirmation was worth asking for even though §2.1 already
+  claimed the answer</strong>, because a scope written as <em>everything except the list we never finished</em> is a scope a
+  new table falls out of by nobody noticing, and check 5's assertion that the list and the write paths agree
+  had nothing correct to agree with. The cost is storage, and the growth is in the skeleton of a small fixed
+  row rather than in a payload, since payloads empty at 24 months
+  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).</li>
 <li><strong>Retention period for <code>audit_log</code> — decided as policy, still open as law</strong>
   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
   It used to read "retention period before archival to cold storage; legal input required", which got the
@@ -3315,7 +3341,7 @@ be discovered only when someone needs the history that was never recorded.</p>
   that grows for the life of the system. The open part is which the deployment does first, not whether
   the horizon justifies it.</li>
 <li><strong>✅ Closed — the end-date inference rule for imported membership periods</strong>
-  (<a href="../06a-import/#31-what-a-source-row-actually-evidences">§3.1</a>). An imported membership ends with the
+  (<a href="../06-audit-and-import/#3-import-pipeline--deleted">§3</a>). An imported membership ends with the
   calendar year of the last period in which the person appears: their last day as a member is 31 December,
   and the value written into <code>valid_to</code> is <strong>1 January of the following year</strong>, because every period here is
   half-open and current membership is read as <code>valid_to</code> <em>after</em> today — a literal 31 December in that
@@ -3332,9 +3358,14 @@ be discovered only when someone needs the history that was never recorded.</p>
   standing between the import and the permission gate. (When this bullet was written the row in question was a
   <code>unit_participation</code>; <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
   removed that table, which sharpens the point rather than softening it — there is now exactly one period an
-  inferred date can be ending, and it is the consequential one.)</li>
+  inferred date can be ending, and it is the consequential one.)
+  <strong>What the pipeline's removal did not touch is the date itself.</strong> It is a rule about the rows a script
+  writes now, not about a parse step inside a stage, and the value is read from <code>expiry_month</code> and <code>expiry_day</code>
+  on the <code>membership_type</code> row wherever the load computes it. What died with the stages is the report that
+  would have noticed a load ignoring it (§5's first bullet), so this bullet is the only place left where the
+  date is written down in full.</li>
 <li><strong>✅ Resolved — whether the import should create a <code>membership</code> at all</strong> for a historical period, or
-  only a <code>unit_participation</code> (<a href="../06a-import/#31-what-a-source-row-actually-evidences">§3.1</a>). Settled by
+  only a <code>unit_participation</code> (<a href="../06-audit-and-import/#3-import-pipeline--deleted">§3</a>). Settled by
   <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>
   on the shape of the corpus rather than on the merits of the two options — the corpus carried no payment
   data, so the exception arm of "participation unless there is payment evidence" had an empty set to fire
@@ -3345,12 +3376,6 @@ be discovered only when someone needs the history that was never recorded.</p>
   settled was never "no imported memberships" but "no inferred ones", and that half still holds in both
   directions: never open-ended, never from an attendance row. <strong>Superseded here and kept visible: this
   bullet used to end "participation only, always; <code>membership</code> rows come only from the current register."</strong></li>
-<li><strong>Not a question, because the answer that split the corpus already answered it: a batch types itself</strong>
-  (<code>import_batch.batch_kind</code>, §3). Two halves of corpus mean two shapes of row, and one <code>field_mapping</code>
-  cannot serve both — an events export has no column that maps to an attribute code and a people export has
-  nothing to map to a registration. Recording it as an open question would invite somebody to answer it
-  with the larger alternative (one batch, two mappers that can never both apply), which the answer in D-092
-  explicitly passed over as the bigger change.</li>
 <li>Exact redaction scope: which fields are personal data vs. organizational history (§4). Requires legal
   review — <strong>much narrower than it was, and still not closed.</strong> D-083 removed the <em>category</em> question
   (there is no specially-graded subset of the person record), and
@@ -3397,7 +3422,7 @@ be discovered only when someone needs the history that was never recorded.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../06a-import/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Import Pipeline">
+          <a href="../06-audit-and-import/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Model — Audit and Import: the two audit trails, and audit_log">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3407,7 +3432,7 @@ be discovered only when someone needs the history that was never recorded.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                The Import Pipeline
+                Data Model — Audit and Import: the two audit trails, and audit_log
               </div>
             </div>
           </a>

@@ -1686,8 +1686,6 @@
       
         
       
-        
-      
     
     
     
@@ -1745,34 +1743,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2255,6 +2225,8 @@
       
         
           
+        
+      
         
       
         
@@ -2938,6 +2910,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3287,8 +3287,8 @@ exists:</p>
 </tr>
 <tr>
 <td>Staff-created account</td>
-<td>registrar creates one for an adult who is not self-sufficient with computers</td>
-<td><code>person</code> + <code>account</code>, flagged <code>created_by_staff</code></td>
+<td>staff open one for a person who has not signed up — a camp office with a paper list (<a href="../../decisions/round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>)</td>
+<td><code>person</code> + <code>account</code>, flagged <code>created_by_staff</code>, sitting at <code>pending_verification</code>: the row is what a registration attaches to, and it <strong>cannot authenticate until its person, or that person's guardian, sets a credential</strong></td>
 </tr>
 <tr>
 <td>Legacy import</td>
@@ -3381,15 +3381,29 @@ registration on a fuzzy score is the failure this rule would most deserve
 (<a href="../03-identity-and-legacy/#4-match-signals">03-identity-and-legacy.md §4</a>).</p>
 <p>Why: <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>.</p>
 <h3 id="credentials">Credentials<a class="headerlink" href="#credentials" title="Permanent link">&para;</a></h3>
-<p><code>account</code> holds authentication material. Two rules worth fixing now:</p>
+<p><code>account</code> holds authentication material, and a person signs in with <strong>Google or an e-mail address and a
+password</strong> — every person may have their own (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>).
+Two rules worth fixing now:</p>
 <ol>
 <li><strong>The password hash lives in <code>account_credential</code>, not in <code>account</code>.</strong> This leaves
-   room for multiple authentication methods (password, passkey, OAuth via a national
-   Scout identity provider, staff-issued one-time links) without restructuring.</li>
+   room for multiple authentication methods (<code>password</code>, <code>passkey</code>, <code>totp</code>, <code>oauth</code>, <code>staff_link</code>)
+   without restructuring. The list is written in the program and in
+   <a href="../../data-model/01a-accounts-and-contacts/#5-account_credential">01a §5</a>, and a new method is a
+   <strong>release</strong>, not a row: code and value ship together (<a href="../../decisions/round-23/#d-177--the-list-of-login-methods-is-written-in-the-program">D-177</a>).
+   The <code>oauth</code> in the list is <strong>Google</strong>, and what Google vouches for is an e-mail address — it does not
+   know the organization exists and cannot vouch for membership: an external login proves a mailbox and
+   nothing more.</li>
 <li><strong>Never share an account between a parent and a child.</strong> The temptation is real —
    "the parent will just log in as the kid" — but it destroys attributability. The
    correct mechanism is <a href="#5-acting-on-behalf">acting on behalf</a>, which records <em>who</em>
-   acted and <em>as whom</em>. An account shared between people makes every audit entry
+   acted and <em>as whom</em>. The save now refuses the technical form of the shortcut: one
+   <code>(external_issuer, external_ref)</code> pair backs exactly one account, so a parent's Google cannot quietly
+   become three children's logins (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>).
+   A child who has no Google account and no e-mail of their own has <strong>no account</strong>, and the model does
+   not need one — an adult acts for them through the guardianship row
+   (<a href="../../data-model/04-relationships/#4-how-the-resolver-uses-these-tables">04 §4</a>,
+   <a href="../../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).
+   An account shared between people makes every audit entry
    worthless, and in a youth organization the audit trail is the point.</li>
 </ol>
 <h3 id="when-nobody-who-can-hold-systemadmin-can-sign-in">When nobody who can hold <code>system.admin</code> can sign in<a class="headerlink" href="#when-nobody-who-can-hold-systemadmin-can-sign-in" title="Permanent link">&para;</a></h3>
@@ -3526,18 +3540,19 @@ with no system access at all can still be the emergency contact. Do not require 
 capability to be reachable in an emergency.</p>
 <hr />
 <h2 id="7-open-issues">7. Open issues<a class="headerlink" href="#7-open-issues" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Whether staff-created accounts are allowed for children, or only adults. <strong>Still open, and untouched by
-  the fact that the sign-up path has no age gate:</strong> <a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a>
-  removes a gate on a path, not a policy about who may open an account on somebody else's behalf, so a
-  reader who takes "no gate" to mean "staff may create a child's account" has read further than the answer
-  goes. The <code>created_by_staff</code> flag on <code>account</code> (<a href="../../data-model/01a-accounts-and-contacts/#4-account">01a §4</a>)
-  stays whichever way this is settled.</li>
-</ul>
-<p><strong>Not registered in <a href="../../open-questions/">../open-questions.md</a>,</strong> and a reader of the register alone
-would not find it: this page is the only place the question is written down.</p>
+<p><strong>Nothing is open on this page.</strong> The question it carried — whether staff-created accounts are allowed for
+children, or only adults — is settled: staff may open the row for <strong>any</strong> person who has not signed up,
+child or adult, and what protects the child is the status rather than a rule against the insert. The
+account waits at <code>pending_verification</code> and cannot authenticate until its person, or that person's
+guardian, sets a credential — <strong>nobody ever holds a child's password</strong>
+(<a href="../../decisions/round-23/#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>).
+The <code>created_by_staff</code> flag on <code>account</code> (<a href="../../data-model/01a-accounts-and-contacts/#4-account">01a §4</a>)
+keeps its job: it records how the row was born. The question was once written down only here; it is
+registered and closed in
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K of the register</a>.</p>
 <hr />
-<p><em>Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166.</em></p>
+<p><em>Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166,
+D-176, D-178, D-179.</em></p>
 
 
 

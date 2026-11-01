@@ -1574,8 +1574,6 @@
       
         
       
-        
-      
     
     
     
@@ -1633,34 +1631,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2143,6 +2113,8 @@
       
         
           
+        
+      
         
       
         
@@ -2826,6 +2798,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3036,21 +3036,43 @@ visible instead of being a sentence on page 412 that nobody re-reads.</p>
 </table>
 <p><strong>How to read the two right-hand columns.</strong> <em>Backstop</em> names the report that would list a breach, by
 the page and number where that report is written. <strong><code>none</code> in bold</strong> is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. <strong>Five rows are in
-that state and all five are shape-3 rows</strong>, whose only enforcement is a line of code. The five are not one
-kind of blank, and the kinds are worth naming because they fail differently.
-<strong>Two are rulings</strong>: <a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>
-decided that a rule about an ended key gets no report, and
-<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>
-decided the same about a delegation outliving the permission behind it — in both cases the absence was chosen,
-and said on the page that owns the rule rather than only here.
-<strong>One is a promise with an address</strong>: D-130's identifier row names the section the report will be added to, so
-that <code>none</code> is dated rather than permanent. <strong>Two are blanks this page is not allowed to fill by inventing a
-check nobody asked for.</strong>
-<strong>The count came down from eleven — seven after round 19, five after round 20 — and none of the six losses was
-a re-reading.</strong> Two
-pages were given the check sections they lacked (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>).
-Two rows here turned out to describe a rule no page states at all, so they are gone rather than repaired
+slur on the rule: it means the corpus names no such report anywhere, which is the finding. <strong>Twelve rows are in
+that state — ten of them shape-3 and two shape-2 — and they are not one kind of blank.</strong> The kinds are worth
+naming because they fail differently. <strong>Four were chosen by a ruling</strong> and said on the page that owns the rule: an
+ended key's audit window (<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>),
+a delegation outliving the permission behind it
+(<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>),
+eligibility for registering, which is a capability rather than a state to list, and a value's conformance to the
+type its own definition declares. <strong>Two have a refusal standing where a report would be</strong>: the granter's ceiling
+and the request-to-membership pair are refused at the write, so a report over the state they would breach is empty
+by construction and would cost a query to say nothing. <strong>Two are out of reach of any report</strong> — a selector's
+resolver is program text, and an audit payload's ordering is not a row state — which is a different condition from
+being uncovered, and is written as the one it is. <strong>One is a promise with an address</strong>: D-130's identifier row
+names the section the report will be added to, so that <code>none</code> is dated rather than permanent. <strong>The last three are
+blanks nobody has asked to fill</strong>, and this page is not allowed to fill them by inventing a check nobody asked
+for.
+<strong>This page printed five for three rounds, and five had stopped being true.</strong> It printed five because round 20
+counted, rounds 21 and 22 added rows carrying <code>none</code> faster than they removed any, and nobody re-counted — there
+were thirteen when this round opened. <strong>The history of this column in the order it happened: eleven, seven after
+round 19, five after round 20, thirteen, twelve now.</strong> The last figure is the first one in that sentence that was
+produced rather than re-printed: a program counted the rows whose report cell begins with the word <code>none</code>, which
+is the definition this paragraph now states, so the next round can re-produce the number instead of trusting it.
+<strong>That is not the same as a check, and this page says so rather than pretending otherwise.</strong> Until this round
+the repository's only measuring tooling was <code>scripts/check-registries.py</code>, which verifies that a <em>name</em> resolves and
+never reads a figure beside a sentence — a row with no report beside it has never claimed a name that does not exist,
+which is exactly why the paragraph above could stand there being wrong. <a href="../../decisions/round-23/">Round 23</a> wrote
+a second script for the figure this corpus states in prose:
+<code>scripts/count-decisions.py</code> counts the <code>## D-</code> headings, counts the index's rows, and then reads every sentence
+outside the history pages that states how many decisions there are, and it fails if the three disagree. It exists
+because that round shipped a stale one: the index page's own total, one short of its own table, stale <strong>across a
+line break</strong> — which is why the script reads paragraphs rather than lines, and why it refuses a number beside
+<code>round 20</code> or a <code>§11</code>, since those are not claims about the size of anything. <strong>What still holds is the narrower
+claim:</strong> no tool reads the figures on <em>this</em> page, the <code>none</code> count among them, and this paragraph is all that
+stands between them and drifting again. That is why each figure above is stated with the definition a count would
+use. <strong>Two of the original eleven's
+losses were re-readings of the worst kind</strong>: two pages were given the check sections they
+lacked (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>),
+and two rows here turned out to describe a rule no page states at all, so they are gone rather than repaired
 (<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>,
 <a href="../../decisions/round-20/#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked">D-144</a>)
 — which is the half of this page's history it should be embarrassed by. <strong>And one <code>none</code> was simply false in
@@ -3160,8 +3182,8 @@ once, in an index.</p>
 <td><a href="../01a-accounts-and-contacts/#5-account_credential">01a §5</a></td>
 <td><code>(external_issuer, external_ref)</code></td>
 <td>kind is <code>oauth</code> and the row is current</td>
-<td><strong>none</strong></td>
-<td>An issuer's login lands on whichever credential the index happened to keep</td>
+<td><strong>the save path — the first check this invariant ever had</strong> (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>)</td>
+<td>a second account for one external identity is refused while it is being written, so an issuer's login can no longer land on whichever credential an index happened to keep</td>
 </tr>
 <tr>
 <td>One primary contact per kind</td>
@@ -3418,10 +3440,10 @@ downstream ever says so.</p>
 <td><a href="../02-organization/#6-integrity-checks">02 §6 check 5</a>, which watches whether the refusal is still there</td>
 </tr>
 <tr>
-<td>A member row sits inside its group's period</td>
+<td>A member row <strong>meets</strong> its group's period</td>
 <td><a href="../02-organization/#2-person_group_member">02 §2</a></td>
-<td>none — containment is assumed</td>
-<td><a href="../02-organization/#6-integrity-checks">02 §6 check 2</a>, a list to read</td>
+<td>the save refuses a row meeting no part of the group's life, and the resolver reads the <strong>intersection</strong>, so every membership is trimmed to the group's lifetime (<a href="../../decisions/round-23/#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171</a>)</td>
+<td><a href="../02-organization/#6-integrity-checks">02 §6 check 2</a>, which now looks only for the case a save cannot see: a group whose period moved underneath a row already written</td>
 </tr>
 <tr>
 <td>A request and the membership it produces refer to each other</td>
@@ -3508,12 +3530,6 @@ downstream ever says so.</p>
 <td>none, by design</td>
 </tr>
 <tr>
-<td>One staged row makes one event</td>
-<td><a href="../06a-import/#3-import-pipeline">06a §3</a></td>
-<td>the application, deliberately</td>
-<td><a href="../06a-import/#4-integrity-checks">06a §4 check 2</a></td>
-</tr>
-<tr>
 <td><code>membership.outstanding_balance</code> agrees with the allocations</td>
 <td><a href="../07-finance/#3-keeping-membershipoutstanding_balance-honest">07 §3</a></td>
 <td>the writing transaction if the column stays; §3 recommends dropping it for a view</td>
@@ -3521,15 +3537,9 @@ downstream ever says so.</p>
 </tr>
 <tr>
 <td>An imported membership is bounded at both ends and never inferred from attendance</td>
-<td><a href="../06a-import/#31-what-a-source-row-actually-evidences">06a §3.1</a></td>
+<td><a href="../06-audit-and-import/#3-import-pipeline--deleted">06 §3</a></td>
 <td>the parse and end-date inference rules, which now end at a stated date (<a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>)</td>
-<td><a href="../06a-import/#4-integrity-checks">06a §4 check 1</a> — <strong>the one row in this table that reaches the permission gate</strong>, because an open membership satisfies <code>is_current_member()</code>. <strong>What D-169 changed is not the rule but what a non-zero answer means:</strong> there is a value to move a row to now, so the report says the inference did not run</td>
-</tr>
-<tr>
-<td>A batch can say what it did, and a revert leaves nothing behind</td>
-<td><a href="../06a-import/#3-import-pipeline">06a §3</a></td>
-<td>the pre-flight refusal</td>
-<td><a href="../06a-import/#4-integrity-checks">06a §4 check 3</a>, read against the audit entries the revert wrote</td>
+<td><a href="../06-audit-and-import/#3-import-pipeline--deleted">06a §4 check 1</a> — <strong>the one row in this table that reaches the permission gate</strong>, because an open membership satisfies <code>is_current_member()</code>. <strong>What D-169 changed is not the rule but what a non-zero answer means:</strong> there is a value to move a row to now, so the report says the inference did not run</td>
 </tr>
 <tr>
 <td>A payment's allocations account for its amount</td>
@@ -3653,9 +3663,11 @@ which is the one property of this shape that does not need a checker.</p>
   inventory behind this page was for, and what it found in the way of absences is in
   <a href="../../open-questions/">the open questions</a>, each one naming the page it is missing from.</li>
 <li><strong>It cannot rank the <code>none</code>s.</strong> It used to be able to say at least where they clustered, and the answer
-  was two pages: <a href="../07-finance/">07-finance.md</a> and <a href="../06a-import/">06a-import.md</a> had no "Invariants to
+  was two pages: <a href="../07-finance/">07-finance.md</a> and the import page had no "Invariants to
   verify" section, so every rule they stated was unassigned by construction rather than by oversight. That
-  structural excuse is gone (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>) and both pages now carry their own list, which leaves this column
+  structural excuse is gone (<a href="../../decisions/round-19/#d-135--the-two-modules-with-no-check-list-get-one-each">D-135</a>),
+  one of those two pages has since been deleted outright (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+  and what survives of its rules is filed on <a href="../06-audit-and-import/#3-import-pipeline--deleted">the audit page</a> — which leaves this column
   holding only rules that were read in the round that found them and left unguarded on purpose or on the
   table's own limits. <strong>Ranking those is still not something a register can do without inventing a
   severity, which is the thing it refuses to do.</strong></li>

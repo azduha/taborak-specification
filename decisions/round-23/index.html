@@ -1,0 +1,4359 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/decisions/round-23/">
+      
+      
+        <link rel="prev" href="../round-22/">
+      
+      
+        <link rel="next" href="../../open-questions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Round 23 - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#decision-log--refinement-round-23-d-171--d-192" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Round 23
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-a-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-b-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-a-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog: the codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-b-roles-and-open-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/removed-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-171 — A member row has to meet its group, and the resolver trims it to the group's life
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-172--an-ended-group-is-in-no-picker-and-comes-back-never" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-172 — An ended group is in no picker and comes back never
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-173--that-two-groups-are-the-same-group-is-said-not-stored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-173 — That two groups are the same group is said, not stored
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-174 — person.gender is how the system declines a verb, and it is required
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-175--an-erased-persons-grammatical-form-goes-with-their-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-175 — An erased person's grammatical form goes with their names
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-176 — Google or a password, one identity one account, and the invariant finally has a check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-177--the-list-of-login-methods-is-written-in-the-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-177 — The list of login methods is written in the program
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-178 — A child without a login is reached through the guardianship row
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-179--staff-may-open-an-account-only-its-person-can-start-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-179 — Staff may open an account; only its person can start it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-180--there-is-no-queue-for-money-that-does-not-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-180 — There is no queue for money that does not fit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-181--every-payable-has-a-variable-symbol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-181 — Every payable has a variable symbol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-182 — Matching money is a code of its own, and the automatic half is system:bank-pull's
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-183 — A changed ask is a voided request and a new symbol, and amount_discount goes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-184 — Every table is audited, and the delete carve-out names the moments that survive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-185 — A guardianship ends when a party ends it, and majority is not a party
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-186 — membership_type is settings wearing a vocabulary's clothes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-187--an-invoice-is-a-document-a-payer-asks-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-187 — An invoice is a document a payer asks for
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-188 — The ceiling reads a grant and nothing else, and what it leaves open is written down
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-189--one-author-writes-the-vocabulary-before-the-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-189 — One author writes the vocabulary before the batch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-190 — The legacy import is a script and a key, and the pipeline is gone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-191 — person.notes is deleted, and the vocabulary takes the job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-192 — proposed_by loses import_job, because a vocabulary value is a claim about who can write
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-round-cost-and-what-it-did-not-close" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this round cost, and what it did not close
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-171 — A member row has to meet its group, and the resolver trims it to the group's life
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-172--an-ended-group-is-in-no-picker-and-comes-back-never" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-172 — An ended group is in no picker and comes back never
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-173--that-two-groups-are-the-same-group-is-said-not-stored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-173 — That two groups are the same group is said, not stored
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-174 — person.gender is how the system declines a verb, and it is required
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-175--an-erased-persons-grammatical-form-goes-with-their-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-175 — An erased person's grammatical form goes with their names
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-176 — Google or a password, one identity one account, and the invariant finally has a check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-177--the-list-of-login-methods-is-written-in-the-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-177 — The list of login methods is written in the program
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-178 — A child without a login is reached through the guardianship row
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-179--staff-may-open-an-account-only-its-person-can-start-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-179 — Staff may open an account; only its person can start it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-180--there-is-no-queue-for-money-that-does-not-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-180 — There is no queue for money that does not fit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-181--every-payable-has-a-variable-symbol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-181 — Every payable has a variable symbol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-182 — Matching money is a code of its own, and the automatic half is system:bank-pull's
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-183 — A changed ask is a voided request and a new symbol, and amount_discount goes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-184 — Every table is audited, and the delete carve-out names the moments that survive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-185 — A guardianship ends when a party ends it, and majority is not a party
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-186 — membership_type is settings wearing a vocabulary's clothes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-187--an-invoice-is-a-document-a-payer-asks-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-187 — An invoice is a document a payer asks for
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-188 — The ceiling reads a grant and nothing else, and what it leaves open is written down
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-189--one-author-writes-the-vocabulary-before-the-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-189 — One author writes the vocabulary before the batch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-190 — The legacy import is a script and a key, and the pipeline is gone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-191 — person.notes is deleted, and the vocabulary takes the job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-192 — proposed_by loses import_job, because a vocabulary value is a claim about who can write
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-round-cost-and-what-it-did-not-close" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this round cost, and what it did not close
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/decisions/round-23.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/decisions/round-23.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="decision-log--refinement-round-23-d-171--d-192">Decision Log — Refinement round 23 (D-171 … D-192)<a class="headerlink" href="#decision-log--refinement-round-23-d-171--d-192" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Nine sittings, twenty-two decisions, and the shape of three of the answers changed while they were being given. <code>person.gender</code> turned out to be a column about grammar rather than a column about reporting, which falsified the assumption the register had carried since round 1 and gave the value set a reason to exist; "an invoice can be requested by the payee" turned out to mean the payer, which is the difference between a document the organization issues to itself and one a family asks for; and a question about sibling discounts came back as a requirement to select payment requests and change their amounts, which is a different decision and a larger one. <strong>This round also deletes the legacy import pipeline</strong>, which is the largest thing removed since the unit hierarchy and which arrived as a subordinate clause: <em>"one script and one key, you can remove all the machinery around."</em></p>
+<p><strong>One of the questions asked again what round 20 had already answered.</strong> <a href="../../open-questions/#f-27">F-27</a>, whether this system ever calls outward, was settled by <a href="../round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a> — an outbound call is a person's act or this system's job, and nothing about it is designed yet. The answer it got this time ("there MAY be external services added in future versions, but no specifics for now") is the same answer. It is recorded here rather than quietly dropped because the question was asked <em>sharper</em> than round 20 left it, and the sharper form is worth having on the record; the register's row is closed against D-146 and no new decision is minted for it.</p>
+</blockquote>
+<p><a href="../round-22/">Refinement round 22 (D-155 … D-170 ←)</a> | <a href="../">All decisions</a></p>
+<p><strong>Where the questions came from.</strong> <strong>All nine</strong> of the questions
+<a href="../round-22/">round 22</a> filed as <a href="../../open-questions/#k-filed-by-a-module-page">§ K of the register</a> — the repair
+for a module page that had kept its open issues where no register could see them. <strong>Three</strong> of the survivors at the
+top of that register: <a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child"><code>E-3</code></a>,
+<a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row"><code>F-9</code></a> and
+<a href="../../open-questions/#f-34"><code>F-34</code></a>; <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim"><code>F-11</code></a>
+was deliberately <strong>not</strong> asked, on its own recommendation, and stays open.
+<strong>Four</strong> items out of <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07-finance</code> §5</a>:
+its discount item, its invoice item, its variable-symbol item, and its accounting-direction item, which is also
+<a href="../../open-questions/#f-27"><code>F-27</code></a>. <strong>And four holes that opened while the answers were being written:</strong> what
+happens to a required column at an erasure (<a href="#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>),
+who is the actor when a variable symbol resolves itself (<a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>),
+what a ceiling reads when a right can be widened without writing one (<a href="#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188</a>),
+and what "change the amount" means in a module that prints QR codes
+(<a href="#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>).</p>
+<p><strong>What was checked before asking, and once was not.</strong> Every question here was grepped for a prior answer first,
+and the one above still got through: <code>F-27</code>'s row is on a page of this register titled <em>answered</em>, in a column
+that says the caller is designed and the wire is not, and the register's own API row cites D-146 in the sentence
+about calls going out. <strong>A question surviving on a register is not proof that it is open</strong> — it is proof that
+nobody deleted the row.</p>
+<hr />
+<h2 id="d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life">D-171 — A member row has to meet its group, and the resolver trims it to the group's life<a class="headerlink" href="#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — rules the question <a href="../../data-model/02-organization/#8-open-issues"><code>02</code> §8</a>
+called "assumed in §2, reported in §6 check 2, and nowhere ruled", and replaces the
+<a href="../../data-model/00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">register's row</a>
+whose save-time check read <em>none — containment is assumed</em>.</p>
+<p><strong>The rule.</strong> A row in <code>person_group_member</code> need <strong>not</strong> lie inside its group's period. It must <strong>meet</strong> it: the
+two periods must have a non-empty intersection, and a member row that cannot overlap its group at all is refused at
+the save. During a permission check the membership contributes only the part of itself that falls inside the
+group's lifetime — the resolver reads the intersection, not the member row's own span.</p>
+<p><strong>Read as given, and the one word that needed deciding.</strong> The answer came as <em>"if it at least intersects with
+max(start, now) : min(end, now)"</em>. The <code>min</code>/<code>max</code> pair is the intersection of two intervals, and this writes it as
+the intersection of the <strong>two periods</strong>; <code>now</code> is read as <em>the date a check runs on</em>, which is the date
+<a href="../round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree"><code>OLDER(n)</code> and <code>YOUNGER(n)</code> already read on</a>'s
+sibling rule, and not a fourth bound in the constraint. So the save-time test is between <code>person_group.valid_from</code> /
+<code>valid_to</code> and the member row's own two columns, with an absent <code>valid_to</code> on either side read as open, and a future
+membership of a group that still exists passes it. <strong>If <code>now</code> was meant inside the constraint rather than inside the
+resolver, say so and this entry moves</strong> — the difference is whether a membership can be written today for a group
+that ended last spring, which under this reading it cannot, because the periods do not meet.</p>
+<p><strong>Why trimming rather than refusing containment, which is the interesting half.</strong> Containment would have been the
+obvious rule and it is the wrong one. A group's period is a fact about a body; a member row's period is a fact about
+a person's belonging to it, and the two are dated by different people at different moments — a roster corrected in
+2026, a group whose <code>valid_to</code> is set by whoever closes it. Refusing to hold a row whose ends disagree would make
+ordinary bookkeeping impossible and would force whoever hit it to <em>invent an earlier date</em> to get the write through,
+which is data corruption as a side effect of a validation rule. What matters is not that the two intervals agree but
+that <strong>nobody gains a right from a period the group does not have</strong>, and trimming the interval at resolution
+guarantees exactly that without touching the stored facts. It is the same shape the corpus already uses for a
+membership whose group has ended: <a href="../../data-model/02-organization/#1-person_group">setting <code>valid_to</code> is refused while a live grant names the group</a>,
+so the group cannot stop covering a right it is holding; this is the other direction, where the person's row runs on
+and the group's does not.</p>
+<p><strong>What it costs the page that reports it.</strong> <a href="../../data-model/02-organization/#6-integrity-checks"><code>02</code> §6 check 2</a>
+was written to catch rows outside their group's period — a report standing under an assumption. Its subject is now
+the narrower and real one: a member row meeting no part of its group's period at all, which is not untidy bookkeeping
+but a row that says nothing and cannot be repaired by reading either end. The register's row stops reading as an
+omission, and the report becomes the net under a rule instead of the whole of one.</p>
+<p><strong>Cost, stated.</strong> The resolver now reads a second table's period on the path where it decides anything about a
+group's members, which is one more join per check and one more thing that must be inside any
+<a href="../round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">compilation</a>'s
+reach rather than smuggled in beside it. It also means a group's dates can <em>silently shorten</em> a membership's effect:
+a person with a row running to June in a group closed in March stops being reachable through that group in March,
+and no report says so, because nothing sends anything to anybody (<a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
+<hr />
+<h2 id="d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172 — An ended group is in no picker and comes back never<a class="headerlink" href="#d-172--an-ended-group-is-in-no-picker-and-comes-back-never" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the second
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a> and the
+<a href="../../data-model/02-organization/#8-open-issues"><code>02</code> §8</a> bullet that called the two halves one question.</p>
+<p><strong>The rule.</strong> A group whose <code>valid_to</code> is set is not offered by a picker. It is not offered by a picker <em>because</em>
+it may never be reopened: <code>valid_to</code> is set by a person and is not cleared. A name that comes back is a new group,
+which is <a href="../../data-model/02-organization/#1-person_group">§1's rule</a> and stays the only rule about a returning
+name. An ended group stays reachable as history — its member rows still answer the question
+<a href="../round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>
+built them for — and reachable by search, which is not a picker.</p>
+<p><strong>Why the two halves really were one.</strong> The page noticed the collision by itself: reopening a group by clearing
+<code>valid_to</code> would put two rules over the same name, "a returning name is a new group" and "sometimes it is the old
+one", and the difference between them would be a judgement nobody recorded. Refusing to reopen is the only answer
+that keeps the naming rule singular, and it is the answer the picker question wanted anyway — a list of live groups
+is a list of groups that can be written to.</p>
+<p><strong>What this silently decides, since it is worth saying out loud.</strong> A troop that sleeps for a year and restarts is a
+new row, and its old roster does not come with it: the new group's first roster is empty and someone writes it
+again. Continuity between the two rows is not recorded either, which is <a href="#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>
+and was asked in the same sitting. So "the same troop, 1998" is now true of nothing in the database, deliberately,
+in two directions.</p>
+<hr />
+<h2 id="d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173 — That two groups are the same group is said, not stored<a class="headerlink" href="#d-173--that-two-groups-are-the-same-group-is-said-not-stored" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the third
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a>, and ends the last trace of
+<a href="../round-09/#d-096--a-reused-unit-number-is-a-new-unit-unless-someone-records-the-continuity">D-096</a>'s
+continuity rule, whose subject <a href="../round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+removed.</p>
+<p><strong>The rule.</strong> Nothing records that a group continues another. There is no self-reference on <code>person_group</code>, no
+carried number, and no edge: <a href="../round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098's refusal of group-to-group edges</a>
+stands, and the words "the same troop, 1998" live outside the database. This is written as a choice, in the page
+that held the question, rather than left as the silence of a table that has no column for it.</p>
+<p><strong>Why the question existed at all, and why it is cheap to close.</strong> The corpus used to have exactly one continuity
+rule and it belonged to units: a reused number is a new unit <em>unless someone records the continuity</em>. When units
+became a scope rather than a row, the rule lost the thing it was about and its shape stayed behind, so <code>02</code> §8
+asked where an assertion would be held and the honest answer was <em>nowhere, and no decision ever said that was the
+intention</em>. Saying it is the whole of this entry.</p>
+<p><strong>What is refused, and the cost of each.</strong> A self-reference on <code>person_group</code> reopens a refusal that was made for
+good reasons — a graph of groups is a hierarchy arriving by the back door, and the corpus deleted a hierarchy once
+already. A carried number revives the identifier D-096 needed units to have, and a group's <code>name</code> is already unique
+across <a href="../../data-model/02-organization/#1-person_group"><code>person_group</code>, <code>role</code> and <code>audience</code> together</a>, which is
+one namespace more than a number would fit into. The cost of refusing both is real but bounded: a search for a group
+that no longer exists does not find its successor, and the person who wants the whole story of a troop reads two
+rosters. That is a job for the words on the page, which is where the corpus puts everything it has refused to
+build.</p>
+<hr />
+<h2 id="d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174 — <code>person.gender</code> is how the system declines a verb, and it is required<a class="headerlink" href="#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the fourth
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a>, deletes one value from the set, and
+<strong>falsifies assumption 15</strong> of
+<a href="../../open-questions/#i-assumption-index">the register's assumption index</a>, which had this column's
+justification as "needed for reporting" since the first round.</p>
+<p><strong>The rule.</strong> The column exists so that the system can address a person in a language that asks for it: Czech
+inflects a past tense and an adjective for the sex of the person it talks about, so <em>"your registration was
+accepted"</em> has more than one form and the system has to pick one. Its value set is <code>male</code>, <code>female</code>, <code>other</code>.
+<strong><code>unknown</code> is deleted</strong> — it is not a grammatical form, and a value that cannot be declined toward is not an answer
+to the question this column asks. The column is <strong>required</strong>, and it holds nothing else: it is not a category for
+reporting, no report groups on it, and no page may justify it by a report again.</p>
+<p><strong>Why the falsification matters more than the value set.</strong> Assumption 15 was not wrong about the column existing;
+it was wrong about <em>why</em>, and the wrong reason was load-bearing in a way the right one is not. "Needed for
+reporting" is a justification that has to survive a legal review, a data-minimisation argument, and every year in
+which nobody publishes the number — and <a href="../../data-model/00-conventions/#8-personal-data-and-erasure"><code>00-conventions §8</code>'s own non-collection rule</a>
+is written to defeat exactly that kind of justification, saying <em>do not collect what you cannot justify</em>. "The
+sentence will otherwise be wrong in the mouth of the system" is a different claim: it is about every sentence the
+system says, and it is falsifiable the next morning by anyone who reads one. This is the second time in two rounds
+that a column's recorded reason turned out not to be its reason — <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07-finance</code> §5</a>
+asserted a currency question it had already answered in koruna, and closed as
+<a href="../round-22/#d-155--the-currency-is-koruna-and-the-modules-own-money-path-said-so">D-155</a>.</p>
+<p><strong>Why it stays one of the three exceptions, and does not move into the vocabulary.</strong> <a href="../round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>'s
+formula — everything about a person other than a name, a gender and an age is one class of data — is quoted in
+about ten pages, and the wording survives this ruling unchanged. That is not inertia: the column has to be readable
+by anything that renders a sentence about a person, which is the least privileged path in the design and cannot
+issue a <a href="../../appendix/permission-catalog-a-codes/"><code>person.view</code></a> check to decline a verb with, and an attribute
+value in a vocabulary the organization edits at runtime cannot be required to exist. A required value that any
+screen might need in order to be grammatical is a column. The round-22 option of pushing it into the attribute
+vocabulary was the right instinct for a reporting category and the wrong one for this.</p>
+<p><strong>Required, and what that costs the two paths that write a person.</strong> An import and a merge are the two writers that
+do not have the person in front of them. The script (<a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>)
+that cannot derive the value from its source has to supply one, which for the historical corpus means the value is
+the organization's inference rather than its record — the same posture
+<a href="../round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>
+already takes toward an inferred period: write it, mark the row's confidence low, do not pretend the source said it.
+A merge has it easier: both candidate rows carry a required value, and two required values that disagree are
+already what <a href="../../appendix/erd-b-inventory/"><code>field_conflict</code></a> exists to hold.</p>
+<p><strong>Reading, not ruling:</strong> <em>"other" is doing two jobs and one page should say which.</em> It is the third grammatical
+option and, for anybody who did not choose it, the absence of a choice the system is allowed to make for them; the
+row that explains the value set should say in one sentence that it is a form of address, not a category of person,
+because the same ten pages that quote D-083's formula will otherwise read it as the reporting category assumption
+15 said it was.</p>
+<hr />
+<h2 id="d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175 — An erased person's grammatical form goes with their names<a class="headerlink" href="#d-175--an-erased-persons-grammatical-form-goes-with-their-names" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — puts <code>person.gender</code> on
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure">the redactor's list in <code>00-conventions §8</code> item 1</a>,
+which named names and contact points and did not name it, and answers the question the previous entry's own answer
+opened.</p>
+<p><strong>The rule.</strong> A redaction overwrites <code>person.gender</code> with the other personal fields. Since the column is required
+and its set is closed, the set gains a fourth value that no screen offers and nothing but an erasure writes, and it
+is the one the redaction marker already means. After an erasure no sentence in this system is ever addressed to that
+person again, so the value is not a form of address; it is the shape a required column makes when its contents are
+gone.</p>
+<p><strong>The tension, kept in the open rather than argued away.</strong> <a href="../round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>
+is the corpus's standing refusal to let an absence have a value, and this ruling writes one. The alternative was to
+name <code>gender</code> in neither place — which is where it stood, and which meant an erased person kept a datum selected
+for how the system would talk to them, forever, for a person the system no longer talks about. Between an absent
+answer and an invented one, this round invents one and says so; the difference between that and the thing D-059
+refuses is that D-059's rule is about <em>a person's answer to a question</em>, and nobody is being asked anything here.</p>
+<p><strong>Why it is not simply deleted the way an attribute row is.</strong> <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">Item 2 of §8</a>
+deletes <code>person_attribute</code> rows because the row <em>is</em> the value and there is nothing left for a foreign key to point
+at once it is gone. <code>person.gender</code> is a column of a row that must survive — the person id is what every 2003
+reference resolves through — and a column of a surviving row cannot be removed without removing the row's shape.</p>
+<hr />
+<h2 id="d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176 — Google or a password, one identity one account, and the invariant finally has a check<a class="headerlink" href="#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answers) — closes the fifth
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a>, gives
+<a href="../../data-model/00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph"><code>00a</code>'s row for one current credential per external identity</a>
+the save-time check it recorded as <strong>none</strong>, and replaces the hypothetical that <a href="../../data-model/01a-accounts-and-contacts/#5-account_credential"><code>01a</code> §5</a>
+drew the <code>oauth</code> half of the table around.</p>
+<p><strong>The rule.</strong> A person signs in with <strong>Google or an e-mail address and a password</strong>. Every person may have their own
+login. One external identity is one account: an <code>(external_issuer, external_ref)</code> pair held by a current credential
+is refused at the save for a second account, and that refusal is the enforcement the register has been recording as
+absent. A child who has no Google account, or will not sign in with one, is not given a worse login — they are
+reached through the guardianship row (<a href="#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).</p>
+<p><strong>What the hypothesis was, and what it cost.</strong> <code>01a</code> §5 says <code>oauth</code> "supports a national Scout identity provider",
+and the credential table's shape was drawn with that issuer in mind: one provider, whose subject id means <em>this
+member</em>, because a national body's provider vouches for membership. <strong>Google vouches for an e-mail address.</strong> It
+does not know the organization exists, it does not know the person is a member, and — the case the register's row
+was written to name — a parent has one and three children. The register's row said the save-time check is <em>none</em>
+and the failure is that "an issuer's login lands on whichever credential the index happened to keep". Under the old
+hypothesis that was a tidy-up problem behind an issuer nobody had ever seen. Under Google it is the ordinary
+sign-up path, and the row was one paragraph away from describing a shared family login as an index artifact.</p>
+<p><strong>Why the answer keeps the constraint rather than loosening it.</strong> The option on the table was the other one: let one
+external identity back several accounts and have the person choose which to enter. It is not silly — it is how
+family banking works — but it was refused, and the refusal has a consequence worth writing here rather than in a
+cost column: <strong>a child with no e-mail of their own has no account, and the model must not be read as needing one.</strong>
+That is why this entry and the guardianship entry are one ruling told twice, and why the register's row stops being
+advisory: with self-service sign-up on a public provider, "one live account per person"
+(<a href="../round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>)
+and "one account per external identity" are the same wall seen from either side, and a wall with no check in it is a
+comment.</p>
+<p><strong>Cost, stated.</strong> A family of four needs three Google accounts and a guardian's, and the organization will spend real
+effort on that at the start of each year. Some of that effort lands on the person who signs a child up. The
+mitigation already exists and is not new: a staff member may open an account, and it waits to be claimed
+(<a href="#d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179</a>).</p>
+<hr />
+<h2 id="d-177--the-list-of-login-methods-is-written-in-the-program">D-177 — The list of login methods is written in the program<a class="headerlink" href="#d-177--the-list-of-login-methods-is-written-in-the-program" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — settles how a method added later gets into
+<a href="../../data-model/01a-accounts-and-contacts/#5-account_credential"><code>01a</code> §5's <code>credential_type</code></a>, which is where a
+magic link and an SMS code will arrive whenever they are built.</p>
+<p><strong>The rule.</strong> The allowed values are stated in the program and in this document. A new method is a release: the code
+that authenticates against an SMS code and the value naming it ship together. No table lists the methods, and no
+screen can offer one that has not been written.</p>
+<p><strong>Why not a vocabulary row, when the corpus says vocabularies are rows.</strong> Because the principle exists for data the
+organization decides — a fee, a category, an office — and a login method is not data, it is behaviour. The
+<a href="../../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">one-row-table precedent, <code>membership_type</code></a>,
+holds a thing a person could genuinely change their mind about; nobody has ever changed their mind about whether the
+software speaks SMS. A table of methods would make a row exist that the software cannot honour, and the first
+implementation of that table puts a row in it, offers it on a login screen, and breaks on the first click. <strong>The
+principle is not "anything enumerable is a row"; it is "anything the organization may decide is a row"</strong>, and the
+page that states the shape of <code>credential_type</code> should say which side of that line it is on, because the corpus has
+now ruled both ways in the same neighbourhood.</p>
+<p><strong>What stays on the list.</strong> <code>password</code>, <code>passkey</code>, <code>totp</code>, <code>oauth</code>, <code>staff_link</code>. The answer named a magic link and
+an SMS code as possible future methods and this round adds neither — a future version is not a value — and it
+leaves <code>staff_link</code> alone, which the round-22 option proposed merging into a general link type. Merging was not
+chosen; <code>staff_link</code> is what it says it is, a link a staff member issues, and the day a member may issue themselves
+one is the day the list grows and this entry gets corrected.</p>
+<hr />
+<h2 id="d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178 — A child without a login is reached through the guardianship row<a class="headerlink" href="#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — the other half of <a href="#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>,
+and the reason the account model does not need a child's e-mail address.</p>
+<p><strong>The rule.</strong> The guardianship channel is how an adult acts for a child who cannot sign in, and it already is:
+a guardianship row carries a <code>right_level</code> of <code>none</code>, <code>view</code> or <code>write</code>
+(<a href="../../data-model/04-relationships/#2-the-guardians-right-none-view-or-write"><code>04</code> §2</a>), and the party direction
+already lets a party end the row, add a guardian and change the level. Nothing is added by this ruling. What is
+settled is the negative half: <strong>a child without their own external identity does not get a second-class credential,
+a shared mailbox, or a login held by staff.</strong> The absence of a login is not a gap in the child's record; it is a
+record of an adult acting for them, which is what the table for that already says.</p>
+<p><strong>Why this is a decision rather than an observation, since the mechanism was already built.</strong> Because the model has
+two ways to do the same job and until now nothing said which one is meant. A guardian acting for a child could ride
+the guardianship row or an ordinary grant aimed at the child
+(<a href="../../data-model/04-relationships/#4-how-the-resolver-uses-these-tables"><code>04</code> §4</a> reads both channels). After this,
+for the case of a person who cannot sign in, the guardianship row is the answer, and the grant route is for an adult
+who can. That fixes which of two working mechanisms an implementer builds first, which is the thing a document is
+for.</p>
+<p><strong>Where the same logic lands for an adult child, which was asked separately and is answered here.</strong> <a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a>
+asked whether a parent may register an adult child for an event with the child's consent, and the answer given was
+that the delegation and the guardianship arrive at the same place, so keep the guardianship until someone ends it.
+See <a href="#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185</a>, which records that this
+was already the rule and names the one sentence that was missing.</p>
+<hr />
+<h2 id="d-179--staff-may-open-an-account-only-its-person-can-start-it">D-179 — Staff may open an account; only its person can start it<a class="headerlink" href="#d-179--staff-may-open-an-account-only-its-person-can-start-it" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the ninth
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a>, the one round 22 touched without closing, and it
+uses a status that already exists rather than a mechanism.</p>
+<p><strong>The rule.</strong> Staff may create an <code>account</code> row for a person who has not signed up — the useful case being a camp
+office with a paper list. The row sits at
+<a href="../../data-model/01a-accounts-and-contacts/#4-account"><code>pending_verification</code></a>, which is already its default, and it
+cannot authenticate until the person it belongs to, or that person's guardian, sets a credential. <strong>Nobody ever
+holds a child's password</strong> is the whole of this rule said the other way round.</p>
+<p><strong>Why a status rather than a rule against the write, which the corpus has said before.</strong> <a href="../../data-model/01a-accounts-and-contacts/#4-account"><code>01a</code> §4</a>
+already writes its gate as a condition on a status "rather than as a rule against creating the row", and this lands
+on the same choice for the same reason: the row is worth having before it can be used, because it is the thing a
+registration attaches to and the thing an import attaches to. Refusing the insert would push staff into recording a
+child somewhere worse than the database. A status that cannot sign in keeps the row and refuses the only thing that
+mattered, which is a stranger or a well-meaning volunteer authenticating <em>as</em> a child.</p>
+<p><strong>What is not refused, and should be watched.</strong> Nothing here stops staff setting a password at the moment they
+create the row and reading it out across a table. The write is audited like every other, the gate that allows it
+exists and names who holds it, and the control is the trail — which is what this design has always relied on where
+it refused a mechanism
+(<a href="../round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>).
+If an organization wants that pattern to be impossible rather than visible, the way to want it is a denial, not a
+column: an explicit <code>deny</code> on the write that sets a credential for somebody who is not you.</p>
+<hr />
+<h2 id="d-180--there-is-no-queue-for-money-that-does-not-fit">D-180 — There is no queue for money that does not fit<a class="headerlink" href="#d-180--there-is-no-queue-for-money-that-does-not-fit" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the eighth
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a> by refusing its premise, deletes the queue as a named
+thing from <a href="../../data-model/07-finance/#2b-money-that-cannot-be-matched"><code>07</code> §2a and §2b</a>, and narrows what
+<a href="../round-06/#d-076--money-that-cannot-be-matched-waits-for-a-person">D-076</a>
+is a decision <em>about</em>.</p>
+<p><strong>The rule.</strong> Bank transactions arrive on a schedule and every one of them is in the system; there is no queue. A
+<code>bank_transaction</code> whose <code>matched_payment_request_id</code> is empty is not waiting for a person and is not an exception —
+<strong>most money that arrives has nothing to do with a member at all</strong>: donations, grants, a shop's sponsorship.
+Accounting may tie any incoming transaction to any live request when they choose to. No page may describe an
+unmatched row as a piece of outstanding work, because nobody is assigned to it, nothing counts it, and the design has
+no way to tell "not yet" from "never".</p>
+<p><strong>What survives D-076, because the decision was right and only its framing was wrong.</strong> <em>Waiting is better than
+guessing</em>: an unmatched transaction gets no subject assigned by a match on an amount and a date, and that stands
+untouched. What dies is the picture underneath it — that an unmatched row is money with a person waiting somewhere
+behind it, which is true of a camp fee and false of a sponsorship, and was drawn from a corpus of exports where
+everything was a member. <code>matched_payment_request_id IS NULL</code> was written as "that absence <em>is</em> the queue"; it is
+now the absence of a match, which is a value like any other absence
+(<a href="../round-05/#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values">D-059</a>) and stops being
+the name of a worklist.</p>
+<p><strong>What must not be swept by mistake, because two reports share the word.</strong> <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07</code> §5's reconciliation list</a>
+warns in its own words <em>"do not read this list as the queue"</em>, and that warning was written to keep an unrelated hole
+— <strong>a liability with no ask attached</strong> — from being confused with the money queue. The money queue is deleted; the
+hole is not, and it is still silent in both directions: nobody is chased and nobody pays. The sentence loses its
+left-hand term and has to be rewritten rather than cut.</p>
+<p><strong>The cost, which is the honest half of a no-queue design.</strong> A transfer aimed at a camp whose request nobody ties
+anything to can sit forever, and nothing anywhere will show that it is not merely non-member money. That is a
+consequence of two answers taken together — nothing sends anything to anyone
+(<a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and now no list of rows that need
+looking at — and it is bought on purpose: the alternative is a worklist whose first entry is always a grant payment
+nobody wants to classify, and a worklist nobody clears is a lie about supervision. What makes this survivable is
+that the money is not lost, only unattributed, and it is all on one screen in date order.</p>
+<hr />
+<h2 id="d-181--every-payable-has-a-variable-symbol">D-181 — Every payable has a variable symbol<a class="headerlink" href="#d-181--every-payable-has-a-variable-symbol" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the scope half of
+<a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07</code> §5 item 5</a>, which is the
+question <a href="../round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>
+raised and this round of questions finally got.</p>
+<p><strong>The rule.</strong> Every <code>fee_obligation</code> gets a <code>payment_request</code> and therefore a variable symbol — the yearly fee and a
+camp fee alike — and it gets it because <a href="#d-180--there-is-no-queue-for-money-that-does-not-fit">every payable needs one</a>,
+not because a person asked. The granularity the same item proposed stands as proposed: <strong>one live request per
+liability</strong>, never per person and never per person-year, because a parent paying for two children in one transfer is
+the ordinary case and a camp must not share a symbol with a membership fee.</p>
+<p><strong>Why the answer had to be "every", and what the alternative really was.</strong> With no queue, a liability with no symbol
+has money arriving against nothing and nobody looking at a list where it would show. A second, hand-recorded money
+path is what "membership only" buys, at the exact moment of the year with the most money and the fewest volunteers in
+it — and hand-recorded is what the renewal window has been designed to avoid since
+<a href="../round-02-03/#d-040--the-fee-expires-yearly-a-date-tracked-renewal-window-replaces-a-grace-status">D-040</a>.
+The recommendation the page made in round 22 and the answer agree, so the entry records the answer rather than the
+argument.</p>
+<p><strong>Cost, stated.</strong> Symbols are consumed for liabilities that are never paid — a child registered for a camp that
+does not happen — and the sequence is
+<a href="../../data-model/07-finance/#2-minimal-provisional-shape">unique across all rows forever</a>, so they are spent and
+never reused. Eleven digits is a large number and this is not a real cost; it is named because a future reader will
+wonder whether burning symbols on dead liabilities was noticed.</p>
+<hr />
+<h2 id="d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182 — Matching money is a code of its own, and the automatic half is <code>system:bank-pull</code>'s<a class="headerlink" href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answers) — adds a <code>payment.match</code> code, gives the automatic half of matching an
+actor that already exists
+(<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means"><code>00-conventions §7a</code></a> names six labels and
+now still six).</p>
+<p><strong>The rule.</strong> Tying a <code>bank_transaction</code> to a <code>payment_request</code> by hand is a human act with a code: <code>payment.match</code>.
+It is not an act of a unit — money arrives at one bank account and the ledger is one ledger, and the person who can
+read a statement is not the person who owns the camp — so the code is held at the organization's scope, by whoever
+runs the accounting. Tying the same two rows by variable symbol is not a human act at all: it is what the scheduled
+bank fetch does, and its rows already belong to <code>system:bank-pull</code>.</p>
+<p><strong>Why a code of its own when <code>payment.record</code> was free and the corpus prefers a code to cover a family of acts.</strong>
+Because the two acts point in opposite directions. <code>payment.record</code> writes money that a person typed, which is the
+shape a correction and a refund take (<a href="../round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>:
+money leaves as a negative payment and the bank is where the fact lives). Matching asserts that a row the bank
+already reported belongs to a liability somebody else created, which changes <em>somebody's membership status</em>
+(<a href="../round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>) without writing any money.
+One role doing both is fine and will usually happen; one code doing both means the permission that can free a
+member is the permission that can type in a number, and this round has spent twenty entries on not conflating the
+two.</p>
+<p><strong>Why the automatic half needs no new label, which is the part of the answer that was not a free choice.</strong> The
+fetch that lands a transaction and the resolver that reads its symbol are one run, so one actor writes both rows;
+this is also what the <a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means">existing label's own entry says it is for</a>
+— "the <code>bank_transaction</code> and <code>payment</code> rows that answer a variable symbol" — which means the answer was already in
+the label's wording and the question asked for a confirmation of it. Nothing in the fixed list is added, and the
+count of six stands.</p>
+<p><strong>The shape of the code, decided here because the entry adds it.</strong> <code>payment.match</code>, namespace <code>payment</code>,
+<code>applies_to = unit</code>. Not <code>unit_and_item</code>: money is not an item in the sense that an event or a group is one, and an
+item-scope grant on a fee would be a right over one obligation, which is nobody's job. It is a <code>write</code>.</p>
+<p><strong>Cost, stated, and one thing this entry found out by trying to cite it.</strong> A second money code is a second thing a
+curator has to grant, and an accounting role given <code>payment.match</code> without <code>payment.record</code> can settle transfers but
+cannot correct them — which is the point of the split and will read as an oversight to whoever grants the first one.
+<strong>And where the code is written down turned out to be a different question than the one this entry first answered.</strong>
+The sentence drafted here said the money codes were <em>"registered by no page"</em>, and the grep drafted to prove it found
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">the catalog's deferred namespaces</a>,
+which lists <code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code> and <code>report.finance.view</code> and
+has listed them for six rounds. <strong>So the codes are registered — in the section reserved for namespaces whose module
+does not exist yet, while this module already moves money.</strong> <a href="../../appendix/permission-catalog-a-codes/">Catalog A</a>
+has sections for people, accounts, membership, organization, groups, guardianship, permission administration, audit,
+events and keys, and no money section, so the two codes this round adds go to §10 beside their family: that is where a
+code that exists is filed when its namespace has never been promoted, and this entry records the correction rather
+than the claim, because the file it cites says something the entry did not read. <strong>Whether the promotion is owed is
+<a href="../../open-questions/#k-10--are-the-money-permission-codes-still-deferred">K-10</a>.</strong>
+Because there is no <code>permission.create</code> and no <code>permission.delete</code>
+(<a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>),
+both codes arrive as seeded rows in a migration, which is the only way a code has ever arrived.</p>
+<hr />
+<h2 id="d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183 — A changed ask is a voided request and a new symbol, and <code>amount_discount</code> goes<a class="headerlink" href="#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer, against the recommendation this page first offered) — answers the discount
+question <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07</code> §5 item 1</a>
+asked as a yes or no, deletes <code>fee_obligation.amount_discount</code>, and settles what "change the amount" means in a
+module whose asks are printed on QR codes.</p>
+<p><strong>What was actually asked.</strong> The question put to you was whether a family or sibling discount exists. What came
+back was a requirement, not a policy: <em>be able to select payment requests and change their amount</em>. A discount is a
+policy about who owes less; editing an ask is a capability somebody will use for a discount, a mistake, a
+negotiated camp fee, or a transcription error, and the design has to answer the capability. Three shapes were
+weighed — edit the rows in place, add an adjustment table, void and reissue — and the third was chosen.</p>
+<p><strong>The rule.</strong> <code>fee_obligation.amount_due</code> is edited in place, exactly as
+<a href="../round-22/#d-160--no-proration-rule-and-the-row-is-the-amount">D-160</a>
+already ruled that a reduced fee is "an obligation written with a smaller <code>amount_due</code>, the same act that writes any
+other amount" — this round only makes explicit that <em>written</em> includes <em>written again</em>. <strong>What a person has been
+asked to pay is never edited.</strong> Changing an ask means the live <code>payment_request</code> is voided, with
+<code>voided_reason</code>, and a new request is issued with the new amount and <strong>a new variable symbol</strong>; the old symbol keeps
+resolving to the row it was printed on, which is voided, and money against it is matched by hand
+(<a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>).
+<code>amount_discount</code> is deleted, and the balance in
+<a href="../../data-model/07-finance/#3-keeping-membershipoutstanding_balance-honest">§3</a>
+loses a term: <strong>balance = <code>amount_due</code> − allocations</strong>.</p>
+<p><strong>Why in-place editing of the request was refused, in one sentence a payer could check.</strong> The symbol, the amount
+and the QR code were shown to a person standing at their own bank. Editing a live request's amount rewrites the
+promise while it is in their hand: they pay the figure they were given, it does not fit the ask, and after
+<a href="#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a> there is no list where that mismatch would ever
+appear. The request's <code>amount</code> is a copy rather than a reference for precisely this reason —
+<a href="../../data-model/07-finance/#2-minimal-provisional-shape">"what a person was asked to pay is a historical fact about the ask"</a>.</p>
+<p><strong>Why no adjustment table, which was the option with the best argument.</strong> A named reduction is countable, and after
+<a href="../round-22/#d-157--there-are-no-hardship-waivers">D-157</a>
+nothing in this design can answer "how much did we reduce this year" — that report is genuinely gone, and an
+adjustment row would have restored it. It was refused because the shape it needs is the shape this module has
+refused twice: a second set of rows that the balance has to sum and the reconciliation checks have to agree with,
+which is what <a href="../../data-model/07-finance/#2b-money-that-cannot-be-matched"><code>07</code> §2b</a> says about a separate
+worklist, and what the matcher would inherit — an ask settles against <code>amount</code> minus a sum of adjustments, which
+turns a comparison into a solver. It also needs a code, a scope and a granter's ceiling
+(<a href="../round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>), which is the corpus's costliest
+unit of new machinery. <strong>And it buys nothing void-and-reissue does not:</strong> a voided request is a permanent row holding
+the amount originally asked for, with a reason and a person's name on it, kept with no end date
+(<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>). The history was
+already being kept; it just was not being read as history.</p>
+<p><strong>What is lost, and it should be read rather than skipped.</strong> A discount that is granted by lowering <code>amount_due</code>
+leaves <strong>no mark that a reduction happened</strong> — after the edit the row reads as a fee that was always that size, and
+the audit payload saying what it used to be
+<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">empties after 24 months (D-088)</a>.
+Void-and-reissue keeps the old <em>ask</em>, not the old <em>liability</em>: an obligation written at 500, edited to 350 before
+any request went out, is a 350 obligation with no trace of the 500 anywhere in the data. That is the exact hole
+D-157 refused to build a mechanism for and this entry now states as ordinary operation: <strong>the discretion exists, it
+is audited while the payload lives, and no report will ever count what it was used for.</strong> If a grant report ever
+needs that number, this is the entry to reverse, and the reversal is the adjustment table refused above.</p>
+<p><strong>Cost, stated twice because the plural was in the requirement.</strong> "Select payment requests, plural, and change
+their amount" is a loop of one void and one new symbol per row, not an edit: twelve children on one camp means
+twelve voids and twelve new symbols, and each family's QR code changes. The old symbols stay live in the banks. And
+<code>amount_discount</code> was not decorative — it is a term in the balance and in
+<a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially">§5's checks</a>, so deleting it
+moves three pages and one check that compares a screen against a recomputation.</p>
+<hr />
+<h2 id="d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184 — Every table is audited, and the delete carve-out names the moments that survive<a class="headerlink" href="#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — turns
+<a href="../../open-questions/#i-assumption-index">assumption 17</a>
+into a rule, closes <a href="../../data-model/06b-redaction-and-checks/#6-open-issues"><code>06b</code> §6</a>'s ask for confirmation
+rather than derivation, and re-cuts the <code>DELETE</code> carve-out in
+<a href="../../data-model/06-audit-and-import/#21-the-trigger"><code>06</code> §2.1</a>
+now that <a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a> has removed one of its
+moments.</p>
+<p><strong>The rule.</strong> The audit obligation is no longer scoped by a list of tables. Every table the application writes owes
+one <code>audit_log</code> row per insert and update, on every path, from the day the table exists. The only tables outside it
+are the trails themselves: <code>audit_log</code> and <code>access_log</code> are the record, and a record of a record is a row that has
+to be recorded in its turn.</p>
+<p><strong>Why the confirmation was worth asking for at all, when §2.1 already claimed it.</strong> Because §2.1 named some tables
+and then pointed at an open question for the rest, and
+<a href="../../data-model/06b-redaction-and-checks/#6-open-issues">the page holding that question</a>
+asked for somebody to read the list and say yes — the cheapest closure on the register and the one nobody
+volunteers for, because a confirmation changes no table and closes no hole visibly. A rule whose scope is "everything
+except the list we never finished" is a rule that a new table can fall outside of by nobody noticing; check 5's
+assertion that the list and the write paths agree had nothing correct to agree with.</p>
+<p><strong>The delete carve-out, re-cut.</strong> §2.1's <code>DELETE</code> exclusion rested on "nothing in this data model is hard-deleted"
+and admitted <strong>two</strong> moments where a delete reaches a business row: the import revert and erasure's attribute
+deletion. The revert is gone (<a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>),
+so one path reaches a business row with a delete — erasure, which audits nothing per row and is recorded once in
+<code>redaction_log</code> — and one path deletes a trail row: <a href="../round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name"><code>access_log</code>'s age-out at 24 months
+(D-145)</a>.
+That leaves the enumerated list in check 5 shorter by one, and it leaves the deletion policy in
+<a href="../../data-model/00-conventions/#4-deletion-policy"><code>00-conventions §4</code></a>
+carrying <strong>two</strong> exceptions where it currently says three, because the staging truncate goes with the pipeline.</p>
+<p><strong>Reading, not ruling — but the reading this answer forces.</strong> <a href="../round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
+gave the age-out a name in the fixed actor list for one reason: "a job that removes rows has to be nameable". While
+<code>DELETE</code> wrote no audit row anywhere, that name had nowhere to be written — the label existed in a list and on no
+row. Now that every table is audited and the age-out is the one scheduled delete left standing, the reading is that
+<strong>it writes one summary audit row per run</strong> — <code>system:log-reduction</code>, how many rows went, and the window that
+removed them — and not one row per deleted row. Per-row entries would either quote contents the deletion exists to
+destroy, which is the argument
+<a href="../../data-model/06-audit-and-import/#21-the-trigger"><code>06</code> §2.1 makes for erasure</a>, or accumulate thousands of rows
+whose entire content is "something was deleted", which is the same argument. So the age-out finally becomes
+attributable in the place D-145 implied it already was.</p>
+<p><strong>Cost, stated.</strong> A trail that records every table is bigger than one that records the interesting ones, and this
+design already says the cost of the obligation is storage rather than correctness. The offsetting fact is the one
+<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>
+set up: rows are kept indefinitely and <strong>payloads empty at 24 months</strong>, so the growth is in the skeleton of the row,
+and widening the obligation multiplies a small fixed-size row rather than a payload holding two images of a person.</p>
+<hr />
+<h2 id="d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party">D-185 — A guardianship ends when a party ends it, and majority is not a party<a class="headerlink" href="#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> confirmed (from your answer), with the sentence that was missing — closes
+<a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a>, and re-points
+<a href="../../open-questions/#i-assumption-index">assumption row 9</a>, which round 22 struck through as superseded.</p>
+<p><strong>What your answer added to what was already written.</strong> You answered that a delegation and a guardianship arrive at
+the same result, so leave the guardianship until the child or another guardian ends it. <a href="../../data-model/04-relationships/#1-guardianship"><code>04</code> §1</a>
+already says a <code>valid_to</code> is set by a person and <strong>never by a job</strong>
+(<a href="../round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>),
+and its table of three acts already gives the ending of a row to the guardian, to staff on request, and to
+<strong>"the subject (adult)"</strong> (<a href="../round-06/#d-073--guardianship-is-administered-by-its-own-parties-not-by-staff">D-073</a>).
+The answer is the rule on the page. <strong>What was missing is the sentence that says a dependent may be an adult</strong> —
+nothing restricts the column to a minor, and nothing said so either, which is how
+<a href="../../open-questions/#e-3--guardian-acting-for-an-adult-child">E-3</a> could stay open while its answer sat three sections away.</p>
+<p><strong>So, plainly.</strong> A guardianship row's dependent is a person, not a minor; nothing happens to the row when the
+dependent's birth date passes 18; a parent acting under a <code>write</code> level may register an adult child for an event
+because that is what <code>write</code> says; and the row ends when the guardian ends it, when the adult named in it ends it,
+or when staff record either of those. A delegated grant remains available to an adult who prefers it
+(<a href="../round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>),
+and this ruling does not prefer one over the other — it refuses the premise that a second mechanism was needed.</p>
+<p><strong>Why "both arrive at the same result" is worth recording as an answer rather than an evasion.</strong> Because the two
+mechanisms are checked through different channels — the guardianship channel is entered by shape and cannot be
+denied (<a href="../round-06/#d-079--the-guardianship-channel-is-entered-by-shape-not-by-permission-name">D-079</a>), while a
+delegation is an ordinary grant with everything that implies — and the register's recommendation for E-3 argued for
+the delegation on the ground that <em>the legal basis differs</em>. Your answer drops that argument for the reason the
+corpus would give: the legal basis is not something this system records a position on
+(<a href="../round-05/#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority">D-069</a>),
+so it cannot be a reason to prefer a mechanism.</p>
+<p><strong>Cost, stated.</strong> An adult with a guardianship row still pointing at a parent, because nobody ended it, has a person
+with <code>write</code> over their records. Every defence here is the one this design always uses: the subject may end it
+without a grant and without anybody's agreement, the row names both parties, and the trail shows every act taken
+under it. What is <em>not</em> there is a prompt — no report lists adult dependents whose guardianship outlived its
+reason, because the design takes no position on majority and a list like that is the position, wearing a report.</p>
+<hr />
+<h2 id="d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186 — <code>membership_type</code> is settings wearing a vocabulary's clothes<a class="headerlink" href="#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes <a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row">F-9</a>, changes no table, and moves the
+defence of <a href="../../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table"><code>03</code> §1</a>
+off the ground it was standing on.</p>
+<p><strong>The ruling.</strong> The one-row table stays, with its <code>member</code> row and its foreign key that can only ever hold one
+value, and it stops being described as a vocabulary. <strong>It is a settings row</strong>: three of its columns are the
+organization's calendar — <code>expiry_month</code>, <code>expiry_day</code>, <code>renewal_grace_days</code>, the knobs
+<a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4's remainder</a>
+exists to keep out of code — and a settings row that one other table points at is a settings row with a foreign key,
+not a taxonomy with one member.</p>
+<p><strong>Why the distinction is worth an entry rather than a sentence.</strong> Because the defence on the page was the
+corpus's own best principle — <em>vocabularies are rows, not enums</em> (<a href="../round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>)
+— applied to a table that does not earn it. A vocabulary is a set the organization may change its mind about, and
+for twenty-two rounds this one has been refused a second member at every turn: the fee is flat and per person, one
+live price is edited in place
+(<a href="../round-22/#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last">D-161</a>),
+and the fee buys membership and nothing else
+(<a href="../round-22/#d-156--the-fee-buys-nothing-but-membership">D-156</a>). <strong>A principle cited on behalf of a shape it does
+not describe is a principle that will be cited wrongly again</strong>, which is the same failure as
+<a href="#d-177--the-list-of-login-methods-is-written-in-the-program">the login-method list in D-177</a>
+— two tables in the same round, both defended by "vocabularies are rows", neither of them a vocabulary.</p>
+<p><strong>What stays exactly as it was.</strong> The row, the key, the columns, the seed of one <code>member</code>, and the discipline A-4
+asked for: a job or a screen that contains the literal <code>60</code> or the literal <code>1</code> is the only way to lose the property
+those columns were bought for. Renaming the table was not chosen, and would have been a rename of a table for the
+sake of a comment.</p>
+<hr />
+<h2 id="d-187--an-invoice-is-a-document-a-payer-asks-for">D-187 — An invoice is a document a payer asks for<a class="headerlink" href="#d-187--an-invoice-is-a-document-a-payer-asks-for" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07</code> §5 item 2</a>,
+adds an <code>invoice</code> to <a href="../../appendix/erd-b-inventory/">the inventory</a> and an <code>invoice.issue</code> code, and answers a
+question whose wording had to be corrected before it could be answered — the first answer said <em>by the payee</em>, and a
+payee is the organization, which would have had it invoicing itself.</p>
+<p><strong>The rule.</strong> A payer may ask for an invoice against a <code>payment_request</code> they have been sent. Issuing one writes an
+<code>invoice</code> row over the same obligation, carrying its own number from its own sequence, and it is written by whoever
+holds <code>invoice.issue</code>. <strong>A <code>payment_request</code> is not an invoice and does not become one</strong> — that was the page's own
+sharpening and it survives untouched: no tax identity, no legally-required sequence, no delivery record. If this
+country turns out to require invoices of somebody, the answer is this table, not a renaming.</p>
+<p><strong>Why there is no "requested" state, which is the half of this a reader will trip on.</strong> A payer's ask that sat on a
+row waiting for accounting to notice it is <strong>the queue this round deleted two entries ago</strong>
+(<a href="#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) wearing a different coat: a column meaning
+<em>somebody owes this person a document</em>, with nobody assigned to it and nothing counting it. So an invoice is a row
+that exists or does not. Someone asks; someone issues; the trail of the ask is the conversation the organization had
+with the payer, which is outside the database, exactly as <a href="#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>
+does for a troop that continues another troop. <strong>Reading, not ruling:</strong> if this turns out to be wrong in practice —
+if invoices are asked for often enough that forgetting one is a real failure — the fix is a report over the requests
+that have no invoice, not a status on the request.</p>
+<p><strong>What this does not touch, and the review that still owns it.</strong> <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially">Item 4 of §5</a>
+asks what this country's law demands of a fee, and
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure">the four data policies already in front of a legal review</a>
+sit in the same sitting. This round decides that the organization <em>issues</em> invoices when asked. Whether it is
+<em>obliged</em> to, what one must contain, and how long it must be kept are a lawyer's questions and stay filed. The
+document this design has now added a table for may turn out to need columns this design has not invented; that is
+the correct order, because a table whose number is real is cheaper to extend than a document that was printed
+without one.</p>
+<p><strong>The shape of the code.</strong> <code>invoice.issue</code>, namespace <code>invoice</code>, <code>applies_to = unit</code>, a <code>write</code> — same reasoning as
+<a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls"><code>payment.match</code></a>, and the
+same complaint: it joins a money family the catalog files as <strong>deferred</strong> — a namespace whose module does not
+exist — while the module that spends these codes has been designed for two rounds and moves real money in
+<a href="../../data-model/07-finance/"><code>07</code></a>.</p>
+<p><strong>Cost, stated.</strong> A third money entity, a second numbering sequence beside the variable symbol's, and a code whose
+holder can produce a document with a legal shape. <code>invoice.issue</code> is deliberately separate from <code>payment.match</code>
+(<a href="#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>)
+so that the person who can settle a transfer is not automatically the person who can sign a tax document, and — this
+is the sentence that matters — <strong>nothing in this design sends the invoice to anybody</strong>
+(<a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). It exists on a screen and is handed over
+by a person or printed by one, and no page may say otherwise.</p>
+<hr />
+<h2 id="d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188 — The ceiling reads a grant and nothing else, and what it leaves open is written down<a class="headerlink" href="#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — answers the half of
+<a href="../round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>
+that its own entry refused to pretend was settled, and settles it in the direction of <em>no</em>.</p>
+<p><strong>The rule.</strong> The granter's ceiling reads a write to <code>access_grant</code> whose subject somebody chose, and nothing else.
+It does not read an edit to an <code>audience</code>'s expression tree, and it does not read adding a person to an office. A
+grant pointing at an audience can therefore be widened without any write to <code>access_grant</code> at all, and this says so
+in the pages that describe the ceiling rather than leaving it to be discovered by whoever audits something.</p>
+<p><strong>What that costs, stated without softening, because the shape of it is not obvious.</strong> An audience's whole content
+is an expression over named sets (<a href="../round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>),
+and a person holding <code>audience.manage</code> can rewrite one. Rewriting <code>ROLE(camp organizer)</code> to <code>MEMBERS</code> takes every
+live grant that names that audience and gives it to everybody in the unit — including the person who made the edit,
+who needed no grant to make it and no grant to be covered by it. <strong>That is escalation, and the ceiling does not see
+it</strong>, because no grant was written and no grant was touched. It is bounded by what the vocabulary can be made to
+read: to admit a specific person an editor still has to be able to name a set they fall into, and adding them to an
+office is a separate act behind <code>role.assign</code>. But the broad case does not need any of that.</p>
+<p><strong>Why "no" anyway, which is the answer given and the reason it is defensible.</strong> Because the alternative is not
+safe, it is only wider: a ceiling that reads an expression edit has to decide, at the save, what the expression
+resolves to for every live grant that points at it — which is a permission check <em>inside</em> the definition of a
+permission's reach, running while the check is being changed. The corpus has refused that recursion before, and it
+refused the mechanism rather than the worry: <strong><code>audience.manage</code> is not a lesser code than <code>access_grant.create</code>
+and must not be granted like one</strong>, which is a sentence the catalog should carry beside both codes. The control for
+the widening is the same control that protects the codes themselves — there is no <code>permission.create</code>, no
+<code>permission.delete</code>, and <code>permission.edit</code> reaches labels only
+(<a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>),
+so what is rare is rare because somebody granted it, once, in the open.</p>
+<p><strong>Cost, stated.</strong> Two things now widen a right without a ceiling reading them, and <a href="../round-22/#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes">D-170</a>
+already refused to let "by construction" cover a pair: the twelve rows an event create writes, and the audience an
+editor can rewrite. The difference between them is worth keeping straight rather than merging into a worry —
+the twelve name nobody the writer chose, and this one names exactly whoever the editor decides to name.</p>
+<hr />
+<h2 id="d-189--one-author-writes-the-vocabulary-before-the-batch">D-189 — One author writes the vocabulary before the batch<a class="headerlink" href="#d-189--one-author-writes-the-vocabulary-before-the-batch" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the schedule half of <a href="../../open-questions/#f-34">F-34</a>, which is the
+question <a href="../round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>
+left open by deleting the stage that used to carry it.</p>
+<p><strong>The rule.</strong> One named person holds <code>attribute.define</code> and writes the definitions the legacy corpus needs,
+sitting with the source's column headers, <strong>before</strong> the batch that would otherwise refuse at apply time on a mapped
+column naming no live code. Afterwards the code stays with that role. There is no queue of proposals, no ageing, no
+curation stage — the mechanism was deleted in round 20 and stays deleted — and what replaces the schedule the
+deleted stage secretly carried is a person and a period, written down.</p>
+<p><strong>Why the answer is a name and not a mechanism, which is the pattern of this whole round.</strong> D-141 removed
+<code>proposed</code> and with it the only thing that made the vocabulary arrive <em>in time for</em> an import, and the round noticed
+afterwards that a mechanism had been quietly answering a question nobody had written. The corpus has now answered
+that shape of gap four rounds running the same way: <strong>a report and a written procedure, not a mechanism</strong>
+(<a href="../round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>),
+and <a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>
+means the schedule cannot be a reminder — nobody is told anything, including the author, and the page that states the
+rule must be where the deadline lives.</p>
+<p><strong>Reading, not ruling:</strong> the refusal that D-141 put at apply time was a refusal <em>of the pipeline</em>, and the pipeline
+is gone (<a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). What survives is the
+invariant underneath it — <strong>a value may not invent a code</strong>, and an unmapped column is an error rather than a
+proposal — which now binds the script, and every later write, exactly as hard.</p>
+<hr />
+<h2 id="d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190 — The legacy import is a script and a key, and the pipeline is gone<a class="headerlink" href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — the largest deletion since
+<a href="../round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>
+removed the unit hierarchy, and the reason several pages of this corpus now describe a thing that does not exist
+until they are swept.</p>
+<p><strong>The rule.</strong> The membership and attendance exports are loaded <strong>once</strong>, by a script, through an <code>api_key</code>. The
+script reads the two exports, transforms them, and writes rows through the application with a key that the
+<a href="../../data-model/05e-keys-and-callers/">keys-and-callers page</a>
+already knows how to authenticate and already names as a third kind of grantee
+(<a href="../round-16/#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind">D-116</a>).
+Everything built around the idea that an import is a feature of this system is deleted.</p>
+<p><strong>What dies.</strong> <code>import_batch</code> and <code>import_batch_id</code>; the staging tables <code>staging_import</code> and <code>staging_import_row</code>,
+and with them <a href="../../data-model/00-conventions/#4-deletion-policy">the deletion policy's first exception</a> — the
+staging truncate, which was one of the three named holes in "nothing is hard-deleted" and is now one of two; the six
+stages and the field→code mapping, which is
+<a href="../../data-model/06-audit-and-import/#3-import-pipeline--deleted"><code>06a</code> §3</a> entire; the per-batch revert, and with it the <em>first</em> of
+the two moments where <a href="../../data-model/06-audit-and-import/#21-the-trigger"><code>06</code> §2.1</a>
+let a delete reach a business row; the four codes <code>import.view</code>, <code>import.apply</code>, <code>import.stage</code> and <code>import.revert</code>;
+the <code>import_batch:&lt;id&gt;</code> entry in the fixed actor list, which goes from six labels to five;
+<a href="../../data-model/06-audit-and-import/#3-import-pipeline--deleted"><code>06a</code> §4's three checks</a>, all of which are assertions about
+staged rows and batch accounting; and the page
+<a href="../../data-model/06-audit-and-import/#3-import-pipeline--deleted"><code>06a-import.md</code></a> itself, whose whole contents are those two sections.</p>
+<p><strong>What does not die, and should not be swept by mistake.</strong> The <strong>bank</strong> import is a different thing and stays:
+transactions arrive on a schedule under <code>system:bank-pull</code>
+(<a href="../round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>),
+with <code>bank_reference</code> as the idempotency key. D-169's end-date inference stays the rule for what an imported
+membership's <code>valid_to</code> holds, but it is now a rule about rows rather than about a pipeline's parse step, and its
+check goes with the page it was written on. D-093's ruling that the one-off load may create dated memberships
+stands, D-092's description of the corpus as people and events stands, <code>data_confidence</code> stays on the rows the
+script writes because the periods are still inferences, and D-141's invariant — a value may not invent a code — is
+what the script must obey instead of a stage that used to enforce it.
+<a href="../round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>'s
+"no unit is named by any row" consequence is untouched and remains the reason there is no sub-unit history.</p>
+<p><strong>What is genuinely lost, named one by one rather than waved at.</strong></p>
+<ul>
+<li><strong>Revert.</strong> A batch that goes wrong can no longer be undone as a batch. A bad load is corrected forward — row by
+  row, in the open, each correction audited — or the database is restored from before it ran. This is the real
+  price, and the honest framing is that it was never a safety feature so much as a <em>tidiness</em> feature: the rows it
+  let you un-write are rows a person with the script could have written wrongly one at a time, and nothing in this
+  design lets a bad <code>membership</code> go unnoticed for long, because <a href="../round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>
+  puts an open membership at the front of a permission check.</li>
+<li><strong>The person who ran it.</strong> <code>import_batch.created_by</code> named whoever uploaded the file. A key names itself and
+  never carries a person's authority (<a href="../round-16/#d-121--a-key-never-carries-a-persons-authority">D-121</a>), so the
+  trail will say <em>this script's key wrote these rows</em> and not <em>Ana ran it at eleven at night</em>. Accountability
+  survives one step removed: the key was granted, the grant names its holder, and the grant is audited. That is a
+  weaker sentence than the one it replaces and it should be recorded as weaker.</li>
+<li><strong>Provenance as a column.</strong> <code>import_batch_id</code> on created rows let any report ask "what made this row" without
+  touching the trail. After this, provenance lives in the trail: an <code>audit_log</code> row whose <code>api_key_id</code> names the
+  load. The trail's rows survive — <a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">their payloads empty at 24 months and the skeleton stays
+  (D-088)</a> — so <em>which key
+  wrote this</em> is answerable forever while <em>what it wrote</em> is answerable for two years, which is the same bargain this
+  design already makes everywhere else and is exactly why
+  <a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>
+  refused to put provenance flags on rows.</li>
+<li><strong>Three checks.</strong> All of <a href="../../data-model/06-audit-and-import/#3-import-pipeline--deleted"><code>06a</code> §4</a> is assertions about staged
+  rows. The one that mattered was the first — an imported membership with no end date, which is authority rather
+  than untidiness, and was <strong>the only check on that page that reached the permission gate</strong>. Its subject outlives
+  it: an open imported membership is still a person who can be handed rights by
+  <a href="../round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>, and D-169 still supplies the
+  date that closes it. What is gone is the report that would have noticed one, which is a hole, and the shape of the
+  hole is a <code>membership</code> row with <code>valid_to</code> empty whose audit row names the load's key.</li>
+</ul>
+<p><strong>Why the deletion is right anyway, which is not the same as it being free.</strong> The machinery was built for a job
+that happens <strong>once</strong>, and every one of its features — six stages, staging tables, a mapping the organization
+edits, a revert, four permission codes, a fixed actor label, three checks — is a feature of a thing that will be
+run and never run again. This corpus's own test for a mechanism has been the same in every round: <em>who uses this on
+a Tuesday?</em> Nothing here used the pipeline on a Tuesday. The script has the same requirements written in a language
+where they are cheap — idempotence in a script is a key and a skip — and the parts that were decisions rather than
+machinery are the parts this entry has just carried forward.</p>
+<p><strong>One consequence nobody asked for and it is fair to name.</strong> The transformation stops being configuration and
+becomes code, so the definitions of what a source row means — that a people row evidences <em>a person and a bounded
+membership</em>, that an attendance row evidences <em>an event nobody owns and a registration</em>
+(<a href="../round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>)
+— now live in a script that is not in this repository and will not be reviewed by whoever reads this page next.
+The rules survive; the place they are readable does not.</p>
+<hr />
+<h2 id="d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191 — <code>person.notes</code> is deleted, and the vocabulary takes the job<a class="headerlink" href="#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the sixth
+<a href="../../open-questions/#k-filed-by-a-module-page">§ K question</a>, deletes a column of <code>person</code>, and removes the one
+corner of the person record that <a href="../round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+was written to forbid.</p>
+<p><strong>The rule.</strong> The column is gone. Free text about a person becomes what every other free text about a person
+already is: an <code>attribute_definition</code> row somebody holds <code>attribute.define</code> for, live at the save of that person
+(<a href="../round-20/#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted">D-141</a>),
+readable by anyone with <code>person.view</code>, erased by having its rows deleted like every other attribute row. There is no
+longer a place to write something about a child that is not in the vocabulary.</p>
+<p><strong>Why this was worth a ruling rather than a shrug, which is the argument the holding page had already made.</strong>
+<a href="../../data-model/01-identity/#2-person"><code>01-identity</code>'s own field row</a>
+said the column "may contain anything, including a diagnosis sitting under a column nobody would call medical", and
+its own boundary section said it "is a worse exposure than most of what" the vocabulary guards. The protection it
+did have was the one every guarded field has: the trail, and <code>audit.view</code> deciding who may read a value at all
+(<a href="../round-20/#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138</a>).
+<strong>So the column bought nothing except the property of not being in the vocabulary</strong> — and not being in the
+vocabulary is the thing that made it worth asking about, because a value the organization has to define in order to
+store is a value somebody had to think about once.</p>
+<p><strong>The erasure argument runs the opposite way to the obvious one, and it is the strongest reason for the deletion.</strong>
+<code>person.notes</code> was deliberately kept off <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">the redactor's list</a>,
+and the reason given was that naming a column as an exception is the field-name rule D-083 removed. The consequence
+nobody drew was that a redaction therefore <strong>left the notes intact</strong>: erasure overwrites names and contacts, deletes
+every <code>person_attribute</code> row, empties an event answer — and does not touch the free text that the same page admits
+may hold a diagnosis. Moving the text into the vocabulary does not weaken its erasure, it fixes one: attribute rows
+are the one thing this design <em>deletes</em> on erasure, because the row is the value
+(<a href="../../data-model/00-conventions/#4-deletion-policy">§4's second exception</a>). A diagnosis that lived in <code>person.notes</code>
+survived being asked to leave; the same diagnosis as an attribute value does not survive it.</p>
+<p><strong>What the sweep has to re-point rather than delete.</strong> <a href="../../data-model/00-conventions/#8-personal-data-and-erasure">§8 item 2</a>
+names "free-text notes that may contain personal data" in its cascade, and
+<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from"><code>09-attributes</code></a>
+lists notes as an example of what the vocabulary is for; both are now about attribute rows rather than about a
+column. And the corpus is not now free of free text about a person, which the pages that keep the remaining ones
+should say rather than imply: a roster row's <code>note</code>
+(<a href="../../data-model/02-organization/#2-person_group_member"><code>02</code> §2</a>) is free text about why a child joined a group
+and is written in the organization's words on purpose; an account's <code>status_reason</code> and <code>status_note</code> are free text
+about a person in the words of whoever suspended them; a <code>field_conflict</code> holds the two values a merge could not
+choose between. Every one of those is a row of a relationship or an act rather than a column of the person record,
+which is the distinction this deletion draws and no page has ever stated — <strong>the person row holds no free text, and
+plenty of rows about a person still do.</strong></p>
+<p><strong>Cost, stated.</strong> One column is easy to delete and the cost is not in the schema.</p>
+<ul>
+<li><strong>The legacy load meets D-141 face to face.</strong> A source export with a notes or remarks column can no longer land it
+  anywhere without a definition existing first, and the refusal is now the script's
+  (<a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). That is the correct order —
+  <a href="#d-189--one-author-writes-the-vocabulary-before-the-batch">one author writes the vocabulary first</a> — and it is
+  also the first place an operator will hit it, because "notes" is the column every export has.</li>
+<li><strong>A merged note is now N values, not one.</strong> Free text arriving as one blob against a person becomes one or more
+  attribute values, each of which has to be mapped to a code by somebody reading it, which is exactly the work
+  <code>attribute.define</code> was made to carry and is not work the column ever asked anyone to do.</li>
+<li><strong>The trail still holds what the column held, for as long as payloads live.</strong> Deleting a column does not delete
+  its past: <code>audit_log</code> rows carry before and after images of a field that no longer exists on the table, and they
+  empty <a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">at 24 months (D-088)</a>.
+  Someone auditing 2027 in 2030 will find an old value under a column name they cannot find in the schema, which is
+  true of every deletion this corpus has ever made and is worth saying once where the deleted thing was the worst
+  field on the table.</li>
+</ul>
+<p><strong>What is refused, so that nobody re-litigates it from this entry.</strong> Keeping the column and putting it on the
+redactor's list was the third option, and it is the one that contradicts a decision: naming a column as an exception
+to a field-name rule is what D-083 removed, and a design with one named exception invites the second. Keeping it
+exactly as it stood was the second, defensible on the grounds that the trail already guards every field; it was
+refused because the corpus's own page called the column a worse exposure than the things the vocabulary protects,
+and a page that says that about its own column has made the argument.</p>
+<h2 id="d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192 — <code>proposed_by</code> loses <code>import_job</code>, because a vocabulary value is a claim about who can write<a class="headerlink" href="#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write" title="Permanent link">&para;</a></h2>
+<p><strong>Raised by this round's own sweep, and by nothing else.</strong> After <a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a> deleted the pipeline, two pages went on
+describing <code>match_proposal.proposed_by</code> as one of <code>import_job</code>, <code>match_job</code>, <code>person</code>, <code>staff</code>
+(<a href="../../data-model/01b-merges-views-and-checks/#8-identity_hypothesis-and-person_merge">01b §8</a>,
+<a href="../../domain/03-identity-and-legacy/#3-identity-hypotheses-not-merges">domain/03 §3</a>). <strong>No gate would have caught
+it.</strong> <code>scripts/check-registries.py</code> reads permission codes, selectors, scope types and actor labels; an enumerated
+column's value set is not a registry it knows, so a value that names a mechanism this corpus has just deleted is
+invisible to it, and the sweep that deleted the page was looking for pages.</p>
+<p><strong>Answer.</strong> The value is deleted. <code>proposed_by</code> is one of <code>match_job</code>, <code>person</code>, <code>staff</code>.</p>
+<p><strong>Why not rename it <code>legacy_load</code>, which is what it meant.</strong> Because the rename keeps the false claim and adds a
+migration to it. The column answers <em>who put this hypothesis in front of a reviewer</em>, and after <a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a> the
+writers are the nightly matcher, a person asserting that a sign-up colliding with their record is themselves
+(<a href="../../data-model/01a-accounts-and-contacts/#4-account">01a §4</a>), and a staff member at the review screen.
+<strong>The load does not propose matches.</strong> If it lands two near-duplicate people, it is the matcher's code that scores
+the pair and the matcher's name the value carries; the load's own writes carry the key that ran it, which is
+provenance and answered where provenance lives (<a href="../../data-model/06-audit-and-import/#3-import-pipeline--deleted"><code>06</code> §3</a>).</p>
+<p><strong>This is not the corpus forgetting which rows are legacy.</strong> Stated here so the deletion is not read as a second
+sweep of the same idea: <code>person.record_origin</code>, <code>data_confidence</code>, <code>person_attribute.source</code>, and the <code>source</code>
+columns on names, contact points, identifiers and registrations all still say <em>an import wrote this</em>, and
+<a href="#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a> kept them on purpose. <strong>A row's provenance marker and a proposal's origin value answer different
+questions</strong>, and only the second one lost the thing it named.</p>
+<p><strong>What it costs.</strong> A hypothesis that exists only because the load created a duplicate can no longer be told apart,
+<em>in this column</em>, from one the nightly matcher found by itself. It can be reconstructed by reading the trail behind
+the two person rows, which is work no page promises and a report no check lists. The review screen is the only
+reader of this column and it shows the signals, not the origin, so the loss lands on nobody's workflow — which is
+the reason it is worth recording rather than the reason to ignore it.</p>
+<p><strong>The rule this generalizes, and it is not new.</strong> A value in an enumerated column is a claim that something in this
+system can be that thing. When a mechanism dies, every value that named it dies in the same round — the test
+<a href="../round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a> applied to an operand that named a channel instead of a set, and <a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a> applied to the
+rows of a vocabulary. <code>scripts/check-registries.py</code> will not apply it, so it is written in the page that owns each
+column. <strong>Schema impact: one value leaving one column.</strong> The dead name is registered in
+<a href="../../appendix/removed-concepts/">removed concepts</a>.</p>
+<hr />
+<h2 id="what-this-round-cost-and-what-it-did-not-close">What this round cost, and what it did not close<a class="headerlink" href="#what-this-round-cost-and-what-it-did-not-close" title="Permanent link">&para;</a></h2>
+<p><strong>One question out of the whole batch was already answered.</strong> <code>F-27</code> is recorded above against
+<a href="../round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>
+and mints nothing. It is not the fourth question this corpus has found already-settled in the way
+<a href="../round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169</a>
+described, and the reason it slipped through is narrower than that finding and worth its own sentence: <strong>the
+question was drafted from the register's live section and the answer was in the register's answered table, on the
+same page, two hundred lines apart.</strong></p>
+<p><strong>Three answers changed shape while being given, and each is recorded where it landed rather than tidied.</strong> A
+reporting column became a grammar column (<a href="#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a>),
+which forced a second entry about an erasure it had not occurred to anyone to ask about
+(<a href="#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>); a document issued by the payee became a
+document requested by the payer (<a href="#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>); a yes-or-no about
+discounts became a capability, and the capability became the death of a column
+(<a href="#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>). None of the three
+was foreseeable from the question, which is the argument for asking questions in a register rather than answering
+them in a summary.</p>
+<p><strong>And one entry nobody was asked for.</strong> <a href="#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a> is a value in one enum, and it arrived because
+the page that listed it was opened to be swept rather than to be asked about. <strong>Every round of this size leaves
+residues of exactly this shape</strong>, and the honest note about it is that a round which only asks registered questions
+never finds them: the register held twenty-one questions and closed twenty-one, and the thing that was actually
+broken was found by reading a field table.</p>
+<p><strong>The count this page will not claim.</strong> <a href="../round-22/">Round 22's repair</a> ended by refusing to print a per-file
+sentence count it could not point a program at, and that refusal is the habit this entry inherits: the numbers in
+this round that are verifiable are the ones a script can produce, and they are these: <strong>twenty-two decisions</strong> on this
+page (counted from its own headings); <strong>one page deleted</strong>; <strong>three tables deleted</strong> (<code>import_batch</code>,
+<code>staging_import</code>, <code>staging_import_row</code>) <strong>and one added</strong> (<code>invoice</code>); <strong>four permission codes removed</strong>
+(<code>import.view</code>, <code>import.stage</code>, <code>import.apply</code>, <code>import.revert</code>) <strong>and two added</strong> (<code>payment.match</code>, <code>invoice.issue</code>);
+<strong>one actor label removed</strong> (<code>import_batch:&lt;id&gt;</code>, six to five); <strong>three column names deleted</strong> — <code>person.notes</code>,
+<code>fee_obligation.amount_discount</code>, and <code>import_batch_id</code>, which was written into 12 rows of eight field tables before
+it went; and <strong>two vocabulary values deleted</strong> (<code>unknown</code> from <code>person.gender</code>, <code>import_job</code> from
+<code>match_proposal.proposed_by</code>). <strong>The sentence printed here for an hour said twenty entries, one column and two
+tables, and every one of those three figures was wrong</strong> — twenty-one decisions when it was written and twenty-two
+now, three columns, three tables — which is the same failure this paragraph exists to describe, reproduced inside
+the paragraph describing it. The figures above name what counted them so the next reader can re-produce them.
+the number of sentences swept across the corpus is deliberately not stated anywhere in these documents, because the
+last round's was wrong every time it was measured.</p>
+<p><strong>What is still open when this closes.</strong> <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim"><code>F-11</code></a> — whether the identity reviewer needs
+to <em>read</em> a person record to settle a claim — stays open on its own recommendation, and nothing in this round
+touches it; its recommendation is to watch a queue rather than redesign around a guess, and the queue it means is
+produced by the sign-up collision path, not by the import that has just been deleted. The legal review is still four
+policies and now also owns the invoice's contents
+(<a href="#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). The wire in and the wire out are still undesigned.
+And <a href="#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188</a> has left a
+widening path open on purpose, with the sentence about it in the pages that describe the ceiling so that the next
+reader finds the statement rather than the hole.</p>
+<p><strong>A gate this round wrote, and which is deliberately not a decision.</strong> This page's own figures are above, and they
+were measured; the sentence that broke was in a different page and the sweep missed it. The decision index says in its own
+introduction how many decisions it indexes; that number was one short of its own rows from the moment
+<code>D-192</code>'s row was added, and it survived every gate this round ran — <code>scripts/check-registries.py</code> reads names, and
+<code>mkdocs --strict</code> reports a document with a stale figure in it as a successful build. So round 23 wrote
+<code>scripts/count-decisions.py</code>, which counts the entry headings, counts the index's rows, reads every sentence outside
+the history pages that states a total, and exits non-zero when the three disagree. Closing a round now means running
+it beside <code>check-registries.py</code> and the documentation build. It is not a decision because it changes nothing about the system being designed: it is a
+script, it can be deleted by anybody who finds it cheaper to count by hand, and no ruling depends on it. What it
+cannot do is check a figure it was not written for — the count of rows on
+<a href="../../data-model/00a-invariant-register/">the invariant register</a> that drifted for three rounds is still checked by
+nobody but the next reader who counts, which the page itself now says.</p>
+<p><strong>One hazard found in the existing tooling while doing this.</strong> <code>scripts/check-registries.py</code> has an
+<code>--update-baseline</code> flag that rewrites <code>scripts/registry-baseline.txt</code> from scratch, which deletes the file's header
+and the reason after every <code>#</code> — and that header says a reason is the record, not a comment. It also drops lines
+whose finding has stopped firing, silently, which is the one useful thing it does. Round 23 ran the flag, lost the
+file, and got it back by saving the diff and reversing it:
+<code>git diff -- scripts/registry-baseline.txt &gt; /tmp/bs.diff</code>, then <code>git apply -R /tmp/bs.diff</code>. <strong>The flag should not be run
+inside a round:</strong> add or delete the baseline's lines by hand, keeping each reason, and if a bulk edit is wanted, run
+the script against a scratch copy of <code>docs/</code> and copy in what was measured.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../round-22/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 22">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Round 22
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../open-questions/" class="md-footer__link md-footer__link--next" aria-label="Next: Open Questions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Open Questions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>

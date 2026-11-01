@@ -1470,8 +1470,6 @@
       
         
       
-        
-      
     
     
     
@@ -1529,34 +1527,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../data-model/06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2259,6 +2229,8 @@
       
         
       
+        
+      
     
     
     
@@ -2885,6 +2857,34 @@
     
   
     Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
   
 
     
@@ -3830,28 +3830,34 @@ reading.</p>
 <td>Export audit records</td>
 </tr>
 <tr>
-<td><code>import.view</code></td>
-<td>—</td>
-<td>⚠</td>
-<td>See import batches</td>
-</tr>
-<tr>
-<td><code>import.stage</code></td>
-<td>—</td>
+<td>&gt; <strong>There is no <code>import.*</code> namespace.</strong> The four codes that used to sit here — <code>import.view</code>, <code>import.stage</code>,</td>
 <td></td>
-<td>Stage an import</td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td><code>import.apply</code></td>
-<td>—</td>
-<td>🔒</td>
-<td>Apply a staged import</td>
+<td>&gt; <code>import.apply</code>, <code>import.revert</code> — described a pipeline of staged batches with a revert, and the legacy load</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td><code>import.revert</code></td>
-<td>—</td>
-<td>🔒</td>
-<td>Revert an applied import</td>
+<td>&gt; is now one script posting through a registered key, so there is no screen left to grant</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&gt; (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). A key is granted the ordinary codes of whatever it writes and holds no code of its own</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>&gt; (<a href="#8b-keys--a-caller-that-is-nobody">§8b</a>).</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td><code>report.view</code></td>
@@ -3893,8 +3899,9 @@ question of who holds this code the whole of the control.</p>
 <p><strong>The contents expire, which bounds that exposure without removing it.</strong> A row lives for the life of
 the system; its <code>old_values</code>/<code>new_values</code> are emptied <strong>24 months after they were written</strong>, by a
 scheduled job this corpus calls <strong>payload reduction</strong> — a third operation on the trail, distinct
-from redaction (a person's erasure, immediate and absolute, whatever the age of the row) and from an
-import revert (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
+from redaction (a person's erasure, immediate and absolute, whatever the age of the row). <strong>There was a
+third</strong> — the import revert — and it left with the pipeline it belonged to (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>,
+<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
 <em>"Every belief it has held"</em> is therefore true only of values less than two years old; about anything
 older the trail answers <em>who touched this row, when, and were they allowed to</em> and not <em>and to what</em>.
 It puts a horizon under the risk rather than making it impossible. <strong>AT-4 stays open</strong>, because a

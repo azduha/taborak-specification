@@ -1582,8 +1582,6 @@
       
         
       
-        
-      
     
     
     
@@ -1641,34 +1639,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2151,6 +2121,8 @@
       
         
           
+        
+      
         
       
         
@@ -2834,6 +2806,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3054,7 +3054,7 @@ them by number and their anchors are built from them:
 <tr>
 <td><code>proposed_by</code></td>
 <td>text, required</td>
-<td>One of: <code>import_job</code>, <code>match_job</code>, <code>person</code>, <code>staff</code>. <code>match_job</code> is the nightly batch matcher, as opposed to a person suggesting a match by hand</td>
+<td>One of: <code>match_job</code>, <code>person</code>, <code>staff</code>. <code>match_job</code> is the nightly batch matcher, as opposed to a person suggesting a match by hand. <strong><code>import_job</code> is deleted</strong> — the value named a mechanism <a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a> removed, and a value in this column answers <em>who put this hypothesis here</em>, which nothing of ours has been since (<a href="../../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>)</td>
 </tr>
 <tr>
 <td><code>proposed_by_person_id</code></td>
@@ -3338,7 +3338,8 @@ time" rules, so that application code cannot forget them.</p>
 <p><strong><code>v_person</code></strong> — the person rows most queries actually want: a person who is neither merged
 away nor redacted. <strong>Both exclusions, not one.</strong> They are different reasons and they must not be
 collapsed: a merged row is a <em>duplicate</em> that points at the real answer, while a redacted row is a
-<em>person who was erased</em>, whose names and contacts no longer exist. Neither belongs in a list of
+<em>person who was erased</em>, whose names, grammatical form and contacts no longer exist
+(<a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>). Neither belongs in a list of
 people, and a listing that shows one and hides the other is worse than either, because it teaches
 the reader that the redacted child is a data-entry error.</p>
 <blockquote>
@@ -3517,10 +3518,15 @@ must not wait for a reader to stumble on it.</p>
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   <em>named</em> <code>membership</code> and fee rows has a basis. See
   <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a> and
-  <a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a>.</li>
-<li>Whether <code>person.gender</code> is needed at all; if so, what value set.</li>
-<li>Whether the organization has (or will have) a national SSO identity provider — this
-  determines how much of <code>account_credential</code> is actually used.</li>
+  <a href="../06b-redaction-and-checks/#6-open-issues">06-audit-and-import.md §6</a>.
+Two more questions this page carried are now settled rather than open. <strong>Whether <code>person.gender</code> is
+needed at all, and with what value set — settled: required, <code>male</code> / <code>female</code> / <code>other</code>, and its purpose
+is grammar rather than reporting</strong> (<a href="../../decisions/round-23/#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required">D-174</a>),
+with the redaction marker as the fourth value an erasure writes (<a href="../../decisions/round-23/#d-175--an-erased-persons-grammatical-form-goes-with-their-names">D-175</a>).
+<strong>Whether there is a national SSO identity provider — settled: the external issuer is Google</strong>, which
+vouches for an e-mail address and not for membership, and one live identity backs exactly one account,
+refused at the save (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check">D-176</a>,
+<a href="../../open-questions/#k-filed-by-a-module-page">K-4 and K-5</a>).</li>
 </ul>
 <p>Both questions this page grew up around are settled and closed in the register: whether merge chains stay
 (they do, and the two rules a permanent chain needs are written where they are obeyed — the cycle refusal

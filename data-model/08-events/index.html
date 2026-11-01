@@ -1472,8 +1472,6 @@
       
         
       
-        
-      
     
     
     
@@ -1531,34 +1529,6 @@
     
   
     Data Model — Audit and Import: the two audit trails, and audit_log
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06a-import/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The Import Pipeline
   
 
     
@@ -2379,6 +2349,8 @@
       
         
       
+        
+      
     
     
     
@@ -3018,6 +2990,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3540,11 +3540,6 @@ is already modelled.</p>
 <td>reference to person, optional</td>
 <td></td>
 </tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td>Set on imported rows</td>
-</tr>
 </tbody>
 </table>
 <p><strong>Rules</strong></p>
@@ -3582,10 +3577,15 @@ saved, with the reason in the message
 whole set), no check in §10 that reads one, no cascade running through one, and no rule in §5 or
 §8 that compares one. The people connected to an event are reached through <code>event_organizer</code> and
 <code>event_registration</code>, which point at the event directly.</p>
-<p><strong>Import consequence.</strong> The one-off import owes <code>event</code> rows and <code>event_registration</code> rows and
+<p><strong>Load consequence.</strong> The one-off load owes <code>event</code> rows and <code>event_registration</code> rows and
 it owes <strong>no owner column</strong> — one less thing to invent a value for
 (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
-It does owe the twelve per-event grants of §8, one bundle for every event row it writes.</p>
+It does owe the twelve per-event grants of §8, one bundle for every event row it writes.
+<strong>What it no longer owes is a provenance value</strong>: neither table has a column to fill, because the load is a
+script through a key and not a batch, and <em>which key wrote this event</em> is answered from the <code>audit_log</code> row
+the write left behind (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+An idempotent re-run is the script's own problem — a key and a skip, with no staging table to hold the hash
+(<a href="../06-audit-and-import/#3-import-pipeline--deleted">06 §3</a>).</p>
 <h3 id="no-status-column-and-why-that-is-not-an-omission">No <code>status</code> column, and why that is not an omission<a class="headerlink" href="#no-status-column-and-why-that-is-not-an-omission" title="Permanent link">&para;</a></h3>
 <p>Nothing is stored that can be derived. "Is this event over?" is <code>ends_at</code> in the past. "Is it
 cancelled?" is <code>cancelled_at</code> set. "Needs attention now" — the list an admin screen runs — is
@@ -3761,7 +3761,7 @@ for named sets generally. See §8 for the twelve grants that aim at this table.<
 <tr>
 <td><code>source</code></td>
 <td>enum: <code>self</code> / <code>staff</code> / <code>guardian</code> / <code>import</code>, required</td>
-<td>Default <code>self</code>. How this person got here, and the audit answer to "how did they get in?". <code>staff</code> is written by a person holding <code>event.register_other</code>, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. <code>guardian</code> is acting-under-guardianship; the acting person is in <code>access_log</code></td>
+<td>Default <code>self</code>. How this person got here, and the audit answer to "how did they get in?". <strong><code>import</code> is now the only row-level marker the one-off load leaves on this table</strong>: the provenance column that used to sit beside it is gone (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>), so <em>that a load wrote this</em> reads from here and <em>which key wrote it</em> from the trail — and an <code>event</code> row, which has no such column, carries neither and is answered from the trail alone. <code>staff</code> is written by a person holding <code>event.register_other</code>, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. <code>guardian</code> is acting-under-guardianship; the acting person is in <code>access_log</code></td>
 </tr>
 <tr>
 <td><code>registered_by</code></td>
@@ -3822,11 +3822,6 @@ for named sets generally. See §8 for the twelve grants that aim at this table.<
 <td><code>updated_by</code></td>
 <td>reference to person, optional</td>
 <td></td>
-</tr>
-<tr>
-<td><code>import_batch_id</code></td>
-<td>reference to import batch, optional</td>
-<td>Set on imported rows</td>
 </tr>
 </tbody>
 </table>
