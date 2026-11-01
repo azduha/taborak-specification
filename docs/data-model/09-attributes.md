@@ -367,10 +367,15 @@ cost this section something it should not pretend otherwise about.**
   [D-189](../decisions/round-23.md#d-189--one-author-writes-the-vocabulary-before-the-batch)
   puts a person and a period where the deleted stage's queue used to be: whoever holds `attribute.define` sits
   down with the source's column headers and writes the first few hundred definitions, which arrive `live`
-  because a definition is live at the save. There is no queue, no ageing and no curation stage, and nothing
-  reminds that person of the date — [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)
-  forbids the reminder, which is precisely why the deadline is written on this page rather than held in
-  somebody's calendar. A load that stops on an undefined column is this design working, not failing.
+  because a definition is live at the save. There is no queue, no ageing and no curation stage, and **nothing
+  reminds that person of the date — and since round 25 the reason is not that a reminder could not be sent.**
+  [The messaging module](10-messaging.md) can carry words to a named person; **what it has not been given is a
+  type for a schedule this page invented, and the period is the part that stays nobody's to choose**:
+  [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+  narrows [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) to exactly this — no
+  page may write *within N days* unless a row holds the N and a named decision chose it — and no row holds a number
+  here. Which is precisely why the deadline is written on this page rather than held in
+  somebody's calendar, and why it is a sentence a person reads rather than a notice anybody receives. A load that stops on an undefined column is this design working, not failing.
 - **The map is no longer a row of this database, and that is the price.** It used to sit on the batch as
   one entry per raw column, reviewed as one artefact top to bottom; it now lives in the script, which is not
   in this repository and will not be read by whoever reads this page next. **The rules survive; the place they
@@ -406,8 +411,12 @@ cost this section something it should not pretend otherwise about.**
    that point the definition is wrong, not the data.
 
 **Check 5 is the one to open the day it is non-empty:** a person's data outliving their erasure, and
-nothing in this design tells anyone that it has — reading this report is the whole control there is
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **Check 3 is the one
+nothing in this design tells anyone that it has — reading this report is the whole control there is.
+**The reason is specific now that sending exists:** a check is a run, its output reaches whoever runs it, and
+**no message type is configured to carry a finding of this list** — if one ever were, it would be a type with an
+audience like any other and this sentence would say so
+([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name),
+[D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). **Check 3 is the one
 that indicts the code rather than the data:** non-zero there means some write path skipped §3's
 guard, and the fix is the path, not the rows. **Check 1 is the vocabulary talking** — never a
 failure, only the permanent cost of an open vocabulary, and the list worth reading before saving a
@@ -431,3 +440,9 @@ values — a position, not an omission
 ([D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)).
 What remains unknown here is not a question with an owner but the cost §6 states: the history of a
 value is a copy that depends on a write path remembering to log, and that copy ages out.
+**The register holds seven questions after [round 25](../decisions/round-25.md) —
+[K-11](../open-questions.md#k-11) through [K-17](../open-questions.md#k-17) — and none of them belongs to this
+page.** One of them, [K-16](../open-questions.md#k-16), asks which *other* columns of free text about a person
+join the three that erasure now empties, and this page is not among them: a `person_attribute` value is a
+vocabulary value and not free text beside somebody's row, and erasure already reaches it in its own shape —
+**the rows are deleted**, which is §8's check 5 and [06b §4](06b-redaction-and-checks.md#4-redaction-log).

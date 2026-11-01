@@ -47,9 +47,15 @@
 > ([D-198](../decisions/round-24.md#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database)),
 > and nothing leaves this system to an accounting system
 > ([D-199](../decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)).
-> **What is not this module's to decide is said in §5 and left filed elsewhere:** the money codes are
-> shipped codes while the reporting shape above them is not
-> ([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)).
+> **What is not this module's to decide shrank in round 25.** The money codes are shipped codes
+> ([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)),
+> and this module has never spent a code of reporting's: **the six codes named in §5 are the whole of what money
+> answers to, and a listing over them has never been one of them.** Round 25 took the question of reporting's
+> shape away rather than answering it — **there is no report screen in this design and no reporting code**, and
+> what an organization calls a report over this module's money is a message of a type addressed to an audience.
+> **The over-or-under payment and the late fee are the two cases [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+> names as now reaching people instead of waiting for them**
+> ([10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)). §5 says what the six codes are.
 >
 > This document exists because membership activation depends on payment
 > ([../domain/05-membership-lifecycle.md](../domain/05-membership-lifecycle.md#1-the-flow-you-described)),
@@ -236,7 +242,15 @@ and not a ruling inside it.
 - One person's obligations, by status.
 - Obligations ordered by `due_date`, restricted to the rows still open — `unpaid` or `partially_paid`.
   Closed rows are not in it. **Read down this index past today's date and it is the overdue list**: one
-  fact stored once, with no status value to keep in step with the calendar.
+  fact stored once, with no status value to keep in step with the calendar. **Lateness is also one of the two
+  money cases round 25 turned into a delivered message**, and `fee-overdue` is the code the messaging module
+  lists for it ([10 §2](10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel)): the people who
+  chase a late fee are reached by a type whose audience an installation edits, not by opening this index
+  ([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)),
+  and which clock fires it is [K-14](../open-questions.md#k-14). **Whether it fires at all is that installation's
+  edit** — this design ships no rows at all beyond the first account ([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
+  **The index stays exactly as it was**: a send does not replace the read it is computed from, and no row of this
+  table records that either one happened.
 - Obligations carrying the event arm, and obligations carrying the membership arm — each
   restricted to the rows where that column is set.
 - Obligations within a `period_from` / `period_to` range.
@@ -287,7 +301,7 @@ and not a ruling inside it.
 | `on_behalf_of` | reference to person, optional | |
 | `status` | text, required | Default `confirmed`. **`confirmed` or `reversed`, and nothing else.** A bank transfer the bank has reported does not later fail, expire, or get reversed by a card network, so the two values describe whether *we* still stand behind the row. There is no `pending` and no `failed`: a promised transfer is not a state ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
 | `confirmed_by` | reference to person, optional | |
-| `notes` | text, optional | |
+| `notes` | text, optional | Free text beside the money. **Erasure empties it and the row remains** — the emptied shape, not the deleted one, so the skeleton [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short) keeps stays intact and only the remark on it goes ([D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them), listed in [06b §4](06b-redaction-and-checks.md#4-redaction-log)) |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 
@@ -458,7 +472,7 @@ being two would have shown up in the data.
 | Field | Kind | Notes |
 |---|---|---|
 | `id` | surrogate id | |
-| `number` | text, required | **Unique, and never reused.** Its own sequence, beside the variable symbol's and independent of it: a symbol resolves a payment to an ask, a number identifies a document to a tax authority, and nothing promises the two agree ([D-187](../decisions/round-23.md#d-187--an-invoice-is-a-document-a-payer-asks-for)). **That sequence is legally required now, not merely tidy:** unique-and-never-reused was hygiene when a document was a courtesy and is a legal fact now that one is compulsory, which is the one clause of D-187's "no tax identity, no legally-required sequence, no delivery record" that changed meaning — the request still has no tax identity and no delivery record, and nothing here delivers anything ([D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)) |
+| `number` | text, required | **Unique, and never reused.** Its own sequence, beside the variable symbol's and independent of it: a symbol resolves a payment to an ask, a number identifies a document to a tax authority, and nothing promises the two agree ([D-187](../decisions/round-23.md#d-187--an-invoice-is-a-document-a-payer-asks-for)). **That sequence is legally required now, not merely tidy:** unique-and-never-reused was hygiene when a document was a courtesy and is a legal fact now that one is compulsory, which is the one clause of D-187's "no tax identity, no legally-required sequence, no delivery record" that changed meaning — the request still has no tax identity and no delivery record, and no delivery of a document is designed here — sending words became possible in round 25 and a tax document was not given a type ([D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it), [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)) |
 | `payment_request_id` | reference to payment request, required | The ask it documents. Never a bare obligation, because the request is what the payer was shown |
 | `amount` | money, required | Copied from the request, for the same reason the request copies it from the obligation: an edit to the liability must not rewrite a document that has already been handed over ([D-183](../decisions/round-23.md#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes)) |
 | `currency` | three-letter currency code, required | `CZK` |
@@ -476,13 +490,21 @@ being two would have shown up in the data.
   and what precedes the row is no longer a conversation with the payer but the same write that created the
   request, which is in the audit trail rather than in a column
   ([D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)).
-- **Nothing sends the invoice to anybody** ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). It exists on a screen and is handed over
-  by a person, or printed by one. **Everything after this row is outside the system in the same way:**
-  getting the document to the payer, filing it, reporting it and reconciling it with an accountant are acts
-  this system does not perform, does not record having performed, and holds no column claiming it
-  performed ([D-198](../decisions/round-24.md#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database)).
-  D-164 already forbade writing the first of those as if the system did it; this forbids the *schema*
-  implying it.
+- **Nothing delivers the invoice to anybody, and the reason is now a missing row rather than a missing
+  mechanism.** Round 25 opened [the messaging module](10-messaging.md), so this design can carry words to a
+  person; what it has not been told to carry is a tax document. **No message type is configured for an invoice
+  and nobody has configured one** ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+  narrows [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise): a page may no
+  longer write that nothing *can* be sent, and may still not write a send or a period nobody chose), so the
+  document exists on a screen and is handed over by a person, or printed by one. **Everything after this row is
+  outside the system in the same way:** getting the document to the payer, filing it, reporting it and
+  reconciling it with an accountant are acts this system does not perform, does not record having performed, and
+  holds no column claiming it performed
+  ([D-198](../decisions/round-24.md#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database)).
+  D-164 already forbade writing the first of those as if the system did it; D-198 forbids the *schema* implying
+  it — and **that half is untouched by the round that opened sending**, because a type is a row an installation
+  writes ([10 §2](10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel)) and no column of
+  this table may hold a delivery.
 - A voided request keeps its invoice. Both rows are permanent — and this now **fires on every reissue**
   instead of almost never, because a changed ask is a void plus a new request (§2) and each reissue carries
   a document of its own. The reissued ask gets a new invoice with a fresh number from the same sequence and
@@ -570,9 +592,23 @@ symbol is missing, unknown, or dead — a narrower population than the one
 [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit) was written about, and
 not a queue.
 
-**What the system does with any of those: nothing.** It records the money. No page opens on it,
-nothing counts it, and nothing sends anything to anyone about it
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+**What the system does with any of those: it records the money, and since round 25 it can tell somebody.**
+No page opens on it and nothing counts it. **What changed is the second half of that sentence:** money arriving
+under no symbol is one of the two money cases the messaging module hands to a type and an audience — "both are now
+a type with an audience", in [10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)'s own words, the
+other being the late fee below — where [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+named this section by its other case, the over-or-under payment. So a
+notice about such a row is an ordinary `message` authored by `system:messages` under a type whose audience an
+installation edits ([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)),
+and an automated send is authored under that label rather than gated by a code a job would have to hold
+([10 §7](10-messaging.md#7-who-may-send-and-what-is-not-checked)). **This module names no code and no type for
+it, and does not need one**: the vocabulary is rows in `message_type`, not rows in `permission`, and which clock
+fires it is [K-14](../open-questions.md#k-14) — a question this page is not allowed to answer by picking a
+night. **What did not change is the absence.** There is still no queue and no state: an unmatched row is not held
+somewhere waiting to be cleared ([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)),
+a send is an act with its own audit row rather than a condition a row is in, and if such a type's audience
+resolves to nobody, no row is parked anywhere — [10 §3](10-messaging.md#3-message--one-author-one-target-and-no-second-version)
+calls that case exactly this absence, shaped as words.
 
 When a person does decide to act, tying the transaction to a request is a write with a code of its
 own, `payment.match`, held at the organization's scope by whoever runs the accounting
@@ -610,11 +646,19 @@ own. It no longer leaves a family's money with no subject — that was the old f
 transfer of 1 100 Kč under one child's 550 Kč symbol, with a second child who also has an ask, lands
 **entirely** on the first child, who then reads **+550 over** while the sibling reads unpaid. No tolerance
 and no threshold is introduced anywhere to soften this — 4,90 against 5,00 is a shortfall like any other,
-because a threshold would be a number nobody can defend and everyone would have to remember. Nothing tells
-anybody ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)) and no list holds the row
-([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)), so what catches it is **a
-person reading an obligation that says +550, or the family being asked.** Stating it as the decision states
-it: the design has traded a silence a treasurer notices in February for a number that reads like a success.
+because a threshold would be a number nobody can defend and everyone would have to remember. **What catches it
+is a type and an audience from round 25, and not somebody happening to open the row**: the
+over-or-under payment notice is one of the two money cases [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+names as now reaching people *instead of waiting for them*, and [10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)
+says the same thing from the sending side. **Which audience is nobody's to pick from here** — it is a row an
+installation edits ([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)),
+and the type's name is not this module's to invent. **What still holds is the absence:** no list holds the row
+([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)), and a delivered notice is
+an act with an audit row, not a worklist. **What delivery does not buy is the hand:** a message saying a sum
+arrived twice still leaves the surplus sitting on an obligation until a person holding `payment.match` moves it,
+so a person reading an obligation that says +550, or the family being asked, remains the moment anything is
+*decided*. Stating it as the decision states it: the design has traded a silence a treasurer notices in February
+for a number that reads like a success — and round 25 gave that number a voice without giving it a hand.
 
 Auto-refunding is refused for two reasons: it needs the bank integration to work outbound as well
 as inbound, which is a second integration with its own authorization; and it returns the
@@ -650,10 +694,15 @@ in this design
 **No page counts what nobody is looking at, and that is a cost being paid on purpose.** A transfer
 aimed at a camp whose request nobody ties anything to can sit in this table forever, and nothing
 anywhere distinguishes it from a grant payment nobody needed to classify — after
-([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)) there is no list of rows that need looking at, and after
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)) nobody is told that money arrived. The alternative refused was a worklist whose
-first entry is always a sponsorship nobody wants to classify, and a worklist nobody clears is a lie
-about supervision. What makes the no-queue survivable is that the money is not lost, only
+([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)) there is no list of rows that need looking at. **What round 25
+changed is that such a row can now be told about**: [10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)
+hands money arriving under no symbol to a type and an audience, and
+[D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+is why this page may no longer write the flat sentence that nobody is told — a send if an installation configures
+one, and nothing at all if it does not, which is the same absence wearing a different coat rather than a page
+promising a notice. **What no configuration buys is the worklist.** The
+alternative refused was one whose first entry is always a sponsorship nobody wants to classify, and a worklist
+nobody clears is a lie about supervision. What makes the no-queue survivable is that the money is not lost, only
 unattributed, and every row is on the same screen in date order: the payer's belief and the
 organization's belief are reconciled by a person who was asked, not by a count.
 **[D-196](../decisions/round-24.md#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown)
@@ -674,7 +723,7 @@ and the heading is the slug [the invariant register](00a-invariant-register.md),
 renamed heading is a dead anchor that no build will report**, so the column's name survives in a title and
 nowhere else. **There is one
 definition of what is owed, it is the blockquote below, and this is the only place it is stated.** Every
-screen, every report, every gate and every API response that shows a balance reads it, over
+screen, every gate and every API response — and a delivered message that quotes one ([10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)) — that shows a balance reads it, over
 `fee_obligation` and `payment_allocation`; [03-membership.md §3](03-membership.md#3-membership) shows it and
 does not store it. **The view this section used to recommend is not created either** — the definition *is* the
 view, and a second name for it is a second thing to get wrong.
@@ -785,12 +834,17 @@ For every membership that is **active**, has an obligation with a **positive bal
    date whether or not anyone noticed.
 2. Open the **renewal window** as a date, never as a status. The resolver does not know windows exist.
 
-**Nothing has to be told afterwards.** `MEMBERS` is evaluated live on the checked date
+**Nothing has to be told afterwards, and this sweep tells nothing at all.** `MEMBERS` is evaluated live on the checked date
 ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
 so the two facts step 1 writes — the period ending and the `lapsed` status — are visible to the next check,
 with no job in between and no stored answer to invalidate
 ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation),
 [domain/06 §8](../domain/06-authorization-model.md#8-there-is-no-permission-cache-and-what-replaces-it)).
+**The second half of that lead sentence is round 25's.** This job expires memberships and writes no message;
+a renewal notice is a `message` of its own type authored by `system:messages`, which makes the notice a separate
+authored act rather than a side effect of the transition, and which clock fires it is
+[K-14](../open-questions.md#k-14) ([D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender),
+and [03-membership §7's check 4](03-membership.md#7-integrity-checks), which says the same thing from the worklist side).
 What the sweep costs is stated where cost belongs: on 1 January the answer moves for every member at once,
 and a screen opened that day computes it rather than reading it
 ([D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)).
@@ -877,7 +931,13 @@ a breach.
    nothing fails to *fit* any more. An unmatched `bank_transaction` is money with no subject, most of
    it never meant for a member at all, and the design keeps it that way on purpose (§2b,
    [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)). This is the other side of the same ledger: a liability with no ask
-   attached, silent in both directions — nobody is chased and nobody pays. It is the one failure on this list
+   attached. **How silent it is is now a configuration question, and the two readings differ.** An obligation
+   past its `due_date` and unpaid is exactly what a lateness type is computed from, so if an installation
+   configures one, the first half of this row reaches a person as a message and not as a check
+   ([10 §2](10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel)). **The second half has no date to
+   be late about**: an `event_registration` with no obligation behind it has no `due_date`, so no type can be
+   computed from it and it stays invisible in both directions — nobody is chased and nobody pays — which is why
+   it is this check's finding and not a message type's. It is the one failure on this list
    that no unmatched row would ever reveal, because with no queue there is nowhere the two could meet.
 
 **No check here reads a negative balance, and that is a decision rather than a gap in the list.** An obligation
@@ -888,9 +948,13 @@ reason §2b refuses a worklist: an overpayment is not an inconsistency but a fac
 surplus is moved by a person holding `payment.match` rather than by a report, and a count of rows that are legal
 by design is a list whose first entry is always somebody's correct data
 ([D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit),
-[D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **So the answer to "what
-catches it" is §2b's and it belongs next to the absence: a person reading an obligation that says +550, or the
-family being asked.** Writing the count would be a new check, and a new check is a decision this round did not
+[D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise), narrowed but not repealed by
+[D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). **So the answer to "what
+catches it" is §2b's and it belongs next to the absence: a delivered notice if an installation configures the
+type, and then a person reading an obligation that says +550 and deciding where the money goes.**
+**A notice is not a count and would not be a check here** — it writes nothing in this table, its audience is an
+installation's row ([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)), and its clock is
+[K-14](../open-questions.md#k-14) — so refusing the count below stands untouched. Writing the count would be a new check, and a new check is a decision this round did not
 take — it is named as missing here so that a reader looking for it finds the reason rather than the check.
 
 **Checks 1 and 2 are the two that matter, and §3 says why in one line: a wrong number here has a human
@@ -907,17 +971,27 @@ counted itself, and every one of them was answered in round 24; each keeps its p
 written into it**, because a bullet deleted from an open-issues list reads to the next person as "still open,
 we forgot", which is the failure this round exists to close. Three more were answered while an earlier round was
 running — who may reduce a fee, whether the organization issues invoices, and what gets a variable symbol — and
-each is listed at the end of the page beside the decision that closed it. **What this module still does not own
-is named at the bottom of the section rather than counted as an open question: the shape of reporting.**
+each is listed at the end of the page beside the decision that closed it. **What this module used to leave
+unnamed at the bottom of this section is no longer a thing a module could own: reporting was never inherited
+here, it was deleted**, and what arrives over this module's money is a type with an audience
+([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name),
+[10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)) — the paragraph about this module's codes below
+says what that leaves and what it costs.
 
 1. **✅ Closed — accounting integration: nothing leaves this system, and nothing is reserved for a system that
    might arrive** ([D-199](../decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)).
    The bullet asked whether anything needs to be exported, and the answer is that this design owes a future
    accounting package **nothing at all**: no export, no feed, no periodic journal, no CSV of the day's bank
-   rows, no `external_reference` column, no `export` status, and no sixth actor label for accounting. Everything the
-   money model asserts lives in this module's tables (§2) and is read out of them by a report a person reaches
-   with `report.view` or by a person with `report.export`. **The actor list stays exactly where
-   [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) left it**, and that is the
+   rows, no `external_reference` column, no `export` status, and no actor label for accounting. Everything the
+   money model asserts lives in this module's tables (§2) and is read out of them a person at a time, on the
+   screens this module already has: **there is no export path, and there is no code that gates a list either** —
+   reporting's codes went with the screen they gated, so neither the read nor the way out exists any more
+   ([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)),
+   and a person who wants this module's data out of it has to read it. **The actor list grew by one in round 25 and
+   the newcomer has nothing to do with accounting**: `system:messages` joined it for automated sends
+   ([D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)),
+   and [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) is still the whole list, so this
+   bullet's refusal stands as it was written. That is the
    concrete shape of a deferral that costs nothing: an integration added later will need a label, and needing
    one someday was not a reason to reserve one now. An external accounting system **may** appear in a later
    version and will be designed then, in a document that is not this one — which is why this closes instead of
@@ -974,16 +1048,22 @@ is named at the bottom of the section rather than counted as an open question: t
       **The membership gate did not move to accommodate any of it:** a fee is settled when no attached
       obligation has a positive balance (§4), so a short payment settles nothing and a long one settles
       everything.
-    - **And nobody finds out — still true, and now the mechanism rather than the objection.** Nothing sends
-      anything to anyone ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)), and after
-      [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit) there is no list of unmatched rows for a person to notice it on. So *finds out*
+    - **And nobody finds out unless an installation has configured a type that says so.** Round 25 opened
+      [the messaging module](10-messaging.md), and [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+      names this exact case — the over-or-under payment — as one of the two money sentences that now reach people
+      instead of waiting for them. **This module names no type for it and no page of it may pick the audience**;
+      whether such a type exists at all, whom it reaches, and which clock fires it are configuration and
+      [K-14](../open-questions.md#k-14). **What stands untouched is that nothing here holds the row**: after
+      [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit) there is no list of unmatched rows for a person to notice it on, and
+      a send is an act with an audit row rather than a state a row waits in. So on the ground *finds out* still
       means somebody telephoning the payer because they were asked to, which is a procedure and not a
       design. **What changed is what there is to find out.** The rows that used to arrive here as
       "money that did not fit" now arrive *matched and mis-attributed*: one 1 100 Kč transfer under one child's
       550 Kč symbol, with a sibling who also has an ask, lands entirely on the first child, who reads **+550
-      over** while the sibling reads unpaid, silently, on the module's own normal path. §2b states that trade and
-      does not soften it, and what catches it is **a person reading an obligation that says +550, or the family
-      being asked** — which is also why no check counts those rows (§4a).
+      over** while the sibling reads unpaid, on the module's own normal path. §2b states that trade and
+      does not soften it, and what catches it is **a delivered notice where somebody configured one, and then a
+      person reading an obligation that says +550 and deciding where the money goes** —
+      which is also why no check counts those rows (§4a).
 
     **Why this is not a footnote, and what became of the fear:** this was the one place the module could still
     end up with two money paths — the automatic one, and a hand-corrected one running beside it. **It has both,
@@ -1090,18 +1170,18 @@ row and has exactly one customer — the guardianship channel, which compares a 
 ([05 §2](05-authorization.md#right_kind-a-column-with-exactly-one-customer)) — so which side of that comparison the
 two `view` codes fall on is what decides how far a right of *see* reaches into a child's money, and these two rows
 say **all the way in**. That is a guardian's answer and not a hint, which is the only reason the column is filled
-in on a money row at all. **And
-`report.finance.view` is not one of the six, on purpose:** promoting it would have shipped a second report shape
-beside `report.view` and `report.export`, and [05d §12](05d-invariants-and-seed.md#12-what-day-one-looks-like)
-rules that an installation picks one shape when reporting is designed, so a module cannot settle that question by
-promoting its own row. **The module can spend six codes and not the seventh, and the seventh is not this module's
-to decide:** the money rows are gated by `fee.view` and `payment.view`, which is the shape this vocabulary already
-has — a code per row-set — and the report that reads across subjects waits for the reporting question like every
-other report does. That question stays where it is filed, in
-[catalog B §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues), and `invoice.issue`
-appears in neither catalog, because [D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
+in on a money row at all. **And there is no seventh code, which round 25 settled rather than deferred.** Until
+last round this paragraph explained why a money report's own code sat deliberately undeclared beside the codes
+reporting already had, and why a module could not settle a question about a reporting shape by promoting its own
+row. **There is nothing left to wait for, because there is nothing left to gate:** [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+deleted reporting's codes along with the screen they authorized, so a module is not one row short of a namespace
+that no longer exists, and the deferral is not a deferral of anything. **Six codes are the whole of what this
+module spends**, and the shape a listing over money takes is not a permission at all: it is a type and an
+audience, which is why the two cases this page used to hand to a person who might someday open a list are now
+sent ([§2b](#2b-money-that-cannot-be-matched), and `fee-overdue` at the indexes in §2). **`invoice.issue` appears
+in neither catalog**, because [D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
 deleted the code one answer after [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
 registered it. **The finance question that *was* in [the register](../open-questions.md) —
-[K-10](../open-questions.md#k-10--are-the-money-permission-codes-still-deferred) — closed with the six codes and
-not with the report's shape**, and that distinction is the reason this section could be honest about its own list
-for the first time.
+[K-10](../open-questions.md#k-10--are-the-money-permission-codes-still-deferred) — closed with the six codes**,
+and the half of it that asked about a money report closed a round later by ceasing to be a question
+([10 §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)).

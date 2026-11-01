@@ -1,12 +1,17 @@
 # Open Questions
 
-**Nothing is open on this page.** [Round 24](decisions/round-24.md) answered the three questions that were
-here — [A-4's remainder](#a-4-remainder--the-organizational-calendar),
+**Seven questions are open, and [round 25](decisions/round-25.md) opened this page again on purpose.** It was
+empty the day these were asked: [round 24](decisions/round-24.md) had answered the three that were here —
+[A-4's remainder](#a-4-remainder--the-organizational-calendar),
 [F-11](#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim) and
-[K-10](#k-10--are-the-money-permission-codes-still-deferred) — and each of the three sections that held one is
-now empty, so **§ A, § F and § K have joined § B, § C, § D, § E, § G, § Ga and § J** among the sections this
-register has closed by answering them rather than by reversing them. The history of how the list got here is
-below, because a page that reads as empty is a page a reader will not believe.
+[K-10](#k-10--are-the-money-permission-codes-still-deferred) — and § A, § F and § K had gone empty together,
+joining § B, § C, § D, § E, § G, § Ga and § J among the sections closed by answering rather than reversing.
+**§ K is reopened, with seven rows** ([K-11](#k-11) … [K-17](#k-17)), because a round that designs a module
+invents questions faster than it settles them: five come out of
+[messaging](data-model/10-messaging.md) itself, and two are things the same round's spelling fix and `notes`
+ruling brought into the open without answering. **An empty register was never a claim that the design was
+finished**, and round 24 said so in its own words; the history of how the list got here and back is below,
+because a page that reads as empty is a page a reader will not believe.
 
 **A question that has been answered is not kept here.** Its entry is deleted; what remains is one
 row in [§ R. Resolved](#r-resolved--moved-to-the-decision-log) naming the question, the decision
@@ -15,9 +20,12 @@ is silently dropped: a row in § R carries a short anchor, so a link written yea
 `F-7` still lands somewhere true — **which is why the three anchors this page just lost are still here**, in
 their § R rows, and why every page that linked them in the last twenty-four rounds still resolves.
 
-**Zero open questions is not the same claim as *nothing is unknown*, and the three places the unknown still
-lives are all on this page or linked from it.** [§ H](#h-not-yet-designed) lists the areas the schema has hooks
-for and nobody has designed — documents, consents, messaging, reporting, the wire, notifications.
+**Seven questions are open, and the unknown
+lives in three places, all of them on this page or linked from it.** [§ K](#k-filed-by-a-module-page-reopened)
+lists the seven questions round 25 is standing on with nobody to answer them.
+[§ H](#h-not-yet-designed) lists the areas the schema has hooks for: one of its rows became a module in round 25 and two were answered out of
+existence rather than unbuilt — messaging is a module, a notification is a kind of message, and a report is a
+delivery — and the rest is still waiting.
 [§ I](#i-assumption-index) lists what the documentation is standing on without anyone having verified it.
 And a module page keeps its own `## Open issues` list, which this register has never counted and never should:
 **a module lists what it has not decided; this page lists what nobody has answered**, and the two lists have
@@ -33,9 +41,12 @@ answered thirteen of the seventeen questions then on this page, every 🟡 among
 [Round 23](decisions/round-23.md) emptied § E, answered the nine of § K in the pages that filed them, answered
 three survivors, and filed one question of its own — K-10 — which is the shape of the residue round 24 inherited:
 **three 🟢 questions, none of them changing a table, and one appendix page nobody had written.**
+[Round 25](decisions/round-25.md) is the first round to leave questions behind rather than answer them since
+round 22 opened this section, and it left seven: **one module was designed in the round, and designing a module
+is what generates a question** — which clock fires it, where a token lives, whether a mirror doubles.
 
-**The section letters are names, not a sequence,** and the register now has three of them left: § H, § R and
-§ I. Sections B, C and D held only closed questions and are gone; § J went in round 20, § G (events) and § Ga
+**The section letters are names, not a sequence,** and the register has four of them left: § K (reopened in round 25 with seven rows),
+§ H, § R and § I. Sections B, C and D held only closed questions and are gone; § J went in round 20, § G (events) and § Ga
 (attributes) went with their rows carried into [§ R](#r-resolved--moved-to-the-decision-log), § E (guardianship)
 went in round 23, and § A (blocking), § F (authorization) and <a id="k-filed-by-a-module-page"></a>§ K (filed by
 a module page) went in round 24 the same way — **and § K's id is kept here on purpose**, because a dozen pages
@@ -51,8 +62,9 @@ was when it was filed.
 
 ## H. Not yet designed
 
-Each of these is referenced by the schema and has hooks left for it. **Three** rows carry a ✅ because the area
-they name is no longer waiting on anybody: events was designed in round 5; the medical record was answered out of
+Each of these is referenced by the schema and has hooks left for it. **Five** rows carry a ✅ because the area
+they name is no longer waiting on anybody — **and two of the five got it in [round 25](decisions/round-25.md), when a
+report turned out to be a delivery and a notification turned out to be a kind of message**: events was designed in round 5; the medical record was answered out of
 existence in round 7 — what a reader who says "the medical record" is pointing at is the attribute
 vocabulary of [data-model/09](data-model/09-attributes.md), one class of
 person data with no privileged subset ([D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data));
@@ -68,12 +80,126 @@ in the table.
 | **Documents** | `access_grant.scope_type = 'document'`; the evidence-reference hook belonged to the removed requirement tables | Needs: storage, versions, retention, consent-driven access. |
 | **Consents** | No `dependent.consent.*` any more — a guardian at `write` may give and manage consents ([D-074](decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) | Needs: template, per-activity consent, expiry, revocation, who may consent. No longer connected to a membership requirement ([D-044](decisions/round-02-03.md#d-044--nothing-gates-a-membership-request-except-identity-and-payment)). **`is_legal_decision_maker` on the guardianship row is the existing hook for "who may sign" — and it is now the only place that distinction lives**, since the right level cannot express it. |
 | **Health records** ✅ | **Designed — as [domain/08](domain/08-person-data.md) and [data-model/09](data-model/09-attributes.md)** | **There was no medical record to design.** [D-083](decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) ruled that everything about a person except name, gender and age is one class of data, held as fields in a vocabulary the organization defines at runtime ([D-084](decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). Reading is `person.view`, writing is `person.edit`, and only the vocabulary needs a code of its own. What is left undesigned is policy around one class rather than a second module: what happens to the history of a value once the audit payloads expire. **The other half of that sentence is now answered** — whether `attribute.define` is a sufficient gate for a vocabulary free to invent a "health" category tomorrow, which round 20 settled by deciding **there is no second gate**: a definition is live at the save of whoever holds the code ([D-141](decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)), and the widening is a stated property of that code rather than a queue in front of it. The trail side of the same worry is [AT-4](#at-4). |
-| **Communication** | `message.send_direct`, `message.broadcast` (scoped) — shape decided, detail undesigned | **Shape decided by [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel):** internal first, external channels are delivery; everyone may send direct; `broadcast` is one scoped permission; **the recipient picks the channel.** Needs: templates, opt-out granularity, retention, moderation. The rule against contacting minors directly was **declined as a sender restriction** and replaced by mirroring — see [MSG-1](#msg-1). |
-| **Reporting** | `report.view` and `report.export`, and nothing else — deliberately | The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-back-to-the-paper--the-ten-queries-this-design-must-answer) are the starting set. Query 10 (members per year, as far back as the records reach) is the acceptance test. **Reporting is the one place [round 24](decisions/round-24.md) refused to answer the question in front of it:** K-10 named `report.finance.view` among the money codes to promote, and it stayed deferred, because shipping a per-subject report code beside `report.view` would put both report shapes in one installation and [`05d`'s rules list](data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) says pick one when reporting is designed ([D-195](decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)). **So a money report is gated today by the codes over the rows it reads** — `fee.view`, `payment.view` — and the shape question is still this row's to answer. |
+| **Communication** | `message.send` (unit, marked twice) — **now a module: [data-model/10](data-model/10-messaging.md)** | **Designed in [round 25](decisions/round-25.md): one `message` table, this system as one of its authors, and a notification a *kind of row* rather than a second mechanism ([D-206](decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)). A message goes to one person or to a saved audience, and the rows it writes are the record of the act and nothing resolves against them ([D-207](decisions/round-25.md#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set)). The recipient chooses the door — [D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)'s rule, now the column `account.opt_in_email` — and the inbox is the one door that cannot be declined. **Five questions came out of designing it and every one is registered above rather than left on the module page: [K-11](#k-11) … [K-15](#k-15).** What the shape still refuses is a second table of the same shape, and a column for a transport this design cannot drive. |
+| **Reporting** ✅ | **Answered out of existence** — [data-model/10 §8](data-model/10-messaging.md#8-reports-arrive-here-and-stop-being-a-name) | **There is no report screen in this design, so there is nothing left to design here.** A report is a message of a type, addressed to an audience, delivered by the same machinery as a person's letter, and all five codes reporting had — two shipped and three deferred — were deleted with the screen ([D-210](decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)). **The shape question this row carried is dissolved rather than answered:** per-subject report codes beside one wide code was a choice between two screens, and there is no screen. The historical queries in [domain/05](domain/05-membership-lifecycle.md#8-back-to-the-paper--the-ten-queries-this-design-must-answer) are still the starting set and query 10 is still the acceptance test — they are now a type and an audience. An integrity check is a **run**, not a report, and reads as one at [`05d §11`](data-model/05d-invariants-and-seed.md#11-invariants-to-verify). |
 | **API and UI** | `api_key` and its four codes: who may call in is **designed** ([05e](data-model/05e-keys-and-callers.md), [D-116](decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)); the resolver's `at` parameter exists partly for this | **The caller is designed; the wire is not.** What a request looks like, how a secret is presented and carried, and how a session survives a login are API-layer work, and [D-072](decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job) is the standing division — what is decided is only what may be stored: a hash, and nothing else. The UI side of the same decision is one permissions page answering a second question (§15's tabs). Calls going out were answered in round 20 **without being designed**: an outbound call is a person's act or this system's job, never a third kind of actor ([F-27](#f-27), [D-146](decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet)). Beside it, three things are settled rather than open — this system's own writers are an empty actor column read as the system acting on its own and named by a fixed label list ([D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)), a lockout is a report plus a written procedure rather than a mechanism ([D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)), and everything a caller sends over the wire is API work, not schema work. |
-| **Notifications** | — | **Nothing in this design notifies anybody today, and that is a ruling rather than a gap** ([D-164](decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise), generalizing [D-137](decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)): a report is a tab somebody opens and the audit trail is the control. The one person the authority model does point at survives this untouched, because [D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)'s break-glass actor is a *procedure* needing somebody, not a message needing a recipient. What this row still describes is an undesigned module, and its one dated shape is worth keeping if it is ever built — the renewal window makes it *dated* rather than status-driven, a job over `in_renewal_window()` rather than a watcher on a status column. **Nothing waits on it:** no rule in [the register](data-model/00a-invariant-register.md) reads a send, because nothing is sent. |
+| **Notifications** ✅ | **Answered out of existence** — a notification is a `message_type`, not a module | **[D-206](decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)** rules that the word names a *kind of row*: a `message` whose `message_type_id` is set. The area this row described is therefore messaging itself, and what remains is configuration — a type and the audience on its row, which an installation edits ([D-209](decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)). **The rule this row used to carry — that nothing is sent — is narrowed, not kept** ([D-214](decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)): a send is now a gated, authored, audited act, and what stays forbidden is a page inventing a period nobody chose. **[D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)'s break-glass person survives it untouched**, because a procedure needs a name and a delivery does not, and [D-137](decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told) still tells nobody about a guardian's appointment — because no type is configured for that event, which is now the reason rather than the rule. **When each automated type fires is [K-14](#k-14).** |
 | **Payment gateway** | — | **Answered, so this row is now narrower than it was.** The organization collects via **bank API**, not a card gateway ([D-075](decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)): no webhooks, no disputes, no processor reconciliation. What remains undesigned is the **statement import** itself — file formats, the idempotency key, and what happens to an account the bank revises. |
 | **Multi-language** | — | **Answered for the attribute vocabulary by [D-149](decisions/round-20.md#d-149--words-are-stored-in-one-language-and-a-label-is-not-translated): one language, no translation columns.** The same reasoning covers the other words the database holds — nothing else on it was asked about separately — because a row holding two labels has to be asked which of the two the record is. **The example this row was written with has itself gone:** there is no unit left whose name could be translated ([D-097](decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). |
+
+---
+
+## K. Filed by a module page (reopened)
+
+**This section is empty in [round 24](decisions/round-24.md) and holds seven rows in round 25,** and the page says
+so because a reopened section that does not mention it was reopened reads like it never closed. Round 22 opened it
+by letting module pages file questions here instead of holding them; round 23 answered the nine it held; round 24
+answered its last row and emptied it. **Round 25 reopened it by designing
+[messaging](data-model/10-messaging.md)** — five of the seven rows are what that module could not decide about
+itself, one is what its erasure ruling declined to widen, and one is what a spelling fix exposed in the grammar.
+**Every one of the seven is registered here, and the module page lists the same five** at
+[§10](data-model/10-messaging.md#10-open-issues); the marks are this page's own —
+🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred.
+
+<a id="k-11"></a>
+
+### K-11 🟡 Does an audience-addressed message mirror to guardians, or only a message addressed to one named child?
+
+Filed by [data-model/10 §6](data-model/10-messaging.md#6-a-childs-message-mirrors-as-rows), from
+[D-213](decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today).
+
+**What is decided:** a message addressed to one named minor mirrors to that child's guardians as their own
+recipient rows on their own doors ([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
+now in rows). **What is not:** whether a message addressed to an *audience* mirrors too. An audience may contain a
+hundred children, and on the wide reading that is a thousand rows for one announcement — and a guardian sees that
+their child was on a list nobody told them about, which is a fact about the audience and not about their child.
+**Answering it changes the row count of every message addressed to an audience, and one line of the privacy picture.**
+
+<a id="k-12"></a>
+
+### K-12 🟢 What gates editing a `message_type` row?
+
+Filed by [data-model/10 §2](data-model/10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel),
+from [D-209](decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits).
+
+**What is decided:** the audience a type reaches is configuration an admin edits, and the table is
+[`membership_type`](data-model/03-membership.md) a second time — settings wearing a vocabulary's clothes
+([D-186](decisions/round-23.md#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes)).
+**What is not:** which permission says so. This corpus has refused a code for editing a vocabulary before
+([D-152](decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)),
+and the working default is whoever holds `system.admin` at the unit. **A message that reaches every member is
+written by whoever holds the code that edits one row's audience, and nobody has chosen that on purpose yet.**
+
+<a id="k-13"></a>
+
+### K-13 🟢 Does an event type propose a default audience that a per-event send may narrow?
+
+Filed by [data-model/10 §10](data-model/10-messaging.md#10-open-issues), and it is the seam between two wordings of
+one answer: the first said the admin picks an audience **for each event type**, the follow-up said **each message
+type**, and the follow-up won because a message type is the row that fires.
+
+**Why it is a question and not a footnote:** [D-204](decisions/round-24.md#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure)
+is the standing warning that an entry which widens an answer while writing it down becomes a false claim about a
+table. What an event type proposes is a per-installation default nobody has chosen, and a default that can be
+narrowed is a second authority over whom a message reaches.
+
+<a id="k-14"></a>
+
+### K-14 🟡 Which clock fires each automated type — nightly, hourly, or at the moment a row crosses a date?
+
+Filed by [data-model/10 §7](data-model/10-messaging.md#7-who-may-send-and-what-is-not-checked), and it is a design
+decision rather than a detail because this corpus already refused a shape: the renewal window was made
+**date-driven** rather than status-driven ([D-048](decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)),
+a job over a predicate rather than a watcher on a status column.
+
+**What is decided:** `system:messages` authors every automated message and the run writes one audit row for itself
+([D-212](decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)).
+**What is not:** when a run happens. **A notice that fires the day a fee is due and one that fires the morning
+after are two different rules wearing one type code**, and no page may call the difference implementation.
+
+<a id="k-15"></a>
+
+### K-15 🟢 Where does a device token live?
+
+Filed by [data-model/10 §5](data-model/10-messaging.md#5-doors-the-account-chooses-the-inbox-is-not-one-and-only-e-mail-lands).
+
+**What is decided:** a door arrives with its column on the day its transport exists, so today the only external door
+is e-mail, on `account.opt_in_email`
+([D-213](decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)).
+**What is not:** where a token goes once a transport exists. It does not look like the existing answer — every value
+of `person_contact.contact_type` describes something that survives its device, and a person holds several tokens
+that expire without telling anyone — so this is either a new table or a narrower `contact_type`, and neither is
+designed. **Nothing is blocked on it, because nothing can send it yet.**
+
+<a id="k-16"></a>
+
+### K-16 🟡 Do the other columns of free text about a person join the three that erasure now empties?
+
+Filed by [D-215](decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them), which ruled on
+three columns because the answer it was given was about three columns.
+
+**What is decided:** `membership.notes`, `membership_request.notes` and `payment.notes` stay and are **emptied** at
+erasure, the way [D-140](decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)
+empties an event answer. **What is not:** a roster row's note, an account's status note, and the two values a
+`field_conflict` holds when a merge could not choose between them — all free text about a person, all named by
+[`06b`](data-model/06b-redaction-and-checks.md#4-redaction-log), none of them inside the answer that was given.
+**The answer's reason covers them and the answer's words do not, which is the shape this register exists to keep
+out of a decision entry.**
+
+<a id="k-17"></a>
+
+### K-17 🟡 What does `ROLE(x)` resolve against — `role.code` or `role.name`?
+
+Filed by [D-216](decisions/round-25.md#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated),
+found while renaming fourteen worked examples.
+
+**Nothing in this corpus states it.** Both readings are consistent with everything written down: the operand's
+argument type names the `role` table, not a column of it. **It is not cosmetic.** A name is unique across
+`person_group`, `role` and `audience`, and a rename frees the old name for any of the three to take
+([D-201](decisions/round-24.md#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence)),
+while an office's name is editable and its code is not — so under one reading a rename silently changes whom an old
+expression picks out, and under the other it changes nothing. **Every saved audience expression in an installed
+system is waiting on which of the two this is.**
 
 ---
 
@@ -266,7 +392,7 @@ the entry, and this index is a register, not a second copy of it.
 | <a id="f-21"></a>F-21 | Who reads the report about what an expression names and what it costs? | [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) | Nobody, because there is nothing to read. [D-109](decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report) retires the standing reports *about rules* with one tab on the permissions page — **Broken** lists every live rule naming a deprecated, hidden or disabled thing or failing to resolve — and [D-112](decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event) is what made the cost acceptable. Reports outside the expression language survive it: the dead-deny line in *Deny*, and [D-071](decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)'s report of assignments nobody forced to end. |
 | <a id="f-22"></a>F-22 | May the editor fold and flatten an expression for display? | [D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other) | Yes, with one hard limit: **display is free, storage is not.** The editor may fold a sum of same-kind leaves onto one line; it may not change the stored canonical string, because the cycle walk, the reserved-name rule and the listing of what names an audience all reason over the stored form ([D-105](decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)). |
 | <a id="f-23"></a>F-23 | Is a resolved audience stored as the record of whom a grant reached? | [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached) | "Words only — the expression is the record." [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached). The preview still prints a resolved set before a save, and the log calls it *a rendering on a date*, not a statement of members. The middle position — a reach query — is **not adopted either**, which is the part a skimming reader gets wrong. |
-| <a id="f-25"></a>F-25 | What is this system's own name when it writes to itself? | [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | **It has no name, and none is owed.** An empty actor column is read as *this system acting on its own* and is a complete answer to *who did this* — no row, no code, no secret, because a permission for a sweep would imply a person choosing not to run it. Where the trail keeps a label column the label comes from a fixed list — **five since round 23** (`system:renewal-sweep`, `system:payload-reduction`, `system:log-reduction`, `system:bank-pull`, `migration:<id>`); there were six until the sixth — the import batch's own label — left with the batch it named ([D-190](decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)) and bare `system` is retired; the rule is stated once, in [00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means). Zero schema. What it costs: **nothing in the database refuses an off-list label**, so a guessed one looks plausible until a person compares it against the list. |
+| <a id="f-25"></a>F-25 | What is this system's own name when it writes to itself? | [D-125](decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list) | **It has no name, and none is owed.** An empty actor column is read as *this system acting on its own* and is a complete answer to *who did this* — no row, no code, no secret, because a permission for a sweep would imply a person choosing not to run it. Where the trail keeps a label column the label comes from a fixed list — **six since round 25** (`system:renewal-sweep`, `system:payload-reduction`, `system:log-reduction`, `system:bank-pull`, `system:messages`, `migration:<id>`); there were six before round 23 too, until the sixth — the import batch's own label — left with the batch it named ([D-190](decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)), and the number returned to six when the messaging job got its own ([D-212](decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)); bare `system` is still retired; the rule is stated once, in [00-conventions §7a](data-model/00-conventions.md#7a-what-an-empty-actor-column-means). Zero schema. What it costs: **nothing in the database refuses an off-list label**, so a guessed one looks plausible until a person compares it against the list. |
 | <a id="f-26"></a>F-26 | When nobody who can hold `system.admin` can sign in, what happens? | [D-126](decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism) | A **report and a written procedure**, not a mechanism. Integrity check 9 already listed the holders; it now says for each whether they can sign in, and **an empty second column is the alert**. The procedure lives in [domain/02 §3](domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in): one named person written down in advance, and **the recovery performed on an account, never on a grant** — so everything after it carries `granted_by`, a channel and an audit row like anybody else's. A sealed `recovery` key, a time-boxed self-service path and a seeded minimum number of holders are all refused. Residual risk, accepted out loud: the recovery is a database edit no schema distinguishes from an intrusion, and whoever can make it can write an audit row by hand. |
 | <a id="f-10"></a>F-10 | Which invariants the ORM cannot express, and who writes those? | [D-130](decisions/round-18.md#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes) | Answered **per instance, not per shape**, because that is the question a migration writer has: the register it created stands at **72 rows** — it opened at 69, and this sentence printed **73** until round 23 counted it with a program rather than re-printing it: the true number when round 23 opened was **74**, so the figure was one high before the round deleted two pipeline rows and added one — the oldest habit in this corpus, a number typed rather than measured, caught by a script that was written to check names and never numbers — each naming the page that owns the rule, the layer, the report that would notice, and what a breach looks like — 4 temporal exclusions (a hand-written constraint), 15 conditioned uniques (a partial index), 46 that read another table (the write path), and shape 4, which was called empty and turns out to have members with `audience.code` explicitly *not* among them — six when [D-131](decisions/round-18.md#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed) counted them and **seven since round 20 bound an event question to a vocabulary code, which made that code referenced and therefore a member by D-131's own test** ([D-139](decisions/round-20.md#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer)). **The count was what was wrong about this question:** the page said "dozens" and named about fifteen; listing them found eleven rows with no report at all, six of which became [F-28](#f-28)–[F-33](#f-33); [round 19](decisions/round-19.md) answered three of those and gave two pages the check sections they lacked, and [round 20](decisions/round-20.md) answered one more and deleted a row that described a rule no page states — **so the register now says five where it said eleven.** Two of the eleven came off for the worse reason, a row describing a rule no page states ([D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud), [D-144](decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked)), **and one said `none` while the report had been sitting in [01b §10](data-model/01b-merges-views-and-checks.md#10-integrity-checks) the whole time** ([D-142](decisions/round-20.md#d-142--the-displayed-name-stays-a-copy-and-the-check-that-counts-its-drift-is-named-at-last)). **The remaining five are all shape-3 rows, and two of the five are blanks that were chosen out loud** ([D-133](decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud), [D-143](decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)). |
 
@@ -282,11 +408,14 @@ the entry, and this index is a register, not a second copy of it.
 
 ## How to answer
 
-**There is nothing here to answer, so this section has changed jobs.** No question on this page is marked 🔴 and
-none has been since round 4; the three that were left when [round 24](decisions/round-24.md) took them were all
-🟢, all answerable in a sentence, and none of them changed a table. **The marks still mean what they meant** —
-🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred — and there is simply nothing wearing one,
-which is the first time this register has had to say that about itself. **[Round 20](decisions/round-20.md)
+**Seven questions are here to answer, all of them filed by [round 25](decisions/round-25.md), and four of the
+seven change a table or a row count.** No question on this page is marked 🔴 and none has been since round 4;
+the three that were left when [round 24](decisions/round-24.md) took them were all 🟢, all answerable in a
+sentence, and none of them changed a table. **The marks still mean what they meant** —
+🔴 **blocking** something else · 🟡 **important** · 🟢 can be deferred — and what is wearing one now is
+[K-11](#k-11), [K-14](#k-14), [K-16](#k-16) and [K-17](#k-17): a mirror's reach, a clock, erasure's reach, and
+what one operand reads. **Round 24's register could say it had nothing to answer; this one cannot, and it is the
+same page one round later.** **[Round 20](decisions/round-20.md)
 answered thirteen of seventeen, all six 🟡 among them;
 [round 22](decisions/round-22.md) added § K without closing a row;
 [round 23](decisions/round-23.md) answered the nine § K held plus three survivors and filed K-10 in their place;

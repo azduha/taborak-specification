@@ -425,6 +425,7 @@ what turns *"the system"* from a shrug into a claim.
 | `system:payload-reduction` | payload reduction | Emptying `old_values` and `new_values` once a row passes the payload window ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) |
 | `system:log-reduction` | the access trail's age-out | **Deleting** `access_log` rows once they pass their 24 months ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to *who deleted my access history*. It was a name on a list and on no row until [D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive) made every write auditable: the run now writes **one summary `audit_log` row per run** — this label, how many rows went, the window — and not one per deleted row. **Not to be confused with `system:payload-reduction` above**, which empties columns of the other trail and deletes nothing |
 | `system:bank-pull` | the bank statement fetch | The `bank_transaction` and `payment` rows that answer a variable symbol ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)). **For the run with nobody in the room** — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does |
+| `system:messages` | the messaging run | The automated `message` rows and their `message_recipient` rows ([D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)). **The sixth label, and the first addition to this list since round 17 fixed it.** One label per kind of act, which is why the renewal sweep did not get this job: it expires memberships, and a label that both expires memberships and writes letters cannot be added to without editing a vocabulary. **A job holds no permission** — `message.send` gates a person's act and a job has none to gate ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)) — and the run writes **one summary `audit_log` row for itself** ([D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive)), the way `system:log-reduction` does. Which clock fires which type is [K-14](../open-questions.md#k-14) |
 | `migration:<id>` | a named migration | Any structural change, **and any one-off correction** — a fix that is not in a migration is a fix nobody can attribute |
 
 **Bare `system` is not one of them.** It means "one of the above, and I am not saying which", which is the
@@ -472,7 +473,22 @@ Requirements the design must satisfy:
    ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)).
    The two shapes are one decision, not an inconsistency: a descriptive value has no row worth keeping
    because the row *is* the value, while an answer is a fact that a question was answered on a dated
-   occasion, and that fact belongs partly to the event. **`event_registration` is not in either shape:**
+   occasion, and that fact belongs partly to the event.
+   **A third shape arrived in [round 25](../decisions/round-25.md), and it is the second one again:**
+   `membership.notes`, `membership_request.notes` and `payment.notes` are **emptied** and their rows remain
+   ([D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them)). Free text
+   beside a row the organization keeps is the event-answer case, not the attribute case — the row is a fee, an
+   ask or a membership, and the note is a remark on it. **Whether the other free text about a person joins them
+   is [K-16](../open-questions.md#k-16)**, and it is a question because the answer that was given named three
+   columns and this design does not quietly widen an answer while writing it down.
+   **And one body of text stands outside erasure by decision, not by oversight:** a `message`, its body, its
+   recipient rows and their read-moment are neither emptied nor deleted
+   ([D-211](../decisions/round-25.md#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages)).
+   [D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job) deleted
+   `person.notes` on the ground that free text about a person outside erasure makes erasure a lie, and that
+   argument applies to a message word for word and **was put and refused** — a message is correspondence, an act
+   this organization performed on a date, and the consequence is stated rather than discovered: an erasure leaves
+   every message addressed to the person standing, pointing at a tombstone. **`event_registration` is not in either shape:**
    whether a person came is organizational history under item 3, and this is stated because
    [D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)
    declined to make it a record class of its own.
@@ -664,13 +680,16 @@ states the fields, rules, invariants and open issues for its part of the model.
 | [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log` — and no import tables at all: the legacy load is a script run through a key, not a feature of this system ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)) |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment_allocation`, `payment`, `invoice`, `bank_transaction` — the seven tables §2 introduces, in its order |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
+| [10-messaging.md](10-messaging.md) | `message_type`, `message`, `message_recipient` — **one table, one author per row, and a notification a kind of row rather than a second mechanism** ([D-206](../decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)); `account.opt_in_email` is the one door-column and it lives on the `account` row, which [01-identity.md](01-identity.md) describes — a door is a messaging decision wearing an account column, and it is chosen here because a door is messaging's |
 | [09-attributes.md](09-attributes.md) | `attribute_definition`, `attribute_option`, `person_attribute` — **everything the system knows about a person other than their name, their gender and their age** ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). It is last in this table because it is last in every other document's account of a person: it references `person` and nothing references it |
 
 Each document presents its entities in **dependency order**: one appears only after everything it
 references. That ordering was needed to make a schema file execute; it is kept because it is also
 the order in which the model is understandable.
 
-**Messaging is not in this table.** `message` and `message_recipient` are decided at
+**Messaging is in this table now, in a document round 24 left unwritten.**
 [D-077](../decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
-and not yet designed; they will need their own document. The absence is tracked in
-[../open-questions.md](../open-questions.md#h-not-yet-designed).
+decided its shape in round 6 and twenty-three rounds passed before it was drawn
+([D-206](../decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)).
+**What the document does not have is a settled edge**: five questions came out of designing it and every one is
+registered at [K-11](../open-questions.md#k-11) … [K-15](../open-questions.md#k-15) rather than answered here.

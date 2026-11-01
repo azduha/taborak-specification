@@ -157,8 +157,11 @@ decision has a name attached to it — and `cancel_reason` says why.
 A cancelled event **stops accepting registrations** (the registration window closes
 implicitly) and **keeps every existing row**: those registrations are the record that the
 camp was planned and who was coming. That record is exactly what is needed afterwards — to refund
-them, and to know whom a cancellation notice would have to reach, since nothing in this design sends one
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+them, and to know whom a cancellation notice would have to reach. **Whether such a notice goes out is now a
+piece of configuration rather than a missing mechanism:** it would be a message of a type addressed to an
+audience, exactly like any other ([10 §2](../data-model/10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel)),
+and **no type is configured for a cancellation and nobody has configured one**
+([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)).
 
 **`completed` is derived, never set.** `cancelled_at IS NULL AND ends_at < now()`. There is
 no state to keep consistent, and no job to move events between states.
@@ -324,7 +327,7 @@ as a suggestion and writes back a fresh dated one
 
 Tracked with the rest in [../open-questions.md](../open-questions.md): the answered ones under
 **R. Resolved**, each carrying the decision that answered it, and the live ones where the module map points.
-**Six of the seven below are settled and say so rather than reading as still open** — that is deliberate,
+**Every one of the seven below is settled and says so rather than reading as still open** — that is deliberate,
 because a list of open issues that keeps asking an answered question is how a design gets reopened by a
 newcomer who reads the list and not the log. The ones this module raises:
 

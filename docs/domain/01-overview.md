@@ -264,7 +264,11 @@ Consequences, which the data model implements:
    ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)), so the
    person designing the system chose it and names what could be asked about it — **these are the rows that
    outlive every erasure safeguard described two sentences above, and nothing outside this design vouches
-   for them.**
+   for them.** **A message joins that kept class by decision, not by oversight**: its body, its recipient
+   rows and their opened-moment are never scheduled away and never emptied by an erasure
+   ([D-211](../decisions/round-25.md#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages)).
+   **That is keeping, not deleting:** it adds nothing to the two named acts, and a message row is never
+   removed by either.
 3. **People's names change**, so a name is a child-table row with a validity period and never a
    column that gets overwritten. A **group's** name is a column, and nothing replaces the deleted
    name-history table: a rename edits it and the old name is gone. What survives a rename is the
@@ -286,15 +290,28 @@ Referenced by the schema but not designed, pending your specification:
 - **Fees and payments** — a provisional shape exists in
   [../data-model/07-finance.md](../data-model/07-finance.md) because membership activation depends on
   it. Expect to rewrite it.
-- **Communication** — its shape is decided (direct by default, `broadcast` an ordinary scoped
-  permission, the recipient chooses the channel, a minor's guardians get a mirror of a direct
-  message), and its codes are in the catalog. There is no `message` or `message_recipient` table yet,
-  and no design for templates, opt-out granularity, retention or moderation.
-- **Notifications** — nothing in this design sends anything to anybody today
-  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)), and what is
-  deferred is a module nobody has designed: the renewal window made notifications dated rather than
-  status-driven, which is a design note, not a design.
-- **Documents, reporting, API and UI.**
+- **Communication** — designed in [round 25](../decisions/round-25.md) as
+  [../data-model/10-messaging.md](../data-model/10-messaging.md), and it is the module this page kept on
+  the deferred list for twenty-four rounds. One `message` table with exactly one author — a person, or
+  this system writing under `system:messages` — a `message_type` row carrying the audience it reaches,
+  and one recipient row per person reached. **One code, `message.send`, gates every write, a message to a
+  single person included** — what used to be free to anyone is now a held code, and a person without it
+  has no way to write to the organization through this module
+  ([D-208](../decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)).
+  **A notification is a message whose type is set**, a kind of
+  row rather than a second mechanism, so it no longer belongs on this list as an area of its own
+  ([D-206](../decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)).
+  **What moved off this page is the rule, not the caution:** the system sends, a send is gated and
+  audited, and what stays forbidden is a page inventing a period nobody chose
+  ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)).
+  What the module has not decided is on its own page and in
+  [the register](../open-questions.md#k-filed-by-a-module-page-reopened) — whether an audience-addressed
+  message mirrors to a child's guardians ([K-11](../open-questions.md#k-11)), and which clock fires an
+  automated type ([K-14](../open-questions.md#k-14)), among them.
+- **Documents, API and UI.** Reporting is not on this list either, and not because it is waiting:
+  what an organization calls a report is a message of a type delivered to an audience, and there is no
+  report screen
+  ([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)).
 
 ---
 

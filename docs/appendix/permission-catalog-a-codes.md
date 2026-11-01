@@ -1,8 +1,8 @@
 # Appendix — Permission Catalog: the codes
 
-Every code the system ships, grouped by the thing it acts on — people, accounts, membership, money, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.
+Every code the system ships, grouped by the thing it acts on — people, accounts, membership, money, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, the keys that call from outside, and the one code that writes a message — each with the grant that carries it.
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8c, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
 
 ---
 
@@ -242,8 +242,13 @@ with it"* — which is true only if `fee.view` and `payment.view` fall on the `r
 >
 > **`payment.match` is the row to read twice before granting it.** D-196 makes the variable symbol the whole
 > match, which means the system's own automatic half can attach a family's single transfer wholly to one
-> child's obligation and leave the sibling reading `unpaid`, silently, with nobody told
-> ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). The correction is
+> child's obligation and leave the sibling reading `unpaid`. Nothing refuses that allocation, and this catalog
+> says nothing about who hears of it: **whom a notice reaches is a message type and an audience, which is
+> configuration an admin edits**
+> ([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits))
+> — configuration an admin edits, not a permission — and no type is configured for a mis-attachment here.
+> The correction is
+> not a permission, and no type is configured for a mis-attachment here. The correction is
 > a person moving an allocation, and that is this code. So the money path's one safeguarding-shaped
 > permission is a ⚠ about bookkeeping rather than a 🔒 about authority — and it is still the row a reviewer
 > should notice, because holding it means being the person who decides which child the money was for.
@@ -266,16 +271,20 @@ with it"* — which is true only if `fee.view` and `payment.view` fall on the `r
 > — and if that turns out not to be enough, the repair is a sentence about who may hold `fee.create`, not
 > the code back.
 >
-> **And no report code ships with the money, including no `report.finance.view`.** That code was in the list
-> [K-10](../open-questions.md#k-10--are-the-money-permission-codes-still-deferred) named, and it stayed in
-> §10 on purpose: promoting it would have answered a question nobody asked — whether reporting is per-report
-> or one permission with row-level filtering — and
-> [05d §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) says the shape is open and
-> that an installation must not ship both at once. The full reason is written where the two report codes
-> live, in §8; the fact for this section is that **the money module spends six codes and does not get to
-> decide reporting's shape**, so money rows are gated by `fee.view` and `payment.view`, which is the shape
-> this vocabulary already has — a code per row-set — and the report that reads money across subjects waits
-> for the shape question like every other report does.
+> **And no report code ships with the money, and none ships anywhere.** [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+> deleted the whole reporting namespace — the codes that shipped, and the deferred money one and
+> safeguarding one with them — on the ground that what an organization calls a report is a message of a type
+> delivered to an audience and not a screen a permission gates. **The posture
+> [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+> chose for money stands untouched, with a different reason under it:** one round ago the money module was
+> refused a report code because promoting it would have settled reporting's shape by accident, and the
+> question it would have settled — per-report codes, or one code with row-level filtering — is no longer a
+> question anybody can be asked. It is not answered here either. **What this section holds is unchanged and
+> is held by nothing else: money rows are gated by `fee.view` and `payment.view`**, which is the shape this
+> vocabulary already has — a code per row-set — and **no money report code exists, is deferred, or gates a
+> screen, a list or a file anywhere in this design.** What an organization calls a money report is a message
+> type addressed to an audience ([../data-model/10-messaging.md §8](../data-model/10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)),
+> and this file mints nothing on its behalf.
 
 **One more thing this section does not have: a dependency.** Saving a grant of `payment.match` offers
 `payment.view` and `fee.view` beside it, and taking the offer writes **two rows**, each naming one code, each
@@ -554,25 +563,25 @@ difference is the whole reason there are two tables — and the office codes are
 > is now one script posting through a registered key, so there is no screen left to grant
 > ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)). A key is granted the ordinary codes of whatever it writes and holds no code of its own
 > ([§8b](#8b-keys--a-caller-that-is-nobody)).
-| `report.view` | — | ⚠ | Run standard reports |
-| `report.export` | — | ⚠⚠ | Export report data |
 
-> **Two report codes, and the absence of a third is deliberate — look for `report.finance.view` and find
-> this paragraph.** Reporting ships coarse **on purpose**: [05d
-> §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) states that only `report.view`
-> and `report.export` exist, that whether reporting is per-report or one permission with row-level filtering
-> is **still open** — this catalog's own §12 carries that question — and that **an installation must not ship
-> both shapes; pick one when reporting is designed**. So
-> [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows),
-> which promoted the six money codes into [§4a](#4a-money), left `report.finance.view` in §10 behind them:
-> promoting it would have answered the shape question by accident, on a round that was asked only whether
-> *the finance module's* codes are still deferred. **The module spends six codes and does not get to decide
-> reporting's shape**, and this file mints no report code on its behalf — which is what keeps
+> **The reporting namespace is gone, and this is the section its shipped codes sat in.**
+> [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+> ruled that what an organization calls a report is a message of a type delivered to an audience, and that
+> there is no report screen in this design — so there is no screen left for a code to gate, and nothing worth
+> deferring either: the shipped pair and the deferred pair (a money listing and a safeguarding one) left in
+> the same answer, and the deferral [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+> chose one round ago went with them. Reporting is not a permission, not a module, and not a deferred item;
+> it is an audience and a type, and the machinery is
+> [../data-model/10-messaging.md](../data-model/10-messaging.md). **What a reader loses is a lookup and not an
+> answer**, and [§4a](#4a-money) keeps its sentence untouched: money is readable through `fee.view` and
+> `payment.view`, a code per row-set, and no money report code exists, is deferred, or ships.
 > [D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)'s
-> one-code-for-the-whole-trail ruling the only report-shaped decision in the corpus rather than one of two
-> contradictory ones. **What a reader loses is a lookup and not an answer:** money is readable through
-> `fee.view` and `payment.view`, which is the shape this vocabulary already has — a code per row-set — and a
-> report that reads money *across* subjects waits for the shape question like every other report does.
+> one code for the whole trail is now simply the audit trail's guard, with no second report-shaped ruling beside
+> it to contradict. **One export remains in this section and it is the trail's**, which is the cost stated where
+> it bites: the export that used to sit under this heading was this design's one moment of data leaving it by
+> intention, and with it gone [D-199](../decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)'s
+> "nothing leaves" gets stronger, not weaker — a person who wants data out now has to read it. The five codes
+> are named in [removed-concepts.md](removed-concepts.md), and this page does not spell them out.
 
 > **`audit.view` is graded ⚠⚠ because the trail is a second copy of the person record.** `audit_log`
 > carries the before and after images of what changed, descriptive values included, on the same terms
@@ -736,9 +745,12 @@ the only reason the column exists. *Why: a grant allows or denies one permission
 
 > **`event.cancel` is separated from `event.edit` deliberately.** Cancelling is the most
 > consequential thing anyone does to an event: it affects every registrant, it usually
-> involves money, and it is a decision rather than an edit. It does not notify anyone — that
-> is the communication module's job, and conflating the two makes "who cancelled this, and
-> when?" harder to answer than it should be.
+> involves money, and it is a decision rather than an edit. **The cancel itself writes no message**:
+> telling people is the messaging module's act and not this code's
+> ([../data-model/10-messaging.md](../data-model/10-messaging.md)), and no message type is configured for a
+> cancellation anywhere in this corpus, so nobody is told by a cancel — which is a fact about the
+> configuration, not a rule about verbs ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)).
+> Conflating the two acts makes "who cancelled this, and when?" harder to answer than it should be.
 
 > **`event.delete` is on this list and nothing else has an equivalent, because events are the
 > one thing in this data model that can be deleted.** A draft event with no
@@ -916,3 +928,51 @@ existed in any registry and was deleted for being prose only
 These rows are not its revival. The lesson of that deletion is *a name must have a row behind it*, and
 here the row exists before the prose does
 ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
+
+## 8c. Messaging
+
+**One code, one row, and it gates every write in the module** — the tables behind it, the doors a message
+arrives on, what a notification is, and what a message type may be configured to do are in
+[../data-model/10-messaging.md](../data-model/10-messaging.md), the module [README](../README.md) kept
+deferred from round 1 to round 24. What the catalog owes is one row
+([D-208](../decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)).
+
+| Code | Namespace | Sens. | Grants |
+|------|-----------|-------|--------|
+| `message.send` | — | ⚠⚠ | **Write a message** — to one person **or** to a saved audience, either target, `applies_to = unit`. **The target is not checked:** no per-person test over an audience, no requirement that the writer could read the rows of everyone addressed, and no rule that an event's organizers may address only their event (the note below) |
+
+> **One code gates both halves, and the second half is the narrowing.** The answer that minted it asked for
+> *"one permission to write messages to anyone"*, and [D-208](../decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)
+> rules that a sentence to one person is included. That narrows
+> [D-077](../decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)
+> in the place its title is not about: *"direct by default"* described a right not to be gated, and it now
+> describes the **shape** of a send — one target rather than an audience — and nothing else. The corpus's own
+> test runs the new way: [D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
+> ruled that a permission nobody can decline is not a permission, and this one can be declined — which is what
+> makes it the control the answer asked for, *"held by the leadership or anyone the granter decides"*. **The
+> cost is in the decision entry and is not softened here:** a person holding no code has no way to write to the
+> organization through this module, and **no route for such a person is designed** — this page does not offer
+> one either.
+
+> **The widening is on the record, and the two controls that remain are named in
+> [10-messaging §7](../data-model/10-messaging.md#7-who-may-send-and-what-is-not-checked).** Nothing about the
+> send's target is tested at the write, so what bounds a send is [D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)'s
+> ceiling over **who may hand the code out** — which says nothing at all about what a send may name once it is
+> held — and one audit row for every send
+> ([D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive)).
+> The alternative was a per-person read test over everybody an audience resolves to, and this design has no rule
+> that would make it come out right. ⚠⚠ is D-208's own marking; the mark grades what a grant exposes
+> ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)),
+> and a send aimed at an audience reaches the people in it with words this catalog cannot bound.
+
+> **An automated message is not this code's work, and there is no second code for it.** A permission gates a
+> person's act and a job has none to gate, so traffic this system writes is authored under the actor label
+> `system:messages` ([§7a](../data-model/00-conventions.md#7a-what-an-empty-actor-column-means),
+> [D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)),
+> and the run writes one audit row for itself. **There is no second code beside `message.send`, and none was
+> ever registered for the wide case** — a send aimed at an audience is the same code, and an audience narrows the *send* rather than
+> the scope of a grant ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
+> untouched: one grant, one permission, one scope). **What gates editing a `message_type` row is open** and is
+> [K-12](../open-questions.md#k-12); the working default there is whoever holds `system.admin` at the unit, and
+> this file mints no code for that table on its behalf
+> ([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)).

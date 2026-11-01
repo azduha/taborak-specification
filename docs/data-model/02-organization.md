@@ -128,7 +128,7 @@ and which must not become the history of record for anything
 | `valid_from` | date, required | The first day the person is in the group. |
 | `valid_to` | date, optional | NULL = still in the group. The day the person is **no longer** in it, half-open — see the overlap rule. |
 | `added_by` | reference to `person`, required | Who wrote it. Required, not optional: no row in this table is allowed to be unattributed, because the permission that writes it is the module's only safeguard (§4). |
-| `note` | text, optional | Why, in the organization's words. Free text, deliberately — see below for what it is not. |
+| `note` | text, optional | Why, in the organization's words. Free text, deliberately — see below for what it is not. **Erasure does not empty this column:** [D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them) ruled on three `notes` columns and this is not one of them, and whether it joins them is [K-16](../open-questions.md#k-16) |
 | `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. |
 
 **Rules**
@@ -157,8 +157,10 @@ and which must not become the history of record for anything
   contributes only the part of itself inside the group's lifetime — **the resolver reads the
   intersection**, not the row's own span. The cost, stated: a group's dates can silently shorten a
   membership's effect — a row running to June in a group closed in March stops reaching anybody in
-  March, and no report says so, because nothing here sends anything to anybody
-  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). Integrity
+  March, and no report says so — and nothing arrives either, because **no message type is configured for
+  that moment and nobody has configured one**
+  ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting):
+  the design can deliver, and this is not a case anybody has configured it to deliver). Integrity
   check 2 is the net under the refusal.
 
 **Who enforces the overlap rule.** [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now)
@@ -451,6 +453,17 @@ now carries the rule rather than here:
   no self-reference, no carried number, no edge — so a search for a dead group does not find its
   successor and the whole story of a troop is two rosters read in sequence
   ([D-173](../decisions/round-23.md#d-173--that-two-groups-are-the-same-group-is-said-not-stored); §1).
+
+**One question round 25 opened here, and this page cannot settle it.** A roster row's `note` is free text
+about a person sitting beside a row the organization keeps — the shape
+[D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them) just ruled on
+for `membership.notes`, `membership_request.notes` and `payment.notes`, which erasure now empties. **This
+column is not one of those three and erasure does not empty it**; [06b §6](06b-redaction-and-checks.md#6-open-issues)
+names it among the free text that stands outside that list, and whether it joins them is
+[K-16](../open-questions.md#k-16) — one of the seven questions
+[the register](../open-questions.md#k-filed-by-a-module-page-reopened) holds after round 25 reopened it. The
+rule round 24 fixed still governs the three above: an item here closes by having its answer written **into
+the bullet**, not by being handed back.
 
 The questions this page once wondered about, open and settled alike, are registered in
 [../open-questions.md](../open-questions.md); a settled one is listed there with the decision that settled

@@ -251,11 +251,14 @@ person, the only form of this failure that is still visible after the fact.
 ## 10. Integrity checks
 
 Checks that should run nightly, and that somebody reads the same morning. These encode invariants that
-no per-column rule above can express. **A result here is a report a person opens; no check in this
-section sends anything to anybody**
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)), and where a
-bullet below says a finding belongs in the report rather than in a log, what it means is that the finding
-must not wait for a reader to stumble on it.
+no per-column rule above can express. **A result here is a report a person opens; no check in this section
+reaches anybody on its own, because no message type is configured for a check's finding and nobody has
+configured one** — a check is a **run** and its output is read by whoever runs it
+([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)),
+and where a bullet below says a finding belongs in the report rather than in a log, what it means is that
+the finding must not wait for a reader to stumble on it. If a finding is ever meant to arrive somewhere
+rather than be waited for, it arrives as a message type like anything else
+([10-messaging.md](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)).
 
 **Invariants to verify**
 
@@ -353,11 +356,14 @@ must not wait for a reader to stumble on it.
 
 ## 11. Open issues
 
-- Erasure policy specifics: what must be redacted vs. retained. **The retention shape is decided; what is
-  open is whether it has a basis.** The shape is
-  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
-  — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
-  *named* `membership` and fee rows has a basis. See
+- Erasure policy specifics: what must be redacted vs. retained. **The retention shape is decided, and so is
+  what stands in place of a basis.** The shape is
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)),
+  and the question this bullet used to keep open — whether indefinite retention of *named* `membership` and
+  fee rows has a basis — was answered out of existence rather than answered: there is no legal review of this
+  design and none will be, so what the retention carries is the designer's choice with its **risk named where
+  a basis used to sit** ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)).
+  Nothing here waits on a review. See
   [00-conventions.md](00-conventions.md#8-personal-data-and-erasure) and
   [06b §6](06b-redaction-and-checks.md#6-open-issues).
 Two more questions this page carried are now settled rather than open. **Whether `person.gender` is
@@ -376,4 +382,4 @@ in §8, the length report in §10), and whether a person may hold two live accou
 colliding sign-up files a claim and activates nothing instead of becoming a second account). See
 [B-2](../open-questions.md#b-2) and [B-4](../open-questions.md#b-4).
 
-Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
+**The register holds seven questions again** — [K-11](../open-questions.md#k-11) through [K-17](../open-questions.md#k-17), all of them filed by [round 25](../decisions/round-25.md) when it designed [messaging](10-messaging.md) — and **none of them is this page's.** The habit [round 24](../decisions/round-24.md) fixed still holds: an item here closes by having its answer written **into the bullet above**, never by being handed back to the register, which is how every item above was closed. The one thing on this page a register row touches from the outside is [K-16](../open-questions.md#k-16), and it is asked where the columns are named — [06b §6](06b-redaction-and-checks.md#6-open-issues).

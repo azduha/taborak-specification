@@ -20,9 +20,12 @@ other grant ([../data-model/05d-invariants-and-seed.md §12](../data-model/05d-i
 > ([D-055](../decisions/round-04.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)).
 > This is a **menu, not a checklist.** Administrators assign people only the permissions they
 > actually need; that is only possible if the capabilities exist as separate rows to assign.
-> Further permissions arrive with the modules not yet specified — documents and communication.
-> Events were on that list and are no longer: §8a carries their thirteen codes
-> ([§10](permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces)).
+> Further permissions arrive with the modules not yet specified — documents.
+> Events were on that list and are no longer: §8a carries their thirteen codes. Neither is communication:
+> the messaging module is designed, and §8c carries the one code it
+> ([D-208](../decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked),
+> [../data-model/10-messaging.md](../data-model/10-messaging.md);
+> [§10](permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces)).
 >
 > **This is the opposite disposition from roles, and the asymmetry is deliberate.** Roles are
 > *runtime data* the organization invents ([D-052](../decisions/round-04.md#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification));
@@ -34,7 +37,7 @@ other grant ([../data-model/05d-invariants-and-seed.md §12](../data-model/05d-i
 > ([§1](#code-shape)). What is *not* yet settled is the exact contents — tracked in §12.
 
 
-**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
+**Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8c, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
 
 ---
 
@@ -91,12 +94,17 @@ is the only code in this system allowed to be a noun, and the exemption sets no 
 `<resource>.admin` is precisely what rule 3 refuses and precisely what was deleted.
 
 **The three rules were run against the sixty-six live codes the tables below held when D-104 ran them,
-and corrected nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. **Ten** codes
-have arrived since that count — the four `api_key.*` rows of
-[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody) and the six money rows of
-[§4a](permission-catalog-a-codes.md#4a-money), promoted in
-[round 24](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
-— and every one of them satisfies the three rules rather than testing them
+and corrected nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. Codes have
+arrived since that count and others have left it — the four `api_key.*` rows of
+[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody), the six money rows of
+[§4a](permission-catalog-a-codes.md#4a-money) promoted in
+[round 24](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows),
+and `message.send` of
+[§8c](permission-catalog-a-codes.md#8c-messaging) arrived, and the reporting pair left in
+[round 25](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+— and **the register holds seventy-one codes now**, counted off the tables below rather than remembered,
+because a count beside a sentence is the thing that goes stale silently. Every one of them satisfies the
+three rules rather than testing them
 ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
 That null result is the reason this section changed voice rather than its contents: **a convention that is
 followed and
@@ -233,8 +241,8 @@ preview is logged as *a rendering on a date*, never as a statement of who was in
 ([D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached), §12).
 
 So `event.answer.view` on an event is aimed at `ORGANIZERS`, an open camp is opened by `MEMBERS`, a gated
-office is `MEMBERS * ROLE(treasurers)`, and the exemption for one named person is
-`(MEMBERS * ROLE(treasurers)) + PERSON(jan)` — a second grant aimed at that person is the other way to write
+office is `MEMBERS * ROLE(treasurer)`, and the exemption for one named person is
+`(MEMBERS * ROLE(treasurer)) + PERSON(jan)` — a second grant aimed at that person is the other way to write
 the same thing, and it keeps the exception off the expression everyone else reads.
 
 **Three refusals belong next to the language, because each is a temptation this catalog creates.** None of
@@ -368,8 +376,10 @@ The **Sens.** column flags permissions that need extra care:
 
 These marks should drive UI warnings, and they are what the reports in
 [../data-model/05d-invariants-and-seed.md](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)
-are read with — a mark is on the screen somebody opens, because nothing in this design sends anything
-to anybody ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+are read with — a mark is on the screen somebody opens, and a mark is never delivered: **the design has
+sending machinery now, but no message type carries a sensitivity mark to anybody**, which is the reason and
+not the rule ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as
+narrowed by [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)).
 **A mark grades what a grant exposes, not the table a code names**
 ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)),
 and the two families a reader is most likely to place wrongly are placed by it: `person_group.member.manage` takes **⚠** because a

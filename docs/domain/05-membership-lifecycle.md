@@ -697,7 +697,7 @@ somebody who does not hold that group's roster write, §7); and whether the one-
 memberships (it may, for the periods the source states, and never open-ended, §3). Each is settled, and
 the argument for each one is in the [decision log](../decisions/index.md) rather than here.
 
-Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
+**The register holds seven questions after [round 25](../decisions/round-25.md)** — [K-11](../open-questions.md#k-11) through [K-17](../open-questions.md#k-17), every one of them filed by that round as it designed [messaging](../data-model/10-messaging.md) — and **none of them belongs to this page**: each bullet above carries its own answer in place. That is the habit [round 24](../decisions/round-24.md) fixed and it still holds, register empty or not — **an item here closes by having its answer written into the bullet above**, never by being handed back.
 
 ---
 

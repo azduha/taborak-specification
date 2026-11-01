@@ -436,7 +436,7 @@ remaining way to produce a broken leaf.**
 **A preview is a statement about the day it was taken.** `OLDER(n)` and `YOUNGER(n)` make that
 true of every age-bearing expression in the sharpest form there is: the 84 names on the screen
 are the people who qualify *on that date*, and a birthday moves the list with no write and no edit to the
-grant. Nothing is told about it and nothing needs to be: **there is nothing to be stale**, because every
+grant. Nothing about it needs telling, and the reason is that **there is nothing to be stale**, because every
 check resolves against live rows and a birthday moves the answer at the instant it happens
 ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
 What the preview is a statement about is **the date it was taken**, and that is a fact about the

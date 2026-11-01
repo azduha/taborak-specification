@@ -110,9 +110,11 @@ and both are checks rather than intentions:
 
 - **A hypothesis that is blocking an account is age-checked.** A queue that stalls is
   not a data-quality problem with no victim you can name: it is a specific person who cannot log in,
-  whose only remaining channel is to telephone someone. Nothing here will tell anyone the queue has
-  stalled — no message is sent, and the age on a row is the whole of the warning
-  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)),
+  whose only remaining channel is to telephone someone. Nothing here tells anyone the queue has
+  stalled: **no message type is configured for that event and nobody has configured one**, so the age on a
+  row is the whole of the warning
+  ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+  narrows what this page used to cite as a rule about sending),
   which is why the block carries a number rather than sitting in a list.
 - **The message the person sees confirms nothing.** Not that the name matched, not that the birth date
   did, not that anyone by that name exists — because a sign-up form that can answer "yes, that person
@@ -325,4 +327,4 @@ registered as K-9 and closed in
 ---
 
 *Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166,
-D-176, D-178, D-179.*
+D-176, D-178, D-179, D-214.*

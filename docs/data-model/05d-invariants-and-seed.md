@@ -146,9 +146,12 @@ lesson about what a check is allowed to be).
   world in which somebody could hold the capability and nobody can reach a screen is the state D-126's
   procedure exists for, **and that procedure keeps the one name it names** — the column is read by whoever
   works the queue and answered by the recovery person written into the procedure, which is a procedure
-  needing a name rather than an alert, and nothing in this design sends it to anyone
+  needing a name rather than an alert, and **no message type is configured that would send this list to
+  anybody** — a procedure needs a name where a notification needs none, and the absence here is the missing
+  configuration rather than a rule about verbs
   ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism),
-  [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+  [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as narrowed by
+  [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)).
   **On a first run this report is one row long, it has already reported its holder, and both are correct:**
   the one grant the installation writes is a holder of `system.admin`, so the report's first output is the
   installation itself ([D-150](../decisions/round-21.md#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped)).
@@ -462,13 +465,18 @@ lesson about what a check is allowed to be).
   things is how a broken one comes to be read past. **Which authors are lawful is stated once, above, and it is
   now one path long, so the tolerance this bullet used to need has shrunk with it.**
 
-**Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and
-no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the report
-rather than a message.** *Why that is said here rather than assumed:* a sentence wiring five checks and half
-of a sixth to alerts sat above this list and named no report at all, so it survived every count of sentences
-about `system.admin` — most of what a grep for the promise matches survives the test for the same reason, a
-report described as urgent is not a message, and what this page lost was that framing sentence plus half of
-check 7
+**Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and the
+reason is what a check is rather than a rule about the design: a check has no door, no `message_type_id` and no
+target person, so there is nothing for [the messaging module](10-messaging.md) to write.** What a check owes is
+a row on a screen, and urgency is a property of the run rather than of a message. **What no page may still do
+is invent a period** — a promise that somebody will be told within a stretch of days is only writable where a
+row holds the number and a named decision chose it, and that half of D-164 is exactly the half
+[D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+left standing when it narrowed the rest. *Why that is said here rather than assumed:* a sentence wiring five
+checks and half of a sixth to alerts sat above this list and named no report at all, so it survived every count
+of sentences about `system.admin` — most of what a grep for the promise matches survives the test for the same
+reason, a check described as urgent is not a message, and what this page lost was that framing sentence plus
+half of check 7
 ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
 
 - **3 and 4 are the reports that stand in for the database rules that do not exist.** A row in either
@@ -517,11 +525,15 @@ check 7
   correctly-configured oddity a tab is for
   ([D-120](../decisions/round-16.md#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control)).
   **There is no age threshold on that line**: a bound somebody might want to change belongs in a column, and
-  inventing one is not this page's call. **Check 7's wide half and check 9 are reports on a screen and not
-  messages to a person**, and that is stated rather than glossed: both describe authority getting bigger
-  while nobody was editing a grant, and this design still sends nothing to anybody, so the honest claim is
-  that these are the two a person is expected to have opened recently
-  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **Being read is
+  inventing one is not this page's call. **Check 7's wide half and check 9 are runs on a screen and not
+  messages to a person**, and that is stated rather than glossed: a check borrows neither an audience nor a
+  type, so it writes nothing
+  ([10-messaging §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)). Both describe authority
+  getting bigger while nobody was editing a grant, and **no message type is configured for either of them**, so
+  the honest claim is that these are the two a person is expected to have opened recently — the reason is the
+  missing configuration and not a rule about verbs
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as narrowed by
+  [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). **Being read is
   enough here because of what the ceiling took off the table**: nothing can be written that hands out more
   than the writer holds, so neither report can be surprised by an escalation, and every change of hands that
   does happen carries the name of the person who did it — `granted_by`, required, no empty to read. **No
@@ -785,14 +797,26 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   `right_level = write` on the relationship, not a permission (D-074); the code families `dependent.*` and
   `*.admin` are not in this catalog. So an office that should hold a new permission must have one **written
   down for it** — check 13 is the net, and reading it is the whole of the follow-up.
-- **Reporting ships coarse, and is left open on purpose.** Only `report.view` and `report.export` exist.
-  Whether reporting is per-report or one permission with row-level filtering is still open
-  (catalog §12). Do not ship both shapes; pick one when reporting is designed.
+- **Reporting is not a permission, and there is no shape left to pick.** This bullet used to state that two
+  reporting codes existed, and that whether reporting was per-report or one permission with row-level filtering
+  was still open. [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+  deleted the whole namespace — what shipped and what was deferred together — on the ground that **there is no
+  report screen in this design** for a code to gate, and the question those two shapes were rival answers to
+  died with the screen rather than being answered. What an organization calls a report is a message of a type
+  addressed to an audience ([10-messaging §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)), so
+  what is left to decide is a type and an audience, never a code; **the one export the catalog still carries is
+  the trail's own**. The catalog's own item carries the same verdict in place
+  ([catalog §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues)), and this page's §11 checks keep
+  being runs rather than reports, which is what [10-messaging §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)
+  asks of a check.
 
 > **`system.admin` is deliberately a single top-level permission**, not a
 > per-resource one. Holding it satisfies everything, and check 9 in §11 reports its holders —
-> a list to open, since nothing here would tell anybody that it had changed
-> ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). Keeping the most
+> a list to open, since **no message type is configured for a change among its holders** — the design has
+> sending machinery now ([10-messaging](10-messaging.md)) and this corpus writes no type that watches who
+> holds this code, so the absence is configuration and not a rule about verbs
+> ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as narrowed by
+> [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). Keeping the most
 > dangerous capability concentrated, and visible in one short report, is safer than
 > spreading equivalents of it across every resource. **`system.admin` is a permission code, not a level** —
 > there are no levels (D-099) — and it is the only permission whose *action* is `admin` (§11's check 17 is
@@ -804,7 +828,9 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 
 - **One question left about callers that are not people.** Round 16 designed the arriving integration and
   stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
-  system acting on its own, with a fixed vocabulary instead of free text — five labels on the list now
+  system acting on its own, with a fixed vocabulary instead of free text — **six** labels on the list now, the
+  sixth being `system:messages`, the messaging run, added by
+  [D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)
   ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means))
   ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
   and check 9 above is its sibling) and the case where nobody who could hold `system.admin` can reach a screen

@@ -126,6 +126,7 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 | [data-model/07-finance.md](data-model/07-finance.md) | Fees and payments. **Provisional — you have not specified this yet.** |
 | [data-model/08-events.md](data-model/08-events.md) | `event`, organizers, registrations, questions, answers. §1–§7. |
 | [08a](data-model/08a-event-guards-and-checks.md) | How authority reaches an event, the three queries that matter, integrity checks, open issues. §8–§11. The two parts share one section numbering. |
+| [data-model/10-messaging.md](data-model/10-messaging.md) | `message_type`, `message`, `message_recipient` — who may write a message, whom a type reaches, which doors a person has open, and what a report turns out to be. §1–§10. |
 
 ### Reference
 
@@ -145,20 +146,39 @@ still has a subject: nothing is implied by who somebody is, and a deny cannot be
 membership over time, groups and offices, guardianship, events, and the authorization system.
 
 **Deliberately deferred** — referenced so the data model does not block them, not designed: fee and
-payment processing beyond the provisional shape in
-[data-model/07-finance.md](data-model/07-finance.md), documents, reporting, notifications, and the
-API and UI layers. Each is listed in [open-questions.md](open-questions.md) with the hooks already
-left for it.
+payment processing beyond what
+[data-model/07-finance.md](data-model/07-finance.md) already decides — the money module is designed and no longer
+provisional, and what stands outside it is a rendered document and an external accounting system, which
+[D-199](decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)
+rules this design owes that system nothing — documents, and the API and UI layers. What is genuinely still a
+question is in [open-questions.md](open-questions.md), which [round 25](decisions/round-25.md) reopened at seven
+rows.
 
-**Communication sits between the two lists, and the line is worth drawing rather than guessing.**
-Its **shape** is decided: internal first, external channels are delivery rather than a product,
-anyone may send a direct message, `broadcast` is one ordinary scoped permission, the recipient
-chooses the channel, and a direct message to a minor is mirrored to that minor's guardians. Its
-codes are in the catalog. **What is undesigned is the module** — templates, opt-out granularity,
-retention, moderation. Notifications stay genuinely undesigned, and nothing in this design sends
-anything to anybody today ([D-164](decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)):
-what is deferred is a module nobody has designed, not a promise anybody is waiting on. The renewal
-window made notifications dated rather than status-driven, which is a design note, not a design.
+**Communication sat between the two lists for twenty-four rounds and is now on the designed side.**
+Its **shape** was decided long before its module was: internal first, external channels are delivery
+rather than a product, the recipient chooses the channel, and a direct message to a minor is mirrored
+to that minor's guardians. **One code, `message.send`, gates every write — a sentence to one person
+included** — so *direct* now names the shape of a send, one target rather than an audience, and not a
+right; a person who holds no code has no way to write to the organization through this module, and no
+route for that person is designed anywhere
+([D-208](decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)).
+What round 25 added is the module that shape had no place to live in,
+[data-model/10-messaging.md](data-model/10-messaging.md): one `message` table with exactly one author
+— a person, or this system writing under `system:messages` — a `message_type` whose audience an
+installation edits, and one recipient row per person reached. **A notification is a message of a
+type**, a kind of row rather than a second mechanism beside the one a person writes with
+([D-206](decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message)),
+and **what an organization calls a report is a message delivered to an audience** rather than a screen
+anybody opens
+([D-210](decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)).
+The account chooses its own doors, and the inbox is not one of them: it cannot be declined, because a
+design in which "you were addressed" can be turned off has no evidence behind the phrase. **What
+still stays forbidden is inventing a period nobody chose** —
+[D-164](decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) is narrowed by
+[D-214](decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting),
+not repealed, so a page may promise a deadline only where a row holds the number of days and a named
+decision chose it. The renewal window made notices dated rather than status-driven, which is a design
+note, not a design; which clock fires which type is [K-14](open-questions.md#k-14).
 
 **There is no health module, and none is waiting to be designed.** Everything the organization knows
 about a person beyond a name, a gender and an age is **one class of data**, held in fields the
@@ -197,4 +217,4 @@ italics, so you can find and kill it with a search.
 ---
 
 *Decisions behind this page: D-001, D-005, D-037, D-038, D-083, D-086, D-088, D-090, D-092, D-093,
-D-097, D-098, D-099, D-100.*
+D-097, D-098, D-099, D-100, D-206, D-210, D-214.*

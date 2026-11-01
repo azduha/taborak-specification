@@ -545,35 +545,70 @@ does not fit settles, if anything, is the finance module's open question.
 
 ## Communication
 
-**Direct message** — One person to one person. **Everyone can send one**; there is no
-permission for it.
+**Message** — The one thing this module has, and the only word for it. A `message` row has exactly one author, a
+person or this system acting on its own, and goes to exactly one target: one person **or** one saved audience.
+**A body is never edited** — a wrong send is followed by a second message that says what the first got wrong — and
+**nothing about a message ages out or is emptied by an erasure**, which is a decision with an argument against it
+on the record ([D-206](decisions/round-25.md#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message),
+[D-211](decisions/round-25.md#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages)).
+There is one table and not two: a design with a second one would need its own expiry rule, its own audit shape and
+its own reader, and they would drift ([data-model/10](data-model/10-messaging.md)).
 
-**Broadcast** — The only messaging permission, and **an ordinary scoped one**: a grant like
-any other. Held at the unit, `message.broadcast` reaches everyone; **the narrower reading is
-a grant naming a group**, reaching that roster. There is **no global broadcast flag**: a
-permission that has to be granted is one that can be given to some people and refused to
-others, whereas the flag would be all-or-nothing and would leave a section leader choosing
-between an organization-wide power and typing the same sentence twelve times. Whether
-broadcast should ever be grantable on an item is messaging's open question, not the model's
-([D-077](decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)).
+**Notification** — **A kind of message, not a mechanism.** The word names a `message` whose `message_type_id` is
+set, and nothing else: no table, no module, no second pipeline beside the one a person uses to write to another
+person. The older word for this area is retired with the table it implied, and the refusal is
+[D-100](decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)'s,
+applied twice.
 
-**Delivery channel** — Email, push, or in-app, **chosen by the recipient**, not the sender.
-The sender chooses *who*; the recipient chooses *how it arrives*. This is why the system is
-the medium rather than a mail relay: a bounced email is a failed delivery on one channel,
-not a lost message.
+**Message type** — What may be sent automatically, and **whom it reaches**: `message_type` holds a `code`, a name,
+and an `audience_id` an administrator edits. It is [D-186](decisions/round-23.md#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes)'s
+diagnosis a second time — settings wearing a vocabulary's clothes: the code is the vocabulary, the audience is the
+setting, and what an organization changes on a Tuesday afternoon is the setting
+([D-209](decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)).
+
+**`message.send`** — The only messaging permission, **one code for a message to one person or to an audience**,
+held by the leadership or by anyone the granter decides. **The target a send names is not checked** — no per-person
+test over an audience — and the controls that remain are the granter's ceiling over who may hold the code and one
+audit row per send ([D-208](decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)).
+It also gates what used to need nothing: a sentence to one person is now a gated act, so *"direct by default"*
+describes a shape and not a right.
+
+**Door** — How a message arrives for one person: **the account chooses its doors** and the organization does not.
+**The inbox is not a door and cannot be turned off**, because a design where it can be declined is a design where
+"you were addressed" has no evidence behind it; the one external door with a column today is e-mail, on
+`account.opt_in_email`, default off. **A door arrives with its column on the day its transport exists**, so this
+design carries none for a token that outlives its device
+([D-213](decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)).
+The older phrase "delivery channel" described three doors at once and is retired with them.
+
+**Recipient row** — `message_recipient`: whom a message reached, on which door, and whether it was opened. **The
+record of an act, and nothing resolves against it** — no audience expression may name a message's recipients as a
+set, which is the opposite of a grant's record and for the opposite reason: a grant's authority *is* its
+expression, while an audience can be edited tomorrow and the fact that thirty people were addressed in March must
+not change with it ([D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached),
+[D-207](decisions/round-25.md#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set)).
 
 **Age is not a sender concept** — and it is not a *recipient* concept either. Nothing
 restricts who may address a child; what stops a private message to a child from being
 unnoticed is **mirroring**, and no check in the resolver ever looks at an age.
 
-**Mirroring** — A copy of a direct message addressed to a minor, delivered to that minor's
-guardians whose **right** is `view` or `write` — the three-value right of the guardianship
-channel, not a level — fixed to that set **at the moment of sending**. Visibility, not
-approval: nobody has to agree before the message is sent. A guardian at `none` receives
-nothing, because `none` is the organization having already decided that this party sees
-nothing about the child — and a minor whose guardians are *all* `none` is the same
-shape as a minor with no guardian at all, so it is reported together with it
-([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)).
+**Mirroring** — A message addressed to a minor reaches that minor's guardians whose **right** is `view` or `write`
+— the three-value right of the guardianship channel, not a level — as **their own recipient rows, on their own
+chosen doors**, each carrying the row it mirrors. Visibility, not approval: nobody has to agree before the message
+is sent, and the sender is shown the mirroring at the write because the rows are computable before they exist. A
+guardian at `none` receives nothing, because `none` is the organization having already decided that this party sees
+nothing about the child — and a minor whose guardians are *all* `none` is the same shape as a minor with no
+guardian at all, so it is reported together with it
+([D-082](decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
+[D-213](decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)).
+**Whether a message addressed to an audience mirrors as well is
+[K-11](open-questions.md#k-11)**, and it decides whether one announcement writes a thousand rows.
+
+**A report is a delivered message** — and there is no report screen. What an organization calls a report is a
+message of a type addressed to an audience, which is why the reporting permission codes are gone and why the word
+survives with new machinery under it. **Where this corpus says "the report is the control" it means a listing
+nobody receives — a check — and that idiom is kept, because three decision titles are built on it**
+([D-210](decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)).
 
 ---
 

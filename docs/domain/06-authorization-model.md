@@ -159,9 +159,13 @@ Three properties keep a wildcard from being the hole in the design, and each sta
    is [05 §6](../data-model/05-authorization.md#what-is-refused-when-a-grant-is-saved)). A right held through
    a delegation raises no ceiling (§9), so that path opens no gap here either.
 2. **Its holders are on a list, and the list is read.** It is what tells a planned change from an
-   incident; what it does not do is reach anybody by itself, because nothing in this design sends a message
-   when the set changes, so the hour a new holder is noticed in is the hour somebody opens the report
-   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **One thing
+   incident; what it does not do is reach anybody by itself, and **the reason is now a fact about the
+   configuration rather than a rule about verbs:** the design has sending machinery
+   ([10-messaging](../data-model/10-messaging.md)) and **this corpus configures no message type that watches a
+   holder list**, so nothing is written when the set changes and the hour a new holder is noticed in is the hour
+   somebody opens the report
+   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as narrowed by
+   [D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). **One thing
    this does not sweep away:** [D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)'s
    break-glass procedure names one recovery person in advance, and that name stays — a procedure needs a
    person where a notification needs none, and nothing here is a notification.
@@ -280,24 +284,27 @@ permissions" consists of:
 ```
 role         code = treasurer                (a row the organization wrote, like every other)
 role_holder  treasurer ← Ana, 2026-01-01 → open
-access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
              permission = fee.view            effect = allow
-access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
              permission = payment.record      effect = allow
-access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
              permission = payment.match      effect = allow
   … one row per code, and the list is the office
 ```
 
 **Six money codes, and no seventh one for reporting on them**
 ([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)):
-`fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `payment.match`. A reader who
-comes here looking for `report.finance.view` will not find it in this example and will not find it shipped
-anywhere, on purpose — reporting ships `report.view` and `report.export` and picks its shapes when reporting is
-designed, and the finance module was not the round that got to decide that. **What the office therefore cannot
-do on day one is open a money report**: it can read every obligation and every payment, which is the same facts
-row by row, and the count over them is the part still undesigned
-([appendix catalog B §10](../appendix/permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces)).
+`fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `payment.match`. **No seventh
+code was ever coming**: [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+deleted the whole reporting namespace one round after these six shipped — the codes that had rows in the
+catalog, and the deferred money one with them — on the ground that **there is no report screen in this design**
+for a code to gate, so reporting stopped being a permission, a module and a deferred item in the same stroke.
+**What this office holds, then, is the facts and no total**: it reads every obligation and every payment, which
+is those rows one by one. What an organization calls a money report is a message of a type addressed to an
+audience ([10-messaging §8](../data-model/10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)), and the
+row that decides whom it reaches is a setting an admin edits, not a right anybody is granted
+([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)).
 
 **Neither a role nor a group authorizes anything by existing**, which is
 [D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity) and
@@ -570,9 +577,12 @@ person, which is how the waiver looks when the writer would rather not touch the
 else reads.
 
 **The test is opt-in per grant, and the failure mode must be named rather than buried.** A grant
-written as `ROLE(treasurers)` with no `MEMBERS` authorizes a lapsed member, **silently, forever**.
-Nothing errors, nothing reports itself when it happens, and nothing about the grant looks wrong — a
-lapsed treasurer is still a treasurer. Three controls, **none of which is the resolver**:
+written as `ROLE(treasurer)` with no `MEMBERS` authorizes a lapsed member, **silently, forever**.
+Nothing errors, nothing says it out loud — **and the reason is that no message type is configured for a grant
+of this shape**, not a rule about verbs
+([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting))
+— and nothing about the grant looks wrong: a lapsed treasurer is still a treasurer. Three controls, **none of
+which is the resolver**:
 
 1. **A standing report** of live grants naming a `ROLE(...)` operand whose expression does not contain
    `MEMBERS` — **every one of them**, since nothing marks which offices should have carried the term
@@ -622,7 +632,7 @@ Who is gated:
 
 ### 6.2 Audiences — an expression over named sets
 
-A grant aimed at a set of people names **an expression over named sets** — `MEMBERS * ROLE(treasurers)`,
+A grant aimed at a set of people names **an expression over named sets** — `MEMBERS * ROLE(treasurer)`,
 `EVERYONE - GROUP(x)`, `PERSON(a) + PERSON(b)` — stored as a tree of binary nodes, evaluated live on the
 checked date, and never materialized. The language and its operators, precedence and canonical rendering,
 the thirteen seeded selectors and the argument each takes, the rules that make the tree safe (cycles, the

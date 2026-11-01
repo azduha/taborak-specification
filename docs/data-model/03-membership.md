@@ -116,7 +116,7 @@ The names of the columns that carried those rules are indexed in
 | `membership_id` | reference to `membership`, optional | Set on approval. The reference is added only once `membership` exists (§3): this is the design's circular pair, broken with an optional column and not a deferred constraint, which is what [00 §9](00-conventions.md#9-referential-integrity-rules) requires (D-129). |
 | `previous_membership_id` | reference to `membership`, optional | Links a renewal or re-application to the prior membership. This is how a returning member's chain is expressed. |
 | `expires_at` | timestamp, optional | An unreviewed request eventually goes stale. Needed so the review queue does not accumulate abandoned drafts forever. |
-| `notes` | text, optional | |
+| `notes` | text, optional | Free text beside the ask. **Erasure empties it and the row remains** — the emptied shape, not the deleted one ([D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them), listed in [06b §4](06b-redaction-and-checks.md#4-redaction-log)) |
 | `source` | text, optional | `self`, `guardian`, `staff` or `import`. |
 | `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. |
 
@@ -199,7 +199,7 @@ inferred from date arithmetic.
 | `ended_by` | reference to `person`, optional | |
 | `ended_at` | timestamp, optional | |
 | `data_confidence` | text, required, defaults to `high` | One of `high`, `medium`, `low`. |
-| `notes` | text, optional | |
+| `notes` | text, optional | Free text beside the period. **Erasure empties it and the row remains** — the period, the dates and the confidence are untouched; the remark on them goes ([D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them), listed in [06b §4](06b-redaction-and-checks.md#4-redaction-log)) |
 | `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. |
 
 **Rules**
@@ -577,7 +577,7 @@ regardless of their own fee status — is the only one that was ever a waiver of
 simply the second row of that table: write the office without `MEMBERS`.
 
 **The posture is opt-in, so the new failure is named rather than buried.** The gate used to be
-default-on, so forgetting it was impossible; now a grant written `ROLE(TREASURERS)` with no `MEMBERS`
+default-on, so forgetting it was impossible; now a grant written `ROLE(treasurer)` with no `MEMBERS`
 authorizes a lapsed member, silently, forever. Three controls, none of which is the resolver:
 
 - **A standing report** of live grants naming a `ROLE(...)` operand whose expression does not contain
@@ -690,6 +690,16 @@ when they do not (§6).
 
 **Check 4 is operational** (a worklist for the renewal campaign). The rest are data-quality checks
 for cases no constraint rejects at the write.
+
+**A renewal notice is not this check's job, and is no longer the sweep's either.** A notice to renew is a
+message of the `renewal-window-opened` type, authored by `system:messages` and delivered to the audience on
+that type's own row ([10 §2](10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel),
+[D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender)):
+**the sweep expires memberships and sends nothing**, which is why the label did not get the job as well. This
+check stays a worklist somebody runs, and a worklist is not a delivery — the two are different things and
+neither replaces the other. Which clock fires the type is
+[K-14](../open-questions.md#k-14), and it is a real choice here because the window's own arithmetic was
+deliberately date-driven rather than job-driven ([D-048](../decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)).
 
 **Checks this module deliberately does not hold.** The one [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
 asks for — a live `deny` whose grantee, scope and code match no live allow, and so denies nothing — is a
@@ -863,4 +873,8 @@ and never on a membership, so belonging survives where no membership record surv
 renewal inside the window opens its row at the previous expiry date, which is what makes a lapse
 invisible in the coverage and still visible in the money (§3).
 
-Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
+**One thing above is on its way to [the register](../open-questions.md), and it is this page's own**: which clock
+fires the renewal notice now that the notice has a type to be — [K-14](../open-questions.md#k-14). Round 24 emptied
+that register and round 25 reopened it with **seven rows, K-11 through K-17**, five of them born from designing the
+messaging module ([§ K](../open-questions.md#k-filed-by-a-module-page-reopened)). Everything else above closes by
+having its answer written **into the bullet**, which is how a closed item is told apart from a forgotten one.

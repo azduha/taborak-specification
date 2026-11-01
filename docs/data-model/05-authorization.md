@@ -21,15 +21,15 @@ access_grant ───────────── THE ONE TABLE THAT GRANTS. 
                                                        one code, effect (allow | deny),
                                                        period
 
-role ───────────────────── an office, conferring nothing.     'treasurers'
-role_holder ────────────── who holds it, for a period.        person X, 'treasurers',
+role ───────────────────── an office, conferring nothing.     'treasurer'
+role_holder ────────────── who holds it, for a period.        person X, 'treasurer',
                                                               2026-03-01 → open
 
 selector_type ──────────── the language: every operand that   'ROLE', 'MEMBERS', 'PLACED',
                           may appear in an expression.          'AUDIENCE'
                           Shipped, written only by migrations.
 
-audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurers)
+audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurer)
                           by code from another audience.
 audience_operand ───────── one node of that expression        (a tree, not a string; an
                           — an AUDIENCE leaf doubles as       AUDIENCE leaf is also the
@@ -266,7 +266,7 @@ tenant and no routing left.
 | Field | Kind | Notes |
 |---|---|---|
 | `id` | integer identity | Surrogate key. |
-| `code` | text, required, unique among roles, **and unique across roles and groups** | `registrar`, `treasurers`, `counselors`. The cross-table half of the rule is §8's namespace rule; a single constraint cannot span two tables, so the write path carries it (§8, *Names are one namespace*). |
+| `code` | text, required, unique among roles, **and unique across roles and groups** | `registrar`, `treasurer`, `counselors`. The cross-table half of the rule is §8's namespace rule; a single constraint cannot span two tables, so the write path carries it (§8, *Names are one namespace*). |
 | `name` | text, required | What the office is called on screen. |
 | `description` | text, optional | |
 | `sort_order` | integer, required | Default 0. |
@@ -323,7 +323,7 @@ else is**
 **Three rules this table has to get right:**
 
 - **`role.edit` edits a name, a description and a sort order. The sharp edge is `role.assign`.**
-  Adding one person to `treasurers` inherits *every* grant that names `ROLE(treasurers)`, including
+  Adding one person to `treasurer` inherits *every* grant that names `ROLE(treasurer)`, including
   ones written later, by other people, for reasons whoever is doing the assigning has never seen.
   That is the invisibility §8 records for composition, arriving through the office door instead of
   the expression door — which is why `role.*` is the most sensitive code family in the catalog (🔒🔒)
@@ -457,7 +457,7 @@ There is no edge from `role_holder` to `audit_log` and there must never be one: 
 
 **Indexes**
 
-- over open rows only, by role — the read that answers "who is in `ROLE(treasurers)` today", which
+- over open rows only, by role — the read that answers "who is in `ROLE(treasurer)` today", which
   is now an operand of a grant rather than a tier of the resolver, and runs on every check that
   names the office;
 - over open rows only, by person — the read that answers "what offices does this person hold", for

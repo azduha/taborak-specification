@@ -141,8 +141,13 @@ second only to reading a person — and **anyone holding it over a child gives a
 authority, with no approval from the organization and no second signature anywhere.** The
 ordinary case is a mother adding the father. The design does not prevent the non-ordinary case;
 it **attributes** it instead — who added whom, when, from which account, is audited, **and that is the whole of
-the control**. **Nothing notifies anybody.** There is no office to notify and nothing in this design that would
-receive a notification at all, and the notice-to-a-"safeguarding-contact" option this page once recommended was
+the control**. **Nothing notifies anybody about it** — and since [round 25](../decisions/round-25.md) the design
+*can* deliver, so the reason is now specific: **no message type reaches anyone for this event and nobody has
+configured one**
+([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+narrows the rule this page used to cite; [D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)
+stands with its reason changed and its ruling untouched). There is also no office to notify, and the
+notice-to-a-"safeguarding-contact" option this page once recommended was
 **refused rather than left un-built**: a control whose recipient is a row somebody must remember to create is
 off by default and silent about being off, which is worse than a trail that is on whether or not anyone
 configured it ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)).
@@ -462,8 +467,9 @@ These were executable queries. They are now requirements stated in prose, and no
    way a category recorded when a row was opened would. **This is a
    safeguarding gap, not a data-quality nit**: the organization holds a member it cannot contact in
    an emergency and cannot obtain consent from. It is the finding here that most demands a reader, and
-   nothing sends it to one
-   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). This check is one of the
+   **nothing brings it to one**: a check is a run whose output is read by whoever runs it
+   ([D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)),
+   and no message type is configured for a check's finding here and nobody has configured one. This check is one of the
    reasons `guardianship` is a required part of the model rather than an optional convenience.
 
    **The second half was added by [D-082](../decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians),
@@ -474,6 +480,15 @@ These were executable queries. They are now requirements stated in prose, and no
    guardians, while in fact nobody outside the child receives a copy of anything sent to them. **A
    right level that silently removes the only safeguarding net is a right level nobody understands
    anymore**, and this report is what keeps `none` meaning what it says.
+   **Round 25 gave the mirroring a physical form and took nothing away from this rule:** the mirror is now
+   *rows* — one `message_recipient` row per guardian, written on that guardian's own chosen door and carrying
+   `mirrored_from_recipient_id` — so guardianship gains no selector and the resolver no age branch, since this
+   page's channel already answers who a child's guardians are
+   ([D-213](../decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today),
+   [10 §6](../data-model/10-messaging.md#6-a-childs-message-mirrors-as-rows)). **Whether a message addressed to
+   an audience mirrors at all is not ruled**, and it is this page's question as much as the module's: a
+   class-wide announcement may name a hundred children, and it is the guardianship row that decides whom that
+   would reach. It is [K-11](../open-questions.md#k-11).
 5. **A guardian younger than the dependent**, where both birth dates are known. Almost always a
    data-entry error, and detectable only when both dates survived the import.
 6. **`guardianship.right_level` disagrees with its own open history row.** A new invariant created
@@ -494,7 +509,10 @@ with no postal address behind it, which is a finance problem
 ## 7. Open issues
 
 - **A guardian may appoint a guardian, with no approval from the organization. — settled: attributed, and
-  nothing more.** Audited, notified to nobody, not prevented; the recommendation this page made for a notice to
+  nothing more.** Audited; told to nobody, because **no message type is configured for that event and nobody
+  has configured one** — which is now the reason rather than the rule
+  ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting));
+  not prevented. The recommendation this page made for a notice to
   a safeguarding contact is deleted with the question, for the reason D-137 gives
   ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told),
   [E-6](../open-questions.md#e-6)). **§1 states what that costs, and the cost is not closed by the decision.**
@@ -550,6 +568,15 @@ with no postal address behind it, which is a finance problem
   [E-4](../open-questions.md#e-4) asked exactly whether that was intended or merely inherited. **It is intended,
   and the behaviour now has an owner of its own rather than being an exemption inside a rule that no longer
   exists** ([D-115](../decisions/round-15.md#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal)).
+- **Does an audience-addressed message mirror to guardians, or only a message addressed to one named child? —
+  open, and filed by [round 25](../decisions/round-25.md).** A message to one named child mirrors, as rows on
+  each guardian's own door ([D-213](../decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today));
+  a message to an **audience** may contain a hundred children, and every one of them mirrors on the current
+  reading. Whether it does decides both the row count of every class-wide announcement and whether a guardian
+  can see that their child was on a list nobody told them about. §6 carries the same question where the
+  mirroring rule lives; the register keeps the row, [K-11](../open-questions.md#k-11), because nobody has
+  answered it — this is the one item on this page that is genuinely still open, and unlike the settled bullets
+  above it has no answer to be written into it.
   The premise moved before the answer did: [D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)
   deleted the membership gate, so membership became a term a grant's expression may name rather than something
   the resolver requires, and [D-113](../decisions/round-13.md#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector)

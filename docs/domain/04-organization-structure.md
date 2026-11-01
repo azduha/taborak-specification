@@ -187,8 +187,11 @@ person writes that down somewhere. *Where that sentence goes is not decided.* Th
 available today is a `note` on the second group's member rows and on the group's `description`, which
 nothing reads and nothing links; the honest alternative is to accept that the organization's memory of its
 own continuity is prose.
-**Status:** assumption — this page does not choose, and the question is recorded in
-[../open-questions.md](../open-questions.md).
+**Status:** chosen, not assumed — the answer is that there is no column and no reopened question:
+[D-173](../decisions/round-23.md#d-173--that-two-groups-are-the-same-group-is-said-not-stored) rules the
+continuity claim is said and not stored, and §8 below carries it as a closed item rather than as an opening.
+In [the register](../open-questions.md) it is a resolved row,
+[K-3](../open-questions.md#k-3), and not one of the seven questions now open.
 
 **Names are one namespace with roles and audiences.** Because `ROLE(x)` and `GROUP(x)` do not have to
 disambiguate, a bare `COUNSELORS` resolves against roles and groups together, so names are unique across the
@@ -309,7 +312,7 @@ named operands lives in one table —
 [the selector registry](../data-model/05a-audience-and-grammar.md#the-selector-registry) — and this page does not
 recite its row count.
 
-The posture is **opt-in per grant**, so a grant written as `ROLE(TREASURERS)` with no `MEMBERS` authorizes a
+The posture is **opt-in per grant**, so a grant written as `ROLE(treasurer)` with no `MEMBERS` authorizes a
 lapsed member silently and forever. The controls are a standing report of live grants that name a
 `ROLE(...)` operand without `MEMBERS`, and an import count — not the resolver. The only grants this system
 writes for itself are the twelve beside an event, they name `ORGANIZERS` rather than a `ROLE(...)`, and they
@@ -388,7 +391,25 @@ openings someone has to remember to close:**
   what a sentence written years earlier picks out, and nothing here keeps the record that would let a reader see
   that it did.
 
+**Round 25 fixed a spelling on this page and left the question underneath it open.** Every worked example now
+names the office `treasurer` — the grant in §6 among them — so the examples and
+[catalog B §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--worked-examples-of-writing-one)
+say one name instead of two
+([D-216](../decisions/round-25.md#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated)).
+What the rename did not settle is **what `ROLE(x)` resolves against — `role.code` or `role.name`** — and
+nothing in this corpus states it: both readings fit everything written here, because the operand's argument
+type names the `role` table and not a column of it. That is not cosmetic on this page. §4 puts a group's, a
+role's and an audience's names in one namespace, and the bullet above rules that a rename **frees** the old
+name — so under one reading a rename silently changes whom an expression written years earlier picks out.
+It is [K-17](../open-questions.md#k-17).
+
+**The register holds seven questions after [round 25](../decisions/round-25.md)**,
+[K-11](../open-questions.md#k-11) through [K-17](../open-questions.md#k-17), and the one of them this page
+owns is K-17 just above. The habit [round 24](../decisions/round-24.md) fixed still governs everything else
+here: an item closes by having its answer written **into the bullet**, never by being handed back to the
+register.
+
 ---
 
 *Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
-D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173, D-201.*
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173, D-201, D-216.*

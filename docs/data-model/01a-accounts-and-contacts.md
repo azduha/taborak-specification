@@ -32,6 +32,7 @@ them by number and their anchors are built from them:
 | `locked_until` | timestamp, audit time, optional | |
 | `status_reason` | text, optional | Why suspended or closed, in the words of whoever did it (D-128) |
 | `status_note` | text, optional | The human explanation |
+| `opt_in_email` | boolean, required | Default `false`. **The account's own answer about its one door outside the inbox**, on this row rather than on anything a sender can touch ([D-213](../decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)); [the messaging module](10-messaging.md) is what reads it |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 | `updated_at` | timestamp, audit time | |
@@ -76,9 +77,12 @@ them by number and their anchors are built from them:
 which is exactly the returning-member case at the account level.
 
 **An account is a login, and nothing about a child is decided here.** `account` keeps the columns that
-describe authentication and no others: there is no minimum age for one, no consent step, and no branch
+describe authentication — and one that does not, `opt_in_email` below, which is the account's own answer about
+its own mail and decides nothing about anybody either, least of all a child. Nothing else is kept here: there
+is no minimum age for an account, no consent step, and no branch
 in the sign-up path that a minor's sign-up takes and an adult's does
-([D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives)). What a
+([D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives),
+[D-213](../decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)). What a
 new account can reach is nothing until somebody writes a row about its person — a grant, a guardianship,
 a membership — which is what every new account is anyway, not a defence built for this case. **If the
 organization wants a guardian's answer on record**, it goes on the guardianship relationship, where an
@@ -90,6 +94,24 @@ password ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-ident
 be read as needing.** Such a child is not given a second-class credential, a shared mailbox or a login
 held by staff; the way an adult acts for them is the guardianship row, and an account staff open for them
 waits to be claimed (Rules above; [D-178](../decisions/round-23.md#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row)).
+
+**The one column here that is not about logging in, and why it is here.** `opt_in_email` is the account's own
+yes or no about having its messages delivered to it outside the system, and it is [D-077](../decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)'s
+*"the recipient chooses the channel"* finally given somewhere to live
+([D-213](../decisions/round-25.md#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today)).
+**It sits on `account` and not on anything a sender can touch, because the choice is the login owner's and not
+a property of the message** — while everything the choice means, what a door is, what a message writes against
+one, and what a notification is, belongs to [the messaging module](10-messaging.md), whose
+[§5](10-messaging.md#5-doors-the-account-chooses-the-inbox-is-not-one-and-only-e-mail-lands) is the page that
+decides it. **Three things follow, and none of them is a column on this table.** The inbox is **not a door and
+cannot be turned off**: it is the record that a message exists for you, so there is no `opt_in` for it and no
+refusing it. The **address is not here either** — the door opens onto a `person_contact` row of type `email`
+carrying a verified address (§6), and an account with the flag on and no such row holds a choice with nothing
+behind it, which writes no row for that door and is a fact about the person's contacts rather than a failed
+send. And **only one door exists today**: no column is written for a transport this design cannot perform, which
+is the same lesson [D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write)
+drew from a vocabulary value that claimed a kind of actor existed — where the next transport's address will live
+is [K-15](../open-questions.md#k-15).
 
 **A colliding sign-up files a claim and brings nothing into the world that a human has not approved.**
 This is the case the second gate above exists for
@@ -174,9 +196,14 @@ That is one extra login against the alternative of an account that belongs to tw
 once, and the holding message (§4 above) is where they are told it.
 Two costs come with it and both are stated rather than absorbed. **A genuinely new person who happens to
 match now waits for a human**, so the blocking condition carries an age check shaped like
-`field_conflict`'s thirty days below — a number on a report somebody opens, because nothing in this design
-tells anybody that a queue has stalled
-([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). A
+`field_conflict`'s thirty days below — a number on a listing somebody opens, because **no message type is
+configured for a queue that has stalled**: the design has the sending machinery
+([10-messaging](10-messaging.md)) and an installation's vocabulary of types is empty until somebody writes it
+([10-messaging §2](10-messaging.md#2-message_type--a-vocabulary-that-is-also-a-settings-panel)), so nothing is
+written about a waiting claim unless a person configures a type that says so — the reason is configuration now,
+and not a rule about verbs
+([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) as narrowed by
+[D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)). A
 stalled identity queue stopped being a data-quality problem the moment it could hold a login, and the
 person it is holding has no way to say so except by telephoning someone.
 **And the reviewer deciding it is deliberately half-blind** — the office that holds the merge holds no read

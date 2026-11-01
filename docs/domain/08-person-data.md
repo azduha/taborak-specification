@@ -164,6 +164,18 @@ Two operations that look alike and must not be confused.
   nine years of facts, or nobody will ever retire a badly-named thing and the list will only ever grow.
 - **Erasing a person** deletes what was collected, everywhere, including in the trail's payloads. The
   organization keeps that it held a record and that it was removed — and not what the record said.
+  **Two things now qualify that "everywhere", and both are decisions rather than gaps.** Erasure **empties**
+  free text that sits beside a row the organization keeps and lets the row stand: an event answer's `value`
+  ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)),
+  and since [round 25](../decisions/round-25.md) the `notes` of a membership, of a membership request and of
+  a payment ([D-215](../decisions/round-25.md#d-215--the-three-notes-columns-stay-and-erasure-empties-them)) —
+  the fee, the ask and the membership survive, the remark on them does not. And **one body of text stands
+  outside erasure altogether**: a message, its body and the rows recording whom it reached are neither emptied
+  nor deleted, on the ground that a message is correspondence — an act this organization performed on a date —
+  while the argument that once deleted `person.notes` applies to it word for word and **was put and refused**
+  ([D-211](../decisions/round-25.md#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages)).
+  [../data-model/06b §4](../data-model/06b-redaction-and-checks.md#4-redaction-log) holds the whole list, with
+  the columns that are still only questioned named there too.
 
 **The audit trail carries these values, in the clear, because it is the only place they have a
 history.** What changed is not what the trail holds but who may read it: an entry about a person is as
@@ -192,7 +204,14 @@ not a line in a policy document
 ([data-model/06 §2.2](../data-model/06-audit-and-import.md#22-redaction-before-logging) keeps that apart
 from redaction, which must never be deferred). It is also why the sentence *the trail is a second copy of
 the person record* — the sentence that decides who may read it — is true for two years and untrue
-afterwards.
+afterwards. **No clock of that kind runs on a message.** The two that run are this one — a trail's values
+emptied 24 months after they were written — and the access trail's own rows, which are **deleted** at 24
+months ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name));
+nothing about a message is scheduled away, and erasure does not reach it either
+([D-211](../decisions/round-25.md#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages)).
+What makes keeping text survivable is that a message is never edited — a body written is a body kept — so a
+design that keeps it forever is not also a design that rewrites it
+([../data-model/10-messaging.md](../data-model/10-messaging.md#3-message--one-author-one-target-and-no-second-version)).
 
 ---
 
@@ -215,4 +234,4 @@ afterwards.
 
 ---
 
-*Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100, D-174, D-191.*
+*Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100, D-174, D-191, D-211, D-215.*

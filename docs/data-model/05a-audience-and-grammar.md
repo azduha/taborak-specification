@@ -17,7 +17,7 @@ A grant can name a **person**, an **audience** or a **registered key** (D-042, w
 audience is an expression over
 named sets, stored as a tree**
 ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)):
-`MEMBERS * ROLE(treasurers) - GROUP(schuzka2026-1)` is one grant's grantee. One grant composes a
+`MEMBERS * ROLE(treasurer) - GROUP(schuzka2026-1)` is one grant's grantee. One grant composes a
 rule and a roster — *"the kitchen crew, plus whoever leads this pack"* — in the same expression, and
 it intersects and differences as well as unions.
 

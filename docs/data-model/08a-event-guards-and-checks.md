@@ -88,8 +88,8 @@ tiers are listed, beside the `PRESENT` refusal, and it stands there in
 **The count of operands refused here does not move**: `WHITELISTED` was already one of the operands
 this table does not hold.
 
-**Two binding rules, both refused when the grant is saved, both naming the operand in the
-message:**
+**Two binding rules, both refused when the grant is saved, both naming the operand in the refusal
+that save returns** — an on-screen answer, and not a row in `message`:
 
 1. **A bound (argument-less) operand is legal only on an item-scope grant.** At the unit there
    is no item for it to bind to, so a grant at the unit whose expression names `PLACED`,
@@ -396,9 +396,13 @@ is wrong, and the fix is to change the number rather than to start refusing peop
 
 Tracked in [../open-questions.md](../open-questions.md). **There is no events section on that page any more:**
 § G was emptied when the questions it held were answered, and its rows live in
-[§ R](../open-questions.md#r-resolved--moved-to-the-decision-log) with the decision that closed each one, and
-nothing about events is open there. What is below is therefore this page's own list, kept here so that somebody
-reading the guards sees each answer beside the mechanism it answers.
+[§ R](../open-questions.md#r-resolved--moved-to-the-decision-log) with the decision that closed each one.
+**What round 25 did was reopen the register's § K with seven rows, K-11 through K-17, and exactly one of them
+names an event concept** — [K-13](../open-questions.md#k-13), whether an event type proposes a default audience that a
+per-event send may narrow — **and this page is not where that is answered**, because no table of an event type
+exists anywhere in this design to narrow anything from; the question is filed against the messaging module, which
+is where the word came from ([10 §10](10-messaging.md#10-open-issues)). What is below is therefore this page's own
+list, kept here so that somebody reading the guards sees each answer beside the mechanism it answers.
 
 - **The age ceiling on an open event: there is none**
   ([D-070](../decisions/round-05.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
@@ -454,14 +458,21 @@ reading the guards sees each answer beside the mechanism it answers.
   itself a grant. What used to hang off that question — whether more codes should reach `ORGANIZERS` — is
   settled beside it, by the create writing the event's whole code family onto the event
   ([../domain/07-events.md §5](../domain/07-events.md#5-organizers-are-appointed-not-granted)).
-- **Waitlist promotion, and nobody told.** Promotion is an ordinary write by whoever may mark the register, and
-  the mechanism is [domain/07a §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist).
-  **There is no notification to design here, because there is no sending in this design at all**
-  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)): a promotion changes a
-  row, and what a promoted family is told, and whether anybody tells them, is a person deciding to write — which
-  is the communication module's business and has never been designed. What this page had left standing as an open
-  item was the shape of a message that no rule here would ever send.
+- **Waitlist promotion, and whether anybody is told — closed, and it closed by moving rather than by being
+  answered.** Promotion is an ordinary write by whoever may mark the register, and the mechanism is
+  [domain/07a §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist).
+  **The reason this bullet was open is gone: sending exists now** ([10-messaging.md](10-messaging.md)), so what a
+  promoted family hears about is one of two things — a message of a type whose audience an installation edits
+  ([D-209](../decisions/round-25.md#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits)),
+  or a person writing one under `message.send`, the one messaging code, a sentence to one family included
+  ([D-208](../decisions/round-25.md#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked)).
+  **No type is configured for a promotion and nobody has configured one**, which is the reason rather than the rule
+  now ([D-214](../decisions/round-25.md#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting)
+  narrows [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). **What this page
+  still refuses to design is the part that was never about sending**: no rule here promotes a family *in order to*
+  tell them, no page may name a period in which anybody hears, and no clock of this module's fires a type — which
+  clock fires which type is [K-14](../open-questions.md#k-14), and it is not this page's to answer.
 
 ---
 
-*Decisions behind this page: D-013, D-043, D-059, D-061, D-062, D-067, D-070, D-074, D-076, D-081, D-083, D-099, D-101, D-102, D-112, D-113, D-114, D-140, D-147, D-148.*
+*Decisions behind this page: D-013, D-043, D-059, D-061, D-062, D-067, D-070, D-074, D-076, D-081, D-083, D-099, D-101, D-102, D-112, D-113, D-114, D-140, D-147, D-148, D-208, D-209, D-214.*

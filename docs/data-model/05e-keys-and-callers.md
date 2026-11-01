@@ -199,9 +199,9 @@ that was never written:
 Stated because a reader will otherwise assume the nearest mechanism applies.
 
 - **What this system does to itself is not a caller and has no row.** The 1 January membership sweep, payload
-  reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
-  the system acting on its own and is a complete answer to *who did this*; where the audit trail keeps a
-  label, it is one of the five labels on that list rather than free text
+  reduction, migrations, the bank statement pull and the messaging run write rows with an empty actor column,
+  which is read as the system acting on its own and is a complete answer to *who did this*; where the audit
+  trail keeps a label, it is one of the six labels on that list rather than free text
   ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means),
   [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
   **`api_key` was deliberately not stretched to cover them**: a sweep is not a caller, and a table whose rows
@@ -217,11 +217,17 @@ Stated because a reader will otherwise assume the nearest mechanism applies.
   this system to an accounting system**
   ([D-199](../decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)):
   no export, no feed, no periodic journal, no CSV of the day's bank rows, no `external_reference` column, and
-  **no sixth actor label for accounting**: the vocabulary of
-  [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) keeps its five labels and reserves no
-  sixth, because an integration added later will need a label and needing one is not a reason to hold a slot for
-  it. Everything the money model
-  asserts is read out of its own tables by a person holding `report.view` or `report.export`. A later version
+  **no actor label for accounting**: the vocabulary of
+  [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) has grown a sixth label since this
+  item was closed — `system:messages`, the messaging run
+  ([D-212](../decisions/round-25.md#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender))
+  — and **none of the six is accounting's and no slot was held back for it**, because a writer that is not on
+  the list joins the list on that page when it exists, and an integration added later will need a label without
+  needing a reservation. Everything the money model
+  asserts is read out of its own tables, **and there is no reporting permission left to hold**: [D-210](../decisions/round-25.md#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name)
+  deleted the namespace together with the screen it gated, so the numbers are read through the money's own
+  reads, or arrive as a message of a type
+  ([10-messaging §8](10-messaging.md#8-reports-arrive-here-and-stop-being-a-name)). A later version
   may add an accounting package and will design it then, in a document that is not this one, and **this corpus
   keeps no placeholder against that day** — which is what the item cost to close: nothing. A refund is not on
   this list either, because a refund happens at the bank and arrives here as a negative `payment`
