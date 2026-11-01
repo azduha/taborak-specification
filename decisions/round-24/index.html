@@ -3654,12 +3654,17 @@ not the expensive thing it was assumed to be when the column was drawn.</p>
 <a href="../round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> made imported rows
 believe things. With no column, that distinction does not disappear — <strong>it moves into the absence of rows</strong>. An
 imported membership has no <code>fee_obligation</code> underneath it, and the balance definition reading "no obligations"
-must keep reading it as <em>nothing is known</em>, not as <em>nothing is owed</em>, in exactly the places assumption 53 listed:
-the gate, the arrears report, and any screen that would otherwise print <code>0 Kč</code>.
+must keep reading it as <em>nothing is known</em>, not as <em>nothing is owed</em>. Assumption 53 named three places and one of
+them has never existed: <strong>there is no arrears report</strong>, because no report over money is designed at all — the
+finance report code stays deferred on purpose (D-195). What is left is the gate and <strong>any read that would
+otherwise print <code>0 Kč</code></strong>, and both are now written on the pages that perform them.
 <strong>The activation gate's behaviour for such a row is unchanged and is now written down rather than inferred:</strong> it
 asks whether any attached obligation has a positive balance, an imported membership has none, so the test passes
-vacuously — which is correct for the gate (nobody is being suspended for a debt nobody computed) and is <em>also</em> what
-makes the import check flag an obligation-less imported membership as something to look at. Deleting the column
+vacuously — which is correct for the gate (nobody is being suspended for a debt nobody computed). <strong>Nothing
+catches such a row, and this entry said otherwise until the day after it was written:</strong> the three integrity
+checks that would once have flagged it were checks over <em>staged</em> rows, and they were deleted with the pipeline
+that staged them (D-190), so an obligation-less imported membership is something a person notices, if anybody
+does. Deleting the column
 removes a number that could lie; it does not remove the underlying absence, and it must not be allowed to remove
 the sentence about it.</p>
 <p><strong>What this changes.</strong> The field table in <a href="../../data-model/03-membership/#3-membership"><code>03-membership</code> §3</a>

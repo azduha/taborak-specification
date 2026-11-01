@@ -3466,15 +3466,18 @@ member's sibling needs a guardian and the member is the one who has them.</p>
 <p>Consequences, which the data model implements:</p>
 <ol>
 <li><strong>Everything temporal is a period</strong>, never a boolean or a single date.</li>
-<li><strong>Nothing is hard-deleted</strong>, except by three named acts, each somebody's decision rather than a
-   cleanup job. <strong>Erasing a person</strong> redacts their values wherever they were copied, including in the
-   audit payload, immediately and at any age. <strong>Payload reduction</strong> empties an audit row's values 24
-   months after they were written and leaves the row standing, so the trail keeps answering <em>who
-   changed this, when, and were they allowed to</em> and stops answering <em>and to what</em>
-   (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).
-   <strong>Reverting an import batch</strong> removes the rows that batch created. Reduction is not redaction: one
+<li><strong>Nothing is hard-deleted</strong>, except by two named acts, each somebody's decision rather than a
+   cleanup job, and <a href="../../data-model/00-conventions/#4-deletion-policy">data-model/00 §4</a> is where both are
+   written out. <strong>Erasing a person</strong> redacts their values wherever they were copied, including in the audit
+   payload, immediately and at any age — and in one table it deletes rather than redacting, because there the
+   row <em>is</em> the value. <strong>An <code>access_log</code> row that passes 24 months is deleted</strong> by a job with a name, which is
+   the only place in this design where a row ages out (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>). <strong>Payload reduction is not one of the two:</strong> it
+   empties an audit row's values 24 months after they were written and leaves the row standing, so it removes
+   an answer and not a row — the trail keeps answering <em>who changed this, when, and were they allowed to</em> and
+   stops answering <em>and to what</em> (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>). There was a third act on this list, <strong>reverting an import batch</strong>, and
+   it died with the staging tables it truncated (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). Reduction is not redaction: one
    answers to a person and is absolute, the other answers to a calendar and is bounded. The accounting
-   skeleton — <code>membership</code>, fees, payments — is deliberately outside all three and kept indefinitely
+   skeleton — <code>membership</code>, fees, payments — is deliberately outside both and kept indefinitely
    as the organization's own history. <strong>That "forever" is a decision, not a claim this document is waiting
    to have confirmed:</strong> there is no legal review of this design and none is owed
    (<a href="../../decisions/round-24/#d-205--there-is-no-legal-review-and-assumption-49-is-retired">D-205</a>), so the
