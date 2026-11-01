@@ -2115,6 +2115,8 @@
       
         
       
+        
+      
     
     
     
@@ -2782,6 +2784,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2964,6 +2994,13 @@ its vocabulary.</p>
 <td><a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a></td>
 </tr>
 <tr>
+<td><code>custody_arrangement</code></td>
+<td>a free-text column on <code>guardianship</code> describing the arrangement a court had ordered for a child</td>
+<td>the question on the page asked whether to <em>structure</em> it, and the answer was neither option: <strong>delete it</strong>. The column was read by nobody and gated nothing — it could not gate anything, because graded categories of field were deleted earlier — so it is the <code>person.notes</code> argument in a smaller size, and worse than <code>notes</code> in one way: <strong>a box named <code>custody_arrangement</code> invites a person to type a court order into a database that cannot act on it</strong>, sensitive enough to be a problem if leaked and useless enough to be a problem when needed. The row is <em>not</em> prose-free and this row must not be read as saying it is: <code>evidence_reference</code>, <code>ended_reason</code> and <code>ended_note</code> stay, because a column recording an act of the organization is a record while a column describing a child's private arrangement is a copy of it</td>
+<td>nothing in the row. The order lives in the organization's paper file and in the memory of the person it was told to — and the case the corpus kept naming, one parent's access to a child's health facts restricted while their other access continues, can now be neither expressed <em>nor</em> written down anywhere, which is the sharpest cost of this round</td>
+<td><a href="../../decisions/round-24/#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure">D-204</a></td>
+</tr>
+<tr>
 <td><code>effective_permission</code></td>
 <td>the honest name for a table of answers — one row per person and code saying what they may do, rebuilt nightly, proposed as the answer to "who could read this in 2023?"</td>
 <td>it is <code>permission_cache</code> under its own name: a row mapping a person to an answer is what invariant 19 forbids</td>
@@ -3018,6 +3055,13 @@ its vocabulary.</p>
 <td>one live price, edited in place. Safe because the obligation snapshots <code>fee_schedule_id</code> and copies <code>amount_due</code>, so what a person owed was never read from here — which is also the price: there is no price history, and nobody can ask what the 2027 fee was going to be</td>
 <td>the single live <code>fee_schedule</code> row for the current price; <code>fee_obligation.amount_due</code> for anything historical</td>
 <td><a href="../../decisions/round-22/#d-161--one-live-price-and-the-amount-is-filed-as-a-question-at-last">D-161</a></td>
+</tr>
+<tr>
+<td><code>invoice.issue</code></td>
+<td>the code that authorized producing an invoice over an ask — one code, one document, and one answer earlier it had been registered as a placeholder in a deferred namespace</td>
+<td>invoices are compulsory in this country, so <strong>nobody issues one</strong>: every <code>payment_request</code> has its invoice written by the same write in the same transaction, there is no row sitting in a state of <em>awaiting a document</em>, no screen offering the choice, and <strong>a permission nobody can decline is not a permission</strong>. The loss is the separation the round that added the table bought on purpose — that the person who may type in a number is not automatically the person who may produce a document with a legal shape — and it is gone: whoever holds <code>fee.create</code> signs tax documents as a side effect, with no code, check or report distinguishing the two acts</td>
+<td><code>fee.create</code>, which writes the obligation, the request <strong>and</strong> the invoice in one transaction. If the separation is ever wanted back, the repair is a sentence about who may hold <code>fee.create</code>, not this code back</td>
+<td><a href="../../decisions/round-24/#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it">D-197</a></td>
 </tr>
 <tr>
 <td>the shipped <code>event.answer.view</code> → <code>ORGANIZERS</code> <strong>grant row</strong>, and the <em>template</em> read of it — the code is live and unrenamed, only the row that arrived with the platform is gone</td>
@@ -3130,6 +3174,13 @@ its vocabulary.</p>
 <td>it was the one column where <em>may contain a diagnosis</em> was a property of the design rather than of careless typing — and it survived an erasure that <strong>deletes</strong> <code>person_attribute</code> rows, so keeping it made erasure weaker, not stronger</td>
 <td>the attribute vocabulary for anything that is about a person. The boundary holds the other way too: a row <em>about</em> a person may still carry free text — a roster <code>note</code>, a <code>status_reason</code>, a <code>field_conflict</code></td>
 <td><a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a></td>
+</tr>
+<tr>
+<td><code>membership.outstanding_balance</code></td>
+<td>a stored balance on the membership row, kept equal to the finance arithmetic by a rule the module had recommended against since the round it was drawn</td>
+<td><strong>delete the column.</strong> There is one definition of what is owed, it reads <code>fee_obligation</code> and <code>payment_allocation</code>, and a second name for it is a second thing to get wrong — the column's defence was never accuracy but that a membership screen wants a number without joining four tables, and that defence ran out when a request was ruled to memoize, so the join was never the expensive thing it was assumed to be. The view it was going to be copied into is not created either: the definition <em>is</em> the view. What the deletion does <strong>not</strong> remove is the absence underneath — an imported membership has no obligation rows, so the NULL-and-not-zero distinction moves into that absence and the one definition must keep reading it as <em>nothing is known</em>, at the gate, on the arrears report and on any screen that would otherwise print <code>0 Kč</code></td>
+<td>the balance definition in <a href="../../data-model/07-finance/"><code>07-finance</code> §3</a>, which every screen, report, gate and API response that shows a balance reads</td>
+<td><a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a></td>
 </tr>
 <tr>
 <td>the membership gate, <code>role.requires_membership</code>, <code>system.gate_exempt</code>, <code>person_holds_gate_exempt</code></td>
@@ -3366,8 +3417,8 @@ were granted, and here is where their act is performed now.</p>
 <tr>
 <td>~~<code>guardianship.permission.grant</code>~~</td>
 <td>granting a guardian individual capability codes</td>
-<td>there was no namespace to grant from: a guardian's rights are one value with three choices</td>
-<td><code>guardianship.change_right</code></td>
+<td>there was no namespace to grant from: a guardian's rights are one value with three choices, and the act is <code>guardianship.change_right</code></td>
+<td><a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a></td>
 </tr>
 </tbody>
 </table>

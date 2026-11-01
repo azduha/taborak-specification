@@ -2209,6 +2209,8 @@
       
         
       
+        
+      
     
     
     
@@ -2876,6 +2878,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3295,7 +3325,9 @@ new group, unless somebody records that it is not.</strong></p>
 human knows whether the crew refounded in 2026 <em>is</em> the crew of 2016. Left unstated, the question is
 answered anyway — by whoever writes the matching screen, who will match on name and let a thirty-year gap
 sit inside one group's life. So the default points at <strong>a new <code>person_group</code> row</strong>. A rename is an edit to
-one column and the previous name is not kept (§2).</p>
+one column and the previous name is not kept (§2) — <strong>and that is now a ruling, not a default</strong>: <em>no, prose is
+enough</em> (<a href="../../decisions/round-24/#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence">D-201</a>,
+stated in §8).</p>
 <p><strong>The continuity claim has nowhere to live.</strong> Groups keep no group-to-group edges — no split, no merger, no
 succession — so an assertion of continuity has <strong>no field to hold it</strong>
 (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>).
@@ -3519,15 +3551,26 @@ openings someone has to remember to close:</strong></p>
   <a href="../../decisions/round-23/#d-172--an-ended-group-is-in-no-picker-and-comes-back-never">D-172</a>: its <code>valid_to</code> is never cleared, so a returning name is a new group and "the same name twice"
   stays one rule instead of becoming two.</li>
 </ul>
-<p><strong>One is left, and it is left on purpose:</strong></p>
+<p><strong>One was left, and it is now a ruling rather than an absence:</strong></p>
 <ul>
-<li><strong>Whether a group's previous name should be kept at all.</strong> It is not, deliberately, as part of "no
-  special features". If the organization turns out to rename groups often, the answer is a decision and not
-  a column someone adds quietly.</li>
+<li><strong>Whether a group's previous name should be kept at all — settled: no, and now decided rather than merely
+  defaulted.</strong> <em>No, prose is enough</em>
+  (<a href="../../decisions/round-24/#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence">D-201</a>),
+  which is the sibling of
+  <a href="../../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a> arriving a round
+  later: continuity between two groups was already said-in-prose rather than stored, and now the name a group
+  stops using joins it. What §2's table declined as "no special features" is a decision, and the cost is sharper
+  than it looked while it was only a default — <strong>a group's name is unique across <code>person_group</code>, <code>role</code> and
+  <code>audience</code> together</strong>
+  (<a href="../../data-model/02-organization/#1-person_group">02 §1</a>), so renaming a group <strong>frees the old name to be taken
+  by a group, a role or an audience</strong>, and §4's namespace rule means a bare <code>COUNSELORS</code> in an old grant's
+  expression resolves against roles and groups together. A rename is therefore not a cosmetic edit: it can change
+  what a sentence written years earlier picks out, and nothing here keeps the record that would let a reader see
+  that it did.</li>
 </ul>
 <hr />
 <p><em>Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
-D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173.</em></p>
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173, D-201.</em></p>
 
 
 

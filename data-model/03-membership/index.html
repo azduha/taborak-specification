@@ -2331,6 +2331,8 @@
       
         
       
+        
+      
     
     
     
@@ -2998,6 +3000,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3371,7 +3401,7 @@ carried now sits on groups.</p>
 <tr>
 <td><code>expiry_month</code>, <code>expiry_day</code></td>
 <td>integers, required, both defaulting to 1</td>
-<td><strong>When the fee expires</strong> (D-047): 1 January. The organizational year runs with the calendar, so "a member this year" means what a reader expects, and the sweep, the campaign and the reports all land on a boundary nobody has to look up. These are columns, not a constant in a scheduled job, for the reason given for the renewal window below: the date is a parameter the organization may move, and moving it must not require a code change. Every lapse date, the yearly sweep and the renewal worklist derive from these two values.</td>
+<td><strong>When the fee expires</strong> (D-047): 1 January. <strong>The membership year <em>is</em> the calendar year, and it is the only year this design stores</strong> — the program year a group's term runs on, September to August, is stored nowhere at all (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>, §9). So "a member this year" means exactly what a reader expects, and the sweep, the campaign and the reports all land on a boundary nobody has to look up, while "who was in a group this year" is a different question that reads a group's own two dates and gets its own answer. These are columns, not a constant in a scheduled job, for the reason given for the renewal window below: the date is a parameter the organization may move, and moving it must not require a code change. Every lapse date, the yearly sweep and the renewal worklist derive from these two values.</td>
 </tr>
 <tr>
 <td><code>renewal_grace_days</code></td>
@@ -3422,7 +3452,8 @@ is a <strong>role</strong>, never a type (<a href="../../decisions/round-10a/#d-
    the same argument that keeps the seeded registries as tables (<code>grant_scope_type</code>,
    <code>selector_type</code>). A second kind of membership (a supporting or honorary one) would then
    be a data change.</li>
-<li><strong>A place for the organizational calendar to live.</strong> The term, the expiry date and the
+<li><strong>A place for the membership calendar to live — and it is the only calendar this design stores</strong>
+   (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>). The term, the expiry date and the
    renewal window are genuinely type-dependent parameters even when there is one type — and
    they are the parameters most likely to be tuned. Putting them in a row rather than in code
    is what makes <em>"it should not be hard to modify"</em> (<a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>)
@@ -3433,12 +3464,16 @@ rather than hidden.</p>
 <p><strong>And what the table <em>is</em> was settled in round 23, which the two reasons above stop short of saying</strong> (<a href="../../decisions/round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a>):
 it is <strong>settings wearing a vocabulary's clothes</strong>. The vocabulary half is the part that will never grow — one
 kind of membership is a ruling (D-037) and not an absence of imagination — and the settings half is the live
-part: three columns of organizational calendar somebody tunes once a year, which is precisely the thing this
+part: the columns of calendar somebody tunes once a year, which is precisely the thing this
 document refuses to hardcode anywhere else. Read that way, the single row is not a vestigial table waiting for
-its second member. <strong>The table is where the calendar lives</strong>, and it is a vocabulary too because the schema has
-that habit and the foreign key had to point somewhere. <a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row">F-9</a>
+its second member. <strong>The table is where the calendar lives — the membership calendar, and the only calendar here</strong>,
+since <a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>
+named the program year and found it stored nowhere; a reader who arrives here looking for the September boundary
+will not find it, and that absence is the ruling rather than an omission. The row is a vocabulary too because the
+schema has that habit and the foreign key had to point somewhere. <a href="../../open-questions/#f-9--should-membership_type-stay-a-table-with-one-row">F-9</a>
 asked whether it should collapse into a constant. It should not, and the reason is the second bullet rather than
-the first: a principle about vocabularies would not be worth an FK, a place for four tunable dates is.</p>
+the first: a principle about vocabularies would not be worth an FK, a place for the term, the expiry date and the
+renewal window to be tuned is.</p>
 <h3 id="what-is-deliberately-not-on-this-table">What is deliberately not on this table<a class="headerlink" href="#what-is-deliberately-not-on-this-table" title="Permanent link">&para;</a></h3>
 <p><strong>The type says nothing about who may join, and nothing about what they pay.</strong> No age floor,
 ceiling, or automatic age-out: membership is ageless and age is a fact about the person
@@ -3665,11 +3700,6 @@ inferred from date arithmetic.</p>
 <td>Forms the renewal chain. See domain/05 §6.</td>
 </tr>
 <tr>
-<td><code>outstanding_balance</code></td>
-<td>money amount, optional</td>
-<td><strong>Denormalised</strong> from <code>fee_obligation</code>/<code>payment</code>. <a href="../07-finance/">07-finance.md</a> §3 recommends <strong>dropping</strong> this column in favour of <code>v_fee_obligation_balance</code> — a wrong balance suspends the wrong child. Kept here only until that decision is taken. <strong>NULL on every imported row, and since <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> put memberships back into the import that is load-bearing rather than incidental:</strong> the export carries no payment data, and a zero would be a claim — <em>settled</em> — that the export does not support. There is no <code>fee_obligation</code> underneath these rows either, which is what makes the NULL unambiguous rather than merely uncomputed (<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a>, <a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).</td>
-</tr>
-<tr>
 <td><code>termination_reason</code></td>
 <td>text, optional</td>
 <td>Free text, written by whoever terminates (D-128)</td>
@@ -3731,6 +3761,34 @@ inferred from date arithmetic.</p>
 <li>On <code>person_id</code> with <code>valid_from</code> descending, and a period index per person: one person's
   membership history, and the range scan the overlap rule and every point-in-time question use.</li>
 </ul>
+<p><strong>There is no balance column on this table.</strong> What a person owes has <strong>one</strong> definition, in
+<a href="../07-finance/">07-finance.md §3</a>, and every screen, report, gate and API response that shows a balance reads
+that definition — this table's own membership screen among them, which computes the number when asked rather
+than keeping one (<a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a>).
+<strong>The column's defence is worth stating because it was answered and not overruled:</strong> it was never accuracy, it
+was that a membership screen wants a number without joining four tables — and a request memoizes, so the join is
+not the expense the column was drawn to avoid
+(<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+What decided it is the sentence that made a performance question into a design one: <strong>a wrong balance suspends
+the wrong child</strong>. <strong>No view is created to replace the column either</strong> — the definition is the view, and a second
+name for the same arithmetic is a second thing to get wrong.</p>
+<p><strong>The NULL that was load-bearing did not disappear; it moved into the absence of rows.</strong> The column used to be
+<strong>NULL and not zero</strong> on every imported membership, because a zero would assert that the organization settled a
+debt it never saw — the legacy exports carry no money at all
+(<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>),
+and <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> had already
+made imported rows believe things. With no column, that distinction is carried by a fact instead: <strong>an imported
+membership has no <code>fee_obligation</code> underneath it</strong>, and the one definition reading <em>no obligations</em> must keep
+meaning <strong>nothing is known</strong>, not <em>nothing is owed</em> — in the overdue list
+<a href="../07-finance/#2-minimal-provisional-shape">07-finance.md §2</a> produces, in the activation gate, and on any screen
+that would otherwise print <code>0 Kč</code>. <strong>The gate's behaviour for such a row is written down now instead of
+inferred:</strong> it asks whether any attached obligation has a positive balance, an imported membership has none to
+check, so the test <strong>passes vacuously</strong> — which is correct for a gate, since nobody is being suspended for a debt
+nobody computed, and is the very same fact that makes an obligation-less imported membership something a person
+reviews rather than something the model certifies. The rows are findable by the confidence the load wrote beside
+them (<code>data_confidence = 'low'</code>), which names <em>who made this row</em> and not <em>whether money is owed</em>: <strong>a pointer for
+a reader, never a condition in a query.</strong> Deleting a number that could lie is not the same as making the absence
+disappear, and this paragraph is the place a later editor has to argue with.</p>
 <h3 id="one-person-one-open-membership">One person, one open membership<a class="headerlink" href="#one-person-one-open-membership" title="Permanent link">&para;</a></h3>
 <p><strong>The uniqueness rule is scoped to the person, not to the type</strong>
 (<a href="../../decisions/round-02-03/#d-037--exactly-one-membership-type-the-fee-is-flat-and-per-person">D-037</a>):
@@ -3823,9 +3881,12 @@ The wording of each is load-bearing; the differences between them are the design
   anything <strong>except</strong> <code>pending_payment</code>. Note the asymmetry with the question above: <em>now</em>
   demands <code>active</code>, <em>then</em> admits every terminal status, because how a membership ended does not
   change that it existed.</li>
-<li><strong>When does the organizational year containing a date expire?</strong> <code>membership_expiry_date(as_of)</code>
-  — <code>expiry_month</code> and <code>expiry_day</code> read off the <code>member</code> row, applied to the year of <code>as_of</code>.
-  Always derived from those two columns and never from a constant (D-047).</li>
+<li><strong>When does the membership year containing a date expire?</strong> <code>membership_expiry_date(as_of)</code>
+  — <code>expiry_month</code> and <code>expiry_day</code> read off the <code>membership_type</code> row, applied to the year of <code>as_of</code>.
+  Always derived from those two columns and never from a constant (D-047). <strong>The question is deliberately
+  narrower than it used to read:</strong> the year here is the membership year, the calendar year, and this is the only
+  year-boundary function in the design — there is no <code>program_year_of(date)</code> and none is coming, because September
+  is stored nowhere (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>, §8).</li>
 <li><strong>May this person renew without re-applying?</strong> <code>in_renewal_window(person, as_of)</code> — true when
   they have a membership of theirs that has ended (<code>valid_to</code> set) with <code>valid_to</code> on or before
   <code>as_of</code>, and <code>valid_to</code> plus that type's <code>renewal_grace_days</code> still after <code>as_of</code>; in other
@@ -4136,12 +4197,21 @@ somebody who is not a member is dormant authority when its grants say <code>MEMB
 when they do not (§6).</p>
 <p><strong>Check 4 is operational</strong> (a worklist for the renewal campaign). The rest are data-quality checks
 for cases no constraint rejects at the write.</p>
-<p><strong>Two checks this module deliberately does not hold.</strong> The one <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+<p><strong>Checks this module deliberately does not hold.</strong> The one <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
 asks for — a live <code>deny</code> whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
 <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d-invariants-and-seed.md §11</a>. The no-overlap invariant over
 <code>person_group_member</code> belongs to the groups module, <a href="../02-organization/#6-integrity-checks">02-organization.md §6</a>.
-Naming both here is to stop either being written twice and drifting.</p>
+Naming both here is to stop either being written twice and drifting.
+<strong>The third absence is newer and it is the one a reader might look for:</strong> nothing here reconciles a stored balance
+with the sum of what is owed, because <strong>there is no stored balance to reconcile</strong> — the column that would have
+needed watching was deleted (<a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a>,
+§3), and a check that compares one number with a derivation of itself is only worth writing when the two can
+disagree. <strong>What money does get checked lives with the money</strong>, in
+<a href="../07-finance/#4a-integrity-checks">07-finance.md §4a</a>, where the allocations can genuinely disagree with the
+obligations; the balance a member is shown is computed there and read from
+<a href="../07-finance/">07-finance.md §3</a>, so this module has no figure of its own to be wrong about and no report that
+could catch a difference.</p>
 <p><strong>Retired with <code>unit_participation</code></strong> (§5), listed so that a citation of an old number lands somewhere:</p>
 <table>
 <thead>
@@ -4189,16 +4259,24 @@ any other
 D-100 settled which <strong>table</strong> a permanent, organization-wide population belongs in; it never asked anybody
 to write the row. A role is a <strong>set</strong> that confers nothing until a grant names it: no more than a
 membership type has ever conferred.</p>
-<p><strong>All three are settled, and all three are §1's columns</strong> — 12 months, 1 January, 60 days
+<p><strong>Three values are settled, and all three are §1's columns</strong> — 12 months, 1 January, 60 days, held across
+<code>duration_months</code>, <code>expiry_month</code> with <code>expiry_day</code>, and <code>renewal_grace_days</code>
 (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>,
 <a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).
 None is a placeholder: the term is what the yearly lapse sweep
 (<a href="../07-finance/#4-how-this-connects-to-membership">07-finance.md §4</a>) and the period a renewal opens
 both read, and a term of the wrong length produces a membership that ends on a date nobody chose.
-<strong>None of the four is a constant</strong>, so tuning any of them is an <code>UPDATE</code>, not a release — which is the
-whole difference between a settled value and a hard-coded one.</p>
+<strong>None of them is a constant</strong>, so tuning any of them is an <code>UPDATE</code>, not a release — which is the
+whole difference between a settled value and a hard-coded one.
+<strong>And what gets seeded here is one calendar and not two</strong> (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>):
+the three values above are the <strong>membership</strong> year, which is the calendar year, and the <strong>program</strong> year a group
+lives in — September to August — gets no row here, no column anywhere and no seed value, on purpose. <strong>A seeded
+September would be this page asserting a common term for groups whose two dates are typed one at a time</strong>, which
+is a claim about data that does not exist yet — the same invention
+<a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a> refused
+when it ruled that a unit carries no restrictions of its own (§9).</p>
 <blockquote>
-<p><strong>The one rule about these four values: read them from the row.</strong> A scheduled job, a front
+<p><strong>The one rule about these values: read them from the row.</strong> A scheduled job, a front
 end or a report that contains the literal <code>60</code> or <code>1</code> has quietly reverted a parameter to a
 constant, and the organization will discover it the first time it changes its mind.</p>
 </blockquote>
@@ -4215,12 +4293,53 @@ and a reference, a form or a photograph has never been a condition of joining.</
   tuned between years as the organization learns what actually gets paid"</em>, which is this question answered by
   making it cheap to ask again, and §8 already reads the value as settled.
   <strong>What stays open is a discipline and not a number</strong> — the one way to lose what the column bought is a job, a
-  front end or a report holding the literal <code>60</code> (§8), the property
+  front end or a report holding the literal <code>60</code>, <strong>or the literal <code>1</code> that is the expiry day</strong> (§8), the property
   <a href="../../decisions/round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a>
   was written to protect when it moved this table's defence off <em>vocabularies are rows</em> and onto the calendar the
-  row carries (§1).</li>
-<li>Whether <code>outstanding_balance</code> should exist as a denormalised column or be computed
-  (§3) — depends on the finance design in <a href="../07-finance/">07-finance.md</a>.</li>
+  row carries (§1).
+  <strong>✅ Closed in round 24 — and closed as a finding rather than an answer, because the organization has two
+  calendars and only one of them is stored</strong>
+  (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>).
+  The question behind this whole bullet, in <a href="../../open-questions/#a-4-remainder--the-organizational-calendar">the register's oldest open row</a>,
+  was whether 1 January is <em>this organization's</em> date or a date a database happened to like. <strong>It is a real date
+  for a real thing.</strong> The <strong>membership</strong> year is 1 January to 31 December and it is stored — <code>expiry_month</code>,
+  <code>expiry_day</code> and <code>renewal_grace_days</code> on the §1 row are exactly how
+  <a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a> and D-048 left them, and that is why both
+  numbers can move with an <code>UPDATE</code>. The <strong>program</strong> year — a group's term, a camp season, the collections — runs
+  September to August and is stored <strong>nowhere at all</strong>: not a column, not a constant, not a rule, not a check. A
+  <code>person_group</code> gets the <code>valid_from</code> and <code>valid_to</code> a person types
+  (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>),
+  and those two dates happen to fall in September and August the way they happen to fall anywhere else. <strong>So the
+  register's question assumed one calendar where there are two, and nothing in a table changes:</strong> <a href="../../decisions/round-22/#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in">D-169's
+  stored 1 January</a>
+  for an imported membership stands untouched, because it rules the membership half and the membership half <em>is</em>
+  the calendar year. <strong>What it costs, plainly:</strong> ask "how many members did the 2026 year have" and ask "who was
+  in a group in the 2026 year" and the two answers cover periods that overlap without coinciding, and nothing in
+  the schema tells a reader which of the two they just got. That bill is what a program year with no
+  representation costs, and this design has been paying it since
+  <a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a> stopped dating
+  bodies at all; the alternative was a calendar table or a second pair of date columns on a group, which would
+  have made September a fact the model asserts about groups that hold no dates in common — <strong>an invented
+  uniformity, which is what <a href="../../decisions/round-09/#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act">D-095</a>
+  refused to do for money and for restrictions.</strong></li>
+<li><strong>✅ Closed — whether <code>outstanding_balance</code> should exist as a denormalised column: it does not exist</strong>
+  (<a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a>).
+  The question was filed here and the answer lived over money: there is <strong>one</strong> definition of what is owed, in
+  <a href="../07-finance/">07-finance.md §3</a>, it reads <code>fee_obligation</code> and <code>payment_allocation</code>, and every screen, report,
+  gate and API response that shows a balance reads it. §3's recommendation had been standing since round 6 for
+  nine rounds with the column still in the table, because <strong>deleting a column is a decision somebody has to take
+  and a document can only recommend it</strong>; the answer given was <em>"Delete the column."</em> <strong>What the column had going
+  for it, stated honestly:</strong> not correctness but a membership screen wanting a number without joining four
+  tables, and that defence is answered rather than dismissed — a request memoizes, so the join is not the expense
+  the column was invented to avoid
+  (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
+  <strong>The replacement is nothing:</strong> no view is created, because the definition <em>is</em> the view and a second name for
+  one arithmetic is a second thing to get wrong. <strong>What the deletion does not delete is the part to keep
+  reading:</strong> assumption 53's <em>NULL and not zero</em> moved into <strong>the absence of <code>fee_obligation</code> rows</strong>, so an
+  imported membership's empty set means <em>nothing is known</em> and not <em>nothing is owed</em> — in the overdue list, in the
+  activation gate (where the empty set makes the gate's test <strong>pass vacuously</strong>, which is right for a gate and
+  wrong to read as a settled debt), and on any screen that would otherwise print <code>0 Kč</code>. §3 carries the whole
+  paragraph; this bullet is the pointer to it.</li>
 <li><strong>Which offices are written without <code>MEMBERS</code> is ruled, and what it rules is that nothing defaults.</strong>
   The membership gate left the resolver for the grant text (§6, D-100), so somebody decides, per office,
   that a lapsed member may still hold it — and nothing in the model records who decided it or why, only

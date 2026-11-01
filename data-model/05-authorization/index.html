@@ -1558,6 +1558,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nothing-is-implied-by-a-permission-the-companion-read-is-a-second-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nothing is implied by a permission: the companion read is a second row
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#no-foreign-key-on-scope_id--the-accepted-trade-off" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2350,6 +2361,8 @@
       
         
       
+        
+      
     
     
     
@@ -3017,6 +3030,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3286,6 +3327,17 @@
     <span class="md-ellipsis">
       
         What is refused when a grant is saved
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nothing-is-implied-by-a-permission-the-companion-read-is-a-second-row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nothing is implied by a permission: the companion read is a second row
       
     </span>
   </a>
@@ -4441,7 +4493,17 @@ rule, and D-081 forbids writing them as if one were:</p>
    <code>selector_type.argument_type</code> matches that grant's item type. <code>PLACED</code> on a <code>person_group</code> grant
    is refused because that item is not an event; <code>ORGANIZERS</code> on a <code>unit</code> grant is refused because
    at the unit there is nothing to bind it to, <strong>with the operand named in the message</strong>
-   (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).</li>
+   (<a href="../../decisions/round-10b/#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it">D-102</a>).
+   <strong>The reason this refusal is not relaxed for the <code>ORGANIZERS</code>-at-the-unit case, which looks harmless and is
+   not:</strong> a grant says what it grants in its own scope column, and check 7's granter's ceiling reads that column
+   and, since <a href="../../decisions/round-23/#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188</a>,
+   <strong>nothing else</strong>. Park a bound operand in the scope column to make the row save and the ceiling is handed a
+   scope the grant does not confer — it passes, and what it passed is a lie. The organizer case that prompted the
+   question never needed this row: it works through the <strong>twelve</strong> item-scope grants a create writes beside every
+   event (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>),
+   and an author of a shared audience learns about the refusal at this check, in the message, naming the operand —
+   <strong>the editor does not warn earlier, that was offered and declined</strong>
+   (<a href="../../decisions/round-24/#d-203--a-bound-operand-stays-illegal-at-the-unit-and-the-reason-is-the-granters-ceiling">D-203</a>).</li>
 <li><strong>The audience's expression is well-formed and acyclic</strong> (§8) — <strong>and "acyclic" is measured over
    the expanded tree, so this check follows the <code>AUDIENCE</code> leaves into the audiences this one names</strong>
    (<a href="../../decisions/round-10b/#d-103--an-audience-may-name-another-audience">D-103</a>). Saving a grant
@@ -4514,6 +4576,42 @@ means the write path was skipped — there is no constraint to have disabled.</p
 <p><strong>An eighth refusal lives on the other screen.</strong> Ending or deleting an <em>audience</em> is refused while a live
 grant, or a live audience reachable from one, names it (§8, <em>Rules</em>). It is listed here only so that a
 reader of this section does not conclude the grant save is the whole write path.</p>
+<h3 id="nothing-is-implied-by-a-permission-the-companion-read-is-a-second-row">Nothing is implied by a permission: the companion read is a second row<a class="headerlink" href="#nothing-is-implied-by-a-permission-the-companion-read-is-a-second-row" title="Permanent link">&para;</a></h3>
+<p><strong>A grant allows or denies the one code its row names, and nothing else. The resolver reads no dependency,
+there is no table of pairs, and no code confers another.</strong> That was already true and is now ruled
+(<a href="../../decisions/round-24/#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows">D-194</a>),
+which is worth writing down because the obvious feature — <em>a write should drag its read along with it</em> — was
+asked for and refused twice.</p>
+<p><strong>What was added instead is on the screen and not in the model.</strong> When a grant is written for a <code>write</code> code
+whose resource has a <code>read</code> code, the editor <strong>offers</strong> the companion read beside it; taking the offer saves
+<strong>two rows</strong> and declining saves one, and <code>permission.right_kind</code> (§2) is where the two kinds are already
+recorded, so no vocabulary is added for the offer to read. Four cases are named rather than derived, because
+their read is not the same resource's <code>.view</code>: <code>person.merge</code> and <code>person.unmerge</code> offer <code>person.view</code>;
+<code>payment.match</code> offers <code>payment.view</code> and <code>fee.view</code>; <code>event.presence.mark</code> offers <code>event.answer.view</code> beside
+the roster it marks; <code>membership.request.approve</code> offers <code>membership.view</code>.</p>
+<p><strong>Why auto-inheritance was refused.</strong> An implied permission confers what no row names, and three rulings say
+that cannot happen. Check 7's granter's ceiling reads a grant and, since
+<a href="../../decisions/round-23/#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down">D-188</a>,
+nothing else — a grant that also carried its read implicitly would hand away a code the granter does not hold,
+and the check would not see it happen. <a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>'s
+record is the expression, and an implied code is not in any expression. And <em>what may this person do?</em> is
+answered today by listing rows, which is the property
+<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>
+spent twelve rows per event to keep. The catalog had already suspected this without a rule to stand on:
+<code>membership.terminate</code> carries the sentence <em>"it must not be implied by <code>membership.lapse</code>"</em> — that prohibition
+now has the ruling it was missing.</p>
+<p><strong>Why the save-time refusal was refused too, since it is the version that would have worked.</strong> It was offered,
+with a strictness question attached, and the answer was <em>not at save</em>. A rule refusing an allow for a <code>write</code>
+code whose grantee holds no live allow for its read would have had a real hole in it — the grantee of the two
+rows is rarely the same row twice, and deciding whether two expressions reach the same people is the
+containment question <a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>
+refused to make computable — but it is absent because it was not chosen, not because it could not be built.</p>
+<p><strong>The hole this leaves is on this page, not in a footnote.</strong> The offer is a screen, and three paths do not pass
+through it: <strong>an <code>api_key</code> holder</strong> writing a grant, <strong>a migration</strong>, and <strong>the twelve rows an event create
+writes</strong>. An office built by one of them can hold <code>person.merge</code> and no <code>person.view</code>, and then
+<strong>nothing refuses it, nothing lists it, and no report will ever show it</strong> — a reviewer who cannot open either
+record asks somebody else to look. That is the price of "editor convenience", paid here so that no code ever
+confers what its row does not name.</p>
 <h3 id="no-foreign-key-on-scope_id--the-accepted-trade-off">No foreign key on <code>scope_id</code> — the accepted trade-off<a class="headerlink" href="#no-foreign-key-on-scope_id--the-accepted-trade-off" title="Permanent link">&para;</a></h3>
 <p><code>scope_id</code> has no FK because it is polymorphic. This is a deliberate choice, and
 <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>

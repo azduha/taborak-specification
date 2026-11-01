@@ -2377,6 +2377,8 @@
       
         
       
+        
+      
     
     
     
@@ -3031,6 +3033,34 @@
     
   
     Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
   
 
     
@@ -3753,9 +3783,18 @@ permissions" consists of:</p>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>             permission = payment.record      effect = allow
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>             permission = report.finance.view effect = allow
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>             permission = payment.match      effect = allow
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  … one row per code, and the list is the office
 </code></pre></div>
+<p><strong>Six money codes, and no seventh one for reporting on them</strong>
+(<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>):
+<code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code>. A reader who
+comes here looking for <code>report.finance.view</code> will not find it in this example and will not find it shipped
+anywhere, on purpose — reporting ships <code>report.view</code> and <code>report.export</code> and picks its shapes when reporting is
+designed, and the finance module was not the round that got to decide that. <strong>What the office therefore cannot
+do on day one is open a money report</strong>: it can read every obligation and every payment, which is the same facts
+row by row, and the count over them is the part still undesigned
+(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">appendix catalog B §10</a>).</p>
 <p><strong>Neither a role nor a group authorizes anything by existing</strong>, which is
 <a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> and
 <a href="../../decisions/round-01b/#d-019--household-membership-grants-no-access">D-019</a> restated one level

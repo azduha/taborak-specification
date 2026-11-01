@@ -2150,6 +2150,8 @@
       
         
       
+        
+      
     
     
     
@@ -2817,6 +2819,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3242,7 +3272,7 @@ that was never written:</p>
 <li><strong>What this system does to itself is not a caller and has no row.</strong> The 1 January membership sweep, payload
   reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
   the system acting on its own and is a complete answer to <em>who did this</em>; where the audit trail keeps a
-  label, it is one of six from a list rather than free text
+  label, it is one of the five labels on that list rather than free text
   (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>,
   <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
   <strong><code>api_key</code> was deliberately not stretched to cover them</strong>: a sweep is not a caller, and a table whose rows
@@ -3253,11 +3283,25 @@ that was never written:</p>
   for somebody who cannot log in; what it can do is nothing, which is why the answer is check 9's second
   column and a written procedure
   (<a href="../../domain/02-actors/#when-nobody-who-can-hold-systemadmin-can-sign-in">domain/02 §3</a>).</li>
-<li><strong>The outbound direction is <a href="../../open-questions/#f-27">F-27</a>.</strong> Everything here is a caller arriving.
-  Anything this system initiates — an accounting export, a refund, a webhook (a mechanism this corpus
-  deleted rather than deferred) — has no design, and the one refusal that cited "a second integration with
-  its own authorization" as a reason now has a mechanism to point at
-  (<a href="../07-finance/">07-finance.md §2b</a>).</li>
+<li><strong>The outbound direction is <a href="../../open-questions/#f-27">F-27</a>, and one item that used to sit on this list
+  has been removed from it rather than left waiting.</strong> Everything here is a caller arriving. <strong>Nothing leaves
+  this system to an accounting system</strong>
+  (<a href="../../decisions/round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a>):
+  no export, no feed, no periodic journal, no CSV of the day's bank rows, no <code>external_reference</code> column, and
+  <strong>no sixth actor label for accounting</strong>: the vocabulary of
+  <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a> keeps its five labels and reserves no
+  sixth, because an integration added later will need a label and needing one is not a reason to hold a slot for
+  it. Everything the money model
+  asserts is read out of its own tables by a person holding <code>report.view</code> or <code>report.export</code>. A later version
+  may add an accounting package and will design it then, in a document that is not this one, and <strong>this corpus
+  keeps no placeholder against that day</strong> — which is what the item cost to close: nothing. A refund is not on
+  this list either, because a refund happens at the bank and arrives here as a negative <code>payment</code>
+  (<a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>), and a webhook is a mechanism this
+  corpus deleted rather than deferred. <strong>What is left undesigned is the general shape</strong> — an outbound call is a
+  person's act or this system's job, and nothing about it is designed yet
+  (<a href="../../decisions/round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>)
+  — and the one refusal that cited "a second integration with its own authorization" as a reason now has a
+  mechanism to point at (<a href="../07-finance/">07-finance.md §2b</a>).</li>
 <li><strong>Nothing about the wire.</strong> How a secret is presented, what it looks like, how it is hashed, how a
   session is carried after a person logs in — API layer, and <a href="../../decisions/round-06/#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job">D-072</a>
   is the standing division. What is decided here is only what may be stored: a hash, and nothing else.</li>

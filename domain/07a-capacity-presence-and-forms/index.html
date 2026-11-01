@@ -2189,6 +2189,8 @@
       
         
       
+        
+      
     
     
     
@@ -2856,6 +2858,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3386,11 +3416,22 @@ newcomer who reads the list and not the log. The ones this module raises:</p>
   writes nothing else
   (<a href="../07-events/#5-organizers-are-appointed-not-granted">§5</a>,
   <a href="../07-events/#6-how-authority-reaches-an-event">§6</a>).</li>
-<li><strong>Whether a bound selector makes its audience single-scope.</strong> An audience whose expression
-  names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared audience row can stop
-  being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
-  as written; whether the editor should warn at the audience instead is unsettled
-  (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>).</li>
+<li><strong>Whether a bound selector makes its audience single-scope — settled: it does, the rule stands, and the editor
+  will not warn.</strong> An audience whose expression names <code>PLACED</code> cannot be aimed at a unit-scope grant, so a shared
+  audience row is not reusable across scopes, and the refusal lands on the grant
+  (<a href="../07-events/#7-the-people-connected-to-an-event">§7</a>). Two things were asked and both are answered here rather
+  than softened: the rule was kept because the reason for it is not convenience but
+  <a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>'s granter's ceiling,
+  which reads the grant's own scope column and nothing else — a bound operand parked in that column would hand the
+  ceiling a scope the grant does not confer, and the check would pass while saying something false. And <em>does the
+  organizer case still work if a unit grant cannot carry <code>ORGANIZERS</code>?</em> — <strong>yes, and it was never working through a
+  unit grant</strong>: it works through the twelve item-scope rows that a create writes beside every event, each aimed at
+  the bare operand <code>ORGANIZERS</code>
+  (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>),
+  which is the row-count consequence this round re-confirmed rather than dissolved. <strong>The editor warning was
+  declined</strong>, so an author of a shared audience learns about it at the grant save, in the refusal, naming the
+  operand — the cost of that choice is a person finding out late, and it is accepted
+  (<a href="../../decisions/round-24/#d-203--a-bound-operand-stays-illegal-at-the-unit-and-the-reason-is-the-granters-ceiling">D-203</a>).</li>
 <li><strong><code>WHITELISTED</code> — settled: refused.</strong> No stored state to name it, so it is not a selector, and there will be
   no fifth presence tier, no <code>is_whitelisted</code> column and no reserved name
   (<a href="../../decisions/round-20/#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are">D-148</a>).

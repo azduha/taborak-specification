@@ -2115,6 +2115,8 @@
       
         
       
+        
+      
     
     
     
@@ -2782,6 +2784,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3260,7 +3290,11 @@ item being checked</em>: <code>PLACED</code> on the event under check, not <code
 exists to kill a specific flaw — one grant per event with the event's own id typed into it
 is a thing you do 400 times and forget on the 401st — and two rules keep it safe, <strong>both
 enforced when the grant is saved</strong>, with the operand named in the refusal: a bound operand
-is legal <strong>only on an item-scope grant</strong> (at the unit there is nothing to bind it to) and
+is legal <strong>only on an item-scope grant</strong> (at the unit there is nothing to bind it to — and
+the deeper reason, ruled rather than assumed, is that a grant states its scope in one column
+and <a href="../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>'s
+granter's ceiling reads exactly that column, so parking a bound operand there would hand the
+ceiling a scope the grant does not confer) and
 <strong>only on a matching item type</strong> (<code>PLACED</code> on a group grant is refused, because that item
 is not an event — <code>selector_type.argument_type</code> checked against <code>grant_scope_type</code>). The
 consequence: <strong>the set a grant reaches is per-item</strong>, so the editor's preview is computed
@@ -3274,6 +3308,18 @@ exactly for <strong>the five event operands — <code>ATTENDED</code>, <code>PLA
 <code>ORGANIZERS</code> — which cannot be evaluated without the event the grant sits on</strong>, and is
 false for everything else. A bound operand never meant <em>the subject of the item</em> and never
 will; there is no third binding kind.</p>
+<p><strong>Nothing is implied by a permission</strong> — The sentence to reach for before asking <em>"does a write bring its read?"</em>:
+<strong>a grant allows or denies the one code its row names, and the resolver reads no dependency.</strong> The pairing that
+people actually want exists one layer out — the grant editor <strong>offers</strong> the companion read beside a write, and
+taking the offer saves <strong>two rows</strong> while declining saves one
+(<a href="../decisions/round-24/#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows">D-194</a>).
+Auto-inheritance was refused because an implied code confers what no row names, which
+<a href="../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>'s granter's ceiling cannot
+see and <a href="../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>'s record would
+stop being the record; a save-time refusal was offered and answered <em>not at save</em>. <strong>What that costs, stated rather
+than footnoted:</strong> an <code>api_key</code>, a migration, or the twelve rows an event create writes never pass the screen that
+offers, so an office can hold <code>person.merge</code> with no <code>person.view</code> — nothing refuses it, nothing lists it, and no
+report shows it.</p>
 <p><strong><code>admin</code></strong> — A word to avoid: readers bring three different meanings to it and only one of
 them exists here. There is <strong>no grant level</strong> (<code>access_level</code>, <code>permission_level</code> are not in
 this schema, and a grant does not rank) and <strong>no per-resource wildcard</strong> (<code>person.admin</code>,

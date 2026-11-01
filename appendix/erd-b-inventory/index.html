@@ -2137,6 +2137,8 @@
       
         
       
+        
+      
     
     
     
@@ -2804,6 +2806,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2975,7 +3005,9 @@ parameter, not a kind of person
 states a period of membership, and since
 <a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a> one
 reviewed batch may turn that stated period into membership #1 itself: both ends dated, <code>data_confidence</code>
-low, the batch id on it, <strong>no</strong> <code>fee_obligation</code> and a balance that stays absent rather than zero, because
+low, <code>record_origin</code> saying the row arrived rather than that it was registered — <strong>and nothing pointing at a batch,
+because §7 deleted the table that would hold one</strong> — with <strong>no</strong> <code>fee_obligation</code> underneath it and therefore no
+balance to read, rather than a balance of zero, because
 the corpus carries no money in it
 (<a href="../../decisions/round-07-08/#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money">D-090</a>).
 Two shapes remain forbidden, and they are the two the ban was ever really about: an <strong>open-ended</strong> imported
@@ -3245,7 +3277,7 @@ and <a href="../../data-model/05-authorization/#4-role_holder--who-holds-an-offi
 <tbody>
 <tr>
 <td><code>guardianship</code></td>
-<td>One adult's responsibility for one dependent, carrying one <code>right_level</code></td>
+<td>One adult's responsibility for one dependent, carrying one <code>right_level</code>. <strong>It holds no copy of a court order</strong> — <code>custody_arrangement</code> is deleted, and the arrangement a court ordered is stored here neither as structure nor as prose — while <code>evidence_reference</code>, <code>ended_reason</code> and <code>ended_note</code> remain, because those say something the organization did or holds rather than describing a child's private life (<a href="../../decisions/round-24/#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure">D-204</a>)</td>
 <td><code>person</code> twice — never the same person twice</td>
 <td>One current row per pair; unlimited past rows; a dependent may have any number of guardians at once</td>
 <td>yes</td>
@@ -3359,43 +3391,13 @@ nothing at all, on their own.</p>
 <td>One per redaction performed</td>
 <td>no</td>
 </tr>
-<tr>
-<td><strong>There is no import entity in this inventory.</strong> <code>import_batch</code>, <code>staging_import</code> and <code>staging_import_row</code> were</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>deleted with the pipeline they belonged to: the legacy load is one script posting through a registered key, so</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>there is no batch row to point at, no staging table to truncate, and no revert to undo</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). What survives the load is what it wrote — people, dated memberships, events and registrations —</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>and what says how much to trust them, <code>data_confidence</code>, which never needed the batch row beside it.</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
 </tbody>
 </table>
+<p><strong>There is no import entity in this inventory.</strong> <code>import_batch</code>, <code>staging_import</code> and <code>staging_import_row</code> were
+deleted with the pipeline they belonged to: the legacy load is one script posting through a registered key, so
+there is no batch row to point at, no staging table to truncate, and no revert to undo
+(<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). What survives the load is what it wrote — people, dated memberships, events and registrations —
+and what says how much to trust them, <code>data_confidence</code>, which never needed the batch row beside it.</p>
 <p><strong>Finance</strong> <em>(provisional)</em></p>
 <table>
 <thead>
@@ -3419,7 +3421,7 @@ nothing at all, on their own.</p>
 <td><code>fee_obligation</code></td>
 <td>What one person owes for exactly one thing</td>
 <td><code>person</code> (who it is <em>for</em>), <code>fee_schedule</code>, and <strong>exactly one</strong> of <code>membership</code>, <code>membership_request</code>, <code>event_registration</code></td>
-<td>Many per person; the target is never two and never none. An <strong>imported</strong> membership creates none, and its <code>outstanding_balance</code> is <code>NULL</code> rather than zero, because zero would be a claim the export does not support (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>)</td>
+<td>Many per person; the target is never two and never none. An <strong>imported</strong> membership creates none, and since <a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a> there is no <code>membership.outstanding_balance</code> left for that absence to be copied into: the NULL that used to say <em>nothing is known, not zero</em> now lives in the absence of rows, and the one balance definition that reads this table must keep reading "no obligations" that way at the gate, on the arrears report, and on any screen that would otherwise print <code>0 Kč</code> (<a href="../../decisions/round-09/#d-093--the-one-off-import-may-create-memberships-both-ends-dated">D-093</a>)</td>
 <td>no</td>
 </tr>
 <tr>
@@ -3445,15 +3447,15 @@ nothing at all, on their own.</p>
 </tr>
 <tr>
 <td><code>invoice</code></td>
-<td>The document a payer asks for, issued over an ask that already exists</td>
-<td><code>payment_request</code>; the person who issued it</td>
-<td>One per issued document. <strong>No state</strong> — it exists or it does not, because a column meaning <em>somebody owes this person a document</em> is the queue that was just deleted (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). Numbered from its own sequence, separate from the variable symbol's</td>
+<td>The document the country requires over every ask — compulsory, not requested</td>
+<td><code>payment_request</code>; the person whose write produced it</td>
+<td><strong>Exactly one per <code>payment_request</code>, always.</strong> The invoice is written by the same write that creates its request — one transaction, one actor, one audit payload over both rows — and there is <strong>no <code>invoice.issue</code></strong> to hold, because a permission nobody can decline is not a permission; <code>fee.create</code> does the job (<a href="../../decisions/round-24/#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it">D-197</a>). <strong>No state</strong> — it exists or it does not — now for the stronger reason that there is no moment at which a document could be missing (<a href="../../decisions/round-23/#d-187--an-invoice-is-a-document-a-payer-asks-for">D-187</a>). Numbered from its own sequence, separate from the variable symbol's, and <strong>that sequence is legally required</strong>: <code>number</code> is unique and never reused, since a number a tax authority has seen cannot be handed to a second document. A voided ask keeps its invoice, so every reissued ask carries a second one</td>
 <td>no</td>
 </tr>
 <tr>
 <td><code>bank_transaction</code></td>
 <td>One incoming transfer as the bank reported it</td>
-<td><code>payment_request</code> when matched. <strong>Absent is the absence of a match, not a queue position</strong> — most money that arrives belongs to no member (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) — and which run wrote the row is in the row's actor column, <code>system:bank-pull</code>, because there is no batch to point at</td>
+<td><code>payment_request</code> when matched. <strong>Absent is the absence of a match, not a queue position</strong> — most money that arrives belongs to no member (<a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) — and which run wrote the row is in the row's actor column, <code>system:bank-pull</code>, because there is no batch to point at. <strong>The symbol is the whole match</strong>: whatever arrives under a live request's symbol is attached <strong>in full</strong>, the amount is not a condition of the match and never becomes one, and an under- or overpayment is shown rather than held back — so what leaves a row unmatched is a missing, unknown or voided symbol and nothing else (<a href="../../decisions/round-24/#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown">D-196</a>)</td>
 <td>Unique per bank reference within an account; immutable once fetched</td>
 <td>no</td>
 </tr>

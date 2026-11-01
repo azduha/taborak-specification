@@ -2304,6 +2304,8 @@
       
         
       
+        
+      
     
     
     
@@ -2958,6 +2960,34 @@
     
   
     Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
   
 
     
@@ -3811,6 +3841,16 @@ those people when they are opened — affordable at the size
 states, and precisely what that entry's trigger reopens, with D-114 naming the reopen answer: materialize
 <code>effective_permission</code> per person <strong>and call it that</strong>.
 See <a href="../../data-model/05c-access-log-and-resolver/#10-the-resolver">data-model/05 §10</a>.</p>
+<p><strong>One last thing this section is read as implying, and it does not mean.</strong> Everything above turns on 1 January, and
+the organization does not run its whole life on 1 January: <strong>the membership year is January to December and the
+program year is September to August</strong>
+(<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>).
+A renewal asked for in November, a term sheet signed in September and a fee that dies on 1 January are the same
+organization keeping two books, and only one of them is in the database — the fee's, in the three columns this
+section names. The other is a habit, and the design declines to store it. So a reader who concludes that a membership gap means a person left the group,
+or that a person who was in a group in August was a member in August, has imported one calendar into a design that
+holds two; §9 carries what that costs a report, and nothing here proposes to store the second calendar to prevent
+it.</p>
 <hr />
 <h2 id="7-there-are-no-age-transitions">7. There are no age transitions<a class="headerlink" href="#7-there-are-no-age-transitions" title="Permanent link">&para;</a></h2>
 <p><strong>No birthday changes a membership.</strong> There is one membership type and it is ageless, so a person's
@@ -3958,14 +3998,25 @@ resolver, which is the worst kind of bug to find.</p>
 <hr />
 <h2 id="9-open-issues">9. Open issues<a class="headerlink" href="#9-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>The organizational calendar — the two numbers are ruled, and what is left is not a number.</strong> The fee expires
-  on <strong>1 January</strong> (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>) and the renewal window
-  is <strong>60 days</strong> (<a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>);
+<li><strong>The organizational calendar — settled: there are two years here, and only one of them is stored.</strong> The fee
+  expires on <strong>1 January</strong> (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>) and the renewal
+  window is <strong>60 days</strong> (<a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>);
   both are columns on the one <code>membership_type</code> row (§6), so neither is a guess and neither needs a decision to
-  move. What remains is whether those two are this organisation's real numbers, which is a conversation with the
-  people who run the renewal rather than a ruling, and it is filed once as
-  <a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4's remainder</a> — not re-asked here, so that
-  the page carries the mechanism and the register carries the doubt.</li>
+  move. <strong>Both numbers are this organization's real numbers, and the question the register filed against them is
+  closed as confirmed rather than as answered</strong>
+  (<a href="../../decisions/round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a>,
+  <a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4's remainder</a>): the membership year is
+  January to December, and <em>the rest of the organization's life — a group's term, a camp season, the collections —
+  runs September to August and is stored nowhere at all.</em> No column, no constant, no rule names a program year, so
+  a <code>person_group</code> carries the two dates a person types
+  (<a href="../../decisions/round-10a/#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority">D-098</a>)
+  and they fall in September and August the way they fall anywhere else. <strong>What that leaves, and it is not a
+  number:</strong> a report asking "how many members did 2026 have" and a report asking "who was in a group in 2026" are
+  about overlapping-but-different periods, and no column anywhere says which one the reader meant. Nothing here
+  proposes to fix that — a calendar table would make September a fact the model asserts about groups that hold no
+  dates in common. The discipline that outlives the question is the half that was never about the date: <strong>both
+  numbers are read from the row</strong>, and a job or a front end containing the literal <code>60</code> or the literal <code>1</code> is how
+  they stop being (§6).</li>
 <li><strong>Which offices are written without <code>MEMBERS</code> is ruled: per office, by whoever writes the grant, no
   default either way — not into the expression and not out of it.</strong> Which offices carry the term
   (<a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>) is

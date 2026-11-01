@@ -2309,6 +2309,8 @@
       
         
       
+        
+      
     
     
     
@@ -2976,6 +2978,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3350,11 +3380,6 @@ the ORM decides how each rule is enforced.</p>
 <td><code>lives_with</code></td>
 <td>boolean, optional</td>
 <td>Deliberately optional: <em>false</em> means guardianship without cohabitation (shared custody, a guardian in another city), which is a different fact from <em>unknown</em>. Relevant to contact routing, never to authority</td>
-</tr>
-<tr>
-<td><code>custody_arrangement</code></td>
-<td>free text</td>
-<td>A description, not a computable fact, and kept that way on purpose (§7)</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -3972,8 +3997,25 @@ with no postal address behind it, which is a finance problem
   an adult who prefers it (<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>).
   The <em>group</em> version of this was answered long ago by audiences
   (<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
-<li>Whether <code>custody_arrangement</code> free text should be structured. Recommend not — custody
-  orders vary too much to model, and a wrong model is worse than honest prose.</li>
+<li><strong>Whether <code>custody_arrangement</code> free text should be structured — settled: neither structured nor kept, the
+  column is deleted.</strong> This page recommended <em>not</em>, on the argument that custody orders vary too much to model and
+  that a wrong model is worse than honest prose, and the answer took neither of the two options
+  (<a href="../../decisions/round-24/#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure">D-204</a>).
+  The reasoning for <em>not</em> survives and turns out to be an argument for deletion: the column was read by nobody and
+  gated nothing, because <code>right_level</code> is the whole of a guardian's authority
+  (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>) and
+  there is no graded class of field left to grade
+  (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>), so
+  it was <code>person.notes</code> in a smaller size — and worse than it, because <strong>a text field named
+  <code>custody_arrangement</code> invites a person to type a court order into a database that cannot act on it</strong>
+  (<a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>). <strong>The row is
+  not prose-free, and this is the page that has to say so:</strong> <code>evidence_reference</code>, <code>ended_reason</code> and <code>ended_note</code>
+  stay, and the line between them and the deleted column is that they record what the organization did or holds,
+  while <code>custody_arrangement</code> described a child's private arrangement. A column recording an act is a record; a
+  column describing one is a copy of it. What this does to the worked limit in §1 is a widening, not a repair: the
+  order restricting one parent's access to the health facts about a child could previously <strong>not be expressed but
+  could at least be typed into the row</strong> — now it can do neither, and where it lives is the organization's paper
+  file and the memory of the person it was told to.</li>
 <li><strong>Confirm that the membership gate's guardianship carve-out is intended — settled: intended, and it no longer
   lives in a gate, because the gate was deleted.</strong> A lapsed parent keeps their <code>right_level</code>
   (<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),

@@ -2236,6 +2236,8 @@
       
         
       
+        
+      
     
     
     
@@ -2903,6 +2905,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3340,10 +3370,14 @@ window still carrying a payload
 (<a href="../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>).</p>
 <p><strong>The two clocks</strong> — The accounting skeleton (<code>membership</code>, <code>fee_obligation</code>, <code>payment</code>,
 and the anonymised <code>person</code> row an erasure leaves behind) has <strong>no clock at all</strong>,
-justified as the organization's own history. <em>Assumption:</em> that this indefinite retention
-of rows about a named person has a legal basis — organizational history plus accounting
-obligations, against a redacted person row that keeps the skeleton non-identifying — is
-unverified, and a decision log is not the document that grants it. The audit trail runs
+justified as the organization's own history. <em>This retention is a decision, not a claim waiting to be
+confirmed:</em> that rows about a named person are kept with no end date — organizational history plus
+accounting obligations, against a redacted person row that keeps the skeleton non-identifying — is the call
+of the person designing this system, and <strong>there is no legal review that would confirm or overturn it</strong>
+(<a href="../decisions/round-24/#d-205--there-is-no-legal-review-and-assumption-49-is-retired">D-205</a>). The risk it
+carries, named instead of a basis: these are the one class of row that outlives every safeguard in
+<a href="../data-model/00-conventions/#8-personal-data-and-erasure">data-model/00 §8</a>, and nothing outside the design
+vouches for them. The audit trail runs
 the opposite direction: rows forever, payloads for 24 months. Erasure sits outside both,
 immediate and absolute. <strong><code>access_log</code> is a third thing and neither clock:</strong> its <strong>rows are deleted</strong> 24
 months after they are written, by a scheduled job, because what was <em>read</em> stops being answerable and no

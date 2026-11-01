@@ -2159,6 +2159,8 @@
       
         
       
+        
+      
     
     
     
@@ -2813,6 +2815,34 @@
     
   
     Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
   
 
     
@@ -3530,10 +3560,10 @@ downstream ever says so.</p>
 <td>none, by design</td>
 </tr>
 <tr>
-<td><code>membership.outstanding_balance</code> agrees with the allocations</td>
+<td>What a person owes is computed at the read and never stored beside it</td>
 <td><a href="../07-finance/#3-keeping-membershipoutstanding_balance-honest">07 §3</a></td>
-<td>the writing transaction if the column stays; §3 recommends dropping it for a view</td>
-<td><a href="../07-finance/#4a-integrity-checks">07 §4a check 1</a>, and the same query whichever way §3 lands</td>
+<td><strong>nothing, on purpose</strong> — <code>membership.outstanding_balance</code> is deleted (<a href="../../decisions/round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a>), so there is no second copy that could drift and no transaction obliged to keep one honest</td>
+<td><a href="../07-finance/#4a-integrity-checks">07 §4a check 1</a> compares an obligation against the allocations under it, which is now the only balance arithmetic in the corpus; the row stays in this register because the invariant it states is what replaced the column, not because anything is checked</td>
 </tr>
 <tr>
 <td>An imported membership is bounded at both ends and never inferred from attendance</td>

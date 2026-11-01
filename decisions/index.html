@@ -2059,6 +2059,8 @@
       
         
       
+        
+      
     
     
     
@@ -2726,6 +2728,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2855,7 +2885,7 @@
 re-litigated from scratch — and so that when a decision is reversed, the reason for the
 original choice is visible.</p>
 <p><strong>How this log is filed.</strong> The entries live in the round that took them; this page indexes all
-192 of them and lists the reversals. Read the round you are curious about — each one says what was
+205 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a <code>D-</code> number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.</p>
 <p><strong>Status values:</strong> <code>decided</code> — settled, the data model reflects it <em>(since D-072: the documents, not a schema file)</em>. <code>proposed</code> — recommended,
@@ -4042,6 +4072,84 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 <td><code>proposed_by</code> loses <code>import_job</code>, because a vocabulary value is a claim about who can write</td>
 <td><strong>the residue of a deletion is not the deleted page</strong> — one enum value went on naming the pipeline <code>D-190</code> had removed, and no gate reads a column's value set, so it was found only because the field table was opened to be swept; row-level provenance markers (<code>record_origin</code>, <code>source</code>, <code>data_confidence</code>) survive it untouched</td>
 <td>round 23</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored">D-193</a></td>
+<td>The membership year is January to December, the program year is September to August, and only one of them is stored</td>
+<td><strong>two calendars, and the design holds one of them</strong>: the fee's year is the calendar year and lives in a row's knobs, a group's term is September to August and is stored nowhere — no column, no constant, and a report asking about "the 2026 year" now has two answers</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows">D-194</a></td>
+<td>Nothing is implied by a permission: the editor offers the companion read, and the database stores two rows</td>
+<td>asked for a dependency, <strong>refused both inheritance and a save-time refusal</strong>: the grant screen offers <code>&lt;resource&gt;.view</code> beside a write and the pairing lives in program text — so an <code>api_key</code>, a migration or the event create's twelve rows can still leave a reviewer holding <code>person.merge</code> with no read, and nothing refuses or lists it</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a></td>
+<td>The money codes are shipped codes: catalog A grows a money section, and catalog B §10 loses three rows</td>
+<td>six codes move from <em>deferred</em> to documented; <strong><code>report.finance.view</code> is left behind on purpose</strong>, because promoting it would ship both report shapes and <code>05d</code>'s rules list forbids that — the finance module spends six codes and does not get to decide reporting's shape</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown">D-196</a></td>
+<td>The variable symbol is the whole match: what arrives under its own symbol is attached in full, and the difference is shown</td>
+<td>the amount is never a condition of a match, so <strong><code>partially_paid</code> becomes reachable by itself</strong> and an obligation can read 550 over; the family's one transfer for two children now lands wholly on one child, silently, and the thing that catches it is a person reading a plus sign</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it">D-197</a></td>
+<td>An invoice is compulsory, so nobody issues one: <code>invoice.issue</code> is deleted, and the ask's write writes it</td>
+<td><strong>reverses D-187's "written only because a payer asked for it"</strong> — the invoice row is written with its request by <code>fee.create</code>, its sequence becomes legally required rather than tidy, and the separation between <em>who may type in a number</em> and <em>who may sign a tax document</em> is gone</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database">D-198</a></td>
+<td>An invoice's issuer is configuration; its payer's identification is already in the database</td>
+<td>the organization's name, address and IČO arrive the way the SMTP relay does — no table since D-097 deleted the unit as a row — and the payer's IČO and DIČ are <code>person_identifier</code> <strong>schemes, not columns</strong>; one legal entity per deployment, said out loud for the first time</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a></td>
+<td>Nothing leaves this system to an accounting system, and an external one is a later version's design</td>
+<td>no export, no feed, no journal, no <code>external_reference</code>, no seventh actor label — <strong>a later version may add one and will design it then</strong>, which is why the item closes instead of staying filed</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200</a></td>
+<td><code>membership.outstanding_balance</code> is deleted, and the balance is the one definition it was copied from</td>
+<td>§3's recommendation from round 6 is taken at last, and <strong>assumption 53's NULL-not-zero moves into the absence of <code>fee_obligation</code> rows</strong> — including the gate's vacuous pass for an imported membership, which is now written down instead of inferred</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence">D-201</a></td>
+<td>A group keeps no previous name: this is now a ruling, and not an absence</td>
+<td><em>no, prose is enough</em> — the sibling of D-173, and the cost is sharper than it looked: a group's name is unique across three tables, so renaming one <strong>frees the old name to be taken by a group, a role or an audience</strong></td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-202--there-is-no-twin-and-sibling-procedure-and-the-collision-pair-stays-a-persons-judgement">D-202</a></td>
+<td>There is no twin-and-sibling procedure, and the collision pair stays a person's judgement</td>
+<td>no checklist, no pairing screen, no suspicious-merge check; <em>never merge automatically</em> was already true of a design where every merge is a person holding <code>person.merge</code> — <strong>and the shared-guardian hint the model already stores was offered and declined</strong></td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-203--a-bound-operand-stays-illegal-at-the-unit-and-the-reason-is-the-granters-ceiling">D-203</a></td>
+<td>A bound operand stays illegal at the unit, and the reason is the granter's ceiling</td>
+<td><em>yes, it still works — through the twelve rows a create writes, not through a unit grant</em>, and a bound operand in a scope column would hand D-163's ceiling a scope the grant does not confer; <strong>the editor warning is declined</strong>, so the refusal keeps landing at the save</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure">D-204</a></td>
+<td><code>custody_arrangement</code> is deleted: a court order is stored here neither as prose nor as structure</td>
+<td>asked whether to structure the free text, <strong>the answer deleted it</strong> — a field no rule reads invites a court order into a database that cannot act on it, and the arrangement D-083 already refused to express can now not be written down either. <strong>The row is not prose-free, and the entry says which columns survive</strong>: <code>evidence_reference</code>, <code>ended_reason</code> and <code>ended_note</code> stay, because a column recording what the organization did is a record and a column describing a child's private arrangement is a copy of it</td>
+<td>round 24</td>
+</tr>
+<tr>
+<td><a href="round-24/#d-205--there-is-no-legal-review-and-assumption-49-is-retired">D-205</a></td>
+<td>There is no legal review, and assumption 49 is retired</td>
+<td><strong>the register's last debt is deleted rather than paid</strong>: five retention policies become decisions of the person designing the system, each with its risk named in place of a lawful basis, and nine pages lose the sentence that said somebody else would check</td>
+<td>round 24</td>
 </tr>
 </tbody>
 </table>
