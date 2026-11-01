@@ -3409,8 +3409,10 @@ contradictory ones.</p>
 <p><strong>What changes.</strong> A grant over money has something to be checked against besides a worked example: <code>applies_to</code>
 says which scope shape each code may sit on, and
 <a href="../../data-model/05-authorization/#what-is-refused-when-a-grant-is-saved">the grant save</a> refuses one that does
-not match. Catalog B §11's treasurer and
-bookkeeper examples stop holding placeholders, which is what made §10 dishonest rather than merely optimistic.
+not match. Catalog B §11's <code>treasurer</code> office — the one worked example that spends money, and the only one —
+stops holding six codes that named no register row, which is what made §10 dishonest rather than merely
+optimistic. <strong>It gained <code>payment.match</code> and is now seven rows, six of them registered</strong>, and the page's own
+sentence saying the office "cannot be written today" retires with them.
 <a href="../../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially"><code>07-finance</code> §5</a> loses the
 paragraph that said its codes are registered nowhere. And <code>scripts/check-registries.py</code>, which reads the
 registries out of the pages, now finds money codes in the same register as everything else — a code-shaped money
@@ -3612,11 +3614,21 @@ mode this round exists to close. The corpus has an exact precedent for this shap
 <a href="../round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>
 answered an outbound direction by refusing to design either side of it, and
 <a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> then swept every sentence that implied the
-system sends things. <strong>The actor-label list stays where
-<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means"><code>00-conventions §7a</code></a> left it</strong> — five labels plus the sixth that deletes
-logs — and <code>system:accounting</code> is not added to it, which is the concrete thing this deferral costs: <strong>nothing</strong>.
-An integration added later is an integration that will need its own label, and needing one is not a reason to
-reserve it now.</p>
+system sends things. <strong>The actor-label list stays exactly where
+<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means"><code>00-conventions §7a</code></a> left it</strong> — the five it
+lists, <code>system:renewal-sweep</code>, <code>system:payload-reduction</code>, <code>system:log-reduction</code>, <code>system:bank-pull</code> and
+<code>migration:&lt;id&gt;</code>, of which the third is already the one that deletes — and no accounting label joins them, which is
+the concrete thing this deferral costs: <strong>nothing</strong>. An integration added later is an integration that will need its
+own label, and needing one is not a reason to reserve it now.</p>
+<p><strong>One cost is worth naming, because it is a cost of the tooling and not of the design.</strong>
+<code>scripts/check-registries.py</code> reads three registers out of these pages — permission codes, deferred namespaces, and
+the dead names in <a href="../../appendix/removed-concepts/"><code>removed-concepts.md</code></a> — and it has <strong>no register of things the
+design has refused to add</strong>. A label that was considered and declined is therefore invisible to the gate: the only
+thing standing between this deferral and a future <code>system:accounting</code> appearing in a page is this paragraph and the
+two module sentences beside it. It is not baselined, because a baseline is for findings the corpus has read and
+kept, and there is no finding to keep — the name appears in the corpus solely to say it does not exist, and the
+pages that name it were reworded to say <em>"no sixth actor label"</em> instead, so the checker stays at zero and cannot
+be the thing that remembers.</p>
 <hr />
 <h2 id="d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from">D-200 — <code>membership.outstanding_balance</code> is deleted, and the balance is the one definition it was copied from<a class="headerlink" href="#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from" title="Permanent link">&para;</a></h2>
 <p><strong>Status:</strong> decided (from your answer) — the recommendation
