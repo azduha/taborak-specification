@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -1723,6 +1725,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2141,6 +2171,8 @@
       
         
           
+        
+      
         
       
         
@@ -2884,6 +2916,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3151,6 +3211,29 @@ deliberate separation: that the person who may type in a number is not automatic
 document with a legal shape. <strong><a href="../../decisions/round-24/#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it">D-197</a>
 gave that separation up</strong>, and the giving-up is written as a cost in catalog A §4a and as a death in
 <a href="../removed-concepts/">the dead-name register</a> rather than kept here as a distinction nothing enforces any more.</p>
+<p><strong>Two rows left this page in round 25, for the reason the money rows left it in round 24.</strong> The <code>report</code> row went
+first, and it did not go to <a href="../permission-catalog-a-codes/">catalog A</a>: <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+ruled that what an organization calls a report is a message of a type delivered to an audience and that <strong>there is
+no report screen in this design</strong>, so the namespace has no shape left to defer — a code that would gate a screen is
+not worth deferring once there is no such screen. <strong>The posture <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>
+chose for money is untouched and is repeated in <a href="../permission-catalog-a-codes/#4a-money">catalog A §4a</a>: money is
+readable through <code>fee.view</code> and <code>payment.view</code>, no money report code exists here or there, and none is deferred.</strong>
+The <code>message</code> row went because its module arrived: <a href="../../data-model/10-messaging/">../data-model/10-messaging.md</a>
+draws the three tables, and its one code, <code>message.send</code>, is a shipped row in
+<a href="../permission-catalog-a-codes/#8c-messaging">catalog A §8c</a> — and this table is the register for <em>a namespace whose
+module does not exist</em>, which is exactly the sentence that moved the money rows. What that row used to describe in
+the conditional is now settled rather than deferred, and settled differently than it read: <strong>one code gates every
+write, a message to one person included</strong>, so <em>"direct by default"</em> names a send's shape and not a right
+(<a href="../../decisions/round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>
+narrowing <a href="../../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>);
+an audience narrows a <em>send</em> rather than the scope of a grant, so <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+is untouched; <strong>the recipient's choice of door is a column on the account</strong> and not a permission
+(<a href="../../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>);
+and a minor's mirroring is <strong>recipient rows on the guardian's own doors</strong>, which is the physical form
+<a href="../../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>
+had always meant (<a href="../../data-model/10-messaging/#6-a-childs-message-mirrors-as-rows">10-messaging §6</a>).
+<strong>Two of this page's §12 items close with those two rows</strong>, and both are written their verdicts in place rather
+than removed.</p>
 <table>
 <thead>
 <tr>
@@ -3166,19 +3249,9 @@ gave that separation up</strong>, and the giving-up is written as a cost in cata
 <td><code>document</code> is already a row of <code>grant_scope_type</code>, marked deferred — the item exists in the registry before the module does, which is what the polymorphic <code>scope_id</code> is for (D-011). The code is the one this catalog's own §1 rule pays for: <code>document.grant_access</code> sits beside <code>access_grant.create</code> exactly as <code>event.grant_access</code> does, and §12 asks the question once for both.</td>
 </tr>
 <tr>
-<td><code>report</code></td>
-<td><code>report.finance.view</code>, <code>report.membership.view</code>, <code>report.safeguarding.view</code></td>
-<td>⚠⚠ <code>report.safeguarding.view</code>. <strong>The money codes left this page and these three did not, and that is a ruling rather than an oversight:</strong> <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a> was asked whether <em>the finance module's</em> codes are still deferred, and promoting <code>report.finance.view</code> with them would have answered a different question by accident — whether reporting is per-report or one permission with row-level filtering. <a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">05d §12</a> states that reporting ships coarse on purpose, that only <code>report.view</code> and <code>report.export</code> exist, that the shape is <strong>still open</strong> (§12 below carries it as this page's own item), and that <strong>an installation must not ship both shapes</strong>. <strong>The finance module spends six codes and does not get to decide reporting's shape</strong>, so money is readable through <code>fee.view</code> and <code>payment.view</code> and the cross-subject money report waits like every other report does.</td>
-</tr>
-<tr>
 <td><code>consent</code></td>
 <td><code>consent.template.edit</code>, <code>consent.record.view</code></td>
 <td></td>
-</tr>
-<tr>
-<td><code>message</code></td>
-<td><code>message.send_direct</code>, <code>message.broadcast</code></td>
-<td><strong>Decided in shape, undesigned in detail</strong> (<a href="../../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>). Everyone may send direct; <code>broadcast</code> is an ordinary <strong>scoped</strong> permission. <strong>The unit is one scope</strong> (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>), so held at the unit <code>broadcast</code> reaches everyone; the narrower audience — this body, not the unit — is a <strong>grant on a <code>person_group</code></strong>, reaching that roster, which <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a> makes available. <em>Which of the two messaging means, and whether <code>message.broadcast</code> should be <code>applies_to = unit_and_item</code>, is messaging's decision, not this catalog's</em> (§12). Recipient chooses the channel, which is not a permission at all. <strong>A direct message to a minor is mirrored to that minor's guardians and the sender is told it will be</strong> — no permission, no age branch in the resolver (<a href="../../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>)</td>
 </tr>
 <tr>
 <td><code>partner</code></td>
@@ -3201,7 +3274,7 @@ grant can be written on, which is what makes a document or a group an item at al
 because an office has no contents: <strong>the codes an office carries are the live grants whose expression
 names it</strong>, one row per code, each with its own scope and its own period
 (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).
-<code>MEMBERS * ROLE(treasurers)</code> on <code>fee.create</code> is one such row, and it — not the office — is what lets a
+<code>MEMBERS * ROLE(treasurer)</code> on <code>fee.create</code> is one such row, and it — not the office — is what lets a
 treasurer issue a fee. A role is two things: <strong>a name a grant can be aimed at</strong>, and <strong>the register that
 answers <em>who held this in 2023</em></strong> (<code>role_holder</code>, which is why
 <a href="../../open-questions/#f-12">F-12</a> closes with <em>no</em> — a holder row names one person). Offices are runtime
@@ -3320,19 +3393,19 @@ requirement, and do not expect the list to survive contact with the organization
 </tr>
 <tr>
 <td><code>treasurer</code></td>
-<td><code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code>, <code>report.finance.view</code> — <strong>seven rows, six of them registered today</strong></td>
+<td><code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code> — <strong>six rows, all six registered</strong></td>
 <td><code>MEMBERS * ROLE(treasurer)</code></td>
-<td>as above, and one list shorter than it was: the treasurer waives nothing and refunds nothing here (D-157, D-158). The six money rows are <a href="../permission-catalog-a-codes/#4a-money">catalog A §4a</a>'s since <a href="../../decisions/round-24/">round 24</a>, which is what makes this office writable today <strong>except</strong> for its one report row — the seventh is the money report code §10 keeps on purpose</td>
+<td>as above, and one list shorter than it was: the treasurer waives nothing and refunds nothing here (D-157, D-158). The six money rows are <a href="../permission-catalog-a-codes/#4a-money">catalog A §4a</a>'s since <a href="../../decisions/round-24/">round 24</a>, which is what makes this office writable today — and it is writable in full now, because the seventh row this office used to name is gone with the whole reporting namespace (<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>)</td>
 </tr>
 <tr>
 <td><code>safeguarding_officer</code></td>
-<td><code>membership.view</code> ⚠, <code>report.safeguarding.view</code> ⚠⚠, <code>membership.terminate</code> ⛔</td>
+<td><code>membership.view</code> ⚠, <code>membership.terminate</code> ⛔ — <strong>two rows</strong></td>
 <td><code>MEMBERS * ROLE(safeguarding_officer)</code></td>
 <td>whoever finds the problem and whoever ends a membership over it are the same person, and nobody else</td>
 </tr>
 <tr>
 <td><code>leaders</code></td>
-<td>the thirteen <code>event.*</code> codes (§8a), <code>membership.view</code> ⚠, <code>person_group.view</code> ⚠, <code>report.membership.view</code> ⚠ — <strong>sixteen rows</strong></td>
+<td>the thirteen <code>event.*</code> codes (§8a), <code>membership.view</code> ⚠, <code>person_group.view</code> ⚠ — <strong>fifteen rows</strong></td>
 <td><code>ROLE(leaders)</code></td>
 <td><strong>volunteers, so no <code>MEMBERS</code></strong> (property 4): the office must survive a lapsed fee, and it reaches every event, not one body's events</td>
 </tr>
@@ -3350,9 +3423,9 @@ requirement, and do not expect the list to survive contact with the organization
 </tr>
 <tr>
 <td><code>auditor</code></td>
-<td><code>audit.view</code> ⚠⚠, <code>audit.export</code> ⚠⚠, <code>report.view</code> ⚠ — <strong>read-only, no writes</strong></td>
+<td><code>audit.view</code> ⚠⚠, <code>audit.export</code> ⚠⚠ — <strong>read-only, no writes, and two rows</strong></td>
 <td><code>ROLE(auditor)</code></td>
-<td><strong>no <code>MEMBERS</code></strong>: an auditor who forgets to pay must not lose the read (property 4)</td>
+<td><strong>no <code>MEMBERS</code></strong>: an auditor who forgets to pay must not lose the read (property 4). What this office used to hold besides the trail was a report code, and there is none left to hold — the trail is the read, and it is ⚠⚠ for what it quotes (<a href="../../decisions/round-20/#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record">D-138</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -3363,23 +3436,25 @@ does this person stop being able to do that?</em> has more than one right answer
 kind of row to end</strong> — the posture of
 <a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>
 applies to both, and the control is the report.</p>
-<p><strong>Three of these offices name a code this catalog has not registered, and after
-<a href="../../decisions/round-24/">round 24</a> all three name the same kind of one.</strong> <code>treasurer</code>,
-<code>safeguarding_officer</code> and <code>leaders</code> each hold exactly one <code>report.*</code> code — <code>report.finance.view</code>,
-<code>report.safeguarding.view</code>, <code>report.membership.view</code> — and those three sit in
-<a href="#10-deferred-namespaces">§10</a> because <strong>reporting's shape is undecided, not because their modules are
-unbuilt</strong> (§10, §12). <strong>The treasurer's money rows are no longer among the unregistered names at all:</strong>
-<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>
-registered six codes for money in <a href="../permission-catalog-a-codes/#4a-money">catalog A §4a</a>, so the sentence
-this page used to carry — that the treasurer's office <em>"cannot be written today"</em> and its count is <em>"a wish
-rather than a migration"</em> — was true of it only while its codes were placeholders, and it is false now. The
-same ruling is why <code>payment.match</code> appears in that row: the office that runs the accounting is the office the
-finance module names as holding it, and a hand-move of an allocation is the only correction the automatic
+<p><strong>Every code every office above names is registered, and that is new.</strong> Two rounds took the exceptions
+away. <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>
+registered six codes for money in <a href="../permission-catalog-a-codes/#4a-money">catalog A §4a</a>, so the sentence this
+page used to carry — that the treasurer's office <em>"cannot be written today"</em> and its count is <em>"a wish rather
+than a migration"</em> — was true of it only while its codes were placeholders, and it is false now; the same
+ruling is why <code>payment.match</code> appears in that row, because the office that runs the accounting is the office
+the finance module names as holding it, and a hand-move of an allocation is the only correction the automatic
 match leaves for a person (<a href="../../decisions/round-24/#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown">D-196</a>).
-Nothing in the schema stops a grant row naming a code that does not exist, so this paragraph is
-<a href="../../open-questions/#f-19">F-19</a>
-one section further along: the catalog names the office, the office names the code, and no row agrees —
-which is now true of three report codes and of nothing else on this page.</p>
+<a href="../../decisions/round-25/">round 25</a> took the last three with it: <code>treasurer</code>, <code>safeguarding_officer</code> and
+<code>leaders</code> each held exactly one reporting code, unregistered and parked in <a href="#10-deferred-namespaces">§10</a>
+because <strong>reporting's shape was undecided rather than because their modules were unbuilt</strong>, and
+<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+deleted the namespace outright — what an organization calls a report is a message of a type delivered to an
+audience now (<a href="../../data-model/10-messaging/#8-reports-arrive-here-and-stop-being-a-name">../data-model/10-messaging.md §8</a>),
+so an office's reach stops at the codes that act on rows and the listings an organization wants are configured
+as types, not granted as screens. <strong>Four of the nine rows above got shorter by one, and none got unwritable.</strong>
+<strong>The paragraph stays because the hazard it was written about does not:</strong> nothing in the schema stops a grant
+row naming a code that has no row, so a future office could walk into the same gap and
+<a href="../../open-questions/#f-19">F-19</a> is still the answer — today this page simply has no example of it.</p>
 <p><strong>Read <code>event.*</code> above as a count, not as a wildcard.</strong> Since
 <a href="../../decisions/round-05/#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle">D-068</a>
 there is no resolver rule that makes <code>person.*</code> mean anything; the notation means <em>"every <code>person.</code>
@@ -3460,7 +3535,7 @@ a grant written without the term needs no reason field: <code>grant_reason</code
 row (<a href="../../data-model/05-authorization/#6-access_grant--the-per-item-layer">05 §6</a>), and it stays optional.
 §12 carries the ruling and its edges.</p>
 <p><strong>The posture is opt-in, so name the new failure rather than bury it.</strong> An expression written
-<code>ROLE(treasurers)</code> with no <code>MEMBERS</code> authorizes a lapsed member, silently, for as long as the grant
+<code>ROLE(treasurer)</code> with no <code>MEMBERS</code> authorizes a lapsed member, silently, for as long as the grant
 lives: forgetting <code>MEMBERS</code> is now possible, and waiving it is a deliberate act in the text. Three
 controls, none of which is the resolver:</p>
 <ul>
@@ -3504,10 +3579,16 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
    fees. This is deliberate. There is no <code>person.background_check.*</code> for it to hold: the organization
    records no background checks
    (<a href="../../decisions/round-02-03/#d-043--no-background-checks-are-recorded-in-this-system">D-043</a>).
-   What it also does not have here is <code>person.view</code>: three rows, and the ⚠⚠ one is the report rather
-   than the record. <strong>If working a case needs the record, that is a fourth grant row</strong> — scoped, dated,
+   What it also does not have here is <code>person.view</code>: <strong>two rows</strong>, and neither reads a person record. Until
+   round 25 this office held a second read as well, a report code marked ⚠⚠, and <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+   took it away with the rest of that namespace, so <strong>the widest thing this office reads is now a membership</strong>.
+   <strong>If working a case needs the record, that is a third grant row</strong> — scoped, dated,
    attributable, and visible to anyone who asks what this office can read, which is the review §2 moved
-   to when it graded <code>person.view</code> ⚠⚠.</li>
+   to when it graded <code>person.view</code> ⚠⚠. What reached the officer before was a listing somebody opened, and
+   what reaches them now is a message of a type with an audience
+   (<a href="../../data-model/10-messaging/#8-reports-arrive-here-and-stop-being-a-name">../data-model/10-messaging.md §8</a>):
+   <strong>this corpus configures no type for a safeguarding case</strong>, which is a fact about the configuration and not
+   a promise that one is coming.</li>
 <li><strong>No office is a guardian.</strong> <strong>The guardianship channel is only consulted when the subject of the act
    is someone else, and it only finds a guardianship row</strong>
    (<a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
@@ -3553,9 +3634,11 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
    the pair, the <code>match_signals</code> recorded against it, and the names and dates those signals compare — and this
    is also the office a <strong>blocked sign-up</strong> lands on
    (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>),
-   where the stalled item is a person who cannot log in and the queue's listing is read by whoever works it,
-   since nothing in this design sends anything
-   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
+   where the stalled item is a person who cannot log in and the queue's listing is read by whoever works it.
+   <strong>Nobody is fetched for that queue, and the reason is configuration rather than a rule about verbs:</strong> no
+   message type is configured for a blocked sign-up, so there is nothing that would fetch anybody
+   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+   <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>).
    <code>person.view</code> at the unit is the catalog's largest ⚠⚠ read sitting in the office with the most write
    authority over identity — <strong>the road this property called the wrong one is now the office as written</strong>, and
    what controls it is the one §2 nominated when it graded the code ⚠⚠: the question <em>which grants were given
@@ -3829,16 +3912,19 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
   survives as a property of day one rather than as a rule about offices, and that is now the ruling and
   not a reading: the design states no default for <code>MEMBERS</code> in either direction
   (<a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>).</li>
-<li>Whether <code>report.*</code> should be per-report permissions or one <code>report.view</code> with
-  row-level filtering. <strong>Still open, and the round that shipped the money codes deliberately did not close it</strong>
-  (<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>):
-  promoting <code>report.finance.view</code> would have answered <em>this</em> question by accident, since what was asked was whether
-  the finance module's own codes are still deferred, and whether reporting is one permission with row-level
-  filtering or a code per row-set was not asked and is not decided. So the row stays in §10 as the only genuinely
-  deferred thing money left behind, the finance module's obligations and payments are gated by <code>fee.view</code> and
-  <code>payment.view</code> — <strong>the module can spend six codes and not the seventh, and the seventh is not this module's to
-  decide</strong> — and <a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like">the day-one rules</a> keep
-  stating that <strong>an installation must not ship both shapes; pick one when reporting is designed</strong>.</li>
+<li>Whether reporting should be gated per report by one permission with row-level
+  filtering. <strong>Answered, and answered by deleting the question:</strong> <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+  ruled that what an organization calls a report is a message of a type addressed to an audience and delivered
+  by the messaging module, and that <strong>there is no report screen in this design</strong> — so there is no permission to
+  shape, no row-level filter to attach to one, and no namespace to defer. Reporting is not a permission, not a
+  module, and not a deferred item: it is an audience and a type
+  (<a href="../../data-model/10-messaging/#8-reports-arrive-here-and-stop-being-a-name">../data-model/10-messaging.md §8</a>).
+  <strong>Everything <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>
+  refused to decide by accident now decides itself:</strong> the finance module spends its six codes and no seventh,
+  money is gated by <code>fee.view</code> and <code>payment.view</code>, and no money report code exists anywhere to be promoted or
+  deferred — the module's money and the listing somebody might want over it are simply no longer the same kind
+  of thing. The §10 row is gone with them, and the codes that ever had a row in
+  <a href="../permission-catalog-a-codes/">catalog A</a> are named in <a href="../removed-concepts/">the dead-name register</a>.</li>
 <li>Whether the organization has offices this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief). <strong>This is answerable by the organization itself</strong> rather than by a
   change to the data model and a migration — one <code>role</code> row and some grants — which is the point of
@@ -3882,16 +3968,28 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
   one <code>role</code> row and a grant, not a migration
   (<a href="../../decisions/round-21/#d-154--counselors-is-an-example-now-not-a-shipped-office">D-154</a>,
   <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>).</li>
-<li><strong><code>message.broadcast</code> has one scope, and messaging has not ruled on what that means.</strong>
-  There is one unit scope
-  (<a href="../../decisions/round-10a/#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row">D-097</a>),
-  so a broadcaster held there reaches everyone
-  (<a href="../../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>),
-  and the narrower audience has to be a
-  grant aimed at a <code>person_group</code>, which is a different shape of decision (who may create the group, and
-  whether it is the <em>broadcast</em> grant or the group roster that carries the ⚠). §10 records it as
-  messaging's call; <strong>the catalog has not silently re-specified it either way</strong>, including whether the
-  code should become <code>applies_to = unit_and_item</code>.</li>
+<li><strong>Which scope a send should carry — closed: one code, at the unit, and nothing about its target checked.</strong>
+  This item asked whether the wide messaging code should be <code>applies_to = unit</code> only or
+  <code>unit_and_item</code>, so that a body could be given the power to address its own roster and nothing
+  wider. <a href="../../decisions/round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>
+  answered it by registering one code, <code>message.send</code>, at the unit, and by ruling that <strong>what a send names is
+  not checked</strong>: a send carries either one person or a saved audience on the message itself, so <strong>an audience
+  narrows the send, and no grant scope narrows it</strong> — the code reaches everybody, and a holder may address a
+  member they have never seen. <strong>The other half of the answer is that a job holds no code at all</strong>: a
+  permission gates an act, a scheduled job has none, and an automated send is therefore not gated by this code
+  and reaches the audience its type names — one message carries one target, and an automated type must name its
+  audience, so there is no second set the run could add to it
+  (<a href="../../data-model/10-messaging/#7-who-may-send-and-what-is-not-checked">10-messaging §7</a>), which is also why
+  no narrower code exists to be scoped for a job either. That is why the two names this item was written around
+  retire rather than get a scope — they never had a row in <a href="../permission-catalog-a-codes/">catalog A</a>, which is
+  what a register is for, and they get no entry in <a href="../removed-concepts/">the dead-name register</a> either, because
+  a death certificate is for something that lived. <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+  is untouched: one grant, one permission, one scope, and <code>message.send</code> carries <code>applies_to = unit</code> and stops
+  there (<a href="../../data-model/10-messaging/#7-who-may-send-and-what-is-not-checked">10-messaging §7</a>). <strong>Who holds
+  it is the granter's decision</strong>, and the ceiling over handing it out is
+  <a href="../../decisions/round-22/#d-163--a-grant-may-not-confer-more-than-the-granter-holds">D-163</a>; <strong>what it costs is
+  on the record</strong> — a person holding no code has no way to write to the organization through this module, and no
+  route for that person is designed anywhere.</li>
 <li><strong><code>membership.manage</code> does not exist, and five places in these documents used it as their example.</strong> D-099
   quotes the organization's own observation — <em>"on an event, <code>membership.manage</code>, or <code>event.create</code>, make
   no sense"</em> — the domain model and the authorization module each restate that sentence as the reason
@@ -3938,9 +4036,11 @@ the first office somebody writes (<a href="#what-an-installation-has">What an in
   person rather than an office, which is the shape §11 property 7 recorded for it. Both of the register's rows for
   this question are in § R now: <a href="../../open-questions/#at-2">AT-2</a> closed on the mechanism and
   <a href="../../open-questions/#f-34">F-34</a> on the schedule the deleted proposal stage had secretly been carrying. The
-  schedule cannot live in a reminder either — nobody is told anything, the author included — so the page that
-  states the rule is where the deadline lives
-  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
+  schedule cannot live in a reminder either — nobody is told anything, the author included, and the reason is
+  that no message type is configured for a definition going stale rather than a rule about verbs — so the page
+  that states the rule is where the deadline lives
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+  <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>).
   <strong>The risk of leaving it unheld changed kind and got
   worse.</strong> While a proposal stage existed, an office without the permission was a slow leak: values arrived
   against invented codes, sat in a queue, and the vocabulary rotted while still storing everything. Now a value

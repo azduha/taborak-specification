@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1807,6 +1809,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2093,6 +2123,8 @@
       
         
           
+        
+      
         
       
         
@@ -2836,6 +2868,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3072,16 +3132,39 @@ table, and a tombstone where the import pipeline was), and
 was removed, when, on what legal basis, and — importantly — what was deliberately retained
 and why. A redaction performed without a record is indistinguishable from a data loss
 incident.</p>
-<p><strong>Two clocks, and this log is where the permanent one gets written down.</strong> An erasure now performs three
-acts with three different lifetimes. It overwrites the person row's names and contact points,
-immediately and irreversibly; it deletes the <code>person_attribute</code> rows, so that <code>redacted_tables</code> naming
-that table is the only sentence left saying they existed; and it scrubs that person's values out of the
-trail's payloads — out of rows which, since
+<p><strong>Two clocks, and this log is where the permanent one gets written down.</strong> An erasure acts in more than
+one shape, and the shapes differ in what they leave behind. It overwrites the person row's names and
+contact points, immediately and irreversibly; it deletes the <code>person_attribute</code> rows, so that
+<code>redacted_tables</code> naming that table is the only sentence left saying they existed; it empties an
+<code>event_answer</code>'s <code>value</code> and keeps the row (§5, and
+<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>);
+and it scrubs that person's values out of the trail's payloads — out of rows which, since
 <a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>,
-are scheduled to lose their payloads anyway (§2.2). <strong>What an erasure does not do is touch
-<code>membership</code>, <code>fee_obligation</code>, <code>payment</code>, or this row's <code>person_id</code></strong> — and the reason is now a stated
+are scheduled to lose their payloads anyway (§2.2). <strong>Round 25 added one column-list to that sentence, and
+it is the emptied shape rather than the deleted one:</strong> <code>membership.notes</code>, <code>membership_request.notes</code> and
+<code>payment.notes</code> are <strong>emptied</strong> and their rows remain
+(<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>). Free text
+beside a row the organization keeps is the event-answer case and not the attribute case — the row is a fee,
+an ask or a membership, and the note is a remark on it. <strong>What an erasure does not do is touch the <em>facts</em>
+in <code>membership</code>, <code>fee_obligation</code> and <code>payment</code>, or this row's <code>person_id</code></strong> — a period, an amount or a
+date is untouched, and only the free text beside them goes — and the reason is now a stated
 justification rather than nobody having decided when those rows end. That difference, between a rule
 nobody defended and a rule with a reason attached, is exactly what <code>retained_reason</code> carries.</p>
+<p><strong>One body of text stands outside that whole list, by decision and not by oversight.</strong> A <code>message</code>, its
+body, its recipient rows and their opened-moment are neither emptied nor deleted
+(<a href="../../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>),
+and the reason is on the record because the argument against it was available:
+<a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a> deleted
+<code>person.notes</code> on the ground that free text about a person, sitting outside erasure, makes erasure a lie —
+that argument applies to a message body word for word, and it <strong>was put and refused</strong>, on the ground that a
+message is correspondence, an act this organization performed on a date, and not something it deletes on
+request. The consequence is stated rather than discovered: an erasure removes the person and leaves every
+message addressed to them standing, its recipient row pointing at the tombstone
+<a href="../01b-merges-views-and-checks/">01b</a> leaves behind. <strong>The columns this list does <em>not</em> name are named in
+§6</strong> — a roster row's <code>note</code>, an account's <code>status_reason</code> and <code>status_note</code>, and the two values a
+<code>field_conflict</code> holds — and whether they join it is <a href="../../open-questions/#k-16">K-16</a>. The answer that
+moved these three columns named three columns, and this page does not widen an answer while writing it
+down.</p>
 <p><strong>This log is not subject to payload reduction, and that is a decision rather than an oversight.</strong>
 Reduction empties the payloads of rows past the window. A <code>redaction_log</code> row holds no values to empty —
 a person id, a legal basis, a list of table names, and the reasoning — and it is the <em>evidence</em> that a
@@ -3135,8 +3218,12 @@ what the record said.</p>
   count every integration write as a finding until whoever reads it stopped reading. <strong>What it no longer
   counts as a gap is the shape it was built to count.</strong> A row naming no person and no key is not a row that
   failed to answer <em>who did this</em>: §7a reads it as this system acting on its own, and the renewal sweep,
-  payload reduction, the access trail's age-out, the bank statement pull and a named migration write rows in
-  exactly that shape, correctly and by design (<a href="../00-conventions/#7-standard-columns">00-conventions §7</a>).
+  payload reduction, the access trail's age-out, the bank statement pull, the messaging run and a named
+  migration write rows in exactly that shape, correctly and by design
+  (<a href="../00-conventions/#7-standard-columns">00-conventions §7</a>). <strong>The messaging run is the newest of those
+  writers</strong> (<a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>):
+  it authored what used to be called a renewal notice, because one label per kind of act is why the renewal
+  sweep did not get the job — it expires memberships, and it now sends nothing.
   <strong>The age-out's row is new rather than always having been there</strong>, and it is one row per run rather than one
   per deleted row (<a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>):
   before it, <code>system:log-reduction</code> was a name on a vocabulary and on no row at all. Two things are
@@ -3439,9 +3526,16 @@ be discovered only when someone needs the history that was never recorded.</p>
   stronger rather than weaker. <strong>What still exists is free text <em>about</em> a person that is not a fact <em>of</em> them</strong>,
   and the page says so rather than implying the record is now clean of it: a roster row's <code>note</code>, an account's
   <code>status_reason</code> and <code>status_note</code>, and a <code>field_conflict</code> holding the two values a merge could not choose
-  between. The boundary is that the person row holds no free text, while plenty of rows about a person do.</li>
+  between. The boundary is that the person row holds no free text, while plenty of rows about a person do.
+  <strong>Round 25 then ruled on three rows of that kind and no more:</strong> <code>membership.notes</code>,
+  <code>membership_request.notes</code> and <code>payment.notes</code> stay where they are and <strong>erasure empties them</strong>, in the
+  emptied shape §4 now lists
+  (<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>). The four
+  named just above are <strong>not</strong> among them — the answer named three columns, and this page does not widen an
+  answer while writing it down — so they stay named here, and whether they join is
+  <a href="../../open-questions/#k-16">K-16</a>.</li>
 </ul>
-<p>Nothing above is on its way to <a href="../../open-questions/">../open-questions.md</a>: round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written <strong>into the bullet above</strong>, and one that is genuinely still open stays open here rather than being handed back to the register.</p>
+<p><strong>The register holds seven questions, <a href="../../open-questions/#k-11">K-11</a> through <a href="../../open-questions/#k-17">K-17</a>, and one of them is this page's own</strong> — <a href="../../open-questions/#k-16">K-16</a>, whether the free-text columns named in the bullet above join the three that erasure now empties. That is the only item above pointing into the register, and the habit it does not change: <a href="../../decisions/round-24/">round 24</a> emptied the register and left the asking on this page, so <strong>an item here closes by having its answer written into the bullet above</strong>, never by being handed back — which is exactly how the <code>person.notes</code> bullet and the three <code>notes</code> columns above were closed, in place, with their decisions named.</p>
 
 
 

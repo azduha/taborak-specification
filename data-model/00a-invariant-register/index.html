@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1827,6 +1829,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2113,6 +2143,8 @@
       
         
           
+        
+      
         
       
         
@@ -2856,6 +2888,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3024,7 +3084,7 @@ rule is a second copy of it, and the defect this corpus keeps hitting is a copy 
 the catalog's §12 tells about a seeded table copied from an evaluator's arm list, and the reason
 <a href="../../decisions/round-18/#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round">D-127</a>
 diffs documents against their own registries rather than against a list. What is <em>here</em> is the three
-facts a rule's own page is allowed to leave implicit — <strong>which layer carries it, which report would see
+facts a rule's own page is allowed to leave implicit — <strong>which layer carries it, which check would see
 a breach, and what a breach looks like</strong> — and the register is where a blank in those two columns is
 visible instead of being a sentence on page 412 that nobody re-reads.</p>
 <p><strong>The four shapes, and the layer each is assigned</strong> (<a href="../../decisions/round-18/#d-130--one-register-answers-who-enforces-an-invariant-and-f-10-closes">D-130</a>):</p>
@@ -3054,7 +3114,7 @@ visible instead of being a sentence on page 412 that nobody re-reads.</p>
 <td><strong>3</strong></td>
 <td>The answer reads another table, a resolver, or a graph</td>
 <td>The write path, inside the transaction that writes</td>
-<td>No constraint spans two tables. The layer named in this register is always the write path; <strong>what varies is whether a report was named beneath it</strong></td>
+<td>No constraint spans two tables. The layer named in this register is always the write path; <strong>what varies is whether a backstop was named beneath it</strong></td>
 </tr>
 <tr>
 <td><strong>4</strong></td>
@@ -3064,32 +3124,41 @@ visible instead of being a sentence on page 412 that nobody re-reads.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>How to read the two right-hand columns.</strong> <em>Backstop</em> names the report that would list a breach, by
-the page and number where that report is written. <strong><code>none</code> in bold</strong> is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. <strong>Twelve rows are in
-that state — ten of them shape-3 and two shape-2 — and they are not one kind of blank.</strong> The kinds are worth
+<p><strong>How to read the two right-hand columns.</strong> <em>Backstop</em> names the check that would list a breach, by
+the page and number where that check is written. <strong>That column was headed <em>Report</em> until
+<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">round 25</a>,
+which deleted the report screen and left the word meaning a message somebody receives; every row of this column
+lists a run that reaches nobody unless somebody configures a type over its finding, so the column took the word
+this page was already using for it in the sentence you are reading. Nothing changed in the column but its name.</strong>
+<strong><code>none</code> in bold</strong> is not an omission of this page and not a slur on the rule: it means the corpus names no such
+check anywhere, which is the finding. <strong>Sixteen rows are in
+that state — thirteen of them shape-3 and three shape-2 — and they are not one kind of blank.</strong> The kinds are worth
 naming because they fail differently. <strong>Four were chosen by a ruling</strong> and said on the page that owns the rule: an
 ended key's audit window (<a href="../../decisions/round-19/#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud">D-133</a>),
 a delegation outliving the permission behind it
 (<a href="../../decisions/round-20/#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date">D-143</a>),
 eligibility for registering, which is a capability rather than a state to list, and a value's conformance to the
-type its own definition declares. <strong>Two have a refusal standing where a report would be</strong>: the granter's ceiling
-and the request-to-membership pair are refused at the write, so a report over the state they would breach is empty
-by construction and would cost a query to say nothing. <strong>Two are out of reach of any report</strong> — a selector's
+type its own definition declares. <strong>Five have a refusal standing where a check would be</strong>: the granter's ceiling
+and the request-to-membership pair are refused at the write, so a check over the state they would breach is empty
+by construction and would cost a query to say nothing — <strong>and three more arrived in round 25 for exactly that
+reason</strong>, one per rule a <code>message</code> refuses at the save: a second target, a second author, an automated type with
+no audience to reach. <strong>Two are out of reach of any check</strong> — a selector's
 resolver is program text, and an audit payload's ordering is not a row state — which is a different condition from
 being uncovered, and is written as the one it is. <strong>One is a promise with an address</strong>: D-130's identifier row
-names the section the report will be added to, so that <code>none</code> is dated rather than permanent. <strong>The last three are
-blanks nobody has asked to fill</strong>, and this page is not allowed to fill them by inventing a check nobody asked
-for.
+names the section the check will be added to, so that <code>none</code> is dated rather than permanent. <strong>The last four are
+blanks nobody has asked to fill</strong> — three that this page has carried and, since round 25, <code>message_type.code</code>
+unique among live rows — and this page is not allowed to fill them by inventing a check nobody asked for.
 <strong>This page printed five for three rounds, and five had stopped being true.</strong> It printed five because round 20
 counted, rounds 21 and 22 added rows carrying <code>none</code> faster than they removed any, and nobody re-counted — there
 were thirteen when this round opened. <strong>The history of this column in the order it happened: eleven, seven after
-round 19, five after round 20, thirteen, twelve now.</strong> The last figure is the first one in that sentence that was
-produced rather than re-printed: a program counted the rows whose report cell begins with the word <code>none</code>, which
+round 19, five after round 20, thirteen, twelve after round 24, sixteen now.</strong> The last figure is the second one
+in that sentence that was produced rather than re-printed, and it went <strong>up</strong> for the first time in four rounds
+because round 25 designed a module and a new module's rules arrive here before anybody has written a check for
+them — which is the shape this column is supposed to show and not a failure of it: a program counted the rows whose backstop cell begins with the word <code>none</code>, which
 is the definition this paragraph now states, so the next round can re-produce the number instead of trusting it.
 <strong>That is not the same as a check, and this page says so rather than pretending otherwise.</strong> Until this round
 the repository's only measuring tooling was <code>scripts/check-registries.py</code>, which verifies that a <em>name</em> resolves and
-never reads a figure beside a sentence — a row with no report beside it has never claimed a name that does not exist,
+never reads a figure beside a sentence — a row with no backstop beside it has never claimed a name that does not exist,
 which is exactly why the paragraph above could stand there being wrong. <a href="../../decisions/round-23/">Round 23</a> wrote
 a second script for the figure this corpus states in prose:
 <code>scripts/count-decisions.py</code> counts the <code>## D-</code> headings, counts the index's rows, and then reads every sentence
@@ -3113,7 +3182,7 @@ the other direction</strong>: the displayed-name row said no report existed whil
 absence cannot, so a blank is as much a claim about the corpus as a link is, and it can be wrong while looking
 humble. <em>Breach</em> is what the bad data looks like afterwards, because a shape-1 breach and a shape-2
 breach both read as "two rows" and only one of them is a duplicate.</p>
-<p><strong>Nine numbered checks, on three pages, are assertions about the code rather than reports over data</strong>
+<p><strong>Nine numbered checks, on three pages, are assertions about the code rather than checks over data</strong>
 — the six <code>TIME-BOMB</code> checks of
 <a href="../05d-invariants-and-seed/#11-invariants-to-verify">05d §11</a> (15, 16, 17, 18, 19 and 22),
 <a href="../02-organization/#6-integrity-checks">02 §6</a> check 4, and
@@ -3124,7 +3193,7 @@ clean. Filing one as a backstop would overstate coverage in exactly the directio
 <h2 id="1-no-two-rows-overlap-in-time">1. No two rows overlap in time<a class="headerlink" href="#1-no-two-rows-overlap-in-time" title="Permanent link">&para;</a></h2>
 <p>Four rules. All four are a hand-written exclusion constraint over a range built from <code>valid_from</code> and
 <code>valid_to</code>, half-open, so that a row ending 2010-06-30 and one starting 2010-06-30 do not collide.</p>
-<p><strong>A report beneath a real constraint is a courtesy, not a control</strong> — the constraint cannot be breached
+<p><strong>A check beneath a real constraint is a courtesy, not a control</strong> — the constraint cannot be breached
 quietly — so a <code>none</code> in this table or the next is only a finding where the layer is the write path.</p>
 <table>
 <thead>
@@ -3178,7 +3247,7 @@ produces a rule that refuses a lapsed row beside a new one — which history req
 mistake <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00 §6a</a> records as already having been made
 once, in an index.</p>
 <h2 id="2-unique-but-only-among-rows-meeting-a-condition">2. Unique, but only among rows meeting a condition<a class="headerlink" href="#2-unique-but-only-among-rows-meeting-a-condition" title="Permanent link">&para;</a></h2>
-<p>Fifteen rules, each a partial unique index whose predicate is the interesting half.</p>
+<p>Sixteen rules, each a partial unique index whose predicate is the interesting half.</p>
 <table>
 <thead>
 <tr>
@@ -3296,6 +3365,14 @@ once, in an index.</p>
 <td>Two integrations authenticate as each other in the audit trail</td>
 </tr>
 <tr>
+<td>A message type's code is used once</td>
+<td><a href="../10-messaging/#2-message_type--a-vocabulary-that-is-also-a-settings-panel">10 §2</a></td>
+<td><code>code</code></td>
+<td>the row is live</td>
+<td><strong>none</strong></td>
+<td>An automated message is written against whichever of two types a query found, so the audience an installation configured is not the audience that fires</td>
+</tr>
+<tr>
 <td>One live payment request per obligation</td>
 <td><a href="../07-finance/#2a-how-money-actually-arrives">07 §2a</a></td>
 <td><code>fee_obligation_id</code></td>
@@ -3319,12 +3396,15 @@ once, in an index.</p>
 <a href="../00-conventions/#6a-who-enforces-an-invariant-now">00 §6a</a> tells the story of the index that got this
 wrong once by ignoring a flag. Uniqueness stated over <strong>all</strong> rows — <code>permission.code</code>, <code>role.code</code>,
 <code>payment_request.variable_symbol</code>, the <code>public_id</code> columns, the one-row-per-pair rules on registrations
-and answers — is a plain unique constraint and is not listed here at all.</p>
+and answers, and <code>message_recipient (message_id, person_id, channel)</code> from <a href="../../decisions/round-25/">round 25</a>
+on — is a plain unique constraint and is not listed here at all. <strong>That last one is named even though it is the
+boring shape, because without it a guardian appears twice in one message's record</strong> and <em>"whom did this reach"</em>
+stops being a count.</p>
 <h2 id="3-the-answer-reads-another-table-a-resolver-or-a-graph">3. The answer reads another table, a resolver, or a graph<a class="headerlink" href="#3-the-answer-reads-another-table-a-resolver-or-a-graph" title="Permanent link">&para;</a></h2>
-<p>Forty-seven rules, <strong>counted off the table below rather than carried down from the last round that touched it</strong> —
+<p>Forty-nine rules, <strong>counted off the table below rather than carried down from the last round that touched it</strong> —
 this sentence said forty-one while the register's own summary elsewhere in the corpus said forty-five, and both
 were describing one table. <strong>In this shape the layer is always the write path</strong> — no constraint spans two tables —
-so the layer column is gone from this table and only two columns remain. <strong>The report column is the one
+so the layer column is gone from this table and only two columns remain. <strong>The backstop column is the one
 worth reading</strong>: <code>none</code> means a rule that holds until somebody edits the write path and nothing
 downstream ever says so.</p>
 <table>
@@ -3333,7 +3413,7 @@ downstream ever says so.</p>
 <th>The rule</th>
 <th>Stated in</th>
 <th>Save-time check</th>
-<th>Report</th>
+<th>Backstop</th>
 </tr>
 </thead>
 <tbody>
@@ -3455,13 +3535,13 @@ downstream ever says so.</p>
 <td>An item-scoped grant carries an end date</td>
 <td><a href="../05-authorization/#6-access_grant--the-per-item-layer">05 §6</a></td>
 <td>application validation</td>
-<td>the report of long-lived open grants, named beside an admission that nothing backstops it</td>
+<td>the check that lists long-lived open grants, named beside an admission that nothing backstops it</td>
 </tr>
 <tr>
 <td>An office does not outlive its own term limit</td>
 <td><a href="../05-authorization/#4-role_holder--who-holds-an-office">05 §4</a></td>
 <td>none — the column is a prefilled nudge</td>
-<td>the report of offices held past their end date</td>
+<td>the check that lists offices held past their end date</td>
 </tr>
 <tr>
 <td>An ended group is not named by a new grant</td>
@@ -3509,7 +3589,7 @@ downstream ever says so.</p>
 <td>An <code>access_log</code> row does not outlive the window</td>
 <td><a href="../00-conventions/#4-deletion-policy">00 §4</a>, <a href="../05c-access-log-and-resolver/#9-access_log">05c §9</a></td>
 <td>a scheduled job — <strong>the only rule in this register carried by a clock rather than by a write</strong></td>
-<td><a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> counts a row still present past the window; the delete is the third exception to "nothing is hard-deleted" (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>)</td>
+<td><a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> counts a row still present past the window; the delete is the second exception to "nothing is hard-deleted" (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>)</td>
 </tr>
 <tr>
 <td>Every audited table is in fact audited</td>
@@ -3581,13 +3661,13 @@ downstream ever says so.</p>
 <td>An operand that resolves to nothing is said out loud</td>
 <td><a href="../05b-expression-tree/">05b</a></td>
 <td>none — no save is refused</td>
-<td>the report of audiences that reach nobody, with an owner</td>
+<td>the check that lists audiences that reach nobody, with an owner</td>
 </tr>
 <tr>
 <td>An expression tree stays a size that resolves</td>
 <td><a href="../05a-audience-and-grammar/#8-audience--grants-that-target-a-set-of-people">05a §8</a></td>
 <td>none, by design</td>
-<td>a report the corpus says has nothing behind it</td>
+<td>a check the corpus says has nothing behind it</td>
 </tr>
 <tr>
 <td>A compilation is invalidated by exactly the right edits</td>
@@ -3607,19 +3687,46 @@ downstream ever says so.</p>
 <td>release engineering</td>
 <td>none can: it is program text, and it surfaces as an empty set</td>
 </tr>
+<tr>
+<td>A message names exactly one target</td>
+<td><a href="../10-messaging/#3-message--one-author-one-target-and-no-second-version">10 §3</a></td>
+<td>the write path: exactly one of <code>target_person_id</code> and <code>audience_id</code>, never both, never neither</td>
+<td><strong>none, and none is possible</strong> — the save refuses the state, so a check over it is empty by construction (<a href="../../decisions/round-25/#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207</a>)</td>
+</tr>
+<tr>
+<td>A message has exactly one author</td>
+<td><a href="../10-messaging/#3-message--one-author-one-target-and-no-second-version">10 §3</a></td>
+<td>the write path: exactly one of <code>author_person_id</code> and <code>actor_label</code>, and a label from the fixed list when it is the system</td>
+<td><a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> reports a label that is not on the list; the empty-both case is refused at the save</td>
+</tr>
+<tr>
+<td>An automated message type names the audience it reaches</td>
+<td><a href="../10-messaging/#2-message_type--a-vocabulary-that-is-also-a-settings-panel">10 §2</a></td>
+<td>the write path: <code>audience_id</code> is required exactly when <code>is_automated</code></td>
+<td><strong>none, and none is possible</strong> — a job with no audience cannot be written, which is the point of putting the reach on the row (<a href="../../decisions/round-25/#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209</a>)</td>
+</tr>
+<tr>
+<td>A guardian's mirror row does not mirror again</td>
+<td><a href="../10-messaging/#6-a-childs-message-mirrors-as-rows">10 §6</a></td>
+<td>the write path: a row carrying <code>mirrored_from_recipient_id</code> is never itself mirrored</td>
+<td><strong>none</strong> — and this is the one row added here whose breach is not quiet, because mirroring a mirror is a message about a message, delivered to a guardian who was never addressed (<a href="../../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>)</td>
+</tr>
 </tbody>
 </table>
 <p><strong><code>none</code> in this table is not an indictment of the rule.</strong> Four of them are <code>none</code> because the design
 refused a guard on purpose — eligibility is capability, a warning is not an error, a size rule would be
 a limit nobody asked for, and a resolver arm is code. The register keeps those rows precisely so that
-"we checked" and "we chose not to" are different words in the same column.</p>
+"we checked" and "we chose not to" are different words in the same column. <strong>Three of them are a fourth kind,
+which arrived with the messaging module: the save itself refuses the state, so a check over it would be empty
+by construction</strong> — that is not a guardrail missing, it is a guardrail standing where a check cannot be seen.</p>
 <h2 id="4-a-value-that-may-never-change-once-set">4. A value that may never change once set<a class="headerlink" href="#4-a-value-that-may-never-change-once-set" title="Permanent link">&para;</a></h2>
 <p><strong>This shape is not empty.</strong> It was described as empty on the strength of one deleted instance; four live
 ones were already in these pages, and the test that separates them from a column nobody would think to
 rename is the same test that made the two named candidates worth naming: <strong>a rename rewrites what
-references it, and nothing leaves a row in the wrong state for a report to find.</strong> <strong>Eight rows are below and
+references it, and nothing leaves a row in the wrong state for a report to find.</strong> <strong>Nine rows are below and
 seven of them are members</strong>, counted off the table rather than carried down: the audience row is the eighth and
-is the correction, not a member. <strong>The seventh arrived in round 20 without anyone looking for it</strong> — a decision
+is the correction, not a member, and the message row is the ninth — <strong>a value that may never change because it
+happened</strong>, which is a reason no other row here has. <strong>The seventh arrived in round 20 without anyone looking for it</strong> — a decision
 about event forms made a vocabulary code referenced, and the shape grew by whatever the corpus references,
 which is the one property of this shape that does not need a checker.</p>
 <table>
@@ -3665,7 +3772,7 @@ which is the one property of this shape that does not need a checker.</p>
 <tr>
 <td>A key's <code>code</code></td>
 <td><a href="../05e-keys-and-callers/#14-api_key--a-caller-that-is-nobody">05e §14</a></td>
-<td>grants, audit rows, and the report of who called</td>
+<td>grants, audit rows, and the check that lists who called</td>
 <td>the same rule (<a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>)</td>
 </tr>
 <tr>
@@ -3673,6 +3780,12 @@ which is the one property of this shape that does not need a checker.</p>
 <td><a href="../09-attributes/#2-attribute_definition--the-vocabulary">09 §2</a></td>
 <td><code>event_question.bound_attribute_code</code> from round 20 on — <strong>the first table that ever named a vocabulary code by value</strong></td>
 <td>the same rule, arrived at by D-131's own test rather than by looking for it: a merge may carry the bound questions, a rename would silently re-answer every form asked under the old name (<a href="../../decisions/round-18/#d-131--shape-4-is-not-empty-and-a-code-that-is-referenced-may-not-be-renamed">D-131</a>, <a href="../../decisions/round-20/#d-139--an-event-question-may-bind-to-a-stored-value-it-prefills-as-a-suggestion-and-writes-back-as-an-answer">D-139</a>)</td>
+</tr>
+<tr>
+<td>A written message, its subject and its body</td>
+<td><a href="../10-messaging/#3-message--one-author-one-target-and-no-second-version">10 §3</a></td>
+<td>nothing inside the database, which is why the row is here anyway: what references it is outside and historical — a person reading in 2031 the sentence written in 2026</td>
+<td>"a body written is a body kept": no update path, and a wrong send is a second message (<a href="../../decisions/round-25/#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207</a>). <strong>The bank row's shape arrived at from the other direction</strong> — that one is immutable because money has already reconciled against it, this one because a letter is an act that happened</td>
 </tr>
 <tr>
 <td>An audience's <code>code</code></td>

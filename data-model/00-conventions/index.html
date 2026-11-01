@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1971,6 +1973,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2257,6 +2287,8 @@
       
         
           
+        
+      
         
       
         
@@ -2987,6 +3019,34 @@
     
   
     Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
   
 
     
@@ -3829,6 +3889,11 @@ what turns <em>"the system"</em> from a shrug into a claim.</p>
 <td>The <code>bank_transaction</code> and <code>payment</code> rows that answer a variable symbol (<a href="../../decisions/round-06/#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code">D-075</a>). <strong>For the run with nobody in the room</strong> — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does</td>
 </tr>
 <tr>
+<td><code>system:messages</code></td>
+<td>the messaging run</td>
+<td>The automated <code>message</code> rows and their <code>message_recipient</code> rows (<a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>). <strong>The sixth label, and the first addition to this list since round 17 fixed it.</strong> One label per kind of act, which is why the renewal sweep did not get this job: it expires memberships, and a label that both expires memberships and writes letters cannot be added to without editing a vocabulary. <strong>A job holds no permission</strong> — <code>message.send</code> gates a person's act and a job has none to gate (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>) — and the run writes <strong>one summary <code>audit_log</code> row for itself</strong> (<a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>), the way <code>system:log-reduction</code> does. Which clock fires which type is <a href="../../open-questions/#k-14">K-14</a></td>
+</tr>
+<tr>
 <td><code>migration:&lt;id&gt;</code></td>
 <td>a named migration</td>
 <td>Any structural change, <strong>and any one-off correction</strong> — a fix that is not in a migration is a fix nobody can attribute</td>
@@ -3875,7 +3940,22 @@ in one place instead of inferred in four.</p>
    (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>).
    The two shapes are one decision, not an inconsistency: a descriptive value has no row worth keeping
    because the row <em>is</em> the value, while an answer is a fact that a question was answered on a dated
-   occasion, and that fact belongs partly to the event. <strong><code>event_registration</code> is not in either shape:</strong>
+   occasion, and that fact belongs partly to the event.
+   <strong>A third shape arrived in <a href="../../decisions/round-25/">round 25</a>, and it is the second one again:</strong>
+   <code>membership.notes</code>, <code>membership_request.notes</code> and <code>payment.notes</code> are <strong>emptied</strong> and their rows remain
+   (<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>). Free text
+   beside a row the organization keeps is the event-answer case, not the attribute case — the row is a fee, an
+   ask or a membership, and the note is a remark on it. <strong>Whether the other free text about a person joins them
+   is <a href="../../open-questions/#k-16">K-16</a></strong>, and it is a question because the answer that was given named three
+   columns and this design does not quietly widen an answer while writing it down.
+   <strong>And one body of text stands outside erasure by decision, not by oversight:</strong> a <code>message</code>, its body, its
+   recipient rows and their read-moment are neither emptied nor deleted
+   (<a href="../../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>).
+   <a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a> deleted
+   <code>person.notes</code> on the ground that free text about a person outside erasure makes erasure a lie, and that
+   argument applies to a message word for word and <strong>was put and refused</strong> — a message is correspondence, an act
+   this organization performed on a date, and the consequence is stated rather than discovered: an erasure leaves
+   every message addressed to the person standing, pointing at a tombstone. <strong><code>event_registration</code> is not in either shape:</strong>
    whether a person came is organizational history under item 3, and this is stated because
    <a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>
    declined to make it a record class of its own.</li>
@@ -4112,6 +4192,10 @@ states the fields, rules, invariants and open issues for its part of the model.<
 <td><code>event</code>, <code>event_organizer</code>, <code>event_registration</code>, <code>event_question</code>, <code>event_answer</code></td>
 </tr>
 <tr>
+<td><a href="../10-messaging/">10-messaging.md</a></td>
+<td><code>message_type</code>, <code>message</code>, <code>message_recipient</code> — <strong>one table, one author per row, and a notification a kind of row rather than a second mechanism</strong> (<a href="../../decisions/round-25/#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a>); <code>account.opt_in_email</code> is the one door-column and it lives on the <code>account</code> row, which <a href="../01-identity/">01-identity.md</a> describes — a door is a messaging decision wearing an account column, and it is chosen here because a door is messaging's</td>
+</tr>
+<tr>
 <td><a href="../09-attributes/">09-attributes.md</a></td>
 <td><code>attribute_definition</code>, <code>attribute_option</code>, <code>person_attribute</code> — <strong>everything the system knows about a person other than their name, their gender and their age</strong> (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>, <a href="../../decisions/round-07-08/#d-084--descriptive-data-is-organization-defined-at-runtime">D-084</a>). It is last in this table because it is last in every other document's account of a person: it references <code>person</code> and nothing references it</td>
 </tr>
@@ -4120,10 +4204,12 @@ states the fields, rules, invariants and open issues for its part of the model.<
 <p>Each document presents its entities in <strong>dependency order</strong>: one appears only after everything it
 references. That ordering was needed to make a schema file execute; it is kept because it is also
 the order in which the model is understandable.</p>
-<p><strong>Messaging is not in this table.</strong> <code>message</code> and <code>message_recipient</code> are decided at
+<p><strong>Messaging is in this table now, in a document round 24 left unwritten.</strong>
 <a href="../../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>
-and not yet designed; they will need their own document. The absence is tracked in
-<a href="../../open-questions/#h-not-yet-designed">../open-questions.md</a>.</p>
+decided its shape in round 6 and twenty-three rounds passed before it was drawn
+(<a href="../../decisions/round-25/#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a>).
+<strong>What the document does not have is a settled edge</strong>: five questions came out of designing it and every one is
+registered at <a href="../../open-questions/#k-11">K-11</a> … <a href="../../open-questions/#k-15">K-15</a> rather than answered here.</p>
 
 
 

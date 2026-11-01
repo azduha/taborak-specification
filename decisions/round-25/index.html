@@ -1,0 +1,3798 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Design documentation for the organization's information system.">
+      
+      
+      
+        <link rel="canonical" href="https://azduha.github.io/taborak-specification/decisions/round-25/">
+      
+      
+        <link rel="prev" href="../round-24/">
+      
+      
+        <link rel="next" href="../../open-questions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Round 25 - Information System — Design Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#decision-log--refinement-round-25-d-206--d-216" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Information System — Design Documentation" class="md-header__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Information System — Design Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Round 25
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Information System — Design Documentation" class="md-nav__button md-logo" aria-label="Information System — Design Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Information System — Design Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/azduha/taborak-specification" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    azduha/taborak-specification
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Glossary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary — Ubiquitous Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization terms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/02-actors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actors and Accounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/03-identity-and-legacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity and Legacy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/08-person-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/04-organization-structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups and the Unit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/05-membership-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06-authorization-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/06a-audiences-and-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audiences and Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../domain/07a-capacity-presence-and-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacity, Presence, Forms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/00a-invariant-register/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Who Enforces Each Invariant
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01-identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Identity: the central claim, person, and name history
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01a-accounts-and-contacts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accounts, Contacts, Identifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/01b-merges-views-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merges, Views, Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/09-attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/02-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/03-membership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Membership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/04-relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Authorization
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Authorization: permissions, offices, grants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05a-audience-and-grammar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audience, Grammar, Selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05b-expression-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Expression Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05c-access-log-and-resolver/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Log and Resolver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05d-invariants-and-seed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invariants and Seed Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/05e-keys-and-callers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys and Machine Callers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit and Import
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audit and Import
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06-audit-and-import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Audit and Import: the two audit trails, and audit_log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/06b-redaction-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redaction and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/07-finance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model — Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/08a-event-guards-and-checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guards and Integrity Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-a-authorization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: authorization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/erd-b-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD: inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-a-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog: the codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/permission-catalog-b-roles-and-open-issues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Catalog continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/removed-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Removed Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Log
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Log
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-01b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 1 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-02-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 2-3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 4
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 5
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 6
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-07-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 7-8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 9
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-10b/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 10 continued
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-11-12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rounds 11-12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 13
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 15
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 16
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 17
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 18
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 19
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 20
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 21
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 22
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 23
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../round-24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-206 — A message is one table, this system is one of its authors, and a notification is a type of message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-207 — A message is addressed to one person or to a saved audience, and the recipient rows record an act and not a set
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-208 — message.send is the only messaging code, and the audience a send names is not checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-209 — A message type is a row, and the audience it reaches is configuration an admin edits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-210 — A report is a delivered message, so all five report codes are deleted and reporting stops being a name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-211 — Nothing about a message ages out, and erasure does not reach messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-212 — system:messages is the sixth actor label, and the renewal sweep stops being a sender
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-213 — The account chooses its own doors, a child's message mirrors as its own rows, and only e-mail lands today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-214 — The system sends, and D-164 is narrowed to the one thing it was protecting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-215--the-three-notes-columns-stay-and-erasure-empties-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-215 — The three notes columns stay, and erasure empties them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-216 — Every worked example names the office treasurer, and what the operand reads is still unstated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-round-adds-to-the-register-and-why-an-empty-register-was-not-a-finished-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this round adds to the register, and why an empty register was not a finished design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-sweep-found-that-this-round-did-not-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the sweep found that this round did not plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-206 — A message is one table, this system is one of its authors, and a notification is a type of message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-207 — A message is addressed to one person or to a saved audience, and the recipient rows record an act and not a set
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-208 — message.send is the only messaging code, and the audience a send names is not checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-209 — A message type is a row, and the audience it reaches is configuration an admin edits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-210 — A report is a delivered message, so all five report codes are deleted and reporting stops being a name
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-211 — Nothing about a message ages out, and erasure does not reach messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-212 — system:messages is the sixth actor label, and the renewal sweep stops being a sender
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-213 — The account chooses its own doors, a child's message mirrors as its own rows, and only e-mail lands today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-214 — The system sends, and D-164 is narrowed to the one thing it was protecting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-215--the-three-notes-columns-stay-and-erasure-empties-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-215 — The three notes columns stay, and erasure empties them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D-216 — Every worked example names the office treasurer, and what the operand reads is still unstated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-round-adds-to-the-register-and-why-an-empty-register-was-not-a-finished-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this round adds to the register, and why an empty register was not a finished design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-sweep-found-that-this-round-did-not-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the sweep found that this round did not plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/azduha/taborak-specification/edit/main/docs/decisions/round-25.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/azduha/taborak-specification/raw/main/docs/decisions/round-25.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="decision-log--refinement-round-25-d-206--d-216">Decision Log — Refinement round 25 (D-206 … D-216)<a class="headerlink" href="#decision-log--refinement-round-25-d-206--d-216" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong><a href="../round-24/">Round 24</a> emptied <a href="../../open-questions/">the register</a>. This round fills it again, on purpose,
+and that is the honest shape of it.</strong> It opened as four questions about loose ends — three free-text columns,
+one spelling clash, and two standing questions about what reporting even is — and one of those answers came
+back as <strong>a designed messaging module</strong>, which is the feature <a href="../../">README</a> had kept in its deferred
+list since round 1 and which this corpus has referred to in the conditional mood for twenty-four rounds.
+A design that gains a feature gains questions, so the register leaves zero and goes to seven
+(<a href="../../open-questions/#k-11">K-11</a> … <a href="../../open-questions/#k-17">K-17</a>); an empty register was never a claim
+that the design was finished, and round 24 said so in its own words.</p>
+<p><strong>Two of these answers reverse recent decisions, and both reversals are named rather than absorbed.</strong>
+<a href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+deletes four permission codes, two of them shipped, on the ground that a report is a delivery and not a screen —
+which undoes the reporting posture <a href="../round-21/">round 21</a> fixed and the deferral
+<a href="../round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>
+chose one round ago.
+<a href="#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a> narrows
+<a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>, the eight-round-old rule that no page
+may say the system sends anything — the rule <strong>twenty-nine lines across nineteen pages</strong> were written to obey, two
+of them added by <a href="../round-24/">round 24</a> itself <strong>on 2026-11-01, the same day as this round</strong>. Nothing here
+pretends those sentences were always going to be wrong; they were correct under the ruling that stood, and the
+ruling moved.</p>
+<p><strong>One answer arrived twice and differently.</strong> Asked who a notice reaches, the first answer was <em>"the admin
+selects an audience for each event type"</em> and the follow-up was <em>"each message type"</em>. The audience hangs on
+the message type (<a href="#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209</a>);
+what an event type wants as a default is filed as a question instead of being inferred from the first wording.</p>
+<p><strong>Nothing in this round was asked that a previous round had answered</strong> — the discipline round 23 and round 24
+both promised. Where this round touches an old decision it narrows it in the open: D-164 by D-214, D-199's
+actor list by <a href="#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>,
+and <a href="../round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a> by
+<a href="#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>,
+which turns a sentence about mirroring into a rule about rows.</p>
+</blockquote>
+<p><a href="../round-24/">← Refinement round 24 (D-193 … D-205)</a> | <a href="../">All decisions</a></p>
+<p><strong>Where the questions came from.</strong> None of them was in the register, because the register had just been emptied.
+They were asked directly, in four batches, and each answer is quoted in the entry it produced. The two standing
+questions that turned out to be load-bearing were both mine and both about reporting: what a report is, and who
+receives one. The loose ends were <a href="#d-215--the-three-notes-columns-stay-and-erasure-empties-them">the three <code>notes</code> columns</a>,
+<a href="#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated">the <code>ROLE(treasurers)</code> spelling</a>,
+and <a href="#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">the half of messaging catalog B §12 still calls open</a>.</p>
+<hr />
+<h2 id="d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206 — A message is one table, this system is one of its authors, and a notification is a type of message<a class="headerlink" href="#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — opens the module README has listed as deferred since round 1, and starts
+<a href="../../data-model/10-messaging/"><code>data-model/10</code> Messaging</a>.</p>
+<p><strong>The answer, as given.</strong> <em>"Let's call it messages, not notifications (notification is a type of message), but yes,
+they are the same machinery and a message can be sent to a single person or an audience."</em></p>
+<p><strong>The rule.</strong> There is one thing, and its word is <strong>message</strong>. A <code>message</code> row has exactly one author, and the
+author is either a person (<code>author_person_id</code>) or this system acting on its own (<code>actor_label</code>, from the fixed
+list — <a href="../round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
+<strong>A notification is a message whose <code>message_type_id</code> is set</strong>, and nothing more: the word names a kind of row,
+not a table, not a module, and not a second mechanism beside the one a person uses to write to another person.</p>
+<p><strong>Why one table, when an automated notice has nobody to ask.</strong> The temptation is a <code>notification</code> table next to
+<code>message</code>, on the argument that a safeguarding record should tell a system notice and a person's letter apart
+without reading a column. It is refused twice over. Once by shape: this corpus has refused two tables of the
+same shape before, in <a href="../round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>,
+and the difference between these two tables would be exactly which table a row sits in. And once by substance:
+what makes a notice attributable is already there — the actor label, and one audit row per write
+(<a href="../round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>) —
+while a second table would need its own expiry rule, its own audit shape, and its own reader, and those three
+would drift apart within two rounds the way four pages used to drift apart over one sentence about NULL
+(<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means"><code>00-conventions §7a</code></a>).</p>
+<p><strong>What this changes.</strong> Three tables, in a new
+<a href="../../data-model/10-messaging/"><code>data-model/10-messaging.md</code></a>: <code>message_type</code>, <code>message</code>, <code>message_recipient</code>.
+<a href="../../"><code>README</code></a> loses "notifications" from its deferred list and gains the module's shape in the
+paragraph that already draws communication's line. The <a href="../../appendix/erd-b-inventory/">ERD inventory</a> gains
+three entities. And the sentence in that same README paragraph — <em>"nothing in this design sends anything to
+anybody today"</em> — is false from this round on and is rewritten by <a href="#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>.</p>
+<h2 id="d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207 — A message is addressed to one person or to a saved audience, and the recipient rows record an act and not a set<a class="headerlink" href="#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from the same answer) — gives the send its shape, and answers the half of
+<a href="../round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a> that a reader could have carried
+into messaging by mistake.</p>
+<p><strong>The rule.</strong> A <code>message</code> names exactly one of two targets: <code>target_person_id</code> <strong>or</strong> <code>audience_id</code>. Exactly one,
+never both, never neither — the same discipline a <code>fee_obligation</code> keeps over its three possible targets.
+At the save, an audience is resolved once by the resolver that already answers grants, and one
+<code>message_recipient</code> row is written per person reached.</p>
+<p><strong>What the rows are, and what they are not.</strong> They are <strong>the record of the act</strong>: whom this message reached, on
+which door, and whether it was opened. <strong>Nothing resolves against them.</strong> No audience expression may name a
+message's recipients as a set, which is the whole reason this paragraph exists: an operand must be a named
+registry row and never a stored set, and a table that starts as a log ends as a vocabulary the moment somebody
+writes <code>PERSON(...)</code> over it. A grant's record of whom it reached stays the expression it holds (D-110); a
+message's record is the rows, <strong>because an audience can be edited tomorrow and the fact that thirty people were
+addressed in March must not change with it.</strong></p>
+<p><strong>A message is never edited.</strong> A body written is a body kept; a wrong send is followed by a second message that
+says what the first got wrong. This is <a href="../round-23/#d-183--a-changed-ask-is-a-voided-request-and-a-new-symbol-and-amount_discount-goes">D-183</a>'s
+rule about an ask, reused without ceremony, and it is what makes "nothing ages out"
+(<a href="#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>) survivable at all.</p>
+<p><strong>The absence worth naming.</strong> An audience that resolves to nobody writes no recipient rows, and the message row
+still exists. That is not an error and there is no queue: it is the same shape as money that arrived under no
+symbol (<a href="../round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>) — the design records the act
+and does not invent a waiting room for a result nobody claimed.</p>
+<h2 id="d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208 — <code>message.send</code> is the only messaging code, and the audience a send names is not checked<a class="headerlink" href="#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — registers messaging in
+<a href="../../appendix/permission-catalog-a-codes/">catalog A</a>, and closes
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#12-open-issues">catalog B §12</a>'s open half.</p>
+<p><strong>The answer, as given.</strong> <em>"One permission to write messages to anyone, call it message.send (it will be held by
+the leadership or anyone the granter decides)."</em></p>
+<p><strong>The rule.</strong> <strong><code>message.send</code></strong> is registered: one code, <code>applies_to = unit</code>, marked twice
+for sensitivity, and it authorizes writing a message to one person or to an audience. <strong>What the send names is
+not checked.</strong> There is no per-person test over an audience, no requirement that the writer could read the rows
+of everyone addressed, and no rule that an event's organizers may address only their event. D-163's ceiling still
+governs <strong>who may hand the code out</strong>, and one audit row records every send; that is the whole control, chosen
+over the alternatives rather than left as an oversight.</p>
+<p><strong><code>message.send_direct</code> and <code>message.broadcast</code> were never codes.</strong> They appear in
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/">catalog B §1</a> as names and in its §12 as an open
+question about which scope <code>broadcast</code> should carry — and they appear <strong>nowhere in catalog A's register</strong>, which
+is what a register is for. They retire as names. They are deliberately <strong>not</strong> entered in
+<a href="../../appendix/removed-concepts/"><code>removed-concepts.md</code></a>: the first column of that page is this corpus's dead-name
+register, and a row there is a death certificate for something that lived. These two never did.</p>
+<p><strong>Catalog B §12's open half closes with them.</strong> Its question was whether <code>message.broadcast</code> should hold one
+scope or two; there is no <code>broadcast</code> code to scope, and an audience narrows a send instead of a grant scope
+doing it. <a href="../round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
+is untouched: one grant, one permission, one scope.</p>
+<p><strong>This narrows <a href="../round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>
+in the place its title is not about.</strong> D-077's other half was that <strong>messaging is direct by default and no
+permission exists for it</strong> — everyone could write one message to one person, and only reaching a crowd needed a
+grant. From this round <strong>one code gates every write</strong>, a sentence to one person included, so <em>"direct by default"</em>
+now describes the <strong>shape</strong> of a send — one target instead of an audience — and no longer a right. The corpus's own
+rule runs in the new direction: <a href="../round-24/#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it">D-197</a>
+ruled that a permission nobody can decline is not a permission, and this code can be declined, which is what makes
+it the control the answer asked for ("held by the leadership or anyone the granter decides").</p>
+<p><strong>The cost, named in full, because the answer did not buy the route as well.</strong> A person who holds no code has <strong>no
+way to write to the organization through this module</strong> — not to a leader, not to a group, not about their own
+child's membership. <strong>This entry does not design a route for that person and does not claim one exists</strong>, and it
+does not soften the ruling by inventing an ungated exception beside the code the answer asked to be the only one.
+What the account keeps is everything else in this design: a person's own rows are readable to their guardians
+through the guardianship channel, and an erasure request is a person's act that never needed a messaging code,
+because there is no messaging code in front of it.</p>
+<p><strong>A job does not hold this code.</strong> An automated message is written under an actor label
+(<a href="#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>), because a
+permission gates a person's act and a job has none to gate.</p>
+<h2 id="d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209 — A message type is a row, and the audience it reaches is configuration an admin edits<a class="headerlink" href="#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from two answers, the second correcting the first) — puts the reach of an automated message
+where an installation can change it.</p>
+<p><strong>The answers, as given.</strong> <em>"Ok, not permissions, but in the system configuration, the admin selects an audience
+for each event type"</em> — and, asked which word "type" belonged to: <em>"Each message type."</em></p>
+<p><strong>The rule.</strong> <code>message_type</code> is a table: <code>code</code>, <code>name</code>, <code>description</code>, <code>audience_id</code>, <code>is_automated</code>,
+<code>valid_from</code>, <code>valid_to</code>, <code>created_at</code>, <code>created_by</code>. <strong>A type reaches the audience on its own row</strong>, chosen from
+the saved audiences <a href="../../data-model/05a-audience-and-grammar/">05a §8</a> already documents. <code>is_automated</code> is true
+exactly when a job may write the type, and <code>audience_id</code> is required exactly then — a human send carries its own
+target on the message instead (<a href="#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207</a>).
+<strong>A type is retired with <code>valid_to</code>, never deleted</strong>, which is <a href="../round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>
+saying what it says about anything a row may point at.</p>
+<p><strong>This is <code>membership_type</code> again, and saying so is the point.</strong> <a href="../round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a>
+found a table that looked like a vocabulary and was really a settings panel with a vocabulary's clothes. A
+message type is the same animal: the <em>code</em> is the vocabulary (<code>renewal-window-opened</code>, <code>fee-overdue</code>,
+<code>registration-confirmed</code>), the <em>audience</em> is a setting, and what an organization changes on a Tuesday afternoon
+is the second and not the first.</p>
+<p><strong>What the two wordings disagreed about, and what was not inferred from them.</strong> An event type is not what holds
+an audience here. The first answer named one; the follow-up named the message; the message wins because it is
+the row that fires. Whether an event type should propose a default audience that a per-event send may narrow is
+a real question and is filed as <a href="../../open-questions/#k-13">K-13</a> rather than drawn in from the first wording —
+<a href="../round-24/#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure">D-204</a>
+is the reason this round refuses to do that: an entry that widens an answer while writing it down becomes a false
+claim about a table.</p>
+<p><strong>Who may edit a type is not settled here.</strong> Every write in this design is gated by a code, and no code for this
+table is proposed, because a vocabulary table's editing has been refused a code before
+(<a href="../round-21/#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows">D-152</a>).
+The working default is whoever holds <code>system.admin</code> at the unit, and the question of whether that is right is
+<a href="../../open-questions/#k-12">K-12</a>.</p>
+<h2 id="d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210 — A report is a delivered message, so all five report codes are deleted and reporting stops being a name<a class="headerlink" href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answers) — deletes two shipped codes and three deferred ones, and rewrites every
+sentence in this corpus that ends with somebody opening a list.</p>
+<p><strong>The answers, as given.</strong> <em>"Report is a system message delivered through a notification."</em> Asked whether a report
+still has a screen a person opens: <em>"Only a delivery message, depending on a type delivered to people with
+specific permission."</em> Asked what happens to <code>report.view</code>: <em>"Both die."</em></p>
+<p><strong>The rule.</strong> <strong>There is no report screen in this design.</strong> What an organization calls a report is a message of a
+type, addressed to an audience, delivered by the machinery in <a href="#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a>.
+<strong>Five codes go, not four.</strong> <strong><code>report.view</code> and <code>report.export</code> lose their rows in catalog A</strong>, and
+<strong><code>report.finance.view</code>, <code>report.membership.view</code> and <code>report.safeguarding.view</code> lose their rows among the deferred
+namespaces</strong> — the deferral of a finance report was
+<a href="../round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>'s
+deliberate choice one round ago, and a code that would gate a screen is not worth deferring once there is no such
+screen. <strong>This entry's first draft named four and missed <code>report.membership.view</code>,</strong> which catalog B §10 had carried
+beside the other two and which the <code>leaders</code> office named as its one report row; a namespace dies by its whole list,
+so the miss changed nothing about the ruling and everything about this page's accuracy, and the code now has its own
+row in <a href="../../appendix/removed-concepts/">the dead-name register</a>. <strong>The <code>report.*</code> namespace stops existing.</strong>
+Reporting is not a permission, not a module, and not a deferred item: it is an audience and a type.</p>
+<p><strong>What the deleted codes' absence is filled with.</strong> <strong>Twenty-five lines across seven pages</strong> named one of these
+codes at the commit this round starts from, forty occurrences because several lines name two of them:
+seven in <a href="../../appendix/permission-catalog-a-codes/">catalog A</a>, nine in
+<a href="../../appendix/permission-catalog-b-roles-and-open-issues/">catalog B</a>, three in
+<a href="../../data-model/07-finance/"><code>07-finance</code></a>, two in <a href="../../domain/06-authorization-model/"><code>domain/06</code></a>, and one each
+in <a href="../../data-model/05d-invariants-and-seed/"><code>05d</code></a>, <a href="../../data-model/05e-keys-and-callers/"><code>05e</code></a> and
+<a href="../../open-questions/">the open register</a>. <strong>Counted by program, and the count is this entry's own correction:</strong>
+the first draft said seventeen lines across ten pages and listed
+<a href="../../data-model/03-membership/"><code>03-membership</code></a>, <a href="../../data-model/09-attributes/"><code>09-attributes</code></a> and
+<a href="../../domain/05-membership-lifecycle/"><code>domain/05</code></a> among them, and none of those three pages ever named one of the
+five codes — their <code>report</code> sentences are sense 3 below, which survives. Most of the twenty-five sentences were
+written to be
+honest about a hole — they are the corpus admitting that a rule needs a human to notice something. <strong>None of them
+becomes "nobody notices".</strong> Each becomes one of two things, and which one is decided sentence by sentence in the
+sweep, not by a rule here:</p>
+<ul>
+<li><strong>a type and an audience.</strong> The over/under payment notice (<a href="../../data-model/07-finance/#2b-money-that-cannot-be-matched"><code>07-finance §2b</code></a>)
+  and the overdue notice (<a href="../../data-model/07-finance/#3-keeping-membershipoutstanding_balance-honest"><code>07-finance §3</code></a>)
+  are exactly the two cases this round was asked about, and both now reach people instead of waiting for them.</li>
+<li><strong>an honest absence.</strong> Where a sentence said <em>a person with <code>report.view</code> opens the list</em> and no type is
+  configured, the sentence now says the thing plainly: nobody computes it, and the design is not waiting for
+  somebody who might.</li>
+</ul>
+<p><strong>Three things this corpus calls a report, and only one of them changes meaning.</strong></p>
+<ol>
+<li><strong>A report as a permission — deleted.</strong> <code>report.view</code> and <code>report.export</code> authorized a screen, and there is no
+   screen. This is what the answer was about.</li>
+<li><strong>A report as something delivered — the new sense.</strong> "Report is a system message delivered through a
+   notification" is the answer's own sentence, and in that sense a report is a <code>message</code> of a type addressed to an
+   audience. <a href="../round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>'s
+   break-glass <em>report</em> fits this sense better than it ever fitted the old one: the decision always wanted whoever
+   can act to be reached, and had no machinery to reach them.</li>
+<li><strong>A report as a listing nobody receives — this keeps its wording, and the reason is that three decision titles
+   are built on it.</strong> <em>"The gate and the report are the control"</em> is <a href="../round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>'s
+   title, <em>"a key outlives whoever installed it and the report is the control"</em> is
+   <a href="../round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>'s, and D-126's title is
+   built the same way. <strong>Twenty-nine live lines echo them</strong>, and the two halves do not overlap: seventeen carry one
+   of "no report will ever show it", "the report of long-lived open grants", "a report over a date", and twelve say
+   <em>the report is the control</em> — and each means <em>a check exists, somebody runs it, nothing delivers it</em>. <strong>Rewriting that idiom would misquote a title that has an anchor, and an anchor moved is a
+   citation lost</strong>, so the idiom stands where it is. <strong>What is forbidden from this round is the other two senses
+   being confused:</strong> no sentence may promise that a listing reaches anybody, and no page may name a <code>report.*</code>
+   code, because there is no code and no screen.</li>
+</ol>
+<p><strong>Where a page had to be precise, the register was the place, so the register changed its word.</strong>
+<a href="../../data-model/00a-invariant-register/">The invariant register</a> headed its right-hand column <strong>Report</strong> and its
+prose said "a report over the state they would breach"; that column lists numbered checks, so it is now headed
+<strong>Backstop</strong> — the word the page already used for it in its own reading instructions — and the page states that
+nothing in the column changed but its name. <strong>A canonical page a resolver of citations reads is worth one rename;
+twenty-nine echoes of a quoted title are not.</strong></p>
+<p><strong>What this costs, said where it bites.</strong> There is now no screen anywhere in this design that shows an
+organization-wide list. <a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like"><code>05d §12</code></a> used to
+state that exactly two reporting codes exist, and that sentence is gone. And <code>report.export</code> was the one moment
+this design had data leaving it by intention; with it gone,
+<a href="../round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a>'s
+"nothing leaves" gets stronger, not weaker — a person who wants data out now has to read it.</p>
+<h2 id="d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211 — Nothing about a message ages out, and erasure does not reach messages<a class="headerlink" href="#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from two answers) — the third kept-forever posture in this design, and stated with the
+argument against it rather than without it.</p>
+<p><strong>The answers, as given.</strong> Asked which of the body, the address, and the read moment expires: <em>"Nothing ages
+out."</em> Asked what erasure reaches: <em>"Erasure does not reach messages."</em></p>
+<p><strong>The rule.</strong> A <code>message</code> row, its body, its <code>message_recipient</code> rows, and their <code>read_at</code> are never scheduled
+away and never emptied by an erasure. This sits beside the accounting skeleton, which
+<a href="../round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a> keeps indefinitely,
+and against two clocks that do run: audit payloads empty at 24 months (D-088) and <code>access_log</code> rows are <strong>deleted</strong>
+at 24 months (<a href="../round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>).
+<strong>A message is the first body of text in this design that is written to be kept and is then kept.</strong></p>
+<p><strong>The argument against it, recorded because it was available and was declined.</strong> <a href="../round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>
+deleted <code>person.notes</code> on the ground that free text about a person, sitting outside the vocabulary and outside
+erasure, made erasure a lie. The same argument is standing in this room: a message body is free text about a
+person, it is written by the organization rather than curated, and it now survives the one act a person can
+demand. <strong>That argument was put and refused.</strong> The answer's own weight is that a message is correspondence — an
+act that happened on a date — and an act this organization performed is not something it deletes on request.
+<a href="../../data-model/06b-redaction-and-checks/#4-redaction-log"><code>06b §4</code></a> names what erasure empties and says that
+messages are outside that list <strong>by decision, with this paragraph as the reason</strong>, and
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure"><code>00-conventions §8</code></a> carries the same sentence in
+the section that lists the erasure's reach.</p>
+<p><strong>The consequence, not softened.</strong> An erasure removes the person and leaves every message addressed to them: the
+recipient row points at a tombstone, and its body keeps saying what the organization told that person, and when,
+and on which door. <a href="../../data-model/01b-merges-views-and-checks/"><code>01b</code></a> is where a person's row survives as a
+tombstone, and that is what makes this survivable rather than broken — nothing dangles; it points somewhere
+quiet.</p>
+<h2 id="d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212 — <code>system:messages</code> is the sixth actor label, and the renewal sweep stops being a sender<a class="headerlink" href="#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) —
+<a href="../../data-model/00-conventions/#7a-what-an-empty-actor-column-means"><code>00-conventions §7a</code></a> goes from five rows
+to six, for the first time since round 17 fixed the list.</p>
+<p><strong>The answer, as given.</strong> <em>"One new label: <code>system:messages</code>."</em></p>
+<p><strong>The rule.</strong> <strong><code>system:messages</code></strong> joins the fixed list, and it is the author of every automated message.
+<strong><code>system:renewal-sweep</code> stops being a sender</strong>: it expires memberships, which is what it has always done, and the
+renewal notice is a message whose author is the messaging label. One label per kind of act, so that adding a type
+to configuration never adds a label to a vocabulary. The run writes <strong>one audit row</strong> for itself
+(<a href="../round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>),
+as every table the application writes owes.</p>
+<p><strong>The count moves, and a count that moves has to be swept.</strong> Five labels were the settled number:
+<a href="../round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a>
+wrote it in as a refusal of a sixth for accounting, and
+<a href="../../data-model/05e-keys-and-callers/"><code>05e</code></a> says it twice in prose. <strong>D-199's refusal stands untouched</strong> — the
+rejected label was an accounting one, and there is still no accounting label and no export — but its sentence
+about the size of the list is narrowed here, and its row in <a href="../">the index</a> says so. History pages keep
+their wording; that is what makes them history, and it is why <a href="../round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>'s
+label count in <a href="../round-20/">round 20</a> does not get edited either.</p>
+<p><strong>What still has no answer.</strong> Which clock fires which automated type — nightly, hourly, or at the moment a row
+crosses a date — is not ruled here, and the renewal window's own arithmetic
+(<a href="../round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>) was deliberately date-driven rather than
+job-driven. It is <a href="../../open-questions/#k-14">K-14</a>.</p>
+<h2 id="d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213 — The account chooses its own doors, a child's message mirrors as its own rows, and only e-mail lands today<a class="headerlink" href="#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answers) — completes <a href="../round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>'s
+"the recipient chooses the channel", and turns
+<a href="../round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a> into a rule about rows.</p>
+<p><strong>The answers, as given.</strong> <em>"They can decide to read it only within the system or enable external delivery via
+email, push notifications or (possibly) SMS."</em> And, on who decides for a child: <em>"The account opts in; guardians
+get their own."</em></p>
+<p><strong>The rule.</strong> The choice belongs to the account: <strong><code>account.opt_in_email</code></strong>, boolean, required, default <strong>false</strong>.
+<strong>The inbox is not a door and cannot be turned off</strong> — a <code>message_recipient</code> row with <code>channel = inbox</code> is the
+record that a message exists for you, and a design where that can be declined is a design where "you were
+addressed" has no evidence. <strong>A door arrives with its column on the day its transport exists.</strong> E-mail has one,
+because <a href="../../data-model/01a-accounts-and-contacts/#6-person_contact"><code>person_contact</code></a> already carries a verified
+<code>email</code> value. Push has nowhere to live: a device token is not a contact point — a person holds many, they expire
+silently, and <code>contact_type</code>'s values (<code>email</code>, <code>phone</code>, <code>postal</code>, <code>website</code>, <code>messaging</code>) all describe something
+that survives its device. SMS would land on the <code>phone</code> row and has no transport. <strong>No column is written for a
+thing this design cannot do</strong>, which is the same lesson
+<a href="../round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>
+drew from an enum value that claimed a kind of actor existed. Where push lives is <a href="../../open-questions/#k-15">K-15</a>.</p>
+<p><strong>Mirroring, as rows.</strong> A message addressed to a minor is mirrored to that minor's guardians as <strong>their own
+recipient rows, on their own chosen doors</strong>. Guardianship is already the channel that says who that is — it
+carries a <code>right_level</code> and needs no selector (<a href="../round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>)
+— so D-082 gains no table and no age branch in the resolver. It gains a physical form: <strong>the mirror is rows, and
+a row is why "the sender is told it will be" is now an ordinary in-app statement at the write rather than a
+message about a message.</strong></p>
+<p><strong>The question mirroring opens, filed rather than answered.</strong> A message addressed to an <strong>audience</strong> may contain
+minors by the hundred, and every one of them mirrors to their guardians on this rule. Whether an
+audience-addressed message mirrors at all — or only a message addressed to one named child does — decides whether
+a class-wide announcement generates a thousand rows and whether a guardian can see that their child was on a list
+they were not told about. It is <a href="../../open-questions/#k-11">K-11</a>.</p>
+<h2 id="d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214 — The system sends, and D-164 is narrowed to the one thing it was protecting<a class="headerlink" href="#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — narrows
+<a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>, which is rewritten nowhere and re-read
+everywhere.</p>
+<p><strong>The answer, as given.</strong> Asked how much of D-164 survives: <em>"Narrow it, keep the deadline rule."</em></p>
+<p><strong>The rule.</strong> <strong>The system sends, and a send is a named act.</strong> A person's send is gated by <code>message.send</code>; a
+job's send is authored by <code>system:messages</code>; the rows themselves record who was addressed, on which door, and
+whether it was opened; and one audit row answers for the write. <strong>What stays forbidden is a page inventing a
+period nobody chose.</strong> <em>"Told within 14 days"</em> may be written only if a row holds the 14 and a named decision
+chose it — that was D-164's real work, disguised as a rule about verbs, and it is untouched.</p>
+<p><strong>What moves.</strong> <strong>Twenty-nine lines across nineteen pages</strong>, outside this folder, assert that nothing is sent or
+that nobody is told — counted with the vocabulary of <a href="../round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>
+itself, and listed in the sweep's brief rather than here, because a count I cannot re-run is a count that goes stale
+silently. Each is now either true in a narrower sense or false. The false ones are rewritten where they are, in the
+tense they are in:
+<a href="../../"><code>README</code></a>'s <em>"nothing in this design sends anything to anybody today"</em>,
+<a href="../../data-model/04-relationships/"><code>04-relationships</code></a>'s <em>"Nothing notifies anybody"</em>,
+<a href="../../data-model/05d-invariants-and-seed/"><code>05d</code></a>'s <em>"sends nothing"</em>,
+<a href="../../data-model/07-finance/"><code>07-finance</code></a>'s two,
+<a href="../../domain/02-actors/"><code>domain/02</code></a>'s <em>"no message is sent"</em>,
+and the register's own. <strong>Two of them were written today by <a href="../round-24/">round 24</a> itself, in
+<a href="../../data-model/07-finance/"><code>07-finance</code></a></strong>, in the commit that obeyed this rule across the whole corpus — and
+the follow-up sweep committed hours later read that page again and left both sentences standing, correctly, because
+under the rule that still stood they were correct. That is recorded here rather than quieted: it is what ruling in
+the present tense costs when the ruling moves, and it is why every page this round touches cites the decision
+rather than its own memory of the rule.</p>
+<p><strong>What survives intact.</strong> <a href="../round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>
+stands: a guardian appointing a guardian tells nobody, because no type reaches anybody for that event and nobody
+has configured one — which is now the <em>reason</em> rather than the <em>rule</em>. <strong>D-126's named break-glass person
+stands</strong>, for the reason round 22 already gave: a procedure needs a name, and a notification does not. And
+<a href="../round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a> is
+still unanswered about everything except messages — an outbound call to another system is not a message and is
+still undesigned.</p>
+<h2 id="d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215 — The three <code>notes</code> columns stay, and erasure empties them<a class="headerlink" href="#d-215--the-three-notes-columns-stay-and-erasure-empties-them" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — closes the loose end that
+<a href="../round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a> left one table away from
+itself.</p>
+<p><strong>The answer, as given.</strong> <em>"Keep, add to erasure."</em></p>
+<p><strong>The rule.</strong> <code>membership.notes</code>, <code>membership_request.notes</code> and <code>payment.notes</code> stay exactly where they are —
+free text beside the row, where the work happens. <strong>Erasure empties all three</strong>, the way
+<a href="../round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>
+empties an event answer rather than the way a redaction overwrites a name: the row survives, the text goes.
+They join the list in <a href="../../data-model/06b-redaction-and-checks/#4-redaction-log"><code>06b §4</code></a> and the reach sentence in
+<a href="../../data-model/00-conventions/#8-personal-data-and-erasure"><code>00-conventions §8</code></a>.</p>
+<p><strong>What this does not widen, and why that is stated.</strong> Free text about a person exists in more places than these
+three columns, and <a href="../../data-model/06b-redaction-and-checks/"><code>06b</code></a> says so about the others by name: a roster
+row's <code>note</code>, an account's <code>status_reason</code> and <code>status_note</code>, and the two values a <code>field_conflict</code> holds when a
+merge could not choose between them. <strong>The answer given was about three columns and this entry rules on three
+columns.</strong> Whether the others join them is <a href="../../open-questions/#k-16">K-16</a> — a question, not a footnote, because
+round 24 learned the hard way that an entry which quietly generalizes an answer becomes a false claim about a
+table two sections away.</p>
+<h2 id="d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated">D-216 — Every worked example names the office <code>treasurer</code>, and what the operand reads is still unstated<a class="headerlink" href="#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> decided (from your answer) — repairs fourteen sites, and files the thing the answer did not settle.</p>
+<p><strong>The answer, as given.</strong> <em>"Rename every example to <code>treasurer</code>."</em></p>
+<p><strong>The rule.</strong> Fourteen places write <code>ROLE(treasurers)</code> — including the worked audience that opens
+<a href="../../data-model/05a-audience-and-grammar/"><code>05a</code></a>, which is the sentence a newcomer reads first. Every one of
+them now names <strong><code>treasurer</code></strong>, the office <a href="../../appendix/permission-catalog-b-roles-and-open-issues/">catalog B §11</a>
+writes out and <a href="../../glossary/">the glossary</a> defines as held for the unit. An example that names a different
+office from the worked one is not a second example; it reads as a typo in a language that has fourteen
+occurrences and no compiler.</p>
+<p><strong>What the answer did not rule, kept as a question rather than a guess.</strong> Renaming the examples says nothing about
+what <code>ROLE(x)</code> resolves against — <code>role.code</code> or <code>role.name</code>. Nothing in this corpus states it, and both readings
+are consistent with everything written down: the operand's argument type names the <code>role</code> table, not a column of
+it. It is <a href="../../open-questions/#k-17">K-17</a>, and it is not cosmetic — under one reading a rename silently changes
+whom an old expression picks out, which is the cost <a href="../round-24/#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence">D-201</a>
+already made payable for a group's name.</p>
+<hr />
+<h2 id="what-this-round-adds-to-the-register-and-why-an-empty-register-was-not-a-finished-design">What this round adds to the register, and why an empty register was not a finished design<a class="headerlink" href="#what-this-round-adds-to-the-register-and-why-an-empty-register-was-not-a-finished-design" title="Permanent link">&para;</a></h2>
+<p>Seven rows, all filed by this round and none of them a question round 24 answered:
+<a href="../../open-questions/#k-11">K-11</a> does an audience-addressed message mirror to guardians ·
+<a href="../../open-questions/#k-12">K-12</a> what gates editing a message type ·
+<a href="../../open-questions/#k-13">K-13</a> whether an event type proposes a default audience ·
+<a href="../../open-questions/#k-14">K-14</a> which clock fires each automated type ·
+<a href="../../open-questions/#k-15">K-15</a> where a push token lives ·
+<a href="../../open-questions/#k-16">K-16</a> whether the other free-text columns join erasure ·
+<a href="../../open-questions/#k-17">K-17</a> what <code>ROLE(x)</code> resolves against.</p>
+<p><strong>Seven, of which one is not about messaging.</strong> <a href="../../open-questions/#k-17">K-17</a> rode in on the spelling fix and
+<a href="../../open-questions/#k-16"><strong>K-16</strong></a> on the <code>notes</code> columns; a round that clears the register would have caught
+both instead of carrying them, and it did not, so they are rows now.
+<strong>K-12 and K-16</strong> both concern who may write something and were filed apart on purpose: one is about a vocabulary
+table and one is about a person's text, and folding them together would let either answer be borrowed by the wrong
+one.</p>
+<p><strong>The number stated, because a number beside a sentence is what goes stale silently.</strong> The register leaves round
+24 at zero live questions and leaves this round at <strong>seven</strong>: <a href="../../open-questions/#a-4-remainder--the-organizational-calendar">A-4's remainder</a>
+and <a href="../../open-questions/#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim">F-11</a>
+stay resolved rows in § R, K-10 stays closed, and <code>message.send</code>'s registration
+(<a href="#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>) closes
+the question round 24 had answered with a section of its own.</p>
+<h2 id="what-the-sweep-found-that-this-round-did-not-plan">What the sweep found that this round did not plan<a class="headerlink" href="#what-the-sweep-found-that-this-round-did-not-plan" title="Permanent link">&para;</a></h2>
+<p><strong>Four things, none of them a ruling, all of them cheaper said here than left in the pages.</strong></p>
+<ol>
+<li><strong>A namespace dies by its whole list, and this entry's list was one short.</strong>
+   <a href="../../appendix/removed-concepts/"><code>report.membership.view</code> is now a row in the dead-name
+   register</a>, where it had no death certificate at all:
+   <a href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+   enumerated four codes, catalog B §10 had carried three deferred ones, and the fifth name therefore appeared
+   nowhere in the corpus — a code deleted by a ruling and remembered by no page, which is the one state a dead
+   name should never be in. <strong>The rule this teaches is not about reports:</strong> when an entry says a namespace or an
+   enum or a list goes, the entry has to carry every member, because the sweep works from the entry and not from
+   the registry.</li>
+<li><strong>Two of this round's own counts were wrong, and the program that settled them is the same one that settles
+   every other count here.</strong>
+   <a href="#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+   now states twenty-five lines across seven pages rather than seventeen across ten, and twenty-nine echo lines
+   rather than "around fifteen"; three pages it had listed among the sites never named one of the five codes,
+   because their <code>report</code> sentences are the third sense, which survives. <strong>A count written beside a sentence is
+   the number that goes stale silently, and the only repair is to measure before typing.</strong></li>
+<li><strong>Two links crossed a directory without <code>../</code>,</strong> one from <a href="../../appendix/erd-b-inventory/">the ERD inventory</a>
+   into <a href="../../data-model/06b-redaction-and-checks/#4-redaction-log"><code>06b §4</code></a> and one from
+   <a href="../../data-model/05d-invariants-and-seed/#12-what-day-one-looks-like"><code>05d §12</code></a> into
+   <a href="../../appendix/permission-catalog-b-roles-and-open-issues/#12-open-issues">catalog B §12</a>. Both pointed at a
+   section that exists and a file that does not, which is the failure a build without <code>--strict</code> reports as a
+   line nobody reads; the dead-anchor script named both. <strong>A link that resolves inside its own directory is not
+   a link that resolves.</strong></li>
+<li><strong>Two pages still called the <code>access_log</code> delete "the third" hard-delete exception</strong> —
+   <a href="../../data-model/00a-invariant-register/"><code>00a</code>'s shape-3 table</a> and the
+   <a href="../../appendix/erd-b-inventory/">ERD inventory</a> — although
+   <a href="../../data-model/00-conventions/#4-deletion-policy">the page that owns that list</a> has named <strong>two</strong> since round 23 deleted
+   the deletion policy's first exception along with the import pipeline
+   (<a href="../round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>). <strong>A round-23
+   tail, caught a full round late:</strong> the ordinal lives in sentences two directories away from the list, and
+   nothing that gates a round reads a sentence.</li>
+</ol>
+<p><strong>One false alarm worth recording, because it was believed for a minute.</strong> A sweep handback reported that
+<a href="../../domain/03-identity-and-legacy/#7-legacy-import-pipeline"><code>domain/03 §7</code></a> still described the deleted import
+pipeline as a mechanism across five passages. It does not: the section opens "<strong>There is no pipeline</strong>", names
+everything that was deleted, and states that <strong>the heading and the section number stay</strong> because pages cite §7 by
+number. <strong>A grep that finds the words of a deleted thing is not a finding until somebody reads the sentence that
+puts them in the past tense.</strong></p>
+<p><a href="../round-24/">← Refinement round 24 (D-193 … D-205)</a> | <a href="../">All decisions</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../round-24/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Round 24">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Round 24
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../open-questions/" class="md-footer__link md-footer__link--next" aria-label="Next: Open Questions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Open Questions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs" type="module"></script>
+      
+    
+  </body>
+</html>

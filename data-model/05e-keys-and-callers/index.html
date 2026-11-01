@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1818,6 +1820,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2104,6 +2134,8 @@
       
         
           
+        
+      
         
       
         
@@ -2847,6 +2879,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3270,9 +3330,9 @@ that was never written:</p>
 <p>Stated because a reader will otherwise assume the nearest mechanism applies.</p>
 <ul>
 <li><strong>What this system does to itself is not a caller and has no row.</strong> The 1 January membership sweep, payload
-  reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
-  the system acting on its own and is a complete answer to <em>who did this</em>; where the audit trail keeps a
-  label, it is one of the five labels on that list rather than free text
+  reduction, migrations, the bank statement pull and the messaging run write rows with an empty actor column,
+  which is read as the system acting on its own and is a complete answer to <em>who did this</em>; where the audit
+  trail keeps a label, it is one of the six labels on that list rather than free text
   (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>,
   <a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>).
   <strong><code>api_key</code> was deliberately not stretched to cover them</strong>: a sweep is not a caller, and a table whose rows
@@ -3288,11 +3348,17 @@ that was never written:</p>
   this system to an accounting system</strong>
   (<a href="../../decisions/round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a>):
   no export, no feed, no periodic journal, no CSV of the day's bank rows, no <code>external_reference</code> column, and
-  <strong>no sixth actor label for accounting</strong>: the vocabulary of
-  <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a> keeps its five labels and reserves no
-  sixth, because an integration added later will need a label and needing one is not a reason to hold a slot for
-  it. Everything the money model
-  asserts is read out of its own tables by a person holding <code>report.view</code> or <code>report.export</code>. A later version
+  <strong>no actor label for accounting</strong>: the vocabulary of
+  <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a> has grown a sixth label since this
+  item was closed — <code>system:messages</code>, the messaging run
+  (<a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>)
+  — and <strong>none of the six is accounting's and no slot was held back for it</strong>, because a writer that is not on
+  the list joins the list on that page when it exists, and an integration added later will need a label without
+  needing a reservation. Everything the money model
+  asserts is read out of its own tables, <strong>and there is no reporting permission left to hold</strong>: <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+  deleted the namespace together with the screen it gated, so the numbers are read through the money's own
+  reads, or arrive as a message of a type
+  (<a href="../10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging §8</a>). A later version
   may add an accounting package and will design it then, in a document that is not this one, and <strong>this corpus
   keeps no placeholder against that day</strong> — which is what the item cost to close: nothing. A refund is not on
   this list either, because a refund happens at the bank and arrives here as a negative <code>payment</code>

@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1835,6 +1837,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2121,6 +2151,8 @@
       
         
           
+        
+      
         
       
         
@@ -2864,6 +2896,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3442,11 +3502,14 @@ person, the only form of this failure that is still visible after the fact.</p>
 <hr />
 <h2 id="10-integrity-checks">10. Integrity checks<a class="headerlink" href="#10-integrity-checks" title="Permanent link">&para;</a></h2>
 <p>Checks that should run nightly, and that somebody reads the same morning. These encode invariants that
-no per-column rule above can express. <strong>A result here is a report a person opens; no check in this
-section sends anything to anybody</strong>
-(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and where a
-bullet below says a finding belongs in the report rather than in a log, what it means is that the finding
-must not wait for a reader to stumble on it.</p>
+no per-column rule above can express. <strong>A result here is a report a person opens; no check in this section
+reaches anybody on its own, because no message type is configured for a check's finding and nobody has
+configured one</strong> — a check is a <strong>run</strong> and its output is read by whoever runs it
+(<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>),
+and where a bullet below says a finding belongs in the report rather than in a log, what it means is that
+the finding must not wait for a reader to stumble on it. If a finding is ever meant to arrive somewhere
+rather than be waited for, it arrives as a message type like anything else
+(<a href="../10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging.md</a>).</p>
 <p><strong>Invariants to verify</strong></p>
 <ul>
 <li><strong>A person with more than one live account.</strong> Count <code>account</code> rows per person whose status
@@ -3542,11 +3605,14 @@ must not wait for a reader to stumble on it.</p>
 <hr />
 <h2 id="11-open-issues">11. Open issues<a class="headerlink" href="#11-open-issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Erasure policy specifics: what must be redacted vs. retained. <strong>The retention shape is decided; what is
-  open is whether it has a basis.</strong> The shape is
-  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>)
-  — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
-  <em>named</em> <code>membership</code> and fee rows has a basis. See
+<li>Erasure policy specifics: what must be redacted vs. retained. <strong>The retention shape is decided, and so is
+  what stands in place of a basis.</strong> The shape is
+  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>),
+  and the question this bullet used to keep open — whether indefinite retention of <em>named</em> <code>membership</code> and
+  fee rows has a basis — was answered out of existence rather than answered: there is no legal review of this
+  design and none will be, so what the retention carries is the designer's choice with its <strong>risk named where
+  a basis used to sit</strong> (<a href="../../decisions/round-24/#d-205--there-is-no-legal-review-and-assumption-49-is-retired">D-205</a>).
+  Nothing here waits on a review. See
   <a href="../00-conventions/#8-personal-data-and-erasure">00-conventions.md</a> and
   <a href="../06b-redaction-and-checks/#6-open-issues">06b §6</a>.
 Two more questions this page carried are now settled rather than open. <strong>Whether <code>person.gender</code> is
@@ -3564,7 +3630,7 @@ in §8, the length report in §10), and whether a person may hold two live accou
 (<strong>no</strong> — and the case that made that question hard is answered by a gate rather than an exception, so a
 colliding sign-up files a claim and activates nothing instead of becoming a second account). See
 <a href="../../open-questions/#b-2">B-2</a> and <a href="../../open-questions/#b-4">B-4</a>.</p>
-<p>Nothing above is on its way to <a href="../../open-questions/">../open-questions.md</a>: round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written <strong>into the bullet above</strong>, and one that is genuinely still open stays open here rather than being handed back to the register.</p>
+<p><strong>The register holds seven questions again</strong> — <a href="../../open-questions/#k-11">K-11</a> through <a href="../../open-questions/#k-17">K-17</a>, all of them filed by <a href="../../decisions/round-25/">round 25</a> when it designed <a href="../10-messaging/">messaging</a> — and <strong>none of them is this page's.</strong> The habit <a href="../../decisions/round-24/">round 24</a> fixed still holds: an item here closes by having its answer written <strong>into the bullet above</strong>, never by being handed back to the register, which is how every item above was closed. The one thing on this page a register row touches from the outside is <a href="../../open-questions/#k-16">K-16</a>, and it is asked where the columns are named — <a href="../06b-redaction-and-checks/#6-open-issues">06b §6</a>.</p>
 
 
 

@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -2029,6 +2031,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2315,6 +2345,8 @@
       
         
           
+        
+      
         
       
         
@@ -3058,6 +3090,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3432,15 +3492,15 @@ pages cite them by number and their anchors are built from them: <a href="./">05
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                                       one code, effect (allow | deny),
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                                       period
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>role ───────────────────── an office, conferring nothing.     'treasurers'
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>role_holder ────────────── who holds it, for a period.        person X, 'treasurers',
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>role ───────────────────── an office, conferring nothing.     'treasurer'
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>role_holder ────────────── who holds it, for a period.        person X, 'treasurer',
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                                                              2026-03-01 → open
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>selector_type ──────────── the language: every operand that   'ROLE', 'MEMBERS', 'PLACED',
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                          may appear in an expression.          'AUDIENCE'
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                          Shipped, written only by migrations.
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurers)
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>audience ───────────────── a set a grant aims at, nameable     MEMBERS * ROLE(treasurer)
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                          by code from another audience.
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>audience_operand ───────── one node of that expression        (a tree, not a string; an
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                          — an AUDIENCE leaf doubles as       AUDIENCE leaf is also the
@@ -3777,7 +3837,7 @@ tenant and no routing left.</p>
 <tr>
 <td><code>code</code></td>
 <td>text, required, unique among roles, <strong>and unique across roles and groups</strong></td>
-<td><code>registrar</code>, <code>treasurers</code>, <code>counselors</code>. The cross-table half of the rule is §8's namespace rule; a single constraint cannot span two tables, so the write path carries it (§8, <em>Names are one namespace</em>).</td>
+<td><code>registrar</code>, <code>treasurer</code>, <code>counselors</code>. The cross-table half of the rule is §8's namespace rule; a single constraint cannot span two tables, so the write path carries it (§8, <em>Names are one namespace</em>).</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -3879,7 +3939,7 @@ else is</strong>
 <p><strong>Three rules this table has to get right:</strong></p>
 <ul>
 <li><strong><code>role.edit</code> edits a name, a description and a sort order. The sharp edge is <code>role.assign</code>.</strong>
-  Adding one person to <code>treasurers</code> inherits <em>every</em> grant that names <code>ROLE(treasurers)</code>, including
+  Adding one person to <code>treasurer</code> inherits <em>every</em> grant that names <code>ROLE(treasurer)</code>, including
   ones written later, by other people, for reasons whoever is doing the assigning has never seen.
   That is the invisibility §8 records for composition, arriving through the office door instead of
   the expression door — which is why <code>role.*</code> is the most sensitive code family in the catalog (🔒🔒)
@@ -4054,7 +4114,7 @@ There is no edge from <code>role_holder</code> to <code>audit_log</code> and the
 </ul>
 <p><strong>Indexes</strong></p>
 <ul>
-<li>over open rows only, by role — the read that answers "who is in <code>ROLE(treasurers)</code> today", which
+<li>over open rows only, by role — the read that answers "who is in <code>ROLE(treasurer)</code> today", which
   is now an operand of a grant rather than a tier of the resolver, and runs on every check that
   names the office;</li>
 <li>over open rows only, by person — the read that answers "what offices does this person hold", for

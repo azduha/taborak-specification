@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1860,6 +1862,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2146,6 +2176,8 @@
       
         
           
+        
+      
         
       
         
@@ -2889,6 +2921,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3299,7 +3359,7 @@ and which must not become the history of record for anything
 <tr>
 <td><code>note</code></td>
 <td>text, optional</td>
-<td>Why, in the organization's words. Free text, deliberately — see below for what it is not.</td>
+<td>Why, in the organization's words. Free text, deliberately — see below for what it is not. <strong>Erasure does not empty this column:</strong> <a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a> ruled on three <code>notes</code> columns and this is not one of them, and whether it joins them is <a href="../../open-questions/#k-16">K-16</a></td>
 </tr>
 <tr>
 <td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
@@ -3334,8 +3394,10 @@ and which must not become the history of record for anything
   contributes only the part of itself inside the group's lifetime — <strong>the resolver reads the
   intersection</strong>, not the row's own span. The cost, stated: a group's dates can silently shorten a
   membership's effect — a row running to June in a group closed in March stops reaching anybody in
-  March, and no report says so, because nothing here sends anything to anybody
-  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). Integrity
+  March, and no report says so — and nothing arrives either, because <strong>no message type is configured for
+  that moment and nobody has configured one</strong>
+  (<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>:
+  the design can deliver, and this is not a case anybody has configured it to deliver). Integrity
   check 2 is the net under the refusal.</li>
 </ul>
 <p><strong>Who enforces the overlap rule.</strong> <a href="../../decisions/round-06/#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now">D-081</a>
@@ -3651,6 +3713,16 @@ now carries the rule rather than here:</p>
   successor and the whole story of a troop is two rosters read in sequence
   (<a href="../../decisions/round-23/#d-173--that-two-groups-are-the-same-group-is-said-not-stored">D-173</a>; §1).</li>
 </ul>
+<p><strong>One question round 25 opened here, and this page cannot settle it.</strong> A roster row's <code>note</code> is free text
+about a person sitting beside a row the organization keeps — the shape
+<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a> just ruled on
+for <code>membership.notes</code>, <code>membership_request.notes</code> and <code>payment.notes</code>, which erasure now empties. <strong>This
+column is not one of those three and erasure does not empty it</strong>; <a href="../06b-redaction-and-checks/#6-open-issues">06b §6</a>
+names it among the free text that stands outside that list, and whether it joins them is
+<a href="../../open-questions/#k-16">K-16</a> — one of the seven questions
+<a href="../../open-questions/#k-filed-by-a-module-page-reopened">the register</a> holds after round 25 reopened it. The
+rule round 24 fixed still governs the three above: an item here closes by having its answer written <strong>into
+the bullet</strong>, not by being handed back.</p>
 <p>The questions this page once wondered about, open and settled alike, are registered in
 <a href="../../open-questions/">../open-questions.md</a>; a settled one is listed there with the decision that settled
 it.</p>

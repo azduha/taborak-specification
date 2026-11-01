@@ -988,6 +988,8 @@
       
         
       
+        
+      
     
     
     
@@ -1855,6 +1857,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2141,6 +2171,8 @@
       
         
           
+        
+      
         
       
         
@@ -2884,6 +2916,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3236,7 +3296,19 @@ not a longer trail.</p>
   the values stay readable and reportable, and the label can come back. Deleting a name must not delete
   nine years of facts, or nobody will ever retire a badly-named thing and the list will only ever grow.</li>
 <li><strong>Erasing a person</strong> deletes what was collected, everywhere, including in the trail's payloads. The
-  organization keeps that it held a record and that it was removed — and not what the record said.</li>
+  organization keeps that it held a record and that it was removed — and not what the record said.
+  <strong>Two things now qualify that "everywhere", and both are decisions rather than gaps.</strong> Erasure <strong>empties</strong>
+  free text that sits beside a row the organization keeps and lets the row stand: an event answer's <code>value</code>
+  (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>),
+  and since <a href="../../decisions/round-25/">round 25</a> the <code>notes</code> of a membership, of a membership request and of
+  a payment (<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>) —
+  the fee, the ask and the membership survive, the remark on them does not. And <strong>one body of text stands
+  outside erasure altogether</strong>: a message, its body and the rows recording whom it reached are neither emptied
+  nor deleted, on the ground that a message is correspondence — an act this organization performed on a date —
+  while the argument that once deleted <code>person.notes</code> applies to it word for word and <strong>was put and refused</strong>
+  (<a href="../../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>).
+  <a href="../../data-model/06b-redaction-and-checks/#4-redaction-log">../data-model/06b §4</a> holds the whole list, with
+  the columns that are still only questioned named there too.</li>
 </ul>
 <p><strong>The audit trail carries these values, in the clear, because it is the only place they have a
 history.</strong> What changed is not what the trail holds but who may read it: an entry about a person is as
@@ -3263,7 +3335,14 @@ not a line in a policy document
 (<a href="../../data-model/06-audit-and-import/#22-redaction-before-logging">data-model/06 §2.2</a> keeps that apart
 from redaction, which must never be deferred). It is also why the sentence <em>the trail is a second copy of
 the person record</em> — the sentence that decides who may read it — is true for two years and untrue
-afterwards.</p>
+afterwards. <strong>No clock of that kind runs on a message.</strong> The two that run are this one — a trail's values
+emptied 24 months after they were written — and the access trail's own rows, which are <strong>deleted</strong> at 24
+months (<a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>);
+nothing about a message is scheduled away, and erasure does not reach it either
+(<a href="../../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>).
+What makes keeping text survivable is that a message is never edited — a body written is a body kept — so a
+design that keeps it forever is not also a design that rewrites it
+(<a href="../../data-model/10-messaging/#3-message--one-author-one-target-and-no-second-version">../data-model/10-messaging.md</a>).</p>
 <hr />
 <h2 id="6-where-each-part-is-described">6. Where each part is described<a class="headerlink" href="#6-where-each-part-is-described" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3283,7 +3362,7 @@ afterwards.</p>
   (<a href="../../data-model/09-attributes/#7-the-legacy-import-which-is-where-the-vocabulary-comes-from">../data-model/09-attributes.md §7</a>).</li>
 </ul>
 <hr />
-<p><em>Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100, D-174, D-191.</em></p>
+<p><em>Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100, D-174, D-191, D-211, D-215.</em></p>
 
 
 

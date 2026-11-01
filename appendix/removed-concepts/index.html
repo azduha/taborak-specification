@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -1723,6 +1725,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2069,6 +2099,8 @@
       
         
           
+        
+      
         
       
         
@@ -2812,6 +2844,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3355,7 +3415,11 @@ its vocabulary.</p>
 <h3 id="the-codes-that-left-the-catalog">The codes that left the catalog<a class="headerlink" href="#the-codes-that-left-the-catalog" title="Permanent link">&para;</a></h3>
 <p>A code is a stable identifier, so one leaving the catalog silently is a migration nobody decided. The
 tables in <a href="../permission-catalog-a-codes/">the catalog</a> hold only codes that can be granted today; these
-were granted, and here is where their act is performed now.</p>
+were granted, or were written down somewhere in this appendix as a code an installation was going to be
+offered, and here is where their act is performed now. <strong>The two halves differ in kind and are marked
+apart in their rows</strong>, because a code that shipped and was later deleted cost a migration, while a code
+that only ever sat in a deferral list cost a sentence — and reading one as the other invents a migration
+nobody wrote.</p>
 <table>
 <thead>
 <tr>
@@ -3420,14 +3484,43 @@ were granted, and here is where their act is performed now.</p>
 <td>there was no namespace to grant from: a guardian's rights are one value with three choices, and the act is <code>guardianship.change_right</code></td>
 <td><a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a></td>
 </tr>
+<tr>
+<td>~~<code>report.view</code>~~</td>
+<td>opening the standard reports — it was the door to a screen, and the screen is what is gone</td>
+<td><strong>There is no report screen anywhere in this design</strong>, so there is nothing left to gate. What an organization calls a report is a <code>message</code> of a type addressed to an audience (<a href="../../data-model/10-messaging/#8-reports-arrive-here-and-stop-being-a-name">data-model/10 §8</a>); where no type is configured nobody computes the listing, and the design is not waiting for somebody who might. <strong>What survives untouched is the idiom in the titles this row's decision quotes:</strong> "the gate and the report are the control" names a check somebody runs, not a screen</td>
+<td><a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a></td>
+</tr>
+<tr>
+<td>~~<code>report.export</code>~~</td>
+<td>writing a report's rows out to a file — the one moment this design had data leaving it by intention</td>
+<td>Nowhere, and the loss is the one D-210 names in full: <a href="../../decisions/round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a>'s <em>nothing leaves</em> gets stronger, not weaker, and <strong>a person who wants data out now has to read it</strong>. The one export that stays is the trail's own, <code>audit.export</code>, which was never a reporting code</td>
+<td><a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a></td>
+</tr>
+<tr>
+<td>~~<code>report.finance.view</code>~~</td>
+<td>the money report — deferred on purpose by <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a> exactly one round before it was deleted, and never a row anybody could hold</td>
+<td>Nothing, and <strong>the money posture is unchanged by this row</strong>: the money rows are gated by <code>fee.view</code> and <code>payment.view</code>, and <strong>no money report code exists, is deferred, or gates a screen, a list or a file anywhere in this design</strong>. What an organization calls a money report is a message of a type addressed to an audience, exactly like any other. The deferral died with the screen a report code would have gated, which is why a deliberate choice was reversed without being argued</td>
+<td><a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>, <a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a></td>
+</tr>
+<tr>
+<td>~~<code>report.membership.view</code>~~</td>
+<td>the membership list the <code>leaders</code> office would have opened — the third of the three codes catalog B §10 carried as deferred, and the one <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>'s first entry forgot to name</td>
+<td>Nothing, and it was never grantable either: it sat among the deferred namespaces while the office that named it listed it as its one report row. <strong>This row exists because a namespace dies by its whole list:</strong> when an entry enumerates what a deletion takes, every member needs naming, and a member named nowhere in the corpus is a member with no death certificate — which is exactly what this was for one round. What an organization calls a membership list is a message of a type addressed to an audience, exactly like any other</td>
+<td><a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a></td>
+</tr>
+<tr>
+<td>~~<code>report.safeguarding.view</code>~~</td>
+<td>the case list a safeguarding officer would have opened — the second of the three codes catalog B §10 carried as deferred, and likewise never grantable</td>
+<td>Nothing. The reach it was meant to bound is a message type's audience if an organization ever configures one, and <strong>this corpus configures no type for a safeguarding case</strong> — so the honest statement is the absence, and no page may promise that a case list reaches anybody</td>
+<td><a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a></td>
+</tr>
 </tbody>
 </table>
 <p><strong>Two habits this page is meant to prevent.</strong> Naming a removed thing in a spec page, which is what put
 the history back into the pages this appendix exists to keep clean; and re-adding one quietly, which is
 why every row ends in a decision — a concept comes back by a decision entry, or it does not come back.</p>
 <hr />
-<p><em>Decisions behind this page: D-001, D-037, D-038, D-040, D-041, D-043, D-044, D-050, D-057, D-063, D-068, D-074, D-083, D-095, D-096, D-097, D-098,
-D-099, D-100, D-101, D-102, D-104, D-105, D-113, D-114, D-150, D-151, D-152, D-153, D-154.</em></p>
+<p><em>Decisions behind this page: D-001, D-037, D-038, D-040, D-041, D-043, D-044, D-050, D-057, D-068, D-074, D-083, D-095, D-096, D-097, D-098, D-099, D-100, D-101, D-102, D-104, D-105, D-113, D-114, D-121, D-150, D-151, D-152, D-153, D-154, D-157, D-158, D-159, D-161, D-166, D-174, D-175, D-183, D-190, D-191, D-192, D-195, D-197, D-199, D-200, D-204, D-205, D-210.</em>D-099, D-100, D-101, D-102, D-104, D-105, D-113, D-114, D-150, D-151, D-152, D-153, D-154.*</p>
 
 
 

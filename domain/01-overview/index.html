@@ -1049,6 +1049,8 @@
       
         
       
+        
+      
     
     
     
@@ -1916,6 +1918,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2202,6 +2232,8 @@
       
         
           
+        
+      
         
       
         
@@ -2945,6 +2977,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3483,7 +3543,11 @@ member's sibling needs a guardian and the member is the one who has them.</p>
    (<a href="../../decisions/round-24/#d-205--there-is-no-legal-review-and-assumption-49-is-retired">D-205</a>), so the
    person designing the system chose it and names what could be asked about it — <strong>these are the rows that
    outlive every erasure safeguard described two sentences above, and nothing outside this design vouches
-   for them.</strong></li>
+   for them.</strong> <strong>A message joins that kept class by decision, not by oversight</strong>: its body, its recipient
+   rows and their opened-moment are never scheduled away and never emptied by an erasure
+   (<a href="../../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>).
+   <strong>That is keeping, not deleting:</strong> it adds nothing to the two named acts, and a message row is never
+   removed by either.</li>
 <li><strong>People's names change</strong>, so a name is a child-table row with a validity period and never a
    column that gets overwritten. A <strong>group's</strong> name is a column, and nothing replaces the deleted
    name-history table: a rename edits it and the old name is gone. What survives a rename is the
@@ -3503,15 +3567,28 @@ member's sibling needs a guardian and the member is the one who has them.</p>
 <li><strong>Fees and payments</strong> — a provisional shape exists in
   <a href="../../data-model/07-finance/">../data-model/07-finance.md</a> because membership activation depends on
   it. Expect to rewrite it.</li>
-<li><strong>Communication</strong> — its shape is decided (direct by default, <code>broadcast</code> an ordinary scoped
-  permission, the recipient chooses the channel, a minor's guardians get a mirror of a direct
-  message), and its codes are in the catalog. There is no <code>message</code> or <code>message_recipient</code> table yet,
-  and no design for templates, opt-out granularity, retention or moderation.</li>
-<li><strong>Notifications</strong> — nothing in this design sends anything to anybody today
-  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>), and what is
-  deferred is a module nobody has designed: the renewal window made notifications dated rather than
-  status-driven, which is a design note, not a design.</li>
-<li><strong>Documents, reporting, API and UI.</strong></li>
+<li><strong>Communication</strong> — designed in <a href="../../decisions/round-25/">round 25</a> as
+  <a href="../../data-model/10-messaging/">../data-model/10-messaging.md</a>, and it is the module this page kept on
+  the deferred list for twenty-four rounds. One <code>message</code> table with exactly one author — a person, or
+  this system writing under <code>system:messages</code> — a <code>message_type</code> row carrying the audience it reaches,
+  and one recipient row per person reached. <strong>One code, <code>message.send</code>, gates every write, a message to a
+  single person included</strong> — what used to be free to anyone is now a held code, and a person without it
+  has no way to write to the organization through this module
+  (<a href="../../decisions/round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>).
+  <strong>A notification is a message whose type is set</strong>, a kind of
+  row rather than a second mechanism, so it no longer belongs on this list as an area of its own
+  (<a href="../../decisions/round-25/#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a>).
+  <strong>What moved off this page is the rule, not the caution:</strong> the system sends, a send is gated and
+  audited, and what stays forbidden is a page inventing a period nobody chose
+  (<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>).
+  What the module has not decided is on its own page and in
+  <a href="../../open-questions/#k-filed-by-a-module-page-reopened">the register</a> — whether an audience-addressed
+  message mirrors to a child's guardians (<a href="../../open-questions/#k-11">K-11</a>), and which clock fires an
+  automated type (<a href="../../open-questions/#k-14">K-14</a>), among them.</li>
+<li><strong>Documents, API and UI.</strong> Reporting is not on this list either, and not because it is waiting:
+  what an organization calls a report is a message of a type delivered to an audience, and there is no
+  report screen
+  (<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>).</li>
 </ul>
 <hr />
 <h2 id="8-next">8. Next<a class="headerlink" href="#8-next" title="Permanent link">&para;</a></h2>

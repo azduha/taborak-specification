@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1807,6 +1809,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2093,6 +2123,8 @@
       
         
           
+        
+      
         
       
         
@@ -2836,6 +2868,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3108,9 +3168,12 @@ lesson about what a check is allowed to be).</p>
   world in which somebody could hold the capability and nobody can reach a screen is the state D-126's
   procedure exists for, <strong>and that procedure keeps the one name it names</strong> — the column is read by whoever
   works the queue and answered by the recovery person written into the procedure, which is a procedure
-  needing a name rather than an alert, and nothing in this design sends it to anyone
+  needing a name rather than an alert, and <strong>no message type is configured that would send this list to
+  anybody</strong> — a procedure needs a name where a notification needs none, and the absence here is the missing
+  configuration rather than a rule about verbs
   (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>,
-  <a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
+  <a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+  <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>).
   <strong>On a first run this report is one row long, it has already reported its holder, and both are correct:</strong>
   the one grant the installation writes is a holder of <code>system.admin</code>, so the report's first output is the
   installation itself (<a href="../../decisions/round-21/#d-150--day-one-is-one-account-holding-systemadmin-and-nothing-else-is-shipped">D-150</a>).
@@ -3420,13 +3483,18 @@ lesson about what a check is allowed to be).</p>
   not one of these four columns is a rule — and putting an absence with a lawful author on a page about broken
   things is how a broken one comes to be read past. <strong>Which authors are lawful is stated once, above, and it is
   now one path long, so the tolerance this bullet used to need has shrunk with it.</strong></p>
-<p><strong>Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and
-no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the report
-rather than a message.</strong> <em>Why that is said here rather than assumed:</em> a sentence wiring five checks and half
-of a sixth to alerts sat above this list and named no report at all, so it survived every count of sentences
-about <code>system.admin</code> — most of what a grep for the promise matches survives the test for the same reason, a
-report described as urgent is not a message, and what this page lost was that framing sentence plus half of
-check 7
+<p><strong>Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and the
+reason is what a check is rather than a rule about the design: a check has no door, no <code>message_type_id</code> and no
+target person, so there is nothing for <a href="../10-messaging/">the messaging module</a> to write.</strong> What a check owes is
+a row on a screen, and urgency is a property of the run rather than of a message. <strong>What no page may still do
+is invent a period</strong> — a promise that somebody will be told within a stretch of days is only writable where a
+row holds the number and a named decision chose it, and that half of D-164 is exactly the half
+<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>
+left standing when it narrowed the rest. <em>Why that is said here rather than assumed:</em> a sentence wiring five
+checks and half of a sixth to alerts sat above this list and named no report at all, so it survived every count
+of sentences about <code>system.admin</code> — most of what a grep for the promise matches survives the test for the same
+reason, a check described as urgent is not a message, and what this page lost was that framing sentence plus
+half of check 7
 (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).</p>
 <ul>
 <li><strong>3 and 4 are the reports that stand in for the database rules that do not exist.</strong> A row in either
@@ -3475,11 +3543,15 @@ check 7
   correctly-configured oddity a tab is for
   (<a href="../../decisions/round-16/#d-120--a-key-outlives-whoever-created-it-and-the-report-is-the-control">D-120</a>).
   <strong>There is no age threshold on that line</strong>: a bound somebody might want to change belongs in a column, and
-  inventing one is not this page's call. <strong>Check 7's wide half and check 9 are reports on a screen and not
-  messages to a person</strong>, and that is stated rather than glossed: both describe authority getting bigger
-  while nobody was editing a grant, and this design still sends nothing to anybody, so the honest claim is
-  that these are the two a person is expected to have opened recently
-  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). <strong>Being read is
+  inventing one is not this page's call. <strong>Check 7's wide half and check 9 are runs on a screen and not
+  messages to a person</strong>, and that is stated rather than glossed: a check borrows neither an audience nor a
+  type, so it writes nothing
+  (<a href="../10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging §8</a>). Both describe authority
+  getting bigger while nobody was editing a grant, and <strong>no message type is configured for either of them</strong>, so
+  the honest claim is that these are the two a person is expected to have opened recently — the reason is the
+  missing configuration and not a rule about verbs
+  (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+  <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>). <strong>Being read is
   enough here because of what the ceiling took off the table</strong>: nothing can be written that hands out more
   than the writer holds, so neither report can be surprised by an escalation, and every change of hands that
   does happen carries the name of the person who did it — <code>granted_by</code>, required, no empty to read. <strong>No
@@ -3732,15 +3804,27 @@ named because they meant to
   <code>right_level = write</code> on the relationship, not a permission (D-074); the code families <code>dependent.*</code> and
   <code>*.admin</code> are not in this catalog. So an office that should hold a new permission must have one <strong>written
   down for it</strong> — check 13 is the net, and reading it is the whole of the follow-up.</li>
-<li><strong>Reporting ships coarse, and is left open on purpose.</strong> Only <code>report.view</code> and <code>report.export</code> exist.
-  Whether reporting is per-report or one permission with row-level filtering is still open
-  (catalog §12). Do not ship both shapes; pick one when reporting is designed.</li>
+<li><strong>Reporting is not a permission, and there is no shape left to pick.</strong> This bullet used to state that two
+  reporting codes existed, and that whether reporting was per-report or one permission with row-level filtering
+  was still open. <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+  deleted the whole namespace — what shipped and what was deferred together — on the ground that <strong>there is no
+  report screen in this design</strong> for a code to gate, and the question those two shapes were rival answers to
+  died with the screen rather than being answered. What an organization calls a report is a message of a type
+  addressed to an audience (<a href="../10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging §8</a>), so
+  what is left to decide is a type and an audience, never a code; <strong>the one export the catalog still carries is
+  the trail's own</strong>. The catalog's own item carries the same verdict in place
+  (<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#12-open-issues">catalog §12</a>), and this page's §11 checks keep
+  being runs rather than reports, which is what <a href="../10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging §8</a>
+  asks of a check.</li>
 </ul>
 <blockquote>
 <p><strong><code>system.admin</code> is deliberately a single top-level permission</strong>, not a
 per-resource one. Holding it satisfies everything, and check 9 in §11 reports its holders —
-a list to open, since nothing here would tell anybody that it had changed
-(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). Keeping the most
+a list to open, since <strong>no message type is configured for a change among its holders</strong> — the design has
+sending machinery now (<a href="../10-messaging/">10-messaging</a>) and this corpus writes no type that watches who
+holds this code, so the absence is configuration and not a rule about verbs
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>). Keeping the most
 dangerous capability concentrated, and visible in one short report, is safer than
 spreading equivalents of it across every resource. <strong><code>system.admin</code> is a permission code, not a level</strong> —
 there are no levels (D-099) — and it is the only permission whose <em>action</em> is <code>admin</code> (§11's check 17 is
@@ -3751,7 +3835,9 @@ the assertion that it stays the only one).</p>
 <ul>
 <li><strong>One question left about callers that are not people.</strong> Round 16 designed the arriving integration and
   stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
-  system acting on its own, with a fixed vocabulary instead of free text — five labels on the list now
+  system acting on its own, with a fixed vocabulary instead of free text — <strong>six</strong> labels on the list now, the
+  sixth being <code>system:messages</code>, the messaging run, added by
+  <a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>
   (<a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>)
   (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>,
   and check 9 above is its sibling) and the case where nobody who could hold <code>system.admin</code> can reach a screen

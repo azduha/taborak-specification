@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1818,6 +1820,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2104,6 +2134,8 @@
       
         
           
+        
+      
         
       
         
@@ -2847,6 +2879,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3072,6 +3132,11 @@ them by number and their anchors are built from them:
 <td>The human explanation</td>
 </tr>
 <tr>
+<td><code>opt_in_email</code></td>
+<td>boolean, required</td>
+<td>Default <code>false</code>. <strong>The account's own answer about its one door outside the inbox</strong>, on this row rather than on anything a sender can touch (<a href="../../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>); <a href="../10-messaging/">the messaging module</a> is what reads it</td>
+</tr>
+<tr>
 <td><code>created_at</code></td>
 <td>timestamp, audit time</td>
 <td></td>
@@ -3131,9 +3196,12 @@ them by number and their anchors are built from them:
 <code>UNIQUE (person_id)</code> would make it impossible to close an old account and open a new one —
 which is exactly the returning-member case at the account level.</p>
 <p><strong>An account is a login, and nothing about a child is decided here.</strong> <code>account</code> keeps the columns that
-describe authentication and no others: there is no minimum age for one, no consent step, and no branch
+describe authentication — and one that does not, <code>opt_in_email</code> below, which is the account's own answer about
+its own mail and decides nothing about anybody either, least of all a child. Nothing else is kept here: there
+is no minimum age for an account, no consent step, and no branch
 in the sign-up path that a minor's sign-up takes and an adult's does
-(<a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a>). What a
+(<a href="../../decisions/round-22/#d-166--an-account-is-not-where-authority-over-a-child-lives">D-166</a>,
+<a href="../../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>). What a
 new account can reach is nothing until somebody writes a row about its person — a grant, a guardianship,
 a membership — which is what every new account is anyway, not a defence built for this case. <strong>If the
 organization wants a guardian's answer on record</strong>, it goes on the guardianship relationship, where an
@@ -3145,6 +3213,23 @@ password (<a href="../../decisions/round-23/#d-176--google-or-a-password-one-ide
 be read as needing.</strong> Such a child is not given a second-class credential, a shared mailbox or a login
 held by staff; the way an adult acts for them is the guardianship row, and an account staff open for them
 waits to be claimed (Rules above; <a href="../../decisions/round-23/#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row">D-178</a>).</p>
+<p><strong>The one column here that is not about logging in, and why it is here.</strong> <code>opt_in_email</code> is the account's own
+yes or no about having its messages delivered to it outside the system, and it is <a href="../../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>'s
+<em>"the recipient chooses the channel"</em> finally given somewhere to live
+(<a href="../../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>).
+<strong>It sits on <code>account</code> and not on anything a sender can touch, because the choice is the login owner's and not
+a property of the message</strong> — while everything the choice means, what a door is, what a message writes against
+one, and what a notification is, belongs to <a href="../10-messaging/">the messaging module</a>, whose
+<a href="../10-messaging/#5-doors-the-account-chooses-the-inbox-is-not-one-and-only-e-mail-lands">§5</a> is the page that
+decides it. <strong>Three things follow, and none of them is a column on this table.</strong> The inbox is <strong>not a door and
+cannot be turned off</strong>: it is the record that a message exists for you, so there is no <code>opt_in</code> for it and no
+refusing it. The <strong>address is not here either</strong> — the door opens onto a <code>person_contact</code> row of type <code>email</code>
+carrying a verified address (§6), and an account with the flag on and no such row holds a choice with nothing
+behind it, which writes no row for that door and is a fact about the person's contacts rather than a failed
+send. And <strong>only one door exists today</strong>: no column is written for a transport this design cannot perform, which
+is the same lesson <a href="../../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>
+drew from a vocabulary value that claimed a kind of actor existed — where the next transport's address will live
+is <a href="../../open-questions/#k-15">K-15</a>.</p>
 <p><strong>A colliding sign-up files a claim and brings nothing into the world that a human has not approved.</strong>
 This is the case the second gate above exists for
 (<a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>):
@@ -3223,9 +3308,14 @@ That is one extra login against the alternative of an account that belongs to tw
 once, and the holding message (§4 above) is where they are told it.
 Two costs come with it and both are stated rather than absorbed. <strong>A genuinely new person who happens to
 match now waits for a human</strong>, so the blocking condition carries an age check shaped like
-<code>field_conflict</code>'s thirty days below — a number on a report somebody opens, because nothing in this design
-tells anybody that a queue has stalled
-(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). A
+<code>field_conflict</code>'s thirty days below — a number on a listing somebody opens, because <strong>no message type is
+configured for a queue that has stalled</strong>: the design has the sending machinery
+(<a href="../10-messaging/">10-messaging</a>) and an installation's vocabulary of types is empty until somebody writes it
+(<a href="../10-messaging/#2-message_type--a-vocabulary-that-is-also-a-settings-panel">10-messaging §2</a>), so nothing is
+written about a waiting claim unless a person configures a type that says so — the reason is configuration now,
+and not a rule about verbs
+(<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>). A
 stalled identity queue stopped being a data-quality problem the moment it could hold a login, and the
 person it is holding has no way to say so except by telephoning someone.
 <strong>And the reviewer deciding it is deliberately half-blind</strong> — the office that holds the merge holds no read

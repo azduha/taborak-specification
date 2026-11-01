@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1846,6 +1848,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2132,6 +2162,8 @@
       
         
           
+        
+      
         
       
         
@@ -2875,6 +2907,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3145,7 +3205,7 @@ underneath it is the more dangerous kind of stale, and a summary is what people 
 <tr>
 <td><code>actor_label</code></td>
 <td>text, optional</td>
-<td><strong>Not free text: a value from the label list of <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a></strong> — <code>system:renewal-sweep</code>, <code>system:payload-reduction</code>, <code>system:log-reduction</code>, <code>system:bank-pull</code>, <code>migration:0042</code> are instances of its rows — those five are the whole list — and bare <code>system</code> is retired, because it means "one of the above, and I am not saying which" (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). It exists for the writers that have no row of their own, and <strong>a writer that is not on that list joins it there before it writes</strong> — the list is prose, so nothing in the database refuses a label outside it and check 4 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> is what notices. A caller that is not a person is a row in <code>api_key_id</code>, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none</td>
+<td><strong>Not free text: a value from the label list of <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a></strong> — <code>system:renewal-sweep</code>, <code>system:payload-reduction</code>, <code>system:log-reduction</code>, <code>system:bank-pull</code>, <code>system:messages</code>, <code>migration:0042</code> are instances of its rows — that list is the whole list, and <code>system:messages</code> is <a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">round 25</a>'s addition, the author of every automated <code>message</code> row and its recipients — and bare <code>system</code> is retired, because it means "one of the above, and I am not saying which" (<a href="../../decisions/round-17/#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list">D-125</a>). It exists for the writers that have no row of their own, and <strong>a writer that is not on that list joins it there before it writes</strong> — the list is prose, so nothing in the database refuses a label outside it and check 4 of <a href="../06b-redaction-and-checks/#5-integrity-checks">06b §5</a> is what notices. A caller that is not a person is a row in <code>api_key_id</code>, not a label, so an integration's write never arrives here. A row naming none of the three is no longer this trail's gap, because §7a says what it means; what check 4 counts now is a label that is not on the list, and a write path that owed a person and named none</td>
 </tr>
 <tr>
 <td><code>operation</code></td>
@@ -3258,8 +3318,9 @@ before anything is spent on a row that would log noise.</p>
 <li>Write one audit row carrying: the actor — <code>actor_person_id</code> or <code>api_key_id</code>, never both — <strong>and, where
    the write had no actor of either kind, the <code>actor_label</code> naming which of this system's own writers it
    was, taken from the list in <a href="../00-conventions/#7a-what-an-empty-actor-column-means">00-conventions §7a</a>:
-   the renewal sweep, payload reduction, the access trail's age-out, the bank statement pull, or a named
-   migration.</strong>
+   the renewal sweep, payload reduction, the access trail's age-out, the bank statement pull, the messaging
+   run (<a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>),
+   or a named migration.</strong>
    The label is not a fallback for a writer that could have named someone — a person who corrects a row by
    hand through the application is <code>actor_person_id</code>, and a call that authenticated is <code>api_key_id</code> — so a
    row arriving here with none of the three has not joined the list, and check 4 of

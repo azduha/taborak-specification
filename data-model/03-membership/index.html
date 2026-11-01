@@ -858,6 +858,8 @@
       
         
       
+        
+      
     
     
     
@@ -1999,6 +2001,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2285,6 +2315,8 @@
       
         
           
+        
+      
         
       
         
@@ -3028,6 +3060,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3576,7 +3636,7 @@ The names of the columns that carried those rules are indexed in
 <tr>
 <td><code>notes</code></td>
 <td>text, optional</td>
-<td></td>
+<td>Free text beside the ask. <strong>Erasure empties it and the row remains</strong> — the emptied shape, not the deleted one (<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>, listed in <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a>)</td>
 </tr>
 <tr>
 <td><code>source</code></td>
@@ -3727,7 +3787,7 @@ inferred from date arithmetic.</p>
 <tr>
 <td><code>notes</code></td>
 <td>text, optional</td>
-<td></td>
+<td>Free text beside the period. <strong>Erasure empties it and the row remains</strong> — the period, the dates and the confidence are untouched; the remark on them goes (<a href="../../decisions/round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a>, listed in <a href="../06b-redaction-and-checks/#4-redaction-log">06b §4</a>)</td>
 </tr>
 <tr>
 <td><code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code></td>
@@ -4091,7 +4151,7 @@ a grant gates. The third case — appointed counselors and local leaders the org
 regardless of their own fee status — is the only one that was ever a waiver of a gate, and it is now
 simply the second row of that table: write the office without <code>MEMBERS</code>.</p>
 <p><strong>The posture is opt-in, so the new failure is named rather than buried.</strong> The gate used to be
-default-on, so forgetting it was impossible; now a grant written <code>ROLE(TREASURERS)</code> with no <code>MEMBERS</code>
+default-on, so forgetting it was impossible; now a grant written <code>ROLE(treasurer)</code> with no <code>MEMBERS</code>
 authorizes a lapsed member, silently, forever. Three controls, none of which is the resolver:</p>
 <ul>
 <li><strong>A standing report</strong> of live grants naming a <code>ROLE(...)</code> operand whose expression does not contain
@@ -4197,6 +4257,15 @@ somebody who is not a member is dormant authority when its grants say <code>MEMB
 when they do not (§6).</p>
 <p><strong>Check 4 is operational</strong> (a worklist for the renewal campaign). The rest are data-quality checks
 for cases no constraint rejects at the write.</p>
+<p><strong>A renewal notice is not this check's job, and is no longer the sweep's either.</strong> A notice to renew is a
+message of the <code>renewal-window-opened</code> type, authored by <code>system:messages</code> and delivered to the audience on
+that type's own row (<a href="../10-messaging/#2-message_type--a-vocabulary-that-is-also-a-settings-panel">10 §2</a>,
+<a href="../../decisions/round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>):
+<strong>the sweep expires memberships and sends nothing</strong>, which is why the label did not get the job as well. This
+check stays a worklist somebody runs, and a worklist is not a delivery — the two are different things and
+neither replaces the other. Which clock fires the type is
+<a href="../../open-questions/#k-14">K-14</a>, and it is a real choice here because the window's own arithmetic was
+deliberately date-driven rather than job-driven (<a href="../../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).</p>
 <p><strong>Checks this module deliberately does not hold.</strong> The one <a href="../../decisions/round-10a/#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality">D-099</a>
 asks for — a live <code>deny</code> whose grantee, scope and code match no live allow, and so denies nothing — is a
 report over grants, not over memberships, and belongs to
@@ -4379,7 +4448,11 @@ consequence worth keeping in view, because both are easy to undo: the roster is 
 and never on a membership, so belonging survives where no membership record survives (§5), and a
 renewal inside the window opens its row at the previous expiry date, which is what makes a lapse
 invisible in the coverage and still visible in the money (§3).</p>
-<p>Nothing above is on its way to <a href="../../open-questions/">../open-questions.md</a>: round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written <strong>into the bullet above</strong>, and one that is genuinely still open stays open here rather than being handed back to the register.</p>
+<p><strong>One thing above is on its way to <a href="../../open-questions/">the register</a>, and it is this page's own</strong>: which clock
+fires the renewal notice now that the notice has a type to be — <a href="../../open-questions/#k-14">K-14</a>. Round 24 emptied
+that register and round 25 reopened it with <strong>seven rows, K-11 through K-17</strong>, five of them born from designing the
+messaging module (<a href="../../open-questions/#k-filed-by-a-module-page-reopened">§ K</a>). Everything else above closes by
+having its answer written <strong>into the bullet</strong>, which is how a closed item is told apart from a forgotten one.</p>
 
 
 

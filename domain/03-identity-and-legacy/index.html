@@ -1166,6 +1166,8 @@
       
         
       
+        
+      
     
     
     
@@ -2033,6 +2035,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2319,6 +2349,8 @@
       
         
           
+        
+      
         
       
         
@@ -3062,6 +3094,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3679,7 +3739,13 @@ sign up for a camp on the day the form closes, which is not self-correcting at a
   is shaped like <code>field_conflict</code>'s thirty days
   (<a href="../../data-model/08a-event-guards-and-checks/#10-integrity-checks">08a-event-guards-and-checks.md §10</a>);
   that a person opens it is the whole point of having it.</li>
-<li><strong>The holding message confirms nothing.</strong> It says the request was received and will be checked. It
+<li><strong>The holding message confirms nothing — and it is a sentence on a screen, not a row.</strong> Round 25 gave
+  <code>message</code> a table
+  (<a href="../../data-model/10-messaging/">data-model/10</a>), so this is said plainly: what a blocked sign-up is shown is
+  the gate's own on-screen answer, this page designs no send of it, and <strong>no message type exists for a sign-up
+  acknowledgment</strong> (<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>
+  is why that is a design choice now rather than a missing mechanism). What it says is that the request was
+  received and will be checked. It
   says nothing about whether the name, the birth date or the number matched anything, because a
   sign-up form that can answer "yes, that person exists" is an existence oracle, and this system's
   roster is children.</li>
@@ -4148,10 +4214,13 @@ proves false, you can see it was self-asserted rather than discovered.</p>
 <hr />
 <h2 id="9-open-issues">9. Open issues<a class="headerlink" href="#9-open-issues" title="Permanent link">&para;</a></h2>
 <p><strong>Nothing here is open, and this list, not the register, is where the asking lived.</strong>
-<a href="../../open-questions/">../open-questions.md</a> has carried no live question since round 24, and a zero there means
-one thing precisely: nobody is waiting on an answer from outside the design
-(<a href="../../decisions/round-24/">round 24's own header</a> says so, and a reader who concludes from it that the design
-has no questions left has misread what the number was ever for). Where a module page still asks something, that
+<a href="../../open-questions/">../open-questions.md</a> carried no live question at all after round 24 and
+<a href="../../decisions/round-25/">round 25</a> reopened its § K with <strong>seven rows, K-11 through K-17</strong> — five out of the
+messaging module, two out of that same round's own spelling fix and <code>notes</code> ruling
+(<a href="../../open-questions/#k-filed-by-a-module-page-reopened">§ K</a>). <strong>None of the seven is this page's</strong>, so the
+sentence that number carries is unchanged in what it means: a count on that page is never a claim that the design
+has no questions left, which is what round 24 said when its own header read zero
+(<a href="../../decisions/round-24/">round 24's own header</a>). Where a module page still asks something, that
 page is the register for it — so every bullet below now carries its verdict in place of a recommendation:</p>
 <ul>
 <li><strong>✅ Closed — whether twins/siblings with similar names and the same birth date need a documented
@@ -4225,7 +4294,7 @@ page is the register for it — so every bullet below now carries its verdict in
 <hr />
 <p><em>Decisions behind this page: D-004, D-011, D-037, D-038, D-039, D-047, D-056, D-057, D-059, D-072, D-084,
 D-085, D-087, D-088, D-089, D-090, D-092, D-093, D-097, D-099, D-102, D-105, D-114, D-116, D-121, D-141,
-D-151, D-169, D-189, D-190. D-094 is gone from this list because the page no longer cites it: the root unit
+D-151, D-169, D-189, D-190, D-214. D-094 is gone from this list because the page no longer cites it: the root unit
 it named was deleted by D-097, and §7 now says who owns an imported event by naming nobody.</em></p>
 
 

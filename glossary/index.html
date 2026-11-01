@@ -1037,6 +1037,8 @@
       
         
       
+        
+      
     
     
     
@@ -1904,6 +1906,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2190,6 +2220,8 @@
       
         
           
+        
+      
         
       
         
@@ -2920,6 +2952,34 @@
     
   
     Round 24
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
   
 
     
@@ -3693,31 +3753,62 @@ that fallback would be wrong on the common path
 does not fit settles, if anything, is the finance module's open question.</p>
 <hr />
 <h2 id="communication">Communication<a class="headerlink" href="#communication" title="Permanent link">&para;</a></h2>
-<p><strong>Direct message</strong> — One person to one person. <strong>Everyone can send one</strong>; there is no
-permission for it.</p>
-<p><strong>Broadcast</strong> — The only messaging permission, and <strong>an ordinary scoped one</strong>: a grant like
-any other. Held at the unit, <code>message.broadcast</code> reaches everyone; <strong>the narrower reading is
-a grant naming a group</strong>, reaching that roster. There is <strong>no global broadcast flag</strong>: a
-permission that has to be granted is one that can be given to some people and refused to
-others, whereas the flag would be all-or-nothing and would leave a section leader choosing
-between an organization-wide power and typing the same sentence twelve times. Whether
-broadcast should ever be grantable on an item is messaging's open question, not the model's
-(<a href="../decisions/round-06/#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel">D-077</a>).</p>
-<p><strong>Delivery channel</strong> — Email, push, or in-app, <strong>chosen by the recipient</strong>, not the sender.
-The sender chooses <em>who</em>; the recipient chooses <em>how it arrives</em>. This is why the system is
-the medium rather than a mail relay: a bounced email is a failed delivery on one channel,
-not a lost message.</p>
+<p><strong>Message</strong> — The one thing this module has, and the only word for it. A <code>message</code> row has exactly one author, a
+person or this system acting on its own, and goes to exactly one target: one person <strong>or</strong> one saved audience.
+<strong>A body is never edited</strong> — a wrong send is followed by a second message that says what the first got wrong — and
+<strong>nothing about a message ages out or is emptied by an erasure</strong>, which is a decision with an argument against it
+on the record (<a href="../decisions/round-25/#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a>,
+<a href="../decisions/round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a>).
+There is one table and not two: a design with a second one would need its own expiry rule, its own audit shape and
+its own reader, and they would drift (<a href="../data-model/10-messaging/">data-model/10</a>).</p>
+<p><strong>Notification</strong> — <strong>A kind of message, not a mechanism.</strong> The word names a <code>message</code> whose <code>message_type_id</code> is
+set, and nothing else: no table, no module, no second pipeline beside the one a person uses to write to another
+person. The older word for this area is retired with the table it implied, and the refusal is
+<a href="../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>'s,
+applied twice.</p>
+<p><strong>Message type</strong> — What may be sent automatically, and <strong>whom it reaches</strong>: <code>message_type</code> holds a <code>code</code>, a name,
+and an <code>audience_id</code> an administrator edits. It is <a href="../decisions/round-23/#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes">D-186</a>'s
+diagnosis a second time — settings wearing a vocabulary's clothes: the code is the vocabulary, the audience is the
+setting, and what an organization changes on a Tuesday afternoon is the setting
+(<a href="../decisions/round-25/#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209</a>).</p>
+<p><strong><code>message.send</code></strong> — The only messaging permission, <strong>one code for a message to one person or to an audience</strong>,
+held by the leadership or by anyone the granter decides. <strong>The target a send names is not checked</strong> — no per-person
+test over an audience — and the controls that remain are the granter's ceiling over who may hold the code and one
+audit row per send (<a href="../decisions/round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>).
+It also gates what used to need nothing: a sentence to one person is now a gated act, so <em>"direct by default"</em>
+describes a shape and not a right.</p>
+<p><strong>Door</strong> — How a message arrives for one person: <strong>the account chooses its doors</strong> and the organization does not.
+<strong>The inbox is not a door and cannot be turned off</strong>, because a design where it can be declined is a design where
+"you were addressed" has no evidence behind it; the one external door with a column today is e-mail, on
+<code>account.opt_in_email</code>, default off. <strong>A door arrives with its column on the day its transport exists</strong>, so this
+design carries none for a token that outlives its device
+(<a href="../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>).
+The older phrase "delivery channel" described three doors at once and is retired with them.</p>
+<p><strong>Recipient row</strong> — <code>message_recipient</code>: whom a message reached, on which door, and whether it was opened. <strong>The
+record of an act, and nothing resolves against it</strong> — no audience expression may name a message's recipients as a
+set, which is the opposite of a grant's record and for the opposite reason: a grant's authority <em>is</em> its
+expression, while an audience can be edited tomorrow and the fact that thirty people were addressed in March must
+not change with it (<a href="../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,
+<a href="../decisions/round-25/#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207</a>).</p>
 <p><strong>Age is not a sender concept</strong> — and it is not a <em>recipient</em> concept either. Nothing
 restricts who may address a child; what stops a private message to a child from being
 unnoticed is <strong>mirroring</strong>, and no check in the resolver ever looks at an age.</p>
-<p><strong>Mirroring</strong> — A copy of a direct message addressed to a minor, delivered to that minor's
-guardians whose <strong>right</strong> is <code>view</code> or <code>write</code> — the three-value right of the guardianship
-channel, not a level — fixed to that set <strong>at the moment of sending</strong>. Visibility, not
-approval: nobody has to agree before the message is sent. A guardian at <code>none</code> receives
-nothing, because <code>none</code> is the organization having already decided that this party sees
-nothing about the child — and a minor whose guardians are <em>all</em> <code>none</code> is the same
-shape as a minor with no guardian at all, so it is reported together with it
-(<a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>).</p>
+<p><strong>Mirroring</strong> — A message addressed to a minor reaches that minor's guardians whose <strong>right</strong> is <code>view</code> or <code>write</code>
+— the three-value right of the guardianship channel, not a level — as <strong>their own recipient rows, on their own
+chosen doors</strong>, each carrying the row it mirrors. Visibility, not approval: nobody has to agree before the message
+is sent, and the sender is shown the mirroring at the write because the rows are computable before they exist. A
+guardian at <code>none</code> receives nothing, because <code>none</code> is the organization having already decided that this party sees
+nothing about the child — and a minor whose guardians are <em>all</em> <code>none</code> is the same shape as a minor with no
+guardian at all, so it is reported together with it
+(<a href="../decisions/round-07-08/#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians">D-082</a>,
+<a href="../decisions/round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a>).
+<strong>Whether a message addressed to an audience mirrors as well is
+<a href="../open-questions/#k-11">K-11</a></strong>, and it decides whether one announcement writes a thousand rows.</p>
+<p><strong>A report is a delivered message</strong> — and there is no report screen. What an organization calls a report is a
+message of a type addressed to an audience, which is why the reporting permission codes are gone and why the word
+survives with new machinery under it. <strong>Where this corpus says "the report is the control" it means a listing
+nobody receives — a check — and that idiom is kept, because three decision titles are built on it</strong>
+(<a href="../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>).</p>
 <hr />
 <h2 id="time">Time<a class="headerlink" href="#time" title="Permanent link">&para;</a></h2>
 <p><strong>Temporal row</strong> — Any row with <code>valid_from</code> / <code>valid_to</code>. <code>valid_to IS NULL</code> means

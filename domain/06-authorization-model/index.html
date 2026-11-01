@@ -1178,6 +1178,8 @@
       
         
       
+        
+      
     
     
     
@@ -2045,6 +2047,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2331,6 +2361,8 @@
       
         
           
+        
+      
         
       
         
@@ -3074,6 +3106,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3614,9 +3674,13 @@ It crosses no boundary, because there is no boundary for it to cross.</p>
    is <a href="../../data-model/05-authorization/#what-is-refused-when-a-grant-is-saved">05 §6</a>). A right held through
    a delegation raises no ceiling (§9), so that path opens no gap here either.</li>
 <li><strong>Its holders are on a list, and the list is read.</strong> It is what tells a planned change from an
-   incident; what it does not do is reach anybody by itself, because nothing in this design sends a message
-   when the set changes, so the hour a new holder is noticed in is the hour somebody opens the report
-   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>). <strong>One thing
+   incident; what it does not do is reach anybody by itself, and <strong>the reason is now a fact about the
+   configuration rather than a rule about verbs:</strong> the design has sending machinery
+   (<a href="../../data-model/10-messaging/">10-messaging</a>) and <strong>this corpus configures no message type that watches a
+   holder list</strong>, so nothing is written when the set changes and the hour a new holder is noticed in is the hour
+   somebody opens the report
+   (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as narrowed by
+   <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>). <strong>One thing
    this does not sweep away:</strong> <a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>'s
    break-glass procedure names one recovery person in advance, and that name stays — a procedure needs a
    person where a notification needs none, and nothing here is a notification.</li>
@@ -3778,23 +3842,26 @@ over visible grant rows, not a walk through a bundle table nobody reads. What "t
 permissions" consists of:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>role         code = treasurer                (a row the organization wrote, like every other)
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>role_holder  treasurer ← Ana, 2026-01-01 → open
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>             permission = fee.view            effect = allow
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>             permission = payment.record      effect = allow
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>access_grant audience = MEMBERS * ROLE(treasurer)   scope = unit
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>             permission = payment.match      effect = allow
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  … one row per code, and the list is the office
 </code></pre></div>
 <p><strong>Six money codes, and no seventh one for reporting on them</strong>
 (<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">D-195</a>):
-<code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code>. A reader who
-comes here looking for <code>report.finance.view</code> will not find it in this example and will not find it shipped
-anywhere, on purpose — reporting ships <code>report.view</code> and <code>report.export</code> and picks its shapes when reporting is
-designed, and the finance module was not the round that got to decide that. <strong>What the office therefore cannot
-do on day one is open a money report</strong>: it can read every obligation and every payment, which is the same facts
-row by row, and the count over them is the part still undesigned
-(<a href="../../appendix/permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">appendix catalog B §10</a>).</p>
+<code>fee.view</code>, <code>fee.create</code>, <code>payment.view</code>, <code>payment.record</code>, <code>payment.reverse</code>, <code>payment.match</code>. <strong>No seventh
+code was ever coming</strong>: <a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a>
+deleted the whole reporting namespace one round after these six shipped — the codes that had rows in the
+catalog, and the deferred money one with them — on the ground that <strong>there is no report screen in this design</strong>
+for a code to gate, so reporting stopped being a permission, a module and a deferred item in the same stroke.
+<strong>What this office holds, then, is the facts and no total</strong>: it reads every obligation and every payment, which
+is those rows one by one. What an organization calls a money report is a message of a type addressed to an
+audience (<a href="../../data-model/10-messaging/#8-reports-arrive-here-and-stop-being-a-name">10-messaging §8</a>), and the
+row that decides whom it reaches is a setting an admin edits, not a right anybody is granted
+(<a href="../../decisions/round-25/#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209</a>).</p>
 <p><strong>Neither a role nor a group authorizes anything by existing</strong>, which is
 <a href="../../decisions/round-01a/#d-005--permissions-are-grants-never-derived-from-identity">D-005</a> and
 <a href="../../decisions/round-01b/#d-019--household-membership-grants-no-access">D-019</a> restated one level
@@ -4058,9 +4125,12 @@ grant writer's act (§6.2). The resolver has no membership branch and carries no
 person, which is how the waiver looks when the writer would rather not touch the expression everyone
 else reads.</p>
 <p><strong>The test is opt-in per grant, and the failure mode must be named rather than buried.</strong> A grant
-written as <code>ROLE(treasurers)</code> with no <code>MEMBERS</code> authorizes a lapsed member, <strong>silently, forever</strong>.
-Nothing errors, nothing reports itself when it happens, and nothing about the grant looks wrong — a
-lapsed treasurer is still a treasurer. Three controls, <strong>none of which is the resolver</strong>:</p>
+written as <code>ROLE(treasurer)</code> with no <code>MEMBERS</code> authorizes a lapsed member, <strong>silently, forever</strong>.
+Nothing errors, nothing says it out loud — <strong>and the reason is that no message type is configured for a grant
+of this shape</strong>, not a rule about verbs
+(<a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>)
+— and nothing about the grant looks wrong: a lapsed treasurer is still a treasurer. Three controls, <strong>none of
+which is the resolver</strong>:</p>
 <ol>
 <li><strong>A standing report</strong> of live grants naming a <code>ROLE(...)</code> operand whose expression does not contain
    <code>MEMBERS</code> — <strong>every one of them</strong>, since nothing marks which offices should have carried the term
@@ -4130,7 +4200,7 @@ enforces <code>MEMBERS</code> being present: a convention, not a guard</strong>
 </tbody>
 </table>
 <h3 id="62-audiences--an-expression-over-named-sets">6.2 Audiences — an expression over named sets<a class="headerlink" href="#62-audiences--an-expression-over-named-sets" title="Permanent link">&para;</a></h3>
-<p>A grant aimed at a set of people names <strong>an expression over named sets</strong> — <code>MEMBERS * ROLE(treasurers)</code>,
+<p>A grant aimed at a set of people names <strong>an expression over named sets</strong> — <code>MEMBERS * ROLE(treasurer)</code>,
 <code>EVERYONE - GROUP(x)</code>, <code>PERSON(a) + PERSON(b)</code> — stored as a tree of binary nodes, evaluated live on the
 checked date, and never materialized. The language and its operators, precedence and canonical rendering,
 the thirteen seeded selectors and the argument each takes, the rules that make the tree safe (cycles, the

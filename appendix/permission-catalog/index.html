@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -1723,6 +1725,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2152,6 +2182,8 @@
       
         
           
+        
+      
         
       
         
@@ -2895,6 +2927,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3110,9 +3170,12 @@ the schema stores, no grade words and no prefix — with <code>system.admin</cod
 (<a href="../../decisions/round-04/#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular">D-055</a>).
 This is a <strong>menu, not a checklist.</strong> Administrators assign people only the permissions they
 actually need; that is only possible if the capabilities exist as separate rows to assign.
-Further permissions arrive with the modules not yet specified — documents and communication.
-Events were on that list and are no longer: §8a carries their thirteen codes
-(<a href="../permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">§10</a>).</p>
+Further permissions arrive with the modules not yet specified — documents.
+Events were on that list and are no longer: §8a carries their thirteen codes. Neither is communication:
+the messaging module is designed, and §8c carries the one code it
+(<a href="../../decisions/round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a>,
+<a href="../../data-model/10-messaging/">../data-model/10-messaging.md</a>;
+<a href="../permission-catalog-b-roles-and-open-issues/#10-deferred-namespaces">§10</a>).</p>
 <p><strong>This is the opposite disposition from roles, and the asymmetry is deliberate.</strong> Roles are
 <em>runtime data</em> the organization invents (<a href="../../decisions/round-04/#d-052--roles-are-runtime-data-the-seed-set-is-not-a-specification">D-052</a>);
 permissions are <em>capabilities the code implements</em>. You cannot assign a power the data model
@@ -3121,7 +3184,7 @@ comprehensive <em>role</em> list would be a specification pretending to be data.
 <p>Codes are still <strong>stable identifiers</strong>: adding one is free, renaming one is a migration
 (<a href="#code-shape">§1</a>). What is <em>not</em> yet settled is the exact contents — tracked in §12.</p>
 </blockquote>
-<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">permission-catalog.md</a> holds §1, the conventions; <a href="../permission-catalog-a-codes/">permission-catalog-a-codes.md</a> holds §2–§8b, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.</p>
+<p><strong>Section numbers are shared across the three parts</strong> and never renumbered, because other pages cite them by number and their anchors are built from them: <a href="./">permission-catalog.md</a> holds §1, the conventions; <a href="../permission-catalog-a-codes/">permission-catalog-a-codes.md</a> holds §2–§8c, the codes; <a href="../permission-catalog-b-roles-and-open-issues/">permission-catalog-b-roles-and-open-issues.md</a> holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.</p>
 <hr />
 <h2 id="1-conventions">1. Conventions<a class="headerlink" href="#1-conventions" title="Permanent link">&para;</a></h2>
 <h3 id="code-shape">Code shape<a class="headerlink" href="#code-shape" title="Permanent link">&para;</a></h3>
@@ -3170,12 +3233,17 @@ than read off its name, and because D-068 exempted it in so many words rather th
 is the only code in this system allowed to be a noun, and the exemption sets no precedent</strong>:
 <code>&lt;resource&gt;.admin</code> is precisely what rule 3 refuses and precisely what was deleted.</p>
 <p><strong>The three rules were run against the sixty-six live codes the tables below held when D-104 ran them,
-and corrected nothing</strong> — sixty-five satisfy both tests, and the sixty-sixth is <code>system.admin</code>. <strong>Ten</strong> codes
-have arrived since that count — the four <code>api_key.*</code> rows of
-<a href="../permission-catalog-a-codes/#8b-keys--a-caller-that-is-nobody">§8b</a> and the six money rows of
-<a href="../permission-catalog-a-codes/#4a-money">§4a</a>, promoted in
-<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">round 24</a>
-— and every one of them satisfies the three rules rather than testing them
+and corrected nothing</strong> — sixty-five satisfy both tests, and the sixty-sixth is <code>system.admin</code>. Codes have
+arrived since that count and others have left it — the four <code>api_key.*</code> rows of
+<a href="../permission-catalog-a-codes/#8b-keys--a-caller-that-is-nobody">§8b</a>, the six money rows of
+<a href="../permission-catalog-a-codes/#4a-money">§4a</a> promoted in
+<a href="../../decisions/round-24/#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows">round 24</a>,
+and <code>message.send</code> of
+<a href="../permission-catalog-a-codes/#8c-messaging">§8c</a> arrived, and the reporting pair left in
+<a href="../../decisions/round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">round 25</a>
+— and <strong>the register holds seventy-one codes now</strong>, counted off the tables below rather than remembered,
+because a count beside a sentence is the thing that goes stale silently. Every one of them satisfies the
+three rules rather than testing them
 (<a href="../../decisions/round-16/#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined">D-122</a>).
 That null result is the reason this section changed voice rather than its contents: <strong>a convention that is
 followed and
@@ -3302,8 +3370,8 @@ had, and why bands are not in this design.</p>
 preview is logged as <em>a rendering on a date</em>, never as a statement of who was in it
 (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>, §12).</p>
 <p>So <code>event.answer.view</code> on an event is aimed at <code>ORGANIZERS</code>, an open camp is opened by <code>MEMBERS</code>, a gated
-office is <code>MEMBERS * ROLE(treasurers)</code>, and the exemption for one named person is
-<code>(MEMBERS * ROLE(treasurers)) + PERSON(jan)</code> — a second grant aimed at that person is the other way to write
+office is <code>MEMBERS * ROLE(treasurer)</code>, and the exemption for one named person is
+<code>(MEMBERS * ROLE(treasurer)) + PERSON(jan)</code> — a second grant aimed at that person is the other way to write
 the same thing, and it keeps the exception off the expression everyone else reads.</p>
 <p><strong>Three refusals belong next to the language, because each is a temptation this catalog creates.</strong> None of
 them is refused on a type argument: a selector may be a hard-coded computation in the resolver, because
@@ -3458,8 +3526,10 @@ grant (<a href="../../decisions/round-06/#d-073--guardianship-is-administered-by
 </table>
 <p>These marks should drive UI warnings, and they are what the reports in
 <a href="../../data-model/05d-invariants-and-seed/#11-invariants-to-verify">../data-model/05d-invariants-and-seed.md</a>
-are read with — a mark is on the screen somebody opens, because nothing in this design sends anything
-to anybody (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a>).
+are read with — a mark is on the screen somebody opens, and a mark is never delivered: <strong>the design has
+sending machinery now, but no message type carries a sensitivity mark to anybody</strong>, which is the reason and
+not the rule (<a href="../../decisions/round-22/#d-164--nobody-is-told-and-no-page-may-say-otherwise">D-164</a> as
+narrowed by <a href="../../decisions/round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a>).
 <strong>A mark grades what a grant exposes, not the table a code names</strong>
 (<a href="../../decisions/round-07-08/#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads">D-086</a>),
 and the two families a reader is most likely to place wrongly are placed by it: <code>person_group.member.manage</code> takes <strong>⚠</strong> because a

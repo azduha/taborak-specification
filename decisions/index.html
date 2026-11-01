@@ -856,6 +856,8 @@
       
         
       
+        
+      
     
     
     
@@ -1723,6 +1725,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/10-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2013,6 +2043,8 @@
       
         
           
+        
+      
         
       
         
@@ -2756,6 +2788,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="round-25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Round 25
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2885,7 +2945,7 @@
 re-litigated from scratch — and so that when a decision is reversed, the reason for the
 original choice is visible.</p>
 <p><strong>How this log is filed.</strong> The entries live in the round that took them; this page indexes all
-205 of them and lists the reversals. Read the round you are curious about — each one says what was
+216 of them and lists the reversals. Read the round you are curious about — each one says what was
 asked and what the answers did to the design — or follow a <code>D-</code> number from any page straight to its
 entry. Nothing is summarised here that is not stated in full there.</p>
 <p><strong>Status values:</strong> <code>decided</code> — settled, the data model reflects it <em>(since D-072: the documents, not a schema file)</em>. <code>proposed</code> — recommended,
@@ -4112,7 +4172,7 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 <tr>
 <td><a href="round-24/#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design">D-199</a></td>
 <td>Nothing leaves this system to an accounting system, and an external one is a later version's design</td>
-<td>no export, no feed, no journal, no <code>external_reference</code>, no seventh actor label — <strong>a later version may add one and will design it then</strong>, which is why the item closes instead of staying filed</td>
+<td>no export, no feed, no journal, no <code>external_reference</code>, no seventh actor label — <strong>a later version may add one and will design it then</strong>, which is why the item closes instead of staying filed. <strong>Round 25 widened the label list to six</strong> (<a href="round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a>) <strong>and the label this entry refused is still refused</strong>: there is still no accounting label and no export</td>
 <td>round 24</td>
 </tr>
 <tr>
@@ -4153,6 +4213,17 @@ which carries the reasoning; the round is the page that entry sits on.</p>
 </tr>
 </tbody>
 </table>
+<p>| <a href="round-25/#d-206--a-message-is-one-table-this-system-is-one-of-its-authors-and-a-notification-is-a-type-of-message">D-206</a> | A message is one table, this system is one of its authors, and a notification is a type of message | one table, one author, and a notification is a <strong>kind of row</strong> — the word names no table, no module and no second mechanism; a <code>notification</code> table beside <code>message</code> is refused as two tables of the same shape, and the module README had deferred since round 1 opens as <a href="../data-model/10-messaging/"><code>data-model/10</code></a> | round 25 |
+| <a href="round-25/#d-207--a-message-is-addressed-to-one-person-or-to-a-saved-audience-and-the-recipient-rows-record-an-act-and-not-a-set">D-207</a> | A message is addressed to one person or to a saved audience, and the recipient rows record an act and not a set | one person <strong>or</strong> a saved audience, never both, never neither; the recipient rows are the record of the act and <strong>nothing resolves against them</strong> — a grant's record is its expression (D-110) and a message's record is its rows, because an audience can be edited tomorrow; a body is never edited (D-183's habit), and an audience that resolves to nobody writes no rows while the message still exists | round 25 |
+| <a href="round-25/#d-208--messagesend-is-the-only-messaging-code-and-the-audience-a-send-names-is-not-checked">D-208</a> | <code>message.send</code> is the only messaging code, and the audience a send names is not checked | one code, <code>applies_to = unit</code>, marked twice, and <strong>the target a send names is not checked</strong> — no per-person test over an audience; the granter's ceiling and one audit row are the whole control, chosen and not left as an oversight. <strong>This also narrows D-077's other half: writing one message to one person now needs the code too</strong>, so "direct by default" describes a send's shape and no longer a right — and <strong>the cost is named rather than cushioned: a person holding no code has no way to write to the organization through this module, and no route for them is designed here.</strong> The two older messaging names are deliberately given <strong>no death certificate</strong>: the dead-name register is for names that lived, and those two never appeared in this catalog | round 25 |
+| <a href="round-25/#d-209--a-message-type-is-a-row-and-the-audience-it-reaches-is-configuration-an-admin-edits">D-209</a> | A message type is a row, and the audience it reaches is configuration an admin edits | <code>message_type</code> holds <code>code</code>, <code>name</code>, <code>audience_id</code>, <code>is_automated</code>, <code>valid_from/to</code> — <strong>the reach of an automated notice is a setting an admin edits</strong>, and this is <a href="../data-model/03-membership/"><code>membership_type</code></a> a second time, D-186's diagnosis reused. Asked twice, the answer moved from <em>event type</em> to <strong>message type</strong>, so what an event type proposes is filed rather than inferred | round 25 |
+| <a href="round-25/#d-210--a-report-is-a-delivered-message-so-all-five-report-codes-are-deleted-and-reporting-stops-being-a-name">D-210</a> | A report is a delivered message, so all five report codes are deleted and reporting stops being a name | <strong>no report screen exists in this design</strong>: a report is a type addressed to an audience, delivered by the §1 machinery. Two shipped codes and three deferred ones lose their rows — the fifth, <code>report.membership.view</code>, was missed by the entry's first draft and has its own row in the dead-name register — the namespace stops existing, and twenty-five lines across seven pages are rewritten — into a type and an audience where one is configured, and into an honest absence where none is. <strong>An integrity check is a run and may not borrow the word</strong> | round 25 |
+| <a href="round-25/#d-211--nothing-about-a-message-ages-out-and-erasure-does-not-reach-messages">D-211</a> | Nothing about a message ages out, and erasure does not reach messages | body, rows and read-moment are never scheduled away and never emptied by erasure — the argument that deleted <code>person.notes</code> (D-191) <strong>applies word for word here and was put and refused</strong>, on the ground that a message is an act this organization performed; an erasure leaves every message addressed to a person who is now a tombstone | round 25 |
+| <a href="round-25/#d-212--systemmessages-is-the-sixth-actor-label-and-the-renewal-sweep-stops-being-a-sender">D-212</a> | <code>system:messages</code> is the sixth actor label, and the renewal sweep stops being a sender | the sixth label since round 17 fixed the list, and the author of every automated message; <strong><code>system:renewal-sweep</code> stops being a sender</strong> and only expires. D-199's refusal of an <em>accounting</em> label stands untouched — its sentence about the size of the list is narrowed here, and its index row says so | round 25 |
+| <a href="round-25/#d-213--the-account-chooses-its-own-doors-a-childs-message-mirrors-as-its-own-rows-and-only-e-mail-lands-today">D-213</a> | The account chooses its own doors, a child's message mirrors as its own rows, and only e-mail lands today | <code>account.opt_in_email</code>, required, default false; <strong>the inbox is not a door and cannot be turned off</strong>, because a design where that can be declined is one where "you were addressed" has no evidence. <strong>A door arrives with its column on the day its transport exists</strong>, so nothing is written for a device token that outlives its device — and a guardian's mirror is <strong>rows on the guardian's own doors</strong>, which is why the sender can be shown it at the write | round 25 |
+| <a href="round-25/#d-214--the-system-sends-and-d-164-is-narrowed-to-the-one-thing-it-was-protecting">D-214</a> | The system sends, and D-164 is narrowed to the one thing it was protecting | <strong>the system sends, and a send is a gated, authored, audited act</strong>; what stays forbidden is a page inventing a period nobody chose, which was D-164's real work disguised as a rule about verbs. Twenty-nine lines across nineteen pages move. <strong>D-137 stands</strong> — nobody is told about a guardian's appointment because no type reaches anybody for it, which is now the reason rather than the rule | round 25 |
+| <a href="round-25/#d-215--the-three-notes-columns-stay-and-erasure-empties-them">D-215</a> | The three <code>notes</code> columns stay, and erasure empties them | <em>keep, add to erasure</em> — <code>membership.notes</code>, <code>membership_request.notes</code> and <code>payment.notes</code> stay and are <strong>emptied</strong> the way D-140 empties an event answer. <strong>The answer was about three columns and this entry rules on three</strong>: the roster's note, an account's <code>status_note</code> and a <code>field_conflict</code>'s two values are filed as K-16 rather than folded in | round 25 |
+| <a href="round-25/#d-216--every-worked-example-names-the-office-treasurer-and-what-the-operand-reads-is-still-unstated">D-216</a> | Every worked example names the office <code>treasurer</code>, and what the operand reads is still unstated | fourteen live sites wrote the plural of an office held once per unit, including the worked audience that opens <code>05a</code>; an example naming a different office from the worked one reads as a typo in a language with fourteen occurrences and no compiler. <strong>What the operand reads — <code>role.code</code> or <code>role.name</code> — is still unstated</strong>, and under one reading this rename silently changes whom an old expression picks out | round 25 |</p>
 <h2 id="reversed-decisions">Reversed decisions<a class="headerlink" href="#reversed-decisions" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>D-015 — Authority inherits downward through the unit hierarchy.</strong> Reversed by
