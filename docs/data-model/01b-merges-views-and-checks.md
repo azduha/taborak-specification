@@ -376,4 +376,4 @@ in §8, the length report in §10), and whether a person may hold two live accou
 colliding sign-up files a claim and activates nothing instead of becoming a second account). See
 [B-2](../open-questions.md#b-2) and [B-4](../open-questions.md#b-4).
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.

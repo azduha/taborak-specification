@@ -208,8 +208,11 @@ immediate and absolute. **`access_log` is a third thing and neither clock:** its
 months after they are written, by a scheduled job, because what was *read* stops being answerable and no
 skeleton of it is kept — the two trails now differ in **kind** and not only in length
 ([D-145](decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)).
-**Three exceptions to "nothing is hard-deleted", then:** a staging truncate, the delete an erasure has to
+**Two exceptions to "nothing is hard-deleted", then:** the delete an erasure has to
 make, and this trail ending on a calendar ([data-model/00 §4](data-model/00-conventions.md#4-deletion-policy)).
+**There used to be a third** — the truncate of the staging tables between the stages of the legacy import — and
+it died with them ([D-190](decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone));
+a page that still counts three is counting a table that no longer exists.
 
 **Curation** — Keeping the vocabulary meaning one thing: merging near-duplicates,
 retiring codes nobody uses, and writing the

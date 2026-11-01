@@ -431,4 +431,4 @@ be discovered only when someone needs the history that was never recorded.
   `status_reason` and `status_note`, and a `field_conflict` holding the two values a merge could not choose
   between. The boundary is that the person row holds no free text, while plenty of rows about a person do.
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.

@@ -833,4 +833,4 @@ over (§1 carries the argument); a code's last segment is an action (§1,
 rule now** — which is the discipline [D-081](../decisions/round-06.md#d-081--rule-names-survive-the-deletion-of-their-mechanisms-a-renamed-rule-must-say-who-enforces-it-now) states.
 **What is open is the list above this paragraph, and nothing else in this file.**
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.

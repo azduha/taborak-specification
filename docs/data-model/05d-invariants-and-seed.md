@@ -1019,7 +1019,7 @@ form that settled it (D-101, D-103); there is no inclusion edge table in this mo
 membership status through any switch: **membership is an operand**, and the posture is opt-in per grant
 (D-100).
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
 
 *Decisions behind this page: D-005, D-011, D-012, D-053, D-060, D-061, D-062, D-068, D-071, D-072,
 D-074, D-081, D-083, D-085, D-086, D-087, D-088, D-090, D-091, D-095, D-097, D-098, D-099, D-100, D-101,

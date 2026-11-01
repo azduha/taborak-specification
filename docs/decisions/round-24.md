@@ -531,12 +531,17 @@ not the expensive thing it was assumed to be when the column was drawn.
 [D-093](round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) made imported rows
 believe things. With no column, that distinction does not disappear — **it moves into the absence of rows**. An
 imported membership has no `fee_obligation` underneath it, and the balance definition reading "no obligations"
-must keep reading it as *nothing is known*, not as *nothing is owed*, in exactly the places assumption 53 listed:
-the gate, the arrears report, and any screen that would otherwise print `0 Kč`.
+must keep reading it as *nothing is known*, not as *nothing is owed*. Assumption 53 named three places and one of
+them has never existed: **there is no arrears report**, because no report over money is designed at all — the
+finance report code stays deferred on purpose (D-195). What is left is the gate and **any read that would
+otherwise print `0 Kč`**, and both are now written on the pages that perform them.
 **The activation gate's behaviour for such a row is unchanged and is now written down rather than inferred:** it
 asks whether any attached obligation has a positive balance, an imported membership has none, so the test passes
-vacuously — which is correct for the gate (nobody is being suspended for a debt nobody computed) and is *also* what
-makes the import check flag an obligation-less imported membership as something to look at. Deleting the column
+vacuously — which is correct for the gate (nobody is being suspended for a debt nobody computed). **Nothing
+catches such a row, and this entry said otherwise until the day after it was written:** the three integrity
+checks that would once have flagged it were checks over *staged* rows, and they were deleted with the pipeline
+that staged them (D-190), so an obligation-less imported membership is something a person notices, if anybody
+does. Deleting the column
 removes a number that could lie; it does not remove the underlying absence, and it must not be allowed to remove
 the sentence about it.
 

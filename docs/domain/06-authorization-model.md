@@ -1033,7 +1033,7 @@ listed here because a reader of this page needs to know where the edge is, not b
   the uncomfortable one the entry names rather than a third option: a person's permission gating somebody else's
   system, or an empty actor column on a write the organization cannot pin on anybody.
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
 
 ---
 

@@ -697,7 +697,7 @@ somebody who does not hold that group's roster write, §7); and whether the one-
 memberships (it may, for the periods the source states, and never open-ended, §3). Each is settled, and
 the argument for each one is in the [decision log](../decisions/index.md) rather than here.
 
-All tracked in [../open-questions.md](../open-questions.md).
+Nothing above is on its way to [../open-questions.md](../open-questions.md): round 24 emptied that register and left the asking on this page, so an item here closes by having its answer written **into the bullet above**, and one that is genuinely still open stays open here rather than being handed back to the register.
 
 ---
 
