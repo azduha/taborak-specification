@@ -3384,7 +3384,18 @@ be discovered only when someone needs the history that was never recorded.</p>
   retained, and the trail's payloads expire. What the review is asked about is therefore no longer "which
   fields" but "on what basis does the retained half survive indefinitely" — one question about one list,
   which is the item above.</li>
-<li>Whether <code>person.notes</code> should exist at all, given the redaction burden it creates.</li>
+<li><strong>✅ Deleted — whether <code>person.notes</code> should exist at all.</strong> It does not, and the burden this item was written
+  about turned out to point the other way (<a href="../../decisions/round-23/#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job">D-191</a>).
+  The column was kept off the redactor's list, because naming a column as an exception is the field-name rule
+  <a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>
+  removed — and the consequence nobody drew was that <strong>a redaction left the notes intact</strong>: erasure overwrites
+  names and contacts, deletes every <code>person_attribute</code> row, empties an event answer, and did not touch the free
+  text this same page admits may hold a diagnosis. Free text about a person is now an attribute definition's
+  value, and an attribute row is the one thing this design <em>deletes</em> on erasure, so the deletion made erasure
+  stronger rather than weaker. <strong>What still exists is free text <em>about</em> a person that is not a fact <em>of</em> them</strong>,
+  and the page says so rather than implying the record is now clean of it: a roster row's <code>note</code>, an account's
+  <code>status_reason</code> and <code>status_note</code>, and a <code>field_conflict</code> holding the two values a merge could not choose
+  between. The boundary is that the person row holds no free text, while plenty of rows about a person do.</li>
 </ul>
 <p>All tracked in <a href="../../open-questions/">../open-questions.md</a>.</p>
 

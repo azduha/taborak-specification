@@ -3946,8 +3946,19 @@ with no postal address behind it, which is a finance problem
   a safeguarding contact is deleted with the question, for the reason D-137 gives
   (<a href="../../decisions/round-20/#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told">D-137</a>,
   <a href="../../open-questions/#e-6">E-6</a>). <strong>§1 states what that costs, and the cost is not closed by the decision.</strong></li>
-<li><strong>One right level cannot separate the health facts from the rest of the record</strong> — the arrangement the
-  per-code model existed for. <a href="../../open-questions/#e-7">E-7</a>, and §2 states what it costs.</li>
+<li><strong>One right level cannot separate the health facts from the rest of the record — settled: the premise was
+  deleted, not the granularity granted.</strong> <a href="../../open-questions/#e-7">E-7</a> asked whether a guardian could read the
+  profile but not the medical record, and it was closed by removing the category rather than by granting the
+  exception: there is <strong>no medical record</strong> inside the person record to be excepted from, because everything
+  other than a name, a gender and an age is descriptive data of one class, so the guardian's right level applies
+  to the record whole and <code>view</code> reads it whole
+  (<a href="../../decisions/round-07-08/#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data">D-083</a>,
+  <a href="../../decisions/round-06/#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular">D-074</a>).
+  <strong>The decision closes the question and not the cost, and it says so itself</strong>: the court order restricting one
+  parent's access to the health facts about a child while their other access continues — the arrangement the
+  per-code model existed for — is refused on the merits rather than waved away, and what is traded is that this
+  system cannot express such an arrangement. It fails visibly instead: a guardian either has the access or does
+  not, in one place, auditable. §2 states the rule and what it costs.</li>
 <li><strong>Can a guardian act for a dependent who is a member in their own right — a parent registering an
   adult child for an event, with the child's consent? — settled: the guardianship already says so, and a
   delegation stays available.</strong> A dependent may be an adult (§1), <code>write</code> is what it says, and the row is
@@ -3963,11 +3974,26 @@ with no postal address behind it, which is a finance problem
   (<a href="../../decisions/round-02-03/#d-042--grants-may-target-audiences-not-only-individuals">D-042</a>).</li>
 <li>Whether <code>custody_arrangement</code> free text should be structured. Recommend not — custody
   orders vary too much to model, and a wrong model is worse than honest prose.</li>
-<li><strong>Confirm that the membership gate's guardianship carve-out is intended.</strong> A lapsed parent keeps
-  their <code>right_level</code> (<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),
-  which means an unpaid parent and a paid one are indistinguishable inside that namespace. It is
-  almost certainly right — guardianship comes from a legal relationship, not a membership — but it
-  should be a stated choice, not a side effect of where the gate was placed.</li>
+<li><strong>Confirm that the membership gate's guardianship carve-out is intended — settled: intended, and it no longer
+  lives in a gate, because the gate was deleted.</strong> A lapsed parent keeps their <code>right_level</code>
+  (<a href="../../decisions/round-02-03/#d-039--member-permissions-require-a-current-paid-membership">D-039</a>),
+  which leaves an unpaid parent and a paid one indistinguishable inside that namespace, and
+  <a href="../../open-questions/#e-4">E-4</a> asked exactly whether that was intended or merely inherited. <strong>It is intended,
+  and the behaviour now has an owner of its own rather than being an exemption inside a rule that no longer
+  exists</strong> (<a href="../../decisions/round-15/#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal">D-115</a>).
+  The premise moved before the answer did: <a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>
+  deleted the membership gate, so membership became a term a grant's expression may name rather than something
+  the resolver requires, and <a href="../../decisions/round-13/#d-113--the-guardianship-channel-has-no-expression-guardians-is-not-a-selector">D-113</a>
+  closed the last route by which an expression could have reached a guardianship — there is no expression in the
+  channel to write it into. What follows is the ruling, not a side effect: a lapse changes that <code>membership</code> row
+  and nothing else, a renewal finds the guardian's access untouched and needing no re-approval, and <code>none</code> is
+  reached because a named adult wrote it, never because a sweep noticed a status. Who is gated and who is not is
+  tabulated at
+  <a href="../../domain/06-authorization-model/#61-members--the-membership-test-moved-into-the-expression">../domain/06-authorization-model.md §6.1</a>;
+  §4 is this page's reading of the same channel.
+  <strong>What is given up, and it is the price rather than a gap:</strong> there is no lever anywhere that conditions a
+  guardian's access on their membership, so an organization that wants <em>members-only guardianship</em> gets it by
+  ending the guardianship, and there is no suspended state to come back from.</li>
 </ul>
 <p>What this page once wondered about and no longer does — the default right level at creation, what
 happens at majority, whether an adult ends their own guardianship, the household grouping, background

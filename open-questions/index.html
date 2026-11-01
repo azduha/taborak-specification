@@ -3151,9 +3151,15 @@ asks whether the role that settles an identity claim may read the record it is s
 <a href="#k-10--are-the-money-permission-codes-still-deferred">K-10</a> asks which page writes down the money permission
 codes this corpus already uses. <strong>Not one of the three is 🟡, and not one of the three changes a table</strong> — which
 is what is left when a design has had twenty-three rounds spent on it.</p>
+<p><strong>These three are not the same list as the open items a module page keeps, and the two counts should not be
+compared.</strong> <a href="#h-not-yet-designed">§ H</a>'s finance row, for instance, reports three open issues of its own and says
+so on <a href="../data-model/07-finance/#5-open-issues--the-whole-of-this-document-essentially">the module page</a>. A module
+page lists what it has not decided; this page lists what nobody has answered. A question is counted here only when
+it is written here.</p>
 <p><strong>The section letters are names, not a sequence.</strong> Sections B, C and D held only closed questions and are
 gone; § J joined them in round 20, emptied by answering it, § G (events) and § Ga (attributes) went the
-same way when their seven questions were answered, and § E (guardianship) went in round 23 the same way. <strong>The modules they framed are unaffected</strong> — both are
+same way with their rows carried into <a href="#r-resolved--moved-to-the-decision-log">§ R</a>, and § E (guardianship) went
+in round 23 the same way. <strong>The modules they framed are unaffected</strong> — both are
 designed, and <a href="#h-not-yet-designed">§ H</a> still links them. The ids those sections held — <code>B-2</code>, <code>C-5</code>, <code>D-9</code>,
 <code>EV-2</code>, <code>AT-4</code> — are still how § R means them, and <code>E-6</code> is still the question it was when it was filed.</p>
 <p><a href="#i-assumption-index">§ I</a> lists every assumption the documentation is standing on;
@@ -3164,11 +3170,15 @@ designed, and <a href="#h-not-yet-designed">§ H</a> still links them. The ids t
 <p><strong>Answered.</strong> The fee expires on <strong>1 January</strong>
 (<a href="../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>) and the renewal
 window is <strong>60 days</strong> (<a href="../decisions/round-04/#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter">D-048</a>).</p>
-<p><strong>What is left is not a question but a discipline.</strong> Both values live in
-<code>membership_type</code> as columns — <code>expiry_month</code>, <code>expiry_day</code>, <code>renewal_grace_days</code> — so either
-can be moved by an <code>UPDATE</code>. The one way to lose that property is a scheduled job or a front
-end that contains the literal <code>60</code> or <code>1</code>. Worth one line in code review: <em>do these values
-come from the row?</em></p>
+<p><strong>What is left is two things, and the second is the only one that wants a human.</strong> <strong>The first is a
+discipline, not a question:</strong> both values live in <code>membership_type</code> as columns — <code>expiry_month</code>,
+<code>expiry_day</code>, <code>renewal_grace_days</code> — so either can be moved by an <code>UPDATE</code>, and the one way to lose that
+property is a scheduled job or a front end that contains the literal <code>60</code> or <code>1</code>. Worth one line in code
+review: <em>do these values come from the row?</em> <strong>The second is whether the calendar those two numbers sit in is
+this organisation's calendar</strong> — that the membership year turns on 1 January because the year, the camps and
+the collections turn with it, rather than because a database likes round dates. <strong>That half cannot be answered
+by a ruling</strong>, which is why this row is still open when both of its numbers are decided: it wants one
+conversation with whoever runs the renewal, and the answer would be an <code>UPDATE</code> and nothing more.</p>
 <p><strong>See:</strong> <a href="../data-model/03-membership/#1-membership_type--one-row-kept-as-a-table">data-model/03 §1</a>,
 <a href="../domain/05-membership-lifecycle/#6-renewal-and-the-yearly-fee">domain/05 §6</a></p>
 <hr />

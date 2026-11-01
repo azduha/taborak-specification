@@ -3363,7 +3363,7 @@ as a suggestion and writes back a fresh dated one
 <h2 id="13-open-issues">13. Open issues<a class="headerlink" href="#13-open-issues" title="Permanent link">&para;</a></h2>
 <p>Tracked with the rest in <a href="../../open-questions/">../open-questions.md</a>: the answered ones under
 <strong>R. Resolved</strong>, each carrying the decision that answered it, and the live ones where the module map points.
-<strong>Five of the seven below are settled and say so rather than reading as still open</strong> — that is deliberate,
+<strong>Six of the seven below are settled and say so rather than reading as still open</strong> — that is deliberate,
 because a list of open issues that keeps asking an answered question is how a design gets reopened by a
 newcomer who reads the list and not the log. The ones this module raises:</p>
 <ul>
@@ -3403,8 +3403,13 @@ newcomer who reads the list and not the log. The ones this module raises:</p>
   held under weaker rules and fresher; <strong>the two rules now agree, so the asymmetry is gone rather than
   mitigated</strong> (<a href="../../decisions/round-20/#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it">D-140</a>,
   <a href="../../open-questions/#ev-2">EV-2</a>).</li>
-<li><strong>Cancelled events and fees</strong> (§10–11). Cancelling keeps the registrations; whether it
-  releases the obligations, refunds them, or neither is the finance module's call.</li>
+<li><strong>Cancelled events and fees — settled, and settled by the finance module rather than this one</strong> (§10–11).
+  Cancelling keeps the registrations. The payment requests that were still outstanding are voided, and money
+  that already arrived <strong>stays exactly where it is</strong>: the fee bought membership and nothing else, so there is
+  nothing here to hand back, and a refund is a thing the bank does rather than a row this system writes
+  (<a href="../../decisions/round-22/#d-156--the-fee-buys-nothing-but-membership">D-156</a>,
+  <a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>,
+  <a href="../../decisions/round-23/#d-180--there-is-no-queue-for-money-that-does-not-fit">D-180</a>).</li>
 <li><strong>Presence for minors and the safeguarding record — settled: it stays a column of the registration</strong> (§9).
   No retention of its own, no permission of its own, no <code>presence_record</code> table, <strong>and no safeguarding register
   behind any of it</strong> (<a href="../../decisions/round-20/#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own">D-147</a>,

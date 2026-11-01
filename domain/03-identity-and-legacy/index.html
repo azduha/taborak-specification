@@ -4110,14 +4110,25 @@ staff confirm. Record the assertion on the hypothesis row, so that if the claim 
 proves false, you can see it was self-asserted rather than discovered.</p>
 <hr />
 <h2 id="9-open-issues">9. Open issues<a class="headerlink" href="#9-open-issues" title="Permanent link">&para;</a></h2>
-<p>Still open, and tracked in <a href="../../open-questions/">../open-questions.md</a>:</p>
+<p>Still open, and tracked in <a href="../../open-questions/">../open-questions.md</a>, except in any bullet below that
+carries its own answer:</p>
 <ul>
 <li>Whether twins/siblings with similar names and the same birth date need a documented
   disambiguation procedure (recommend: yes, and never merge them automatically). The sign-up gate in §4
   sharpens this: same birth date plus a normalised name is exactly the collision pair, and a collision
   now stops a registration instead of merely queueing a card.</li>
-<li>Whether a hypothesis a person raised about <em>themselves</em> should hold their account out of <code>active</code>,
-  as against one the system raised because a stranger's sign-up strong-matched them (§8).</li>
+<li><strong>Whether a hypothesis a person raised about <em>themselves</em> holds their account out of <code>active</code>, as against one
+  the system raised — settled: it does, and the gate could not tell them apart if it wanted to.</strong> The rule is a
+  gate on a status transition and it reads the hypothesis row rather than its author: <strong>an account may not reach
+  <code>active</code> while an unresolved <code>identity_hypothesis</code> names its person</strong>, a hypothesis sitting in <code>proposed</code> or
+  <code>needs_review</code>, <strong>on either side of the pair</strong> (<a href="../../data-model/01a-accounts-and-contacts/#4-account">§4 of the accounts page</a>),
+  and <a href="../../decisions/round-07-08/#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing">D-089</a>
+  is the decision that put it there (§8's collision flow is the same page's: the claimant's rows stay
+  <code>pending_verification</code>, <code>proposed_by</code> reads <code>person</code>, and the gate holds the account where it is). Who raised
+  the row is recorded — <code>proposed_by</code> is one of <code>match_job</code>, <code>person</code>, <code>staff</code> since
+  <a href="../../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>,
+  §3 above — and it is an attribution for the reviewer, not a term in the gate; the register's B-4 row carries the
+  same answer in one line.</li>
 <li><strong>Not open, and corrected here because §7 now states the date:</strong> the organizational year boundary that
   historical end dates get inferred from was settled in the previous round, and the calendar it comes from is
   1 January with the year running with the calendar (<a href="../../decisions/round-04/#d-047--the-fee-expires-on-1-january">D-047</a>,

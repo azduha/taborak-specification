@@ -3727,15 +3727,35 @@ the assertion that it stays the only one).</p>
   and check 9 above is its sibling) and the case where nobody who could hold <code>system.admin</code> can reach a screen
   is a report and a written procedure rather than a mechanism
   (<a href="../../decisions/round-17/#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism">D-126</a>).
-  <strong>What stays open is the other direction:</strong> calls going <em>out</em> have no design at all
-  (<a href="../../open-questions/#f-27">F-27</a>). <a href="../05e-keys-and-callers/">05e §17</a> states each from this module's side,
-  and none of the three was ever answered by adding a column to <code>api_key</code> — <strong>a sweep is not a caller and
-  should not have to authenticate.</strong></li>
-<li><strong>Which grants an organization writes with <code>MEMBERS</code> in the expression, and which without</strong> — the question
+  <strong>What this bullet left open has an answer, and the answer is a shape rather than a design: an outbound
+  call is a person's act or this system's job.</strong> <a href="../../decisions/round-20/#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet">D-146</a>
+  rules that a call this system initiates is either <strong>a person acting</strong> — the actor column holds them, their
+  permission is checked, the trail shows them — or <strong>this system acting on its own</strong>, which is the empty
+  column and a label from the same fixed list; there is no service identity and no key acting as a person, and
+  an <code>api_key</code> as the actor of an outbound write is refused because a secret must not carry the
+  accountability of an act (<a href="../../open-questions/#f-27">F-27</a> sits in § R for that refusal). Of the three acts
+  this direction was once said to cover — an export, a refund, a pull — two have already fallen to one side of
+  that fork: the bank pull is the job half, and the
+  rows its fetch writes already belong to <code>system:bank-pull</code>
+  (<a href="../../decisions/round-23/#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls">D-182</a>);
+  and a refund is not an outbound act at all, because nobody initiates one here — money out is a <code>payment</code> like
+  money in, and the bank is where the fact lives
+  (<a href="../../decisions/round-22/#d-158--a-refund-happens-at-the-bank">D-158</a>). What is undesigned is the accounting
+  export and the wire, and <a href="../05e-keys-and-callers/">05e §17</a> keeps both from this module's side; none of the
+  three was ever answered by adding a column to <code>api_key</code> — <strong>a sweep is not a caller and should not have to
+  authenticate.</strong></li>
+<li><strong>Which grants an organization writes with <code>MEMBERS</code> in the expression, and which without — settled: the
+  design states no default in either direction, and each grant carries its own answer.</strong> That was the question
   this file used to ask as "which <em>starter</em> grants name <code>MEMBERS</code>", which has no starter grants to ask about
-  any more. <code>role</code> has no <code>requires_membership</code> switch to carry an answer
-  (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>),
-  so it is answered per grant rather than per role, with check 6 (§11) as the net. <strong>One case the design does
+  any more, and <a href="../../decisions/round-22/#d-165--there-is-no-default-for-members-and-that-is-the-decision">D-165</a>
+  closed the gap D-100 left by ruling that <strong>there is no default</strong> — each grant is written with the term or
+  without it by whoever writes it, so no office inherits an entitlement from a template and none inherits a
+  lockout. <code>role</code> has no <code>requires_membership</code> switch to carry an answer
+  (<a href="../../decisions/round-10a/#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape">D-100</a>)
+  and no save is refused or warned, so the whole control is check 6 (§11) — whose rows are the <code>Unusual</code>
+  section of the tab on the permissions page and nothing more
+  (<a href="../../decisions/round-13/#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report">D-109</a>).
+  <strong>One case the design does
   answer:</strong> the twelve grants an event creation writes are written <em>without</em> <code>MEMBERS</code>, because an organizer
   appointed for one weekend is not required to be a paying member
   (<a href="../../decisions/round-21/#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it">D-151</a>).</li>
@@ -3788,15 +3808,22 @@ the assertion that it stays the only one).</p>
   events feature from the authorization module. <strong>The need for "these few people" arrives anyway</strong> and is
   served today: write grants, or a <code>GROUP(x)</code>, or <code>PERSON(a) + PERSON(b)</code>. The discipline stays — a row is
   not seeded so that a question cannot become a word in a grammar by being typed often enough.</li>
-<li><strong><code>PERSON(x)</code> is a seeded row (<code>argument_type = person</code>); the class of bug behind it is the open item.</strong>
+<li><strong><code>PERSON(x)</code> is a seeded row (<code>argument_type = person</code>); the class of bug behind it is caught, by a script
+  somebody has to run.</strong>
   §12 states the one count that matters — how many rows <code>selector_type</code> holds — cheap to check, and checked
   here because a registry that prose contradicts is a fiction
   (<a href="../../decisions/round-10b/#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction">D-104</a>).
-  <strong>What is open is the class, not this operand:</strong> nothing in this module, or in this repository,
-  compares the dotted tokens these documents write against the seeded registries they describe, so the same
-  drift will happen again in whichever table is written next. D-104 adopts a hand-run report over the
-  documents as the answer, and states plainly that <strong>a report nobody runs is a convention</strong> — there is no CI
-  here to make it a guard, and no layer of this spec can tell a writer that <code>PERSON(</code> had no row behind it.</li>
+  <strong>The class is caught now: <a href="../../decisions/round-18/#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round">D-127</a>
+  turned D-104's hand-run report into <code>scripts/check-registries.py</code></strong>, a committed script that reads every
+  registry out of the page that holds it — the catalog's code rows, catalog-b §10's deferred namespaces, the
+  dead names in <a href="../../appendix/removed-concepts/">removed concepts</a>, the selector registry, the
+  <code>grant_scope_type</code> seed and the actor-label table — reads the catalog's own grammar back at the prose, and
+  reports an operand spelled as a selector with no seeded row behind it, which is the exact shape <code>PERSON(</code> was.
+  A round does not close while a finding is unbaselined, and a baseline line is the record of why a finding was
+  kept. <strong>What survives of the sentence this bullet used to end with is the weaker half:</strong> the script is run by
+  hand, so it gates a round only when somebody runs it, and a drift in a register it was never told to read —
+  an enumerated column's value set, for instance, which is how <a href="../../decisions/round-23/#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write">D-192</a>
+  found what it found — still surfaces only for a reader.</li>
 <li><strong>The <code>LIST</code> gloss, and the proposed rename of that operand to <code>ADDED</code> (§8): moot — there is no such
   operand</strong> (<a href="../../decisions/round-11-12/#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other">D-105</a>).
   Neither the gloss nor the rename has a subject: <code>LIST</code> is not an operand of this grammar, so there is
@@ -3821,15 +3848,20 @@ the assertion that it stays the only one).</p>
   <a href="../00a-invariant-register/#3-the-answer-reads-another-table-a-resolver-or-a-graph">shape 3</a> for exactly
   that reason, and it is the item on the register where <strong>the failure direction is a grant that denies
   everybody</strong>: <code>EVERYONE - PERSON(x)</code> with an un-repointed <code>x</code>.</li>
-<li><strong>Whether the reference listing is actually cheap (§8, §10).</strong> D-103 registers the assumption: "which
+<li><strong>Whether the reference listing is actually cheap (§8, §10): answered — yes, at a size that is now stated
+  instead of imagined.</strong> D-103 registered the assumption: "which
   live grants name this audience, and at what depth" is one indexed query over the leaf rows, cheap at
   this organization's size, <strong>unverified at any size</strong>. It is on the save path of a screen a person is
   standing at, and it is <strong>load-bearing for a policy and not only for a screen</strong>: dropping exactly the
   compilations that embed a changed expression
   (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>)
   needs this listing run in its <strong>reverse</strong> direction, transitively rather than one hop at a time (§10).
-  If the legacy corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
-  is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.</li>
+  <a href="../../open-questions/#f-16">F-16</a> closed the question on <a href="../../decisions/round-13/#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event">D-112</a>'s
+  stated size: the listing is a scan over a small table with a handful of referencing rows each, pagination is a
+  UI nicety rather than a requirement, both of D-103's protections that hang off the query stand as written, and
+  the weakened fallback this entry kept polished <strong>is not needed</strong>. What that closure did not weigh is the
+  reverse direction §10 needs, and what reopens the whole question is D-112's trigger — a few thousand people,
+  or a thousand registrants on one event — which is what stands here besides this bullet.</li>
 <li><strong>A nested audience's past reach is not reconstructable, and that is the answer (§8, <em>Three named
   sets</em>):</strong> the record of whom a grant reached <strong>is the expression</strong>
   (<a href="../../decisions/round-13/#d-110--the-expression-is-the-record-of-whom-a-grant-reached">D-110</a>,
@@ -3842,10 +3874,28 @@ the assertion that it stays the only one).</p>
   window, a per-person record of people who were never granted anything.</li>
 <li><strong>Whether <code>membership</code> belongs in <code>grant_scope_type</code> (§6).</strong> It is not seeded, and that is an
   inference from what D-097 and D-099 list rather than a ruling.</li>
-<li>Whether <code>valid_to</code> should be mandatory for high-authority holder rows and long-lived item grants
-  (§4, §6).</li>
-<li>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable (§6) — a real fork, covering
-  <code>selector_arg_id</code> too.</li>
+<li><strong>Whether <code>valid_to</code> should be mandatory for high-authority holder rows and long-lived item grants (§4, §6):
+  answered no in the schema and yes in the application, which is the same answer twice.</strong> Nothing forces a role
+  assignment to end and the control is the report — <a href="../../decisions/round-05/#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control">D-071</a>
+  ruled that for holders and withdrew F-3's earlier "yes" with it — and <a href="../05-authorization/#why-valid_to-is-discouraged-here-too">05 §6</a>
+  applies the same posture to item grants: an open-ended item grant is nearly always a mistake, so <strong>application
+  validation should require <code>valid_to</code> for item-scoped grants with <code>grant_reason</code> explaining any exception</strong>,
+  while the schema forces nothing. The one case the schema already refuses is a delegation without <code>valid_to</code>
+  (check 11 above). <strong>What is left is thinner than the question:</strong> the report of long-lived open grants that
+  05 §6 names as the control carries no number in §11 — it is a sentence on that page and not a check on this
+  one — and <strong>nothing backstops a forgotten grant.</strong></li>
+<li><strong>Polymorphic <code>scope_id</code> vs a <code>grantable_item</code> supertable (§6): answered in round 6, and the fork is a door
+  rather than a question.</strong> Polymorphic stands — <code>scope_type</code> plus <code>scope_id</code>, no foreign key — which is what the
+  register's § R row for F-2 records and what <a href="../05-authorization/#no-foreign-key-on-scope_id--the-accepted-trade-off">05 §6</a>
+  states with its trade-off table and its four mandatory mitigations. <code>selector_arg_id</code> is covered by the same
+  answer, not by a second one: <a href="../../decisions/round-10b/#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree">D-101</a>
+  extended <a href="../../decisions/round-01a/#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key">D-011</a>'s
+  accepted trade-off to it, the nightly orphan scan runs over it as check 2 above, and
+  <a href="../../decisions/round-19/#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never">D-134</a>
+  widened that treatment to the rest of the reference-less columns. <strong>To overrule it is written down, not left
+  to be invented:</strong> add the supertable and give every grantable entity a foreign key to it, and give up the
+  property the polymorphism bought — a new grantable thing is a row of <code>grant_scope_type</code> rather than a schema
+  change.</li>
 <li><strong>How long a <code>permission_cache</code> entry may live (§10): there is no such table, so there is no lifetime</strong>
   (<a href="../../decisions/round-14/#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation">D-114</a>).
   <strong>No TTL is being asked about, because there is no row to put one on:</strong> <code>expires_at</code> is not a column of
@@ -3864,8 +3914,18 @@ the assertion that it stays the only one).</p>
   exactly where it would come back from. What is left of the pair is the history side alone: there is no
   rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
   <strong>invariant 19 is the thing a return has to argue with.</strong></li>
-<li>Retention policy for <code>access_log</code> — legal input required
-  (<a href="../../open-questions/#f-8">F-8</a>).</li>
+<li><strong>Retention policy for <code>access_log</code>: settled, and stricter than the proposal that asked for legal input —
+  the rows are deleted at 24 months.</strong> <a href="../../decisions/round-20/#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name">D-145</a>
+  is the ruling and <a href="../../open-questions/#f-8">F-8</a> is its row in § R: these are the only rows in this design
+  that age out, and one of the two exceptions <a href="../00-conventions/#4-deletion-policy">00 §4</a> names against "nothing
+  is hard-deleted" — the only one of the two carried by a clock, since the staging truncate went with the
+  pipeline (<a href="../../decisions/round-23/#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone">D-190</a>).
+  <code>audit_log</code> keeps the opposite shape — rows for life, payloads emptied at the same 24 months
+  (<a href="../../decisions/round-07-08/#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short">D-088</a>) —
+  so the two trails now differ in <strong>kind</strong> as well as in length. The age-out is also the one scheduled delete
+  <a href="../../decisions/round-23/#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive">D-184</a>
+  left standing, which is what makes it attributable: the run writes one summary <code>audit_log</code> row under
+  <code>system:log-reduction</code>, how many rows went and the window that removed them, and not one row per deleted row.</li>
 <li>Whether <code>access_log</code> needs human annotation (recommend a separate table if so).</li>
 </ul>
 <p><strong>Settled, stated as answers.</strong> A role may <strong>not</strong> be held by a rule
