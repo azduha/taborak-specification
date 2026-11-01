@@ -347,27 +347,40 @@ act of design, because [the corpus you have](../decisions/round-07-08.md#d-090--
 is thousands of roster rows with free-text columns beside them. **That is one file arriving with the
 organization's descriptive vocabulary in it, and it changes how the mapping has to be reviewed.**
 
-- **Every raw field name in a batch must map to a code, be mapped to `discarded` with a reason, or
-  stop the batch.** Silently dropping an unmapped column is how a decade of a fact the organization
-  collected disappears on a Tuesday.
-- **An unmapped column is an error at apply time.** The batch refuses and names the column; a value
-  may not invent a code, and a column may not borrow one by similarity either. Nothing guesses at
-  import time, because an import-time merge is invisible and unreviewable — merging near-duplicates
-  is a curation act afterwards, by a human holding `attribute.define`, where the trail can see it
-  ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
-- **The map is authored against a vocabulary that already exists.** The import does not bootstrap the
-  vocabulary, it fills it in: every code the map names must be defined and `live` before the batch
-  applies, or the batch refuses. This is not a trap but the shape the largest single event in this
-  layer's life actually has — the map is authored and read *before* the batch applies, as one
-  artefact, top to bottom, so whoever wrote the map wrote the vocabulary first, and the codes arrive
-  `live` because they were `live` before the batch was ever typed. The cost is stated plainly: the
-  first few hundred definitions are a writing job under `attribute.define` that must happen *before*
-  the import that seemingly produces them, and a batch held at the door for an undefined column is
-  this design working, not failing.
-- **The mapping is recorded on the batch**, in `import_batch.field_mapping`, one entry per raw column
-  ([06-audit §3](06a-import.md#3-import-pipeline) explains why the grain is a column and not a
-  staged row, which is the plausible wrong answer). The mapping is not the schema; changing it is an
-  act of curation with an audit entry, not a migration.
+There is no pipeline and no batch: the load is **one script, run once, through a registered key**
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+and what follows are the rules that survived it. **The mechanism was where the schedule lived, and losing it
+cost this section something it should not pretend otherwise about.**
+
+- **Every raw column in the exports maps to a code, or is mapped to a discarded value with a reason, or the
+  load stops.** Silently dropping an unmapped column is how a decade of a fact the organization collected
+  disappears on a Tuesday.
+- **An unmapped column is an error, not a proposal, and the invariant binds the script exactly as hard as it
+  bound a stage.** A value may not invent a code, and a column may not borrow one by similarity either.
+  Nothing guesses on the way in, because a merge done at load time is invisible and unreviewable — merging
+  near-duplicates is a curation act afterwards, by a human holding `attribute.define`, where the trail can see
+  it ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
+  [D-141 deleted the proposal stage, and this round found the schedule that stage had been quietly carrying]
+  (../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted):
+  something had to make the vocabulary arrive *in time for* the load, and it was the stage doing it in silence.
+- **One named person writes the vocabulary before the load runs, and this sentence is the schedule.**
+  [D-189](../decisions/round-23.md#d-189--one-author-writes-the-vocabulary-before-the-batch)
+  puts a person and a period where the deleted stage's queue used to be: whoever holds `attribute.define` sits
+  down with the source's column headers and writes the first few hundred definitions, which arrive `live`
+  because a definition is live at the save. There is no queue, no ageing and no curation stage, and nothing
+  reminds that person of the date — [D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)
+  forbids the reminder, which is precisely why the deadline is written on this page rather than held in
+  somebody's calendar. A load that stops on an undefined column is this design working, not failing.
+- **The map is no longer a row of this database, and that is the price.** It used to sit on the batch as
+  one entry per raw column, reviewed as one artefact top to bottom; it now lives in the script, which is not
+  in this repository and will not be read by whoever reads this page next. **The rules survive; the place they
+  were readable does not.** The mapping was never the schema either way — changing it is an act of curation
+  with an audit entry, not a migration — and the grain was always a column and never a row, because a
+  per-row map is how one legacy column quietly becomes two codes.
+- **Provenance is no longer a column either.** A value the load wrote is a `person_attribute` row whose
+  `source` says `legacy_import` and whose `data_confidence` says how much to believe it; past that, *which key
+  wrote it* is answered by the trail
+  ([06 §3](06-audit-and-import.md#3-import-pipeline--deleted)).
 
 ---
 

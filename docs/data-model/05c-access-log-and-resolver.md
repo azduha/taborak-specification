@@ -53,12 +53,19 @@ this*, which is what the guard has always protected.
 
 **Three of the columns in that table carry no foreign key** — `scope_id`, `authorization_ref_id`, `entity_id`
 — and [§11's check 23](05d-invariants-and-seed.md#11-invariants-to-verify) counts them, this table being the
-one that needs the rule about which absences are legal: the guard further down lets only the erasure touch a
-row's state columns — plus the age-out, which removes the whole row on schedule — so when the import's revert
-removes an event or a person
-this table goes on naming the one it named, and that absence is expected rather than wrong. What no page says
+one that needs the rule about which absences are legal, and the rule got narrower rather than looser.
+[D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive)
+names the two delete moments still standing, and neither of them removes a row this trail points at: the guard
+further down lets only the erasure touch a row of *this* table, and then only its state columns, while the
+age-out removes this table's own rows on schedule and points at nothing of its own.
+**The third writer that used to be on that list is gone**: the import's revert was the one path that removed
+an `event` or a `person` row outright, and with it gone nothing this system runs ever deletes either, so a
+row of this trail naming an event or a person does not dangle and never will
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+What no page says
 is whether a row here is ever written naming a `person_attribute` row an erasure will delete — `entity_type` is
-declared with an empty note and given no list of tables anywhere.
+declared with an empty note and given no list of tables anywhere, and it is now the *only* table whose rows
+this trail could ever name and then lose.
 
 **Indexes**
 

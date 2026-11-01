@@ -391,28 +391,30 @@ lesson about what a check is allowed to be).
   being nothing in the design that would send it
   ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
 
-  **Which absences are legal, and where the pages stop short of saying so.** Two paths in this design remove a
-  business row outright, and neither can take a trail row with it: [05c §9](05c-access-log-and-resolver.md#9-access_log)
+  **Which absences are legal, and where the pages stop short of saying so.** **One** path in this design removes
+  a business row outright, and it cannot take a trail row with it: [05c §9](05c-access-log-and-resolver.md#9-access_log)
   permits only the erasure and the reduction to change a row of that trail, permits them to touch only the
-  state columns, and calls every other field on it immutable. **The import's revert** removes the
-  `event_registration`, `event`, `membership` and `person` rows a batch created
-  ([06a §3, Reversibility](06a-import.md#reversibility)), and **the erasure** deletes the person's
+  state columns, and calls every other field on it immutable. **The erasure** deletes the person's
   `person_attribute` rows ([00-conventions §4](00-conventions.md#4-deletion-policy),
-  [06b §4](06b-redaction-and-checks.md#4-redaction-log)). **So the exception is a rule about the target table
-  plus a demand for evidence, never a list of tolerated ids:** an absence is legal exactly when the table the
-  row names is one of those five *and* the trail shows the removal — a revert writes one audit entry per row it
-  deleted, naming the batch, and an erasure writes one `redaction_log` row naming `person_attribute` in
-  `redacted_tables`. Everything else is a defect, including a row inside those five tables with no removal
-  recorded against it — and revert's pre-flight is stated as a check for references
-  ([06a §3](06a-import.md#reversibility)) and never as one that reads a column with no foreign key in front of
-  it, which is what makes an absence under these three columns an expected outcome rather than a surprise.
+  [06b §4](06b-redaction-and-checks.md#4-redaction-log)) and removes the `audience_operand` leaves that named
+  them. **So the exception is a rule about the target table plus a demand for evidence, never a list of
+  tolerated ids:** an absence is legal exactly when the table the row names is one of those two *and*
+  `redaction_log` shows the removal — one row naming `person_attribute` in `redacted_tables`. **This is the one
+  part of the check that got sharper rather than softer:** while an import could be reverted, an id naming a
+  removed `person`, `membership`, `event` or `event_registration` row was an expected outcome with a per-row
+  audit entry beside it, and this check had to hold that; with the revert gone
+  ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+  **an orphan under these three columns has exactly one lawful author, and whoever reads the report no longer
+  has to weigh which of two removal paths produced it.**
 
   **Erasure on its own accounts for none of them:** what it deletes is attribute rows, plus the expression
   leaves naming the person where it removes one rather than rewriting it, while an erased person's `scope_id`
   names a scope — an event, a group or an office, and nothing at all where the check was at the unit — and
   their `authorization_ref_id` names an `access_grant` or a
   `guardianship_permission` row, none of which erasure touches. So an orphan under `authorization_ref_id` has
-  no lawful explanation at all, and one under `scope_id` has exactly one: revert removing an `event`. **One
+  no lawful explanation at all, and **neither has one under `scope_id` any more** — the revert that used to
+  explain a vanished `event` is gone, and nothing else in this design removes an event, a group or an office,
+  so an orphan there is a finding now rather than a tolerated shape. **One
   shape beside these is neither a finding nor clean:** a row whose `authorization_channel` is outside the six
   values 05c §9 lists keeps its word and loses its table, so there is nothing for the id to be counted against,
   and it is reported separately rather than as an orphan. Of the
@@ -434,9 +436,12 @@ lesson about what a check is allowed to be).
   to the other), so a removal in a business table *must* leave a reference behind; and the orphan is not merely
   tolerated down there, it is **load-bearing** — [06b §5's check that a redacted person's payloads are empty](06b-redaction-and-checks.md#5-integrity-checks)
   finds the rows it exists to test by their `table_name` and `record_id` precisely because those two survive
-  the erasure that deleted the row behind them, and revert's entries name a deleted row by design. A count over
-  this column would report both erasure and revert as integrity failures, **which is worse than no check at
-  all, because the first false alarm teaches whoever reads the report to ignore the real one.** What stands in
+  the erasure that deleted the row behind them, and an erasure's own entries name rows it deleted by design. A
+  count over this column would report that erasure as an integrity failure, **which is worse than no check at
+  all, because the first false alarm teaches whoever reads the report to ignore the real one.** A count would
+  have reported the import revert's deletions in exactly the same light, and that second example left with the
+  revert ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone));
+  the argument never depended on it, and it now rests on erasure alone. What stands in
   its place is the pair of checks that read the property the column was ever a proxy for: that an erased
   person's payloads are empty, and that nothing past the window still carries one.
 
@@ -444,14 +449,18 @@ lesson about what a check is allowed to be).
   three do not share. A conflict row is a question put to a person — one field a merge could not decide,
   sitting `unresolved` in the queue [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) ages at
   thirty days — and an `entity_id` naming nothing is that
-  question being unanswerable. **The reading nobody has written down before now is the likeliest one: the
-  import recorded a conflict against a row that is not there**, and every decision taken on the strength of
-  that conflict inherited the mistake. Revert explains some of them, since `entity_table` holds `person` and
-  `membership` and revert removes both, and its per-row entries settle which of the two paths was here; a row
-  outside those two tables, or with no removal behind it, is not untidiness but a merge that decided something
-  about a record that never existed. **None of this belongs on the permissions tab:** the tab lists rules, and
-  not one of these four columns is a rule — and putting a legal absence on a page about broken things is how a
-  broken one comes to be read past.
+  question being unanswerable. **The likeliest reading is now also the only
+  one: a merge recorded the conflict against a row that is not there**, and every decision taken on the strength
+  of that conflict inherited the mistake. **Nothing in this design explains it away any more.** `entity_table`
+  holds `person` and `membership`, and the import revert that used to remove both — leaving one audit entry per
+  row it deleted, which settled which path had been here — is gone
+  ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+  while erasure deletes neither of those two tables. So a conflict naming a missing `person` or `membership` row
+  is not an expected absence: it is a merge that decided something about a record that never existed, or a write
+  made from outside the application, and both are findings. **None of this belongs on the permissions tab:** the tab lists rules, and
+  not one of these four columns is a rule — and putting an absence with a lawful author on a page about broken
+  things is how a broken one comes to be read past. **Which authors are lawful is stated once, above, and it is
+  now one path long, so the tolerance this bullet used to need has shrunk with it.**
 
 **Checks 3, 4, 5, 6 and 9, and one half of 7, are the ones to open often. None of them sends anything, and
 no page may say otherwise: what a check owes is a row on a screen, and urgency is a property of the report
@@ -634,7 +643,7 @@ branch (§2).
 platform ships three vocabularies and the enums, and no configuration:
 
 - **The permission vocabulary**, spanning people, accounts, membership, groups, audiences, roles, guardianship, item grants, audit,
-  legacy import, reporting, the thirteen `event.*` codes, messaging, and the four `api_key.*` codes of [05e §15](05e-keys-and-callers.md) —
+  reporting, the thirteen `event.*` codes, messaging, and the four `api_key.*` codes of [05e §15](05e-keys-and-callers.md) —
   `api_key.view`, `api_key.create`, `api_key.rotate`, `api_key.end`, every one `applies_to = unit`. **The one complete list is
   [../appendix/permission-catalog.md](../appendix/permission-catalog.md)**; this document keeps no second
   copy of it, because two copies drift for exactly the reason above.
@@ -795,7 +804,8 @@ A few of the surviving codes carry a decision in their shape, and those are wort
 
 - **One question left about callers that are not people.** Round 16 designed the arriving integration and
   stopped there; round 17 settled the two things it stopped short of — an empty actor column is read as this
-  system acting on its own, with a six-label vocabulary instead of free text
+  system acting on its own, with a fixed vocabulary instead of free text — five labels on the list now
+  ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means))
   ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list),
   and check 9 above is its sibling) and the case where nobody who could hold `system.admin` can reach a screen
   is a report and a written procedure rather than a mechanism
@@ -901,7 +911,7 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   compilations that embed a changed expression
   ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation))
   needs this listing run in its **reverse** direction, transitively rather than one hop at a time (§10).
-  If the import corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
+  If the legacy corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
   is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.
 - **A nested audience's past reach is not reconstructable, and that is the answer (§8, *Three named
   sets*):** the record of whom a grant reached **is the expression**

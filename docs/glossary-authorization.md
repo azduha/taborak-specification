@@ -92,7 +92,7 @@ complete answer to "who did this" rather than a missing one.** It is **not a cal
 answered about a person or a key (see **Caller** above) — and this system holds no grants, is
 named by no grant and appears in no `role_holder` row; nothing in a permission check reads an
 empty actor column to decide an answer. Two limits keep it narrow: **only where empty is legal**
-(`import_batch.created_by` and `api_key.created_by` are required, and a grant's `granted_by`
+(`api_key.created_by` is required, because installing an integration is a person's act, and a grant's `granted_by`
 names a person) and **only in an actor column** — an absent `scope_id` is a check at the unit,
 not a writer. **Where the trail has a label column, the writer's name comes from a fixed list**,
 so a label such as `system:renewal-sweep` is one of the few names this system signs its own

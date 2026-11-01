@@ -104,7 +104,6 @@ nav:
           - Keys and Machine Callers: data-model/05e-keys-and-callers.md
       - Audit and Import:
           - data-model/06-audit-and-import.md
-          - The Import Pipeline: data-model/06a-import.md
           - Redaction and Integrity Checks: data-model/06b-redaction-and-checks.md
       - Finance: data-model/07-finance.md
       - Events:
@@ -141,6 +140,7 @@ nav:
           - Round 20: decisions/round-20.md
           - Round 21: decisions/round-21.md
           - Round 22: decisions/round-22.md
+          - Round 23: decisions/round-23.md
       - Open Questions: open-questions.md
 
 site_url: https://azduha.github.io/taborak-specification/

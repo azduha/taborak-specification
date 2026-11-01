@@ -42,19 +42,17 @@ a well-meaning future change.
 | `family_name` | text, required | As above |
 | `birth_date` | date, optional | Nullable because legacy records frequently lack it. **Never required** — a 1994 roster with no birth date must still import |
 | `birth_date_precision` | text, optional | One of: `exact`, `month`, `year`, `unknown`. Because an imported birth date of `1990-01-01` often means "year 1990, month and day unknown". Storing the precision prevents false matches on a guessed day and prevents "happy 1 January birthday" emails |
-| `gender` | text, optional | One of: `male`, `female`, `other`, `unknown`. Included because youth organizations typically must report it. Remove if yours does not need it — do not collect what you cannot justify |
+| `gender` | text, required | One of: `male`, `female`, `other`. The column exists so the system can **decline a verb**: Czech inflects a past tense for the sex of the person being talked about, so *"your registration was accepted"* has more than one form and something has to pick one ([D-174](../decisions/round-23.md#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required)). These are **forms of address, not categories of person**; `other` is the third grammatical option and, for anybody who did not choose it, the absence of a choice the system is not allowed to make for them. It is **not a reporting category** — no report groups on it, and the older reason for the column, that youth organizations must report it, is falsified and gone. `unknown` was deleted: an absence cannot be declined, and a required column has no room for one. The fourth value of the set is the redaction marker an erasure writes into this column along with the names — the only value no screen offers ([D-175](../decisions/round-23.md#d-175--an-erased-persons-grammatical-form-goes-with-their-names)). A load that cannot derive the value from its source supplies one: the organization's inference, written with the row's `data_confidence` low, the posture [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) already takes toward an inferred period |
 | `preferred_name` | text, optional | What the person is actually called. Distinct from `given_name` so that the organization's records stay legally correct while the person is addressed correctly — "Alexandra" recorded, "Lex" displayed |
 | `record_origin` | text, required | One of: `self_registered`, `staff_created`, `legacy_import`. Default `self_registered` |
 | `data_confidence` | text, required | One of: `high`, `medium`, `low`. Default `high`. `low` for imported rows: it drives whether a merge may absorb this row, and whether the UI warns before displaying it as fact |
 | `merged_into_person_id` | reference to person, optional | Tombstone. When set, this row is absorbed and queries must follow the pointer. Never deleted (§8) |
 | `merged_at` | timestamp, audit time, optional | |
-| `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names and contacts are overwritten and the person's `person_attribute` rows are deleted; the row and its id survive so historical references still resolve ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)) |
-| `notes` | text, optional | Free text about a person, and the only such text that lives outside the attribute vocabulary — see *What is deliberately not on this table* below. May contain anything, including a diagnosis sitting under a column nobody would call medical. **It is logged with its contents, like every other field on this row, and it is deliberately *not* on the redactor's list** — a column named as an exception is the field-name rule [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data) removed, and the protection is the guard on the trail ([00-conventions §8 item 7](00-conventions.md#8-personal-data-and-erasure)). Whether the column should exist at all is argued below |
+| `redacted_at` | timestamp, audit time, optional | Set when a GDPR-style erasure was performed. Names, contact points and `gender` are overwritten with the redaction marker — the column is required, so the marker is a value of its set, and the only one no screen offers ([D-175](../decisions/round-23.md#d-175--an-erased-persons-grammatical-form-goes-with-their-names)) — and the person's `person_attribute` rows are deleted; the row and its id survive so historical references still resolve ([00-conventions §8](00-conventions.md#8-personal-data-and-erasure)) |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 | `updated_at` | timestamp, audit time | |
 | `updated_by` | reference to person, optional | |
-| `import_batch_id` | reference to import batch, optional | Set on imported rows. Its link to `import_batch` can only be made once that table exists |
 
 **Rules**
 
@@ -112,8 +110,10 @@ whatever the shelf is called ([domain/08-person-data.md](../domain/08-person-dat
 
 **`given_name`/`family_name`/`preferred_name`, `gender` and `birth_date` are the only descriptive
 facts that are columns here, and they are the last the model will accept.** The test for keeping one
-is not sensitivity — `notes` sits in the field table above and is a worse exposure than most of what
-moved out. **The test is whether a rule exists that an open layer physically cannot hold.** *"One
+is not sensitivity — the free-text `notes` column that used to sit in the field table above was a worse
+exposure than most of what moved out, and sensitivity is exactly why it is gone now
+([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)).
+**The test is whether a rule exists that an open layer physically cannot hold.** *"One
 current name per person"*, *"exactly one primary postal contact among the open rows"*, *"a school id
 may repeat, a birth number may not"* — each is a constraint over a **known set of columns**, and a
 key/value layer has no known set of columns, which is the whole of what it is for. Folding
@@ -130,17 +130,21 @@ does not earn a column here, however reasonable it looks — that is the sentenc
 the new layer looks tidier — that is the sentence that keeps a well-meaning unification of "everything
 about a person" from quietly turning four enforced rules into four hopes.
 
-**One consequence names itself.** `person.notes` is the last free text about a person kept outside the
-vocabulary, and it is the column a reviewer should ask about: a sentence typed there is invisible to
-to any report on a code, and to the screen a first aider reads at 23:00, while the same sentence recorded as a
-value against a code is visible to both — **and recording it that way is now one act by one person rather than
-a request waiting for somebody with time**, since a definition is live at the save of whoever holds
-`attribute.define` and there is no queue left to wait in
-([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
-[09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)). Whether the column
-should exist at all is open and already argued
-([06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues)); what is settled is that it
-carries no protection the attribute layer does not carry, and less readability.
+**The person row holds no free text, and plenty of rows about a person still do.** That is the
+distinction [D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)
+drew, and this is the page that states it. A free-text column *on the person record* is gone for good:
+free text that is a **fact** about a person is an `attribute_definition` row, live at the save of whoever
+holds `attribute.define` ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
+[09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)), read under the same
+`person.view` as the rest of the record. What stays is free text on **rows about a person** — each one a
+relationship or an act, not a column of this table: why a child joined a group is the `note` on a roster
+row ([02 §2](02-organization.md#2-person_group_member)); why an account was suspended is its
+`status_reason` and `status_note` ([01a §4](01a-accounts-and-contacts.md#4-account)); what a merge could
+not choose between is held in `field_conflict` ([01b §8](01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge)).
+The deletion fixed an erasure hole rather than opening one: the deleted column was kept off the
+redactor's list, so a diagnosis typed into it survived being asked to leave, while attribute rows are the
+one thing an erasure **deletes** ([00-conventions §8 item 2](00-conventions.md#8-personal-data-and-erasure),
+[D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)).
 
 ### The answer to "who is a member?" is never on this table
 
@@ -173,7 +177,6 @@ are usually wrong.
 | `valid_from` | date, optional | Optional because an imported name often arrives with no start date at all |
 | `valid_to` | date, optional | `NULL` = current for this `name_type` |
 | `source` | text, optional | `self`, `staff`, `legacy_import` |
-| `import_batch_id` | reference to import batch, optional | |
 
 **Rules**
 

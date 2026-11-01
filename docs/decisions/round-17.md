@@ -57,7 +57,7 @@ call a forensic gap. **Reverses nothing.** No column, table or code changes; one
 | `system:payload-reduction` | payload reduction | Emptying `old_values` and `new_values` once a row passes the payload window ([D-088](round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) |
 | `system:bank-pull` | the bank statement fetch | Writing the payments that answer a variable symbol ([D-075](round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)) |
 | `migration:<id>` | a named migration | Any structural change, **and any one-off correction**: a fix that is not in a migration is a fix nobody can attribute |
-| `import_batch:<id>` | a run of the import pipeline | Not anonymous, and never was — `import_batch.created_by` is required and names the person who uploaded the file ([06a §3](../data-model/06a-import.md#3-import-pipeline)) |
+| `import_batch:<id>` | a run of the import pipeline | Not anonymous, and never was — `import_batch.created_by` is required and names the person who uploaded the file ([06a §3](../data-model/06-audit-and-import.md#3-import-pipeline--deleted)) |
 
 **Bare `system` is retired by this decision.** It was the example [06 §2](../data-model/06-audit-and-import.md)
 and `00-conventions §7` both carried, and it means "one of the above, and I am not saying which",

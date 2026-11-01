@@ -431,8 +431,9 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
 - **Cancelled events and fees.** Cancelling keeps the registrations. What it does to the
   obligations is the finance module's (§6), and for events it has an answer
   ([D-076](../decisions/round-06.md#d-076--money-that-cannot-be-matched-waits-for-a-person)):
-  cancelling voids the outstanding requests, and money that already arrived waits in the
-  unmatched queue ([07-finance.md §2b](07-finance.md#2b-money-that-cannot-be-matched)).
+  cancelling voids the outstanding requests, and money that already arrived **stays where it is**:
+  unmatched, uncounted, and not in a queue, because there is none
+  ([07-finance.md §2b](07-finance.md#2b-money-that-cannot-be-matched), [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)).
 - **`was_present` as a safeguarding record — settled: it stays a column of the registration.** No
   retention of its own and no permission of its own: it inherits both from the registration, and the
   codes that already reach the roster are the codes that read it (§9). `PRESENT` stays refused, so

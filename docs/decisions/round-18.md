@@ -231,7 +231,7 @@ stayed open for eleven rounds while its four shapes were cited by name from ever
   have before this round, and one of them — per-scheme identifier uniqueness, which §6a's own sentence has
   promised a report for since round 6 — is the row round 18 filled.
 - **Two modules have no check list at all.** [07-finance.md](../data-model/07-finance.md) and
-  [06a-import.md](../data-model/06a-import.md) state rules and carry no "Invariants to verify" section, so
+  [`06a-import.md`](../data-model/06-audit-and-import.md#3-import-pipeline--deleted) state rules and carry no "Invariants to verify" section, so
   every rule they state is unassigned **by construction rather than by oversight** — which is where most of
   the nineteen live, and is [F-31](../open-questions.md#f-31).
 - **Nine numbered checks are assertions about the code, not reports over data** — the six `TIME-BOMB`

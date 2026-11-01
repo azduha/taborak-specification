@@ -26,21 +26,43 @@ visible instead of being a sentence on page 412 that nobody re-reads.
 
 **How to read the two right-hand columns.** *Backstop* names the report that would list a breach, by
 the page and number where that report is written. **`none` in bold** is not an omission of this page and not a
-slur on the rule: it means the corpus names no such report anywhere, which is the finding. **Five rows are in
-that state and all five are shape-3 rows**, whose only enforcement is a line of code. The five are not one
-kind of blank, and the kinds are worth naming because they fail differently.
-**Two are rulings**: [D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)
-decided that a rule about an ended key gets no report, and
-[D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)
-decided the same about a delegation outliving the permission behind it — in both cases the absence was chosen,
-and said on the page that owns the rule rather than only here.
-**One is a promise with an address**: D-130's identifier row names the section the report will be added to, so
-that `none` is dated rather than permanent. **Two are blanks this page is not allowed to fill by inventing a
-check nobody asked for.**
-**The count came down from eleven — seven after round 19, five after round 20 — and none of the six losses was
-a re-reading.** Two
-pages were given the check sections they lacked ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)).
-Two rows here turned out to describe a rule no page states at all, so they are gone rather than repaired
+slur on the rule: it means the corpus names no such report anywhere, which is the finding. **Twelve rows are in
+that state — ten of them shape-3 and two shape-2 — and they are not one kind of blank.** The kinds are worth
+naming because they fail differently. **Four were chosen by a ruling** and said on the page that owns the rule: an
+ended key's audit window ([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud)),
+a delegation outliving the permission behind it
+([D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)),
+eligibility for registering, which is a capability rather than a state to list, and a value's conformance to the
+type its own definition declares. **Two have a refusal standing where a report would be**: the granter's ceiling
+and the request-to-membership pair are refused at the write, so a report over the state they would breach is empty
+by construction and would cost a query to say nothing. **Two are out of reach of any report** — a selector's
+resolver is program text, and an audit payload's ordering is not a row state — which is a different condition from
+being uncovered, and is written as the one it is. **One is a promise with an address**: D-130's identifier row
+names the section the report will be added to, so that `none` is dated rather than permanent. **The last three are
+blanks nobody has asked to fill**, and this page is not allowed to fill them by inventing a check nobody asked
+for.
+**This page printed five for three rounds, and five had stopped being true.** It printed five because round 20
+counted, rounds 21 and 22 added rows carrying `none` faster than they removed any, and nobody re-counted — there
+were thirteen when this round opened. **The history of this column in the order it happened: eleven, seven after
+round 19, five after round 20, thirteen, twelve now.** The last figure is the first one in that sentence that was
+produced rather than re-printed: a program counted the rows whose report cell begins with the word `none`, which
+is the definition this paragraph now states, so the next round can re-produce the number instead of trusting it.
+**That is not the same as a check, and this page says so rather than pretending otherwise.** Until this round
+the repository's only measuring tooling was `scripts/check-registries.py`, which verifies that a *name* resolves and
+never reads a figure beside a sentence — a row with no report beside it has never claimed a name that does not exist,
+which is exactly why the paragraph above could stand there being wrong. [Round 23](../decisions/round-23.md) wrote
+a second script for the figure this corpus states in prose:
+`scripts/count-decisions.py` counts the `## D-` headings, counts the index's rows, and then reads every sentence
+outside the history pages that states how many decisions there are, and it fails if the three disagree. It exists
+because that round shipped a stale one: the index page's own total, one short of its own table, stale **across a
+line break** — which is why the script reads paragraphs rather than lines, and why it refuses a number beside
+`round 20` or a `§11`, since those are not claims about the size of anything. **What still holds is the narrower
+claim:** no tool reads the figures on *this* page, the `none` count among them, and this paragraph is all that
+stands between them and drifting again. That is why each figure above is stated with the definition a count would
+use. **Two of the original eleven's
+losses were re-readings of the worst kind**: two pages were given the check sections they
+lacked ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)),
+and two rows here turned out to describe a rule no page states at all, so they are gone rather than repaired
 ([D-133](../decisions/round-19.md#d-133--two-trail-rules-stay-unchecked-and-say-so-out-loud),
 [D-144](../decisions/round-20.md#d-144--right_kind-is-a-note-required-by-the-schema-checked-against-nothing-and-no-longer-claiming-to-be-checked))
 — which is the half of this page's history it should be embarrassed by. **And one `none` was simply false in
@@ -91,7 +113,7 @@ Fifteen rules, each a partial unique index whose predicate is the interesting ha
 |---|---|---|---|---|---|
 | One live account per person | [01a §4](01a-accounts-and-contacts.md#4-account) | `person_id` | status is pending, active or suspended | [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) | A person logs in twice and gets two different sets of grants |
 | A username is used by one live account | [01a §4](01a-accounts-and-contacts.md#4-account) | `lower(username)` | has one, and is not closed | same | Two people type the same username and one is quietly rejected at the form |
-| One current credential per external identity | [01a §5](01a-accounts-and-contacts.md#5-account_credential) | `(external_issuer, external_ref)` | kind is `oauth` and the row is current | **none** | An issuer's login lands on whichever credential the index happened to keep |
+| One current credential per external identity | [01a §5](01a-accounts-and-contacts.md#5-account_credential) | `(external_issuer, external_ref)` | kind is `oauth` and the row is current | **the save path — the first check this invariant ever had** ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check)) | a second account for one external identity is refused while it is being written, so an issuer's login can no longer land on whichever credential an index happened to keep |
 | One primary contact per kind | [01a §6](01a-accounts-and-contacts.md#6-person_contact) | `(person_id, contact_type, purpose)` | `is_primary` and current | **none** | A guardian mail merge picks one of two primaries at random |
 | One live hypothesis per pair | [01b §8](01b-merges-views-and-checks.md#8-identity_hypothesis-and-person_merge) | `(person_a_id, person_b_id)` | status is open | [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) | Two reviewers work the same pair in the queue and merge on top of a merge |
 | One open request per person per type | [03 §2](03-membership.md#2-membership_request) | `(person_id, membership_type_id)` | `draft`, `submitted` or `pending_payment` | [03 §7](03-membership.md#7-integrity-checks) | A parent's two attempts both arrive and one person is approved twice |
@@ -146,7 +168,7 @@ downstream ever says so.
 | An item-scoped grant carries an end date | [05 §6](05-authorization.md#6-access_grant--the-per-item-layer) | application validation | the report of long-lived open grants, named beside an admission that nothing backstops it |
 | An office does not outlive its own term limit | [05 §4](05-authorization.md#4-role_holder--who-holds-an-office) | none — the column is a prefilled nudge | the report of offices held past their end date |
 | An ended group is not named by a new grant | [02 §3](02-organization.md#3-a-group-is-an-item-a-grant-can-be-written-on-one) | the write path | [02 §6 check 5](02-organization.md#6-integrity-checks), which watches whether the refusal is still there |
-| A member row sits inside its group's period | [02 §2](02-organization.md#2-person_group_member) | none — containment is assumed | [02 §6 check 2](02-organization.md#6-integrity-checks), a list to read |
+| A member row **meets** its group's period | [02 §2](02-organization.md#2-person_group_member) | the save refuses a row meeting no part of the group's life, and the resolver reads the **intersection**, so every membership is trimmed to the group's lifetime ([D-171](../decisions/round-23.md#d-171--a-member-row-has-to-meet-its-group-and-the-resolver-trims-it-to-the-groups-life)) | [02 §6 check 2](02-organization.md#6-integrity-checks), which now looks only for the case a save cannot see: a group whose period moved underneath a row already written |
 | A request and the membership it produces refer to each other | [03 §2](03-membership.md#2-membership_request) | the two-step insert | **none** |
 | A guardian's right agrees with its open history row | [04 §1](04-relationships.md#1-guardianship) | none — the row wins on disagreement | [04 §6 check 6](04-relationships.md#6-invariants-to-verify) |
 | No live row points at a merged-away person | [01b §10](01b-merges-views-and-checks.md#10-integrity-checks) | the reassignment table | the same section |
@@ -161,10 +183,8 @@ downstream ever says so.
 | A registration is inside its event's window | [08a §8](08a-event-guards-and-checks.md#8-projections-and-guards) | every insert path | [08a §10 check 9](08a-event-guards-and-checks.md#10-integrity-checks) |
 | An event's capacity is not silently exceeded | [08 §5](08-events.md#5-capacity-and-the-waitlist) | the placing procedure | [08a §10 check 5](08a-event-guards-and-checks.md#10-integrity-checks); an overrun is permitted, attributed and reported |
 | Only members register | [08 §4](08-events.md#4-event_registration) | none, and none is wanted — eligibility is capability | none, by design |
-| One staged row makes one event | [06a §3](06a-import.md#3-import-pipeline) | the application, deliberately | [06a §4 check 2](06a-import.md#4-integrity-checks) |
 | `membership.outstanding_balance` agrees with the allocations | [07 §3](07-finance.md#3-keeping-membershipoutstanding_balance-honest) | the writing transaction if the column stays; §3 recommends dropping it for a view | [07 §4a check 1](07-finance.md#4a-integrity-checks), and the same query whichever way §3 lands |
-| An imported membership is bounded at both ends and never inferred from attendance | [06a §3.1](06a-import.md#31-what-a-source-row-actually-evidences) | the parse and end-date inference rules, which now end at a stated date ([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)) | [06a §4 check 1](06a-import.md#4-integrity-checks) — **the one row in this table that reaches the permission gate**, because an open membership satisfies `is_current_member()`. **What D-169 changed is not the rule but what a non-zero answer means:** there is a value to move a row to now, so the report says the inference did not run |
-| A batch can say what it did, and a revert leaves nothing behind | [06a §3](06a-import.md#3-import-pipeline) | the pre-flight refusal | [06a §4 check 3](06a-import.md#4-integrity-checks), read against the audit entries the revert wrote |
+| An imported membership is bounded at both ends and never inferred from attendance | [06 §3](06-audit-and-import.md#3-import-pipeline--deleted) | the parse and end-date inference rules, which now end at a stated date ([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)) | [06a §4 check 1](06-audit-and-import.md#3-import-pipeline--deleted) — **the one row in this table that reaches the permission gate**, because an open membership satisfies `is_current_member()`. **What D-169 changed is not the rule but what a non-zero answer means:** there is a value to move a row to now, so the report says the inference did not run |
 | A payment's allocations account for its amount | [07 §2](07-finance.md#2-minimal-provisional-shape) | the write path; no constraint spans the two tables | [07 §4a check 2](07-finance.md#4a-integrity-checks), which is the whole of the backstop |
 | An operand that resolves to nothing is said out loud | [05b](05b-expression-tree.md) | none — no save is refused | the report of audiences that reach nobody, with an owner |
 | An expression tree stays a size that resolves | [05a §8](05a-audience-and-grammar.md#8-audience--grants-that-target-a-set-of-people) | none, by design | a report the corpus says has nothing behind it |
@@ -211,9 +231,11 @@ which is the one property of this shape that does not need a checker.
   inventory behind this page was for, and what it found in the way of absences is in
   [the open questions](../open-questions.md), each one naming the page it is missing from.
 - **It cannot rank the `none`s.** It used to be able to say at least where they clustered, and the answer
-  was two pages: [07-finance.md](07-finance.md) and [06a-import.md](06a-import.md) had no "Invariants to
+  was two pages: [07-finance.md](07-finance.md) and the import page had no "Invariants to
   verify" section, so every rule they stated was unassigned by construction rather than by oversight. That
-  structural excuse is gone ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)) and both pages now carry their own list, which leaves this column
+  structural excuse is gone ([D-135](../decisions/round-19.md#d-135--the-two-modules-with-no-check-list-get-one-each)),
+  one of those two pages has since been deleted outright ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+  and what survives of its rules is filed on [the audit page](06-audit-and-import.md#3-import-pipeline--deleted) — which leaves this column
   holding only rules that were read in the round that found them and left unguarded on purpose or on the
   table's own limits. **Ranking those is still not something a register can do without inventing a
   severity, which is the thing it refuses to do.**

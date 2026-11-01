@@ -438,10 +438,11 @@ difference is the whole reason there are two tables — and the office codes are
 |------|-----------|-------|--------|
 | `audit.view` | — | ⚠⚠ | Read the audit log — **including the before/after values it carries, which are person data like any other** |
 | `audit.export` | — | ⚠⚠ | Export audit records |
-| `import.view` | — | ⚠ | See import batches |
-| `import.stage` | — | | Stage an import |
-| `import.apply` | — | 🔒 | Apply a staged import |
-| `import.revert` | — | 🔒 | Revert an applied import |
+> **There is no `import.*` namespace.** The four codes that used to sit here — `import.view`, `import.stage`,
+> `import.apply`, `import.revert` — described a pipeline of staged batches with a revert, and the legacy load
+> is now one script posting through a registered key, so there is no screen left to grant
+> ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)). A key is granted the ordinary codes of whatever it writes and holds no code of its own
+> ([§8b](#8b-keys--a-caller-that-is-nobody)).
 | `report.view` | — | ⚠ | Run standard reports |
 | `report.export` | — | ⚠⚠ | Export report data |
 
@@ -472,8 +473,9 @@ difference is the whole reason there are two tables — and the office codes are
 > **The contents expire, which bounds that exposure without removing it.** A row lives for the life of
 > the system; its `old_values`/`new_values` are emptied **24 months after they were written**, by a
 > scheduled job this corpus calls **payload reduction** — a third operation on the trail, distinct
-> from redaction (a person's erasure, immediate and absolute, whatever the age of the row) and from an
-> import revert ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+> from redaction (a person's erasure, immediate and absolute, whatever the age of the row). **There was a
+> third** — the import revert — and it left with the pipeline it belonged to ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone),
+> [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
 > *"Every belief it has held"* is therefore true only of values less than two years old; about anything
 > older the trail answers *who touched this row, when, and were they allowed to* and not *and to what*.
 > It puts a horizon under the risk rather than making it impossible. **AT-4 stays open**, because a

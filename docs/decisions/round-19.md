@@ -153,13 +153,13 @@ about which rows survive erasure, and the check inherits whatever 00 §4 and 06b
 
 **Question.** [F-31](../open-questions.md#f-31). Every data-model page states its rules and then lists what
 would notice a breach — except [07-finance](../data-model/07-finance.md) and
-[06a-import](../data-model/06a-import.md), which state rules and stop. That is why most of the
+[06a-import](../data-model/06-audit-and-import.md#3-import-pipeline--deleted), which state rules and stop. That is why most of the
 register's blanks sit in those two modules: **their rules were unassigned by construction, not by oversight**,
 because there was no section for an assignment to live in. It was the only yes-or-no on the page.
 
 **Answer.** **Yes: three checks on each page**, in a new
 [07 §4a](../data-model/07-finance.md#4a-integrity-checks) and a new
-[06a §4](../data-model/06a-import.md#4-integrity-checks).
+[06a §4](../data-model/06-audit-and-import.md#3-import-pipeline--deleted).
 
 | The check | What a row means |
 |---|---|
@@ -183,7 +183,7 @@ register its excuse**: *What the register cannot say* had been explaining the co
 pointing at these two pages, and can no longer.
 
 **See:** [07 §4a](../data-model/07-finance.md#4a-integrity-checks),
-[06a §4](../data-model/06a-import.md#4-integrity-checks),
+[06a §4](../data-model/06-audit-and-import.md#3-import-pipeline--deleted),
 [00a](../data-model/00a-invariant-register.md), and
 [F-31](../open-questions.md#f-31) in § R.
 

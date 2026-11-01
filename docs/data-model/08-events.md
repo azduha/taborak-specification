@@ -69,7 +69,6 @@ is already modelled.
 | `created_by` | reference to person, optional | Who created the row. **Not an owner** — `created_by` is attribution, and a permission is never derived from an identity ([D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity)) |
 | `updated_at` | timestamp, audit time, optional | |
 | `updated_by` | reference to person, optional | |
-| `import_batch_id` | reference to import batch, optional | Set on imported rows |
 
 **Rules**
 
@@ -110,10 +109,15 @@ whole set), no check in §10 that reads one, no cascade running through one, and
 §8 that compares one. The people connected to an event are reached through `event_organizer` and
 `event_registration`, which point at the event directly.
 
-**Import consequence.** The one-off import owes `event` rows and `event_registration` rows and
+**Load consequence.** The one-off load owes `event` rows and `event_registration` rows and
 it owes **no owner column** — one less thing to invent a value for
 ([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
 It does owe the twelve per-event grants of §8, one bundle for every event row it writes.
+**What it no longer owes is a provenance value**: neither table has a column to fill, because the load is a
+script through a key and not a batch, and *which key wrote this event* is answered from the `audit_log` row
+the write left behind ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+An idempotent re-run is the script's own problem — a key and a skip, with no staging table to hold the hash
+([06 §3](06-audit-and-import.md#3-import-pipeline--deleted)).
 
 ### No `status` column, and why that is not an omission
 
@@ -233,7 +237,7 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 | `person_id` | reference to person, required | `person_id`, NOT `membership_id`. An event's roster must survive independently of how membership is recorded, and imported historical attendance has no membership row to point at. A 1998 camp roster is participation, and an inferred open-ended membership would put every one of those children inside `MEMBERS` today — see the note below |
 | `response` | enum: `attending` / `not_attending`, required | TWO values. `unanswered` is written NOWHERE. It is the absence of a row, so "who has not replied yet?" is a subtraction, not a stored state ([../domain/07-events.md §3](../domain/07-events.md#3-registration-one-record-two-stored-answers-and-no-unanswered)). Returning someone to unanswered deletes the row, which `audit_log` records — the honest act, and the one that leaves least behind |
 | `responded_at` | timestamp, required | Default now. When the ANSWER was given, which may differ from when it was recorded. A phone call on Tuesday entered on Thursday has two dates and both matter |
-| `source` | enum: `self` / `staff` / `guardian` / `import`, required | Default `self`. How this person got here, and the audit answer to "how did they get in?". `staff` is written by a person holding `event.register_other`, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. `guardian` is acting-under-guardianship; the acting person is in `access_log` |
+| `source` | enum: `self` / `staff` / `guardian` / `import`, required | Default `self`. How this person got here, and the audit answer to "how did they get in?". **`import` is now the only row-level marker the one-off load leaves on this table**: the provenance column that used to sit beside it is gone ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)), so *that a load wrote this* reads from here and *which key wrote it* from the trail — and an `event` row, which has no such column, carries neither and is answered from the trail alone. `staff` is written by a person holding `event.register_other`, and it bypasses the registration window and the waitlist deliberately (§5, Guard 1): whoever has the permission may register anyone. `guardian` is acting-under-guardianship; the acting person is in `access_log` |
 | `registered_by` | reference to person, optional | `NULL` when `source` is `self`. Set otherwise: which organizer, or which guardian |
 | `is_waitlisted` | boolean, required | Default false |
 | `waitlist_position` | integer, optional | Order within the waitlist. Assigned on insert when the event is at capacity, and rewritten on promotion. See §5 |
@@ -246,7 +250,6 @@ One row per person per event. **Two stored values; "unanswered" is the absence o
 | `created_at` | timestamp, audit time | |
 | `updated_at` | timestamp, audit time, optional | |
 | `updated_by` | reference to person, optional | |
-| `import_batch_id` | reference to import batch, optional | Set on imported rows |
 
 **Rules**
 

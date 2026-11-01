@@ -76,8 +76,8 @@ rather than two.
 `confidence` is the matcher's score between 0 and 1; `match_signals` records which fields
 agreed and how strongly, which is what a reviewer reads to see *why* it was proposed. `status`
 is one of `proposed`, `needs_review`, `confirmed`, `rejected`, `superseded`. `proposed_by`
-says where the proposal came from — `import_job`, `match_job` (the nightly batch matcher),
-`person` or `staff` — and `proposed_at` when. `reviewed_by`, `reviewed_at` and `review_note` are the
+says where the proposal came from — `match_job` (the nightly batch matcher),
+`person` or `staff` — and `proposed_at` when; **`import_job` is gone**, since the load that would have used it is a script writing through a key and the matcher's own code is what scores a candidate pair ([D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write)). `reviewed_by`, `reviewed_at` and `review_note` are the
 human part, and a hypothesis may not reach `confirmed` or `rejected` without a `reviewed_at`. At most
 one live hypothesis exists per pair — live means `proposed`, `needs_review` or `confirmed`.
 
@@ -353,118 +353,135 @@ simply visible on the next check.
 
 ## 7. Legacy import pipeline
 
-Staged, reviewed, idempotent. Never a direct write into live tables.
+**There is no pipeline.** Everything that stood under this heading as a mechanism — the staging tables,
+the six stages from upload to apply, the field map held as data and reviewed as a unit, the review queue,
+the per-batch revert, the idempotency hash, and the batch row every one of them hung from — is deleted,
+the page it was written on included
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+**The heading and the section number stay** because pages across the corpus cite §7 by number and their
+anchors are built from it, and what follows is the part of this section that was never the mechanism: what
+the two exports actually evidence, and what may therefore be written from them.
 
-**What is arriving is two exports, and neither is a roster**
+**What replaces it is one script and one key.** The membership export and the attendance export are
+loaded **once**, by a script that reads both, transforms them, and writes rows **through the application**
+as a registered `api_key` — a third kind of grantee that the keys page already authenticates
+([../data-model/05e-keys-and-callers.md §14](../data-model/05e-keys-and-callers.md),
+[D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)).
+Because the write goes *through* the application and not around it, every rule that binds a write binds the
+load: one `audit_log` row per insert on every path
+([../data-model/06-audit-and-import.md §2.1](../data-model/06-audit-and-import.md#21-the-trigger)), the
+invariant that a value may not invent a code
+([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)),
+the person-level no-overlap rule below, and the rule about what an imported period's `valid_to` holds.
+**Idempotency, which used to be a staged-row hash, is a key and a skip inside a script** — the same
+requirement written where it is cheap. There is no screen, no permission code and no queue anywhere in
+this, because the job runs once and is never run again.
+
+**What is loaded is two exports, and neither is a roster**
 ([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units)). A
 roster is evidence of presence in a unit, which is not what the source says. The source says two
 things:
 
-| Half | What a row says | What the batch writes |
+| Half | What a row says | What the load writes |
 |---|---|---|
-| **The membership export** | a name, a birth date, and **when that person was a member of the organization** | a `person`, and a **bounded** `membership` — both ends dated, `data_confidence = 'low'`, batch id on it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
-| **The attendance export** | an event, and who came to it | an `event`, and one `event_registration` per attendee at `attending` / `was_present = true` ([D-094](../decisions/round-09.md#d-094--the-root-unit-owns-every-imported-event)) |
+| **The membership export** | a name, a birth date, and **when that person was a member of the organization** | a `person` with `record_origin = 'legacy_import'`, and a **bounded** `membership` — both ends dated, `data_confidence = 'low'`, nothing else in the temporal layer ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
+| **The attendance export** | an event, and who came to it | an `event` that belongs to nobody, one `event_registration` per attendee at `attending` / `was_present = true`, and the twelve per-event grants an event create would have written ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it), [D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)) |
 
-**Neither names a sub-unit, and nothing is assigned to one.** The parser keeps its parsed unit code —
-an export that surprises whoever runs it with a unit column is exactly what that field and its
-`unit_not_found` warning are for, and keeping them costs nothing — but **nothing reads them, no
-`org_unit` is created by any batch, and no sub-unit participation row is ever imported**. Two halves
-also means two shapes of batch on one `import_batch`: a people batch and an events batch, each carrying
-the field map and the checks that fit its half, rather than one batch holding two mappers that can never
-both apply.
+**Neither names a sub-unit, and nothing is assigned to one.** A source column that looks like a unit is
+read and then left unread: **no body of any kind is created by the load, and no sub-unit participation row
+is ever written from it**, because there is no table for one to land in and no name in the file to put in
+it ([D-092](../decisions/round-09.md#d-092--the-corpus-is-people-and-events-and-it-names-no-units),
+[D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)). Two halves
+still means two shapes of input and two maps, and the script holds both — the reason the old design put the
+shape on a batch row was that one map cannot serve both files, and that reason is a property of the corpus
+rather than of any mechanism.
 
-**Say where it hurts, because somebody will ask this question.** The historical record this import
+**Say where it hurts, because somebody will ask this question.** The historical record this load
 leaves behind **contains no sub-units**. "Who was in Pack 12 in 2011?" has no answer at go-live — not
 a wrong one, none — and the first answer anyone reads will be a roster somebody typed in by hand.
 Nothing in the model is missing: it is what the source can say, and it is written here so that the first
 person to ask finds the sentence rather than the absence.
 
-```
-  source file(s)
-       │
-       ▼
-  [1] staging_import          ── raw rows, verbatim, with the source file + line ref
-       │
-       ▼
-  [2] staging_import_row      ── parsed: normalised name, parsed birth date,
-       │                          detected unit, parse warnings
-       ▼
-  [3] matching                ── for each row, find candidate person rows and score them
-       │
-       ▼
-  [4] review queue            ── human confirms: link to existing | create new | discard
-       │
-       ▼
-  [5] apply                   ── a people batch writes person + bounded membership; an events
-       │                          batch writes event + event_registration. Never an org_unit,
-       │                          never a sub-unit participation row, never an open-ended
-       │                          membership
-       │
-       ▼
-  [6] import_log              ── what was applied, by whom, when; reversal instructions
-```
+### What the script still owes
 
-### Requirements
-
-- **Idempotent.** Re-running the same import must not duplicate people. Each staged row
-  carries a deterministic `source_row_hash`; re-import matches on it.
-- **Reversible per batch.** `import_log` records every row created or modified in a batch,
-  so a bad batch can be rolled back without touching other data.
+- **Idempotent.** Re-running the load must not duplicate people. There is no staged row to carry a
+  hash any more, so the key is whatever the script computes from a source row's content, and re-running
+  matches on it and skips. **Idempotence became cheaper, not harder: a key and a skip, in a language where
+  that is two lines.**
+- **Corrected forward, never undone as a unit.** The revert is gone, and it is the real price of this
+  deletion: a load that went wrong is repaired **row by row, in the open, each correction audited**, or the
+  database is restored from before it ran. What revert bought was tidiness rather than safety — the rows it
+  could un-write are rows the script could have written wrongly one at a time — and nothing in this design
+  lets a bad `membership` sit unnoticed for long, because an open membership sits at the front of every
+  permission check ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)).
 - **Never overwrites self-registered data.** If a legacy row matches a `self_registered`
-  person, the import may *add* what the export evidences — a bounded historical membership
+  person, the load may *add* what the export evidences — a bounded historical membership
   period, a registration on an imported event — but never alters names, contacts, identifiers,
   or descriptive values the person maintains themselves. An added closed period contradicts
   nothing the person typed: it is a dated claim about the past, sitting beside their live row
   rather than over it. An *open-ended* period would be a different thing entirely, which is why
   the surviving ban is exactly that one.
-- **Preserves provenance.** Every imported row records `import_batch_id` and
-  `source_reference` (file + line), so any value can be traced back to the paper it came
-  from. When someone disputes a historical record, you can show them where it came from.
-- **Records uncertainty rather than guessing.** A row that cannot be parsed cleanly goes
-  to the review queue with the raw value intact — it does not get a best-effort guess
-  written as if it were fact.
+- **Provenance lives in the trail, not on the row.** No imported row carries a batch id: the column is
+  gone from every table this load writes. What answers *what made this row* is the `audit_log` row the write
+  left, whose `api_key_id` names the load, and whose payload empties at 24 months while its skeleton stays
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) —
+  so *which key wrote this* is answerable for the life of the system and *what it wrote* for two years.
+  `record_origin`, `data_confidence`, and `person_attribute.source` keep saying *an import wrote this* at
+  the row level, which is the weaker half of the sentence and now the only row-level half
+  ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+- **Weaker still, and recorded as weaker: the load will not say who ran it.** A key names itself and never
+  carries a person's authority ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)),
+  so the trail says *this script's key wrote these rows* rather than *Ana ran it at eleven at night*.
+  Accountability survives one step removed — the key was granted, the grant names its holder, and the grant
+  is audited — and that is a shorter sentence than the one it replaces.
+- **Records uncertainty rather than guessing.** A row the script cannot parse cleanly is not written with a
+  best-effort guess in place of the fact — it is left unwritten, with the raw value kept where the script
+  keeps it, until a person decides. What the deleted review queue used to supply was a place such rows
+  waited; that place is now outside this system, which is the honest shape of the loss.
 
 ### Raw columns become codes
 
 Old rosters carry columns about the *person* — a remarks column, a "medical" column, a list of shirt
-sizes — and each of those arrives at step [5] as a value against a **code**, not as a blob beside the
-record
+sizes — and each of those arrives as a value against a **code**, not as a blob beside the record
 ([D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)).
 Those columns are in the **membership export**; the attendance export brings nothing that maps to an
 attribute code
 ([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)).
-The map therefore belongs to the people batch and a code-to-registration map to the events batch: one
-batch, one map. That makes the first import the single largest event in the life of this vocabulary —
-several hundred codes out of one file. The rest of the rules live in staging
+There are therefore two maps, one per export, and the script holds both. That makes this load the single
+largest event in the life of this vocabulary — several hundred codes out of one file. The rules themselves
+belong to the attribute layer
 ([../data-model/09-attributes.md §7](../data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from));
-three consequences follow from arriving all at once.
+three consequences follow from arriving all at once, and one of them is a loss.
 
-- **The map is authored and read before the batch applies, not after.** The mapping is recorded on the
-  batch as one object rather than per staged row because it is one artefact a person reads once, top to
-  bottom, and the reading is what makes the codes it names trustworthy. Reading it afterwards would put
-  the live vocabulary at the mercy of whatever the batch had already written. Changing an applied map is
-  curation with an audit entry, not a migration.
-- **A raw column that maps to no code stops the batch**, unless someone maps it or marks it
-  `discarded` with a reason. An unmapped column is a decade of something the organization used to
-  collect vanishing quietly.
-- **A column nobody recognises stops the batch**, and it never becomes a code named from the column header
+- **The map is authored and read before the load runs, not after.** It used to be one object stored on the
+  batch and read top to bottom, because the reading is what makes the codes it names trustworthy. It is now
+  a table inside a script that is not in this repository, and **nothing forces anybody to read it**: the
+  artefact survives as a document only if whoever writes the script chooses to keep it one. Reading it
+  afterwards would put the live vocabulary at the mercy of what the load had already written, and changing a
+  map that has run is still curation with an audit entry rather than a migration.
+- **A raw column that maps to no code stops the load**, unless someone maps it or marks it discarded with a
+  reason. An unmapped column is a decade of something the organization used to collect vanishing quietly,
+  and a silent drop is the same loss as deleting the column.
+- **A column nobody recognises stops the load**, and it never becomes a code named from the column header
   either. **A value may not invent a code, and a column may not borrow one by similarity**: an import-time
-  merge is invisible and unreviewable, and the review queue above is for people, not for vocabulary
+  merge is invisible and unreviewable, and a merge of near-duplicates is a curation act afterwards, by a
+  human holding `attribute.define`
   ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
-  **Every code the map names is already defined and `live` before the batch applies, or the batch refuses** —
-  which is not a trap but the actual shape of this event: the map is authored and read top to bottom as one
-  artefact, so whoever wrote the map wrote the vocabulary first, and the endorsement the old `proposed` status
-  was invented to express is now simply *having held the permission while reading the list*. **The cost is the
-  first few hundred definitions being a writing job under `attribute.define` that must happen before the import
-  that looks like it produces them.** Who holds `attribute.define` day to day, and who writes that vocabulary
-  before the first batch, is open and is the shape the answer has to take — a permission and a named person,
-  not a queue ([AT-2](../open-questions.md#at-2), and the new [F-34](../open-questions.md#f-34)).
+  **Every code either map names is already defined and `live` before the load runs, or the load stops** —
+  which is not a trap but the actual shape of this event: the map is read as one artefact, so whoever wrote
+  the map wrote the vocabulary first, and the endorsement the old `proposed` status was invented to express
+  is now simply *having held the permission while reading the list*. **The cost is the first few hundred
+  definitions being a writing job under `attribute.define` that must happen before the load that looks like
+  it produces them.** Who holds `attribute.define` day to day, and who writes that vocabulary before the
+  load, is open and is the shape the answer has to take — a permission and a named person, not a queue
+  ([AT-2](../open-questions.md#at-2), and the new [F-34](../open-questions.md#f-34), and
+  [D-189](../decisions/round-23.md#d-189--one-author-writes-the-vocabulary-before-the-batch)).
 
 ### What each source row lands on
 
 | What the source says | It becomes | Why |
 |---|---|---|
-| "Jan Novák, born 1962, member 1990–1995" | a `person` with `record_origin = 'legacy_import'`, and **one `membership` per period the source states** — `valid_from` *and* `valid_to` set, `data_confidence = 'low'`, `import_batch_id` set, the renewal chain left to whoever reconstructs it | A stated period is evidence of membership and infers nothing; a closed period cannot gate anything ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
+| "Jan Novák, born 1962, member 1990–1995" | a `person` with `record_origin = 'legacy_import'`, and **one `membership` per period the source states** — `valid_from` *and* `valid_to` set, `data_confidence = 'low'`, `status = 'completed'`, no provenance column to set, the renewal chain left to whoever reconstructs it | A stated period is evidence of membership and infers nothing; a closed period cannot gate anything ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)) |
 | the same, with the year repeated in the file | a **second `membership` only if the source states a second period**; consecutive stated years stretch to one row, a gap in the source opens another | One row per stated period keeps one row per membership, and a lapse stays visible in the one table that means it |
 | an event, and who came to it | an `event` **with no owner column at all**, one `event_registration` per attendee at `attending` with `was_present = true`, and the twelve per-event grants an event create would have written | Nothing owns an event: its people are named by selectors that bind to it ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)) |
 | a person who might have come and did not | **nothing** | An export lists who came. Writing `not_attending` from silence puts words in a source that said nothing ([D-059](../decisions/round-05.md#d-059--unanswered-is-the-absence-of-a-row-a-registration-stores-two-values)) |
@@ -475,8 +492,12 @@ three consequences follow from arriving all at once.
 inferred from an attendance row.** `is_current_member()` and the permission gate
 ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)) both
 read `membership`, so a row running to no `valid_to` hands whoever signs up under that name authority in
-the present. The ban is sized for what it now guards: one reviewed batch whose map is read before it
-applies, on a corpus that will never arrive twice.
+the present. The ban is sized for what it guards: one load, whose map is read before it runs, on a corpus
+that will never arrive twice. **What was lost with the pipeline is not the ban but the report beneath it** —
+there used to be a check that counted the rows which broke this rule, and nothing counts them now, so the
+hole is a `membership` row with `valid_to` empty whose `audit_log` row names the load's key, noticed by
+whoever reads the load's output
+([06b §5](../data-model/06b-redaction-and-checks.md#5-integrity-checks)).
 
 **The line the whole design turns on is evidence against inference.** A row that says *member
 1990–1995* is evidence of a membership; a row that says *in Pack 12 in 1998* is evidence of presence and
@@ -493,33 +514,54 @@ with an empty set to fire on while still inviting somebody to build it.
   `unpaid` and turn a decade of members into a wall of debt with a 1999 `due_date` for the lapse sweep to
   choke on. Related, and load-bearing rather than incidental: `outstanding_balance` is **null** on these
   rows — a zero would be a claim of *settled* that no export supports.
-- **The person-level no-overlap rule is in the import's path.** One row per period the source states,
-  not one per calendar year, is a rule with a consequence: two stated periods covering one date violate
-  it and reach the review queue (§5).
+- **The person-level no-overlap rule is in the load's path.** One row per period the source states,
+  not one per calendar year, is a rule with a consequence: a stated period that runs into a person's
+  **live** membership violates it
+  ([../data-model/03-membership.md](../data-model/03-membership.md#the-exclusion-constraint-and-status-transitions)).
+  **There is no queue for that refusal any more, and the change is worth stating precisely.** The queue took
+  a row aside before writing; an imported period carries `completed`, which the constraint excludes, so the
+  collision that bites is the one against a live row and it bites as a **failed write** — the script stops on
+  it, and whoever ran it settles the person and re-runs. Overlaps between two closed imported periods are
+  still not refused at all, and were never refused before
+  ([domain/05 §3](05-membership-lifecycle.md#overlap-rules--the-invariant-that-matters)).
 - **These rows are the oldest layer of the skeleton D-088 keeps forever**
   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
   thousands of named people with birth dates who were never asked and never used the system, held on an
   unverified legal basis. Same judgement as for live rows, much larger population.
-- **Every cross-decade member count is a mixture** of an export and a register, distinguished only by
-  `data_confidence` and `import_batch_id`. A membership-rate chart spanning the import boundary compares
+- **Every cross-decade member count is a mixture** of an export and a register, and `data_confidence` is
+  now the **only** thing on a `membership` row telling the two apart: the provenance column that used to sit
+  beside it is gone, and what answers *which load wrote this* is not on the row but in the trail, whose
+  `api_key_id` is skeleton and so outlives the payload by decades
+  ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone),
+  [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+  **Which is the better bargain for a chart and the worse for a dispute:** a report has one column to read
+  either way, while anyone asking what a specific row's value was has twenty-four months to ask.
+  A membership-rate chart spanning the load boundary compares
   a source that *states* membership with a system that *records* it, and nothing in the query knows the
   difference.
 
 **A historical membership is also obtainable as a human act.** Where the organization has a period the
 export does not state — a ledger found later, a written confirmation, a person who was a member in a year
 the file lost — the period is entered by hand under `membership.backdate`
-([../appendix/permission-catalog.md §4](../appendix/permission-catalog-a-codes.md#4-membership)). The pipeline
-carries the stated ones; this is the route for the unstated: deliberate, attributed, outside the batch.
+([../appendix/permission-catalog.md §4](../appendix/permission-catalog-a-codes.md#4-membership)). The load
+carries the stated ones; this is the route for the unstated: deliberate, attributed, and written by a person
+through a screen rather than by a script through a key.
 
-**End dates are still often unknown, and this is the sharpest case of it.** A period the export leaves
+**End dates are often unknown, and this one is settled rather than open.** A period the export leaves
 open — someone last seen in a 2003 row with no end stated — cannot be written open: that is the one shape
 refused outright, and an unbounded historical record is the same hazard wearing a different name.
-Convention: **end it at the end of the school/organizational year of the last row they appear in, marked
-as inferred.** That is the *only* date the import infers — the periods themselves are stated — and it is
-precisely what the organizational year boundary is needed for, which is still open
-([A-4](../open-questions.md#a-4-remainder--the-organizational-calendar)). With attendance and no money in
-the corpus, it is the sharpest remaining import question. Document the rule you choose; it will be
-questioned.
+**The rule: end it with the calendar year of the last period the person appears in, marked
+`data_confidence = 'low'`**
+([D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)).
+Their last day as a member is **31 December**, and the value written into `valid_to` is **1 January of the
+following year**, because every period here is half-open and `is_current_member` reads `valid_to` as
+*after* today — a literal 31 December ends every imported row one day short and looks correct in every
+report that does not name the day. **The date is read from `expiry_month` and `expiry_day` on the
+`membership_type` row and never compiled into a job as a literal**, which is the only reason those two
+columns exist ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)). That is the *only*
+date the load infers — the periods themselves are stated — and it survives the deletion of the pipeline as a
+rule about rows rather than about a parse step, with the report that would have caught a load ignoring it
+gone along with the stage that ran it.
 
 ---
 
@@ -573,10 +615,13 @@ Still open, and tracked in [../open-questions.md](../open-questions.md):
   now stops a registration instead of merely queueing a card.
 - Whether a hypothesis a person raised about *themselves* should hold their account out of `active`,
   as against one the system raised because a stranger's sign-up strong-matched them (§8).
-- The organizational year boundary that historical end dates get inferred from
-  ([A-4](../open-questions.md#a-4-remainder--the-organizational-calendar)). With stated membership
-  periods, attendance, and no money (§7) it is load-bearing by itself, and the inferred date closes a
-  `membership` row, so the number of rows it touches is large.
+- **Not open, and corrected here because §7 now states the date:** the organizational year boundary that
+  historical end dates get inferred from was settled in the previous round, and the calendar it comes from is
+  1 January with the year running with the calendar ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january),
+  [D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)).
+  What is still open in [A-4](../open-questions.md#a-4-remainder--the-organizational-calendar) is the
+  *remainder* of the organizational calendar — the parts of it no rule here depends on since the one date
+  that mattered stopped being missing.
 - Whether indefinite retention of named membership and fee rows has a legal basis. The design keeps that
   skeleton indefinitely as the organization's own history while audit payloads are emptied after 24
   months
@@ -585,5 +630,7 @@ Still open, and tracked in [../open-questions.md](../open-questions.md):
 
 ---
 
-*Decisions behind this page: D-004, D-011, D-037, D-038, D-039, D-056, D-057, D-059, D-072, D-084, D-085,
-D-087, D-088, D-089, D-090, D-092, D-093, D-094, D-097, D-099, D-102, D-105, D-114.*
+*Decisions behind this page: D-004, D-011, D-037, D-038, D-039, D-047, D-056, D-057, D-059, D-072, D-084,
+D-085, D-087, D-088, D-089, D-090, D-092, D-093, D-097, D-099, D-102, D-105, D-114, D-116, D-121, D-141,
+D-151, D-169, D-189, D-190. D-094 is gone from this list because the page no longer cites it: the root unit
+it named was deleted by D-097, and §7 now says who owns an imported event by naming nobody.*

@@ -173,10 +173,12 @@ A membership row belongs to one person and one membership type, and carries a `s
 deliberately, never defaulted. The period is `valid_from` and `valid_to`, and an absent `valid_to`
 means the period is still open: it is the current membership, not a row someone forgot to close.
 `joined_via_request_id` records the request it came out of, `termination_reason` the reason it
-was ended, `data_confidence` is `high`, `medium` or `low`, and `import_batch_id` is set on imported
-rows and on nothing else. **Both of those columns have a live writer: the legacy import writes
+was ended, `data_confidence` is `high`, `medium` or `low`, **and that is the whole of the provenance this
+table carries** — there is no import column on it and none was left behind when the pipeline went
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+**`data_confidence` has a live writer besides a human: the one-off load of the legacy exports writes
 `membership` rows.** The export states a membership period directly rather than only attendance, so
-the batch writes one row per stated period — `data_confidence = 'low'`, `import_batch_id` set,
+the load writes one row per stated period — `data_confidence = 'low'`,
 **both ends dated** ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
 [domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)), **and `status = 'completed'`**, the value
 an imported closed period carries: none of the six means *a source stated this and nobody in the system
@@ -188,7 +190,8 @@ because an open membership satisfies `is_current_member()`, so an inferred one w
 roster a current member today. So
 `data_confidence` on this table has two live sources and they mean different things: on a
 backdated row it is a human's judgement (`membership.backdate`, attributed to whoever typed it), on
-an imported row it is the batch speaking for itself.
+an imported row it is **a script declining to claim more than the source said** — and after this round the
+only difference between the two is who holds the pen, because neither leaves a row of its own behind.
 
 ### Overlap rules — the invariant that matters
 
@@ -211,15 +214,21 @@ status, one date. **It belongs to the person alone, not to any structure above t
 scope and not a row ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)),
 so there is no per-body membership to add up.
 
-**This is the invariant the import writes against.** Say exactly what fires, because the
-rule's reach is narrow: it watches the three live statuses, so what the exclusion constraint refuses at
-apply time is an imported period colliding with a **live** membership — an export period that runs into
+**This is the invariant the load writes against.** Say exactly what fires, because the
+rule's reach is narrow: it watches the three live statuses, so what the exclusion constraint refuses is an
+imported period colliding with a **live** membership — an export period that runs into
 or past the person's current one, which an open-ended imported row would produce for thousands of people
 in one transaction. What it does *not* refuse is an overlap between two closed imported periods: the
 statuses are outside its reach by design, so a source file that double-books somebody across 1993 lands
 quietly, marked only as `data_confidence = 'low'`. That is the honest cost of the same decision that
-keeps a returning member's old period from gating anything today, and it is why the batch is reviewed
-before it applies rather than after.
+keeps a returning member's old period from gating anything today. **And the refusal now lands differently.**
+There is no review queue to catch a refused row before it is written, because there is no queue: the load
+writes through the application and the constraint answers it the way it answers any other writer — a
+**failed write**, which stops the script on that row, and whoever ran it settles the person and re-runs. The
+sentence used to read "the batch is reviewed before it applies rather than after"; what is true now is
+narrower and worth the exact words — **the map and the rows are read before the load runs, and nothing
+softens the constraint when it does**
+([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)).
 
 *Assumption:* `btree_gist` is available (PostgreSQL), because a temporal overlap is the one
 rule that can only be refused *during* the write that would create it. If the target database
@@ -281,11 +290,12 @@ memorable case still works: the person never changed, and neither did the type �
 period did.
 
 **Half of this picture is reachable without a human, and the other half is not.** Membership #1 and
-its dates are exactly what the membership export states, so the one-off import writes them —
-bounded, `data_confidence = 'low'`, batch id set
+its dates are exactly what the membership export states, so the one-off load writes them —
+bounded, `data_confidence = 'low'`, `status = 'completed'`, and with no marker of its own on the row beyond
+those two
 ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
 The group row is the other half: **the corpus names no groups either**, so a 1990s roster exists
-only because somebody who remembers typed it, and the import owes **no belonging rows of any kind**
+only because somebody who remembers typed it, and the load owes **no belonging rows of any kind**
 ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row),
 [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)).
 **A membership is one period, not a period plus a body.** There is one unit and it is not a row
@@ -331,14 +341,15 @@ Everything the system needs follows from this:
 | `under_review` | `rejected` | reviewer rejects | `membership.request.approve` |
 | any | `withdrawn` | applicant withdraws | own, or guardian with permission |
 | `approved` | membership `pending_payment` | approval processed | system |
-| `pending_payment` | `active` | payment confirmed | system (or `fee.record` for manual) |
+| `pending_payment` | `active` | payment confirmed | system (or `payment.record`, the code a treasurer holds, when a person types the confirmation in) |
 | `active` | `lapsed` | fee unpaid past the organization's expiry date | `membership.lapse` or the yearly sweep |
 | `active` | `terminated` | disciplinary / cause | `membership.terminate` — **separate, more restricted permission** |
 | `active` | `suspended` | temporary hold | `membership.suspend` |
 
 **No transition above writes `completed`, and none will.** The value existed only for ageing out, and
 ageing out no longer exists ([D-038](../decisions/round-02-03.md#d-038--membership-is-ageless)). **The one
-writer `completed` has is not a transition:** the legacy import writes it on the row it inserts, so the
+writer `completed` has is not a transition:** the one-off load of the legacy exports writes it on the row it
+inserts, so the
 status appears in the data with no live path leading to it
 ([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page),
 §3) — and §9 keeps the warning about what such a row reads as. `terminated` stays exactly what this table
@@ -543,11 +554,15 @@ period a source stated, not a period this system recorded**
 [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)).
 The people export states membership periods, so the import writes bounded `membership` rows and those
 four queries do reach through the decades — **over an export, though, not over a register**, and the
-only thing telling the two kinds of row apart is `data_confidence = 'low'` and a batch id, which no
-report is obliged to notice ([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). So
+only thing telling the two kinds of row apart is `data_confidence = 'low'` — one column, and now the only
+one, since the provenance column that used to sit beside it is gone and what replaces it is not on the row
+at all
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+and **no report is obliged to read even that one**
+([domain/03 §7](03-identity-and-legacy.md#7-legacy-import-pipeline)). So
 query 10 is answerable in a form that should be labelled on the way out of the chart: a member count
 where the source states a period, and nothing where it does not. **How far back that reaches is not a
-design fact:** D-090 records the record count and the year range as inputs the batch itself carries.
+design fact:** D-090 records the record count and the year range as inputs whoever runs the load is given.
 
 **The wrong answer is exactly one decision away, and the ban that stops it is one sentence.**
 Generate a `membership` per attendance row and every historical query instantly returns a confident
@@ -637,7 +652,10 @@ resolver, which is the worst kind of bug to find.
   to the membership, `imported` would say how the row arrived, and every historical query would then have to
   choose between an event and a provenance inside one column — where the corpus's whole answer to *what did
   this import assert* is already `data_confidence`, sitting beside `status` for exactly that reason. §5
-  produces no `completed` row on the live path, so the import is the value's only writer. **The reporting
+  produces no `completed` row on the live path, so the one-off load is the value's only writer, and a script
+  rather than a screen is the thing that writes it
+  ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+  **The reporting
   consequence is kept, not resolved:** a `status` that reads as a decision will be reported as one, and
   historical query 10 counts these rows as completed memberships — which is what the acceptance test wants,
   and the reason this sentence is here rather than in a footnote.

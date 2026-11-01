@@ -99,12 +99,13 @@ published the internal counter.
 
 ## 4. Deletion policy
 
-**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data. **Three
-exceptions are named below** — a staging truncate, one delete that erasure has to make, and one trail that
-ends on a clock — and each is narrow enough to prove the rule rather than erode it. **Two of the three reach
-no business row anyone would miss — a staging table between two batches, and a trail of reads — **and the one
-that does reach a person's values does it for the only reason that has ever justified deleting anything: they
-asked.**
+**Nothing is hard-deleted.** There is no `deleted_at` and no delete for business data. **Two
+exceptions are named below** — one delete that erasure has to make, and one trail that ends on a clock — and
+each is narrow enough to prove the rule rather than erode it. **One of the two reaches no business row anyone
+would miss: a trail of reads.** The other reaches a person's values, and it does so for the only reason that
+has ever justified deleting anything: they asked. There was a third, a truncate of staging tables between the
+stages of a legacy import, and it left with the staging tables
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
 
 | Situation | Mechanism |
 |-----------|-----------|
@@ -113,17 +114,14 @@ asked.**
 | A grant revoked | Set `access_grant.valid_to`; keep the row |
 | Two people merged | Tombstone: set `merged_into_person_id`; row remains |
 | A group ended | Set `person_group.valid_to`; its member rows remain |
-| An `access_log` row passes 24 months | **Deleted**, by a scheduled job — the third exception below. The only rows in this design that age out, and the only ones that ever did |
+| An `access_log` row passes 24 months | **Deleted**, by a scheduled job — the second exception below. The only rows in this design that age out, and the only ones that ever did |
 | GDPR-style erasure requested | **Redact** field values; do not delete rows — see §8. **One table is deleted rather than redacted; the exception below names it and why** |
 
 This is not nostalgia. Historical foreign keys — "who attended this camp in 2003" — must resolve
 forever. A hard delete breaks the audit trail and, in a youth organization, the safeguarding
 record.
 
-**The first exception:** staging tables (`staging_import*`) may be truncated after a batch is
-applied, subject to the project's retention policy.
-
-**The second exception is not convenience and it should be read as a decision, not an oversight.**
+**The first exception is not convenience and it should be read as a decision, not an oversight.**
 Redacting a person **deletes** their `person_attribute` rows ([§8 item
 2](#8-personal-data-and-erasure)). Everywhere else in this file, erasure means overwriting a value
 and keeping the row, because the row is what old references point at. A descriptive value is the one
@@ -144,13 +142,18 @@ deleted and is retired instead, and so outlives the person whose values sit unde
 delete invisible: there is no edge for §9 to walk. **A reference from any table to a `person_attribute` row id
 remains forbidden by this paragraph**, and would have to be argued for against it, not merely written.
 
-**The third exception is a trail, and it is the newest.** [D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)
+**The second exception is a trail, and it is the newest.** [D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)
 confirms what [05c §9](05c-access-log-and-resolver.md#9-access_log) had only proposed: **an `access_log` row
 older than 24 months is deleted**, by a scheduled job, because that is what the organization decided its
 access trail is worth. It is an exception in the shape this section wants: **no business row is touched, no
 table holding a person's record is in its scope, it moves only forward from a row's own write, and it is one
 named job** — `system:log-reduction` in [§7a](#7a-what-an-empty-actor-column-means), with a check counting the
-rows that should have gone and are still there. `audit_log` is **not** in its scope and keeps the opposite
+rows that should have gone and are still there. **The run is now attributable as well as nameable:** every
+table the application writes owes an audit row ([D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive)),
+this delete included, and it is recorded as **one summary `audit_log` row per run** — the actor label, how
+many rows went, the window that removed them — rather than one row per deleted row, which would either quote
+contents the deletion exists to destroy or pile up thousands of rows saying only that something was deleted.
+`audit_log` is **not** in its scope and keeps the opposite
 shape ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
 rows for the life of the system, payloads emptied. **Read "append-only" in this corpus as *no application
 writes or removes these rows*, which is what it always protected** — not as a promise that a row survives its
@@ -238,9 +241,13 @@ entity
    you will spend a day debugging it. This rule is invisible in a schema and cannot be inferred
    from column names; it must be written in whatever the ORM uses to express such a thing, and
    tested.
-3. **Overlap is prevented below the application, not inside it.** An import script, a manual data
-   fix, a future API, and a bulk edit all bypass model-layer validation. The invariant must hold
-   for writers that were never written. → §6a.
+3. **Overlap is prevented below the application, not inside it.** A manual data fix, a future API,
+   and a bulk edit that skips the model all bypass model-layer validation. The invariant must hold
+   for writers that were never written. → §6a. **The one-off legacy load is deliberately *not* one of
+   those writers**: it writes through the application as a registered key
+   ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)),
+   so the model layer sees it — which is where D-141's invariant, that a value may not invent a code, now
+   binds it.
 4. **`created_at` is audit time, not world time.** It is distinct from `valid_from` — a membership
    backdated to 1990 during a 2026 import has `valid_from = 1990-09-01` and `created_at = 2026-…`.
    Never conflate them, and never derive one from the other. A system that sets `valid_from` from
@@ -278,7 +285,7 @@ Every data-model document in this folder states its rules as prose: "no two open
 overlap", "at most one primary contact", "a revoked grant must name who revoked it". Prose does
 not reject a row. Three layers could do it, and they are not equivalent:
 
-| Layer | Survives an import? | Survives a manual fix? | Survives a second client? |
+| Layer | Survives a script that skips the app? | Survives a manual fix? | Survives a second client? |
 |---|---|---|---|
 | Model-layer validation in the ORM | **No** | **No** | **No** |
 | Migration-level database constraint | Yes | Yes | Yes |
@@ -342,12 +349,18 @@ Every business table carries:
 |--------|------|---------|
 | `id` | 64-bit surrogate key | Set by the database, never by the caller |
 | `created_at` | timestamp, required | Audit time of insert |
-| `created_by` | person, optional | Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). An import batch is not one of them: `import_batch.created_by` is **required** there ([06a §3](06a-import.md#3-import-pipeline)), so the page that carries imports already names a person. A row an integration wrote is not one of them either: the audit trail names the **key** there, and no person is inferred from it ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority)). |
+| `created_by` | person, optional | Who inserted. Absent for the writers that have no row of their own — the sweeps, payload reduction, migrations — and an empty one of these is read as this system acting on its own (§7a, [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)). A row an integration wrote is not one of them either — the one-off legacy load among them, since it writes through the application as a registered key: the audit trail names the **key** there, and no person is inferred from it ([D-121](../decisions/round-16.md#d-121--a-key-never-carries-a-persons-authority), [D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)). |
 | `updated_at` | timestamp, optional | Audit time of last change |
 | `updated_by` | person, optional | Who last changed it |
-| `import_batch_id` | import batch, optional | Set on imported rows — the only way to undo a bad import |
 
 Temporal entities additionally carry `valid_from` / `valid_to`.
+
+**Nothing on this list marks a row as imported, and no table carries such a column.** The load wrote through
+a key, so *which key wrote this* is answered by the trail and stays answered for the life of the row; *what
+it wrote* is in the payload and expires on the usual window ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+A provenance flag on the row was refused for the same reason `is_system` was: what protects a fact here is a
+record of the act, not a column beside it
+([D-152](../decisions/round-21.md#d-152--zero-is_system-columns-what-protects-a-vocabulary-is-its-table-not-a-flag-on-its-rows)).
 
 Entities that record a *decision about a person* (terminations, rejections, rejections of identity
 hypotheses) additionally carry a reason:
@@ -395,8 +408,7 @@ reductions, the migrations.
 
 **Two limits, because a rule about actors stated as a rule about NULLs gets misread everywhere.**
 
-- **Only where empty is legal.** `import_batch.created_by` is required
-  ([06a §3](06a-import.md#3-import-pipeline)), `api_key.created_by` is required
+- **Only where empty is legal.** `api_key.created_by` is required
   ([D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)),
   and a grant's `granted_by` names a person. Those rows have no empty to interpret.
 - **Only in an actor column.** An absent `scope_id` is a check at the unit; an absent
@@ -411,10 +423,9 @@ what turns *"the system"* from a shrug into a claim.
 |---|---|---|
 | `system:renewal-sweep` | the 1 January renewal sweep | Expiring memberships whose window closed — and nothing else; a guardianship's `valid_to` is **never set by a job** ([04 §1](04-relationships.md)) |
 | `system:payload-reduction` | payload reduction | Emptying `old_values` and `new_values` once a row passes the payload window ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) |
-| `system:log-reduction` | the access trail's age-out | **Deleting** `access_log` rows once they pass their 24 months ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to *who deleted my access history*. **Not to be confused with `system:payload-reduction` above**, which empties columns of the other trail and deletes nothing |
+| `system:log-reduction` | the access trail's age-out | **Deleting** `access_log` rows once they pass their 24 months ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)). Added in round 20 and not cosmetic: a job that removes rows has to be nameable, and an empty actor column that could equally be the renewal sweep or a migration is not an answer to *who deleted my access history*. It was a name on a list and on no row until [D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive) made every write auditable: the run now writes **one summary `audit_log` row per run** — this label, how many rows went, the window — and not one per deleted row. **Not to be confused with `system:payload-reduction` above**, which empties columns of the other trail and deletes nothing |
 | `system:bank-pull` | the bank statement fetch | The `bank_transaction` and `payment` rows that answer a variable symbol ([D-075](../decisions/round-06.md#d-075--money-arrives-from-a-bank-api-a-payment-is-requested-by-variable-symbol-and-qr-code)). **For the run with nobody in the room** — a fetch someone performs from a screen names that person instead, and whether anyone ever performs it this way is not decided here; what is decided is whose rows they are when nobody does |
 | `migration:<id>` | a named migration | Any structural change, **and any one-off correction** — a fix that is not in a migration is a fix nobody can attribute |
-| `import_batch:<id>` | a run of the import pipeline | Not anonymous and never was: `import_batch.created_by` names the person who uploaded the file |
 
 **Bare `system` is not one of them.** It means "one of the above, and I am not saying which", which is the
 drift the vocabulary exists to stop
@@ -442,11 +453,15 @@ This system holds data about **children**, which raises the stakes on every deci
 Requirements the design must satisfy:
 
 1. **A deletion request must not destroy the audit trail.** Implement as **redaction**: set
-   `person.redacted_at`, overwrite names and contact points with a redaction marker, and keep the
+   `person.redacted_at`, overwrite names, `gender` and contact points with a redaction marker — `gender`
+   is required and the marker is therefore a value of its set, the one no screen offers
+   ([D-175](../decisions/round-23.md#d-175--an-erased-persons-grammatical-form-goes-with-their-names)) — and keep the
    row and its ids so historical references still resolve. The person is no longer identifiable;
    the record that *someone* was in Troop 12 in 2003 survives.
-2. **Redaction must cascade.** It reaches contact points, identifiers, and free-text notes that may
-   contain personal data — and it **deletes every `person_attribute` row belonging to the person**
+2. **Redaction must cascade.** It reaches contact points, identifiers, and — since
+   [D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job) deleted `person.notes` — **no
+   free text on the person row at all**, so the third thing it reaches is the vocabulary: it
+   **deletes every `person_attribute` row belonging to the person**
    ([09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)). That is the
    one place in this system where erasure deletes rather than overwrites, and
    [§4](#4-deletion-policy) says why it is the only row that can be handled that way. A redacted
@@ -500,13 +515,17 @@ Requirements the design must satisfy:
    ([09-attributes.md §2](09-attributes.md#2-attribute_definition--the-vocabulary)), and retirement —
    which stops the collecting without destroying what was already recorded — is the mechanism.
    Erasing what was recorded is item 2, and only item 2.
+   **Why `gender` is on this page at all was re-read this round and the answer here had it wrong:** the column is
+   not a reporting field, it is how the system agrees a verb with a person ([D-174](../decisions/round-23.md#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required)), which is why it is
+   required and why `unknown` is not one of its values. The over-collection test survives intact and reads
+   differently on a grammatical column: what it governs is the per-code layer below, not this one.
 6. **Redaction is invisible in listings and visible in the database.** A redacted person must not
    appear where people are listed, and must still resolve wherever an old record points at them
    ([01b-merges-views-and-checks.md §9](01b-merges-views-and-checks.md#9-views)). These two requirements are one rule with two
    halves and the first version of that document had only one of them.
 7. **The trail is a second copy of the person record and has to be guarded like one.** For a
    person's descriptive data the trail holds the **value** — the before and after image, exactly as
-   it does for a contact point or a note — because
+   it does for a contact point or an attribute value — because
    [D-085](../decisions/round-07-08.md#d-085--the-identity-machinery-stays-structured-the-boundary-is-rules-not-sensitivity)
    chose overwrite-in-place on the strength of the trail being the history there is, and a trail that
    records *a value existed* without recording which one answers neither of the two questions an
@@ -552,8 +571,8 @@ removed the subset, and what is left of the list is a set of arbitrary fields �
 value stored under a name nobody predicted**, in an attribute layer whose whole purpose is that nobody can
 enumerate its names. So the list keeps exactly one class of value out of the trail: **the values that must
 never be logged at all** — credentials, tokens, the secret half of an integration — the only values where
-*being in a log* is itself the harm. Everything else, `notes`, the reason fields and an attribute value
-included, is logged in the clear and protected by **who may read the log** (item 7), because the answer to
+*being in a log* is itself the harm. Everything else — the reason fields, an attribute value, and what
+used to be `notes` until [D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job) moved that text into the vocabulary — included, is logged in the clear and protected by **who may read the log** (item 7), because the answer to
 *who may read a child's address* was never a list of field names. Read the list as a credential filter and it
 is a working mechanism; read it as the personal-data filter, notice that `allergy` is not in it, and conclude
 the payload is covered. [09-attributes.md §6](09-attributes.md#6-erasure-retirement-and-the-audit-payload)
@@ -579,7 +598,7 @@ discovers from a regulator.
 | References **restrict**, with **one** deliberate exception | A person cannot be removed while memberships reference them, and nothing but the exception below cascades. **The exception is `event_organizer.event_id`** — deleting an event removes its organizer rows, the single `ON DELETE CASCADE` in this design ([08-events.md §3](08-events.md#3-event_organizer) explains why it is safe there and nowhere else). |
 | Cascade delete is refused everywhere else | It is the enemy of a 40-year audit trail, and ORM relation configs default to it. **Check every one**, and read the exception above before you "fix" the one row that is allowed to cascade. |
 | Optional references document *why* they are optional | An optional reference is usually a design decision worth recording, and it is invisible in the schema. |
-| There are **seven** reference-less keys: **six are followed by a scan, and one is followed by nothing on purpose** | Two were followed before this round — `access_grant.scope_id` and `audience_operand.selector_arg_id`, by [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify). Four more are followed now: `access_log.scope_id`, `access_log.authorization_ref_id`, `access_log.entity_id` and `field_conflict.entity_id`, by [05d §11 check 23](05d-invariants-and-seed.md#11-invariants-to-verify), which also carries the exception `access_log`'s three need — some missing targets are legal, because two paths hard-delete business rows and a trail row may not be rewritten to follow them. `audit_log.record_id` is the seventh and is **scanned by nothing, deliberately**: an audit row outliving the row it described is what the erasure path and the revert path look like afterwards, and it is the reference the redaction check reads in order to run at all ([D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) is what found that the old count was the count of the ones somebody looked at; [F-30](../open-questions.md#f-30) is settled by [D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)) |
+| There are **seven** reference-less keys: **six are followed by a scan, and one is followed by nothing on purpose** | Two were followed before this round — `access_grant.scope_id` and `audience_operand.selector_arg_id`, by [05d §11 check 2](05d-invariants-and-seed.md#11-invariants-to-verify). Four more are followed now: `access_log.scope_id`, `access_log.authorization_ref_id`, `access_log.entity_id` and `field_conflict.entity_id`, by [05d §11 check 23](05d-invariants-and-seed.md#11-invariants-to-verify), which also carries the exception `access_log`'s three need — some missing targets are legal, because **one** path hard-deletes a business row, the erasure, and a trail row may not be rewritten to follow it. `audit_log.record_id` is the seventh and is **scanned by nothing, deliberately**: an audit row outliving the row it described is what the erasure path looks like afterwards, and it is the reference the redaction check reads in order to run at all ([D-129](../decisions/round-18.md#d-129--where-the-register-and-the-page-disagree-the-page-is-wrong) is what found that the old count was the count of the ones somebody looked at; [F-30](../open-questions.md#f-30) is settled by [D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)) |
 | Circular references are broken with an optional column, not a deferred constraint | `membership_request` ↔ `membership` is the one instance; the two-step insert is documented where it lives. |
 
 The polymorphic `access_grant.scope_id` deserves its warning again now that the schema is
@@ -630,7 +649,7 @@ states the fields, rules, invariants and open issues for its part of the model.
 | [03-membership.md](03-membership.md) | `membership`, `membership_type`, `membership_request` |
 | [04-relationships.md](04-relationships.md) | `guardianship` (carrying the guardian's current `right_level`), `guardianship_permission` (the **history** of that value) |
 | [05-authorization.md](05-authorization.md) | `permission`, `role`, `role_holder`, `access_grant`, `audience`, `audience_operand`, `selector_type`, `grant_scope_type`, `access_log`, `api_key` (a caller that is not a person: [05e-keys-and-callers.md](05e-keys-and-callers.md) §14–§17) — and **no member table for an audience**, because a hand-named person is a `PERSON(x)` leaf in the expression ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)) |
-| [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log`, `import_batch`, `staging_import*` |
+| [06-audit-and-import.md](06-audit-and-import.md) | `audit_log`, `field_conflict`, `redaction_log` — and no import tables at all: the legacy load is a script run through a key, not a feature of this system ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)) |
 | [07-finance.md](07-finance.md) | `fee_schedule`, `fee_obligation`, `payment_request`, `payment`, `bank_transaction` — **provisional on policy** |
 | [08-events.md](08-events.md) | `event`, `event_organizer`, `event_registration`, `event_question`, `event_answer` |
 | [09-attributes.md](09-attributes.md) | `attribute_definition`, `attribute_option`, `person_attribute` — **everything the system knows about a person other than their name, their gender and their age** ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data), [D-084](../decisions/round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime)). It is last in this table because it is last in every other document's account of a person: it references `person` and nothing references it |

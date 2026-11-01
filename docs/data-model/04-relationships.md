@@ -35,7 +35,6 @@ the ORM decides how each rule is enforced.
 | `ended_note` | free text | |
 | `created_at`, `updated_at` | timestamps | |
 | `created_by`, `updated_by` | reference to person | |
-| `import_batch_id` | reference to import batch | Legacy rows only |
 
 **Rules**
 
@@ -47,6 +46,15 @@ the ORM decides how each rule is enforced.
   Past ones are unlimited and expected: a court order lapses and is renewed.
 - A dependent may have **any number** of simultaneous guardians, each with its own row and its
   own `right_level`.
+- **A dependent may be an adult.** The dependent side of the row is a person, not a minor: nothing
+  restricts the column that way, and nothing happens to the row when the dependent's birth date passes
+  18 — a parent acting under a `write` level may register an adult child for an event because that is
+  what `write` says. The row ends when the guardian ends it, when the adult named in it ends it, or when
+  staff record either of those (*Guardianship ends* below; [D-185](../decisions/round-23.md#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party)).
+  A delegated grant remains available to an adult who prefers it
+  ([D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)),
+  and this rules no preference between the two — it refuses the premise that a second mechanism was
+  needed ([E-3](../open-questions.md#e-3--guardian-acting-for-an-adult-child), closed).
 - `is_primary_contact` is not unique per dependent. A child can have two primary contacts.
 
 **Indexes**
@@ -388,6 +396,19 @@ Asked about the **guardianship row itself** rather than through it, the same cha
 party to it, and only for the three acts in §1's table. That branch is not a fifth channel; it is
 this one, pointed the other way.
 
+**Which of two working mechanisms is meant, now settled.** The model has two ways for an adult to act
+for another person, and the resolver reads both: this channel, and an ordinary grant aimed at the other
+person. For **a person who cannot sign in**, the guardianship row is the answer, and the grant route is
+for an adult who can ([D-178](../decisions/round-23.md#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row)).
+Nothing is added by that ruling — the row already carries the `right_level`, and the party direction
+already lets a party end it, add a guardian and change the level — but it fixes which mechanism an
+implementer builds first, which is the thing a document is for. The settled negative half belongs to the
+account model rather than this table: a child without their own external identity gets **no second-class
+credential, no shared mailbox, and no login held by staff**. The absence of a login is not a gap in the
+child's record; it is a record of an adult acting for them, which is what this table already is. What
+staff may do is open the account row itself, where it waits to be claimed
+([01a §4](01a-accounts-and-contacts.md#4-account), [D-179](../decisions/round-23.md#d-179--staff-may-open-an-account-only-its-person-can-start-it)).
+
 ---
 
 ## 5. Acting on behalf — recording it
@@ -480,10 +501,18 @@ with no postal address behind it, which is a finance problem
   [E-6](../open-questions.md#e-6)). **§1 states what that costs, and the cost is not closed by the decision.**
 - **One right level cannot separate the health facts from the rest of the record** — the arrangement the
   per-code model existed for. [E-7](../open-questions.md#e-7), and §2 states what it costs.
-- Whether a guardian may act for a dependent who is also a member in their own right — e.g.
-  can a parent register their adult child for an event, if the child consents? Recommend an
-  explicit consent-based delegation rather than a guardianship, since the legal basis
-  differs. The *group* version of this is now answered by audiences
+- **Can a guardian act for a dependent who is a member in their own right — a parent registering an
+  adult child for an event, with the child's consent? — settled: the guardianship already says so, and a
+  delegation stays available.** A dependent may be an adult (§1), `write` is what it says, and the row is
+  kept until someone ends it; nothing happens at 18
+  ([D-185](../decisions/round-23.md#d-185--a-guardianship-ends-when-a-party-ends-it-and-majority-is-not-a-party),
+  [E-3](../open-questions.md#e-3--guardian-acting-for-an-adult-child)). This page's old recommendation —
+  prefer an explicit delegation because *the legal basis differs* — is dropped for the reason this corpus
+  gives: the system records no position on the legal basis of a relationship
+  ([D-069](../decisions/round-05.md#d-069--guardianship-ends-when-a-person-ends-it-the-system-takes-no-position-on-majority)),
+  so that cannot be a reason to prefer a mechanism; a delegated grant stands beside the guardianship for
+  an adult who prefers it ([D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)).
+  The *group* version of this was answered long ago by audiences
   ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
 - Whether `custody_arrangement` free text should be structured. Recommend not — custody
   orders vary too much to model, and a wrong model is worse than honest prose.

@@ -305,7 +305,7 @@ column in the same round, so the vocabulary and its first consumer move together
 
 **See:** [09 §2](../data-model/09-attributes.md#2-attribute_definition--the-vocabulary),
 [09 §7](../data-model/09-attributes.md#7-the-legacy-import-which-is-where-the-vocabulary-comes-from),
-[06a](../data-model/06a-import.md),
+[06a](../data-model/06-audit-and-import.md#3-import-pipeline--deleted),
 [08a §11](../data-model/08a-event-guards-and-checks.md#11-open-issues),
 [catalog-b §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues),
 [D-084](round-07-08.md#d-084--descriptive-data-is-organization-defined-at-runtime), and

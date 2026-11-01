@@ -59,6 +59,16 @@ The table survives rather than collapsing into a constant for two reasons:
 The cost is honest and small: an FK that currently always holds one value. Recorded here
 rather than hidden.
 
+**And what the table *is* was settled in round 23, which the two reasons above stop short of saying** ([D-186](../decisions/round-23.md#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes)):
+it is **settings wearing a vocabulary's clothes**. The vocabulary half is the part that will never grow — one
+kind of membership is a ruling (D-037) and not an absence of imagination — and the settings half is the live
+part: three columns of organizational calendar somebody tunes once a year, which is precisely the thing this
+document refuses to hardcode anywhere else. Read that way, the single row is not a vestigial table waiting for
+its second member. **The table is where the calendar lives**, and it is a vocabulary too because the schema has
+that habit and the foreign key had to point somewhere. [F-9](../open-questions.md#f-9--should-membership_type-stay-a-table-with-one-row)
+asked whether it should collapse into a constant. It should not, and the reason is the second bullet rather than
+the first: a principle about vocabularies would not be worth an FK, a place for four tunable dates is.
+
 ### What is deliberately not on this table
 
 **The type says nothing about who may join, and nothing about what they pay.** No age floor,
@@ -151,8 +161,11 @@ preference on the request.**
 **A rejection requires a reason** (`ck_request_rejection_reason` is the rule's name): no
 rejected request may be written without one. Two columns of the same row, so a migration can state
 it directly as a check on the row — and it belongs there rather than only in the model layer,
-because the two paths that most need catching, an import and a hand-corrected row, never reach a
-model-layer guard. "Why was this
+because the two paths that most need catching, a migration and a row corrected straight in the
+database, never reach a model-layer guard — and not the load of the legacy export, because that writes
+through the application as a key and a model-layer check would see it
+([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+"Why was this
 application turned down?" is asked months later, sometimes by the family. A rejection with
 no recorded reason is an answerable question made unanswerable.
 
@@ -171,9 +184,9 @@ inferred from date arithmetic.
 | `public_id` | uuid, required, generated | The identifier used outside the system; unique. |
 | `person_id` | reference to `person`, required | |
 | `membership_type_id` | reference to `membership_type`, required | |
-| `status` | text, required | One of `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`, `completed`. No default — the state is always chosen deliberately. **`completed` has exactly one writer: the legacy import marks every closed period it inserts `completed`**, because none of the six means *a source stated this and nobody here decided*, and `completed` is the second-worst of the two readings available ([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page)); `low` in the column below is what makes it survivable. |
+| `status` | text, required | One of `pending_payment`, `active`, `suspended`, `lapsed`, `terminated`, `completed`. No default — the state is always chosen deliberately. **`completed` has exactly one writer: the one-off load of the legacy exports marks every closed period it inserts `completed`**, because none of the six means *a source stated this and nobody here decided*, and `completed` is the second-worst of the two readings available ([D-162](../decisions/round-22.md#d-162--an-imported-membership-is-completed-and-the-warning-stays-on-the-page)); `low` in the column below is what makes it survivable. |
 | `valid_from` | date, required | |
-| `valid_to` | date, optional | NULL = open / current. **Never NULL on an imported row** — both ends are what makes an imported membership safe, and check 1 of [06-audit-and-import.md §5](06b-redaction-and-checks.md#5-integrity-checks) counts the rows that broke it ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)). |
+| `valid_to` | date, optional | NULL = open / current. **Never NULL on an imported row** — both ends are what makes an imported membership safe, since an open row satisfies `is_current_member()` and so walks through the permission gate; the date that closes it is the end of the calendar year the person was last seen in ([D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated), [D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)). **No report counts the rows that broke this any more:** the check that did was written over staged rows and died with the pipeline, and [06b §5](06b-redaction-and-checks.md#5-integrity-checks) now says so where the check stood ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)). |
 | `joined_via_request_id` | reference to `membership_request`, optional | |
 | `renewed_from_membership_id` | self-reference to `membership` (the previous one), optional | Forms the renewal chain. See domain/05 §6. |
 | `outstanding_balance` | money amount, optional | **Denormalised** from `fee_obligation`/`payment`. [07-finance.md](07-finance.md) §3 recommends **dropping** this column in favour of `v_fee_obligation_balance` — a wrong balance suspends the wrong child. Kept here only until that decision is taken. **NULL on every imported row, and since [D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated) put memberships back into the import that is load-bearing rather than incidental:** the export carries no payment data, and a zero would be a claim — *settled* — that the export does not support. There is no `fee_obligation` underneath these rows either, which is what makes the NULL unambiguous rather than merely uncomputed ([07-finance.md §2](07-finance.md#2-minimal-provisional-shape), [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money)). |
@@ -182,7 +195,6 @@ inferred from date arithmetic.
 | `ended_by` | reference to `person`, optional | |
 | `ended_at` | timestamp, optional | |
 | `data_confidence` | text, required, defaults to `high` | One of `high`, `medium`, `low`. |
-| `import_batch_id` | reference to the import batch, optional | Set on imported rows. |
 | `notes` | text, optional | |
 | `created_at`, `created_by`, `updated_at`, `updated_by` | timestamp, audit time; reference to `person` | The standard audit columns. |
 
@@ -252,7 +264,7 @@ The overlap rule covers only `pending_payment`, `active`, `suspended`. A
 `terminated`/`lapsed`/`completed` row is excluded, so a new membership can be created with
 a `valid_from` inside an old one's period without violating the constraint. **This is
 deliberate** — a returning member's new membership may legitimately overlap the tail of a
-lapsed one if the dates were entered imprecisely. Historical imports rely on this.
+lapsed one if the dates were entered imprecisely. The load of the legacy exports relies on this.
 
 **Consequence:** the constraint does not prevent two *active* memberships with overlapping
 periods if one was inserted while in another status and then transitioned. A status update
@@ -267,11 +279,15 @@ is only a violation if the constraint is in the database, and no ORM emits an ex
 period assembled from `valid_from` and `valid_to` scoped to three statuses — the migration writes
 it, as [00-conventions.md §6a](00-conventions.md#6a-who-enforces-an-invariant-now) requires. The
 same check performed in the model layer returns a friendlier message a moment earlier and
-guarantees nothing: a batch that imports the legacy people export writes memberships by the thousand
+guarantees nothing. **The one-off load of the legacy people export is not the example this paragraph used to
+reach for:** it writes by the thousand, but it writes *through* the application as a key, so a model-layer
+check would see it
 ([D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
-[D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)),
-and a hand-corrected row never passes through the model layer either. Both meet the constraint in the
-database; neither would ever meet a model-layer check.
+[D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
+[D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+**The writers that decide the question are the ones nobody wrote yet:** a migration, a row corrected straight
+in the database, a future second client. The invariant has to hold for those, and a model-layer rule is not
+where it lives.
 
 ### Why `valid_to IS NULL` and not a sentinel
 
@@ -736,8 +752,9 @@ and a reference, a form or a photograph has never been a condition of joining.
 hold several open memberships, when a membership activates, whether permissions follow membership
 state, the age questions, the grace period and the requirement mechanism are settled and stated — in
 §1, §3, §4 and §6. Whether the legacy import may create a membership is
-[D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated)
-and [06a §3.1](06a-import.md#31-what-a-source-row-actually-evidences). Two of those answers have a
+[D-093](../decisions/round-09.md#d-093--the-one-off-import-may-create-memberships-both-ends-dated),
+and what a source row evidences is restated at [06 §3](06-audit-and-import.md#3-import-pipeline--deleted).
+Two of those answers have a
 consequence worth keeping in view, because both are easy to undo: the roster is keyed on a **person**
 and never on a membership, so belonging survives where no membership record survives (§5), and a
 renewal inside the window opens its row at the previous expiry date, which is what makes a lapse

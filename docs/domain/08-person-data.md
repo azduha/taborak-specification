@@ -34,6 +34,17 @@ what a person is called and counted as; everything else is what the organization
 noticed. The three are also the only descriptive facts that have been stable across every system this
 organization has used, which is the practical test for whether something earns a column.
 
+**`gender` is the exception whose recorded reason turned out to be false, and the true one is smaller.**
+The column exists because Czech inflects a past tense for the sex of the person being talked about: any
+sentence the system forms about a person has more than one form and something has to pick one, so the
+value set — `male`, `female`, `other`, and the column is required — is **a form of address, not a
+category of person** ([D-174](../decisions/round-23.md#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required)).
+The reason this register carried since the first round, that youth organizations must report the value, is
+falsified; no report groups on it and none will be cited for it again. That is also why the column stayed
+a column when the alternative was to move it into the vocabulary: anything that renders a sentence about a
+person reads it on the least privileged path in the design, and a value in a vocabulary the organization
+edits at runtime cannot be required to exist.
+
 The boundary between "identity machinery" and "descriptive data" is drawn by a harsher test than
 sensitivity: **a fact keeps its own table when there is a rule about it that an open layer cannot
 express.** "Exactly one primary postal contact", "a school id may repeat but a birth number may not",
@@ -55,16 +66,21 @@ layer still stores everything and answers nothing. Three defences, none clever:
 - **Recording a value is open; naming a thing is not.** Anyone who can edit a person can write down
   what the doctor said tonight. Creating a code — deciding that this is now a thing the organization
   knows about people — takes a permission and a person who reads what they are given.
-- **An improvised need has somewhere to go, and it is not a queue.** The failure this is aimed at is
-  specific and familiar: at 23:00 on a Friday, there is no field for "carries an adrenaline
-  auto-injector", so the leader types it into a notes box, and it is never read by anyone again.
+- **An improvised need has somewhere to go, and it is not a queue — and now it has nowhere else.** The
+  failure this is aimed at is specific and familiar: at 23:00 on a Friday, there is no field for "carries
+  an adrenaline auto-injector". Until this round there was still a box the leader could type into — the
+  free-text `notes` column on `person` — and it is deleted: **there is no longer a place on the person
+  record to write what the vocabulary has no code for**
+  ([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)).
+  The typed sentence now goes to paper or a phone call rather than to a column nobody reads, and the box
+  had been the worse option all along: invisible to any report on a code, invisible to the screen the
+  first aider reads, and — kept off the redactor's list — invisible to an erasure too.
   **The answer is blunter than the proposal stage it replaced:** naming the code is the act of whoever holds
   `attribute.define`, and it is live the moment they save it — **the permission is the curator**, and a person
   holding a permission is faster than a review list
   ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
-  **The leader at 23:00 does not hold it, and this design no longer pretends otherwise**; what it keeps is that
-  a notes box is the worse of the two remaining options, and that a value recorded against a code *does* exist
-  reaches the screen that gets read at 23:00
+  **The leader at 23:00 does not hold it, and this design no longer pretends otherwise**; what it keeps is
+  that a value recorded against a code *does* exist and reaches the screen that gets read at 23:00
   ([../data-model/09-attributes.md §4](../data-model/09-attributes.md#4-who-may-read-and-who-may-write)).
 
 **Curation is a job, and the documents say so rather than assuming it happens.** The queue that used to make
@@ -199,4 +215,4 @@ afterwards.
 
 ---
 
-*Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100.*
+*Decisions behind this page: D-074, D-081, D-083, D-084, D-085, D-088, D-097, D-100, D-174, D-191.*

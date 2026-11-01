@@ -28,7 +28,7 @@ them by number and their anchors are built from them:
 | `confidence` | number between 0 and 1, required | Inclusive of both ends |
 | `match_signals` | jsonb, required | A list of signals, each with a name, a weight and whether it matched — `[{signal: 'birth_date_exact', weight: 0.4, matched: true}, {signal: 'name_normalised', weight: 0.3, matched: true}, …]`. Stored so a human reviewer can see **WHY** the matcher proposed this |
 | `status` | text, required | One of: `proposed`, `needs_review`, `confirmed`, `rejected`, `superseded`. Default `proposed` |
-| `proposed_by` | text, required | One of: `import_job`, `match_job`, `person`, `staff`. `match_job` is the nightly batch matcher, as opposed to a person suggesting a match by hand |
+| `proposed_by` | text, required | One of: `match_job`, `person`, `staff`. `match_job` is the nightly batch matcher, as opposed to a person suggesting a match by hand. **`import_job` is deleted** — the value named a mechanism [D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone) removed, and a value in this column answers *who put this hypothesis here*, which nothing of ours has been since ([D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write)) |
 | `proposed_by_person_id` | reference to person, optional | Set when a person proposed it |
 | `proposed_at` | timestamp, audit time | Default: now |
 | `reviewed_by` | reference to person, optional | |
@@ -169,7 +169,8 @@ time" rules, so that application code cannot forget them.
 **`v_person`** — the person rows most queries actually want: a person who is neither merged
 away nor redacted. **Both exclusions, not one.** They are different reasons and they must not be
 collapsed: a merged row is a *duplicate* that points at the real answer, while a redacted row is a
-*person who was erased*, whose names and contacts no longer exist. Neither belongs in a list of
+*person who was erased*, whose names, grammatical form and contacts no longer exist
+([D-175](../decisions/round-23.md#d-175--an-erased-persons-grammatical-form-goes-with-their-names)). Neither belongs in a list of
 people, and a listing that shows one and hides the other is worse than either, because it teaches
 the reader that the redacted child is a data-entry error.
 
@@ -359,9 +360,14 @@ must not wait for a reader to stumble on it.
   *named* `membership` and fee rows has a basis. See
   [00-conventions.md](00-conventions.md#8-personal-data-and-erasure) and
   [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues).
-- Whether `person.gender` is needed at all; if so, what value set.
-- Whether the organization has (or will have) a national SSO identity provider — this
-  determines how much of `account_credential` is actually used.
+Two more questions this page carried are now settled rather than open. **Whether `person.gender` is
+needed at all, and with what value set — settled: required, `male` / `female` / `other`, and its purpose
+is grammar rather than reporting** ([D-174](../decisions/round-23.md#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required)),
+with the redaction marker as the fourth value an erasure writes ([D-175](../decisions/round-23.md#d-175--an-erased-persons-grammatical-form-goes-with-their-names)).
+**Whether there is a national SSO identity provider — settled: the external issuer is Google**, which
+vouches for an e-mail address and not for membership, and one live identity backs exactly one account,
+refused at the save ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check),
+[K-4 and K-5](../open-questions.md#k-filed-by-a-module-page)).
 
 Both questions this page grew up around are settled and closed in the register: whether merge chains stay
 (they do, and the two rules a permanent chain needs are written where they are obeyed — the cycle refusal

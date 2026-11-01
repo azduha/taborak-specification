@@ -357,18 +357,25 @@ path-consistency check. The permission check matches scope exactly — the unit,
 
 ## 8. Open issues
 
-Open, and tracked in [../open-questions.md](../open-questions.md):
+**Two of the three questions this section held were answered by
+[round 23](../decisions/round-23.md), and they are answered in the two lines below rather than kept as
+openings someone has to remember to close:**
 
-- **Where a claimed group continuity is recorded.** The method says continuity is asserted, never matched
-  (§4); no table accepts the assertion. Until somebody rules, the default is the whole rule: a returning
-  name is a new group.
+- **Where a claimed group continuity is recorded — nowhere, chosen.** [D-173](../decisions/round-23.md#d-173--that-two-groups-are-the-same-group-is-said-not-stored) puts "the same troop, 1998"
+  in prose and gives it no column, which is the third place this corpus has deliberately left a continuity
+  outside the database and it reopens nothing: [D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority)
+  refuses group-to-group edges outright, and stands. What §4 asserts, this section no longer asks anyone to store.
+- **Whether an ended group is hidden from pickers, and whether it may be reopened — hidden, never reopened.**
+  [D-172](../decisions/round-23.md#d-172--an-ended-group-is-in-no-picker-and-comes-back-never): its `valid_to` is never cleared, so a returning name is a new group and "the same name twice"
+  stays one rule instead of becoming two.
+
+**One is left, and it is left on purpose:**
+
 - **Whether a group's previous name should be kept at all.** It is not, deliberately, as part of "no
   special features". If the organization turns out to rename groups often, the answer is a decision and not
   a column someone adds quietly.
-- **Whether an ended group should be hidden from pickers.** A `person_group` with `valid_to` set has no
-  stated behaviour either way yet.
 
 ---
 
 *Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
-D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071.*
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173.*

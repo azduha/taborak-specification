@@ -51,7 +51,7 @@ exists:
 |------|-------|--------|
 | Self-registration | an adult, or a minor — the path does not branch on age | `person` + `account` |
 | Registration on behalf | caretaker registers a minor who has no account | `person` (child) + `guardianship` |
-| Staff-created account | registrar creates one for an adult who is not self-sufficient with computers | `person` + `account`, flagged `created_by_staff` |
+| Staff-created account | staff open one for a person who has not signed up — a camp office with a paper list ([D-179](../decisions/round-23.md#d-179--staff-may-open-an-account-only-its-person-can-start-it)) | `person` + `account`, flagged `created_by_staff`, sitting at `pending_verification`: the row is what a registration attaches to, and it **cannot authenticate until its person, or that person's guardian, sets a credential** |
 | Legacy import | no account created | `person` only, `record_origin = 'legacy_import'` |
 | Self-registration claiming history | adult registers and asserts a past membership | `person` + `account` + `identity_hypothesis` |
 | Sign-up colliding with an existing person | adult signs up again through an address the system did not know, and **strong**-matches someone who already exists | `person` + `account`, both held at `pending_verification`, + `identity_hypothesis` — and **no merge, no link, no activation**. The address typed survives as the credential it was offered as, and the hypothesis is what holds the account out of `active` (§3) |
@@ -119,15 +119,29 @@ Why: [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sig
 
 ### Credentials
 
-`account` holds authentication material. Two rules worth fixing now:
+`account` holds authentication material, and a person signs in with **Google or an e-mail address and a
+password** — every person may have their own ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check)).
+Two rules worth fixing now:
 
 1. **The password hash lives in `account_credential`, not in `account`.** This leaves
-   room for multiple authentication methods (password, passkey, OAuth via a national
-   Scout identity provider, staff-issued one-time links) without restructuring.
+   room for multiple authentication methods (`password`, `passkey`, `totp`, `oauth`, `staff_link`)
+   without restructuring. The list is written in the program and in
+   [01a §5](../data-model/01a-accounts-and-contacts.md#5-account_credential), and a new method is a
+   **release**, not a row: code and value ship together ([D-177](../decisions/round-23.md#d-177--the-list-of-login-methods-is-written-in-the-program)).
+   The `oauth` in the list is **Google**, and what Google vouches for is an e-mail address — it does not
+   know the organization exists and cannot vouch for membership: an external login proves a mailbox and
+   nothing more.
 2. **Never share an account between a parent and a child.** The temptation is real —
    "the parent will just log in as the kid" — but it destroys attributability. The
    correct mechanism is [acting on behalf](#5-acting-on-behalf), which records *who*
-   acted and *as whom*. An account shared between people makes every audit entry
+   acted and *as whom*. The save now refuses the technical form of the shortcut: one
+   `(external_issuer, external_ref)` pair backs exactly one account, so a parent's Google cannot quietly
+   become three children's logins ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check)).
+   A child who has no Google account and no e-mail of their own has **no account**, and the model does
+   not need one — an adult acts for them through the guardianship row
+   ([04 §4](../data-model/04-relationships.md#4-how-the-resolver-uses-these-tables),
+   [D-178](../decisions/round-23.md#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row)).
+   An account shared between people makes every audit entry
    worthless, and in a youth organization the audit trail is the point.
 
 ### When nobody who can hold `system.admin` can sign in
@@ -289,16 +303,18 @@ capability to be reachable in an emergency.
 
 ## 7. Open issues
 
-- Whether staff-created accounts are allowed for children, or only adults. **Still open, and untouched by
-  the fact that the sign-up path has no age gate:** [D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives)
-  removes a gate on a path, not a policy about who may open an account on somebody else's behalf, so a
-  reader who takes "no gate" to mean "staff may create a child's account" has read further than the answer
-  goes. The `created_by_staff` flag on `account` ([01a §4](../data-model/01a-accounts-and-contacts.md#4-account))
-  stays whichever way this is settled.
-
-**Not registered in [../open-questions.md](../open-questions.md),** and a reader of the register alone
-would not find it: this page is the only place the question is written down.
+**Nothing is open on this page.** The question it carried — whether staff-created accounts are allowed for
+children, or only adults — is settled: staff may open the row for **any** person who has not signed up,
+child or adult, and what protects the child is the status rather than a rule against the insert. The
+account waits at `pending_verification` and cannot authenticate until its person, or that person's
+guardian, sets a credential — **nobody ever holds a child's password**
+([D-179](../decisions/round-23.md#d-179--staff-may-open-an-account-only-its-person-can-start-it)).
+The `created_by_staff` flag on `account` ([01a §4](../data-model/01a-accounts-and-contacts.md#4-account))
+keeps its job: it records how the row was born. The question was once written down only here; it is
+registered and closed in
+[§ K of the register](../open-questions.md#k-filed-by-a-module-page).
 
 ---
 
-*Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166.*
+*Decisions behind this page: D-068, D-074, D-079, D-083, D-089, D-097, D-099, D-100, D-164, D-166,
+D-176, D-178, D-179.*

@@ -46,6 +46,18 @@ them by number and their anchors are built from them:
   closed. A closed account releases its username for someone else to take. It covers live
   rows only, not all rows.
 - An account may not reach `active` while `verified_at` is absent.
+- **Staff may create an account for a person who has not signed up** — the useful case being a camp
+  office with a paper list. The row sits at `pending_verification`, which is already its default, and it
+  **cannot authenticate until the person it belongs to, or that person's guardian, sets a credential** —
+  the same shape as the gate above: the row is worth having before it can be used, because it is what a
+  registration attaches to, and refusing the insert would push staff into recording a child somewhere
+  worse than the database ([D-179](../decisions/round-23.md#d-179--staff-may-open-an-account-only-its-person-can-start-it)).
+  Said the other way round: **nobody ever holds a child's password**. What this does *not* refuse is a
+  staff member setting a password at the moment of creating the row; the write is audited, the gate that
+  allows it names who holds it, and the control is the trail
+  ([D-137](../decisions/round-20.md#d-137--a-guardian-may-appoint-a-guardian-and-nobody-at-the-organization-is-told)).
+  An organization that wants that pattern impossible rather than visible wants an explicit `deny` on the
+  write that sets a credential for somebody who is not you.
 - **An account may not reach `active` while an unresolved `identity_hypothesis` names its person** —
   a hypothesis sitting in `proposed` or `needs_review`, on either side of the pair. This is the second
   gate on the same transition and [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)
@@ -72,6 +84,12 @@ a membership — which is what every new account is anyway, not a defence built 
 organization wants a guardian's answer on record**, it goes on the guardianship relationship, where an
 adult's authority over a child is already written, dated, revocable and carrying its own `right_level`
 ([04 §2](04-relationships.md#2-the-guardians-right-none-view-or-write)); no column returns here for it.
+**Every person may have their own login** — a person signs in with Google or an e-mail address and a
+password ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check))
+— **and a child with no Google account and no e-mail of their own has no account, which the model must not
+be read as needing.** Such a child is not given a second-class credential, a shared mailbox or a login
+held by staff; the way an adult acts for them is the guardianship row, and an account staff open for them
+waits to be claimed (Rules above; [D-178](../decisions/round-23.md#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row)).
 
 **A colliding sign-up files a claim and brings nothing into the world that a human has not approved.**
 This is the case the second gate above exists for
@@ -187,10 +205,10 @@ The schema enforces this by simply not linking them.
 |---|---|---|
 | `id` | surrogate id | |
 | `account_id` | reference to account, required | |
-| `credential_type` | text, required | One of: `password`, `passkey`, `totp`, `oauth`, `staff_link`. Multiple methods per account. `oauth` supports a national Scout identity provider; `staff_link` supports a one-time link issued to a member who cannot self-serve |
+| `credential_type` | text, required | One of: `password`, `passkey`, `totp`, `oauth`, `staff_link`. Multiple methods per account. `oauth` is **Google**, which vouches for an e-mail address and not for membership — it does not know the organization exists; `staff_link` supports a one-time link issued to a member who cannot self-serve. The list is written in the program and in this row — see below for what adding a method costs |
 | `secret_hash` | text, optional | Password/OTP hash. Absent for passkey and oauth |
-| `external_ref` | text, optional | OAuth subject id, or WebAuthn credential id |
-| `external_issuer` | text, optional | OAuth issuer |
+| `external_ref` | text, optional | OAuth subject id — with Google, the subject behind one e-mail address — or WebAuthn credential id |
+| `external_issuer` | text, optional | OAuth issuer. The `(external_issuer, external_ref)` pair is an **external identity**: exactly one account may hold a live one (Rules) |
 | `valid_from` | timestamp, audit time, required | Default: now |
 | `valid_to` | timestamp, audit time, optional | `NULL` = current |
 | `last_used_at` | timestamp, audit time, optional | |
@@ -204,7 +222,13 @@ The schema enforces this by simply not linking them.
   nothing to check against cannot exist.
 - `valid_to` is either absent or later than `valid_from`.
 - One current credential per `(external_issuer, external_ref)` pair among `oauth` rows that
-  are still current. It covers open rows only — an expired credential does not hold its
+  are still current — **one external identity, one account**. A second account offering a pair a live
+  credential already holds is **refused at the save**: with self-service sign-up on a public provider,
+  this and §4's one-live-account rule are the same wall seen from either side, and the refusal is the
+  enforcement the invariant register had recorded as absent
+  ([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check),
+  [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)).
+  It covers open rows only — an expired credential does not hold its
   external identity back.
 
 **Indexes**
@@ -213,9 +237,32 @@ The schema enforces this by simply not linking them.
 - The `oauth` uniqueness above, which is itself a lookup: given an issuer and a subject id,
   which account is this.
 
-**Why credentials are not columns on `account`.** Adding passkeys, an organizational SSO,
-or a one-time-link flow later must not require restructuring `account` and migrating every
-existing password. Keeping `secret_hash` off the `account` table also means the common
+**The issuer is Google, and what that costs is the ordinary sign-up path, not a corner.** Google vouches
+for an e-mail address; it does not know the organization exists and cannot vouch for membership, and the
+case the constraint above exists for is the commonest one in the building: a parent has one Google account
+and three children do not. Before the refusal, an issuer login landing on "whichever credential the index
+happened to keep" was a tidy-up problem behind an issuer nobody had ever seen — a national Scout identity
+provider whose subject id would have meant *this member*; after it, a second account wearing the parent's
+identity is simply refused, and the family's answer is the child's own credential or the guardianship row
+([D-176](../decisions/round-23.md#d-176--google-or-a-password-one-identity-one-account-and-the-invariant-finally-has-a-check),
+[D-178](../decisions/round-23.md#d-178--a-child-without-a-login-is-reached-through-the-guardianship-row)).
+
+**The list of methods is written in the program and in this document.** The five values of
+`credential_type` are behaviour, not a vocabulary: a new method — a magic link, an SMS code — is a
+**release** in which the code that authenticates against it and the value naming it ship together, no
+table lists the methods, and no screen can offer one that has not been written
+([D-177](../decisions/round-23.md#d-177--the-list-of-login-methods-is-written-in-the-program)). This is
+the corpus's line for vocabularies read from the other side: the principle is not *anything enumerable is
+a row* but *anything the organization may decide is a row*, and nobody has ever changed their mind about
+whether the software speaks SMS — where the one-row [`membership_type`](03-membership.md#1-membership_type--one-row-kept-as-a-table)
+holds a thing a person could genuinely change their mind about. A row the software cannot honour is a
+login screen that breaks on the first click. `staff_link` stays what it says it is: a link a staff member
+issues; the day a member may issue themselves one is the day the list grows.
+
+**Why credentials are not columns on `account`.** When a new method ships, nothing must restructure
+`account` or migrate every existing password — one row per method, each with its own period and
+revocation history, makes the arrival of a magic link a write and not a schema change. Keeping
+`secret_hash` off the `account` table also means the common
 "show me the user" query never touches credential material.
 
 **`valid_to` on a credential is how password history and revocation are expressed.** A
@@ -243,7 +290,6 @@ that has since been revoked?" is answerable.
 | `valid_from` | date, required | Default: today |
 | `valid_to` | date, optional | `NULL` = current. Addresses change; history is required |
 | `source` | text, optional | `self`, `staff`, `legacy_import` |
-| `import_batch_id` | reference to import batch, optional | |
 | `created_at` | timestamp, audit time | |
 | `created_by` | reference to person, optional | |
 
@@ -290,7 +336,6 @@ the legacy importer must be case-insensitive, and a plain index cannot serve tha
 | `valid_to` | date, optional | IDs expire or are superseded |
 | `verified_at` | timestamp, audit time, optional | |
 | `source` | text, optional | |
-| `import_batch_id` | reference to import batch, optional | |
 | `created_at` | timestamp, audit time | |
 
 **`identifier_scheme`** — the vocabulary of schemes.

@@ -541,7 +541,7 @@ reason to break D-098 — a decision entry, not a schema change.
 ## D-169 — An imported membership ends with the calendar year it was seen in
 
 **Status:** decided (from your answer) — fills the blank inside the recommended default of
-[`06a` §3.1's end-date inference](../data-model/06a-import.md#end-date-inference), and closes the
+[`06a` §3.1's end-date inference](../data-model/06-audit-and-import.md#3-import-pipeline--deleted), and closes the
 [`06b` §6](../data-model/06b-redaction-and-checks.md#6-open-issues) bullet that asked for it.
 
 **The rule.** Where a people batch states when a period began and not when it ended, the imported
