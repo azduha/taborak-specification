@@ -347,11 +347,22 @@ newcomer who reads the list and not the log. The ones this module raises:
   writes nothing else
   ([§5](07-events.md#5-organizers-are-appointed-not-granted),
   [§6](07-events.md#6-how-authority-reaches-an-event)).
-- **Whether a bound selector makes its audience single-scope.** An audience whose expression
-  names `PLACED` cannot be aimed at a unit-scope grant, so a shared audience row can stop
-  being reusable across scopes. The refusal lands on the grant, which is faithful to the rule
-  as written; whether the editor should warn at the audience instead is unsettled
-  ([§7](07-events.md#7-the-people-connected-to-an-event)).
+- **Whether a bound selector makes its audience single-scope — settled: it does, the rule stands, and the editor
+  will not warn.** An audience whose expression names `PLACED` cannot be aimed at a unit-scope grant, so a shared
+  audience row is not reusable across scopes, and the refusal lands on the grant
+  ([§7](07-events.md#7-the-people-connected-to-an-event)). Two things were asked and both are answered here rather
+  than softened: the rule was kept because the reason for it is not convenience but
+  [D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)'s granter's ceiling,
+  which reads the grant's own scope column and nothing else — a bound operand parked in that column would hand the
+  ceiling a scope the grant does not confer, and the check would pass while saying something false. And *does the
+  organizer case still work if a unit grant cannot carry `ORGANIZERS`?* — **yes, and it was never working through a
+  unit grant**: it works through the twelve item-scope rows that a create writes beside every event, each aimed at
+  the bare operand `ORGANIZERS`
+  ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)),
+  which is the row-count consequence this round re-confirmed rather than dissolved. **The editor warning was
+  declined**, so an author of a shared audience learns about it at the grant save, in the refusal, naming the
+  operand — the cost of that choice is a person finding out late, and it is accepted
+  ([D-203](../decisions/round-24.md#d-203--a-bound-operand-stays-illegal-at-the-unit-and-the-reason-is-the-granters-ceiling)).
 - **`WHITELISTED` — settled: refused.** No stored state to name it, so it is not a selector, and there will be
   no fifth presence tier, no `is_whitelisted` column and no reserved name
   ([D-148](../decisions/round-20.md#d-148--there-is-no-whitelisted-and-the-refusal-is-written-where-the-tiers-are)).

@@ -116,7 +116,7 @@ so a reviewer sees *why* the system proposed a match:
 | Signal | Strength | Notes |
 |--------|----------|-------|
 | **Exact legacy member number** | **decisive** | The corpus carries these ([D-056](../decisions/round-04.md#d-056--the-legacy-import-expects-a-large-corpus-with-legacy-member-numbers)). Same number, same person — matched, not scored. |
-| Exact birth date + exact normalised name | strong | Still not automatic — twins with similar names exist. |
+| Exact birth date + exact normalised name | strong | Still not automatic — twins with similar names exist, **and nothing here is offered to tell them apart**: there is no twin-and-sibling procedure, no checklist, no pairing screen and no suspicious-merge check, only [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)'s collision path and a person holding `person.merge` ([D-202](../decisions/round-24.md#d-202--there-is-no-twin-and-sibling-procedure-and-the-collision-pair-stays-a-persons-judgement)). |
 | Birth date within ±1 day or year-only match + name | moderate | Common with hand-written records. |
 | Name match after normalisation (diacritics, case, spacing) | moderate | Necessary but weak alone; "Jan Novák" is not unique. |
 | Same postal address at the same time | moderate | Strong if the address is distinctive. Read from `person_contact` history — there is no household table ([D-057](../decisions/round-04.md#d-057--household-is-removed)). |
@@ -512,8 +512,10 @@ with an empty set to fire on while still inviting somebody to build it.
 - **No obligation, no payment, no balance.** An imported membership creates **no `fee_obligation`**, and
   that has to be a rule rather than an accident: an obligation per historical year would land as
   `unpaid` and turn a decade of members into a wall of debt with a 1999 `due_date` for the lapse sweep to
-  choke on. Related, and load-bearing rather than incidental: `outstanding_balance` is **null** on these
-  rows — a zero would be a claim of *settled* that no export supports.
+  choke on. Related, and load-bearing rather than incidental: **these rows have no balance at all** —
+  `membership.outstanding_balance` is deleted, so the absence of `fee_obligation` rows is what says *nothing is
+  known*, where a zero would be a claim of *settled* that no export supports
+  ([D-200](../decisions/round-24.md#d-200--membershipoutstanding_balance-is-deleted-and-the-balance-is-the-one-definition-it-was-copied-from)).
 - **The person-level no-overlap rule is in the load's path.** One row per period the source states,
   not one per calendar year, is a rule with a consequence: a stated period that runs into a person's
   **live** membership violates it
@@ -526,8 +528,13 @@ with an empty set to fire on while still inviting somebody to build it.
   ([domain/05 §3](05-membership-lifecycle.md#overlap-rules--the-invariant-that-matters)).
 - **These rows are the oldest layer of the skeleton D-088 keeps forever**
   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)):
-  thousands of named people with birth dates who were never asked and never used the system, held on an
-  unverified legal basis. Same judgement as for live rows, much larger population.
+  thousands of named people with birth dates who were never asked and never used the system, **kept because the
+  person designing this system decided so, and not on a basis anything outside this corpus granted**
+  ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)). Same
+  judgement as for live rows, much larger population — **and the size of that population is the risk, not an
+  argument about it:** this is the half of the skeleton whose subjects have no account, no login and no way to
+  ask the question, and the design holds nothing that would let them. §9's last bullet carries the same
+  statement as a closed item rather than as an open one.
 - **Every cross-decade member count is a mixture** of an export and a register, and `data_confidence` is
   now the **only** thing on a `membership` row telling the two apart: the provenance column that used to sit
   beside it is gone, and what answers *which load wrote this* is not on the row but in the trail, whose
@@ -607,13 +614,39 @@ proves false, you can see it was self-asserted rather than discovered.
 
 ## 9. Open issues
 
-Still open, and tracked in [../open-questions.md](../open-questions.md), except in any bullet below that
-carries its own answer:
+**Nothing here is open, and this list, not the register, is where the asking lived.**
+[../open-questions.md](../open-questions.md) has carried no live question since round 24, and a zero there means
+one thing precisely: nobody is waiting on an answer from outside the design
+([round 24's own header](../decisions/round-24.md) says so, and a reader who concludes from it that the design
+has no questions left has misread what the number was ever for). Where a module page still asks something, that
+page is the register for it — so every bullet below now carries its verdict in place of a recommendation:
 
-- Whether twins/siblings with similar names and the same birth date need a documented
-  disambiguation procedure (recommend: yes, and never merge them automatically). The sign-up gate in §4
-  sharpens this: same birth date plus a normalised name is exactly the collision pair, and a collision
-  now stops a registration instead of merely queueing a card.
+- **✅ Closed — whether twins/siblings with similar names and the same birth date need a documented
+  disambiguation procedure: no procedure, in any form**
+  ([D-202](../decisions/round-24.md#d-202--there-is-no-twin-and-sibling-procedure-and-the-collision-pair-stays-a-persons-judgement)).
+  The recommendation this bullet carried was "yes, and never merge them automatically", and the answer killed
+  the first half while the second half turns out to have described a design nobody proposed: **there is no job,
+  no match pass and no import that merges anybody** — `match_job` writes a *hypothesis*, `proposed_by` says
+  which of `match_job`, `person` or `staff` raised it
+  ([D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write)),
+  and every merge is a person's write behind `person.merge`. So what was actually on the table was the
+  procedure, and the answer is that **the procedure is the reviewer**: no checklist, no screen that pairs
+  candidates, no check that flags a suspicious merge, no report of persons sharing a normalised name and a
+  birth date, and no rule about siblings anywhere. The sign-up gate in §4 stays exactly as sharp as it was —
+  same birth date plus a normalised name is the collision pair, and a collision stops a registration rather
+  than queueing a card — and what stops the wrong merge is now named honestly: **the attention of whoever
+  reviews the claim**. **The cheapest improvement available was offered and declined:** a guardianship row
+  already records which adults reach which children, so "these two are reached through the same guardian" is a
+  fact this model stores and a reviewer could be shown it, and **nothing reads it as a hint and no screen
+  surfaces it beside a merge** — the design keeps its position that a guardianship row is about authority over a
+  child and not about kinship, which is the same reason there is no sibling edge. **What the answer costs:**
+  two children, one surname, one birth date, one form filled in by one parent on one evening — if they are
+  merged anyway, one row carries two children: one `fee_obligation` covering a child who is not the one who came
+  to camp, one attendance mark belonging to the other, one set of attribute answers where a diagnosis for one
+  child is now held about both, and [D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it)'s
+  erasure emptying answers about a person who is two people. `person.unmerge` is why `person.merge` was ever
+  safe to hand out, but it is safe only while the field conflicts are still legible, and a merge that resolves
+  cleanly leaves nothing that reads as a mistake. **Nothing was added to guard against that, by this answer.**
 - **Whether a hypothesis a person raised about *themselves* holds their account out of `active`, as against one
   the system raised — settled: it does, and the gate could not tell them apart if it wanted to.** The rule is a
   gate on a status transition and it reads the hypothesis row rather than its author: **an account may not reach
@@ -630,14 +663,31 @@ carries its own answer:
   historical end dates get inferred from was settled in the previous round, and the calendar it comes from is
   1 January with the year running with the calendar ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january),
   [D-169](../decisions/round-22.md#d-169--an-imported-membership-ends-with-the-calendar-year-it-was-seen-in)).
-  What is still open in [A-4](../open-questions.md#a-4-remainder--the-organizational-calendar) is the
-  *remainder* of the organizational calendar — the parts of it no rule here depends on since the one date
-  that mattered stopped being missing.
-- Whether indefinite retention of named membership and fee rows has a legal basis. The design keeps that
-  skeleton indefinitely as the organization's own history while audit payloads are emptied after 24
-  months
-  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short));
-  a decision log cannot grant the basis, so it is recorded as an assumption awaiting review.
+  **The remainder of [A-4](../open-questions.md#a-4-remainder--the-organizational-calendar) is answered too, and
+  the answer is wider than the question:** there are **two** years in this organization and the design holds one
+  of them — the membership year is 1 January to 31 December and is stored, in `membership_type`'s
+  `expiry_month`, `expiry_day` and `renewal_grace_days`, while the **program** year, a group's term and a camp
+  season, is September to August and is stored nowhere: no column, no constant, no rule, so a `person_group`
+  holds whatever two dates a person types
+  ([D-193](../decisions/round-24.md#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored)).
+  **What that costs lands on reporting, not on this page:** "how many members did 2026 have" and "who was in a
+  group in 2026" are about overlapping-but-different periods and no column anywhere says which one the reader
+  meant. Nothing about an imported end date changes: the inferred day is still read from the membership half of
+  the pair.
+- **✅ Closed — indefinite retention of named membership and fee rows: the retention stands, and the question
+  asked of it is retired.** The bullet asked whether the skeleton "has a legal basis" and answered that a
+  decision log cannot grant one, which was true and pointed at a reviewer who does not exist.
+  **There is no legal review of this design and there will not be one**
+  ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)), and what
+  replaces the basis is the risk, written here rather than filed elsewhere: the design keeps that skeleton
+  indefinitely as the organization's own history
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short))
+  while audit payloads are emptied after 24 months, **and the population this page loads into it is the part
+  that never had a chance to object** — thousands of named people with birth dates who were never asked and
+  never used the system. The design's answer to such a person is the erasure in
+  [00-conventions §8](../data-model/00-conventions.md#8-personal-data-and-erasure), and that erasure does not
+  reach these rows. That is the decision, taken by the person designing the system in round 24; nothing is
+  outstanding against it.
 
 ---
 

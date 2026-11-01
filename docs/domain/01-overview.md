@@ -256,9 +256,12 @@ Consequences, which the data model implements:
    **Reverting an import batch** removes the rows that batch created. Reduction is not redaction: one
    answers to a person and is absolute, the other answers to a calendar and is bounded. The accounting
    skeleton — `membership`, fees, payments — is deliberately outside all three and kept indefinitely
-   as the organization's own history. *Assumption:* that this "forever" has a legal basis is exactly
-   what this document cannot establish for itself; the claim is recorded as an assumption awaiting
-   review, not as settled law.
+   as the organization's own history. **That "forever" is a decision, not a claim this document is waiting
+   to have confirmed:** there is no legal review of this design and none is owed
+   ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)), so the
+   person designing the system chose it and names what could be asked about it — **these are the rows that
+   outlive every erasure safeguard described two sentences above, and nothing outside this design vouches
+   for them.**
 3. **People's names change**, so a name is a child-table row with a validity period and never a
    column that gets overwritten. A **group's** name is a column, and nothing replaces the deleted
    name-history table: a rename edits it and the old name is gone. What survives a rename is the
@@ -306,4 +309,4 @@ Referenced by the schema but not designed, pending your specification:
 ---
 
 *Decisions behind this page: D-037, D-038, D-040, D-041, D-074, D-079, D-088, D-089, D-093, D-097,
-D-098, D-099, D-100, D-114.*
+D-098, D-099, D-100, D-114, D-205.*

@@ -758,6 +758,16 @@ rule, and D-081 forbids writing them as if one were:
    is refused because that item is not an event; `ORGANIZERS` on a `unit` grant is refused because
    at the unit there is nothing to bind it to, **with the operand named in the message**
    ([D-102](../decisions/round-10b.md#d-102--nothing-owns-an-event-the-people-connected-to-it-are-named-by-selectors-that-bind-to-it)).
+   **The reason this refusal is not relaxed for the `ORGANIZERS`-at-the-unit case, which looks harmless and is
+   not:** a grant says what it grants in its own scope column, and check 7's granter's ceiling reads that column
+   and, since [D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down),
+   **nothing else**. Park a bound operand in the scope column to make the row save and the ceiling is handed a
+   scope the grant does not confer — it passes, and what it passed is a lie. The organizer case that prompted the
+   question never needed this row: it works through the **twelve** item-scope grants a create writes beside every
+   event ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)),
+   and an author of a shared audience learns about the refusal at this check, in the message, naming the operand —
+   **the editor does not warn earlier, that was offered and declined**
+   ([D-203](../decisions/round-24.md#d-203--a-bound-operand-stays-illegal-at-the-unit-and-the-reason-is-the-granters-ceiling)).
 4. **The audience's expression is well-formed and acyclic** (§8) — **and "acyclic" is measured over
    the expanded tree, so this check follows the `AUDIENCE` leaves into the audiences this one names**
    ([D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience)). Saving a grant
@@ -831,6 +841,48 @@ means the write path was skipped — there is no constraint to have disabled.
 **An eighth refusal lives on the other screen.** Ending or deleting an *audience* is refused while a live
 grant, or a live audience reachable from one, names it (§8, *Rules*). It is listed here only so that a
 reader of this section does not conclude the grant save is the whole write path.
+
+### Nothing is implied by a permission: the companion read is a second row
+
+**A grant allows or denies the one code its row names, and nothing else. The resolver reads no dependency,
+there is no table of pairs, and no code confers another.** That was already true and is now ruled
+([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)),
+which is worth writing down because the obvious feature — *a write should drag its read along with it* — was
+asked for and refused twice.
+
+**What was added instead is on the screen and not in the model.** When a grant is written for a `write` code
+whose resource has a `read` code, the editor **offers** the companion read beside it; taking the offer saves
+**two rows** and declining saves one, and `permission.right_kind` (§2) is where the two kinds are already
+recorded, so no vocabulary is added for the offer to read. Four cases are named rather than derived, because
+their read is not the same resource's `.view`: `person.merge` and `person.unmerge` offer `person.view`;
+`payment.match` offers `payment.view` and `fee.view`; `event.presence.mark` offers `event.answer.view` beside
+the roster it marks; `membership.request.approve` offers `membership.view`.
+
+**Why auto-inheritance was refused.** An implied permission confers what no row names, and three rulings say
+that cannot happen. Check 7's granter's ceiling reads a grant and, since
+[D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down),
+nothing else — a grant that also carried its read implicitly would hand away a code the granter does not hold,
+and the check would not see it happen. [D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)'s
+record is the expression, and an implied code is not in any expression. And *what may this person do?* is
+answered today by listing rows, which is the property
+[D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)
+spent twelve rows per event to keep. The catalog had already suspected this without a rule to stand on:
+`membership.terminate` carries the sentence *"it must not be implied by `membership.lapse`"* — that prohibition
+now has the ruling it was missing.
+
+**Why the save-time refusal was refused too, since it is the version that would have worked.** It was offered,
+with a strictness question attached, and the answer was *not at save*. A rule refusing an allow for a `write`
+code whose grantee holds no live allow for its read would have had a real hole in it — the grantee of the two
+rows is rarely the same row twice, and deciding whether two expressions reach the same people is the
+containment question [D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)
+refused to make computable — but it is absent because it was not chosen, not because it could not be built.
+
+**The hole this leaves is on this page, not in a footnote.** The offer is a screen, and three paths do not pass
+through it: **an `api_key` holder** writing a grant, **a migration**, and **the twelve rows an event create
+writes**. An office built by one of them can hold `person.merge` and no `person.view`, and then
+**nothing refuses it, nothing lists it, and no report will ever show it** — a reviewer who cannot open either
+record asks somebody else to look. That is the price of "editor convenience", paid here so that no code ever
+confers what its row does not name.
 
 ### No foreign key on `scope_id` — the accepted trade-off
 

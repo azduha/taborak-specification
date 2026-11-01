@@ -421,12 +421,18 @@ the long version, the fix is temporal columns on the value — D-085 reversed �
 window, because stretching the window stretches precisely the guard D-086 graded and re-creates the
 second copy D-083 refuses to keep.
 
-**The half of this that is not settled, and is not pretending to be.** Indefinite retention of named
-`membership` and fee rows is a claim that needs a legal basis and a decision log cannot grant one. What
-the corpus now states, as an **assumption pending review** rather than as settled law, is organizational
-history plus accounting obligations, held up by a redacted person row that keeps the skeleton
-non-identifying — and the review is the one [B-3](../open-questions.md#b-3)
-already asked for, now with a concrete policy in front of it instead of a blank (§6).
+**The half of this that used to be written as unsettled is a decision, and is written as one.** This page
+said indefinite retention of named `membership` and `fee_obligation` rows "needs a legal basis and a
+decision log cannot grant one", which supposed that something outside this corpus would eventually supply
+it. **It will not: there is no legal review of this design, and there will not be one**
+([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)). So what
+stands is the policy this design already chose — organizational history plus accounting obligations, held up
+by a redacted person row that keeps the skeleton non-identifying — taken by the person designing this system
+in round 24, and the risk is named here in place of the basis it does not have: **these are the one class of
+row that outlives every safeguard in
+[00-conventions §8](00-conventions.md#8-personal-data-and-erasure), and nothing outside the design vouches
+for them.** [06b §6](06b-redaction-and-checks.md#6-open-issues) carries the same ruling beside the clock it
+belongs to, and [B-3](../open-questions.md#b-3) is where this question used to be filed.
 
 **The neighbouring trail takes the same window and the opposite shape.** `access_log` sits at the same 24
 months, and it was [decided there by round 20](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name):

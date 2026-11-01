@@ -176,11 +176,17 @@ the read. **Refused with this decision was the weaker shape this page had propos
 emptied — because a row stating *this person's record was opened on this date by this actor* is itself the
 personal data the window was asked about, not a neutral skeleton left behind by it.
 
-**That answer is the organization's to give and it has now been given; the legal review is still owed.**
-Whether an access trail is bounded at all was a legal question when this page called the window "a default
-awaiting a person", and the default has now been chosen — which settles the design, not the review.
-[Assumption 49](../open-questions.md#i-assumption-index) carries the remaining exposure, and it now carries
-three policies rather than two.
+**The answer was the organization's to give, it has been given, and nobody is left to give a second one.**
+Whether an access trail is bounded at all was written here as a legal question, back when this page called the
+window "a default awaiting a person"; the window is chosen, and
+[D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired) retired the
+review this paragraph used to describe as still owed — **there is no legal review of this design and there
+will not be one**, so the choice is the whole of the answer, and the risk stands in the place where a basis
+would have been: **a question asked in year three about a check in year one has no answer, and this is the
+third hard delete in the design and the only one a clock runs.**
+[Assumption 49](../open-questions.md#i-assumption-index) is retired with the review it named, and the
+retention policies it used to point at — five of them, listed with their risks in
+[06b §6](06b-redaction-and-checks.md#6-open-issues) — are decisions of the person designing this system.
 
 **Why the question is weaker here, which is structural and not luck: this table does not hold the
 contents of reads.** `before_state` and `after_state` are populated for write actions only, so a read
@@ -576,4 +582,4 @@ are never both set.
 ---
 
 *Decisions behind this page: D-013, D-068, D-070, D-072, D-074, D-077, D-079, D-083, D-085, D-088, D-090,
-D-097, D-099, D-100, D-102, D-103, D-109, D-112, D-114.*
+D-097, D-099, D-100, D-102, D-103, D-109, D-112, D-114, D-145, D-205.*

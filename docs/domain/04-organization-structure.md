@@ -174,7 +174,9 @@ Why the default matters: continuity is not a property of a label, it is a claim 
 human knows whether the crew refounded in 2026 *is* the crew of 2016. Left unstated, the question is
 answered anyway — by whoever writes the matching screen, who will match on name and let a thirty-year gap
 sit inside one group's life. So the default points at **a new `person_group` row**. A rename is an edit to
-one column and the previous name is not kept (§2).
+one column and the previous name is not kept (§2) — **and that is now a ruling, not a default**: *no, prose is
+enough* ([D-201](../decisions/round-24.md#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence),
+stated in §8).
 
 **The continuity claim has nowhere to live.** Groups keep no group-to-group edges — no split, no merger, no
 succession — so an assertion of continuity has **no field to hold it**
@@ -369,13 +371,24 @@ openings someone has to remember to close:**
   [D-172](../decisions/round-23.md#d-172--an-ended-group-is-in-no-picker-and-comes-back-never): its `valid_to` is never cleared, so a returning name is a new group and "the same name twice"
   stays one rule instead of becoming two.
 
-**One is left, and it is left on purpose:**
+**One was left, and it is now a ruling rather than an absence:**
 
-- **Whether a group's previous name should be kept at all.** It is not, deliberately, as part of "no
-  special features". If the organization turns out to rename groups often, the answer is a decision and not
-  a column someone adds quietly.
+- **Whether a group's previous name should be kept at all — settled: no, and now decided rather than merely
+  defaulted.** *No, prose is enough*
+  ([D-201](../decisions/round-24.md#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence)),
+  which is the sibling of
+  [D-173](../decisions/round-23.md#d-173--that-two-groups-are-the-same-group-is-said-not-stored) arriving a round
+  later: continuity between two groups was already said-in-prose rather than stored, and now the name a group
+  stops using joins it. What §2's table declined as "no special features" is a decision, and the cost is sharper
+  than it looked while it was only a default — **a group's name is unique across `person_group`, `role` and
+  `audience` together**
+  ([02 §1](../data-model/02-organization.md#1-person_group)), so renaming a group **frees the old name to be taken
+  by a group, a role or an audience**, and §4's namespace rule means a bare `COUNSELORS` in an old grant's
+  expression resolves against roles and groups together. A rename is therefore not a cosmetic edit: it can change
+  what a sentence written years earlier picks out, and nothing here keeps the record that would let a reader see
+  that it did.
 
 ---
 
 *Decisions behind this page: D-002, D-005, D-016, D-043, D-081, D-083, D-086, D-088, D-092, D-096, D-097,
-D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173.*
+D-098, D-099, D-100, D-101, D-102, D-103, D-105, D-136, D-071, D-172, D-173, D-201.*

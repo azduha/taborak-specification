@@ -26,7 +26,6 @@ the ORM decides how each rule is enforced.
 | `is_primary_contact` | boolean, required, default false | Who the organization calls in an emergency. **Independent of `right_level`** — a grandparent with no system access at all can still be the emergency contact. See [../domain/02-actors.md §6](../domain/02-actors.md#6-effective-contact-for-a-minor) |
 | `is_legal_decision_maker` | boolean, required, default false | Distinguishes who may make legal decisions — consent for medical treatment, travel — from who provides day-to-day care. Often different people |
 | `lives_with` | boolean, optional | Deliberately optional: *false* means guardianship without cohabitation (shared custody, a guardian in another city), which is a different fact from *unknown*. Relevant to contact routing, never to authority |
-| `custody_arrangement` | free text | A description, not a computable fact, and kept that way on purpose (§7) |
 | `source` | enum: `self` / `staff` / `import` / `court_order` | **Decides the starting `right_level`** (§2 defaults, [D-046](../decisions/round-02-03.md#d-046--guardianship-defaults-depend-on-how-the-guardianship-was-created)) |
 | `verified_at` | timestamp, optional | |
 | `verified_by` | reference to person, optional | |
@@ -525,8 +524,25 @@ with no postal address behind it, which is a finance problem
   an adult who prefers it ([D-143](../decisions/round-20.md#d-143--a-delegation-is-validated-once-when-it-is-written-and-stands-to-its-own-end-date)).
   The *group* version of this was answered long ago by audiences
   ([D-042](../decisions/round-02-03.md#d-042--grants-may-target-audiences-not-only-individuals)).
-- Whether `custody_arrangement` free text should be structured. Recommend not — custody
-  orders vary too much to model, and a wrong model is worse than honest prose.
+- **Whether `custody_arrangement` free text should be structured — settled: neither structured nor kept, the
+  column is deleted.** This page recommended *not*, on the argument that custody orders vary too much to model and
+  that a wrong model is worse than honest prose, and the answer took neither of the two options
+  ([D-204](../decisions/round-24.md#d-204--custody_arrangement-is-deleted-a-court-order-is-stored-here-neither-as-prose-nor-as-structure)).
+  The reasoning for *not* survives and turns out to be an argument for deletion: the column was read by nobody and
+  gated nothing, because `right_level` is the whole of a guardian's authority
+  ([D-074](../decisions/round-06.md#d-074--a-guardians-rights-are-none-view-or-write-nothing-more-granular)) and
+  there is no graded class of field left to grade
+  ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)), so
+  it was `person.notes` in a smaller size — and worse than it, because **a text field named
+  `custody_arrangement` invites a person to type a court order into a database that cannot act on it**
+  ([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)). **The row is
+  not prose-free, and this is the page that has to say so:** `evidence_reference`, `ended_reason` and `ended_note`
+  stay, and the line between them and the deleted column is that they record what the organization did or holds,
+  while `custody_arrangement` described a child's private arrangement. A column recording an act is a record; a
+  column describing one is a copy of it. What this does to the worked limit in §1 is a widening, not a repair: the
+  order restricting one parent's access to the health facts about a child could previously **not be expressed but
+  could at least be typed into the row** — now it can do neither, and where it lives is the organization's paper
+  file and the memory of the person it was told to.
 - **Confirm that the membership gate's guardianship carve-out is intended — settled: intended, and it no longer
   lives in a gate, because the gate was deleted.** A lapsed parent keeps their `right_level`
   ([D-039](../decisions/round-02-03.md#d-039--member-permissions-require-a-current-paid-membership)),

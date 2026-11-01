@@ -68,9 +68,17 @@ guardianship, a membership — which is what every new account is, not a safegua
 **If the organization wants a guardian's answer on record**, it goes on the guardianship relationship,
 which already carries `right_level` and its own dates
 ([../data-model/04-relationships.md §2](../data-model/04-relationships.md#2-the-guardians-right-none-view-or-write));
-no column returns for it. **What this page does not decide** is whether the law of this country demands a
-consent step regardless — a policy in front of the legal review beside the four data policies, and stated
-there ([06b §6](../data-model/06b-redaction-and-checks.md#6-open-issues)).
+no column returns for it. **And this is the design's own decision, not one it is waiting on.** Whether a child
+may hold an account with no guardian's answer recorded anywhere is settled here, the way everything else here
+is settled: the person designing the system chose it, in round 24, and there is no legal review that would
+confirm or overturn it
+([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)). **The risk,
+written where a basis used to sit:** this is the answer a data subject asks about first, and the design answers
+it by holding nothing — and if a jurisdiction ever turns out to ask for a recorded answer, that requirement is
+met outside this design, by a guardianship row written by a person, exactly as the invoice rule is met outside
+it ([D-198](../decisions/round-24.md#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database)).
+This is one of the **five** policies [06b §6](../data-model/06b-redaction-and-checks.md#6-open-issues) now
+carries as decisions of the designer rather than as policies standing in front of anything.
 
 ---
 

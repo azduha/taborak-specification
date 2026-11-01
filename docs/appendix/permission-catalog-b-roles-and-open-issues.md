@@ -65,13 +65,37 @@ deleted. Nothing in this catalog is a range of anything.
 Placeholders for features you have not specified. Listed so the naming convention is
 established before anyone invents an inconsistent one.
 
+**Money left this page, and the sentence above is the reason it had to.** [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+moved six codes into [catalog A §4a](permission-catalog-a-codes.md#4a-money) — `fee.view`, `fee.create`,
+`payment.view`, `payment.record`, `payment.reverse`, `payment.match` — because this table is the register for
+*a namespace whose module does not exist*, and the finance module's money already moved: its worked-example
+treasurer below was written out of codes this page called placeholders, which made §10 dishonest rather than
+merely optimistic. The `invoice` row left with them and for a different reason —
+[D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
+deleted `invoice.issue` outright one answer after it was registered, because invoices are compulsory and a
+permission nobody can decline is not a permission. **The `invoice` table itself is untouched: it is the code
+that died, not the table.** What remains below is genuinely unbuilt.
+
+**What those three rows used to say, because a deletion ought to be readable from the page it happened on.**
+The `fee` row carried two codes and no sensitivity mark, and one long reason for the missing mark: `fee.waive`
+had gone because there are no hardship waivers
+([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)) and `fee.refund` because a refund is a
+transfer the bank makes and a `payment` row records, not an act authorized on a screen
+([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank))
+— **that argument was not deleted with the row, it moved to [catalog A §4a](permission-catalog-a-codes.md#4a-money),
+which is where the marks now live.** The `payment` row listed four codes and then admitted, in its own cell, that
+whether it was still honest as a *deferred* namespace was an open question, since the finance module is designed
+and those codes appear in this page's own worked examples below — **the question is answered now, and the answer is
+that it was not honest, so the row and its admission go together.** The `invoice` row held one code and one
+deliberate separation: that the person who may type in a number is not automatically the person who may produce a
+document with a legal shape. **[D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
+gave that separation up**, and the giving-up is written as a cost in catalog A §4a and as a death in
+[the dead-name register](removed-concepts.md) rather than kept here as a distinction nothing enforces any more.
+
 | Resource | Permission | Notes |
 |----------|-----------|-------|
 | `document` | `document.view`, `document.create`, `document.edit`, `document.delete`, `document.grant_access` | `document` is already a row of `grant_scope_type`, marked deferred — the item exists in the registry before the module does, which is what the polymorphic `scope_id` is for (D-011). The code is the one this catalog's own §1 rule pays for: `document.grant_access` sits beside `access_grant.create` exactly as `event.grant_access` does, and §12 asks the question once for both. |
-| `fee` | `fee.view`, `fee.create` | **No ⛔ and no 🔒, and the reason is a deletion rather than a decision about sensitivity**: `fee.waive` went because there are no hardship waivers ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)) and `fee.refund` went because a refund is a transfer the bank makes and a `payment` row records, not an act authorized on a screen ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)). What is left is reading a fee and writing one, which needs no sensitivity mark and never did. |
-| `payment` | `payment.view`, `payment.record`, `payment.reverse`, `payment.match` | `payment.match` is new since [round 23](../decisions/round-23.md) and is the hand half of matching money to an ask; the automatic half is `system:bank-pull`'s and is nobody's permission ([D-182](../decisions/round-23.md#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls)). **Whether this row is still honest as a *deferred* namespace is [K-10](../open-questions.md#k-10--are-the-money-permission-codes-still-deferred)** — the finance module is designed, and these codes are used in the worked examples below. |
-| `invoice` | `invoice.issue` | One code, one document: issued over a `payment_request` because a payer asked for it ([D-187](../decisions/round-23.md#d-187--an-invoice-is-a-document-a-payer-asks-for)). Deliberately not folded into `payment.record` — the person who may type in a number is not automatically the person who may produce a document with a legal shape. |
-| `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view` | ⚠⚠ `report.safeguarding.view` |
+| `report` | `report.finance.view`, `report.membership.view`, `report.safeguarding.view` | ⚠⚠ `report.safeguarding.view`. **The money codes left this page and these three did not, and that is a ruling rather than an oversight:** [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows) was asked whether *the finance module's* codes are still deferred, and promoting `report.finance.view` with them would have answered a different question by accident — whether reporting is per-report or one permission with row-level filtering. [05d §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) states that reporting ships coarse on purpose, that only `report.view` and `report.export` exist, that the shape is **still open** (§12 below carries it as this page's own item), and that **an installation must not ship both shapes**. **The finance module spends six codes and does not get to decide reporting's shape**, so money is readable through `fee.view` and `payment.view` and the cross-subject money report waits like every other report does. |
 | `consent` | `consent.template.edit`, `consent.record.view` | |
 | `message` | `message.send_direct`, `message.broadcast` | **Decided in shape, undesigned in detail** ([D-077](../decisions/round-06.md#d-077--messaging-is-direct-by-default-broadcast-is-an-ordinary-scoped-permission-and-the-recipient-chooses-the-channel)). Everyone may send direct; `broadcast` is an ordinary **scoped** permission. **The unit is one scope** ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row)), so held at the unit `broadcast` reaches everyone; the narrower audience — this body, not the unit — is a **grant on a `person_group`**, reaching that roster, which [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality) makes available. *Which of the two messaging means, and whether `message.broadcast` should be `applies_to = unit_and_item`, is messaging's decision, not this catalog's* (§12). Recipient chooses the channel, which is not a permission at all. **A direct message to a minor is mirrored to that minor's guardians and the sender is told it will be** — no permission, no age branch in the resolver ([D-082](../decisions/round-07-08.md#d-082--a-direct-message-to-a-minor-is-mirrored-to-the-minors-guardians)) |
 | `partner` | *(namespace)* | For external organizations, if the model expands. |
@@ -176,12 +200,12 @@ requirement, and do not expect the list to survive contact with the organization
 |--------|------------------------------------------|--------------------|---------------------|
 | `system_admin` | `system.admin` — **one row, and it is enough** | `ROLE(system_admin)` | **no `MEMBERS`**, deliberately: the 1 January case below |
 | `registrar` | `person.view` ⚠⚠, `person.create`, `person.edit` ⚠, `person.contact.view` ⚠, `person.contact.edit` ⚠, `account.view` ⚠, `account.create`, `account.suspend` ⚠, `account.close` ⚠, `account.credential.reset` 🔒, `membership.view` ⚠, `membership.request.create`, `membership.request.review` ⚠, `membership.activate`, `membership.backdate` ⚠ — **fifteen rows** | `MEMBERS * ROLE(registrar)` | staff working the organization's own records; the office stops when the fee lapses |
-| `membership_approver` | `membership.request.review` ⚠, `membership.request.approve` ⛔ | `MEMBERS * ROLE(membership_approver)` | as above |
-| `treasurer` | `fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `report.finance.view` | `MEMBERS * ROLE(treasurer)` | as above, and one list shorter than it was: the treasurer waives nothing and refunds nothing here (D-157, D-158) |
+| `membership_approver` | `membership.request.review` ⚠, `membership.request.approve` ⛔, `membership.view` ⚠ — **three rows** | `MEMBERS * ROLE(membership_approver)` | as above, plus the read the approve offers: an approver who cannot open the membership says yes to something they have not seen. **The row is there because the author wrote it and no rule put it there** ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)) |
+| `treasurer` | `fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `payment.match`, `report.finance.view` — **seven rows, six of them registered today** | `MEMBERS * ROLE(treasurer)` | as above, and one list shorter than it was: the treasurer waives nothing and refunds nothing here (D-157, D-158). The six money rows are [catalog A §4a](permission-catalog-a-codes.md#4a-money)'s since [round 24](../decisions/round-24.md), which is what makes this office writable today **except** for its one report row — the seventh is the money report code §10 keeps on purpose |
 | `safeguarding_officer` | `membership.view` ⚠, `report.safeguarding.view` ⚠⚠, `membership.terminate` ⛔ | `MEMBERS * ROLE(safeguarding_officer)` | whoever finds the problem and whoever ends a membership over it are the same person, and nobody else |
 | `leaders` | the thirteen `event.*` codes (§8a), `membership.view` ⚠, `person_group.view` ⚠, `report.membership.view` ⚠ — **sixteen rows** | `ROLE(leaders)` | **volunteers, so no `MEMBERS`** (property 4): the office must survive a lapsed fee, and it reaches every event, not one body's events |
 | `audience_admin` | `audience.view`, `audience.manage` ⚠ | `MEMBERS * ROLE(audience_admin)` | §5a, including the naming rule this office is subject to |
-| `identity_reviewer` | `person.merge` 🔒 | `MEMBERS * ROLE(identity_reviewer)` | and **no `person.view`** — property 5 |
+| `identity_reviewer` | `person.merge` 🔒, `person.view` ⚠⚠ — **two rows** | `MEMBERS * ROLE(identity_reviewer)` | **the read is here because the author wrote it, and not because `person.merge` carried it** — nothing is implied by a permission ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)) — and **no `person.edit`**, because settling an identity is not editing one. Property 5 |
 | `auditor` | `audit.view` ⚠⚠, `audit.export` ⚠⚠, `report.view` ⚠ — **read-only, no writes** | `ROLE(auditor)` | **no `MEMBERS`**: an auditor who forgets to pay must not lose the read (property 4) |
 
 **An office's reach carries two kinds of period, and both are worth knowing before you set either.**
@@ -192,16 +216,23 @@ kind of row to end** — the posture of
 [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)
 applies to both, and the control is the report.
 
-**Three of these offices name codes this catalog has not registered, and one office is made entirely
-of them.** The treasurer's eight rows are `fee.*`, `payment.*` and `report.finance.view`, and all
-three of those namespaces are [§10](#10-deferred-namespaces) placeholders — so **that office cannot
-be written today**, and its row count is a wish rather than a migration. `safeguarding_officer` and
-`leaders` each name one deferred report code among otherwise live rows, which is the milder form of
-the same thing. The counts above therefore say what an office would hold once finance ships; the live
-half of each list is what a person could write today. Nothing in the schema stops a grant row
-naming a code that does not exist, so this paragraph is
+**Three of these offices name a code this catalog has not registered, and after
+[round 24](../decisions/round-24.md) all three name the same kind of one.** `treasurer`,
+`safeguarding_officer` and `leaders` each hold exactly one `report.*` code — `report.finance.view`,
+`report.safeguarding.view`, `report.membership.view` — and those three sit in
+[§10](#10-deferred-namespaces) because **reporting's shape is undecided, not because their modules are
+unbuilt** (§10, §12). **The treasurer's money rows are no longer among the unregistered names at all:**
+[D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+registered six codes for money in [catalog A §4a](permission-catalog-a-codes.md#4a-money), so the sentence
+this page used to carry — that the treasurer's office *"cannot be written today"* and its count is *"a wish
+rather than a migration"* — was true of it only while its codes were placeholders, and it is false now. The
+same ruling is why `payment.match` appears in that row: the office that runs the accounting is the office the
+finance module names as holding it, and a hand-move of an allocation is the only correction the automatic
+match leaves for a person ([D-196](../decisions/round-24.md#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown)).
+Nothing in the schema stops a grant row naming a code that does not exist, so this paragraph is
 [F-19](../open-questions.md#f-19)
-one section further along: the catalog names the office, the office names the code, and no row agrees.
+one section further along: the catalog names the office, the office names the code, and no row agrees —
+which is now true of three report codes and of nothing else on this page.
 
 **Read `event.*` above as a count, not as a wildcard.** Since
 [D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)
@@ -213,7 +244,10 @@ the only place such a list exists at all. Three consequences for whoever writes 
    exactly that literal**: two rows nobody inserted, visible in `access_grant` with a date and an author,
    reviewable like any other row. `identity_reviewer` is the office that *does* hold `person.merge` — the
    whole of identity correction: merging, reversing a merge, and deciding a sign-up collision (§2) — listed
-   beside `registrar` so the difference between the two is legible. **An office that bundles a resource
+   beside `registrar` so the difference between the two is legible. **A companion read is not a licence to
+   bundle**: the reviewer gained `person.view` ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows),
+   property 5) and holds no `person.edit`, so the rule in the sentence after this one is untouched.
+   **An office that bundles a resource
    *including* its 🔒 codes should be named for that**, since nothing else records the choice:
    `person.redact` is irreversible, and `person.merge` is undoable but unions permissions the moment it
    runs
@@ -345,26 +379,40 @@ the first office somebody writes ([What an installation has](#what-an-installati
    `Unusual` section of the tab on the permissions page — grants naming a `ROLE(…)` operand with no
    `MEMBERS` — **which is how the organization notices, and the resolver is still not how it punishes**. See
    [../domain/06-authorization-model.md §4](../domain/06-authorization-model.md#4-roles-are-offices-groups-are-company).
-5. **`identity_reviewer` decides identity questions about children without a read over the person
-   record.** The office carries one row — `person.merge`, and it has carried nothing else since the import
-   pipeline was deleted ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)) — and
-   **`person.view` is not among them**: the reviewer works from the candidate pair, the
-   `match_signals` recorded against it, and the names and dates those signals compare. That is
-   deliberate as it stands — the question being decided is whether two rows are one human, and the
-   descriptive values underneath are not evidence about that — and it is the same shape as `auditor`
-   reading the trail without holding `person.view`.
-   What round 8 changed is the pressure on it. This is now also the office a **blocked sign-up** lands
-   on ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)):
-   an account held out of `active` by an unresolved hypothesis, with the review queue's age check naming
-   it because the stalled item is a person who cannot log in — a listing read by whoever works the queue,
+5. **`identity_reviewer` holds `person.view`, and the author wrote that row rather than inheriting it.**
+   **This property argued the opposite for four rounds and [F-11](../open-questions.md#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim)
+   closed it the other way: the office carries two rows now, `person.merge` 🔒 and `person.view` ⚠⚠**
+   ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)).
+   The reason is practical and it is the half of F-11 that a model cannot answer: **an installation copies
+   this table**, and a reviewer who cannot open either of the two records in front of them spends the first
+   week asking somebody else to look — the work the office exists to do simply does not get done.
+   **Nothing put `person.view` there.** `person.merge` implies nothing, the resolver reads no dependency, and
+   the editor that *offers* the companion read writes a second row when the offer is taken and nothing when it
+   is declined: this row is what taking it looks like — written by a person, dated, with its own grantee and
+   its own audit row. And the read is not `person.edit`, because **settling an identity is not editing one**,
+   which is also why §2's rule against mixing `person.merge` with routine `person.edit` is untouched.
+   **What the old argument said, kept because the trade it named is still live.** The descriptive values
+   underneath a candidate pair are not evidence about whether two rows are one human; the reviewer works from
+   the pair, the `match_signals` recorded against it, and the names and dates those signals compare — and this
+   is also the office a **blocked sign-up** lands on
+   ([D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)),
+   where the stalled item is a person who cannot log in and the queue's listing is read by whoever works it,
    since nothing in this design sends anything
    ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
-   **If reviewers begin asking for context they cannot see, that is the finding to act on**, and the two
-   honest answers are a scoped, dated `person.view` on this office, or a review screen that shows more
-   of the *signals*. Reaching instead for an organization-wide `person.view` would put the catalog's
-   largest ⚠⚠ read in the office with the most write authority over identity. Tracked as
-   [F-11](../open-questions.md#f-11--does-the-identity-reviewer-need-to-read-the-person-record-to-settle-a-claim),
-   where none of the three positions is yet recorded as taken.
+   `person.view` at the unit is the catalog's largest ⚠⚠ read sitting in the office with the most write
+   authority over identity — **the road this property called the wrong one is now the office as written**, and
+   what controls it is the one §2 nominated when it graded the code ⚠⚠: the question *which grants were given
+   this one?*, which a catalog can answer. A narrower form is still available to whoever writes the real
+   grant — a scoped, dated row, or a review screen that shows more of the *signals* — but the example shows
+   the wide form, because an example is the thing that gets copied.
+   **The failure this does not fix, on the page rather than in a footnote.** The offer reaches only the
+   grant screen: it does not reach an `api_key` writing a grant, a migration, or the twelve rows an event
+   create writes, so a reviewer office built by one of those **can hold `person.merge` and no read — nothing
+   refuses it, nothing lists it, and no report will ever show it**
+   ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)).
+   That is the price of "editor convenience" over a save-time refusal. `auditor` was left exactly as it was
+   for the mirror-image reason: it holds **no write at all**, so there was never a companion for an editor to
+   have offered, and reading the trail without `person.view` stays the plausible office property 3 describes.
 6. **No office in this set holds `person_group.member.manage`, and the omission is now ruled rather than
    open — the blank is the answer, named as one by
    [D-167](../decisions/round-22.md#d-167--the-office-that-may-place-a-child-in-a-group-stays-unnamed) so
@@ -626,7 +674,15 @@ the first office somebody writes ([What an installation has](#what-an-installati
   not a reading: the design states no default for `MEMBERS` in either direction
   ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)).
 - Whether `report.*` should be per-report permissions or one `report.view` with
-  row-level filtering.
+  row-level filtering. **Still open, and the round that shipped the money codes deliberately did not close it**
+  ([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)):
+  promoting `report.finance.view` would have answered *this* question by accident, since what was asked was whether
+  the finance module's own codes are still deferred, and whether reporting is one permission with row-level
+  filtering or a code per row-set was not asked and is not decided. So the row stays in §10 as the only genuinely
+  deferred thing money left behind, the finance module's obligations and payments are gated by `fee.view` and
+  `payment.view` — **the module can spend six codes and not the seventh, and the seventh is not this module's to
+  decide** — and [the day-one rules](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) keep
+  stating that **an installation must not ship both shapes; pick one when reporting is designed**.
 - Whether the organization has offices this catalog does not anticipate (a chaplain, a
   quartermaster, a camp chief). **This is answerable by the organization itself** rather than by a
   change to the data model and a migration — one `role` row and some grants — which is the point of
@@ -755,6 +811,11 @@ the first office somebody writes ([What an installation has](#what-an-installati
 **Settled, so that nobody reopens them from the shape of this page.** A grant carries one code, and there
 is neither a level nor a "nearest scope wins" ordering to pair with it
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality));
+nothing is implied by a code — the grant editor may *offer* a companion read and taking it writes a second row,
+so the database holds rows and no dependency is stored anywhere, in no table and read by no gate
+([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows));
+the money codes are shipped codes and only six of them
+([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows));
 the unit is a scope and never a row
 ([D-097](../decisions/round-10a.md#d-097--there-are-no-sub-units-the-unit-is-a-scope-not-a-row));
 nothing owns an event

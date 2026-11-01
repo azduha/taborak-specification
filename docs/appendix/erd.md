@@ -255,7 +255,6 @@ erDiagram
         datetime valid_from
         datetime valid_to
         uuid renewed_from_membership_id FK
-        decimal outstanding_balance
     }
     MEMBERSHIP_REQUEST {
         uuid person_id FK

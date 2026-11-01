@@ -463,6 +463,17 @@ states, and precisely what that entry's trigger reopens, with D-114 naming the r
 `effective_permission` per person **and call it that**.
 See [data-model/05 §10](../data-model/05c-access-log-and-resolver.md#10-the-resolver).
 
+**One last thing this section is read as implying, and it does not mean.** Everything above turns on 1 January, and
+the organization does not run its whole life on 1 January: **the membership year is January to December and the
+program year is September to August**
+([D-193](../decisions/round-24.md#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored)).
+A renewal asked for in November, a term sheet signed in September and a fee that dies on 1 January are the same
+organization keeping two books, and only one of them is in the database — the fee's, in the three columns this
+section names. The other is a habit, and the design declines to store it. So a reader who concludes that a membership gap means a person left the group,
+or that a person who was in a group in August was a member in August, has imported one calendar into a design that
+holds two; §9 carries what that costs a report, and nothing here proposes to store the second calendar to prevent
+it.
+
 ---
 
 ## 7. There are no age transitions
@@ -603,14 +614,25 @@ resolver, which is the worst kind of bug to find.
 
 ## 9. Open issues
 
-- **The organizational calendar — the two numbers are ruled, and what is left is not a number.** The fee expires
-  on **1 January** ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)) and the renewal window
-  is **60 days** ([D-048](../decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter));
+- **The organizational calendar — settled: there are two years here, and only one of them is stored.** The fee
+  expires on **1 January** ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)) and the renewal
+  window is **60 days** ([D-048](../decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter));
   both are columns on the one `membership_type` row (§6), so neither is a guess and neither needs a decision to
-  move. What remains is whether those two are this organisation's real numbers, which is a conversation with the
-  people who run the renewal rather than a ruling, and it is filed once as
-  [A-4's remainder](../open-questions.md#a-4-remainder--the-organizational-calendar) — not re-asked here, so that
-  the page carries the mechanism and the register carries the doubt.
+  move. **Both numbers are this organization's real numbers, and the question the register filed against them is
+  closed as confirmed rather than as answered**
+  ([D-193](../decisions/round-24.md#d-193--the-membership-year-is-january-to-december-the-program-year-is-september-to-august-and-only-one-of-them-is-stored),
+  [A-4's remainder](../open-questions.md#a-4-remainder--the-organizational-calendar)): the membership year is
+  January to December, and *the rest of the organization's life — a group's term, a camp season, the collections —
+  runs September to August and is stored nowhere at all.* No column, no constant, no rule names a program year, so
+  a `person_group` carries the two dates a person types
+  ([D-098](../decisions/round-10a.md#d-098--a-group-is-a-person_group-explicit-members-a-lifetime-and-no-authority))
+  and they fall in September and August the way they fall anywhere else. **What that leaves, and it is not a
+  number:** a report asking "how many members did 2026 have" and a report asking "who was in a group in 2026" are
+  about overlapping-but-different periods, and no column anywhere says which one the reader meant. Nothing here
+  proposes to fix that — a calendar table would make September a fact the model asserts about groups that hold no
+  dates in common. The discipline that outlives the question is the half that was never about the date: **both
+  numbers are read from the row**, and a job or a front end containing the literal `60` or the literal `1` is how
+  they stop being (§6).
 - **Which offices are written without `MEMBERS` is ruled: per office, by whoever writes the grant, no
   default either way — not into the expression and not out of it.** Which offices carry the term
   ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)) is

@@ -285,9 +285,19 @@ access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
 access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
              permission = payment.record      effect = allow
 access_grant audience = MEMBERS * ROLE(treasurers)   scope = unit
-             permission = report.finance.view effect = allow
+             permission = payment.match      effect = allow
   … one row per code, and the list is the office
 ```
+
+**Six money codes, and no seventh one for reporting on them**
+([D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)):
+`fee.view`, `fee.create`, `payment.view`, `payment.record`, `payment.reverse`, `payment.match`. A reader who
+comes here looking for `report.finance.view` will not find it in this example and will not find it shipped
+anywhere, on purpose — reporting ships `report.view` and `report.export` and picks its shapes when reporting is
+designed, and the finance module was not the round that got to decide that. **What the office therefore cannot
+do on day one is open a money report**: it can read every obligation and every payment, which is the same facts
+row by row, and the count over them is the part still undesigned
+([appendix catalog B §10](../appendix/permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces)).
 
 **Neither a role nor a group authorizes anything by existing**, which is
 [D-005](../decisions/round-01a.md#d-005--permissions-are-grants-never-derived-from-identity) and

@@ -1,6 +1,6 @@
 # Appendix — Permission Catalog: the codes
 
-Every code the system ships, grouped by the thing it acts on — people, accounts, membership, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.
+Every code the system ships, grouped by the thing it acts on — people, accounts, membership, money, the unit, groups and roles and audiences, guardianship, the permission system itself, audit and system, events, and the keys that call from outside — each with the grant that carries it.
 
 **Section numbers are shared across the three parts** and never renumbered, because other pages cite them by number and their anchors are built from them: [permission-catalog.md](permission-catalog.md) holds §1, the conventions; [permission-catalog-a-codes.md](permission-catalog-a-codes.md) holds §2–§8b, the codes; [permission-catalog-b-roles-and-open-issues.md](permission-catalog-b-roles-and-open-issues.md) holds §9–§12, the namespaces that are not here, the deferred ones, the worked examples of writing an office, and what is open.
 
@@ -146,7 +146,10 @@ trail that still reads out an erased value has preserved it rather than missed i
 > consequences. It should be held by very few people, and it must not be implied by
 > `membership.lapse`. Grant it explicitly, per person — which since
 > [D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality)
-> is the only thing a grant *can* be: one code, one effect.
+> is the only thing a grant *can* be: one code, one effect. **That prohibition is now a ruling rather than
+> the absence of a proposal:** nothing is implied by a permission, and the only thing an editor may do is
+> *offer* a companion read, which writes a second row when it is taken and nothing when it is declined
+> ([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)).
 
 > **`person_group.member.manage` has no self-scoped variant and none will be added**
 > ([D-095](../decisions/round-09.md#d-095--units-carry-no-restrictions-joining-one-is-somebody-elses-act),
@@ -180,6 +183,113 @@ trail that still reads out an erased value has preserved it rather than missed i
 > [D-116](../decisions/round-16.md#d-116--a-caller-that-is-not-a-person-is-a-registered-key-and-a-key-is-a-third-grantee-kind)),
 > has no expression to evaluate, so the fee is nobody's question there and the grantee's own standing is
 > the whole of what was chosen.
+
+## 4a. Money
+
+**Six codes, and they are codes.** Until [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+these six were documented in exactly one place:
+[catalog B §10](permission-catalog-b-roles-and-open-issues.md#10-deferred-namespaces), whose own opening
+line calls its rows *"placeholders for features you have not specified"* — while
+[the finance module](../data-model/07-finance.md) moved money with them and catalog B §11 wrote a treasurer
+office out of them. **A namespace whose module exists is not deferred, and a code a grant row already names
+is not a placeholder.** What the promotion changes is what a grant over money is checked against, not what
+it does: each code now sits behind a `permission` row carrying the `applies_to` the grant save checks and
+the `right_kind` that is a guardian's answer and not a hint (§6). **An installation may still grant none of
+them**: an installation that takes no money uses none of these six rows, and
+[D-055](../decisions/round-04.md#d-055--the-permission-catalog-is-deliberately-comprehensive-and-granular)
+prices an unused row at nothing — which is the whole cost of documenting a module here rather than leaving
+it in §10.
+
+| Code | Namespace | Sens. | Grants |
+|------|-----------|-------|--------|
+| `fee.view` | — | | See what a person is asked for — the obligation, its amount, its `due_date`, and the arithmetic that reads it `unpaid`, `partially_paid` or `paid` ([D-159](../decisions/round-22.md#d-159--the-status-enum-keeps-three-of-its-seven-values)) |
+| `fee.create` | — | | Write the asking side of the model: an obligation and the `payment_request` over it — **and the `invoice` row beside them, which is a second row in the same transaction and not a second code** (the note below) |
+| `payment.view` | — | ⚠ | See money that arrived: who paid, how much, when, and which obligation it was attached to |
+| `payment.record` | — | ⚠ | Enter money by hand, where the bank feed did not bring it |
+| `payment.reverse` | — | ⚠ | Reverse a payment that was recorded against the wrong thing |
+| `payment.match` | — | ⚠ | **Move an allocation by hand** — the hand half of matching money to an ask. The automatic half belongs to `system:bank-pull` and is nobody's permission ([D-182](../decisions/round-23.md#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls)); what stops the automatic half is the variable symbol and nothing else, so a short or long transfer attaches in full and the difference is shown rather than withheld ([D-196](../decisions/round-24.md#d-196--the-variable-symbol-is-the-whole-match-what-arrives-under-its-own-symbol-is-attached-in-full-and-the-difference-is-shown)) |
+
+**Where each of these may be granted, and what kind of right it is** (§1) — nothing else rides on top:
+
+| Code | `applies_to` | `right_kind` |
+|---|---|---|
+| `fee.view`, `payment.view` | `unit` | `read` |
+| `fee.create`, `payment.record`, `payment.reverse`, `payment.match` | `unit` | `write` |
+
+**All six sit at the unit, and no choice is being made: there is nowhere else for them to sit.**
+`grant_scope_type` has five rows — `unit`, `event`, `person_group`, `role`, and the deferred `document` —
+and not one of them is a money table ([../data-model/05-authorization.md §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer)),
+so there is no obligation, payment or invoice for a grant to be written *on*. This is the same fact that
+puts `membership.terminate` at the unit: a fee is a fact about a person, and no item owns it. **The two
+reads are typed `read` because the guardianship channel is this column's only customer** (§6), and catalog B
+§9 already states the consequence in plain words — a grandmother granted visibility *"gets the fee history
+with it"* — which is true only if `fee.view` and `payment.view` fall on the `read` side of the comparison.
+
+> **Why money is ⚠, and why the fee pair carries no mark at all.** ⚠ grades what a grant *exposes*
+> ([D-086](../decisions/round-07-08.md#d-086--a-sensitivity-mark-grades-what-a-grant-exposes-not-the-table-it-reads)),
+> and at the unit a payment row is not a ledger abstraction: it is a list of which families have paid and
+> which have not, with a name beside each. The `fee.*` pair is unmarked, **and the reason is a deletion
+> rather than a decision about sensitivity** — `fee.waive` went because there are no hardship waivers
+> ([D-157](../decisions/round-22.md#d-157--there-are-no-hardship-waivers)) and `fee.refund` went because a
+> refund is a transfer the bank makes and a `payment` row records, not an act authorized on a screen
+> ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)); what is left is reading a fee and
+> writing one, which needs no sensitivity mark and never did. That sentence lived in §10 and moved here with
+> the rows, because the reason outlives the table it was written in. **No ⛔ appears anywhere in this
+> section, deliberately:** the mark means *granting it can end someone's membership or standing* (§1), and
+> no money code ends anything. Money moves standing through one automatic event nobody is granted — the
+> 1 January expiry sweep of [../data-model/07-finance.md](../data-model/07-finance.md) §4 — and through the
+> codes in §4 that end a membership by name.
+>
+> **`payment.match` is the row to read twice before granting it.** D-196 makes the variable symbol the whole
+> match, which means the system's own automatic half can attach a family's single transfer wholly to one
+> child's obligation and leave the sibling reading `unpaid`, silently, with nobody told
+> ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)). The correction is
+> a person moving an allocation, and that is this code. So the money path's one safeguarding-shaped
+> permission is a ⚠ about bookkeeping rather than a 🔒 about authority — and it is still the row a reviewer
+> should notice, because holding it means being the person who decides which child the money was for.
+
+> **`invoice.issue` is deleted, and no invoice code replaces it.** [D-187](../decisions/round-23.md#d-187--an-invoice-is-a-document-a-payer-asks-for)
+> registered it the round the `invoice` table arrived, and
+> [D-197](../decisions/round-24.md#d-197--an-invoice-is-compulsory-so-nobody-issues-one-invoiceissue-is-deleted-and-the-asks-write-writes-it)
+> deleted it one answer later on a fact about the country rather than about this design: **invoices are
+> compulsory**, so every `payment_request` has an `invoice` over it, always, with nobody being asked, and
+> the row is written by the same `fee.create` write that creates its request — one transaction, one actor,
+> one audit payload covering both rows. **There is no act left for a code to authorize:** no screen offers a
+> choice about producing a document, no row sits in a state of *awaiting one*, and a permission nobody can
+> decline is not a permission. The cost is on the record, and it is a real loss. `invoice.issue` was bought
+> as a separation, and catalog B stated it in one sentence — *"the person who may type in a number is not
+> automatically the person who may produce a document with a legal shape"* — **and that separation is gone**:
+> whoever holds `fee.create` produces tax documents as a side effect of recording what somebody owes, and no
+> code, no check and no report distinguishes the two acts any more. What is left controlling it is the
+> ordinary one — `fee.create` is rare because somebody granted it, once, in the open
+> ([D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down))
+> — and if that turns out not to be enough, the repair is a sentence about who may hold `fee.create`, not
+> the code back.
+>
+> **And no report code ships with the money, including no `report.finance.view`.** That code was in the list
+> [K-10](../open-questions.md#k-10--are-the-money-permission-codes-still-deferred) named, and it stayed in
+> §10 on purpose: promoting it would have answered a question nobody asked — whether reporting is per-report
+> or one permission with row-level filtering — and
+> [05d §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) says the shape is open and
+> that an installation must not ship both at once. The full reason is written where the two report codes
+> live, in §8; the fact for this section is that **the money module spends six codes and does not get to
+> decide reporting's shape**, so money rows are gated by `fee.view` and `payment.view`, which is the shape
+> this vocabulary already has — a code per row-set — and the report that reads money across subjects waits
+> for the shape question like every other report does.
+
+**One more thing this section does not have: a dependency.** Saving a grant of `payment.match` offers
+`payment.view` and `fee.view` beside it, and taking the offer writes **two rows**, each naming one code, each
+with its own grantee, scope, period, `granted_by` and audit row
+([D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows));
+declining it writes one. That pairing is one of the four
+[D-194](../decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)
+writes out by hand rather than deriving, *"because their read is not the same resource's `.view`"* — and the
+pairing lives in program text beside the code, where **no table, no column and no gate reads any of it**,
+because no organization gets to decide whether reading is a different act from writing. So a grant over
+money answers exactly the one code it names, and an office written by a registered key, by a migration, or
+by the twelve rows an event create writes **can hold a money write with no read beside it — and nothing
+refuses it, nothing lists it, and no report will ever show it.** That is the price of "editor convenience",
+and it belongs on the page rather than in a footnote.
 
 ## 5. Organization and positions
 
@@ -438,6 +548,7 @@ difference is the whole reason there are two tables — and the office codes are
 |------|-----------|-------|--------|
 | `audit.view` | — | ⚠⚠ | Read the audit log — **including the before/after values it carries, which are person data like any other** |
 | `audit.export` | — | ⚠⚠ | Export audit records |
+
 > **There is no `import.*` namespace.** The four codes that used to sit here — `import.view`, `import.stage`,
 > `import.apply`, `import.revert` — described a pipeline of staged batches with a revert, and the legacy load
 > is now one script posting through a registered key, so there is no screen left to grant
@@ -445,6 +556,23 @@ difference is the whole reason there are two tables — and the office codes are
 > ([§8b](#8b-keys--a-caller-that-is-nobody)).
 | `report.view` | — | ⚠ | Run standard reports |
 | `report.export` | — | ⚠⚠ | Export report data |
+
+> **Two report codes, and the absence of a third is deliberate — look for `report.finance.view` and find
+> this paragraph.** Reporting ships coarse **on purpose**: [05d
+> §12](../data-model/05d-invariants-and-seed.md#12-what-day-one-looks-like) states that only `report.view`
+> and `report.export` exist, that whether reporting is per-report or one permission with row-level filtering
+> is **still open** — this catalog's own §12 carries that question — and that **an installation must not ship
+> both shapes; pick one when reporting is designed**. So
+> [D-195](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows),
+> which promoted the six money codes into [§4a](#4a-money), left `report.finance.view` in §10 behind them:
+> promoting it would have answered the shape question by accident, on a round that was asked only whether
+> *the finance module's* codes are still deferred. **The module spends six codes and does not get to decide
+> reporting's shape**, and this file mints no report code on its behalf — which is what keeps
+> [D-138](../decisions/round-20.md#d-138--one-permission-guards-the-whole-audit-trail-and-the-widening-is-on-the-record)'s
+> one-code-for-the-whole-trail ruling the only report-shaped decision in the corpus rather than one of two
+> contradictory ones. **What a reader loses is a lookup and not an answer:** money is readable through
+> `fee.view` and `payment.view`, which is the shape this vocabulary already has — a code per row-set — and a
+> report that reads money *across* subjects waits for the shape question like every other report does.
 
 > **`audit.view` is graded ⚠⚠ because the trail is a second copy of the person record.** `audit_log`
 > carries the before and after images of what changed, descriptive values included, on the same terms

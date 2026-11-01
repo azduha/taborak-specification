@@ -195,10 +195,14 @@ window still carrying a payload
 
 **The two clocks** — The accounting skeleton (`membership`, `fee_obligation`, `payment`,
 and the anonymised `person` row an erasure leaves behind) has **no clock at all**,
-justified as the organization's own history. *Assumption:* that this indefinite retention
-of rows about a named person has a legal basis — organizational history plus accounting
-obligations, against a redacted person row that keeps the skeleton non-identifying — is
-unverified, and a decision log is not the document that grants it. The audit trail runs
+justified as the organization's own history. *This retention is a decision, not a claim waiting to be
+confirmed:* that rows about a named person are kept with no end date — organizational history plus
+accounting obligations, against a redacted person row that keeps the skeleton non-identifying — is the call
+of the person designing this system, and **there is no legal review that would confirm or overturn it**
+([D-205](decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)). The risk it
+carries, named instead of a basis: these are the one class of row that outlives every safeguard in
+[data-model/00 §8](data-model/00-conventions.md#8-personal-data-and-erasure), and nothing outside the design
+vouches for them. The audit trail runs
 the opposite direction: rows forever, payloads for 24 months. Erasure sits outside both,
 immediate and absolute. **`access_log` is a third thing and neither clock:** its **rows are deleted** 24
 months after they are written, by a scheduled job, because what was *read* stops being answerable and no

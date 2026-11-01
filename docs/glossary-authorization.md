@@ -310,7 +310,11 @@ item being checked*: `PLACED` on the event under check, not `PLACED(1204)`. The 
 exists to kill a specific flaw — one grant per event with the event's own id typed into it
 is a thing you do 400 times and forget on the 401st — and two rules keep it safe, **both
 enforced when the grant is saved**, with the operand named in the refusal: a bound operand
-is legal **only on an item-scope grant** (at the unit there is nothing to bind it to) and
+is legal **only on an item-scope grant** (at the unit there is nothing to bind it to — and
+the deeper reason, ruled rather than assumed, is that a grant states its scope in one column
+and [D-163](decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)'s
+granter's ceiling reads exactly that column, so parking a bound operand there would hand the
+ceiling a scope the grant does not confer) and
 **only on a matching item type** (`PLACED` on a group grant is refused, because that item
 is not an event — `selector_type.argument_type` checked against `grant_scope_type`). The
 consequence: **the set a grant reaches is per-item**, so the editor's preview is computed
@@ -324,6 +328,19 @@ exactly for **the five event operands — `ATTENDED`, `PLACED`, `CONFIRMED`, `ON
 `ORGANIZERS` — which cannot be evaluated without the event the grant sits on**, and is
 false for everything else. A bound operand never meant *the subject of the item* and never
 will; there is no third binding kind.
+
+**Nothing is implied by a permission** — The sentence to reach for before asking *"does a write bring its read?"*:
+**a grant allows or denies the one code its row names, and the resolver reads no dependency.** The pairing that
+people actually want exists one layer out — the grant editor **offers** the companion read beside a write, and
+taking the offer saves **two rows** while declining saves one
+([D-194](decisions/round-24.md#d-194--nothing-is-implied-by-a-permission-the-editor-offers-the-companion-read-and-the-database-stores-two-rows)).
+Auto-inheritance was refused because an implied code confers what no row names, which
+[D-163](decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)'s granter's ceiling cannot
+see and [D-110](decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached)'s record would
+stop being the record; a save-time refusal was offered and answered *not at save*. **What that costs, stated rather
+than footnoted:** an `api_key`, a migration, or the twelve rows an event create writes never pass the screen that
+offers, so an office can hold `person.merge` with no `person.view` — nothing refuses it, nothing lists it, and no
+report shows it.
 
 **`admin`** — A word to avoid: readers bring three different meanings to it and only one of
 them exists here. There is **no grant level** (`access_level`, `permission_level` are not in

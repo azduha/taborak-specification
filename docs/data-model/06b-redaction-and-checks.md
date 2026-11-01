@@ -26,7 +26,7 @@ table, and a tombstone where the import pipeline was), and
 | `performed_at` | timestamp, audit time, optional | |
 | `performed_by` | reference to person, optional | |
 | `redacted_tables` | list of text | Which tables had values overwritten — **and which had rows deleted.** `person_attribute` is erased by deletion rather than by overwriting ([00-conventions §4](00-conventions.md#4-deletion-policy)), so naming it here is what records that the erasure reached the person's descriptive data, and omitting it is indistinguishable from not having reached it |
-| `retained_reason` | text, optional | Why some data was kept. **It has a standing answer to hold now.** Membership periods, fee obligations, payments and this anonymised `person` row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), nothing in these documents had actually made. What the field adds per case is that *this* erasure made it knowingly, and the reason for anything retained beyond the skeleton. The basis underneath the standing answer is an assumption pending legal review (§6), not settled law |
+| `retained_reason` | text, optional | Why some data was kept. **It has a standing answer to hold now.** Membership periods, fee obligations, payments and this anonymised `person` row are kept with no end date because they are the organization's own history, which is the judgement this field was built to carry and which, until [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short), nothing in these documents had actually made. What the field adds per case is that *this* erasure made it knowingly, and the reason for anything retained beyond the skeleton. **The judgement underneath the standing answer is the designer's own** — [D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired) retired the review that would have settled it, so what the standing answer carries is its risk (these are the one class of row that outlives every safeguard in [00-conventions §8](00-conventions.md#8-personal-data-and-erasure), and nothing outside the design vouches for them) where a basis used to sit (§6) |
 | `note` | text, optional | |
 
 **Rules**
@@ -333,26 +333,35 @@ be discovered only when someone needs the history that was never recorded.
   had nothing correct to agree with. The cost is storage, and the growth is in the skeleton of a small fixed
   row rather than in a payload, since payloads empty at 24 months
   ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
-- **Retention period for `audit_log` — decided as policy, still open as law**
-  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)).
+- **✅ Closed — retention period for `audit_log`: rows forever, payloads 24 months, and nobody is left to
+  rule on it**
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
+  owned as a policy by
+  [D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)).
   It used to read "retention period before archival to cold storage; legal input required", which got the
   question wrong in two ways at once: it assumed the answer was a storage tier rather than a *shape*, and
-  it assumed one clock rather than two. The policy is now **rows forever, payloads 24 months, 12 months
+  it assumed one clock rather than two. The policy is **rows forever, payloads 24 months, 12 months
   as the floor a window may be set to**, enforced by the job and the check in §2.2 and §5 rather than by
-  an archive nobody queries. What remains open is the half a decision log cannot settle: whether the
-  indefinite retention of *named* `membership` and `fee_obligation` rows has a lawful basis. That is
-  recorded as an assumption with a name attached
-  ([../open-questions.md](../open-questions.md#i-assumption-index)), not as settled law, and the review
-  now has a concrete policy in front of it instead of a blank. **It has four policies in front of it
-  now, not three:** these rows kept with no end date, the audit payloads emptied at 24 months, the
+  an archive nobody queries. **The half this bullet kept calling open is not open, because nothing is going
+  to rule on it: there is no legal review of this design and there will not be one.** Whether the
+  indefinite retention of *named* `membership` and `fee_obligation` rows is lawful is therefore decided the
+  way everything else here is decided — chosen by the person designing the system because the alternative
+  falsifies the organization's own history — and the risk sits where the basis used to sit: **this is the
+  one class of row here that outlives every safeguard in
+  [00-conventions §8](00-conventions.md#8-personal-data-and-erasure), and nothing outside the design vouches
+  for it.** **Five policies stand as decisions of the person designing the system, and they are the five
+  D-205 lists:** these rows kept with no end date; the audit payloads emptied at 24 months; the
   `access_log` rows deleted at 24 months
-  ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)),
-  and — added by
-  [D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives) —
-  **whether a child may hold an account with no guardian's consent recorded anywhere**
-  ([domain/02 §2](../domain/02-actors.md#minor-registration)). The second and third are this system's own
-  clocks; the first and fourth are the two a data subject asks about, and the fourth is the only one of the
-  four that this design answers by *not holding a record at all*.
+  ([D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name));
+  **that a child may hold an account with no guardian's answer recorded anywhere**
+  ([D-166](../decisions/round-22.md#d-166--an-account-is-not-where-authority-over-a-child-lives),
+  [domain/02 §2](../domain/02-actors.md#minor-registration)); and what an **invoice** must contain and how
+  long it is kept
+  ([D-198](../decisions/round-24.md#d-198--an-invoices-issuer-is-configuration-its-payers-identification-is-already-in-the-database)).
+  The second and third are this system's own clocks; the first and fourth are the two a data subject asks
+  about, and the fourth is the only one of the five that this design answers by *not holding a record at
+  all*; the fifth is decided by saying what the row is — an `invoice` row is the record that a document
+  exists, and whatever must be printed beyond what this design holds is met outside it.
 - Whether `audit_log` should be partitioned by month from the start. **Recommend yes, and the reasons
   changed when the payload window arrived.** The old reason was "the write volume and the multi-decade
   horizon", which is still true of the *rows* — they are the permanent half — but the bulk of a row is
@@ -396,14 +405,19 @@ be discovered only when someone needs the history that was never recorded.
   settled was never "no imported memberships" but "no inferred ones", and that half still holds in both
   directions: never open-ended, never from an attendance row. **Superseded here and kept visible: this
   bullet used to end "participation only, always; `membership` rows come only from the current register."**
-- Exact redaction scope: which fields are personal data vs. organizational history (§4). Requires legal
-  review — **much narrower than it was, and still not closed.** D-083 removed the *category* question
-  (there is no specially-graded subset of the person record), and
+- **✅ Closed — exact redaction scope: which fields are personal data vs. organizational history (§4).**
+  The bullet read "requires legal review", and **that review is not coming**
+  ([D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)), so the
+  line this page already draws **is** the policy — written by the person designing the system, with its risk
+  named in the retention bullet above rather than a basis claimed below it. D-083 removed the *category*
+  question (there is no specially-graded subset of the person record), and
   [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
-  has since drawn the *line*: identity and descriptive values are erased, the accounting skeleton is
-  retained, and the trail's payloads expire. What the review is asked about is therefore no longer "which
-  fields" but "on what basis does the retained half survive indefinitely" — one question about one list,
-  which is the item above.
+  drew the *line* the design keeps: a person's names, `gender`, contact points and identifiers, every
+  `person_attribute` row and every `event_answer.value` are erased; `membership`, `fee_obligation`,
+  `payment`, `event_registration` and the anonymised `person` row are organizational history and survive.
+  **Nothing is left asking which of those two lists a field belongs to: a new column about a person joins
+  one of them at the design table, and `redacted_tables` in §4 is where the choice becomes visible — once an
+  erasure has run and the table it reached is named there.**
 - **✅ Deleted — whether `person.notes` should exist at all.** It does not, and the burden this item was written
   about turned out to point the other way ([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)).
   The column was kept off the redactor's list, because naming a column as an exception is the field-name rule

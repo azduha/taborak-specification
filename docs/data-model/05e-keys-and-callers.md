@@ -201,7 +201,7 @@ Stated because a reader will otherwise assume the nearest mechanism applies.
 - **What this system does to itself is not a caller and has no row.** The 1 January membership sweep, payload
   reduction, migrations and the bank statement pull write rows with an empty actor column, which is read as
   the system acting on its own and is a complete answer to *who did this*; where the audit trail keeps a
-  label, it is one of six from a list rather than free text
+  label, it is one of the five labels on that list rather than free text
   ([00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means),
   [D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list)).
   **`api_key` was deliberately not stretched to cover them**: a sweep is not a caller, and a table whose rows
@@ -212,11 +212,25 @@ Stated because a reader will otherwise assume the nearest mechanism applies.
   for somebody who cannot log in; what it can do is nothing, which is why the answer is check 9's second
   column and a written procedure
   ([domain/02 §3](../domain/02-actors.md#when-nobody-who-can-hold-systemadmin-can-sign-in)).
-- **The outbound direction is [F-27](../open-questions.md#f-27).** Everything here is a caller arriving.
-  Anything this system initiates — an accounting export, a refund, a webhook (a mechanism this corpus
-  deleted rather than deferred) — has no design, and the one refusal that cited "a second integration with
-  its own authorization" as a reason now has a mechanism to point at
-  ([07-finance.md §2b](07-finance.md)).
+- **The outbound direction is [F-27](../open-questions.md#f-27), and one item that used to sit on this list
+  has been removed from it rather than left waiting.** Everything here is a caller arriving. **Nothing leaves
+  this system to an accounting system**
+  ([D-199](../decisions/round-24.md#d-199--nothing-leaves-this-system-to-an-accounting-system-and-an-external-one-is-a-later-versions-design)):
+  no export, no feed, no periodic journal, no CSV of the day's bank rows, no `external_reference` column, and
+  **no sixth actor label for accounting**: the vocabulary of
+  [00-conventions §7a](00-conventions.md#7a-what-an-empty-actor-column-means) keeps its five labels and reserves no
+  sixth, because an integration added later will need a label and needing one is not a reason to hold a slot for
+  it. Everything the money model
+  asserts is read out of its own tables by a person holding `report.view` or `report.export`. A later version
+  may add an accounting package and will design it then, in a document that is not this one, and **this corpus
+  keeps no placeholder against that day** — which is what the item cost to close: nothing. A refund is not on
+  this list either, because a refund happens at the bank and arrives here as a negative `payment`
+  ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)), and a webhook is a mechanism this
+  corpus deleted rather than deferred. **What is left undesigned is the general shape** — an outbound call is a
+  person's act or this system's job, and nothing about it is designed yet
+  ([D-146](../decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet))
+  — and the one refusal that cited "a second integration with its own authorization" as a reason now has a
+  mechanism to point at ([07-finance.md §2b](07-finance.md)).
 - **Nothing about the wire.** How a secret is presented, what it looks like, how it is hashed, how a
   session is carried after a person logs in — API layer, and [D-072](../decisions/round-06.md#d-072--the-documentation-carries-no-sql-the-schema-is-the-orms-job)
   is the standing division. What is decided here is only what may be stored: a hash, and nothing else.

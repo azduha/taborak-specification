@@ -477,30 +477,36 @@ Requirements the design must satisfy:
    [D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own)
    declined to make it a record class of its own.
 3. **Some data must not be redacted, and the reason is now stated rather than left unopposed** —
-   membership periods, unit participations, fee obligations, payments and position assignments are
+   membership periods, fee obligations, payments and position assignments are
    organizational history rather than personal data, and removing them would falsify records that the
    organization is often obliged to keep. Until
    [D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)
    this item was a carve-out nobody had had to defend; it is now the permanent half of a pair of clocks,
    and those rows carry **no retention period at all**. That is what gives
    `redaction_log.retained_reason` a judgement worth recording instead of a formality
-   ([06-audit-and-import.md §4](06b-redaction-and-checks.md#4-redaction-log)). **What the decision did not do
-   is supply a legal basis, and the difference should not be blurred:** what stands here is an assumption
-   pending review — organizational history plus accounting obligations, leaning on a person row that the
-   erasure in item 1 has made non-identifying — recorded as an assumption and not as settled law. **The
-   uncertainty about that half reaches nothing on this side:** the erasure in items 1 and 2 is immediate
-   and absolute, and would be if the retained half were cut to a single year tomorrow.
+   ([06b §4](06b-redaction-and-checks.md#4-redaction-log)). **This retention is a decision, not a claim
+   waiting for a basis:** [D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired)
+   deleted the review that would have supplied one, so what stands here is that the person designing this
+   system chose, in round 24, to keep these rows with no end date — organizational history plus accounting
+   obligations, leaning on a person row that the erasure in item 1 has made non-identifying — chosen because
+   the alternative falsifies the organization's own history. **The risk carried in place of the basis:**
+   this is the one class of row here that outlives every safeguard in this section, and nothing outside the
+   design vouches for it. **The uncertainty about that half reaches nothing on this side:** the erasure in
+   items 1 and 2 is immediate and absolute, and would be if the retained half were cut to a single year
+   tomorrow.
 4. **Whatever keeps its own retention policy must be able to see `person.redacted_at`, and erasure
    reaching it is a rule that store has to implement.** There is no separate health or safeguarding store
    for such a rule to live in: a diagnosis is an attribute value now, with the same access, protection and
    retention as a shoe size
    ([D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data),
    [09-attributes.md](09-attributes.md)). The store this system does have is `audit_log`, and this item is
-   worth keeping precisely because it is easy to wave through: its retention has half an answer — **the
-   rows are kept for the life of the system and their payloads are emptied 24 months after they are
-   written**
-([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short);
-   [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues) keeps the legal half that remains) —
+   worth keeping precisely because it is easy to wave through: its retention is decided, and the decision is
+   this — **the rows are kept for the life of the system and their payloads are emptied 24 months after they
+   are written**
+([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short),
+   and [D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired) owns it
+   with the risk written where a basis used to be: two years of a person's record exist in a log that most
+   readers never see) —
    and a redaction that stops at the business tables while the trail keeps the erased values is a
    redaction that failed in the one place a regulator looks. **The window is a ceiling on how long a value
    may sit there, never a waiting period: erasure reaches the same two columns on request, at any age of
@@ -551,17 +557,23 @@ Requirements the design must satisfy:
    same columns on request, at any age of a row, and the row's scheduled emptying satisfies nobody's
    erasure request.
 
-> Legal review is required before implementing §8. This section describes the technical mechanism,
-> not the compliance policy. Tracked in
-> [../open-questions.md](../open-questions.md).
->
-> **What the review is handed has changed shape, which is worth saying so nobody reads this note as
-> unchanged.** It used to be asked "how long may this trail keep personal data, and which fields count as
-> personal data". The corpus now puts a concrete policy in front of it instead of a blank: rows forever
-> and payloads for a bounded window on one side (item 4), an accounting skeleton with no clock at all on
-> the other (item 3), and no graded category of field anywhere for it to deliberate over, because D-083
-> deleted that idea. **What is asked is narrower and harder: on what basis does the retained half survive
-> indefinitely.** That is the assumption item 3 names, and nothing in this section makes it lawful.
+> **There is no legal review of this section, and none is owed.**
+> [D-205](../decisions/round-24.md#d-205--there-is-no-legal-review-and-assumption-49-is-retired) retired the
+> one this page carried, on the answer *"Everything is our decision, there will be no review by the law so do
+> not plan for one"*, taken in round 24 on **2026-11-01** by the person designing this system. Everything
+> below is therefore a decision and not a proposal: what erasure reaches (items 1 and 2), what it must not
+> reach (item 3), what the trail holds and for how long (items 4 and 7) — each written with the risk it
+> carries in the place where a lawful basis used to be claimed. The two of the five policies D-205 names
+> that this section owns are item 3 — **named `membership` and `fee_obligation` rows outlive the erasure of
+> the person they describe, and nothing outside this design vouches for them** — and item 4 — **two years of
+> a person's record exist in a log that most readers never see**. There is no graded category of field
+> anywhere for anyone to deliberate over, because
+> [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+> deleted that idea, and nobody else is left holding the other half of this section: **the mechanism here is
+> the policy.** The cost of that is stated once, here: **a design that has decided its own lawfulness is
+> self-validating.** The checks in [06b §5](06b-redaction-and-checks.md#5-integrity-checks) still verify
+> these mechanisms against their own rules; what no longer exists is a rule written outside this corpus that
+> they could be measured against.
 
 **The key-name list is a credential filter, and reading it as the personal-data filter is the mistake to
 avoid.** It once carried a list of sensitive *key names* — `notes`, `custody_arrangement`, and the rest —

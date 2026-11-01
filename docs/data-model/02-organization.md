@@ -71,7 +71,7 @@ the list is worth keeping next to the table:
 | `code` | D-096's method says a label carries no identity, so a second label would only create a second way to be wrong (§1's naming rules) |
 | `status` (`proposed`/`active`/`closed`), `closed_reason_code` | a group has a period. Two states, `valid_to` NULL or not, and no `status` that can disagree with it |
 | `data_confidence` | the rows are typed by a person (§4); there is nothing uncertain about how they arrived |
-| name history rows | a rename edits `name`, and the previous name is gone — the cost §1's naming rules state |
+| name history rows | a rename edits `name`, and the previous name is gone — **now a ruling and not an absence**: *no, prose is enough* ([D-201](../decisions/round-24.md#d-201--a-group-keeps-no-previous-name-this-is-now-a-ruling-and-not-an-absence)). The sharp edge is that `name` is unique across all three tables below, so a rename **frees the old name to be taken by a group, a role or an audience** |
 | any split / merger / `successor_of` edge | D-098 refuses group-to-group edges outright: a split is one group that ended and two that began, with no edge between them |
 | `join_reason_code`, `leave_reason_code`, `is_primary`, `role_in_unit` | the same list, on the member table (§2) |
 | `allows_minors`, or any flag about who may belong | D-095, and nothing on a group replaces it ([../domain/04-organization-structure.md §3](../domain/04-organization-structure.md#3-joining-a-group-is-somebody-elses-act)) |
