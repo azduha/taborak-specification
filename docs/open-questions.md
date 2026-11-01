@@ -27,9 +27,16 @@ asks whether the role that settles an identity claim may read the record it is s
 codes this corpus already uses. **Not one of the three is 🟡, and not one of the three changes a table** — which
 is what is left when a design has had twenty-three rounds spent on it.
 
+**These three are not the same list as the open items a module page keeps, and the two counts should not be
+compared.** [§ H](#h-not-yet-designed)'s finance row, for instance, reports three open issues of its own and says
+so on [the module page](data-model/07-finance.md#5-open-issues--the-whole-of-this-document-essentially). A module
+page lists what it has not decided; this page lists what nobody has answered. A question is counted here only when
+it is written here.
+
 **The section letters are names, not a sequence.** Sections B, C and D held only closed questions and are
 gone; § J joined them in round 20, emptied by answering it, § G (events) and § Ga (attributes) went the
-same way when their seven questions were answered, and § E (guardianship) went in round 23 the same way. **The modules they framed are unaffected** — both are
+same way with their rows carried into [§ R](#r-resolved--moved-to-the-decision-log), and § E (guardianship) went
+in round 23 the same way. **The modules they framed are unaffected** — both are
 designed, and [§ H](#h-not-yet-designed) still links them. The ids those sections held — `B-2`, `C-5`, `D-9`,
 `EV-2`, `AT-4` — are still how § R means them, and `E-6` is still the question it was when it was filed.
 
@@ -46,11 +53,15 @@ designed, and [§ H](#h-not-yet-designed) still links them. The ids those sectio
 ([D-047](decisions/round-04.md#d-047--the-fee-expires-on-1-january)) and the renewal
 window is **60 days** ([D-048](decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)).
 
-**What is left is not a question but a discipline.** Both values live in
-`membership_type` as columns — `expiry_month`, `expiry_day`, `renewal_grace_days` — so either
-can be moved by an `UPDATE`. The one way to lose that property is a scheduled job or a front
-end that contains the literal `60` or `1`. Worth one line in code review: *do these values
-come from the row?*
+**What is left is two things, and the second is the only one that wants a human.** **The first is a
+discipline, not a question:** both values live in `membership_type` as columns — `expiry_month`,
+`expiry_day`, `renewal_grace_days` — so either can be moved by an `UPDATE`, and the one way to lose that
+property is a scheduled job or a front end that contains the literal `60` or `1`. Worth one line in code
+review: *do these values come from the row?* **The second is whether the calendar those two numbers sit in is
+this organisation's calendar** — that the membership year turns on 1 January because the year, the camps and
+the collections turn with it, rather than because a database likes round dates. **That half cannot be answered
+by a ruling**, which is why this row is still open when both of its numbers are decided: it wants one
+conversation with whoever runs the renewal, and the answer would be an `UPDATE` and nothing more.
 
 **See:** [data-model/03 §1](data-model/03-membership.md#1-membership_type--one-row-kept-as-a-table),
 [domain/05 §6](domain/05-membership-lifecycle.md#6-renewal-and-the-yearly-fee)

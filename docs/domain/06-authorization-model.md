@@ -969,17 +969,33 @@ listed here because a reader of this page needs to know where the edge is, not b
 
 ## 11. Open issues
 
-- **Who opens the `Unusual` section of the tab.** §6.1 rules the `MEMBERS` question itself, including that
-  the section lists every live grant naming a `ROLE(…)` operand whose expression carries no `MEMBERS`; what
-  remains is F-21's older question, whether a tab gets opened at all
+- **Who opens the `Unusual` section of the tab — settled: nobody is sent to it, and the tab exists anyway.** §6.1
+  rules the `MEMBERS` question itself, including that
+  the section lists every live grant naming a `ROLE(…)` operand whose expression carries no `MEMBERS`, and the
+  tab it sits on is not waiting for a decision to be built: [D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)
+  replaced every standing report *about rules* with this one tab, and the page that holds it says it is computed
+  when opened, has no cadence to record because nothing runs, and is a convention and not a guard — nothing
+  listed there is blocked and nothing is refused because it is listed
+  ([06a](06a-audiences-and-selectors.md#the-rules-that-make-the-tree-safe),
+  [05d §11](../data-model/05d-invariants-and-seed.md#11-invariants-to-verify)).
+  Both questions this bullet was pointing at are recorded as settled on precisely that ground
   ([F-13](../open-questions.md#f-13),
-  [F-21](../open-questions.md#f-21)).
+  [F-21](../open-questions.md#f-21)): no page gives the tab a reader, a cadence or an owner, and what the design
+  buys instead is that a report has to be remembered while **a tab is where the person already is**.
 - **The holder period.** Nothing forces a `role_holder` row to end, and the report stands alone (§4,
   [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)).
-- **Who may compose an expression?** `audience.manage` covers creating and editing a set, and the
-  catalog is silent on the edit that puts `EVERYONE` into a grant's audience
-  ([appendix/permission-catalog.md §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues)). No new code
-  was invented for this — the gap is the finding.
+- **Who may compose an expression — settled: `audience.manage`, the whole of it, and no ceiling reads the edit.**
+  `audience.manage` covers creating and editing a set, [D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down)
+  rules that the granter's ceiling reads a write to `access_grant` whose subject somebody chose **and nothing
+  else**, so it does not read an edit to an audience's expression tree and does not read adding a person to an
+  office: rewriting one audience widens every live grant aimed at it, including by writing `EVERYONE` into it, and
+  **that is escalation the ceiling does not see** because no grant was written. It is refused anyway, for the
+  corpus's standing reason — a ceiling that read an expression edit would have to resolve what every live grant
+  pointing at it means, inside the save that changes what a reach is — and what is left as the control is a
+  sentence about the code rather than a mechanism: **`audience.manage` is not a lesser code than
+  `access_grant.create` and must not be granted like one**, which the catalog now carries beside both codes
+  ([catalog-b §12](../appendix/permission-catalog-b-roles-and-open-issues.md#12-open-issues)). No new code was
+  invented for the edit, and that is the ruling rather than the finding.
 - **What reopens the settled answers on this page.** Two named conditions, both carried so nobody has to
   rediscover them: a materialized `effective_permission` table becomes worth building at
   [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s
@@ -990,9 +1006,22 @@ listed here because a reader of this page needs to know where the edge is, not b
   ([06a](06a-audiences-and-selectors.md#what-a-grants-reach-is-recorded-in),
   [F-7](../open-questions.md#f-7),
   [F-17](../open-questions.md#f-17)).
-- **The integration this system calls.** Everything §10a designs is a caller arriving; who authorizes an
-  export, a refund or a pull — and whether a permission code and an actor are even the right shape for what
-  is a job — is open ([F-27](../open-questions.md#f-27)).
+- **The integration this system calls — settled in shape, undesigned in substance.** Everything §10a designs is
+  a caller arriving, and the mirror question is no longer open: [D-146](../decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet)
+  rules that a call this system initiates is either **a person acting** — the actor column holds them and their
+  permission is checked, so a code and a person really are the right shape — or **this system acting on its own**,
+  which is the empty actor column and a label from the fixed list
+  ([D-125](../decisions/round-17.md#d-125--an-empty-actor-column-is-this-system-acting-on-its-own-and-its-name-comes-from-a-fixed-list));
+  there is no service identity and no "the integration did it", and an `api_key` as the actor of an outbound write
+  is refused because a secret must not carry the accountability of an act
+  ([F-27](../open-questions.md#f-27) is in § R for that refusal). Of the three acts this bullet used to name —
+  an export, a refund, a pull — two have already fallen to one side of that fork: the pull is the job half, and the rows its fetch writes belong to
+  `system:bank-pull` ([D-182](../decisions/round-23.md#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls)),
+  and a refund is not an act of this system at all — nobody initiates one, money out is a `payment` like money in,
+  and the bank is where the fact lives ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)).
+  What stays undesigned is the accounting export and the whole wire, and the answer when an integration arrives is
+  the uncomfortable one the entry names rather than a third option: a person's permission gating somebody else's
+  system, or an empty actor column on a write the organization cannot pin on anybody.
 
 All tracked in [../open-questions.md](../open-questions.md).
 

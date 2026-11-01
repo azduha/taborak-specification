@@ -447,6 +447,16 @@ the first office somebody writes ([What an installation has](#what-an-installati
   ([D-163](../decisions/round-22.md#d-163--a-grant-may-not-confer-more-than-the-granter-holds)), stated
   where the model states write-path refusals, as check 7 of the seven in
   [05 §6](../data-model/05-authorization.md#6-access_grant--the-per-item-layer).
+  **And the bound reads a grant and nothing else, which [D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down)
+  ruled and this page has to carry beside the rule:** the ceiling reads a write whose subject somebody chose, so
+  it does not read an edit to an audience's expression tree, does not read adding a person to an office behind
+  `role.assign`, and does not read the twelve rows an event creation writes
+  ([D-170](../decisions/round-22.md#d-170--the-ceiling-does-not-read-the-twelve-a-create-writes)), and that
+  exemption covers exactly one transaction: a write that rebuilds a missing bundle by hand is a person choosing
+  rows, so the ceiling reads it like any other grant. The widening that leaves is on the record and not a
+  discovery — `audience.manage` is not a lesser code than
+  `access_grant.create` and must not be granted like one, which is the sentence this file owes for both codes and
+  carries beside the `audience.manage` bullet below.
   `access_grant.create` has always said *you may write grant rows*; that it never said *what they may
   say* was this file's sharpest hole, and the answer is none of the three options this page offered —
   no second code for the `system.` namespace, no two-person rule, no verdict of trail-and-judgment.
@@ -511,8 +521,8 @@ the first office somebody writes ([What an installation has](#what-an-installati
   report, which is the distinction the page has to preserve or it pages about every incomplete import in
   the legacy corpus. **The page is a query with an owner, not a guard** (D-081's phrase, applied to it by
   D-106): no save depends on it, and the catalog mints no code for reading it.
-- **`audience.manage` is one code over an expression, and the largest act it covers is still
-  unmarked.** Composition *is* the expression now
+- **`audience.manage` is one code over an expression, and the largest act it covers is now marked: composition is
+  inside it, and the ceiling does not read it.** Composition *is* the expression now
   ([D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)):
   an inclusion is an ordinary `+` beside a leaf, and the leaf that should worry everyone is `EVERYONE`.
   **There is no smaller act to grant either** — *may tick names on this audience* without *may rewrite
@@ -525,10 +535,17 @@ the first office somebody writes ([What an installation has](#what-an-installati
   resolves to non-members and the public — **and the reach is now transitive**, because
   [D-103](../decisions/round-10b.md#d-103--an-audience-may-name-another-audience) lets one audience be
   named inside another, so editing a widely-named audience widens every grant aimed at every audience
-  that names it. Either composition is documented as plainly inside
-  `audience.manage` — accepting exactly that consequence — or it gets a code of its own; **no code was
-  invented here to fill the gap**. The interim control is the editor showing the expanded set and the
-  affected grants *before* the save, which is a user-interface requirement carried in
+  that names it. **Settled: composition is documented as plainly inside `audience.manage`, the consequence is
+  accepted rather than coded around, and no code was invented to fill the gap**
+  ([D-188](../decisions/round-23.md#d-188--the-ceiling-reads-a-grant-and-nothing-else-and-what-it-leaves-open-is-written-down)).
+  The alternative was not safer, only wider: a ceiling that read an expression edit would have to resolve what that
+  expression means for every live grant aimed at it, at the moment of the save, inside the definition of a
+  permission's reach — a permission check running while the check is being changed, which is a recursion this corpus
+  has refused before. **So the rewriting is escalation and the ceiling does not see it**, bounded only by what the
+  vocabulary can be made to read: to admit one named person an editor still has to be able to name a set that person
+  falls into, and putting them in an office is a separate act behind `role.assign` — while the broad case,
+  `ROLE(camp organizer)` rewritten to `MEMBERS`, needs neither of them. What is left as the control is the editor
+  showing the expanded set and the affected grants *before* the save, which is a user-interface requirement carried in
   [../domain/06a-audiences-and-selectors.md §6.2](../domain/06a-audiences-and-selectors.md#62-audiences--an-expression-over-named-sets),
   not a permission.
 - **Nothing bounds what a permission check costs.** There is no depth bound:
@@ -698,29 +715,43 @@ the first office somebody writes ([What an installation has](#what-an-installati
   **If door scanning is ever wanted it arrives as an open question and then a decision entry naming the
   permission, the artifact that rotates and who may reprint it — not as a code beside a paragraph about
   a door.**
-- **`attribute.define` is in the catalog and in no office §11 works through, and that gap is now the whole
-  of the open half.** The permission and its rules are settled (§2), and so is the second half of what AT-2 asked: **there
+- **`attribute.define` is in the catalog and in no office §11 works through — and who holds it is now answered,
+  by a person and a period rather than by an office.** The permission and its rules are settled (§2), and so is
+  the second half of what AT-2 asked: **there
   is no proposal, so there is no age for a proposal to reach**
   ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted)).
-  **Who holds the code is what remains** — tracked as **AT-2** in
-  [../open-questions.md](../open-questions.md#at-2), and §11 property 7 records the shape the answer should
-  take (a dated grant aimed at one person, not an office). **The risk of leaving it unheld changed kind and got
+  **Who holds the code was what remained, and [D-189](../decisions/round-23.md#d-189--one-author-writes-the-vocabulary-before-the-batch)
+  answers it: one named person, holding the code, writing the definitions the legacy corpus needs before the load
+  that would refuse them, and keeping the code afterwards** — the handover is an ordinary dated grant aimed at one
+  person rather than an office, which is the shape §11 property 7 recorded for it. Both of the register's rows for
+  this question are in § R now: [AT-2](../open-questions.md#at-2) closed on the mechanism and
+  [F-34](../open-questions.md#f-34) on the schedule the deleted proposal stage had secretly been carrying. The
+  schedule cannot live in a reminder either — nobody is told anything, the author included — so the page that
+  states the rule is where the deadline lives
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)).
+  **The risk of leaving it unheld changed kind and got
   worse.** While a proposal stage existed, an office without the permission was a slow leak: values arrived
   against invented codes, sat in a queue, and the vocabulary rotted while still storing everything. Now a value
   recorded against a code nobody has defined is **refused at the write**: an office that cannot name a new
-  thing writes it into `person.notes` or does not write it at all, which is the exact failure the whole
-  attribute layer exists to prevent, arriving as a wall rather than as a leak. The checks that notice a
+  thing writes it into the free text that is left on the rows *about* a person — a roster row's `note`, an
+  account's `status_reason` — or does not write it at all, which is the exact failure the whole
+  attribute layer exists to prevent, arriving as a wall rather than as a leak. **The person row itself no longer
+  has anywhere for it:** `person.notes` is deleted and the vocabulary took its job, so there is no longer a place
+  to write something about a child that is not in the vocabulary
+  ([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)). The checks that notice a
   vocabulary rotting are in [../data-model/09-attributes.md §8](../data-model/09-attributes.md#8-integrity-checks),
   and none of them can fire on codes nobody was able to create.
-  **The import half is answered, and only that half:** every code the legacy batch's column→code map names must
-  already be defined and `live` when the batch applies, and an unmapped column stops the batch — so the
+  **The import half is answered, and only that half:** every code the legacy load's column→code map names must
+  already be defined and `live` when the script writes the rows, and a source column that maps to nothing is an
+  error and not a proposal — so the
   vocabulary is authored *before* the import that looks like it produces it, and day one does not arrive with
   several hundred codes nobody has read
   ([D-141](../decisions/round-20.md#d-141--a-definition-is-live-at-the-save-the-proposal-stage-its-queue-and-its-check-are-deleted),
   [D-090](../decisions/round-07-08.md#d-090--the-legacy-corpus-is-thousands-of-roster-rows-with-numbers-and-no-money),
   [../domain/03-identity-and-legacy.md §7](../domain/03-identity-and-legacy.md#7-legacy-import-pipeline)).
-  **Who writes those first few hundred definitions, and when, is a question this round raised rather than
-  answered** ([F-34](../open-questions.md#f-34)).
+  **That refusal was a rule about a pipeline, and the pipeline is gone:** what survives is the invariant
+  underneath it — a value may not invent a code — which now binds the script, and every write after it, exactly as
+  hard ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
 **Settled, so that nobody reopens them from the shape of this page.** A grant carries one code, and there
 is neither a level nor a "nearest scope wins" ordering to pair with it
 ([D-099](../decisions/round-10a.md#d-099--a-grant-allows-or-denies-one-permission-there-is-no-level-and-no-locality));

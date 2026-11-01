@@ -324,7 +324,7 @@ as a suggestion and writes back a fresh dated one
 
 Tracked with the rest in [../open-questions.md](../open-questions.md): the answered ones under
 **R. Resolved**, each carrying the decision that answered it, and the live ones where the module map points.
-**Five of the seven below are settled and say so rather than reading as still open** — that is deliberate,
+**Six of the seven below are settled and say so rather than reading as still open** — that is deliberate,
 because a list of open issues that keeps asking an answered question is how a design gets reopened by a
 newcomer who reads the list and not the log. The ones this module raises:
 
@@ -364,8 +364,13 @@ newcomer who reads the list and not the log. The ones this module raises:
   held under weaker rules and fresher; **the two rules now agree, so the asymmetry is gone rather than
   mitigated** ([D-140](../decisions/round-20.md#d-140--nothing-about-an-event-is-deleted-on-a-schedule-and-erasure-empties-an-answer-without-deleting-it),
   [EV-2](../open-questions.md#ev-2)).
-- **Cancelled events and fees** (§10–11). Cancelling keeps the registrations; whether it
-  releases the obligations, refunds them, or neither is the finance module's call.
+- **Cancelled events and fees — settled, and settled by the finance module rather than this one** (§10–11).
+  Cancelling keeps the registrations. The payment requests that were still outstanding are voided, and money
+  that already arrived **stays exactly where it is**: the fee bought membership and nothing else, so there is
+  nothing here to hand back, and a refund is a thing the bank does rather than a row this system writes
+  ([D-156](../decisions/round-22.md#d-156--the-fee-buys-nothing-but-membership),
+  [D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank),
+  [D-180](../decisions/round-23.md#d-180--there-is-no-queue-for-money-that-does-not-fit)).
 - **Presence for minors and the safeguarding record — settled: it stays a column of the registration** (§9).
   No retention of its own, no permission of its own, no `presence_record` table, **and no safeguarding register
   behind any of it** ([D-147](../decisions/round-20.md#d-147--presence-stays-on-the-registration-no-clock-of-its-own-no-permission-of-its-own),

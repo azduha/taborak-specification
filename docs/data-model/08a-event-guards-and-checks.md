@@ -394,7 +394,11 @@ is wrong, and the fix is to change the number rather than to start refusing peop
 
 ## 11. Open issues
 
-Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
+Tracked in [../open-questions.md](../open-questions.md). **There is no events section on that page any more:**
+§ G was emptied when the questions it held were answered, and its rows live in
+[§ R](../open-questions.md#r-resolved--moved-to-the-decision-log) with the decision that closed each one, and
+nothing about events is open there. What is below is therefore this page's own list, kept here so that somebody
+reading the guards sees each answer beside the mechanism it answers.
 
 - **The age ceiling on an open event: there is none**
   ([D-070](../decisions/round-05.md#d-070--an-event-has-no-age-ceiling-the-grant-is-the-rule)).
@@ -450,8 +454,13 @@ Tracked in [../open-questions.md](../open-questions.md) under **G. Events**.
   itself a grant. What used to hang off that question — whether more codes should reach `ORGANIZERS` — is
   settled beside it, by the create writing the event's whole code family onto the event
   ([../domain/07-events.md §5](../domain/07-events.md#5-organizers-are-appointed-not-granted)).
-- **Waitlist notification.** Promotion is deliberate; telling the promoted person is not
-  designed. It belongs to the communication module.
+- **Waitlist promotion, and nobody told.** Promotion is an ordinary write by whoever may mark the register, and
+  the mechanism is [domain/07a §8](../domain/07a-capacity-presence-and-forms.md#8-capacity-and-the-waitlist).
+  **There is no notification to design here, because there is no sending in this design at all**
+  ([D-164](../decisions/round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise)): a promotion changes a
+  row, and what a promoted family is told, and whether anybody tells them, is a person deciding to write — which
+  is the communication module's business and has never been designed. What this page had left standing as an open
+  item was the shape of a message that no rule here would ever send.
 
 ---
 

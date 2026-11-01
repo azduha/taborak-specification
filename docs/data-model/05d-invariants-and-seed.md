@@ -810,15 +810,35 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   and check 9 above is its sibling) and the case where nobody who could hold `system.admin` can reach a screen
   is a report and a written procedure rather than a mechanism
   ([D-126](../decisions/round-17.md#d-126--break-glass-is-a-report-and-a-written-procedure-not-a-mechanism)).
-  **What stays open is the other direction:** calls going *out* have no design at all
-  ([F-27](../open-questions.md#f-27)). [05e §17](05e-keys-and-callers.md) states each from this module's side,
-  and none of the three was ever answered by adding a column to `api_key` — **a sweep is not a caller and
-  should not have to authenticate.**
-- **Which grants an organization writes with `MEMBERS` in the expression, and which without** — the question
+  **What this bullet left open has an answer, and the answer is a shape rather than a design: an outbound
+  call is a person's act or this system's job.** [D-146](../decisions/round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet)
+  rules that a call this system initiates is either **a person acting** — the actor column holds them, their
+  permission is checked, the trail shows them — or **this system acting on its own**, which is the empty
+  column and a label from the same fixed list; there is no service identity and no key acting as a person, and
+  an `api_key` as the actor of an outbound write is refused because a secret must not carry the
+  accountability of an act ([F-27](../open-questions.md#f-27) sits in § R for that refusal). Of the three acts
+  this direction was once said to cover — an export, a refund, a pull — two have already fallen to one side of
+  that fork: the bank pull is the job half, and the
+  rows its fetch writes already belong to `system:bank-pull`
+  ([D-182](../decisions/round-23.md#d-182--matching-money-is-a-code-of-its-own-and-the-automatic-half-is-systembank-pulls));
+  and a refund is not an outbound act at all, because nobody initiates one here — money out is a `payment` like
+  money in, and the bank is where the fact lives
+  ([D-158](../decisions/round-22.md#d-158--a-refund-happens-at-the-bank)). What is undesigned is the accounting
+  export and the wire, and [05e §17](05e-keys-and-callers.md) keeps both from this module's side; none of the
+  three was ever answered by adding a column to `api_key` — **a sweep is not a caller and should not have to
+  authenticate.**
+- **Which grants an organization writes with `MEMBERS` in the expression, and which without — settled: the
+  design states no default in either direction, and each grant carries its own answer.** That was the question
   this file used to ask as "which *starter* grants name `MEMBERS`", which has no starter grants to ask about
-  any more. `role` has no `requires_membership` switch to carry an answer
-  ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape)),
-  so it is answered per grant rather than per role, with check 6 (§11) as the net. **One case the design does
+  any more, and [D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)
+  closed the gap D-100 left by ruling that **there is no default** — each grant is written with the term or
+  without it by whoever writes it, so no office inherits an entitlement from a template and none inherits a
+  lockout. `role` has no `requires_membership` switch to carry an answer
+  ([D-100](../decisions/round-10a.md#d-100--a-role-is-an-office-and-a-group-is-company-two-tables-of-the-same-shape))
+  and no save is refused or warned, so the whole control is check 6 (§11) — whose rows are the `Unusual`
+  section of the tab on the permissions page and nothing more
+  ([D-109](../decisions/round-13.md#d-109--nothing-a-rule-names-is-deleted-deprecated-hidden-disabled--and-a-tab-instead-of-a-report)).
+  **One case the design does
   answer:** the twelve grants an event creation writes are written *without* `MEMBERS`, because an organizer
   appointed for one weekend is not required to be a paying member
   ([D-151](../decisions/round-21.md#d-151--creating-an-event-writes-the-events-authority-and-its-organizers-may-grant-on-it)).
@@ -871,15 +891,22 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   events feature from the authorization module. **The need for "these few people" arrives anyway** and is
   served today: write grants, or a `GROUP(x)`, or `PERSON(a) + PERSON(b)`. The discipline stays — a row is
   not seeded so that a question cannot become a word in a grammar by being typed often enough.
-- **`PERSON(x)` is a seeded row (`argument_type = person`); the class of bug behind it is the open item.**
+- **`PERSON(x)` is a seeded row (`argument_type = person`); the class of bug behind it is caught, by a script
+  somebody has to run.**
   §12 states the one count that matters — how many rows `selector_type` holds — cheap to check, and checked
   here because a registry that prose contradicts is a fiction
   ([D-104](../decisions/round-10b.md#d-104--a-permission-codes-last-segment-is-an-action-and-a-registry-that-prose-contradicts-is-a-fiction)).
-  **What is open is the class, not this operand:** nothing in this module, or in this repository,
-  compares the dotted tokens these documents write against the seeded registries they describe, so the same
-  drift will happen again in whichever table is written next. D-104 adopts a hand-run report over the
-  documents as the answer, and states plainly that **a report nobody runs is a convention** — there is no CI
-  here to make it a guard, and no layer of this spec can tell a writer that `PERSON(` had no row behind it.
+  **The class is caught now: [D-127](../decisions/round-18.md#d-127--the-registry-diff-is-a-committed-script-and-it-gates-a-round)
+  turned D-104's hand-run report into `scripts/check-registries.py`**, a committed script that reads every
+  registry out of the page that holds it — the catalog's code rows, catalog-b §10's deferred namespaces, the
+  dead names in [removed concepts](../appendix/removed-concepts.md), the selector registry, the
+  `grant_scope_type` seed and the actor-label table — reads the catalog's own grammar back at the prose, and
+  reports an operand spelled as a selector with no seeded row behind it, which is the exact shape `PERSON(` was.
+  A round does not close while a finding is unbaselined, and a baseline line is the record of why a finding was
+  kept. **What survives of the sentence this bullet used to end with is the weaker half:** the script is run by
+  hand, so it gates a round only when somebody runs it, and a drift in a register it was never told to read —
+  an enumerated column's value set, for instance, which is how [D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write)
+  found what it found — still surfaces only for a reader.
 - **The `LIST` gloss, and the proposed rename of that operand to `ADDED` (§8): moot — there is no such
   operand** ([D-105](../decisions/round-11-12.md#d-105--there-are-no-lists-a-hand-written-set-is-an-expression-like-any-other)).
   Neither the gloss nor the rename has a subject: `LIST` is not an operand of this grammar, so there is
@@ -904,15 +931,20 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   [shape 3](00a-invariant-register.md#3-the-answer-reads-another-table-a-resolver-or-a-graph) for exactly
   that reason, and it is the item on the register where **the failure direction is a grant that denies
   everybody**: `EVERYONE - PERSON(x)` with an un-repointed `x`.
-- **Whether the reference listing is actually cheap (§8, §10).** D-103 registers the assumption: "which
+- **Whether the reference listing is actually cheap (§8, §10): answered — yes, at a size that is now stated
+  instead of imagined.** D-103 registered the assumption: "which
   live grants name this audience, and at what depth" is one indexed query over the leaf rows, cheap at
   this organization's size, **unverified at any size**. It is on the save path of a screen a person is
   standing at, and it is **load-bearing for a policy and not only for a screen**: dropping exactly the
   compilations that embed a changed expression
   ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation))
   needs this listing run in its **reverse** direction, transitively rather than one hop at a time (§10).
-  If the legacy corpus's row-count estimates are wrong there is no blunt instrument to fall back on — there
-  is nothing to invalidate for everyone at once — so what stands here is D-112's trigger and this bullet.
+  [F-16](../open-questions.md#f-16) closed the question on [D-112](../decisions/round-13.md#d-112--the-systems-scale-is-stated-hundreds-of-people-tens-of-registrants-per-event)'s
+  stated size: the listing is a scan over a small table with a handful of referencing rows each, pagination is a
+  UI nicety rather than a requirement, both of D-103's protections that hang off the query stand as written, and
+  the weakened fallback this entry kept polished **is not needed**. What that closure did not weigh is the
+  reverse direction §10 needs, and what reopens the whole question is D-112's trigger — a few thousand people,
+  or a thousand registrants on one event — which is what stands here besides this bullet.
 - **A nested audience's past reach is not reconstructable, and that is the answer (§8, *Three named
   sets*):** the record of whom a grant reached **is the expression**
   ([D-110](../decisions/round-13.md#d-110--the-expression-is-the-record-of-whom-a-grant-reached),
@@ -925,10 +957,28 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   window, a per-person record of people who were never granted anything.
 - **Whether `membership` belongs in `grant_scope_type` (§6).** It is not seeded, and that is an
   inference from what D-097 and D-099 list rather than a ruling.
-- Whether `valid_to` should be mandatory for high-authority holder rows and long-lived item grants
-  (§4, §6).
-- Polymorphic `scope_id` vs a `grantable_item` supertable (§6) — a real fork, covering
-  `selector_arg_id` too.
+- **Whether `valid_to` should be mandatory for high-authority holder rows and long-lived item grants (§4, §6):
+  answered no in the schema and yes in the application, which is the same answer twice.** Nothing forces a role
+  assignment to end and the control is the report — [D-071](../decisions/round-05.md#d-071--nothing-forces-a-role-assignment-to-end-the-gate-and-the-report-are-the-control)
+  ruled that for holders and withdrew F-3's earlier "yes" with it — and [05 §6](05-authorization.md#why-valid_to-is-discouraged-here-too)
+  applies the same posture to item grants: an open-ended item grant is nearly always a mistake, so **application
+  validation should require `valid_to` for item-scoped grants with `grant_reason` explaining any exception**,
+  while the schema forces nothing. The one case the schema already refuses is a delegation without `valid_to`
+  (check 11 above). **What is left is thinner than the question:** the report of long-lived open grants that
+  05 §6 names as the control carries no number in §11 — it is a sentence on that page and not a check on this
+  one — and **nothing backstops a forgotten grant.**
+- **Polymorphic `scope_id` vs a `grantable_item` supertable (§6): answered in round 6, and the fork is a door
+  rather than a question.** Polymorphic stands — `scope_type` plus `scope_id`, no foreign key — which is what the
+  register's § R row for F-2 records and what [05 §6](05-authorization.md#no-foreign-key-on-scope_id--the-accepted-trade-off)
+  states with its trade-off table and its four mandatory mitigations. `selector_arg_id` is covered by the same
+  answer, not by a second one: [D-101](../decisions/round-10b.md#d-101--an-audience-is-an-expression-over-named-sets-stored-as-a-tree)
+  extended [D-011](../decisions/round-01a.md#d-011--scope_id-on-access_grant-is-polymorphic-with-no-foreign-key)'s
+  accepted trade-off to it, the nightly orphan scan runs over it as check 2 above, and
+  [D-134](../decisions/round-19.md#d-134--four-more-polymorphic-columns-get-an-orphan-scan-and-the-audit-row-never)
+  widened that treatment to the rest of the reference-less columns. **To overrule it is written down, not left
+  to be invented:** add the supertable and give every grantable entity a foreign key to it, and give up the
+  property the polymorphism bought — a new grantable thing is a row of `grant_scope_type` rather than a schema
+  change.
 - **How long a `permission_cache` entry may live (§10): there is no such table, so there is no lifetime**
   ([D-114](../decisions/round-14.md#d-114--there-is-no-permission-cache-a-check-resolves-a-request-memoizes-and-the-only-cached-thing-is-a-compilation)).
   **No TTL is being asked about, because there is no row to put one on:** `expires_at` is not a column of
@@ -947,8 +997,18 @@ A few of the surviving codes carry a decision in their shape, and those are wort
   exactly where it would come back from. What is left of the pair is the history side alone: there is no
   rebuild to confuse with a history table, a table of today's answers is not a record of 2011, and
   **invariant 19 is the thing a return has to argue with.**
-- Retention policy for `access_log` — legal input required
-  ([F-8](../open-questions.md#f-8)).
+- **Retention policy for `access_log`: settled, and stricter than the proposal that asked for legal input —
+  the rows are deleted at 24 months.** [D-145](../decisions/round-20.md#d-145--access_log-rows-are-deleted-at-24-months-and-the-job-that-does-it-has-a-name)
+  is the ruling and [F-8](../open-questions.md#f-8) is its row in § R: these are the only rows in this design
+  that age out, and one of the two exceptions [00 §4](00-conventions.md#4-deletion-policy) names against "nothing
+  is hard-deleted" — the only one of the two carried by a clock, since the staging truncate went with the
+  pipeline ([D-190](../decisions/round-23.md#d-190--the-legacy-import-is-a-script-and-a-key-and-the-pipeline-is-gone)).
+  `audit_log` keeps the opposite shape — rows for life, payloads emptied at the same 24 months
+  ([D-088](../decisions/round-07-08.md#d-088--the-accounting-skeleton-is-permanent-the-audit-trail-is-short)) —
+  so the two trails now differ in **kind** as well as in length. The age-out is also the one scheduled delete
+  [D-184](../decisions/round-23.md#d-184--every-table-is-audited-and-the-delete-carve-out-names-the-moments-that-survive)
+  left standing, which is what makes it attributable: the run writes one summary `audit_log` row under
+  `system:log-reduction`, how many rows went and the window that removed them, and not one row per deleted row.
 - Whether `access_log` needs human annotation (recommend a separate table if so).
 
 **Settled, stated as answers.** A role may **not** be held by a rule

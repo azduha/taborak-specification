@@ -311,8 +311,8 @@ guardian, sets a credential — **nobody ever holds a child's password**
 ([D-179](../decisions/round-23.md#d-179--staff-may-open-an-account-only-its-person-can-start-it)).
 The `created_by_staff` flag on `account` ([01a §4](../data-model/01a-accounts-and-contacts.md#4-account))
 keeps its job: it records how the row was born. The question was once written down only here; it is
-registered and closed in
-[§ K of the register](../open-questions.md#k-filed-by-a-module-page).
+registered as K-9 and closed in
+[§ R of the register](../open-questions.md#k-9).
 
 ---
 

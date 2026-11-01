@@ -603,8 +603,14 @@ resolver, which is the worst kind of bug to find.
 
 ## 9. Open issues
 
-- The organizational calendar: which date the fee expires on, and how long the renewal window
-  is (§6). The mechanism is settled; the two numbers are a guess.
+- **The organizational calendar — the two numbers are ruled, and what is left is not a number.** The fee expires
+  on **1 January** ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january)) and the renewal window
+  is **60 days** ([D-048](../decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter));
+  both are columns on the one `membership_type` row (§6), so neither is a guess and neither needs a decision to
+  move. What remains is whether those two are this organisation's real numbers, which is a conversation with the
+  people who run the renewal rather than a ruling, and it is filed once as
+  [A-4's remainder](../open-questions.md#a-4-remainder--the-organizational-calendar) — not re-asked here, so that
+  the page carries the mechanism and the register carries the doubt.
 - **Which offices are written without `MEMBERS` is ruled: per office, by whoever writes the grant, no
   default either way — not into the expression and not out of it.** Which offices carry the term
   ([D-165](../decisions/round-22.md#d-165--there-is-no-default-for-members-and-that-is-the-decision)) is

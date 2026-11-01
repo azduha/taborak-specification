@@ -404,6 +404,17 @@ be discovered only when someone needs the history that was never recorded.
   retained, and the trail's payloads expire. What the review is asked about is therefore no longer "which
   fields" but "on what basis does the retained half survive indefinitely" — one question about one list,
   which is the item above.
-- Whether `person.notes` should exist at all, given the redaction burden it creates.
+- **✅ Deleted — whether `person.notes` should exist at all.** It does not, and the burden this item was written
+  about turned out to point the other way ([D-191](../decisions/round-23.md#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)).
+  The column was kept off the redactor's list, because naming a column as an exception is the field-name rule
+  [D-083](../decisions/round-07-08.md#d-083--there-is-no-medical-record-personal-data-is-one-class-of-data)
+  removed — and the consequence nobody drew was that **a redaction left the notes intact**: erasure overwrites
+  names and contacts, deletes every `person_attribute` row, empties an event answer, and did not touch the free
+  text this same page admits may hold a diagnosis. Free text about a person is now an attribute definition's
+  value, and an attribute row is the one thing this design *deletes* on erasure, so the deletion made erasure
+  stronger rather than weaker. **What still exists is free text *about* a person that is not a fact *of* them**,
+  and the page says so rather than implying the record is now clean of it: a roster row's `note`, an account's
+  `status_reason` and `status_note`, and a `field_conflict` holding the two values a merge could not choose
+  between. The boundary is that the person row holds no free text, while plenty of rows about a person do.
 
 All tracked in [../open-questions.md](../open-questions.md).

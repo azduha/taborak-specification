@@ -359,7 +359,7 @@ must not wait for a reader to stumble on it.
   — so what is left is the question a decision log cannot settle, namely whether indefinite retention of
   *named* `membership` and fee rows has a basis. See
   [00-conventions.md](00-conventions.md#8-personal-data-and-erasure) and
-  [06-audit-and-import.md §6](06b-redaction-and-checks.md#6-open-issues).
+  [06b §6](06b-redaction-and-checks.md#6-open-issues).
 Two more questions this page carried are now settled rather than open. **Whether `person.gender` is
 needed at all, and with what value set — settled: required, `male` / `female` / `other`, and its purpose
 is grammar rather than reporting** ([D-174](../decisions/round-23.md#d-174--persongender-is-how-the-system-declines-a-verb-and-it-is-required)),

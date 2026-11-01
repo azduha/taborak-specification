@@ -607,14 +607,25 @@ proves false, you can see it was self-asserted rather than discovered.
 
 ## 9. Open issues
 
-Still open, and tracked in [../open-questions.md](../open-questions.md):
+Still open, and tracked in [../open-questions.md](../open-questions.md), except in any bullet below that
+carries its own answer:
 
 - Whether twins/siblings with similar names and the same birth date need a documented
   disambiguation procedure (recommend: yes, and never merge them automatically). The sign-up gate in §4
   sharpens this: same birth date plus a normalised name is exactly the collision pair, and a collision
   now stops a registration instead of merely queueing a card.
-- Whether a hypothesis a person raised about *themselves* should hold their account out of `active`,
-  as against one the system raised because a stranger's sign-up strong-matched them (§8).
+- **Whether a hypothesis a person raised about *themselves* holds their account out of `active`, as against one
+  the system raised — settled: it does, and the gate could not tell them apart if it wanted to.** The rule is a
+  gate on a status transition and it reads the hypothesis row rather than its author: **an account may not reach
+  `active` while an unresolved `identity_hypothesis` names its person**, a hypothesis sitting in `proposed` or
+  `needs_review`, **on either side of the pair** ([§4 of the accounts page](../data-model/01a-accounts-and-contacts.md#4-account)),
+  and [D-089](../decisions/round-07-08.md#d-089--one-live-account-a-colliding-sign-up-files-a-claim-and-creates-nothing)
+  is the decision that put it there (§8's collision flow is the same page's: the claimant's rows stay
+  `pending_verification`, `proposed_by` reads `person`, and the gate holds the account where it is). Who raised
+  the row is recorded — `proposed_by` is one of `match_job`, `person`, `staff` since
+  [D-192](../decisions/round-23.md#d-192--proposed_by-loses-import_job-because-a-vocabulary-value-is-a-claim-about-who-can-write),
+  §3 above — and it is an attribution for the reviewer, not a term in the gate; the register's B-4 row carries the
+  same answer in one line.
 - **Not open, and corrected here because §7 now states the date:** the organizational year boundary that
   historical end dates get inferred from was settled in the previous round, and the calendar it comes from is
   1 January with the year running with the calendar ([D-047](../decisions/round-04.md#d-047--the-fee-expires-on-1-january),

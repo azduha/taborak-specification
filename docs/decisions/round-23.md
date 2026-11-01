@@ -1018,7 +1018,7 @@ reader finds the statement rather than the hole.
 were measured; the sentence that broke was in a different page and the sweep missed it. The decision index says in its own
 introduction how many decisions it indexes; that number was one short of its own rows from the moment
 `D-192`'s row was added, and it survived every gate this round ran — `scripts/check-registries.py` reads names, and
-`mkdocs --strict` reports a document with a stale figure in it as a successful build. So round 23 wrote
+the documentation build reports a page holding a stale figure as a successful build, with or without `--strict`. So round 23 wrote
 `scripts/count-decisions.py`, which counts the entry headings, counts the index's rows, reads every sentence outside
 the history pages that states a total, and exits non-zero when the three disagree. Closing a round now means running
 it beside `check-registries.py` and the documentation build. It is not a decision because it changes nothing about the system being designed: it is a
@@ -1035,3 +1035,32 @@ file, and got it back by saving the diff and reversing it:
 `git diff -- scripts/registry-baseline.txt > /tmp/bs.diff`, then `git apply -R /tmp/bs.diff`. **The flag should not be run
 inside a round:** add or delete the baseline's lines by hand, keeping each reason, and if a bulk edit is wanted, run
 the script against a scratch copy of `docs/` and copy in what was measured.
+
+**A repair the same day, found by a reader and not by a gate.** This round swept [the register](../open-questions.md)
+and the pages that had asked each question, and stopped there. It did not sweep the **Open issues** list at the
+bottom of the module pages — there are sixteen of them, and each is a list its page keeps beside the mechanism the
+answers would change. **Ten of the sixteen were still asking, in the present tense, at least one thing a decision
+had already answered**, and two more pointed at a register row that had moved since. What a reader therefore found
+was a corpus that contradicted itself in the one place a reader goes to decide what is still owed: the register said
+three questions while a module page said the fee's renewal window was unsettled, that whether a cancelled event
+releases its obligations was the finance module's call, that `person.notes` might want deleting, that a waitlist
+promotion needed a notification designed, that a guardianship carve-out needed somebody to confirm it was intended.
+Each of those has an answer — [D-048](round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter) set
+the window as a value to be tuned, [D-156](round-22.md#d-156--the-fee-buys-nothing-but-membership) with
+[D-158](round-22.md#d-158--a-refund-happens-at-the-bank) and D-180 settle a cancellation, [D-191](#d-191--personnotes-is-deleted-and-the-vocabulary-takes-the-job)
+did the deleting, [D-164](round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) leaves a notification with
+no sender, [D-115](round-15.md#d-115--a-guardianship-does-not-know-about-membership-right_level-outlives-a-lapse-and-survives-a-renewal)
+had ruled the carve-out intended and **no module page cited that decision anywhere before the repair**.
+
+**Nothing was deleted by the repair, and that is the point of the shape.** Every bullet kept its place in its list
+and gained its verdict in its own sentence, which is the form these lists already use: a list that keeps asking an
+answered question *and says what answered it* is what stops the next reader reopening it from the list rather than
+from the log. One register entry changed as a side effect, and it is the kind of thing only a reader finds: [A-4's
+remainder](../open-questions.md#a-4-remainder--the-organizational-calendar) had been describing itself as "not a
+question but a discipline" while this page's own *How to answer* said it wanted a meeting — two different claims
+about the one open question, carried together for rounds. It now says which half is a discipline (read the numbers
+from the row, never hard-code them) and which half needs a human (whether the year the numbers sit in is this
+organisation's year). **The lesson is this round's own sentence, turned on itself: closing a question means sweeping
+the pages that describe the hole, and a module page's open-issues list is such a page even when the register is
+correct.** A gate cannot catch this one either — a stale question in a list is not a broken name, a bad figure, or
+a dead link; it is a sentence that is still true-looking.

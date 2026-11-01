@@ -715,9 +715,17 @@ and a reference, a form or a photograph has never been a condition of joining.
 
 ## 9. Open issues
 
-- **Whether 60 days is the right renewal window** for an organization whose renewal campaign is a
-  handful of people. The mechanism is settled and the value is a column read from the row (§1, §8);
-  only a year of real lapses answers the value.
+- **Whether 60 days is the right renewal window for an organization whose renewal campaign is a handful of
+  people — settled: the ruling was that nobody has to settle it.** [D-048](../decisions/round-04.md#d-048--the-renewal-window-is-60-days-and-is-a-configuration-parameter)
+  set the window at **60 days as a starting value** and put it in `membership_type.renewal_grace_days` so that
+  the answer is a change of data rather than a decision: the entry's own consequence is that the value *"can be
+  tuned between years as the organization learns what actually gets paid"*, which is this question answered by
+  making it cheap to ask again, and §8 already reads the value as settled.
+  **What stays open is a discipline and not a number** — the one way to lose what the column bought is a job, a
+  front end or a report holding the literal `60` (§8), the property
+  [D-186](../decisions/round-23.md#d-186--membership_type-is-settings-wearing-a-vocabularys-clothes)
+  was written to protect when it moved this table's defence off *vocabularies are rows* and onto the calendar the
+  row carries (§1).
 - Whether `outstanding_balance` should exist as a denormalised column or be computed
   (§3) — depends on the finance design in [07-finance.md](07-finance.md).
 - **Which offices are written without `MEMBERS` is ruled, and what it rules is that nothing defaults.**
