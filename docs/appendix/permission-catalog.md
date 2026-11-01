@@ -91,10 +91,12 @@ is the only code in this system allowed to be a noun, and the exemption sets no 
 `<resource>.admin` is precisely what rule 3 refuses and precisely what was deleted.
 
 **The three rules were run against the sixty-six live codes the tables below held when D-104 ran them,
-and corrected nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. Four
-codes have arrived since that count — the `api_key.*` rows of
-[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody) — and they satisfy the three rules
-rather than testing them
+and corrected nothing** — sixty-five satisfy both tests, and the sixty-sixth is `system.admin`. **Ten** codes
+have arrived since that count — the four `api_key.*` rows of
+[§8b](permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody) and the six money rows of
+[§4a](permission-catalog-a-codes.md#4a-money), promoted in
+[round 24](../decisions/round-24.md#d-195--the-money-codes-are-shipped-codes-catalog-a-grows-a-money-section-and-catalog-b-10-loses-three-rows)
+— and every one of them satisfies the three rules rather than testing them
 ([D-122](../decisions/round-16.md#d-122--what-a-key-owes-the-catalog-four-codes-at-the-unit-and-the-fourth-owed-thing-declined)).
 That null result is the reason this section changed voice rather than its contents: **a convention that is
 followed and

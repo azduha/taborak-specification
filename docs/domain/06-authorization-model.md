@@ -234,10 +234,10 @@ name ([D-079](../decisions/round-06.md#d-079--the-guardianship-channel-is-entere
 `system.admin`. There is no `<resource>.admin` wildcard and no prefix match in the resolver
 ([D-068](../decisions/round-05.md#d-068--there-are-no-per-resource-admin-permissions-roles-are-the-bundle)).
 
-**An office is a stack of rows, not one word.** The catalog holds seventy codes — the sixty-six this page
-counted, plus the four `api_key.*` rows
-([catalog §8b](../appendix/permission-catalog-a-codes.md#8b-keys--a-caller-that-is-nobody)) — and a broad
-office is a couple of dozen rows
+**An office is a stack of rows, not one word.** [Catalog A](../appendix/permission-catalog-a-codes.md) *is* the
+register of codes — its tables are the list, a page deliberately not keeping a tally of its own, because a count
+beside a sentence is the one thing in this corpus that goes stale silently — and **a grant can name no code that is
+not a row there**, which is check 1 of the grant save. A broad office is therefore a couple of dozen rows
 ([catalog §11](../appendix/permission-catalog-b-roles-and-open-issues.md#11-roles--worked-examples-of-writing-one)).
 *Why:* that is the price of *"what exactly does this person have?"* being answerable by reading rows,
 and the reason there is no word like `manage` whose contents a reader would have to look up. Roles

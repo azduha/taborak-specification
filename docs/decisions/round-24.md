@@ -246,8 +246,10 @@ contradictory ones.
 **What changes.** A grant over money has something to be checked against besides a worked example: `applies_to`
 says which scope shape each code may sit on, and
 [the grant save](../data-model/05-authorization.md#what-is-refused-when-a-grant-is-saved) refuses one that does
-not match. Catalog B §11's treasurer and
-bookkeeper examples stop holding placeholders, which is what made §10 dishonest rather than merely optimistic.
+not match. Catalog B §11's `treasurer` office — the one worked example that spends money, and the only one —
+stops holding six codes that named no register row, which is what made §10 dishonest rather than merely
+optimistic. **It gained `payment.match` and is now seven rows, six of them registered**, and the page's own
+sentence saying the office "cannot be written today" retires with them.
 [`07-finance` §5](../data-model/07-finance.md#5-open-issues--the-whole-of-this-document-essentially) loses the
 paragraph that said its codes are registered nowhere. And `scripts/check-registries.py`, which reads the
 registries out of the pages, now finds money codes in the same register as everything else — a code-shaped money
@@ -481,11 +483,22 @@ mode this round exists to close. The corpus has an exact precedent for this shap
 [D-146](round-20.md#d-146--an-outbound-call-is-a-persons-act-or-a-job-and-nothing-about-it-is-designed-yet)
 answered an outbound direction by refusing to design either side of it, and
 [D-164](round-22.md#d-164--nobody-is-told-and-no-page-may-say-otherwise) then swept every sentence that implied the
-system sends things. **The actor-label list stays where
-[`00-conventions §7a`](../data-model/00-conventions.md#7a-what-an-empty-actor-column-means) left it** — five labels plus the sixth that deletes
-logs — and `system:accounting` is not added to it, which is the concrete thing this deferral costs: **nothing**.
-An integration added later is an integration that will need its own label, and needing one is not a reason to
-reserve it now.
+system sends things. **The actor-label list stays exactly where
+[`00-conventions §7a`](../data-model/00-conventions.md#7a-what-an-empty-actor-column-means) left it** — the five it
+lists, `system:renewal-sweep`, `system:payload-reduction`, `system:log-reduction`, `system:bank-pull` and
+`migration:<id>`, of which the third is already the one that deletes — and no accounting label joins them, which is
+the concrete thing this deferral costs: **nothing**. An integration added later is an integration that will need its
+own label, and needing one is not a reason to reserve it now.
+
+**One cost is worth naming, because it is a cost of the tooling and not of the design.**
+`scripts/check-registries.py` reads three registers out of these pages — permission codes, deferred namespaces, and
+the dead names in [`removed-concepts.md`](../appendix/removed-concepts.md) — and it has **no register of things the
+design has refused to add**. A label that was considered and declined is therefore invisible to the gate: the only
+thing standing between this deferral and a future `system:accounting` appearing in a page is this paragraph and the
+two module sentences beside it. It is not baselined, because a baseline is for findings the corpus has read and
+kept, and there is no finding to keep — the name appears in the corpus solely to say it does not exist, and the
+pages that name it were reworded to say *"no sixth actor label"* instead, so the checker stays at zero and cannot
+be the thing that remembers.
 
 ---
 
